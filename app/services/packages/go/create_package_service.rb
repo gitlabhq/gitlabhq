@@ -48,10 +48,9 @@ module Packages
       end
 
       def create_package
-        version.mod.project.packages.create!(
+        ::Packages::Go::Package.for_projects(version.mod.project).create!(
           name: version.mod.name,
           version: version.name,
-          package_type: :golang,
           created_at: version.commit.committed_date
         )
       end

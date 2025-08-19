@@ -1,0 +1,13 @@
+---
+table_name: job_environments
+classes:
+- Environments::Job
+feature_categories:
+- deployment_management
+description: Stores environment configuration for a CI job
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192865
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+milestone: '18.3'
+table_size: small

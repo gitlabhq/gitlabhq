@@ -246,10 +246,12 @@ If one or more of these values is significantly high, this could indicate a prob
 
 ## Stuck at `Message: pg_basebackup: initiating base backup, waiting for checkpoint to complete`
 
-If the initial replication is stuck at `Message: pg_basebackup: initiating base backup, waiting for checkpoint to complete`, this means that the Primary node
+If the initial replication is stuck at `Message: pg_basebackup: initiating base backup, waiting for checkpoint to complete`, this means that the primary Geo site
 is not actively used. This mostly happens on a non-production GitLab server or on a brand new GitLab installation.
 
-The workaround is to run the SQL query `CHECKPOINT;` on the database of the primary node:
+The workaround is to cause some database writes. For example, you can sign in to the primary site and create some issues and comments.
+
+An alternative workaround is to run the SQL query `CHECKPOINT;` on the database of the primary site:
 
 ```shell
 sudo gitlab-psql -xc 'CHECKPOINT;

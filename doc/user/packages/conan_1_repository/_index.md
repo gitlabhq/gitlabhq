@@ -440,6 +440,7 @@ Packages uploaded before this feature was enabled (GitLab 17.10) do not have the
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `conan_package_revisions_support`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14896) in GitLab 18.3. Feature flag `conan_package_revisions_support` removed.
 
 {{< /history >}}
 

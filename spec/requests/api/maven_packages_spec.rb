@@ -10,7 +10,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
   let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group) }
   let_it_be_with_refind(:group) { package_settings.namespace }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, organization: group.organization) }
   let_it_be(:project, reload: true) { create(:project, :public, namespace: group, developers: user) }
   let_it_be(:package, reload: true) { create(:maven_package, project: project, name: project.full_path) }
   let_it_be(:maven_metadatum, reload: true) { package.maven_metadatum }
@@ -492,6 +492,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      subject { download_file_with_token(file_name: package_file.file_name) }
+    end
+
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
       get api("/packages/maven/#{path}/#{file_name}"), params: params, headers: request_headers
     end
@@ -726,6 +730,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         it_behaves_like 'successfully returning the file'
       end
+
+      it_behaves_like 'updating personal access token last used'
     end
 
     context 'maven metadata file' do
@@ -779,6 +785,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           subject
         end
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { download_file_with_token(file_name: package_file.file_name) }
     end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path, group_id: group.id)
@@ -892,6 +902,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     it_behaves_like 'forwarding package requests'
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { download_file_with_token(file_name: package_file.file_name) }
+    end
 
     def download_file(file_name:, params: {}, request_headers: headers, path: maven_metadatum.path)
       get api("/projects/#{project.id}/packages/maven/" \
@@ -1068,6 +1082,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      subject { authorize_upload_with_token }
+    end
+
     def authorize_upload(params = {}, request_headers = headers)
       put api("/projects/#{project.id}/packages/maven/com/example/my-app/#{version}/maven-metadata.xml/authorize"), params: params, headers: request_headers
     end
@@ -1164,7 +1182,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it 'creates package and stores package file' do
         expect_use_primary
 
-        expect { upload_file_with_token(params: params) }.to change { project.packages.count }.by(1)
+        expect { upload_file_with_token(params: params) }.to change { ::Packages::Maven::Package.for_projects(project).count }.by(1)
           .and change { Packages::Maven::Metadatum.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
 
@@ -1232,7 +1250,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:file_name) { 'a' * (Packages::Maven::FindOrCreatePackageService::MAX_FILE_NAME_LENGTH + 1) }
 
         it 'rejects request' do
-          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { project.packages.count }
+          expect { upload_file_with_token(params: params, file_name: file_name) }.not_to change { ::Packages::Maven::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to include('File name is too long')
@@ -1243,7 +1261,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         let(:version) { '$%123' }
 
         it 'rejects request' do
-          expect { upload_file_with_token(params: params) }.not_to change { project.packages.count }
+          expect { upload_file_with_token(params: params) }.not_to change { ::Packages::Maven::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to include('Validation failed')
@@ -1448,6 +1466,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           end
         end
       end
+
+      it_behaves_like 'updating personal access token last used'
     end
 
     def upload_file(params: {}, request_headers: headers, file_extension: 'jar', file_name: 'my-app-1.0-20180724.124855-1')

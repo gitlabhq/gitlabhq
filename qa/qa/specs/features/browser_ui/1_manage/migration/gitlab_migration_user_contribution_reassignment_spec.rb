@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  describe 'Manage', product_group: :import do
+  describe 'Manage', feature_category: :importers do
     describe 'Gitlab migration',
       feature_flag: {
-        name: [:importer_user_mapping, :bulk_import_importer_user_mapping],
+        name: [:bulk_import_importer_user_mapping],
         scope: :global
       } do
       include_context "with gitlab project migration"
@@ -37,7 +37,6 @@ module QA
         end
 
         before do
-          Runtime::Feature.enable(:importer_user_mapping)
           Runtime::Feature.enable(:bulk_import_importer_user_mapping)
 
           Flow::Login.sign_in(as: user)

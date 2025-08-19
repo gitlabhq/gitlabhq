@@ -13,7 +13,9 @@ module WorkItems
     def preloads
       {
         work_item_type: :work_item_type,
-        web_url: { namespace: :route, project: [:project_namespace, { namespace: :route }] },
+        web_url: { namespace: :route, project: [:project_namespace, {
+          namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
+        }] },
         widgets: { work_item_type: :enabled_widget_definitions },
         archived: :project
       }
@@ -37,6 +39,7 @@ module WorkItems
         assignees: :assignees_by_name_and_id,
         participants: WorkItem.participant_includes,
         parent: :work_item_parent,
+        has_parent: :work_item_parent,
         children: { work_item_children_by_relative_position: [:author, { project: :project_feature }] },
         milestone: { milestone: [:project, :group] },
         subscribed: [:assignees, :award_emoji, { notes: [:author, :award_emoji] }],

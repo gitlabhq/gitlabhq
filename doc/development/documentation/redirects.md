@@ -44,7 +44,7 @@ There are two types of redirects:
   contributors and expire after nine months. Redirects pointing to external sites
   are not added to the GitLab Pages redirects.
 
-Expired redirect files are removed from the documentation projects as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
+Expired redirect files are removed from the documentation projects as part of the Technical Writing team's [monthly tasks](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/blob/main/.gitlab/issue_templates/tw-monthly-tasks.md).
 
 ## Redirect to a page that already exists
 

@@ -65,7 +65,7 @@ RSpec.describe Packages::Go::CreatePackageService, feature_category: :package_re
 
       it 'creates a new package' do
         expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { ::Packages::Go::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(2)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe Packages::Go::CreatePackageService, feature_category: :package_re
 
       it 'does not create a package or files' do
         expect { subject }
-          .to not_change { project.packages.count }
+          .to not_change { ::Packages::Go::Package.for_projects(project).count }
           .and not_change { Packages::PackageFile.count }
       end
     end

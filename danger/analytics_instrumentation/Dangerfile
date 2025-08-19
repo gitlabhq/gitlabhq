@@ -15,3 +15,5 @@ analytics_instrumentation.check_removed_metric_fields!
 analytics_instrumentation.warn_about_migrated_redis_keys_specs!
 
 analytics_instrumentation.warn_about_potential_pii_tracking
+
+analytics_instrumentation.prohibit_key_path_changes!

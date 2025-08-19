@@ -23,6 +23,7 @@ module Keeps
   class DeleteOldFeatureFlags < ::Gitlab::Housekeeper::Keep
     CUTOFF_MILESTONE_FOR_DISABLED_FLAG = 12
     CUTOFF_MILESTONE_FOR_ENABLED_FLAG = 4
+    MAX_FILES_LIMIT = 80
     Error = Class.new(StandardError)
     GREP_IGNORE = [
       'locale/',
@@ -33,12 +34,21 @@ module Keeps
     FEATURE_FLAG_LOG_ISSUES_URL = "https://gitlab.com/gitlab-com/gl-infra/feature-flag-log/-/issues/?search=%<feature_flag_name>s&sort=created_date&state=all&label_name%%5B%%5D=host%%3A%%3Agitlab.com"
     MISSING_URL_PLACEHOLDER = '(missing URL)'
 
-    def each_change
+    def each_identified_change
       each_feature_flag do |feature_flag|
-        change = prepare_change(feature_flag)
+        identifiers = build_ff_identifiers(feature_flag)
+        latest_feature_flag_status = get_latest_feature_flag_status(feature_flag)
+        next unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
 
-        yield(change) if change
+        change = ::Gitlab::Housekeeper::Change.new
+        change.identifiers = identifiers
+        change.context = { feature_flag: feature_flag, latest_feature_flag_status: latest_feature_flag_status }
+        yield change
       end
+    end
+
+    def make_change!(change)
+      prepare_change(change)
     end
 
     private
@@ -168,16 +178,15 @@ module Keeps
     end
     # rubocop:enable Gitlab/DocumentationLinks/HardcodedUrl
 
-    def prepare_change(feature_flag)
-      identifiers = [self.class.name.demodulize, feature_flag.name]
-      latest_feature_flag_status = get_latest_feature_flag_status(feature_flag)
-      return unless can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
+    def build_ff_identifiers(feature_flag)
+      [self.class.name.demodulize, feature_flag.name]
+    end
 
-      change = ::Gitlab::Housekeeper::Change.new
+    def prepare_change(change)
+      feature_flag = change.context[:feature_flag]
+      latest_feature_flag_status = change.context[:latest_feature_flag_status]
       change.changelog_type = 'removed'
       change.title = "Delete the `#{feature_flag.name}` feature flag"
-      change.identifiers = identifiers
-      change.description = build_description(feature_flag, latest_feature_flag_status)
 
       FileUtils.rm(feature_flag.path)
       change.changed_files = [feature_flag.path]
@@ -191,6 +200,7 @@ module Keeps
         return change
       end
 
+      change.description = build_description(feature_flag, latest_feature_flag_status)
       change.labels = [
         'automation:feature-flag-removal',
         'maintenance::removal',
@@ -198,6 +208,7 @@ module Keeps
         feature_flag.group
       ]
 
+      change.description = build_description(feature_flag, latest_feature_flag_status)
       change.reviewers = assignees(feature_flag.rollout_issue_url)
 
       if change.reviewers.empty?
@@ -238,8 +249,14 @@ module Keeps
 
     def ai_patch(feature_flag, change)
       failed_files = []
+      files_to_patch = files_mentioning_feature_flag(feature_flag.name)
 
-      files_mentioning_feature_flag(feature_flag.name).each do |file|
+      if files_to_patch.size > MAX_FILES_LIMIT
+        @logger.puts "More than #{MAX_FILES_LIMIT} are mentioning feature flag #{feature_flag.name}, Skipping."
+        return false
+      end
+
+      files_to_patch.each do |file|
         flag_enabled = get_latest_feature_flag_status(feature_flag) == :enabled
         user_message = remove_feature_flag_prompts.fetch(feature_flag, file, flag_enabled)
 
@@ -383,11 +400,13 @@ module Keeps
     end
 
     def each_feature_flag
-      all_feature_flag_files.map do |f|
-        feature_definition = Feature::Definition.new(f,
+      feature_definitions = all_feature_flag_files.map do |f|
+        Feature::Definition.new(f,
           YAML.safe_load_file(f, permitted_classes: [Symbol], symbolize_names: true))
+      end
 
-        yield(feature_definition)
+      feature_definitions.reject { |f| f.milestone.nil? }.sort_by { |f| Gem::Version.new(f.milestone) }.each do |f|
+        yield(f)
       end
     end
 
@@ -435,7 +454,6 @@ module Keeps
         all_files += result if result.any?
       end
 
-      @logger.puts "All files mentioning feature flag #{feature_flag_name}"
       all_files.uniq
     end
 

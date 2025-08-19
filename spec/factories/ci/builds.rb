@@ -387,6 +387,7 @@ FactoryBot.define do
     trait :report_results do
       after(:build) do |build|
         build.report_results << build(:ci_build_report_result)
+        build.job_artifacts << build(:ci_job_artifact, :junit, job: build)
       end
     end
 
@@ -472,7 +473,7 @@ FactoryBot.define do
       artifacts_expire_at { 1.minute.ago }
     end
 
-    trait :with_artifacts_paths do
+    trait :with_archive_artifact do
       options do
         {
           artifacts: {
@@ -483,6 +484,10 @@ FactoryBot.define do
             expire_in: '7d'
           }
         }
+      end
+
+      after(:build) do |build|
+        build.job_artifacts << build(:ci_job_artifact, :archive, job: build)
       end
     end
 

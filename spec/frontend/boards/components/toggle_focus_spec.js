@@ -4,6 +4,8 @@ import ToggleFocus from '~/boards/components/toggle_focus.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
+jest.mock('~/tooltips');
+
 describe('ToggleFocus', () => {
   let wrapper;
 

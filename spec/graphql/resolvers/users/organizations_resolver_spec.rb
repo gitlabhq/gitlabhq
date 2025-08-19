@@ -29,14 +29,14 @@ RSpec.describe Resolvers::Users::OrganizationsResolver, feature_category: :navig
       let_it_be(:organization_owner) { user }
 
       let_it_be(:solo_owned_organizations) do
-        create_list(:organization_owner, 2, user: organization_owner).map(&:organization)
+        create_list(:organization_owner, 2, :without_common_organization, user: organization_owner).map(&:organization)
       end
 
       let_it_be(:multi_owned_organization) do
-        create(:organization, organization_users: [
-          create(:organization_owner, user: organization_owner),
-          create(:organization_owner, user: create(:user))
-        ])
+        org = create(:organization, organization_users: [create(:organization_owner, user: organization_owner)])
+        create(:user, owner_of: org)
+
+        org
       end
 
       let_it_be(:all_organizations) do

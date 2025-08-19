@@ -17,10 +17,21 @@ variables:
   # Setting this variable will affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  # The SECURE_BINARIES_ANALYZERS variable defines analyzers that are still supported.
+  #
+  # The following are analyzers that have reached End of Support:
+  #
+  # - bandit
+  # - brakeman
+  # - gosec
+  # - flawfinder
+  # - phpcs-security-audit
+  # - security-code-scan
+  # - nodejs-scan
+  # - eslint
+  # - license-finder
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, gitlab-advanced-sast, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning,
-    license-finder,
-    dast, dast-runner-validation, api-security
+    gitlab-advanced-sast, spotbugs, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning, dast, dast-runner-validation, api-security
 
   SECURE_BINARIES_DOWNLOAD_IMAGES: "true"
   SECURE_BINARIES_PUSH_IMAGES: "true"
@@ -64,6 +75,7 @@ variables:
 # SAST jobs
 #
 
+# End of Support in GitLab 15.4
 bandit:
   extends: .download_images
   variables:
@@ -71,6 +83,7 @@ bandit:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bbandit\b/'
 
+# End of Support in GitLab 17.0
 brakeman:
   extends: .download_images
   variables:
@@ -78,6 +91,7 @@ brakeman:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bbrakeman\b/'
 
+# End of Support in GitLab 15.4
 gosec:
   extends: .download_images
   variables:
@@ -92,6 +106,7 @@ spotbugs:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bspotbugs\b/'
 
+# End of Support in GitLab 17.0
 flawfinder:
   extends: .download_images
   variables:
@@ -99,6 +114,7 @@ flawfinder:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bflawfinder\b/'
 
+# End of Support in GitLab 17.0
 phpcs-security-audit:
   extends: .download_images
   variables:
@@ -106,6 +122,7 @@ phpcs-security-audit:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bphpcs-security-audit\b/'
 
+# End of Support in GitLab 16.0
 security-code-scan:
   extends: .download_images
   variables:
@@ -113,6 +130,7 @@ security-code-scan:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsecurity-code-scan\b/'
 
+# End of Support in GitLab 17.0
 nodejs-scan:
   extends: .download_images
   variables:
@@ -120,6 +138,7 @@ nodejs-scan:
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bnodejs-scan\b/'
 
+# End of Support in GitLab 15.4
 eslint:
   extends: .download_images
   variables:
@@ -212,6 +231,7 @@ dependency-scanning:
 # License Scanning
 #
 
+# End of Support in GitLab 16.3
 license-finder:
   extends: .download_images
   variables:

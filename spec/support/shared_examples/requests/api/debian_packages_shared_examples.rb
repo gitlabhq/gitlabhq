@@ -27,7 +27,7 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
         expect { subject }
           .to change { ::Packages::Debian::Package.for_projects(container).count }.by(1)
           .and not_change { ::Packages::Debian::Package.for_projects(container).with_name(::Packages::Debian::INCOMING_PACKAGE_NAME).count }
-          .and change { container.package_files.count }.by(1)
+          .and change { ::Packages::PackageFile.for_projects(container).count }.by(1)
       else
         expect(::Packages::Debian::FindOrCreateIncomingService).to receive(:new).with(container, user).and_call_original
         expect(::Packages::Debian::ProcessPackageFileWorker).not_to receive(:perform_async)
@@ -35,7 +35,7 @@ RSpec.shared_examples 'Debian packages upload request' do |status, body = nil|
         expect { subject }
           .to change { ::Packages::Debian::Package.for_projects(container).count }.by(1)
           .and change { ::Packages::Debian::Package.for_projects(container).with_name(::Packages::Debian::INCOMING_PACKAGE_NAME).count }.by(1)
-          .and change { container.package_files.count }.by(1)
+          .and change { ::Packages::PackageFile.for_projects(container).count }.by(1)
       end
 
       expect(response).to have_gitlab_http_status(status)

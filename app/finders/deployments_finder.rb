@@ -196,6 +196,7 @@ class DeploymentsFinder
         job_artifacts: [],
         user: [],
         metadata: [],
+        job_definition: [],
         pipeline: {
           project: {
             route: [],

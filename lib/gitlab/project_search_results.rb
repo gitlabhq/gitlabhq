@@ -52,6 +52,8 @@ module Gitlab
       @limited_blobs_count ||= blobs(limit: count_limit).count
     end
 
+    alias_method :blobs_count, :limited_blobs_count
+
     def limited_notes_count
       return @limited_notes_count if defined?(@limited_notes_count)
 

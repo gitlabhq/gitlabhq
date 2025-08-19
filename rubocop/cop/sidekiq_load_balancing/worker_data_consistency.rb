@@ -36,10 +36,12 @@ module RuboCop
         DISCOURAGE_ALWAYS_MSG = "Refrain from using `:always` if possible." \
                                 "See #{HELP_LINK} for a more detailed explanation of these settings.".freeze
 
+        # @!method application_worker?(node)
         def_node_search :application_worker?, <<~PATTERN
         `(send nil? :include (const nil? :ApplicationWorker))
         PATTERN
 
+        # @!method data_consistency_value(node)
         def_node_matcher :data_consistency_value, <<~PATTERN
           `(send nil? :data_consistency $(sym _) ...)
         PATTERN

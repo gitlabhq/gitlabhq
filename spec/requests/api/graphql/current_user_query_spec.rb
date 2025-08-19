@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting project information', feature_category: :system_access do
+RSpec.describe 'getting project information', :with_current_organization, feature_category: :system_access do
   include GraphqlHelpers
 
   let(:fields) do
@@ -12,9 +12,7 @@ RSpec.describe 'getting project information', feature_category: :system_access d
     GRAPHQL
   end
 
-  let(:query) do
-    graphql_query_for('currentUser', {}, fields)
-  end
+  let(:query) { graphql_query_for('currentUser', {}, fields) }
 
   subject { graphql_data['currentUser'] }
 
@@ -23,11 +21,19 @@ RSpec.describe 'getting project information', feature_category: :system_access d
   end
 
   context 'when there is a current_user' do
-    let_it_be(:current_user) { create(:user) }
+    let(:organization) { current_organization }
+    let(:user_namespace) { create(:user_namespace, organization: organization) }
+    let(:current_user) { create(:user, namespace: user_namespace) }
 
     it_behaves_like 'a working graphql query that returns data'
 
-    it { is_expected.to include('name' => current_user.name, 'namespace' => { 'id' => current_user.namespace.to_global_id.to_s }) }
+    it { is_expected.to include('name' => current_user.name, 'namespace' => { 'id' => user_namespace.to_global_id.to_s }) }
+
+    context 'when namespace does not exist for organization' do
+      let(:organization) { create(:organization, path: 'random-org-1', name: 'Random org 2') }
+
+      it { is_expected.to include('namespace' => nil) }
+    end
   end
 
   context 'when there is no current_user' do

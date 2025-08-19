@@ -131,6 +131,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
         allow(user).to receive(:todos_pending_count).and_return(3)
         allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
+        allow(user).to receive(:review_requested_open_merge_requests_count_in_cache?).and_return(true)
+        allow(user).to receive(:assigned_open_merge_requests_count_in_cache?).and_return(true)
       end
     end
 
@@ -383,82 +385,220 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    it 'returns "Create new" menu groups without headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
+    describe '"Create new" menu groups', :use_clean_rails_memory_store_caching do
+      def menu_item(href:, text:, id:, component: nil)
         {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
+          href: href,
+          text: text,
+          component: component,
+          extraAttrs: {
+            "data-track-label": id,
+            "data-track-action": "click_link",
+            "data-track-property": "nav_create_menu",
+            "data-testid": 'create_menu_item',
+            "data-qa-create-menu-item": id
+          }
         }
-      }
+      end
 
-      expect(subject[:create_new_menu_groups]).to eq([
-        {
-          name: "",
-          items: [
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/organizations/new", text: s_('Organization|New organization'),
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_organization") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          ]
-        }
-      ])
-    end
+      context 'without headers' do
+        shared_examples '"Create new" menu groups without headers' do
+          it 'returns "Create new" menu groups without headers' do
+            expect(subject[:create_new_menu_groups]).to eq([
+              {
+                name: "",
+                items: expected_menu_item_groups
+              }
+            ])
+          end
+        end
 
-    it 'returns "Create new" menu groups with headers', :use_clean_rails_memory_store_caching do
-      extra_attrs = ->(id) {
-        {
-          "data-track-label": id,
-          "data-track-action": "click_link",
-          "data-track-property": "nav_create_menu",
-          "data-testid": 'create_menu_item',
-          "data-qa-create-menu-item": id
-        }
-      }
+        context 'when current Organization has scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/o/#{current_organization.path}/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
 
-      allow(group).to receive(:persisted?).and_return(true)
-      allow(helper).to receive(:can?).and_return(true)
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
 
-      expect(subject[:create_new_menu_groups]).to contain_exactly(
-        a_hash_including(
-          name: "In this group",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_project") },
-            { href: "/groups/new#create-group-pane", text: "New subgroup",
-              component: nil,
-              extraAttrs: extra_attrs.call("new_subgroup") },
-            { href: nil, text: "Invite members",
-              component: 'invite_members',
-              extraAttrs: extra_attrs.call("invite") }
-          )
-        ),
-        a_hash_including(
-          name: "In GitLab",
-          items: array_including(
-            { href: "/projects/new", text: "New project/repository",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_project") },
-            { href: "/groups/new", text: "New group",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_group") },
-            { href: "/-/snippets/new", text: "New snippet",
-              component: nil,
-              extraAttrs: extra_attrs.call("general_new_snippet") }
-          )
-        )
-      )
+          include_examples '"Create new" menu groups without headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:expected_menu_item_groups) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/organizations/new",
+                text: s_('Organization|New organization'),
+                id: "general_new_organization"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups without headers'
+        end
+      end
+
+      context 'with headers' do
+        before do
+          allow(group).to receive(:persisted?).and_return(true)
+          allow(helper).to receive(:can?).and_return(true)
+        end
+
+        shared_examples '"Create new" menu groups with headers' do
+          it 'returns "Create new" menu groups with headers' do
+            expect(subject[:create_new_menu_groups]).to contain_exactly(
+              a_hash_including(
+                name: "In this group",
+                items: array_including(*in_this_group_menu_items)
+              ),
+              a_hash_including(
+                name: "In GitLab",
+                items: array_including(*in_gitlab_menu_items)
+              )
+            )
+          end
+        end
+
+        context 'when current Organization has scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/o/#{current_organization.path}/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/o/#{current_organization.path}/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/o/#{current_organization.path}/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+
+        context 'when current Organization does not have scoped paths' do
+          let(:in_this_group_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "new_project"
+              ),
+              menu_item(
+                href: "/groups/new#create-group-pane",
+                text: "New subgroup",
+                id: "new_subgroup"
+              ),
+              menu_item(
+                href: nil,
+                text: "Invite members",
+                component: 'invite_members',
+                id: "invite"
+              )
+            ]
+          end
+
+          let(:in_gitlab_menu_items) do
+            [
+              menu_item(
+                href: "/projects/new",
+                text: "New project/repository",
+                id: "general_new_project"
+              ),
+              menu_item(
+                href: "/groups/new",
+                text: "New group",
+                id: "general_new_group"
+              ),
+              menu_item(
+                href: "/-/snippets/new",
+                text: "New snippet",
+                id: "general_new_snippet"
+              )
+            ]
+          end
+
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          include_examples '"Create new" menu groups with headers'
+        end
+      end
     end
 
     describe 'current context' do
@@ -523,87 +663,111 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    describe 'context switcher persistent links' do
-      let_it_be(:public_link) do
-        { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
-      end
-
-      let_it_be(:public_links_for_user) do
-        [
-          { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
-          public_link,
-          { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
-          { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
-        ]
-      end
-
-      let_it_be(:admin_area_link) do
-        { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
-      end
-
-      subject do
-        helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
-      end
-
-      context 'when user is not logged in' do
-        let(:user) { nil }
-
-        it 'returns only the public links for an anonymous user' do
-          expect(subject[:context_switcher_links]).to eq([public_link])
-        end
-      end
-
-      context 'when user is not an admin' do
-        it 'returns only the public links for a user' do
-          expect(subject[:context_switcher_links]).to eq(public_links_for_user)
-        end
-      end
-
-      context 'when user is an admin' do
-        before do
-          allow(user).to receive(:admin?).and_return(true)
+    describe 'Context switcher persistent links' do
+      shared_examples 'context switcher with persistent links' do
+        let_it_be(:public_link) do
+          { title: s_('Navigation|Explore'), link: '/explore', icon: 'compass' }
         end
 
-        context 'when application setting :admin_mode is enabled' do
+        let(:public_links_for_user) do
+          your_work_link = if current_organization&.scoped_paths?
+                             "/o/#{current_organization.path}"
+                           else
+                             '/'
+                           end
+
+          [
+            { title: s_('Navigation|Your work'), link: your_work_link, icon: 'work' },
+            public_link,
+            { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
+            { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
+          ]
+        end
+
+        let_it_be(:admin_area_link) do
+          { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
+        end
+
+        subject do
+          helper.super_sidebar_context(user, group: nil, project: nil, panel: panel, panel_type: panel_type)
+        end
+
+        context 'when user is not logged in' do
+          let(:user) { nil }
+
+          it 'returns only the public links for an anonymous user' do
+            expect(subject[:context_switcher_links]).to eq([public_link])
+          end
+        end
+
+        context 'when user is not an admin' do
+          it 'returns only the public links for a user' do
+            expect(subject[:context_switcher_links]).to eq(public_links_for_user)
+          end
+        end
+
+        context 'when user is an admin' do
           before do
-            stub_application_setting(admin_mode: true)
+            allow(user).to receive(:admin?).and_return(true)
           end
 
-          context 'when admin mode is on' do
+          context 'when application setting :admin_mode is enabled' do
             before do
-              current_user_mode.request_admin_mode!
-              current_user_mode.enable_admin_mode!(password: user.password)
+              stub_application_setting(admin_mode: true)
             end
 
-            it 'returns public links, admin area and leave admin mode links' do
+            context 'when admin mode is on' do
+              before do
+                current_user_mode.request_admin_mode!
+                current_user_mode.enable_admin_mode!(password: user.password)
+              end
+
+              it 'returns public links, admin area and leave admin mode links' do
+                expect(subject[:context_switcher_links]).to eq([
+                  *public_links_for_user,
+                  admin_area_link
+                ])
+              end
+            end
+
+            context 'when admin mode is off' do
+              it 'returns public links and enter admin mode link' do
+                expect(subject[:context_switcher_links]).to eq([
+                  *public_links_for_user
+                ])
+              end
+            end
+          end
+
+          context 'when application setting :admin_mode is disabled' do
+            before do
+              stub_application_setting(admin_mode: false)
+            end
+
+            it 'returns public links and admin area link' do
               expect(subject[:context_switcher_links]).to eq([
                 *public_links_for_user,
                 admin_area_link
               ])
             end
           end
+        end
+      end
 
-          context 'when admin mode is off' do
-            it 'returns public links and enter admin mode link' do
-              expect(subject[:context_switcher_links]).to eq([
-                *public_links_for_user
-              ])
-            end
-          end
+      context 'when Organization has scoped paths' do
+        before do
+          allow(current_organization).to receive(:scoped_paths?).and_return(true)
         end
 
-        context 'when application setting :admin_mode is disabled' do
-          before do
-            stub_application_setting(admin_mode: false)
-          end
+        include_examples 'context switcher with persistent links'
+      end
 
-          it 'returns public links and admin area link' do
-            expect(subject[:context_switcher_links]).to eq([
-              *public_links_for_user,
-              admin_area_link
-            ])
-          end
+      context 'when Organization does not have scoped paths' do
+        before do
+          allow(current_organization).to receive(:scoped_paths?).and_return(false)
         end
+
+        include_examples 'context switcher with persistent links'
       end
     end
 
@@ -649,34 +813,36 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       allow(group).to receive(:to_global_id).and_return(5)
     end
 
-    shared_examples 'nav panels available to logged-out users' do
+    shared_examples 'nav panels available to all users' do
       it 'returns Project Panel for project nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'project',
-          user: user)).to be_a(Sidebars::Projects::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'project', user: user))
+          .to be_a(Sidebars::Projects::SuperSidebarPanel)
       end
 
       it 'returns Group Panel for group nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user)).to be_a(Sidebars::Groups::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'group', user: user))
+          .to be_a(Sidebars::Groups::SuperSidebarPanel)
       end
 
       it 'returns User profile Panel for user profile nav' do
         viewed_user = build(:user)
-        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user,
-          viewed_user: viewed_user)).to be_a(Sidebars::UserProfile::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: viewed_user))
+          .to be_a(Sidebars::UserProfile::Panel)
       end
 
       it 'returns Explore Panel for explore nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user)).to be_a(Sidebars::Explore::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'explore', user: user))
+          .to be_a(Sidebars::Explore::Panel)
       end
 
       it 'returns Organization Panel for organization nav' do
-        expect(
-          helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user)
-        ).to be_a(Sidebars::Organizations::SuperSidebarPanel)
+        expect(helper.super_sidebar_nav_panel(nav: 'organization', organization: organization, user: user))
+          .to be_a(Sidebars::Organizations::SuperSidebarPanel)
       end
 
       it 'returns Search Panel for search nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user)).to be_a(Sidebars::Search::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'search', user: user))
+          .to be_a(Sidebars::Search::Panel)
       end
     end
 
@@ -691,40 +857,94 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       it 'returns User Settings Panel for profile nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user)).to be_a(Sidebars::UserSettings::Panel)
+        expect(helper.super_sidebar_nav_panel(nav: 'profile', user: user))
+          .to be_a(Sidebars::UserSettings::Panel)
+      end
+
+      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
+        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user))
+          .to be_a(Sidebars::YourWork::Panel)
       end
 
       describe 'admin user' do
         let(:user) { build(:admin) }
 
         it 'returns Admin Panel for admin nav', :enable_admin_mode do
-          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::Admin::Panel)
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::Admin::Panel)
+        end
+
+        it 'returns Your Work Panel for admin nav when not in admin mode' do
+          expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user))
+            .to be_a(Sidebars::YourWork::Panel)
         end
       end
 
-      it 'returns Your Work Panel for admin nav' do
-        expect(helper.super_sidebar_nav_panel(nav: 'admin', user: user)).to be_a(Sidebars::YourWork::Panel)
+      describe 'fallback behavior' do
+        it 'returns "Your Work" Panel as default fallback', :use_clean_rails_memory_store_caching do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::YourWork::Panel)
+        end
+
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns YourWork panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::YourWork::Panel)
+          end
+        end
       end
 
-      it 'returns "Your Work" Panel for your_work nav', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(nav: 'your_work', user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it 'returns "Your Work" Panel as a fallback', :use_clean_rails_memory_store_caching do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::YourWork::Panel)
-      end
-
-      it_behaves_like 'nav panels available to logged-out users'
+      it_behaves_like 'nav panels available to all users'
     end
 
     describe 'when logged-out' do
       let(:user) { nil }
 
-      it_behaves_like 'nav panels available to logged-out users'
+      describe 'fallback behavior' do
+        it 'returns "Explore" Panel as default fallback' do
+          expect(helper.super_sidebar_nav_panel(user: user))
+            .to be_a(Sidebars::Explore::Panel)
+        end
 
-      it 'returns "Explore" Panel as a fallback' do
-        expect(helper.super_sidebar_nav_panel(user: user)).to be_a(Sidebars::Explore::Panel)
+        context 'when UserProfile panel fails to render' do
+          let(:private_user) { build(:user, private_profile: true) }
+
+          it 'returns Explore panel for viewing private profiles' do
+            panel = helper.super_sidebar_nav_panel(nav: 'user_profile', user: user, viewed_user: private_user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
+
+        context 'when other panels fail to render' do
+          before do
+            allow_next_instance_of(Sidebars::Projects::SuperSidebarPanel) do |instance|
+              allow(instance).to receive(:render?).and_return(false)
+            end
+          end
+
+          it 'returns Explore panel as fallback' do
+            panel = helper.super_sidebar_nav_panel(nav: 'project', user: user)
+            expect(panel).to be_a(Sidebars::Explore::Panel)
+          end
+        end
       end
+
+      it_behaves_like 'nav panels available to all users'
     end
   end
 
@@ -765,12 +985,8 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
   end
 
   describe '#compare_plans_url' do
-    before do
-      allow(helper).to receive(:promo_url).and_return('https://about.gitlab.com')
-    end
-
     it 'always returns the pricing page URL' do
-      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq('https://about.gitlab.com/pricing')
+      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq(promo_pricing_url)
     end
   end
 

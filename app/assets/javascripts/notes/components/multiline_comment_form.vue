@@ -2,7 +2,7 @@
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
 import { mapActions } from 'pinia';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { getSymbol, getLineClasses } from './multiline_comment_utils';
+import { getLineClasses } from './multiline_comment_utils';
 
 export default {
   components: { GlFormSelect, GlSprintf },
@@ -24,7 +24,6 @@ export default {
   data() {
     return {
       commentLineStart: {},
-      commentLineEndType: this.lineRange?.end?.line_type || this.line.type,
     };
   },
   computed: {
@@ -49,9 +48,6 @@ export default {
   },
   methods: {
     ...mapActions(useNotes, ['setSelectedCommentPosition']),
-    getSymbol({ type }) {
-      return getSymbol(type);
-    },
     getLineClasses(line) {
       return getLineClasses(line);
     },

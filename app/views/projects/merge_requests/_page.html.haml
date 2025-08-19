@@ -26,7 +26,7 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     .merge-request-sticky-header.gl-border-b{ class: "!gl-h-auto" }
       = render "projects/merge_requests/mr_box"
-      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative.md:gl-z-1{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
+      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
         %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.lg:gl-w-auto.gl-border-0.gl-h-9
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do

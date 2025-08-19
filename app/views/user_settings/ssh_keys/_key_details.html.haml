@@ -1,5 +1,12 @@
 - is_admin = defined?(admin) ? true : false
 
+- if @ssh_public_key_warning
+  = render Pajamas::AlertComponent.new(variant: :warning,
+    dismissible: false,
+    alert_options: { class: 'gl-mb-3' }) do |c|
+    - c.with_body do
+      = safe_format(s_('Profiles|Warning! Insecure key. %{message}'), message: @ssh_public_key_warning.message )
+
 = render ::Layouts::PageHeadingComponent.new(s_('Profiles|SSH Key: %{title}').html_safe % { title: @key.title }) do |c|
   - c.with_actions do
     - if @key.can_delete?

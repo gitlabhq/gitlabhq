@@ -17,7 +17,8 @@ RSpec.shared_context 'change access checks context' do
       project: project,
       user_access: user_access,
       protocol: protocol,
-      logger: logger
+      logger: logger,
+      push_options: Gitlab::PushOptions.new([])
     )
   end
 

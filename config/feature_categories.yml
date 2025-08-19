@@ -28,7 +28,6 @@
 - cell
 - ci_scaling
 - ci_variables
-- cloud_connector
 - cloud_native_installation
 - code_quality
 - code_review_workflow
@@ -73,13 +72,13 @@
 - git
 - gitaly
 - gitlab_cli
+- gitlab_docs
 - global_search
 - groups_and_projects
 - helm_chart_registry
 - hosted_runners
 - importers
 - incident_management
-- infra_cost_data
 - infrastructure_as_code
 - insider_threat
 - instance_resiliency
@@ -88,6 +87,7 @@
 - job_artifacts
 - knowledge_graph
 - markdown
+- mcp_server
 - merge_trains
 - mlops
 - mobile_devops
@@ -102,6 +102,7 @@
 - organization
 - package_registry
 - pages
+- performance_tooling
 - permissions
 - pipeline_composition
 - pipeline_reports

@@ -24,6 +24,11 @@ module Gitlab
           schema.connections.add(
             Array,
             Gitlab::Graphql::Pagination::ArrayConnection)
+
+          schema.connections.add(
+            ::ClickHouse::Client::QueryBuilder,
+            Gitlab::Graphql::Pagination::ClickHouseConnection
+          )
         end
       end
     end

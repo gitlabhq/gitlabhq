@@ -10,11 +10,11 @@ RSpec.describe ManualInverseAssociation do
     end
   end
 
+  let(:instance) { create(:merge_request).becomes(model) } # rubocop: disable Cop/AvoidBecomes
+
   before do
     stub_const("#{described_class}::Model", model)
   end
-
-  let(:instance) { create(:merge_request).becomes(model) } # rubocop: disable Cop/AvoidBecomes
 
   describe '.manual_inverse_association' do
     context 'when the relation exists' do

@@ -1,0 +1,131 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/work_items/graphql/milestone.fragment.graphql"
+#import "~/work_items/graphql/timelog.fragment.graphql"
+
+fragment BaseWorkItemWidgets on WorkItemWidget {
+  type
+  ... on WorkItemWidgetAssignees {
+    allowsMultipleAssignees
+    canInviteMembers
+    assignees {
+      nodes {
+        ...User
+      }
+    }
+  }
+  ... on WorkItemWidgetCrmContacts {
+    contactsAvailable
+    contacts {
+      nodes {
+        id
+        email
+        firstName
+        lastName
+        phone
+        description
+        organization {
+          id
+          name
+          description
+          defaultRate
+        }
+      }
+    }
+  }
+  ... on WorkItemWidgetCurrentUserTodos {
+    currentUserTodos(state: pending) {
+      nodes {
+        id
+      }
+    }
+  }
+  ... on WorkItemWidgetDescription {
+    description
+    descriptionHtml
+    lastEditedAt
+    # @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
+    # ignoring the newly uncovered error on this fragment. Please consider addressing the violation
+    # if you are modifying this file and it turns out selecting the ID makes sense here.
+    # eslint-disable-next-line @graphql-eslint/require-selections
+    lastEditedBy {
+      name
+      webPath
+    }
+    taskCompletionStatus {
+      completedCount
+      count
+    }
+  }
+  ... on WorkItemWidgetErrorTracking {
+    identifier
+  }
+  ... on WorkItemWidgetHierarchy {
+    hasChildren
+    hasParent
+    rolledUpCountsByType {
+      countsByState {
+        opened
+        all
+        closed
+      }
+      workItemType {
+        id
+        name
+        iconName
+      }
+    }
+    parent {
+      id
+      iid
+      title
+      confidential
+      namespace {
+        id
+        fullPath
+      }
+      webUrl
+      workItemType {
+        id
+        name
+        iconName
+      }
+    }
+  }
+  ... on WorkItemWidgetLabels {
+    labels {
+      nodes {
+        ...Label
+      }
+    }
+  }
+  ... on WorkItemWidgetLinkedResources {
+    linkedResources {
+      nodes {
+        url
+      }
+    }
+  }
+  ... on WorkItemWidgetMilestone {
+    milestone {
+      ...MilestoneFragment
+    }
+  }
+  ... on WorkItemWidgetNotes {
+    discussionLocked
+  }
+  ... on WorkItemWidgetStartAndDueDate {
+    dueDate
+    startDate
+    rollUp
+  }
+  ... on WorkItemWidgetTimeTracking {
+    timeEstimate
+    timelogs {
+      nodes {
+        ...TimelogFragment
+      }
+    }
+    totalTimeSpent
+  }
+}

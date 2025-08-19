@@ -19,6 +19,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       true  | 404 | :not_found
       true  | 409 | :name_taken
       true  | 422 | :too_many_subrepositories
+      true  | 501 | :rename_not_supported
 
       false | 204 | :ok
       false | 400 | :bad_request
@@ -26,6 +27,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
       false | 404 | :not_found
       false | 409 | :name_taken
       false | 422 | :too_many_subrepositories
+      false | 501 | :rename_not_supported
     end
 
     with_them do
@@ -964,11 +966,14 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
   describe '.statistics' do
     subject { described_class.statistics }
 
-    before do
-      stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
-    end
+    context 'when the registry is enabled' do
+      before do
+        stub_container_registry_config(enabled: true, api_url: registry_api_url, key: 'spec/fixtures/x509_certificate_pk.key')
+        allow(Auth::ContainerRegistryAuthenticationService).to receive(:statistics_token).and_return(token)
+      end
 
-    it_behaves_like 'querying and parsing statistics'
+      it_behaves_like 'querying and parsing statistics'
+    end
 
     context 'when the registry is disabled' do
       before do

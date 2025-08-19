@@ -59,7 +59,9 @@ GET /vulnerabilities/:id
 | `id` | integer or string | yes | The ID of a Vulnerability to get |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/vulnerabilities/1"
 ```
 
 Example response:
@@ -104,7 +106,9 @@ POST /vulnerabilities/:id/confirm
 | `id` | integer or string | yes | The ID of a vulnerability to confirm |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/confirm"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/vulnerabilities/5/confirm"
 ```
 
 Example response:
@@ -149,7 +153,9 @@ POST /vulnerabilities/:id/resolve
 | `id` | integer or string | yes | The ID of a Vulnerability to resolve |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/resolve"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/vulnerabilities/5/resolve"
 ```
 
 Example response:
@@ -194,7 +200,9 @@ POST /vulnerabilities/:id/dismiss
 | `id` | integer or string | yes | The ID of a vulnerability to dismiss |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/dismiss"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/vulnerabilities/5/dismiss"
 ```
 
 Example response:
@@ -239,7 +247,9 @@ POST /vulnerabilities/:id/revert
 | `id` | integer or string | yes | The ID of a vulnerability to revert to detected state |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/vulnerabilities/5/revert"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/vulnerabilities/5/revert"
 ```
 
 Example response:

@@ -3,8 +3,9 @@
 
 = render ::Layouts::PageHeadingComponent.new(_('Groups'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_groups_pageload' } }) do |c|
   - c.with_actions do
-    = link_button_to new_admin_group_path, variant: :confirm do
-      = _('New group')
+    - if current_user.can_admin_all_resources?
+      = link_button_to new_admin_group_path, variant: :confirm do
+        = _('New group')
 
 - if Feature.enabled?(:admin_groups_vue, current_user)
   #js-admin-groups-app

@@ -12,13 +12,13 @@ module Projects
     feature_category :groups_and_projects
 
     def perform(project_id, deletion_date)
-      return if Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).notified?
+      return if Gitlab::DormantProjectsDeletionWarningTracker.new(project_id).notified?
 
       project = Project.find(project_id)
 
       notification_service.inactive_project_deletion_warning(project, deletion_date)
 
-      Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).mark_notified
+      Gitlab::DormantProjectsDeletionWarningTracker.new(project_id).mark_notified
     rescue ActiveRecord::RecordNotFound => error
       Gitlab::ErrorTracking.log_exception(error, project_id: project_id)
     end

@@ -12,9 +12,11 @@ RSpec.describe IssuesFinder, feature_category: :team_planning do
     let_it_be(:issuable_attributes) { { project: issuable_parent } }
     let_it_be(:issuable_factory) { :issue }
     let_it_be(:factory_params) { [] }
-    let_it_be(:search_params) { { project_id: issuable_parent.id } }
 
-    it_behaves_like 'filterable by group handle'
+    let(:search_params) { { project_id: issuable_parent.id } }
+
+    it_behaves_like 'filterable by group handle for', :author
+    it_behaves_like 'filterable by group handle for', :assignees
   end
 
   context 'when filtering by group_id' do

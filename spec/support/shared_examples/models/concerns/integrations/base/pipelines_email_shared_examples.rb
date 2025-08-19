@@ -341,5 +341,30 @@ RSpec.shared_examples Integrations::Base::PipelinesEmail do
         it_behaves_like 'sending email'
       end
     end
+
+    context 'with invalid recipients' do
+      it 'skips the invalid email' do
+        subject.recipients = "test@gitlab.com, invalid-email, , another-invalid valid@gitlab.com"
+
+        expect_next_instance_of(PipelineNotificationWorker) do |worker|
+          expect(worker).to receive(:perform).with(pipeline.id, "recipients" => ['test@gitlab.com', 'valid@gitlab.com'])
+        end
+
+        subject.execute(data)
+      end
+    end
+
+    context 'when recipient contains angle brackets' do
+      it 'removes the angle brackets' do
+        subject.recipients = 'Name <valid@recipient.com>, Name 2 valid2@recipient.com'
+
+        expect_next_instance_of(PipelineNotificationWorker) do |worker|
+          expect(worker).to receive(:perform).with(pipeline.id,
+            "recipients" => ['valid@recipient.com', 'valid2@recipient.com'])
+        end
+
+        subject.execute(data)
+      end
+    end
   end
 end

@@ -26,6 +26,8 @@ query getWorkItemsFull(
   $types: [IssueType!]
   $updatedAfter: Time
   $updatedBefore: Time
+  $crmOrganizationId: String
+  $crmContactId: String
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
@@ -33,6 +35,8 @@ query getWorkItemsFull(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -61,6 +65,10 @@ query getWorkItemsFull(
       types: $types
       updatedAfter: $updatedAfter
       updatedBefore: $updatedBefore
+      crmOrganizationId: $crmOrganizationId
+      crmContactId: $crmContactId
+      releaseTag: $releaseTag
+      releaseTagWildcardId: $releaseTagWildcardId
       in: $in
       not: $not
       or: $or

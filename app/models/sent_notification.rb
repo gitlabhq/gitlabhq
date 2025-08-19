@@ -4,6 +4,10 @@ class SentNotification < ApplicationRecord
   include EachBatch
 
   INVALID_NOTEABLE = Class.new(StandardError)
+  # Email reply key is in the form: i_<id-64-bit>-k_<32-char-hex-key>-t_<timestamp-64-bit>
+  PARTITIONED_REPLY_KEY_REGEX = /i_(?<id>\d{1,19})-k_(?<reply_key>[a-f\d]{32})-t_(?<timestamp>\d{1,19})/
+  LEGACY_REPLY_KEY_REGEX = /(?<legacy_key>[a-f\d]{32})/
+  FULL_REPLY_KEY_REGEX = /((#{LEGACY_REPLY_KEY_REGEX})|(#{PARTITIONED_REPLY_KEY_REGEX}))/
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
@@ -27,10 +31,20 @@ class SentNotification < ApplicationRecord
     end
 
     def for(reply_key)
-      find_by(reply_key: reply_key)
+      return find_by(reply_key: reply_key) if Feature.disabled?(:sent_notifications_partitioned_reply_key, :instance)
+
+      matches = FULL_REPLY_KEY_REGEX.match(reply_key)
+      return unless matches
+
+      if matches[:reply_key]
+        created_at_from_timestamp = Gitlab::Utils::TimeIntegerConverter.new(matches[:timestamp]).to_time
+        find_by(id: matches[:id], reply_key: matches[:reply_key], created_at: created_at_from_timestamp)
+      else
+        find_by(reply_key: matches[:legacy_key])
+      end
     end
 
-    def record(noteable, recipient_id, reply_key = self.reply_key, attrs = {})
+    def record(noteable, recipient_id, attrs = {})
       noteable_id = nil
       commit_id = nil
       if noteable.is_a?(Commit)
@@ -42,7 +56,7 @@ class SentNotification < ApplicationRecord
       attrs.reverse_merge!(
         project: noteable.project,
         recipient_id: recipient_id,
-        reply_key: reply_key,
+        reply_key: self.reply_key,
 
         noteable_type: noteable.class.name,
         noteable_id: noteable_id,
@@ -56,11 +70,19 @@ class SentNotification < ApplicationRecord
       end
     end
 
-    def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})
+    def record_note(note, recipient_id, attrs = {})
       attrs[:in_reply_to_discussion_id] = note.discussion_id if note.part_of_discussion? || note.can_be_discussion_note?
 
-      record(note.noteable, recipient_id, reply_key, attrs)
+      record(note.noteable, recipient_id, attrs)
     end
+  end
+
+  def partitioned_reply_key
+    return reply_key if Feature.disabled?(:sent_notifications_partitioned_reply_key, :instance)
+
+    microseconds = Gitlab::Utils::TimeIntegerConverter.new(created_at).to_i
+
+    "i_#{id}-k_#{reply_key}-t_#{microseconds}"
   end
 
   def unsubscribable?
@@ -88,7 +110,7 @@ class SentNotification < ApplicationRecord
   end
 
   def to_param
-    self.reply_key
+    partitioned_reply_key
   end
 
   def create_reply(message, external_author = nil, dryrun: false)

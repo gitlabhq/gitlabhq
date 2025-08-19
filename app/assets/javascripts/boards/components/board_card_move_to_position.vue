@@ -23,11 +23,6 @@ export default {
       required: true,
       validator: (item) => ['id', 'iid', 'referencePath'].every((key) => item[key]),
     },
-    list: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
     index: {
       type: Number,
       required: true,
@@ -38,6 +33,7 @@ export default {
     },
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: 'boards:list',

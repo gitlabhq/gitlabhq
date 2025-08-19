@@ -4,10 +4,10 @@
  */
 import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import csrf from '~/lib/utils/csrf';
 import { __, s__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { createAlert } from '~/alert';
 
 import rollbackEnvironment from '../graphql/mutations/rollback_environment.mutation.graphql';
 
@@ -105,18 +105,31 @@ export default {
     handleChange(event) {
       this.$emit('change', event);
     },
-    onOk() {
-      this.$apollo
-        .mutate({
+    async onConfirm() {
+      try {
+        const { data } = await this.$apollo.mutate({
           mutation: rollbackEnvironment,
-          variables: { environment: this.environment },
-        })
-        .then(() => {
-          this.$emit('rollback');
-        })
-        .catch((e) => {
-          Sentry.captureException(e);
+          variables: {
+            environment: this.environment,
+          },
         });
+        const errors = data?.rollbackEnvironment?.errors;
+        if (errors?.length) {
+          createAlert({
+            message: errors?.[0],
+            error: new Error(errors?.join(', ')),
+            captureError: true,
+          });
+        } else {
+          this.$emit('rollback');
+        }
+      } catch (error) {
+        createAlert({
+          message: __('Something went wrong. Please try again.'),
+          error,
+          captureError: true,
+        });
+      }
     },
     commitData(lastDeployment, key) {
       return lastDeployment?.commit?.[key] ?? '';
@@ -138,7 +151,7 @@ export default {
     :action-cancel="$options.cancelProps"
     :action-primary="primaryProps"
     modal-id="confirm-rollback-modal"
-    @ok="onOk"
+    @primary="onConfirm"
     @change="handleChange"
   >
     <gl-sprintf :message="modalBodyText">

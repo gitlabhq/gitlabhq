@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Project and group access tokens settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "inactive_resource_access_tokens_delete_after_days": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1,
+      "maximum": 2147483647,
+      "description": "Retention period for inactive project and group access tokens"
+    }
+  }
+}

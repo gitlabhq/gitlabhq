@@ -40,12 +40,22 @@ RSpec.describe Ci::PipelineArtifacts::CoverageReportWorker, feature_category: :c
       end
 
       context 'when the pipeline hierarchy has incomplete pipeline' do
-        before do
-          another_child_pipeline.update!(status: :running)
-        end
+        let_it_be(:another_child_pipeline) { create(:ci_pipeline, :running, child_of: root_ancestor_pipeline) }
 
         it 'does not call pipeline coverage report service' do
           expect(Ci::PipelineArtifacts::CoverageReportService).not_to receive(:new)
+
+          subject
+        end
+      end
+
+      context 'when the pipeline hierarchy has manual pipelines' do
+        let_it_be(:another_child_pipeline) { create(:ci_pipeline, :blocked, child_of: root_ancestor_pipeline) }
+
+        it 'calls pipeline coverage report service' do
+          expect_next_instance_of(::Ci::PipelineArtifacts::CoverageReportService, root_ancestor_pipeline) do |service|
+            expect(service).to receive(:execute)
+          end
 
           subject
         end

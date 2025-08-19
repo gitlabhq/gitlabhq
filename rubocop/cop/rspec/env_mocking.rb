@@ -25,6 +25,7 @@ module RuboCop
 
         MESSAGE = "Don't mock the ENV, use `stub_env` instead."
 
+        # @!method env_mocking?(node)
         def_node_matcher :env_mocking?, <<~PATTERN
         (send
           (send nil? :allow

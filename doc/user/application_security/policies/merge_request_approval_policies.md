@@ -116,7 +116,7 @@ To create and verify your security scanners and merge request approval policies 
 1. Create the project.
 1. Configure security scanners using the `.gitlab-ci.yml` configuration, a scan execution policy, or a pipeline execution policy.
 1. Wait for the initial pipeline to complete on the default branch. Resolve any issues and rerun the pipeline to ensure it completes successfully before you continue.
-1. Create merge requests using feature branches with the same security scanners configured. Again, ensure that the security scanners complete sucessfully.
+1. Create merge requests using feature branches with the same security scanners configured. Again, ensure that the security scanners complete successfully.
 1. Apply your merge request approval policies.
 
 ## Merge request with multiple pipelines
@@ -217,7 +217,7 @@ the following sections and tables provide an alternative.
 | `actions`           | `array` of actions | false    |                 | List of actions that the policy enforces.                |
 | `approval_settings` | `object`           | false    |                 | Project settings that the policy overrides.              |
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
-| `policy_scope`      | `object` of [`policy_scope`](_index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
+| `policy_scope`      | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
 | `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
 
@@ -239,7 +239,7 @@ This rule enforces the defined actions based on security scan findings.
 | `type`                     | `string`            | true                                       | `scan_finding`                                                                                                     | The rule's type. |
 | `branches`                 | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name                                                                                          | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
 | `branch_type`              | `string`            | true if `branches` field does not exist    | `default` or `protected`                                                                                           | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions`        | `array` of `string` | false                                      | Names of branches                                                                                                  | Branches to exclude from this rule. |
+| `branch_exceptions`        | `array` of `string` | false                                      | Names of branches                                                                                                  | Target branches to exclude from this rule. |
 | `scanners`                 | `array` of `string` | true                                       | `[]` or `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners. An empty array, `[]`, applies the rule to all security scanners.|
 | `vulnerabilities_allowed`  | `integer`           | true                                       | Greater than or equal to zero                                                                                      | Number of vulnerabilities allowed before this rule is considered. |
 | `severity_levels`          | `array` of `string` | true                                       | `info`, `unknown`, `low`, `medium`, `high`, `critical`                                                             | The severity levels for this rule to consider. |
@@ -265,7 +265,7 @@ This rule enforces the defined actions based on license findings.
 | `type`         | `string` | true                                          | `license_finding`            | The rule's type.                                                                                                                                                                                                    |
 | `branches`     | `array` of `string` | true if `branch_type` field does not exist    | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                 |
 | `branch_type`  | `string` | true if `branches` field does not exist       | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                   |
-| `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Branches to exclude from this rule.                                                                                                                                                                                 |
+| `branch_exceptions` | `array` of `string` | false                                         | Names of branches            | Target branches to exclude from this rule.                                                                                                                                                                                 |
 | `match_on_inclusion_license` | `boolean` | true if `licenses` field does not exists      | `true`, `false`              | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                                                                                                                              |
 | `license_types` | `array` of `string` | true if `licenses` field does not exists      | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                     |
 | `license_states` | `array` of `string` | true                                          | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
@@ -307,7 +307,7 @@ This rule enforces the defined actions for any merge request based on the commit
 | `type`              | `string`            | true                                       | `any_merge_request`       | The rule's type. |
 | `branches`          | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
 | `branch_type`       | `string`            | true if `branches` field does not exist    | `default` or `protected`  | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions` | `array` of `string` | false                                      | Names of branches         | Branches to exclude from this rule. |
+| `branch_exceptions` | `array` of `string` | false                                      | Names of branches         | Target branches to exclude from this rule. |
 | `commits`           | `string`            | true                                       | `any`, `unsigned`         | Whether the rule matches for any commits, or only if unsigned commits are detected in the merge request. |
 
 ## `require_approval` action type
@@ -452,7 +452,7 @@ The availability of support for pipeline execution policies is controlled by a f
 #### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 scan_execution_policy:
@@ -506,7 +506,7 @@ For more information, see [Recreate pipeline execution policies created before G
 {{< /alert >}}
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---
@@ -556,7 +556,7 @@ To recreate a pipeline execution policy:
 
 To customize policy enforcement, you can define a policy's scope to either include or exclude
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](_index.md#scope).
+[Scope](_index.md#configure-the-policy-scope).
 
 ## `bypass_settings`
 
@@ -573,6 +573,7 @@ The `bypass_settings` field allows you to specify exceptions to the policy for c
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18113) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_branch_exceptions`. Enabled by default
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/543778) in GitLab 18.3. Feature flag `approval_policy_branch_exceptions` removed.
 
 {{< /history >}}
 
@@ -587,7 +588,8 @@ With branch-based exceptions, you can configure merge request approval policies 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18112) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_tokens_accounts`. Disabled by default
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18112) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_tokens_accounts`. Enabled by default
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551129) in GitLab 18.3. Feature flag `security_policies_bypass_options_tokens_accounts` removed.
 
 {{< /history >}}
 
@@ -612,7 +614,7 @@ bypass_settings:
 ## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---
@@ -775,6 +777,20 @@ The **Resolve with Merge Request** button only appears when one of the following
 By using the **False Positive** attribute, similarly, you can ignore findings detected by a policy by setting `false_positive` to `false` (or set attribute to **Is not** and **False Positive** in the policy editor).
 
 The **False Positive** attribute only applies to findings detected by our Vulnerability Extraction Tool for SAST results.
+
+### Policy evaluation and vulnerability state changes
+
+When a user changes the status of a vulnerability (for example, dismisses the vulnerability
+in the vulnerability details page), GitLab does not automatically reevaluate merge request
+approval policies due to performance reasons. To retrieve updated data from vulnerability
+reports, update your merge request or rerun the related pipelines.
+
+This behavior ensures optimal system performance and maintains security policy
+enforcement. The policy evaluation occurs during the next pipeline run or when the
+merge request is updated, but not immediately when the vulnerability state changes.
+
+To reflect vulnerability state changes in the policies immediately
+manually run the pipeline or push a new commit to the merge request.
 
 ## Troubleshooting
 

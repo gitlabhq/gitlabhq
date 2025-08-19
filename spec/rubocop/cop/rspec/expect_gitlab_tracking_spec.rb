@@ -37,10 +37,10 @@ RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking, feature_category: :sha
   bad_samples.each do |bad|
     context "bad: #{bad}" do
       it 'registers an offense' do
-        expect_offense(<<~CODE, node: bad)
+        expect_offense(<<~RUBY, node: bad)
           %{node}
           ^{node} Do not expect directly on `Gitlab::Tracking#event`[...]
-        CODE
+        RUBY
       end
     end
   end

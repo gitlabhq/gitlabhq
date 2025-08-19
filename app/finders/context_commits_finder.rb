@@ -47,8 +47,14 @@ class ContextCommitsFinder
         commits = [commit_by_sha] if commit_by_sha
       end
     else
-      commits = project.repository.list_commits_by(search, merge_request.target_branch,
-        author: author, before: committed_before, after: committed_after, limit: limit)
+      commits = project.repository.list_commits(
+        ref: merge_request.target_branch,
+        query: search,
+        author: author,
+        committed_before: committed_before,
+        committed_after: committed_after,
+        pagination_params: { limit: limit }
+      )
     end
 
     commits

@@ -177,27 +177,15 @@ export default {
             return acc.concat({
               name,
               path,
-              to: !this.isBlobView
-                ? buildURLwithRefType({ path: to, refType: this.refType })
-                : null,
-              url: buildURLwithRefType({
-                path: joinPaths(this.projectRootPath, to),
-                refType: this.refType,
-              }),
+              to: buildURLwithRefType({ path: to, refType: this.refType }),
             });
           },
           [
             {
               name: this.projectShortPath,
               path: '/',
-              to: !this.isBlobView
-                ? buildURLwithRefType({
-                    path: joinPaths('/-/tree', this.escapedRef),
-                    refType: this.refType,
-                  })
-                : null,
-              url: buildURLwithRefType({
-                path: joinPaths(this.projectRootPath, '/-/tree', this.escapedRef),
+              to: buildURLwithRefType({
+                path: joinPaths('/-/tree', this.escapedRef),
                 refType: this.refType,
               }),
             },

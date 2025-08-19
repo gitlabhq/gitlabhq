@@ -11,12 +11,13 @@ module Gitlab
             @group = group
           end
 
-          def secret_variables(environment:, protected_ref: false)
+          def secret_variables(environment:, protected_ref: false, only: nil)
             return [] unless group
 
             variables = base_scope
             variables = variables.unprotected unless protected_ref
             variables = variables.for_environment(environment)
+            variables = variables.by_key(only) if only
             variables = variables.group_by(&:group_id)
             variables = list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
             Gitlab::Ci::Variables::Collection.new(variables)

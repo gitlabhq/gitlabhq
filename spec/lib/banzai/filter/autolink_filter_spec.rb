@@ -273,6 +273,51 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
     end.not_to raise_error
   end
 
+  context 'with a large number of links' do
+    let(:limit) { 2 }
+    let(:link1) { 'http://localhost:3000/' }
+    let(:link2) { 'https://gitlab.com' }
+    let(:link3) { 'http://google.com/' }
+
+    before do
+      stub_const('Banzai::Filter::FILTER_ITEM_LIMIT', limit)
+    end
+
+    context 'in a single node' do
+      it 'respects FILTER_ITEM_LIMIT' do
+        doc = filter("See #{link1}, #{link2}. and #{link3}", context)
+
+        found_links = doc.css('a')
+
+        expect(found_links.size).to eq(limit)
+      end
+
+      context 'with bad links' do
+        let(:link1) { 'foo://23423:::asdf' }
+        let(:link2) { 'http://]' }
+        let(:link3) { 'http://google.com/' }
+
+        it 'counts bad links against FILTER_ITEM_LIMIT' do
+          doc = filter("See #{link1}, #{link2}, and #{link3}", context)
+
+          found_links = doc.css('a')
+
+          expect(found_links.size).to eq(0)
+        end
+      end
+    end
+
+    context 'in multiple nodes' do
+      it 'respects FILTER_ITEM_LIMIT' do
+        doc = filter("See #{link1}. <strong>GitLab</strong> #{link2}. and #{link3}", context)
+
+        found_links = doc.css('a')
+
+        expect(found_links.size).to eq(limit)
+      end
+    end
+  end
+
   # Rinku does not escape these characters in HTML attributes, but content_tag
   # does. We don't care about that difference for these specs, though.
   def unescape(html)

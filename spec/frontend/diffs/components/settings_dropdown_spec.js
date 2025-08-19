@@ -44,7 +44,7 @@ describe('Diff settings dropdown component', () => {
   describe('whitespace toggle', () => {
     it('does not set as checked when showWhitespace is false', () => {
       createComponent({ showWhitespace: false });
-      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/3033
+      // https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2268
       // GlFormCheckbox is missing checked prop and doesn't inherit attrs
       // We can only check against its internal state unfortunately
       expect(findWhitespaceCheckbox().vm.$attrs.checked).toBe(false);

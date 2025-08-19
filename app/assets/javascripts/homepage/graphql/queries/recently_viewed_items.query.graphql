@@ -1,17 +1,25 @@
 query RecentlyViewedItems {
   currentUser {
     id
-    recentlyViewedIssues {
-      id
-      title
-      webUrl
-      updatedAt
-    }
-    recentlyViewedMergeRequests {
-      id
-      title
-      webUrl
-      updatedAt
+    recentlyViewedItems {
+      viewedAt
+      item {
+        ... on Issue {
+          id
+          title
+          webUrl
+        }
+        ... on MergeRequest {
+          id
+          title
+          webUrl
+        }
+        ... on Epic {
+          id
+          title
+          webUrl
+        }
+      }
     }
   }
 }

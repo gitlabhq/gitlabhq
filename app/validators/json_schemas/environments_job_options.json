@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Options for a CI job referencing an environment",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string"
+    },
+    "deployment_tier": {
+      "type": "string"
+    },
+    "kubernetes": {
+      "type": "object",
+      "required": ["namespace"],
+      "properties": {
+        "namespace": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -2,11 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Two factor auths', feature_category: :system_access do
+RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
   include Features::TwoFactorHelpers
 
   context 'when signed in' do
+    let(:current_organization) { user.organization }
     let(:invalid_current_pwd_msg) { 'You must provide a valid current password' }
 
     before do

@@ -156,6 +156,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def label_params
     allowed = [:title, :description, :color]
+    allowed << :archived if Feature.enabled?(:labels_archive, :instance)
     allowed << :lock_on_merge if @project.supports_lock_on_merge?
 
     params.require(:label).permit(allowed)
@@ -176,6 +177,7 @@ class Projects::LabelsController < Projects::ApplicationController
       include_ancestor_groups: true,
       search: params[:search],
       subscribed: params[:subscribed],
+      archived: params[:archived],
       sort: sort
     ).execute
   end

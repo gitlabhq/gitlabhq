@@ -243,6 +243,7 @@ class Project < ApplicationRecord
   has_one :jenkins_integration, class_name: 'Integrations::Jenkins'
   has_one :jira_integration, class_name: 'Integrations::Jira'
   has_one :jira_cloud_app_integration, class_name: 'Integrations::JiraCloudApp'
+  has_one :linear_integration, class_name: 'Integrations::Linear'
   has_one :mattermost_integration, class_name: 'Integrations::Mattermost'
   has_one :mattermost_slash_commands_integration, class_name: 'Integrations::MattermostSlashCommands'
   has_one :matrix_integration, class_name: 'Integrations::Matrix'
@@ -288,7 +289,6 @@ class Project < ApplicationRecord
 
   # Packages
   has_many :packages, class_name: 'Packages::Package'
-  has_many :package_files, through: :packages, class_name: 'Packages::PackageFile'
   # repository_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :rpm_repository_files,
     inverse_of: :project,
@@ -299,6 +299,7 @@ class Project < ApplicationRecord
     class_name: 'Packages::Debian::ProjectDistribution',
     dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :npm_metadata_caches, class_name: 'Packages::Npm::MetadataCache'
+  has_many :helm_metadata_caches, class_name: 'Packages::Helm::MetadataCache'
   has_one :packages_cleanup_policy, class_name: 'Packages::Cleanup::Policy', inverse_of: :project
   has_many :package_protection_rules,
     class_name: 'Packages::Protection::Rule',
@@ -454,6 +455,7 @@ class Project < ApplicationRecord
   has_many :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :project
   has_many :pending_builds, class_name: 'Ci::PendingBuild'
   has_many :builds, class_name: 'Ci::Build', inverse_of: :project
+  has_many :bridges, class_name: 'Ci::Bridge', inverse_of: :project
   has_many :processables, class_name: 'Ci::Processable', inverse_of: :project
   has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks, dependent: :restrict_with_error
   has_many :build_report_results, class_name: 'Ci::BuildReportResult', inverse_of: :project
@@ -534,10 +536,11 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :incident_management_setting, update_only: true
   accepts_nested_attributes_for :error_tracking_setting, update_only: true
   accepts_nested_attributes_for :grafana_integration, update_only: true, allow_destroy: true
-  accepts_nested_attributes_for :prometheus_integration, update_only: true
-  accepts_nested_attributes_for :alerting_setting, update_only: true
 
-  delegate :deletion_schedule, to: :project_namespace, allow_nil: true
+  with_options to: :project_namespace, allow_nil: true do
+    delegate :deletion_schedule
+    delegate :archived_ancestor
+  end
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :jira_dvcs_server_last_sync_at, to: :feature_usage
@@ -575,6 +578,7 @@ class Project < ApplicationRecord
       delegate :separated_caches, :separated_caches=
       delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
       delegate :delete_pipelines_in_seconds, :delete_pipelines_in_seconds=
+      delegate :display_pipeline_variables, :display_pipeline_variables=
     end
   end
 
@@ -644,7 +648,7 @@ class Project < ApplicationRecord
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group, if: :should_validate_visibility_level?
+  validate :visibility_level_allowed_by_namespace, if: :should_validate_visibility_level?
   validate :visibility_level_allowed_as_fork, if: :should_validate_visibility_level?
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validate :changing_shared_runners_enabled_is_allowed
@@ -865,6 +869,10 @@ class Project < ApplicationRecord
       .where('rs.path LIKE ?', "#{sanitize_sql_like(path)}/%")
       .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/421843')
   end
+  scope :inside_path_preloaded, ->(path) do
+    preload(:topics, :project_topics, :route)
+      .inside_path(path)
+  end
 
   scope :with_jira_installation, ->(installation_id) do
     joins(namespace: :jira_connect_subscriptions)
@@ -937,6 +945,10 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
+  scope :with_group_child_entity_associations, -> {
+    with_route.preload(namespace: [:namespace_settings_with_ancestors_inherited_settings])
+  }
+
   scope :with_name, ->(name) { where(name: name) }
   scope :created_by, ->(user) { where(creator: user) }
   scope :imported_from, ->(type) { where(import_type: type) }
@@ -952,10 +964,15 @@ class Project < ApplicationRecord
 
   scope :with_topic, ->(topic) { where(id: topic.project_topics.select(:project_id)) }
 
-  scope :with_topic_by_name_and_organization_id, ->(topic_name, organization_ids) do
-    topic = Projects::Topic.find_by_name_and_organization_id(topic_name, organization_ids)
+  scope :contains_all_topic_names, ->(topic_names) do
+    topic_names = Array.wrap(topic_names)
 
-    topic ? with_topic(topic) : none
+    project_topics = Projects::ProjectTopic.joins(:topic)
+      .where(topic: { name: topic_names })
+      .group(:project_id)
+      .having(%(COUNT(DISTINCT "topic"."name") = ?), topic_names.count)
+
+    where(id: project_topics.select(:project_id))
   end
 
   scope :pending_data_repair_analysis, -> do
@@ -1028,9 +1045,20 @@ class Project < ApplicationRecord
       where(
         'EXISTS (?) OR projects.visibility_level IN (?)',
         user.authorizations_for_projects(min_access_level: min_access_level),
-        Gitlab::VisibilityLevel.levels_for_user(user)
+        self.visibility_levels_for_user(user)
       )
     end
+  end
+
+  # Auditors can :read_all_resources while admins can :read_all_resources and
+  # read_admin_projects. In EE, a regular user can read_admin_projects through
+  # custom admin roles.
+  def self.visibility_levels_for_user(user)
+    can_read_all_projects = user&.can_read_all_resources? || user&.can?(:read_admin_projects)
+
+    return ::Gitlab::VisibilityLevel::LEVELS_FOR_ADMINS if can_read_all_projects
+
+    Gitlab::VisibilityLevel.levels_for_user(user)
   end
 
   # Define two instance methods:
@@ -1305,10 +1333,6 @@ class Project < ApplicationRecord
 
   def certificate_based_clusters_enabled?
     !!namespace&.certificate_based_clusters_enabled?
-  end
-
-  def prometheus_integration_active?
-    !!prometheus_integration&.active?
   end
 
   def jenkins_integration_active?
@@ -1824,12 +1848,14 @@ class Project < ApplicationRecord
     new_record? || changes.has_key?(:visibility_level)
   end
 
-  def visibility_level_allowed_by_group
-    return if visibility_level_allowed_by_group?
+  def visibility_level_allowed_by_namespace
+    return if visibility_level_allowed_by_namespace?
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
-    group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
-    self.errors.add(:visibility_level, _("%{level_name} is not allowed in a %{group_level_name} group.") % { level_name: level_name, group_level_name: group_level_name })
+    # Use group visibility level directly when available to avoid stale association issues
+    namespace_visibility = group ? group.visibility_level : namespace.visibility_level
+    namespace_level_name = Gitlab::VisibilityLevel.level_name(namespace_visibility).downcase
+    self.errors.add(:visibility_level, _("%{level_name} is not allowed in a %{namespace_level_name} namespace.") % { level_name: level_name, namespace_level_name: namespace_level_name })
   end
 
   def visibility_level_allowed_as_fork
@@ -2025,7 +2051,9 @@ class Project < ApplicationRecord
   def create_labels
     Label.templates.each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
-      params = label.attributes.slice(*Label.column_names).except('id', 'template', 'created_at', 'updated_at', 'type')
+      params = label.attributes
+                    .slice(*Label.column_names)
+                    .except('id', 'template', 'created_at', 'updated_at', 'type', 'organization_id')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
@@ -2292,6 +2320,7 @@ class Project < ApplicationRecord
     end
   end
 
+  # Overridden in EE
   def membership_locked?
     false
   end
@@ -2504,14 +2533,17 @@ class Project < ApplicationRecord
     level <= original_project.visibility_level
   end
 
-  def visibility_level_allowed_by_group?(level = self.visibility_level)
-    return true unless group
+  def visibility_level_allowed_by_namespace?(level = self.visibility_level)
+    return true unless group || namespace
+    return level <= group.visibility_level if group
 
-    level <= group.visibility_level
+    return true unless Feature.enabled?(:user_namespace_allowed_visibility, namespace)
+
+    level <= namespace.visibility_level
   end
 
   def visibility_level_allowed?(level = self.visibility_level)
-    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_group?(level)
+    visibility_level_allowed_as_fork?(level) && visibility_level_allowed_by_namespace?(level)
   end
 
   def runners_token
@@ -2725,6 +2757,7 @@ class Project < ApplicationRecord
     end
   end
 
+  # rubocop: disable Metrics/AbcSize -- TODO: Method size will be reduced in follow-up MR, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199182#note_2655958320
   def predefined_project_variables
     strong_memoize(:predefined_project_variables) do
       Gitlab::Ci::Variables::Collection.new
@@ -2733,6 +2766,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_PROJECT_NAME', value: path)
         .append(key: 'CI_PROJECT_TITLE', value: title)
         .append(key: 'CI_PROJECT_DESCRIPTION', value: description)
+        .append(key: 'CI_PROJECT_TOPICS', value: topic_list.first(20).join(',').downcase)
         .append(key: 'CI_PROJECT_PATH', value: full_path)
         .append(key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug)
         .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
@@ -2748,6 +2782,7 @@ class Project < ApplicationRecord
         .append(key: 'CI_CONFIG_PATH', value: ci_config_path_or_default)
     end
   end
+  # rubocop: enable Metrics/AbcSize
 
   def predefined_ci_server_variables
     Gitlab::Ci::Variables::Collection.new
@@ -2950,8 +2985,11 @@ class Project < ApplicationRecord
   end
 
   def self_or_ancestors_archived?
-    # We can remove `archived?` once we move the project archival to the `namespaces.archived` column
-    archived? || project_namespace.self_or_ancestors_archived?
+    archived? || namespace.self_or_ancestors_archived?
+  end
+
+  def ancestors_archived?
+    ancestors.archived.exists?
   end
 
   def renamed?
@@ -2974,6 +3012,10 @@ class Project < ApplicationRecord
     else
       :merge
     end
+  end
+
+  def can_create_new_ref_commits?
+    merge_method != :merge
   end
 
   def merge_method=(method)
@@ -3084,14 +3126,6 @@ class Project < ApplicationRecord
 
   def max_attachment_size
     Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
-  end
-
-  def object_pool_params
-    return {} unless !forked? && git_objects_poolable?
-
-    {
-      pool_repository: pool_repository || create_new_pool_repository
-    }
   end
 
   # Git objects are only poolable when the project is or has:
@@ -3257,18 +3291,6 @@ class Project < ApplicationRecord
     ids
   end
 
-  def package_already_taken?(package_name, package_version, package_type:)
-    Packages::Package.with_name(package_name)
-      .with_version(package_version)
-      .with_package_type(package_type)
-      .not_pending_destruction
-      .for_projects(
-        root_ancestor.all_projects
-          .id_not_in(id)
-          .select(:id)
-      ).exists?
-  end
-
   def default_branch_or_main
     return default_branch if default_branch
 
@@ -3297,6 +3319,12 @@ class Project < ApplicationRecord
   override :git_garbage_collect_worker_klass
   def git_garbage_collect_worker_klass
     Projects::GitGarbageCollectWorker
+  end
+
+  def ci_display_pipeline_variables?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.display_pipeline_variables?
   end
 
   def ci_forward_deployment_enabled?
@@ -3448,21 +3476,17 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
+  def work_items_project_issues_list_feature_flag_enabled?
+    group&.work_items_project_issues_list_feature_flag_enabled? || Feature.enabled?(:work_items_project_issues_list, type: :beta)
+  end
+
   def work_item_status_feature_available?
     (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
       licensed_feature_available?(:work_item_status)
   end
 
-  def glql_integration_feature_flag_enabled?
-    group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
-    group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self)
-  end
-
-  def work_items_bulk_edit_feature_flag_enabled?
-    group&.work_items_bulk_edit_feature_flag_enabled? || Feature.enabled?(:work_items_bulk_edit, self, type: :wip)
+    group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self, type: :ops)
   end
 
   def markdown_placeholders_feature_flag_enabled?
@@ -3622,14 +3646,14 @@ class Project < ApplicationRecord
     end
   end
 
-  def job_token_policies_enabled?
-    namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
-  end
-  strong_memoize_attr :job_token_policies_enabled?
-
   # Overridden for EE
   def licensed_ai_features_available?
     false
+  end
+
+  # Ensures project has a pool repository without exposing private creation logic
+  def ensure_pool_repository
+    pool_repository || create_new_pool_repository
   end
 
   private

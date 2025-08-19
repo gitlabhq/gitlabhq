@@ -74,7 +74,7 @@ GitLab calculates the deployment frequency from the number of finished deploymen
 
 The calculation takes into account the production `environment tier` or the environments named `production/prod`. The environment must be part of the production deployment tier for its deployment information to appear on the graphs.
 
-You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#insights-configuration-file).
+You can configure DORA metrics for different environments by specifying `other` under the `environment_tiers` parameter in the [`.gitlab/insights.yml` file](../project/insights/_index.md#configuration).
 
 {{< alert type="note" >}}
 
@@ -106,6 +106,19 @@ Over time, the lead time for changes should decrease, while your team's performa
 GitLab calculates lead time for changes based on the number of seconds to successfully deliver a merge request into production: from merge request merge time (when the merge button is clicked) to code successfully running in production, without adding the `coding_time` to the calculation. Data is aggregated right after the deployment is finished, with a slight delay.
 
 By default, lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
+
+#### Deployments finishing before merge
+
+In rare cases, a deployment may finish before its associated merge request is merged.
+
+This scenario can happen when:
+
+- Deployment processes are triggered independently of the merge workflow.
+- Manual deployment interventions occur before code review completion.
+
+In this situation, GitLab uses the formula: `GREATEST(0, deployment_finished_at - merge_request_merged_at)`.
+The `GREATEST` function ensures that lead time values are never negative, by returning `0` instead of a negative value.
+This function prevents database constraint violations while maintaining data integrity.
 
 ### How to improve lead time for changes
 

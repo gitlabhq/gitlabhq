@@ -95,6 +95,7 @@ authorization with each flow.
 {{< history >}}
 
 - Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+- Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -114,7 +115,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
   state between the request and callback. It should also be used as a CSRF token.
 - The `CODE_VERIFIER` is a random string, between 43 and 128 characters in length,
   which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.
-- The `CODE_CHALLENGE` is an URL-safe base64-encoded string of the SHA256 hash of the
+- The `CODE_CHALLENGE` is a URL-safe base64-encoded string of the SHA256 hash of the
   `CODE_VERIFIER`:
   - The SHA256 hash must be in binary format before encoding.
   - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER), padding: false)`.
@@ -199,6 +200,7 @@ You can now make requests to the API with the access token.
 {{< history >}}
 
 - Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+- Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
 
 {{< /history >}}
 

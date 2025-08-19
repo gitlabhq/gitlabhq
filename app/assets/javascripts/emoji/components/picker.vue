@@ -82,23 +82,11 @@ export default {
     placement() {
       return this.right ? 'bottom-end' : 'bottom-start';
     },
-    newCustomEmoji() {
-      return {
-        text: __('Create new emoji'),
-        href: this.newEmojiPath,
-        extraAttrs: {
-          'data-testid': 'create-new-emoji',
-        },
-      };
-    },
     smileIcon() {
       return this.isHovered || this.isFocused || this.isVisible;
     },
   },
   methods: {
-    categoryAppeared(category) {
-      this.currentCategory = category;
-    },
     async scrollToCategory(categoryName) {
       const categories = await getEmojiCategories();
       const { top } = categories[categoryName];

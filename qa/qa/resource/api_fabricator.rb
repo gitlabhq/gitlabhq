@@ -238,7 +238,8 @@ module QA
         return unless Runtime::Address.valid?(resource_web_url)
 
         Support::Retrier.retry_until(sleep_interval: 3, max_attempts: 5, raise_on_failure: false) do
-          response_check = get(resource_web_url)
+          # Until path based routing is supported in cells authenticated get requests are required
+          response_check = QA::Runtime::Env.running_against_cell? ? api_get_from(api_get_path) : get(resource_web_url)
           Runtime::Logger.debug("Resource availability check for #{resource_web_url} ... #{response_check.code}")
           response_check.code == HTTP_STATUS_OK
         end

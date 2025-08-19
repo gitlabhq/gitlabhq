@@ -1,0 +1,10 @@
+---
+name: use_registry_statistics_endpoint
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/555936
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198771
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556908
+milestone: '18.3'
+group: group::container registry
+type: gitlab_com_derisk
+default_enabled: false

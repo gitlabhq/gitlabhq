@@ -7,6 +7,9 @@ module API
     include Helpers::CustomAttributes
 
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.head? || request_current_user?(request)
+    end
 
     feature_category :user_profile,
       %w[
@@ -20,6 +23,10 @@ module API
         /users/:id/custom_attributes
         /users/:id/custom_attributes/:key
       ]
+
+    def self.request_current_user?(request)
+      request.get? && request.path.match?(%r{/api/v\d+/user$})
+    end
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
@@ -166,6 +173,7 @@ module API
         # CE
         optional :username, type: String, desc: 'Get a single user with a specific username'
         optional :extern_uid, type: String, desc: 'Get a single user with a specific external authentication provider UID'
+        optional :public_email, type: String, desc: 'Get a single user with a specific public email'
         optional :provider, type: String, desc: 'The external provider'
         optional :search, type: String, desc: 'Search for a username'
         optional :active, type: Boolean, default: false, desc: 'Filters only active users'
@@ -1563,10 +1571,11 @@ module API
         end
         params do
           use :create_personal_access_token_params
-          # NOTE: for security reasons only the k8s_proxy scope is allowed at the moment.
+          # NOTE: for security reasons only the k8s_proxy and self_rotate scope is allowed at the moment.
           # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
-          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
+          # and in https://gitlab.com/gitlab-org/gitlab/-/issues/555546
+          requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE].map(&:to_s),
             desc: 'The array of scopes of the personal access token'
         end
         post feature_category: :system_access do

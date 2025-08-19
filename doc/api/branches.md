@@ -13,13 +13,15 @@ title: Branches API
 
 {{< /details >}}
 
-This API operates on [repository branches](../user/project/repository/branches/_index.md).
+Use the branches API to manage a project's Git branches programmatically.
 
-See also [Protected branches API](protected_branches.md).
+To change the branch protections configured for a project, use the [protected branches API](protected_branches.md).
 
 ## List repository branches
 
-Get a list of repository branches from a project, sorted by name alphabetically.
+Get a list of repository branches from a project, sorted by name alphabetically. Search by name, or
+use regular expressions to find specific branch patterns. Returns detailed information about the branch,
+including its protection status, merge status, and commit details.
 
 {{< alert type="note" >}}
 

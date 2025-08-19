@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', product_group: :organizations do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
     shared_examples 'loads all images' do |admin|
       let(:api_client) { Runtime::API::Client.as_admin }
       let(:user) { create(:user, is_admin: admin, api_client: api_client) }

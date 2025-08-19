@@ -61,7 +61,7 @@ Marshal.load(session_data)
 
 ## Getting device information with ActiveSession
 
-The [**Active Sessions** page on a user's profile](../user/profile/active_sessions.md) displays information about the device used to access each session. The methods used there to list sessions can also be useful for development.
+The [**Active sessions** page on a user's profile](../user/profile/active_sessions.md) displays information about the device used to access each session. The methods used there to list sessions can also be useful for development.
 
 ```ruby
 # Get list of sessions for a given user

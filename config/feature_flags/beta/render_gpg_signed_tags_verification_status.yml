@@ -1,0 +1,10 @@
+---
+name: render_gpg_signed_tags_verification_status
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/19260
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200868
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560619
+milestone: '18.3'
+group: group::source code
+type: beta
+default_enabled: false

@@ -220,7 +220,7 @@ export default {
       v-if="isLoading"
       :label="__('Loading snippet')"
       size="lg"
-      class="loading-animation prepend-top-20 gl-mb-6"
+      class="loading-animation gl-mb-6 gl-mt-5"
     />
     <template v-else>
       <gl-form-group

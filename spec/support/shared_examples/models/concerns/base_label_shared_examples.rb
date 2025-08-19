@@ -72,9 +72,10 @@ RSpec.shared_examples 'BaseLabel' do |factory_name: :label|
     end
 
     it 'accepts an empty string' do
-      label = described_class.new(title: 'foo', description: 'bar')
-      label.update!(description: '')
-      expect(label.description).to eq('')
+      label = described_class.new(title: 'foo', description: '')
+      label.valid?
+
+      expect(label.errors[:description]).to be_empty
     end
   end
 

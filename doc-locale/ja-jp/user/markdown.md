@@ -312,7 +312,7 @@ do*this*and*do*that*and*another thing
 - [- deletion -}
 ```
 
-差分の強調表示は`` `inline code` ``では機能しません。テキストにバッククォート（`` ` ``）が含まれている場合は、バックスラッシュ（<code>\</code>）を使用して各バッククォートを[エスケープ](#escape-characters)します。
+差分の強調表示は`` `inline code` ``では機能しません。テキストにバッククォート（`` ` ``）が含まれている場合は、バックスラッシュ（` \ `）を使用して各バッククォートを[エスケープ](#escape-characters)します。
 
 ```markdown
 - {+ Just regular text +}

@@ -10,6 +10,7 @@
   #js-ci-variables-minimum-override-role-app{ data: { full_path: @project.full_path } }
 
   = render 'ci/variables/protect_merge_request_pipelines'
+  = render 'ci/variables/display_pipeline_variables'
 
   %h5
     = _('Project variables')

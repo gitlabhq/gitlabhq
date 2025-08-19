@@ -50,7 +50,7 @@ RSpec.describe 'View on environment', :js, feature_category: :groups_and_project
 
       context 'with legacy diffs' do
         before do
-          stub_feature_flags(rapid_diffs: false, rapid_diffs_on_compare_show: false)
+          stub_feature_flags(rapid_diffs_on_compare_show: false)
         end
 
         context 'when visiting a comparison for the branch' do

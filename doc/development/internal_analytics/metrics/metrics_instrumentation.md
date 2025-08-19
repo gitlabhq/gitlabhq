@@ -24,7 +24,8 @@ For a video tutorial, see the [Adding Service Ping metric via instrumentation cl
 
 ## How metrics instrumentation works
 
-A metric definition has the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
+All metrics must have a [corresponding metric definition](metrics_dictionary.md) to be included in the [service ping](../service_ping/_index.md#how-service-ping-works) payload.
+A metric definition may have the [`instrumentation_class`](metrics_dictionary.md) field, which can be set to a class.
 
 The defined instrumentation class should inherit one of the existing metric classes: `DatabaseMetric`, `NumbersMetric` or `GenericMetric`.
 
@@ -347,6 +348,8 @@ rails generate gitlab:usage_metric CountIssues --type database --operation disti
         create lib/gitlab/usage/metrics/instrumentations/count_issues_metric.rb
         create spec/lib/gitlab/usage/metrics/instrumentations/count_issues_metric_spec.rb
 ```
+
+After implementation, you should [run service ping locally](../service_ping/troubleshooting.md#generate-service-ping) to verify that the metric is included and functioning as expected.
 
 ## Migrate Service Ping metrics to instrumentation classes
 

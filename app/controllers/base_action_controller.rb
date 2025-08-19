@@ -30,6 +30,18 @@ class BaseActionController < ActionController::Base
     connect_src_values = Array.wrap(default_connect_src) | [Gitlab::CurrentSettings.snowplow_collector_hostname]
     p.connect_src(*connect_src_values)
   end
+
+  def set_current_organization
+    return if ::Current.organization_assigned
+
+    organization = Gitlab::Current::Organization.new(
+      params: organization_params,
+      user: current_user,
+      headers: request.headers
+    ).organization
+
+    ::Current.organization = organization
+  end
 end
 # rubocop:enable Gitlab/NamespacedClass
 # rubocop:enable Rails/ApplicationController

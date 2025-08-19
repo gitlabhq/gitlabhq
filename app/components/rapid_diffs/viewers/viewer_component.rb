@@ -10,6 +10,10 @@ module RapidDiffs
       def initialize(diff_file:)
         @diff_file = diff_file
       end
+
+      def virtual_rendering_params
+        nil
+      end
     end
   end
 end

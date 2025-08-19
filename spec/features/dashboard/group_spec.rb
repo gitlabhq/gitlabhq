@@ -7,27 +7,11 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
   let(:group) { create(:group) }
   let(:page_path) { dashboard_groups_path }
 
-  before do
-    current_organization.users << user
-  end
-
   it_behaves_like 'page with product usage data collection banner'
 
   context 'when user has no groups' do
     before do
       sign_in(user)
-    end
-
-    context 'when your_work_groups_vue feature flag is disabled' do
-      before do
-        stub_feature_flags(your_work_groups_vue: false)
-      end
-
-      it 'renders empty state' do
-        visit dashboard_groups_path
-
-        expect(page).to have_css '[data-testid="groups-empty-state"]'
-      end
     end
 
     it 'renders empty state' do
@@ -73,18 +57,6 @@ RSpec.describe 'Dashboard Group', :with_current_organization, :js, feature_categ
     before do
       sign_in(user)
       group.add_developer(user)
-    end
-
-    context 'when your_work_groups_vue feature flag is disabled' do
-      before do
-        stub_feature_flags(your_work_groups_vue: false)
-      end
-
-      it 'defaults sort dropdown to Created date' do
-        visit dashboard_groups_path
-
-        expect(page).to have_button('Created date')
-      end
     end
 
     it 'defaults sort dropdown to Updated date' do

@@ -111,9 +111,9 @@ module Mutations
         end
       end
 
-      def find_parent_by_full_path(full_path)
+      def find_parent_by_full_path(full_path, model = ::Project)
         # Note: Group support is added in the EE module. For CE, we only support bulk edit for projects
-        ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(::Project, full_path).find.sync
+        ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(model, full_path).find.sync
       end
     end
   end

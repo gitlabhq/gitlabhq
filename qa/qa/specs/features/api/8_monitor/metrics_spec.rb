@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'GitLab Metrics', :aggregate_failures, :orchestrated, :metrics, product_group: :observability do
+  RSpec.describe 'GitLab Metrics', :aggregate_failures, :orchestrated, :metrics, feature_category: :observability do
     let(:web_uri) { URI.parse(Runtime::Scenario.gitlab_address) }
     let(:endpoint) do
       "#{web_uri.scheme}://#{web_uri.host}:#{port}#{path}"

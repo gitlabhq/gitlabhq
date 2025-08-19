@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :smoke, product_group: :code_review do
+  RSpec.describe 'Create', :smoke, feature_category: :code_review_workflow do
     describe 'Reverting a commit' do
       let(:file_name) { "secret_file.md" }
       let(:project) { create(:project, :with_readme) }

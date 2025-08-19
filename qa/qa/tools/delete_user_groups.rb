@@ -4,8 +4,8 @@
 #   - If `dry_run` is true the script will list groups to be deleted, but it won't delete them
 
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN, GITLAB_ADDRESS
-# Optional environment variables: DELETE_BEFORE
-#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 1 day ago)
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 24 hours ago)
 
 # Run `rake delete_user_groups`
 
@@ -19,6 +19,7 @@ module QA
         gitlab-e2e-sandbox-group-5
         gitlab-e2e-sandbox-group-6
         gitlab-e2e-sandbox-group-7
+        gitlab-e2e-sandbox-group-8
         quality-e2e-tests
         quality-e2e-tests-2
         quality-e2e-tests-3
@@ -30,7 +31,7 @@ module QA
         qa-perf-testing
         remote-development].freeze
 
-      # @example - delete user groups older than 1 day
+      # @example - delete user groups older than 24 hours
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   bundle exec rake delete_user_groups
@@ -60,7 +61,7 @@ module QA
         groups = fetch_user_groups
         results = delete_user_groups(groups)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -83,6 +84,7 @@ module QA
         groups = fetch_resources("groups?owned=true&top_level_only=true")
 
         groups.select do |group|
+          # sandbox groups can't be deleted immediately so ignore ones already marked for deletion
           group[:marked_for_deletion_on].nil? \
           && @exclude_groups.exclude?(group[:path])
         end
@@ -91,7 +93,7 @@ module QA
       def fetch_token_user_info
         logger.info("Fetching GITLAB_QA_ACCESS_TOKEN user ...")
 
-        user_response = get Runtime::API::Request.new(@api_client, "/user").url
+        user_response = get Runtime::API::Request.new(api_client, "/user").url
 
         unless user_response.code == HTTP_STATUS_OK
           logger.error("Request for user returned (#{user_response.code}): `#{user_response}` ")
@@ -113,7 +115,7 @@ module QA
       end
 
       def resource_request(group, **options)
-        Runtime::API::Request.new(@api_client, "/groups/#{group[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/groups/#{group[:id]}", **options).url
       end
     end
   end

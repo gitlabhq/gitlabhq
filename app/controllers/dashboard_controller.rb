@@ -4,6 +4,7 @@ class DashboardController < Dashboard::ApplicationController
   include IssuableCollectionsAction
   include FiltersEvents
   include HomepageData
+  include ::Gitlab::InternalEventsTracking
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
@@ -31,6 +32,7 @@ class DashboardController < Dashboard::ApplicationController
 
   def home
     if Feature.enabled?(:personal_homepage, current_user)
+      track_internal_event('user_views_homepage', user: current_user)
       @homepage_app_data = homepage_app_data(current_user)
       render('root/index')
     else
@@ -81,8 +83,18 @@ class DashboardController < Dashboard::ApplicationController
         current_user.authorized_projects
       end
 
+    finder_params = {
+      offset: params[:offset].to_i,
+      filter: event_filter
+    }
+
+    if params[:limit].present?
+      limit = params[:limit].to_i
+      finder_params[:limit] = limit if limit > 0
+    end
+
     EventCollection
-      .new(projects, offset: params[:offset].to_i, filter: event_filter)
+      .new(projects, **finder_params)
       .to_a
       .map(&:present)
   end

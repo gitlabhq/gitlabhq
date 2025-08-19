@@ -131,20 +131,33 @@ RSpec.describe API::GroupVariables, feature_category: :ci_variables do
           expect(json_response['raw']).to be_truthy
         end
 
-        it 'creates variable with masked and hidden' do
-          expect do
-            post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked_and_hidden: true, raw: true }
-          end.to change { group.variables.count }.by(1)
+        context 'when masked and hidden is specified' do
+          using RSpec::Parameterized::TableSyntax
 
-          expect(response).to have_gitlab_http_status(:created)
-          expect(json_response['key']).to eq('TEST_VARIABLE_2')
-          expect(json_response['value']).to be_nil
-          expect(json_response['protected']).to be_truthy
-          expect(json_response['hidden']).to eq(true)
-          expect(json_response['masked']).to be_truthy
-          expect(json_response['variable_type']).to eq('env_var')
-          expect(json_response['environment_scope']).to eq('*')
-          expect(json_response['raw']).to be_truthy
+          where(:masked_and_hidden, :expected_masked_and_hidden, :expected_returned_value) do
+            true    | true  | nil                 # masked_and_hidden is set to a boolean `true` and we expect no value to be returned
+            false   | false | 'PROTECTED_VALUE_2' # masked_and_hidden is set to a boolean `false` and we expect a value to be returned
+            'true'  | true  | nil                 # for backwards-compatibility masked_and_hidden is set to a string `"true"` and we expect no value to be returned
+            'false' | false | 'PROTECTED_VALUE_2' # for backwards-compatibility masked_and_hidden is set to a string `"false"` and we expect a value to be returned
+          end
+
+          with_them do
+            it 'creates variable' do
+              expect do
+                post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked_and_hidden: masked_and_hidden, raw: true }
+              end.to change { group.variables.count }.by(1)
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['key']).to eq('TEST_VARIABLE_2')
+              expect(json_response['value']).to eq(expected_returned_value)
+              expect(json_response['protected']).to be_truthy
+              expect(json_response['hidden']).to eq(expected_masked_and_hidden)
+              expect(json_response['masked']).to eq(expected_masked_and_hidden)
+              expect(json_response['variable_type']).to eq('env_var')
+              expect(json_response['environment_scope']).to eq('*')
+              expect(json_response['raw']).to be_truthy
+            end
+          end
         end
 
         it 'masks the new value when logging' do

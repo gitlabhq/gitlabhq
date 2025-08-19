@@ -1,3 +1,7 @@
 # frozen_string_literal: true
 
-todos.check_outdated_todos(git.deleted_files)
+# rubocop:disable Rails/Pluck -- Danger doesn't have ActiveSupport
+non_existent_filenames = git.deleted_files + git.renamed_files.map { |rename| rename[:before] }
+# rubocop:enable Rails/Pluck
+
+todos.check_outdated_todos(non_existent_filenames.sort)

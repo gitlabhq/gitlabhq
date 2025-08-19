@@ -26,14 +26,15 @@ module Gitlab
         attr_reader :project
 
         def reference_store_pending?
-          return false unless import_settings(project).user_mapping_enabled?
+          import_settings = import_settings(project)
 
+          return false unless import_settings.user_mapping_enabled?
+          return false if import_settings.map_to_personal_namespace_owner?
           return false unless placeholder_reference_store.any?
 
           ::Import::LoadPlaceholderReferencesWorker.perform_async(
             ::Import::SOURCE_GITHUB,
-            project.import_state.id,
-            { 'current_user_id' => project.creator.id }
+            project.import_state.id
           )
 
           info(

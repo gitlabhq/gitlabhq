@@ -13,8 +13,6 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
   let(:user)              { create(:user) }
   let(:include_subgroups) { true }
 
-  subject { group }
-
   let(:query) do
     graphql_query_for(
       'namespace',
@@ -31,6 +29,8 @@ RSpec.describe 'getting projects', feature_category: :groups_and_projects do
       QUERY
     )
   end
+
+  subject { group }
 
   before do
     group.add_owner(user)

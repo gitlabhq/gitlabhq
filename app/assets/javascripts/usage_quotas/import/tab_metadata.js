@@ -24,6 +24,7 @@ export const getImportTabMetadata = () => {
     title: __('Import'),
     hash: '#import-usage-tab',
     testid: 'import-usage-tab',
+    featureCategory: 'importers',
     component: {
       name: 'ImportUsageTab',
       provide,

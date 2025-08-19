@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security' do
-    describe 'User', :requires_admin, :skip_live_env, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', feature_category: :system_access do
+    describe 'User', :requires_admin, :skip_live_env do
       let!(:project) { create(:project, :with_readme, name: 'project-for-user-group-access-termination', group: group) }
 
       let(:user) { create(:user, :with_personal_access_token) }

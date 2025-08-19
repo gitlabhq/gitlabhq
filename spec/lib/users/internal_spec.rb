@@ -69,7 +69,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
       end
 
       context 'when user belongs to another organization' do
-        let!(:user) { create(:user, :with_namespace, username: bot_username, in_organization: first_organization) }
+        let!(:user) { create(:user, :with_namespace, username: bot_username, organization: first_organization) }
 
         it 'creates a non-conflicting global username and simple per-org username' do
           expect do

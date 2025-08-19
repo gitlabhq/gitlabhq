@@ -79,5 +79,33 @@ RSpec.describe 'Achievements (JavaScript fixtures)', feature_category: :user_pro
         end
       end
     end
+
+    describe 'award_achievement.mutation.graphql' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:achievement) { create(:achievement, namespace: group, name: 'Hero') }
+
+      let(:mutation_path) { 'achievements/components/graphql/award_achievement.mutation.graphql' }
+      let(:mutation) { get_graphql_query_as_string(mutation_path) }
+      let(:variables) do
+        {
+          input: {
+            achievement_id: "gid://gitlab/Achievements::Achievement/#{achievement.id}",
+            user_id: "gid://gitlab/User/#{user.id}"
+          }
+        }
+      end
+
+      before_all do
+        group.add_maintainer(user)
+      end
+
+      before do
+        post_graphql(mutation, current_user: user, variables: variables)
+      end
+
+      it 'graphql/award_achievement_response.json' do
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 end

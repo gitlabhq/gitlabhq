@@ -6,7 +6,7 @@ RSpec.describe Types::Namespaces::LinkPaths::GroupNamespaceLinksType, feature_ca
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :notification_email) }
 
   it_behaves_like "expose all link paths fields for the namespace"
 
@@ -18,6 +18,7 @@ RSpec.describe Types::Namespaces::LinkPaths::GroupNamespaceLinksType, feature_ca
       :labels_manage | lazy { "/groups/#{namespace.full_path}/-/labels" }
       :new_project | lazy { "/projects/new?namespace_id=#{namespace.id}" }
       :new_comment_template | [{ href: "/-/profile/comment_templates", text: "Your comment templates" }]
+      :user_export_email | lazy { user.notification_email_or_default }
     end
 
     with_them do

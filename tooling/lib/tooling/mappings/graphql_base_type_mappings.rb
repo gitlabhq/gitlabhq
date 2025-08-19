@@ -25,16 +25,15 @@ module Tooling
         'jh' => GRAPHQL_TYPES_FOLDERS_JH
       }.freeze
 
-      def initialize(changed_files_pathname, predictive_tests_pathname)
-        @predictive_tests_pathname = predictive_tests_pathname
-        @changed_files             = read_array_from_file(changed_files_pathname)
+      def initialize(changed_files)
+        @changed_files = changed_files
       end
 
       def execute
         # We go through the available editions when searching for base types
         #
         # `nil` is the FOSS edition
-        matching_graphql_tests = ([nil] + ::GitlabEdition.extensions).flat_map do |edition|
+        ([nil] + ::GitlabEdition.extensions).flat_map do |edition|
           hierarchy = types_hierarchies[edition]
 
           filter_files.flat_map do |graphql_file|
@@ -45,8 +44,6 @@ module Tooling
             children_types.map { |filename| filename_to_spec_filename(filename) }
           end
         end.compact.uniq
-
-        write_array_to_file(predictive_tests_pathname, matching_graphql_tests)
       end
 
       def filter_files
@@ -113,12 +110,12 @@ module Tooling
       def filename_to_spec_filename(filename)
         spec_file = filename.sub('app', 'spec').sub('.rb', '_spec.rb')
 
-        return spec_file if File.exist?(spec_file)
+        spec_file if File.exist?(spec_file)
       end
 
       private
 
-      attr_reader :changed_files, :predictive_tests_pathname
+      attr_reader :changed_files
     end
   end
 end

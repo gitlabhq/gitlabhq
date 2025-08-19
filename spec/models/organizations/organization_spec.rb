@@ -167,14 +167,10 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
     end
 
     describe '.with_user' do
-      let_it_be(:user) { create(:user) }
+      let_it_be(:user) { create(:user, organization: organization) }
       let_it_be(:second_organization) { create(:organization, users: [user]) }
 
       subject(:organizations_for_user) { described_class.with_user(user) }
-
-      before do
-        organization.users << user
-      end
 
       it { is_expected.to eq([organization, second_organization]) }
     end
@@ -313,6 +309,14 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
       expect(Gitlab::UrlBuilder).to receive(:build).with(organization, only_path: nil).and_return(web_url)
       expect(organization.web_url).to eq(web_url)
     end
+  end
+
+  describe '#scoped_paths?' do
+    it { expect(organization.scoped_paths?).to eq(true) }
+  end
+
+  describe '#full_path' do
+    it { expect(organization.full_path).to eq("/o/#{organization.path}") }
   end
 
   describe '.search' do
@@ -460,6 +464,25 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
           expect(default_organization.name).to eq('Default')
         end
       end
+    end
+
+    describe '#scoped_paths?' do
+      it { expect(default_organization.scoped_paths?).to eq(false) }
+    end
+
+    describe '#full_path' do
+      it { expect(default_organization.full_path).to eq('') }
+    end
+  end
+
+  describe 'Feature flagged #scoped_paths?' do
+    # The FF enabled cases are above.
+    context 'when organization_scoped_paths feature flag is disabled' do
+      before do
+        stub_feature_flags(organization_scoped_paths: false)
+      end
+
+      it { expect(organization.scoped_paths?).to eq(false) }
     end
   end
 end

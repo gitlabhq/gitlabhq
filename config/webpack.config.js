@@ -59,7 +59,7 @@ const SUPPORTED_BROWSERS_HASH = crypto
   .digest('hex');
 
 const VENDOR_DLL = process.env.WEBPACK_VENDOR_DLL && process.env.WEBPACK_VENDOR_DLL !== 'false';
-const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
+const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache/webpack');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.env.WEBPACK_SERVE === 'true';
 
@@ -118,6 +118,10 @@ const alias = {
 
   // the following resolves files which are different between CE/EE/JH
   any_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
+  // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
+  '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
+  '@gitlab/ui$': '@gitlab/ui/src',
 
   // override loader path for icons.svg so we do not duplicate this asset
   '@gitlab/svgs/dist/icons.svg': path.join(
@@ -242,20 +246,10 @@ const shouldExcludeFromCompiling = (modulePath) => {
   );
 };
 
-// We explicitly set VUE_VERSION
-// Use @gitlab-ui from source to allow us to dig differences
-// between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
-if (EXPLICIT_VUE_VERSION) {
-  Object.assign(alias, {
-    '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
-    '@gitlab/ui$': '@gitlab/ui/src',
-  });
-}
-
 if (USE_VUE3) {
   Object.assign(alias, {
     // ensure we always use the same type of module for Vue
-    vue: '@vue/compat/dist/vue.runtime.esm-bundler.js',
+    vue$: '@vue/compat/dist/vue.runtime.esm-bundler.js',
     vuex: path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vuex.js'),
     'vue-apollo': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_apollo.js'),
     'vue-router': path.join(ROOT_PATH, 'app/assets/javascripts/lib/utils/vue3compat/vue_router.js'),
@@ -342,11 +336,7 @@ module.exports = {
               presets: [
                 ['@babel/preset-env', { targets: { esmodules: true }, modules: 'commonjs' }],
               ],
-              plugins: [
-                '@babel/plugin-transform-optional-chaining',
-                '@babel/plugin-transform-logical-assignment-operators',
-                '@babel/plugin-transform-classes',
-              ],
+              plugins: ['@babel/plugin-transform-classes'],
               ...defaultJsOptions,
             },
           },
@@ -418,20 +408,14 @@ module.exports = {
         test: /swagger-ui-dist\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          plugins: ['@babel/plugin-transform-logical-assignment-operators'],
-          ...defaultJsOptions,
-        },
+        options: defaultJsOptions,
       },
       {
         test: /@swagger-api\/apidom-.*\.[mc]?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
         options: {
-          plugins: [
-            '@babel/plugin-transform-class-properties',
-            '@babel/plugin-transform-logical-assignment-operators',
-          ],
+          plugins: ['@babel/plugin-transform-class-properties'],
           ...defaultJsOptions,
         },
       },
@@ -450,10 +434,7 @@ module.exports = {
           },
           {
             loader: 'babel-loader',
-            options: {
-              plugins: ['@babel/plugin-transform-logical-assignment-operators'],
-              ...defaultJsOptions,
-            },
+            options: defaultJsOptions,
           },
         ],
       },
@@ -558,6 +539,7 @@ module.exports = {
   optimization: {
     // Replace 'hashed' with 'deterministic' in webpack 5
     moduleIds: 'hashed',
+    chunkIds: 'named', // at least makes named chunks stable,
     runtimeChunk: 'single',
     splitChunks: {
       maxInitialRequests: 20,
@@ -610,6 +592,29 @@ module.exports = {
   },
 
   plugins: [
+    // A custom function is needed because chunkIds: "named" alone only
+    // affects chunks that already have names (entry points, chunks with
+    // magic comments such as:
+    //
+    // /* webpackChunkName: "my-chunk" */
+    //
+    // Anonymous chunks, such as dynamic imports without names, would
+    // still get incremental IDs and could cause different IDs to be
+    // assigned across different runs.
+    //
+    // See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20271.
+    // This should not be needed with Webpack 5.
+    new webpack.NamedChunksPlugin((chunk) => {
+      // Keep named chunks as-is (entries, magic comments)
+      if (chunk.name) return chunk.name;
+
+      // Get all module IDs in this chunk, sorted for stability
+      const ids = Array.from(chunk.modulesIterable, (m) => m.id).sort();
+
+      const hash = crypto.createHash('sha256').update(ids.join('_')).digest('hex');
+
+      return hash.slice(0, 8);
+    }),
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
     new StatsWriterPlugin({

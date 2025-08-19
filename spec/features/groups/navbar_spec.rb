@@ -91,4 +91,16 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
 
     it_behaves_like 'verified navigation bar'
   end
+
+  context 'when contributions_analytics_dashboard feature flag is disabled' do
+    before do
+      stub_feature_flags(contributions_analytics_dashboard: false)
+
+      insert_contribution_analytics_nav if Gitlab.ee?
+
+      visit group_path(group)
+    end
+
+    it_behaves_like 'verified navigation bar'
+  end
 end

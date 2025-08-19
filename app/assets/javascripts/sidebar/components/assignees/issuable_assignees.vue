@@ -1,7 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { n__ } from '~/locale';
 import UncollapsedAssigneeList from './uncollapsed_assignee_list.vue';
 
 export default {
@@ -30,9 +29,6 @@ export default {
     },
   },
   computed: {
-    assigneesText() {
-      return n__('Assignee', '%d Assignees', this.users.length);
-    },
     emptyUsers() {
       return this.users.length === 0;
     },

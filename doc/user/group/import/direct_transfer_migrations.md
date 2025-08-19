@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrate groups and projects by using direct transfer
+description: "Migrate groups and projects between GitLab instances by using direct transfer."
 ---
 
 {{< details >}}
@@ -12,10 +13,10 @@ title: Migrate groups and projects by using direct transfer
 
 {{< /details >}}
 
-To migrate GitLab groups and projects by using direct transfer, you:
+To migrate GitLab groups and projects by using direct transfer:
 
-1. Fulfill the [prerequisites](#prerequisites).
-1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping) and [configure users on the destination instance](#configure-users-on-destination-instance)
+1. Ensure you meet the [prerequisites](#prerequisites).
+1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping).
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).
@@ -103,8 +104,8 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
 {{< /history >}}
 
 This method of user contribution and membership mapping is available for
-GitLab Self-Managed when `importer_user_mapping` and `bulk_import_importer_user_mapping` are disabled.
-These feature flags are enabled by default.
+GitLab Self-Managed when `bulk_import_importer_user_mapping` is disabled.
+This feature flag is enabled by default.
 For information on the default method available for GitLab Self-Managed and GitLab.com,
 see [user contribution and membership mapping](../../project/import/_index.md#user-contribution-and-membership-mapping).
 
@@ -180,12 +181,6 @@ If you do not want to import all user memberships from the source instance, ensu
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
-
-{{< alert type="warning" >}}
-
-Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not ready for production use.
-
-{{< /alert >}}
 
 ## Review results of the import
 

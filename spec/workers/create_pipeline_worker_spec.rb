@@ -9,7 +9,7 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
     context 'when a project not found' do
       it 'does not call the Service' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect { worker.perform(non_existing_record_id, create(:user).id, 'master', :web) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { worker.perform(non_existing_record_id, create(:user).id, 'master', :web) }.not_to raise_exception
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe CreatePipelineWorker, feature_category: :pipeline_composition do
 
       it 'does not call the Service' do
         expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect { worker.perform(project.id, non_existing_record_id, project.default_branch, :web) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { worker.perform(project.id, non_existing_record_id, project.default_branch, :web) }.not_to raise_exception
       end
     end
 

@@ -11,7 +11,13 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
     let(:environment) { '*' }
     let(:protected_ref) { false }
 
-    let_it_be(:variable) do
+    let_it_be(:variable1) do
+      create(:ci_group_variable,
+        value: 'secret',
+        group: group)
+    end
+
+    let_it_be(:variable2) do
       create(:ci_group_variable,
         value: 'secret',
         group: group)
@@ -23,20 +29,24 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
         group: group)
     end
 
-    let(:variable_item) { item(variable) }
+    let(:variable_item1) { item(variable1) }
+    let(:variable_item2) { item(variable2) }
     let(:protected_variable_item) { item(protected_variable) }
+    let(:only) { nil }
 
     subject do
       builder.secret_variables(
         environment: environment,
-        protected_ref: protected_ref)
+        protected_ref: protected_ref,
+        only: only
+      )
     end
 
     context 'when the ref is not protected' do
       let(:protected_ref) { false }
 
       it 'contains only the CI variables' do
-        is_expected.to contain_exactly(variable_item)
+        is_expected.to contain_exactly(variable_item1, variable_item2)
       end
     end
 
@@ -44,7 +54,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
       let(:protected_ref) { true }
 
       it 'contains all the variables' do
-        is_expected.to contain_exactly(variable_item, protected_variable_item)
+        is_expected.to contain_exactly(variable_item1, variable_item2, protected_variable_item)
+      end
+    end
+
+    context 'when only is provided' do
+      let(:protected_ref) { true }
+      let(:only) { [variable1.key] }
+
+      it 'contains only requested variables' do
+        is_expected.to contain_exactly(variable_item1)
       end
     end
 
@@ -58,26 +77,26 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
       context 'when environment scope is exactly matched' do
         let(:environment_scope) { 'review/name' }
 
-        it { is_expected.to contain_exactly(variable_item) }
+        it { is_expected.to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope is matched by wildcard' do
         let(:environment_scope) { 'review/*' }
 
-        it { is_expected.to contain_exactly(variable_item) }
+        it { is_expected.to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope does not match' do
         let(:environment_scope) { 'review/*/special' }
 
-        it { is_expected.not_to contain_exactly(variable_item) }
+        it { is_expected.not_to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope has _' do
         let(:environment_scope) { '*_*' }
 
         it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(variable_item)
+          is_expected.not_to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -86,7 +105,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
         let(:environment_scope) { 'foo_bar/*' }
 
         it 'matches literally for _' do
-          is_expected.to contain_exactly(variable_item)
+          is_expected.to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -98,7 +117,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
         let(:environment_scope) { '*%*' }
 
         it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(variable_item)
+          is_expected.not_to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -107,7 +126,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
         let(:environment_scope) { 'foo%bar/*' }
 
         it 'matches literally for _' do
-          is_expected.to contain_exactly(variable_item)
+          is_expected.to contain_exactly(variable_item1, variable_item2)
         end
       end
     end
@@ -117,7 +136,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
 
       let_it_be(:partially_matched_variable) do
         create(:ci_group_variable,
-          key: variable.key,
+          key: variable1.key,
           value: 'partial',
           environment_scope: 'review/*',
           group: group)
@@ -125,7 +144,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
 
       let_it_be(:perfectly_matched_variable) do
         create(:ci_group_variable,
-          key: variable.key,
+          key: variable1.key,
           value: 'prefect',
           environment_scope: 'review/name',
           group: group)
@@ -134,7 +153,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
       it 'orders the variables from least to most matched' do
         variables_collection = Gitlab::Ci::Variables::Collection.new(
           [
-            variable,
+            variable1,
+            variable2,
             partially_matched_variable,
             perfectly_matched_variable
           ]).to_runner_variables
@@ -166,26 +186,22 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_vari
       end
 
       context 'traversal queries' do
-        shared_examples 'correct ancestor order' do
-          let(:builder) { described_class.new(group_child_3) }
+        let(:builder) { described_class.new(group_child_3) }
 
-          it 'returns all variables belonging to the group and parent groups' do
-            expected_array1 = Gitlab::Ci::Variables::Collection.new(
-              [protected_variable_item, variable_item])
-            .to_runner_variables
+        it 'returns all variables belonging to the group and parent groups' do
+          expected_array1 = Gitlab::Ci::Variables::Collection.new(
+            [protected_variable_item, variable_item1, variable_item2])
+          .to_runner_variables
 
-            expected_array2 = Gitlab::Ci::Variables::Collection.new(
-              [variable_child_1, variable_child_2, variable_child_3]
-            ).to_runner_variables
+          expected_array2 = Gitlab::Ci::Variables::Collection.new(
+            [variable_child_1, variable_child_2, variable_child_3]
+          ).to_runner_variables
 
-            got_array = subject.to_runner_variables
+          got_array = subject.to_runner_variables
 
-            expect(got_array.shift(2)).to contain_exactly(*expected_array1)
-            expect(got_array).to eq(expected_array2)
-          end
+          expect(got_array.shift(3)).to contain_exactly(*expected_array1)
+          expect(got_array).to eq(expected_array2)
         end
-
-        include_examples 'correct ancestor order'
       end
     end
   end

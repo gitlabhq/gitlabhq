@@ -19,9 +19,13 @@ module QA
     let(:tmp_dir) { Dir.mktmpdir }
     let(:project_root) { File.expand_path("../", Runtime::Path.qa_root) }
     let(:cng_pipeline_file) { File.join(tmp_dir, "test-on-cng-pipeline.yml") }
+    let(:performance_pipeline_file) { File.join(tmp_dir, "performance-on-cng-pipeline.yml") }
     let(:generated_cng_yaml) { YAML.load_file(cng_pipeline_file) }
 
-    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/_skip.yml")) }
+    let(:gitlab_version) { "18.0.0" }
+    let(:ruby_version) { "3.2.5" }
+
+    let(:skip_pipeline) { File.read(File.join(project_root, ".gitlab/ci/overrides/skip.yml")) }
     let(:noop_reason) { "no-op run, nothing will be executed!" }
     let(:noop_pipeline) do
       <<~YML
@@ -32,12 +36,17 @@ module QA
       YML
     end
 
+    before do
+      stub_env("RUBY_VERSION", ruby_version)
+    end
+
     describe "#create_noop" do
       let(:scenario_examples) { {} }
       let(:noop_reason) { "no-op run, pipeline:skip-e2e label detected" }
 
       before do
-        allow(File).to receive(:write).with(/test-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
+        allow(File).to receive(:write)
+          .with(/(test|performance)-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
       end
 
       it "creates a noop pipeline with skip message" do
@@ -48,6 +57,39 @@ module QA
         )
 
         expect(File).to have_received(:write).with(cng_pipeline_file, noop_pipeline)
+        expect(File).to have_received(:write).with(performance_pipeline_file, noop_pipeline)
+      end
+    end
+
+    describe "#create_non_functional" do
+      let(:perf_pipeline) do
+        {
+          "performance-trigger-job" => {
+            "stage" => "test",
+            "script" => "echo 'test'"
+          }
+        }
+      end
+
+      let(:generated_perf_pipeline_definition) { YAML.load_file(performance_pipeline_file) }
+
+      before do
+        allow(File).to receive(:read).and_call_original
+        allow(File).to receive(:read).with(File.join(project_root, "VERSION")).and_return(gitlab_version)
+        allow(File).to receive(:read)
+          .with(File.join(project_root, ".gitlab/ci/performance-on-cng/main.gitlab-ci.yml"))
+          .and_return(perf_pipeline.to_yaml)
+      end
+
+      it "creates pipeline definitions for non functional test pipelines with base variables added" do
+        pipeline_creator.create_non_functional
+
+        expect(generated_perf_pipeline_definition).to eq(perf_pipeline.merge({
+          "variables" => {
+            "RUBY_VERSION" => ruby_version,
+            "GITLAB_SEMVER_VERSION" => gitlab_version
+          }
+        }))
       end
     end
 
@@ -62,8 +104,6 @@ module QA
       let(:runtime_report) { { example => runtime } }
       let(:example) { "spec_file.rb[1:1]" }
       let(:status) { "passed" }
-      let(:ruby_version) { "3.2.5" }
-      let(:gitlab_version) { "18.0.0" }
       let(:md5_sum) { instance_double(Digest::MD5, hexdigest: "3596609a928fe9877e37ed6e9c4f87fa") }
 
       let(:scenario_examples) do
@@ -105,7 +145,6 @@ module QA
       end
 
       before do
-        stub_env("RUBY_VERSION", ruby_version)
         stub_env("CI_PROJECT_NAMESPACE", "gitlab-org")
 
         allow(Tools::Ci::ScenarioExamples).to receive(:fetch).with(test_files).and_return(scenario_examples)
@@ -126,7 +165,7 @@ module QA
         it "only creates pipeline definitions for pipeline mappings present in scenarios", :aggregate_failures do
           pipeline_creator.create
 
-          (described_class::SUPPORTED_PIPELINES - [:test_on_cng]).each do |pipeline_type|
+          (described_class::FUNCTIONAL_E2E_PIPELINE_TYPES - [:test_on_cng]).each do |pipeline_type|
             expect(File.exist?(File.join(tmp_dir, "#{pipeline_type.to_s.tr('_', '-')}-pipeline.yml"))).to(
               be(false),
               "Expected pipeline file to not be created for #{pipeline_type}"

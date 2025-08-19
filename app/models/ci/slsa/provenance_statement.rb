@@ -58,8 +58,7 @@ module Ci
         attr_accessor :build_type, :external_parameters, :internal_parameters, :resolved_dependencies
 
         def self.from_build(build)
-          # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
-          build_type = "https://gitlab.com/gitlab-org/gitlab/-/issues/546150"
+          build_type = "https://docs.gitlab.com/ci/pipeline_security/slsa/provenance_v1"
           external_parameters = ExternalParameters.from_build(build)
           internal_parameters = {
             architecture: build.runner_manager.architecture,

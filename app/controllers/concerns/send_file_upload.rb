@@ -3,8 +3,8 @@
 module SendFileUpload
   def send_upload(
     file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false,
-    disposition: 'attachment', ssrf_params: {}, log_enabled: false)
-    content_type = content_type_for(attachment, log_enabled)
+    disposition: 'attachment', ssrf_params: {})
+    content_type = content_type_for(attachment)
 
     if attachment
       response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: disposition,
@@ -41,10 +41,10 @@ module SendFileUpload
     end
   end
 
-  def content_type_for(attachment, log_enabled)
+  def content_type_for(attachment)
     return '' unless attachment
 
-    ::Gitlab::Utils::MimeType.from_filename(attachment, log_enabled: log_enabled)
+    ::Gitlab::Utils::MimeType.from_filename(attachment)
   end
 
   private

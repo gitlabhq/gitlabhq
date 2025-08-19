@@ -3,7 +3,10 @@ import { GlBadge } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { integrationFormSectionComponents, billingPlanNames } from '~/integrations/constants';
+import {
+  integrationFormSectionComponents,
+  billingPlanNames,
+} from 'ee_else_ce/integrations/constants';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 export default {
@@ -30,6 +33,10 @@ export default {
     IntegrationSectionJiraTrigger: () =>
       import(
         /* webpackChunkName: 'integrationSectionJiraTrigger' */ '~/integrations/edit/components/sections/jira_trigger.vue'
+      ),
+    IntegrationSectionJiraVerification: () =>
+      import(
+        /* webpackChunkName: 'integrationSectionJiraVerification' */ 'ee_component/integrations/edit/components/sections/jira_verification.vue'
       ),
     IntegrationSectionTrigger: () =>
       import(

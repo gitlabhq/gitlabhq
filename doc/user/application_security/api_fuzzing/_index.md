@@ -13,17 +13,16 @@ description: Testing, security, vulnerabilities, automation, and errors.
 
 {{< /details >}}
 
-Web API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
-parameters to unexpected values in an effort to cause unexpected behavior and errors in the API
-backend. This helps you discover bugs and potential security issues that other QA processes may
-miss.
+Web API fuzz testing passes unexpected values to API operation parameters to cause unexpected behavior
+and errors in the backend. Use fuzz testing to discover bugs and potential vulnerabilities that other
+QA processes might miss.
 
 You should use fuzz testing in addition to the other security scanners in [GitLab Secure](../_index.md)
 and your own test processes. If you're using [GitLab CI/CD](../../../ci/_index.md),
 you can run fuzz tests as part your CI/CD workflow.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Web API Fuzzing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
+For an overview, see [WebAPI Fuzzing - Advanced Security Testing](https://www.youtube.com/watch?v=oUHsfvLGhDk).
 
 ## Getting started
 
@@ -100,7 +99,7 @@ To get the most out of API fuzzing, follow these recommendations:
 - By default, API fuzzing downloads all artifacts defined by previous jobs in the pipeline. If your
   API fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other
   files created in previous jobs, you should not download artifacts.
- 
+
   To avoid downloading artifacts, extend the analyzer CI/CD job to specify no dependencies.
   For example, for the API fuzzing analyzer, add the following to your `.gitlab-ci.yml` file:
 

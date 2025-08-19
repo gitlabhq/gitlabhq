@@ -36,7 +36,6 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
-    push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:issues_list_create_modal, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
@@ -180,7 +179,7 @@ class GroupsController < Groups::ApplicationController
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       respond_to do |format|
         format.html do
           redirect_to group_path(group), status: :found
@@ -199,11 +198,11 @@ class GroupsController < Groups::ApplicationController
     else
       respond_to do |format|
         format.html do
-          redirect_to edit_group_path(group), status: :found, alert: result[:message]
+          redirect_to edit_group_path(group), status: :found, alert: result.message
         end
 
         format.json do
-          render json: { message: result[:message] }, status: :unprocessable_entity
+          render json: { message: result.message }, status: :unprocessable_entity
         end
       end
     end
@@ -214,11 +213,11 @@ class GroupsController < Groups::ApplicationController
 
     result = ::Groups::RestoreService.new(group, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       redirect_to edit_group_path(group),
         notice: format(_("Group '%{group_name}' has been successfully restored."), group_name: group.full_name)
     else
-      redirect_to edit_group_path(group), alert: result[:message]
+      redirect_to(edit_group_path(group), alert: result.message)
     end
   end
 

@@ -119,6 +119,41 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     end
   end
 
+  %w[
+    Feature::Kas.enabled?
+    Feature::Kas.disabled?
+  ].each do |feature_flag_method|
+    context "#{feature_flag_method} method", feature_category: :deployment_management do
+      context 'a string feature flag' do
+        include_examples 'sets flag as used', %|#{feature_flag_method}("foo")|, 'kas_foo'
+      end
+
+      context 'a symbol feature flag' do
+        include_examples 'sets flag as used', %|#{feature_flag_method}(:foo)|, 'kas_foo'
+      end
+
+      context 'an interpolated string feature flag with a string prefix' do
+        include_examples 'sets flag as used', %|#{feature_flag_method}("foo_\#{bar}")|, %w[foo_hello foo_world]
+      end
+
+      context 'an interpolated symbol feature flag with a string prefix' do
+        include_examples 'sets flag as used', %|#{feature_flag_method}(:"foo_\#{bar}")|, %w[foo_hello foo_world]
+      end
+
+      context 'an interpolated string feature flag with a string prefix and suffix' do
+        include_examples 'does not set any flags as used', %|#{feature_flag_method}(:"foo_\#{bar}_baz")|
+      end
+
+      context 'a dynamic string feature flag as a variable' do
+        include_examples 'does not set any flags as used', %|#{feature_flag_method}(a_variable, an_arg)|
+      end
+
+      context 'an integer feature flag' do
+        include_examples 'does not set any flags as used', %|#{feature_flag_method}(123)|
+      end
+    end
+  end
+
   context 'with the experiment method' do
     context 'a string feature flag' do
       include_examples 'sets flag as used', %q|experiment("baz")|, %w[baz]

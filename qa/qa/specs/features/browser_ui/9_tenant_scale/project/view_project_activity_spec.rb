@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
-    describe 'Project activity', :smoke, product_group: :organizations do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
+    describe 'Project activity', :smoke do
       context 'with git push' do
         it 'creates an event in the activity page',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347879' do

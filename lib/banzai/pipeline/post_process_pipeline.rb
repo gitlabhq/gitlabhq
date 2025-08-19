@@ -35,5 +35,3 @@ module Banzai
     end
   end
 end
-
-Banzai::Pipeline::PostProcessPipeline.prepend_mod_with('Banzai::Pipeline::PostProcessPipeline')

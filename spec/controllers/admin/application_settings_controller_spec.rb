@@ -473,6 +473,18 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
         expect(application_settings.reload.deletion_adjourned_period).to eq(6)
       end
     end
+
+    context 'for project and group access tokens settings' do
+      let(:application_settings) { ApplicationSetting.current }
+
+      it 'updates inactive_resource_access_tokens_delete_after_days setting' do
+        expect do
+          put :update, params: { application_setting: { inactive_resource_access_tokens_delete_after_days: 42 } }
+        end.to change { application_settings.reload.inactive_resource_access_tokens_delete_after_days }.from(30).to(42)
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token', feature_category: :user_management do

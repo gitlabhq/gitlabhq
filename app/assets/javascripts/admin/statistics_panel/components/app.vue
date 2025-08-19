@@ -14,7 +14,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isLoading', 'statistics']),
+    ...mapState(['isLoading']),
     ...mapGetters(['getStatistics']),
   },
   mounted() {

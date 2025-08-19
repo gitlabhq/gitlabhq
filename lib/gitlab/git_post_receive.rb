@@ -4,13 +4,14 @@ module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
 
-    attr_reader :container, :identifier, :changes, :push_options
+    attr_reader :container, :identifier, :changes, :push_options, :gitaly_context
 
-    def initialize(container, identifier, changes, push_options = {})
+    def initialize(container, identifier, changes, push_options = {}, gitaly_context = {})
       @container = container
       @identifier = identifier
       @changes = parse_changes(changes)
       @push_options = push_options
+      @gitaly_context = gitaly_context
     end
 
     def identify

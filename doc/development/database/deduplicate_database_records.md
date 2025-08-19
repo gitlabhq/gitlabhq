@@ -83,6 +83,7 @@ def up
       .group(:project_id, :title)
       .having('COUNT(*) > 1')
       .pluck(:project_id, :title)
+    next if duplicates.empty?
 
     value_list = Arel::Nodes::ValuesList.new(duplicates).to_sql
 

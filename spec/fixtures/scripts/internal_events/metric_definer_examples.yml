@@ -464,7 +464,7 @@
     - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
     - "internal_events_cli_used" # Filters to this event
     - "\n" # Select: config/events/internal_events_cli_used.yml
-    - "\e[A\e[A\e[A\e[A" # Arrow up to: Weekly count of unique values for label
+    - "\e[A\e[A\e[A\e[A\e[A\e[A" # Arrow up to: Weekly count of unique values for label
     - "\n" # Select: Weekly count of unique values for label
     - "values provided for label\n" # Input description
     - "1\n" # Enum-select: Copy & continue
@@ -520,3 +520,52 @@
     files:
     - path: config/metrics/counts_all/count_total_internal_events_cli_closed.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_multiple_product_categories.yml
+
+- description: Create a weekly/monthly/total sum metric for a single event
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_additional_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[A\e[A\n" # Arrow up to: Monthly/Weekly/Total sum of values
+    - "time spent using CLI\n" # Input description
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_all/sum_value_from_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/sum_single_event.yml
+
+- description: Create a weekly/monthly/total sum metric for multiple events with additional properties filters
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_all_additional_properties.yml
+    - path: config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/secondary_event_with_additional_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "2\n" # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+    - 'internal_events_cli' # Filters to the relevant events
+    - ' ' # Multi-select: internal_events_cli_opened
+    - "\e[B " # Multi-select: Arrow down and select internal_events_cli_used
+    - "\n" # Submit selections
+    - "\e[A\n" # Multi-select: Arrow up and select Monthly/Weekly/Total sum of events values where label/property/value is...
+    - "failure\n" # Input value for "label" filter
+    - "\u007F\u007F\u007F\u007F\u007F\u007F\u007F\n" # Clear "label" filter
+    - "flow\n" # Input value for "property" filter
+    - "time spent in failed flow of CLI\n" # Input description
+    - "failed_usage_time\n" # Input metric key path
+    - "\n" # Submit description
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_all/sum_value_from_failed_usage_time.yml
+      content: spec/fixtures/scripts/internal_events/metrics/sum_multiple_events_with_filters.yml

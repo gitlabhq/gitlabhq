@@ -35,7 +35,8 @@ module API
     helpers do
       def packages
         strong_memoize(:packages) do
-          packages = ::Packages::Composer::PackagesFinder.new(current_user, find_authorized_group!).execute
+          group = find_authorized_group!
+          packages = ::Packages::Composer::PackageFinder.new(current_user, group).execute
 
           if params[:package_name].present?
             params[:package_name], params[:sha] = params[:package_name].split('$')
@@ -210,11 +211,11 @@ module API
           project = authorized_user_project(action: :read_package)
           authorize_job_token_policies!(project)
 
-          package = ::Packages::Composer::Package
-            .for_projects(project)
-            .with_name(params[:package_name])
-            .with_composer_target(params[:sha])
-            .first
+          package = ::Packages::Composer::PackageFinder
+                      .new(current_user, project, { package_name: params[:package_name], target_sha: params[:sha] })
+                      .execute
+                      .first
+
           metadata = package&.composer_metadatum
 
           not_found! unless metadata

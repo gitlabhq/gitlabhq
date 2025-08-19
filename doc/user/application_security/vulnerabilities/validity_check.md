@@ -52,11 +52,13 @@ Prerequisites:
 
 To enable validity checks for a project:
 
-- Contact your GitLab representative and ask them to enable validity checks.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure** > **Security configuration**.
+1. Under **Pipeline Secret Detection**, turn on the **Validity checks** toggle. 
 
-If validity checks are enabled, GitLab checks the status of detected secrets when the `secret_detection`
-CI/CD job is complete. To view a secret's status, view the vulnerability details page. To update the
-status of a secret, for example after revoking it, re-run the `secret_detection` CI/CD job.
+GitLab checks the status of detected secrets when the `secret_detection` CI/CD job is complete.
+To view a secret's status, view the vulnerability details page. To update the status of a secret,
+for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 ### Coverage
 
@@ -83,5 +85,21 @@ A secret has one of the following statuses:
 - **Inactive** - The secret is expired or revoked and cannot be used for authentication.
 
 You should rotate **Active** and **Possibly active** detected secrets as soon as possible.
-If a secret has an unexpected status, run a new pipeline and wait for the `secret_detection`
-job to finish.
+
+## Troubleshooting
+
+When working with validity checks, you might encounter the following issues.
+
+### Unexpected token status
+
+The **Possibly active** status appears when GitLab cannot definitively verify a secret's validity.
+This might be because:
+
+- The secret validation hasn't been run.
+- The secret type is not supported by validity checks.
+- There was a problem connecting to the token provider.
+
+To resolve this issue, re-run the `secret_detection` job. If the status persists after a few attempts,
+you might need to validate the secret manually.
+
+Unless you're certain the token isn't active, you should revoke and replace possibly active secrets as soon as possible.

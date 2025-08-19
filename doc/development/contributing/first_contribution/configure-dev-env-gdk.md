@@ -40,7 +40,7 @@ To install the GDK:
 1. Confirm that [Git](../../../topics/git/how_to_install_git/_index.md) is installed,
    and that you have a source code editor.
 1. Choose the directory where you want to install the GDK.
-   The installation script installs the application to a new subdirectory called `gitlab-development-kit`.
+   The installation script installs the application to a new subdirectory called `gdk`.
 
    Keep the directory name short. Some users encounter issues with long directory names.
 
@@ -65,7 +65,7 @@ To install the GDK:
 
    {{< /alert >}}
 
-1. For the message `Where would you like to install the GDK? [./gitlab-development-kit]`,
+1. For the message `Where would you like to install the GDK? [./gdk]`,
    press <kbd>Enter</kbd> to accept the default location.
 1. For the message `Which GitLab repo URL would you like to clone?`, enter the GitLab community fork URL:
 
@@ -91,7 +91,7 @@ To install the GDK:
 1. Go to the directory where the GDK was installed:
 
    ```shell
-   cd gitlab-development-kit
+   cd gdk
    ```
 
 1. Run `gdk truncate-legacy-tables` to ensure that the data in the main and CI databases are truncated,
@@ -122,18 +122,18 @@ To install the GDK:
 
 If you have an existing GDK installation, you should update it to use the community fork.
 
-1. Delete the existing `gitlab-development-kit/gitlab` directory.
+1. Delete the existing `gdk/gitlab` directory.
 1. Clone the community fork into that location:
 
    ```shell
-   cd gitlab-development-kit
+   cd gdk
    git clone https://gitlab.com/gitlab-community/gitlab.git
    ```
 
 To confirm it was successful:
 
-1. Ensure the `gitlab-development-kit/gitlab` directory exists.
-1. Go to the top `gitlab-development-kit` directory and run `gdk stop` and `gdk start`.
+1. Ensure the `gdk/gitlab` directory exists.
+1. Go to the top `gdk` directory and run `gdk stop` and `gdk start`.
 
 If you get errors, run `gdk doctor` to troubleshoot.
 For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troubleshoot-gdk) section.
@@ -148,7 +148,7 @@ and the [#contribute channel on Discord](https://discord.com/channels/7781805110
 
 {{< /alert >}}
 
-If you encounter issues, go to the `gitlab-development-kit/gitlab`
+If you encounter issues, go to the `gdk/gitlab`
 directory and run `gdk doctor`.
 
 If `gdk doctor` returns Node or Ruby-related errors, run:

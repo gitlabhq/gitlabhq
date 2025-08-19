@@ -41,6 +41,8 @@ module API
 
         break not_found!('GroupVariable') unless variable
 
+        audit_variable_access(variable, user_group)
+
         present variable, with: Entities::Ci::Variable
       end
 
@@ -54,10 +56,10 @@ module API
         requires :key, type: String, desc: 'The ID of a group or URL-encoded path of the group owned by the
         authenticated user'
         requires :value, type: String, desc: 'The value of a variable'
-        optional :protected, type: String, desc: 'Whether the variable is protected'
-        optional :masked_and_hidden, type: String, desc: 'Whether the variable is masked and hidden'
-        optional :masked, type: String, desc: 'Whether the variable is masked'
-        optional :raw, type: String, desc: 'Whether the variable will be expanded'
+        optional :protected, type: Boolean, desc: 'Whether the variable is protected'
+        optional :masked_and_hidden, type: Boolean, desc: 'Whether the variable is masked and hidden'
+        optional :masked, type: Boolean, desc: 'Whether the variable is masked'
+        optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
         optional :description, type: String, desc: 'The description of the variable'
@@ -92,9 +94,9 @@ module API
       params do
         optional :key, type: String, desc: 'The key of a variable'
         optional :value, type: String, desc: 'The value of a variable'
-        optional :protected, type: String, desc: 'Whether the variable is protected'
-        optional :masked, type: String, desc: 'Whether the variable is masked'
-        optional :raw, type: String, desc: 'Whether the variable will be expanded'
+        optional :protected, type: Boolean, desc: 'Whether the variable is protected'
+        optional :masked, type: Boolean, desc: 'Whether the variable is masked'
+        optional :raw, type: Boolean, desc: 'Whether the variable will be expanded'
         optional :variable_type, type: String, values: ::Ci::GroupVariable.variable_types.keys, desc: 'The type of the variable. Default: env_var'
         optional :environment_scope, type: String, desc: 'The environment scope of a variable'
         optional :description, type: String, desc: 'The description of the variable'

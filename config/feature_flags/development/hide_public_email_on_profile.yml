@@ -1,8 +1,0 @@
----
-name: hide_public_email_on_profile
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79717
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351731
-milestone: '14.8'
-type: development
-group: group::authentication
-default_enabled: false

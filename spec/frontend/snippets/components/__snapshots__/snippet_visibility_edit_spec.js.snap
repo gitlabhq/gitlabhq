@@ -6,12 +6,6 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
 >
   <label>
     Visibility level
-    <gl-link-stub
-      href="/foo/bar"
-      target="_blank"
-    >
-      <help-icon-stub />
-    </gl-link-stub>
   </label>
   <gl-form-group-stub
     class="gl-mb-0"

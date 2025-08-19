@@ -1,0 +1,56 @@
+- breadcrumb_title s_('Observability|O11y Service Settings')
+- page_title s_('Observability|O11y Service Settings')
+
+%h1.gl-sr-only= @breadcrumb_title
+
+= render ::Layouts::SettingsBlockComponent.new(s_('Observability|Observability Service Configuration'),
+  id: 'o11y-service-settings',
+  expanded: true) do |c|
+  - c.with_description do
+    = s_('Observability|Configure your observability service connection settings.')
+  - c.with_body do
+    = gitlab_ui_form_for @settings, url: group_observability_o11y_service_settings_path(@group), method: :put, authenticity_token: true do |f|
+      = form_errors(@settings)
+
+      .row
+        .form-group.col-md-6
+          = f.label :o11y_service_name, s_('Observability|Service Name'), class: 'label-bold'
+          = f.text_field :o11y_service_name, class: 'form-control', placeholder: 'your-o11y-instance-name'
+          %span.form-text.gl-text-subtle
+            = s_('Observability|The Name of your observability service instance.')
+
+        .form-group.col-md-6
+          = f.label :o11y_service_user_email, s_('Observability|User Email'), class: 'label-bold'
+          = f.email_field :o11y_service_user_email, class: 'form-control', placeholder: 'user@example.com'
+          %span.form-text.gl-text-subtle
+            = s_('Observability|Email address for authentication with the observability service.')
+
+      .row
+        .form-group.col-md-6
+          = f.label :o11y_service_password, s_('Password'), class: 'label-bold'
+          = f.password_field :o11y_service_password, class: 'form-control', placeholder: '••••••••'
+          %span.form-text.gl-text-subtle
+            = s_('Observability|Password for authentication with the observability service.')
+
+        .form-group.col-md-6
+          = f.label :o11y_service_post_message_encryption_key, s_('Observability|Encryption Key'), class: 'label-bold'
+          = f.password_field :o11y_service_post_message_encryption_key, class: 'form-control', placeholder: '••••••••'
+          %span.form-text.gl-text-subtle
+            = s_('Observability|32+ character encryption key for secure communication.')
+
+      .form-group.gl-form-group
+        = f.submit s_('Save changes'), pajamas_button: true, class: 'js-dirty-submit'
+
+- if @settings.persisted?
+  = render ::Layouts::SettingsBlockComponent.new(s_('Observability|Danger Zone'),
+    id: 'o11y-service-settings-danger-zone',
+    expanded: false) do |c|
+    - c.with_description do
+      = s_('Observability|Permanently delete the observability service configuration.')
+    - c.with_body do
+      = link_button_to s_('Observability|Delete settings'), group_observability_o11y_service_settings_path(@group),
+        method: :delete,
+        variant: :danger,
+        category: :secondary,
+        data: { confirm: s_('Observability|Are you sure you want to delete the observability service settings? This action cannot be undone.'),
+                'confirm-btn-variant': 'danger' }

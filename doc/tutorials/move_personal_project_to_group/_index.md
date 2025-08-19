@@ -93,5 +93,5 @@ You can now view your project in your group:
 Start enjoying the benefits of a group! For example, as the group Owner, you can
 quickly view all unique users in your namespace:
 
-1. In your group, select **Settings > Usage Quotas**.
+1. In your group, select **Settings > Usage quotas**.
 1. The **Seats** tab displays all users across all projects in your group.

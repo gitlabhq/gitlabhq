@@ -13,7 +13,7 @@ module Projects
       before_action :authorize_update_cicd_settings!, only: :update
       before_action :authorize_reset_cache!, only: :reset_cache
       before_action :check_builds_available!
-      before_action :define_variables
+      before_action :define_variables, only: :show
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
@@ -104,7 +104,7 @@ module Projects
       def authorize_reset_cache!
         return if can_any?(current_user, [
           :admin_pipeline,
-          :admin_runner
+          :admin_runners
         ], project)
 
         access_denied!
@@ -114,7 +114,7 @@ module Projects
         return if can_any?(current_user, [
           :admin_cicd_variables,
           :admin_protected_environments,
-          :admin_runner
+          :admin_runners
         ], project)
 
         access_denied!
@@ -143,6 +143,7 @@ module Projects
           :build_timeout_human_readable, :public_builds, :ci_separated_caches,
           :auto_cancel_pending_pipelines, :ci_config_path, :auto_rollback_enabled,
           :protect_merge_request_pipelines,
+          :ci_display_pipeline_variables,
           { auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
             ci_cd_settings_attributes: permitted_project_ci_cd_settings_params }
         ].tap do |list|
@@ -180,6 +181,8 @@ module Projects
       end
 
       def define_runners_variables
+        return if Feature.enabled?(:vue_project_runners_settings, @project)
+
         @project_runners = @project.runners.ordered.page(params[:project_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
 
         @assignable_runners = current_user

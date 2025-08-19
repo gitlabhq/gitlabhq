@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_authoring, feature_flag: {
+  RSpec.describe 'Verify', feature_category: :pipeline_composition, feature_flag: {
     name: :ci_release_cli_catalog_publish_option
   } do
     describe 'CI catalog release with release-cli', :skip_live_env do

@@ -7,7 +7,7 @@ module Gitlab
       DEFAULT_EXPIRE_TIME = 60 * 5
 
       def self.for_build(build)
-        self.new(build, ttl: build.metadata_timeout).encoded
+        self.new(build, ttl: build.timeout_value).encoded
       end
 
       def initialize(build, ttl:)

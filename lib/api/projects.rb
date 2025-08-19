@@ -633,9 +633,13 @@ module API
       post ':id/archive', feature_category: :groups_and_projects do
         authorize!(:archive_project, user_project)
 
-        ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
+        result = ::Projects::ArchiveService.new(project: user_project, current_user: current_user).execute
 
-        present_project user_project, with: Entities::Project, current_user: current_user
+        if result.success?
+          present_project user_project, with: Entities::Project, current_user: current_user
+        else
+          render_api_error!(result.message, 400)
+        end
       end
 
       desc 'Unarchive a project' do
@@ -648,9 +652,13 @@ module API
       post ':id/unarchive', feature_category: :groups_and_projects, urgency: :default do
         authorize!(:archive_project, user_project)
 
-        ::Projects::UpdateService.new(user_project, current_user, archived: false).execute
+        result = ::Projects::UnarchiveService.new(project: user_project, current_user: current_user).execute
 
-        present_project user_project, with: Entities::Project, current_user: current_user
+        if result.success?
+          present_project user_project, with: Entities::Project, current_user: current_user
+        else
+          render_api_error!(result.message, 400)
+        end
       end
 
       desc 'Star a project' do
@@ -1050,6 +1058,7 @@ module API
         args = declared_params(include_missing: false)
         args[:permission_scope] = :transfer_projects
         args[:exact_matches_first] = true
+        args[:organization] = Current.organization
 
         groups = ::Groups::UserGroupsFinder.new(current_user, current_user, args).execute
         groups = groups.excluding_groups(user_project.group).with_route

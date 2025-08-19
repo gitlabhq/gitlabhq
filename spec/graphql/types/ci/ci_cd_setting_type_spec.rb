@@ -11,6 +11,7 @@ RSpec.describe Types::Ci::CiCdSettingType, feature_category: :continuous_integra
       keep_latest_artifact merge_pipelines_enabled project
       push_repository_for_job_token_allowed
       pipeline_variables_minimum_override_role
+      display_pipeline_variables
     ]
 
     if Gitlab.ee?

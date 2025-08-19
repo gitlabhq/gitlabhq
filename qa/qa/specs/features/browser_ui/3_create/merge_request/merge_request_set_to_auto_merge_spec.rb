@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
     describe 'Merge request set to auto-merge' do
       let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'set-to-auto-merge') }

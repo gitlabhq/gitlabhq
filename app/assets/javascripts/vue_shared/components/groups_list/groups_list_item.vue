@@ -24,7 +24,7 @@ import { renderDeleteSuccessToast, deleteParams } from '~/vue_shared/components/
 import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
 import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
-import GroupListItemInactiveBadge from './group_list_item_inactive_badge.vue';
+import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 
 export default {
   i18n: {
@@ -44,7 +44,7 @@ export default {
     GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
-    GroupListItemInactiveBadge,
+    ListItemInactiveBadge,
     GroupsListItemPlanBadge: () =>
       import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
   },
@@ -211,7 +211,7 @@ export default {
     </template>
 
     <template #stats>
-      <group-list-item-inactive-badge :group="group" />
+      <list-item-inactive-badge :resource="group" />
       <gl-badge v-if="hasStorageSize" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <groups-list-item-plan-badge :group="group" />
       <list-item-stat

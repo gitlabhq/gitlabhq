@@ -7,6 +7,12 @@ module Types
 
       authorize :manage_merge_request_settings
 
+      field :display_pipeline_variables,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether pipeline variables can be displayed in the UI.',
+        method: :display_pipeline_variables?,
+        authorize: :admin_project
       field :group_runners_enabled,
         GraphQL::Types::Boolean,
         null: true,

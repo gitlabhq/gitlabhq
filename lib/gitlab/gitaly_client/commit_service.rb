@@ -251,8 +251,8 @@ module Gitlab
       # else # defaults to :include_merges behavior
       #   ['foo_bar.rb', 'bar_baz.rb'],
       #
-      def find_changed_paths(objects, merge_commit_diff_mode: nil, find_renames: false)
-        request = find_changed_paths_request(objects, merge_commit_diff_mode, find_renames)
+      def find_changed_paths(objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
+        request = find_changed_paths_request(objects, merge_commit_diff_mode, find_renames, diff_filters)
 
         return [] if request.nil?
 
@@ -476,7 +476,8 @@ module Gitlab
           global_options: parse_global_options!(options),
           disable_walk: true, # This option is deprecated. The 'walk' implementation is being removed.
           trailers: options[:trailers],
-          include_referenced_by: options[:include_referenced_by]
+          include_referenced_by: options[:include_referenced_by],
+          message_regex: options[:message_regex]
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]
         request.before   = GitalyClient.timestamp(options[:before]) if options[:before]
@@ -547,7 +548,8 @@ module Gitlab
             signature: +''.b,
             signed_text: +''.b,
             signer: :SIGNER_UNSPECIFIED,
-            author_email: +''.b
+            author_email: +''.b,
+            committer_email: +''.b
           }
         end
 
@@ -558,7 +560,12 @@ module Gitlab
 
           signatures[current_commit_id][:signature] << message.signature
           signatures[current_commit_id][:signed_text] << message.signed_text
-          signatures[current_commit_id][:author_email] << message.author.email if message.author.present?
+
+          signatures[current_commit_id][:author_email] << message.author.email if message.author&.email.present?
+
+          if Feature.enabled?(:committer_email, repository_container) && message.committer&.email.present?
+            signatures[current_commit_id][:committer_email] << message.committer.email
+          end
 
           # The actual value is send once. All the other chunks send SIGNER_UNSPECIFIED
           signatures[current_commit_id][:signer] = message.signer unless message.signer == :SIGNER_UNSPECIFIED
@@ -668,7 +675,7 @@ module Gitlab
         response.commit
       end
 
-      def find_changed_paths_request(objects, merge_commit_diff_mode, find_renames)
+      def find_changed_paths_request(objects, merge_commit_diff_mode, find_renames, diff_filters = nil)
         diff_mode = MERGE_COMMIT_DIFF_MODES[merge_commit_diff_mode]
 
         requests = objects.filter_map do |object|
@@ -688,7 +695,16 @@ module Gitlab
 
         return if requests.blank?
 
-        Gitaly::FindChangedPathsRequest.new(repository: @gitaly_repo, requests: requests, merge_commit_diff_mode: diff_mode, find_renames: find_renames)
+        request_options = {
+          repository: @gitaly_repo,
+          requests: requests,
+          merge_commit_diff_mode: diff_mode,
+          find_renames: find_renames
+        }
+
+        request_options[:diff_filters] = diff_filters if diff_filters
+
+        Gitaly::FindChangedPathsRequest.new(request_options)
       end
 
       def path_error_message(path_error)

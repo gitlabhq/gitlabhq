@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # this model does not have any kind of authorization so we disable it
 # rubocop:disable Graphql/AuthorizeTypes
 

@@ -390,7 +390,7 @@ class Event < ApplicationRecord
       .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
       .touch_all(:last_activity_at, time: created_at)
 
-    Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).reset
+    Gitlab::DormantProjectsDeletionWarningTracker.new(project_id).reset
   end
 
   def authored_by?(user)

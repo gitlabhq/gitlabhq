@@ -52,47 +52,15 @@
 
 .needs-e2e-gem-cache:
   needs:
-    - job: cache-qa-gems
+    - job: cache:e2e-ruby-gems
       optional: true
   when: always # cache jobs failing or manual should not affect ability to run a job that depends on it
 
 .needs-orchestrator-gem-cache:
   needs:
-    - job: cache-orchestrator-gems
+    - job: cache:orchestrator-gems
       optional: true
   when: always
-
-# ==========================================
-# /qa caching
-# ==========================================
-
-cache-qa-gems:
-  extends:
-    - .qa-job-base
-    - .with-ruby-slim-image
-    - .qa-cache-push
-    - .qa:rules:update-gem-cache
-  stage: prepare
-  script:
-    - echo "Cache has been updated and ready to be uploaded."
-
-cache-orchestrator-gems:
-  extends:
-    - .qa-orchestrator-job-base
-    - .with-ruby-slim-image
-    - .qa-orchestrator-cache-push
-    - .qa:rules:update-orchestrator-gem-cache
-  stage: prepare
-  script:
-    - echo "Cache has been updated and ready to be uploaded."
-
-# E2E runners have separate infra setup and different cache bucket
-cache-qa-gems-e2e-runners:
-  extends:
-    - cache-qa-gems
-    - .qa:rules:update-gem-cache-e2e
-  tags:
-    - e2e
 
 # ==========================================
 # /qa linting and unit testing
@@ -258,6 +226,21 @@ e2e:test-on-cng:
     QA_RUN_TYPE: e2e-test-on-cng
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/test-on-cng-pipeline.yml
+
+e2e:perf-on-cng:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:e2e:perf-on-cng
+  stage: qa
+  needs:
+    - compile-production-assets
+    - e2e-test-pipeline-generate
+  variables:
+    QA_RUN_TYPE: e2e-perf-on-cng
+    PIPELINE_NAME: E2E Performance CNG
+    DYNAMIC_PIPELINE_YML: ${CI_PROJECT_DIR}/qa/tmp/performance-on-cng-pipeline.yml
+    PARENT_CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+  allow_failure: true
 
 e2e:code-suggestions-eval:
   extends:

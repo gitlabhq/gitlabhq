@@ -14,6 +14,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     create(:container_repository, name: 'my_image', project: project)
   end
 
+  let_it_be(:manifest_body) { Gitlab::Json.dump(tags: ['test_tag']) }
+
   before do
     stub_container_registry_config(
       enabled: true, api_url: 'http://registry.gitlab', host_port: 'registry.gitlab'
@@ -23,7 +25,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
       .to_return(
         status: 200,
-        body: Gitlab::Json.dump(tags: ['test_tag']),
+        body: manifest_body,
         headers: { 'Content-Type' => 'application/json' })
   end
 
@@ -589,23 +591,50 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#has_tags?' do
-    context 'when there are no tags' do
+    subject { repository.has_tags? }
+
+    context 'when the Gitlab API is supported' do
       before do
-        allow(repository).to receive(:tags).and_return([])
+        stub_container_registry_gitlab_api_support(supported: true)
       end
 
-      it 'does not have tags' do
-        expect(repository).not_to have_tags
+      context 'when the Gitlab API returns tags' do
+        include_context 'with the container registry GitLab API returning tags'
+
+        before do
+          allow(repository).to receive(:tags_page).with(page_size: 1).and_call_original
+          allow(repository.gitlab_api_client).to receive(:tags).and_return(response_body)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the Gitlab API does not return any tags' do
+        before do
+          allow(repository.gitlab_api_client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+        end
+
+        it { is_expected.to be(false) }
       end
     end
 
-    context 'when there are tags' do
+    context 'when the Gitlab API is not supported' do
       before do
-        allow(repository).to receive(:tags).and_return([ContainerRegistry::Tag.new(repository, 'tag1')])
+        stub_container_registry_gitlab_api_support(supported: false)
       end
 
-      it 'have tags' do
-        expect(repository).to have_tags
+      it { is_expected.to be(true) }
+
+      context 'when the manifest is not present' do
+        let_it_be(:manifest_body) { {}.to_json }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when there are no tags in the manifest' do
+        let_it_be(:manifest_body) { Gitlab::Json.dump(tags: []) }
+
+        it { is_expected.to be(false) }
       end
     end
   end
@@ -622,7 +651,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
     context 'when there are no tags' do
       before do
-        allow(repository).to receive(:tags).and_return([])
+        allow(repository).to receive(:has_tags?).and_return(false)
       end
 
       it 'does nothing' do
@@ -639,7 +668,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         allow(tag1).to receive(:digest).and_return('123')
         allow(tag2).to receive(:digest).and_return('234')
 
-        allow(repository).to receive(:tags).and_return([tag1, tag2])
+        allow(repository).to receive_messages(has_tags?: true, tags: [tag1, tag2])
       end
 
       context 'when action succeeds' do

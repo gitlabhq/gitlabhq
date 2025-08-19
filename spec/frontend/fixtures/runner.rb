@@ -20,8 +20,13 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
 
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
   let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group]) }
+
   let_it_be(:project_runner) do
     create(:ci_runner, :project, :unregistered, projects: [project, project_2])
+  end
+
+  let_it_be(:project_runner_2) do
+    create(:ci_runner, :project, :unregistered, projects: [project_2])
   end
 
   let_it_be(:build) { create(:ci_build, runner: runner) }
@@ -251,6 +256,7 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
 
     before_all do
       project.add_maintainer(project_maintainer)
+      project_2.add_maintainer(project_maintainer)
     end
 
     describe 'project_runners.query.graphql', type: :request do
@@ -261,6 +267,22 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
       end
 
       it "#{fixtures_path}#{project_runners_query}.json" do
+        post_graphql(query, current_user: project_maintainer, variables: {
+          fullPath: project.full_path
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
+    describe 'project_assignable_runners.query.graphql', type: :request do
+      project_assignable_runners_query = 'list/project_assignable_runners.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{project_assignable_runners_query}")
+      end
+
+      it "#{fixtures_path}#{project_assignable_runners_query}.json" do
         post_graphql(query, current_user: project_maintainer, variables: {
           fullPath: project.full_path
         })

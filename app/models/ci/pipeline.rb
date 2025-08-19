@@ -163,6 +163,8 @@ module Ci
     has_many :latest_builds_report_results, through: :latest_builds, source: :report_results
     has_many :pipeline_artifacts, class_name: 'Ci::PipelineArtifact', inverse_of: :pipeline, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+    has_many :job_environments, class_name: 'Environments::Job', inverse_of: :pipeline
+
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
@@ -350,10 +352,9 @@ module Ci
         end
       end
 
-      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         pipeline.run_after_commit do
           ::Ci::PipelineArtifacts::CoverageReportWorker.perform_async(pipeline.id)
-          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
         end
       end
 
@@ -367,6 +368,7 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
+          ::Ci::PipelineArtifacts::CreateQualityReportWorker.perform_async(pipeline.id)
           ::Ci::TestFailureHistoryService.new(pipeline).async.perform_if_needed # rubocop: disable CodeReuse/ServiceClass
         end
       end
@@ -462,6 +464,7 @@ module Ci
     scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
     scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
+    scope :unlocked, -> { where(locked: :unlocked) }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -1046,7 +1049,13 @@ module Ci
     end
 
     def builds_in_self_and_project_descendants
-      Ci::Build.in_partition(self).latest.where(pipeline: self_and_project_descendants)
+      latest_pipelines = self_and_project_descendants.preload(:source_bridge)
+
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        latest_pipelines = latest_pipelines.reject { |pipeline| pipeline&.source_bridge&.retried? }
+      end
+
+      Ci::Build.in_partition(self).latest.where(pipeline: latest_pipelines)
     end
 
     def bridges_in_self_and_project_descendants
@@ -1098,10 +1107,6 @@ module Ci
     # With only parent-child pipelines
     def all_child_pipelines
       object_hierarchy(project_condition: :same).descendants
-    end
-
-    def self_and_project_descendants_complete?
-      self_and_project_descendants.all?(&:complete?)
     end
 
     # Follow the parent-child relationships and return the top-level parent
@@ -1170,8 +1175,12 @@ module Ci
       builds.latest.with_artifacts(reports_scope)
     end
 
+    def latest_test_report_builds_in_self_and_project_descendants
+      latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
+    end
+
     def latest_test_report_builds
-      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, job_artifacts: :artifact_report)
+      latest_report_builds(Ci::JobArtifact.of_report_type(:test)).preload(:project, :metadata, :job_definition, job_artifacts: :artifact_report)
     end
 
     def latest_report_builds_in_self_and_project_descendants(reports_scope = ::Ci::JobArtifact.all_reports)
@@ -1239,14 +1248,26 @@ module Ci
 
     def test_report_summary
       strong_memoize(:test_report_summary) do
-        Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+        if Feature.enabled?(:show_child_reports_in_mr_page, project)
+          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results_in_self_and_descendants)
+        else
+          Gitlab::Ci::Reports::TestReportSummary.new(latest_builds_report_results)
+        end
       end
     end
 
     def test_reports
-      Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
-        latest_test_report_builds.find_each do |build|
-          build.collect_test_reports!(test_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+          latest_test_report_builds_in_self_and_project_descendants.find_each do |build|
+            build.collect_test_reports!(test_reports)
+          end
+        end
+      else
+        Gitlab::Ci::Reports::TestReport.new.tap do |test_reports|
+          latest_test_report_builds.find_each do |build|
+            build.collect_test_reports!(test_reports)
+          end
         end
       end
     end
@@ -1296,11 +1317,7 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
-        complete? && builds.latest.any_with_exposed_artifacts?
-      else
-        complete? && builds.latest.with_exposed_artifacts.exists?
-      end
+      complete? && builds.latest.any_with_exposed_artifacts?
     end
 
     def has_erasable_artifacts?
@@ -1502,7 +1519,11 @@ module Ci
 
     def has_test_reports?
       strong_memoize(:has_test_reports) do
-        has_reports?(::Ci::JobArtifact.of_report_type(:test))
+        if Feature.enabled?(:show_child_reports_in_mr_page, project)
+          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:test)).exists?
+        else
+          has_reports?(::Ci::JobArtifact.of_report_type(:test))
+        end
       end
     end
 
@@ -1595,6 +1616,10 @@ module Ci
         .observe({}, age_in_minutes)
     end
 
+    def latest_builds_report_results_in_self_and_descendants
+      Ci::BuildReportResult.where(build_id: latest_test_report_builds_in_self_and_project_descendants.ids)
+    end
+
     def age_metric_enabled?
       ::Gitlab::SafeRequestStore.fetch(:age_metric_enabled) do
         ::Feature.enabled?(:ci_pipeline_age_histogram, type: :ops)
@@ -1625,7 +1650,10 @@ module Ci
     end
 
     def protected_for_merge_request?
-      return false unless merge_request?
+      # we do not allow exposing protected variables to merge request pipelines that run against source branches and not merge request refs
+      # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196304#note_2611964312
+
+      return false unless merge_request? && merge_request_ref?
       return false unless project.protect_merge_request_pipelines?
 
       # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs

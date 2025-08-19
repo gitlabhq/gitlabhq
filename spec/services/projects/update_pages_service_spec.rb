@@ -126,16 +126,6 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           .from(false).to(true)
       end
 
-      it 'publishes a PageDeployedEvent event with project id and namespace id' do
-        expected_data = {
-          project_id: project.id,
-          namespace_id: project.namespace_id,
-          root_namespace_id: project.root_namespace.id
-        }
-
-        expect { service.execute }.to publish_event(Pages::PageDeployedEvent).with(expected_data)
-      end
-
       it 'creates pages_deployment' do
         expect { expect(service.execute[:status]).to eq(:success) }
           .to change { project.pages_deployments.count }

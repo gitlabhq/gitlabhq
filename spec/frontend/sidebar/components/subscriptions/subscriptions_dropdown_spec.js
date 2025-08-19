@@ -25,8 +25,8 @@ describe('SubscriptionsDropdown component', () => {
       createComponent();
     });
 
-    it('hidden input value is undefined', () => {
-      expect(findHiddenInput().attributes('value')).toBeUndefined();
+    it('hidden input value is empty', () => {
+      expect(findHiddenInput().element.value).toBe('');
     });
 
     it('renders default text', () => {

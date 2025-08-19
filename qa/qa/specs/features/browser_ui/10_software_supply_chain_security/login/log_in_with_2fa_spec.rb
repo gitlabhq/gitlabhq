@@ -1,10 +1,19 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :requires_admin, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :requires_admin, feature_category: :system_access do
     describe '2FA' do
-      let!(:owner_user) { create(:user, :with_personal_access_token, username: "owner_user_#{SecureRandom.hex(4)}") }
-      let!(:owner_api_client) { owner_user.api_client }
+      let!(:owner_user) { create(:user, username: "owner_user_#{SecureRandom.hex(4)}") }
+
+      # We are intentionally using the UI to create a PAT, other tests should use the API for this flow.
+      let!(:personal_access_token) do
+        QA::Resource::PersonalAccessToken.fabricate_via_browser_ui! do |resource|
+          resource.username = owner_user.username
+          resource.password = owner_user.password
+        end
+      end
+
+      let!(:owner_api_client) { Runtime::API::Client.new(:gitlab, personal_access_token: personal_access_token.token) }
 
       let(:sandbox_group) do
         Flow::Login.sign_in(as: owner_user)

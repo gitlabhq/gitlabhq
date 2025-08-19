@@ -164,7 +164,7 @@ export default {
     :target="target"
     boundary="viewport"
     :placement="placement"
-    :css-classes="['gl-min-w-fit']"
+    :css-classes="['gl-min-w-34']"
     show
   >
     <div class="gl-flex gl-items-center gl-gap-2">

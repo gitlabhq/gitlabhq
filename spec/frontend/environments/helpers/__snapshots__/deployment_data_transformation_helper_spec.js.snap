@@ -105,7 +105,7 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
       "label": "#101",
       "path": "/gitlab-org/pipelinestest/-/pipelines/101",
     },
-    "webPath": null,
+    "webPath": "/gitlab-org/pipelinestest/-/jobs/860",
   },
   "rollback": {
     "id": "gid://gitlab/Deployment/76",
@@ -128,7 +128,7 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
       "isLast": false,
     },
     "name": undefined,
-    "retryUrl": "null/retry",
+    "retryUrl": "/gitlab-org/pipelinestest/-/jobs/860/retry",
   },
   "status": "success",
   "triggerer": {
@@ -200,7 +200,7 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
       "isLast": false,
     },
     "name": undefined,
-    "retryUrl": "null/retry",
+    "retryUrl": "/gitlab-org/pipelinestest/-/jobs/860/retry",
   },
   "status": "success",
   "triggerer": {

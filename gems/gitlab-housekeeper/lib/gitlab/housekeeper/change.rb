@@ -15,7 +15,8 @@ module Gitlab
         :changelog_ee,
         :mr_web_url,
         :push_options,
-        :non_housekeeper_changes
+        :non_housekeeper_changes,
+        :context
       attr_reader :assignees,
         :reviewers
 

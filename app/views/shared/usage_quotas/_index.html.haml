@@ -3,12 +3,12 @@
 
 = yield :usage_quotas_alerts
 
-= render ::Layouts::PageHeadingComponent.new(s_('UsageQuota|Usage Quotas')) do |c|
+= render ::Layouts::PageHeadingComponent.new(s_('UsageQuota|Usage quotas')) do |c|
   - c.with_description do
     = yield :usage_quotas_subtitle
 
 #js-usage-quotas-view
   .gl-text-lg.text-center
-    %span.gl-mr-1= s_('UsageQuota|Loading Usage Quotas tabs')
+    %span.gl-mr-1= s_('UsageQuota|Loading Usage quotas tabs')
     = render Pajamas::SpinnerComponent.new(inline: true, size: :md)
   = yield :usage_quotas_tabs

@@ -8,11 +8,44 @@ RSpec.describe JwksController, feature_category: :system_access do
       [
         "/oauth/discovery/keys",
         "/.well-known/openid-configuration",
+        "/.well-known/oauth-authorization-server",
         "/.well-known/webfinger?resource=#{create(:user).email}"
       ].each do |endpoint|
         get endpoint
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+  end
+
+  describe '/.well-known/openid-configuration' do
+    let(:parsed_response) { Gitlab::Json.parse(response.body) }
+    let(:oauth_endpoints) do
+      %w[authorization_endpoint token_endpoint revocation_endpoint introspection_endpoint userinfo_endpoint]
+    end
+
+    before do
+      allow(Gitlab.config.gitlab).to receive(:protocol).and_return(protocol)
+      get "/.well-known/openid-configuration"
+    end
+
+    context 'when protocol is https' do
+      let(:protocol) { 'https' }
+
+      it 'returns OAuth endpoints with https protocol' do
+        oauth_endpoints.each do |endpoint|
+          expect(parsed_response[endpoint]).to start_with('https://')
+        end
+      end
+    end
+
+    context 'when protocol is http' do
+      let(:protocol) { 'http' }
+
+      it 'returns OAuth endpoints with http protocol' do
+        oauth_endpoints.each do |endpoint|
+          expect(parsed_response[endpoint]).to start_with('http://')
+        end
       end
     end
   end

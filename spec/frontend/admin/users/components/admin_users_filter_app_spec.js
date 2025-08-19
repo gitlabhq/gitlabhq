@@ -1,101 +1,115 @@
 import { GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
 import AdminUsersFilterApp from '~/admin/users/components/admin_users_filter_app.vue';
-import { expectedTokens, expectedAccessLevelToken } from '../mock_data';
+import {
+  FILTER_TOKEN_CONFIGS,
+  STANDARD_TOKEN_CONFIGS,
+} from 'ee_else_ce_jest/admin/users/mock_data';
+import { OPERATOR_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
-const mockToken = [
-  {
-    type: 'access_level',
-    value: { data: 'admins', operator: '=' },
-  },
-];
+jest.mock('~/lib/utils/url_utility', () => ({
+  ...jest.requireActual('~/lib/utils/url_utility'),
+  visitUrl: jest.fn(),
+}));
 
-jest.mock('~/lib/utils/url_utility', () => {
-  return {
-    ...jest.requireActual('~/lib/utils/url_utility'),
-    visitUrl: jest.fn(),
-  };
-});
+const getExpectedTokenConfigs = (config) => {
+  return FILTER_TOKEN_CONFIGS.includes(config)
+    ? [config, ...STANDARD_TOKEN_CONFIGS]
+    : [...FILTER_TOKEN_CONFIGS, ...STANDARD_TOKEN_CONFIGS];
+};
 
 describe('AdminUsersFilterApp', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMount(AdminUsersFilterApp);
+    wrapper = shallowMount(AdminUsersFilterApp, {});
   };
 
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
   const findAvailableTokens = () => findFilteredSearch().props('availableTokens');
 
-  it('includes all the tokens', () => {
+  const emitInputEventForConfig = (config, data = 'value') => {
+    findFilteredSearch().vm.$emit('input', [
+      {
+        type: config.type,
+        value: { data, operator: OPERATOR_IS },
+      },
+    ]);
+  };
+
+  it('includes all token configs', () => {
     createComponent();
 
-    expect(findAvailableTokens()).toMatchObject(expectedTokens);
+    expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs());
   });
 
-  describe('when a token is selected', () => {
+  describe.each(FILTER_TOKEN_CONFIGS)('when $type filter is selected', (config) => {
+    beforeEach(() => {
+      createComponent();
+      return emitInputEventForConfig(config);
+    });
+
     /**
-     * Currently BE support only one filter at the time
+     * Currently BE only supports one filter token config at a time
      * https://gitlab.com/gitlab-org/gitlab/-/issues/254377
      */
-    it('discard all other tokens', async () => {
-      createComponent();
-      findFilteredSearch().vm.$emit('input', mockToken);
-      await nextTick();
-
-      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
+    it(`includes only the ${config.type} filter token config`, () => {
+      expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs(config));
     });
   });
 
-  describe('when a text token is selected', () => {
-    it('includes all the tokens', async () => {
+  // 'filtered-search-item' is for a text search.
+  it.each([...STANDARD_TOKEN_CONFIGS, { type: 'filtered-search-item' }])(
+    'includes all token configs when $type filter is selected',
+    (config) => {
       createComponent();
-      findFilteredSearch().vm.$emit('input', [
-        {
-          type: 'filtered-search-term',
-          value: { data: 'mytext' },
+      emitInputEventForConfig(config);
+
+      expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs());
+    },
+  );
+
+  describe('when the querystring has a filter parameter', () => {
+    describe.each(FILTER_TOKEN_CONFIGS)('for the $type config', (config) => {
+      /**
+       * Currently BE only supports one filter token config at a time
+       * https://gitlab.com/gitlab-org/gitlab/-/issues/254377
+       */
+      it.each(config.options)(
+        `includes only ${config.type} filter token config when filter parameter is $value`,
+        (option) => {
+          window.history.replaceState({}, '', `?filter=${option.value}`);
+          createComponent();
+
+          expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs(config));
         },
-      ]);
-      await nextTick();
-
-      expect(findAvailableTokens()).toEqual(expectedTokens);
-    });
-  });
-
-  describe('initialize tokens based on query search parameters', () => {
-    /**
-     * Currently BE support only one filter at the time
-     * https://gitlab.com/gitlab-org/gitlab/-/issues/254377
-     */
-    it('includes only one token if `filter` query parameter the TOKENS', () => {
-      window.history.replaceState({}, '', '/?filter=admins');
-      createComponent();
-
-      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
-    });
-
-    it('replace the initial token when another token is selected', async () => {
-      window.history.replaceState({}, '', '/?filter=banned');
-      createComponent();
-      findFilteredSearch().vm.$emit('input', mockToken);
-      await nextTick();
-
-      expect(findAvailableTokens()).toEqual([expectedAccessLevelToken]);
-    });
-  });
-
-  describe('when user submit a search', () => {
-    it('keeps `sort` and adds new `search_query` and `filter` query parameter and visit page', async () => {
-      window.history.replaceState({}, '', '/?filter=banned&sort=oldest_sign_in');
-      createComponent();
-      findFilteredSearch().vm.$emit('submit', [...mockToken, 'mytext']);
-      await nextTick();
-
-      expect(visitUrl).toHaveBeenCalledWith(
-        `${getBaseURL()}/?filter=admins&search_query=mytext&sort=oldest_sign_in`,
       );
     });
+  });
+
+  it.each([...STANDARD_TOKEN_CONFIGS, { type: 'search_query' }, { type: 'invalid' }])(
+    'includes all token configs when the querystring is ?$type=someValue',
+    (config) => {
+      window.history.replaceState({}, '', `?${config.type}=someValue`);
+      createComponent();
+
+      expect(findAvailableTokens()).toEqual(getExpectedTokenConfigs());
+    },
+  );
+
+  it('visits expected URL when filtered search is submitted', () => {
+    // Set up an existing querystring to verify that the filter changes and sort is not touched.
+    window.history.replaceState({}, '', '/?filter=banned&sort=oldest_sign_in');
+    createComponent();
+    emitInputEventForConfig(FILTER_TOKEN_CONFIGS[0], 'admins');
+    findFilteredSearch().vm.$emit('submit', [
+      { type: 'access_level', value: { data: 'admins', operator: '=' } },
+      'mytext',
+    ]);
+
+    expect(visitUrl).toHaveBeenCalledWith(
+      `${getBaseURL()}/?filter=admins&search_query=mytext&sort=oldest_sign_in`,
+    );
   });
 });

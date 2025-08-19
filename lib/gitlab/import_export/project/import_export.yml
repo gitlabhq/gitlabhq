@@ -74,6 +74,9 @@ tree:
         - merge_request_diff_commits:
           - :commit_author
           - :committer
+          - merge_request_commits_metadata:
+            - :commit_author
+            - :committer
         - :merge_request_diff_files
       - events:
         - :push_event_payload
@@ -423,6 +426,12 @@ included_attributes:
     - :files_count
     - :sorted
     - :diff_type
+  merge_request_commits_metadata:
+    - :sha
+    - :message
+    - :trailers
+    - :authored_date
+    - :committed_date
   merge_request_diff_commits:
     - :author_name
     - :author_email
@@ -660,7 +669,6 @@ included_attributes:
     - :last_edited_by_id
     - :discussion_locked
     - :health_status
-    - :external_key
     - :issue_type
   group_members:
     - :access_level
@@ -879,8 +887,14 @@ excluded_attributes:
     - :merge_request_diff_id
     - :commit_author_id
     - :committer_id
+    - :merge_request_commits_metadata_id
   merge_request_diff_commit_user:
     - :id
+  merge_request_commits_metadata:
+    - :id
+    - :commit_author_id
+    - :committer_id
+    - :project_id
   merge_request_diff_detail:
     - :merge_request_diff_id
     - :verification_retry_at
@@ -907,6 +921,7 @@ excluded_attributes:
     - :work_item_type_id
     - :email_message_id
     - :incident_management_issuable_escalation_status
+    - :external_key
   merge_request: &merge_request_excluded_definition
     - :milestone_id
     - :sprint_id
@@ -956,6 +971,7 @@ excluded_attributes:
     - :issue_id
     - :merge_request_id
     - :label_id
+    - :namespace_id
   runners:
     - :token
     - :token_encrypted
@@ -1059,6 +1075,7 @@ excluded_attributes:
     - :due_date_sourcing_epic_id
     - :issue_id
     - :work_item_parent_link_id
+    - :external_key
   epic_issue:
     - :epic_id
     - :issue_id
@@ -1374,6 +1391,7 @@ ee:
   excluded_attributes:
     project:
       - :vulnerability_hooks_integrations
+      - :ready_active_context_code_repository
     approval_rules:
       - :created_at
       - :updated_at

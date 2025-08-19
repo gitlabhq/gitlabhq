@@ -49,9 +49,9 @@ module Mutations
         private
 
         def validate_import_available_for!(project)
-          return if Feature.enabled?(:import_export_work_items_csv, project)
+          return if project.work_items_project_issues_list_feature_flag_enabled?
 
-          raise_resource_not_available_error! '`import_export_work_items_csv` feature flag is disabled.'
+          raise_resource_not_available_error! '`work_items_project_issues_list` feature flag is disabled.'
         end
 
         def file_is_valid?(file)

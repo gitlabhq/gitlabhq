@@ -671,6 +671,8 @@ export function setTreeOpen({ path, opened }) {
 }
 
 export function setCurrentFileHash(hash) {
+  if (hash.startsWith('note_')) return;
+
   this[types.SET_CURRENT_DIFF_FILE](hash);
 }
 

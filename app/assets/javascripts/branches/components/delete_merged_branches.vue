@@ -115,18 +115,8 @@ export default {
       category="tertiary"
       no-caret
       placement="bottom-end"
-      class="gl-hidden md:!gl-block"
       :items="dropdownItems"
     />
-    <gl-button
-      data-testid="delete-merged-branches-button"
-      category="secondary"
-      variant="danger"
-      class="gl-block md:!gl-hidden"
-      @click="openModal"
-    >
-      {{ $options.i18n.deleteButtonText }}
-    </gl-button>
     <gl-modal
       ref="modal"
       size="sm"

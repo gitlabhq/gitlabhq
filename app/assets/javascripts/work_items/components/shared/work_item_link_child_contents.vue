@@ -4,8 +4,6 @@ import {
   GlLink,
   GlIcon,
   GlButton,
-  GlAvatar,
-  GlAvatarLink,
   GlAvatarsInline,
   GlTooltip,
   GlTooltipDirective,
@@ -13,6 +11,7 @@ import {
 import { __, s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkItemLinkChildMetadata from 'ee_else_ce/work_items/components/shared/work_item_link_child_metadata.vue';
 import RichTimestampTooltip from '../rich_timestamp_tooltip.vue';
@@ -38,14 +37,13 @@ export default {
     created: __('Created'),
     closed: __('Closed'),
     remove: s__('WorkItem|Remove'),
+    assignee: s__('WorkItem|Assignee'),
   },
   components: {
     GlLabel,
     GlLink,
     GlIcon,
     GlButton,
-    GlAvatar,
-    GlAvatarLink,
     GlAvatarsInline,
     GlTooltip,
     RichTimestampTooltip,
@@ -53,6 +51,7 @@ export default {
     WorkItemTypeIcon,
     WorkItemStateBadge,
     WorkItemRelationshipIcons,
+    UserLinkWithTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -276,9 +275,7 @@ export default {
             :badge-sr-only-text="assigneesCollapsedTooltip"
           >
             <template #avatar="{ avatar }">
-              <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
-                <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" @click.stop />
-              </gl-avatar-link>
+              <user-link-with-tooltip :label="$options.i18n.assignee" :avatar="avatar" />
             </template>
           </gl-avatars-inline>
           <work-item-relationship-icons

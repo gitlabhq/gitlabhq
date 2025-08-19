@@ -190,4 +190,17 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       end
     end
   end
+
+  describe '.authorization' do
+    it 'allows ai_workflows scope token' do
+      expect(Mutations::Notes::Create::Note.authorization.permitted_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'note field with :ai_workflows scope' do
+    it "includes :ai_workflows scope for the note field" do
+      field = Mutations::Notes::Create::Note.fields['note']
+      expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
+    end
+  end
 end

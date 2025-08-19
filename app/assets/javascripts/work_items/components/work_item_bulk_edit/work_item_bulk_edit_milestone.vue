@@ -6,7 +6,8 @@ import { MILESTONE_STATE } from '~/sidebar/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import groupMilestonesQuery from '~/sidebar/queries/group_milestones.query.graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
+import { BULK_EDIT_NO_VALUE } from '../../constants';
 
 export default {
   components: {
@@ -27,6 +28,11 @@ export default {
       type: String,
       required: false,
       default: undefined,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -71,6 +77,25 @@ export default {
       return this.$apollo.queries.milestones.loading;
     },
     listboxItems() {
+      if (!this.searchTerm.trim().length) {
+        return [
+          {
+            text: s__('WorkItem|No milestone'),
+            textSrOnly: true,
+            options: [{ text: s__('WorkItem|No milestone'), value: BULK_EDIT_NO_VALUE }],
+          },
+          {
+            text: __('All'),
+            textSrOnly: true,
+            options: this.milestones.map(({ id, title, expired }) => ({
+              value: id,
+              text: title,
+              expired,
+            })),
+          },
+        ];
+      }
+
       return this.milestones.map(({ id, title, expired }) => ({
         value: id,
         text: title,
@@ -83,6 +108,9 @@ export default {
     toggleText() {
       if (this.selectedMilestone) {
         return this.selectedMilestone.title;
+      }
+      if (this.selectedId === BULK_EDIT_NO_VALUE) {
+        return s__('WorkItem|No milestone');
       }
       return __('Select milestone');
     },
@@ -142,6 +170,7 @@ export default {
       :searching="isLoading"
       :selected="selectedId"
       :toggle-text="toggleText"
+      :disabled="disabled"
       @reset="reset"
       @search="setSearchTermDebounced"
       @select="handleSelect"

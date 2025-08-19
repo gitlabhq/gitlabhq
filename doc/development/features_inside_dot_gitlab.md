@@ -14,7 +14,7 @@ When implementing new features, refer to these existing features to avoid confli
 - [CODEOWNERS](../user/project/codeowners/_index.md#set-up-code-owners): `.gitlab/CODEOWNERS`.
 - [Route Maps](../ci/review_apps/_index.md#route-maps): `.gitlab/route-map.yml`.
 - [Customize Auto DevOps Helm Values](../topics/autodevops/customize.md#customize-helm-chart-values): `.gitlab/auto-deploy-values.yaml`.
-- [Insights](../user/project/insights/_index.md#configure-project-insights): `.gitlab/insights.yml`.
+- [Insights](../user/project/insights/_index.md#for-projects): `.gitlab/insights.yml`.
 - [Service Desk Templates](../user/project/service_desk/configure.md#customize-emails-sent-to-external-participants): `.gitlab/service_desk_templates/`.
 - [Secret Detection Custom Rulesets](../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets): `.gitlab/secret-detection-ruleset.toml`
 - [Static Analysis Custom Rulesets](../user/application_security/sast/customize_rulesets.md#create-the-configuration-file): `.gitlab/sast-ruleset.toml`

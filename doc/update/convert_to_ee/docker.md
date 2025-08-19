@@ -7,7 +7,7 @@ title: Convert a Docker CE instance to EE
 
 You can convert an existing GitLab Community Edition (CE) container for Docker
 to a GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE) container
-using the same approach as [upgrading the version](../../install/docker/upgrade.md).
+using the same approach as [upgrading the version](../docker/_index.md).
 
 You should convert from the same version of CE to EE (for example, CE 18.1 to EE 18.1).
 However, this is not required. Any standard upgrade (for example, CE 18.0 to EE 18.1) should work.

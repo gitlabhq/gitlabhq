@@ -63,6 +63,8 @@ module RuboCop
           if flag_arg_is_str_or_sym?(flag_arg)
             if caller_is_feature_gitaly?(node)
               save_used_feature_flag("gitaly_#{flag_value}")
+            elsif caller_is_feature_kas?(node)
+              save_used_feature_flag("kas_#{flag_value}")
             else
               save_used_feature_flag(flag_value)
             end
@@ -158,8 +160,12 @@ module RuboCop
           class_caller(node) == "Feature::Gitaly"
         end
 
+        def caller_is_feature_kas?(node)
+          class_caller(node) == "Feature::Kas"
+        end
+
         def feature_method?(node)
-          FEATURE_METHODS.include?(method_name(node)) && (caller_is_feature?(node) || caller_is_feature_gitaly?(node))
+          FEATURE_METHODS.include?(method_name(node)) && (caller_is_feature?(node) || caller_is_feature_gitaly?(node) || caller_is_feature_kas?(node))
         end
 
         def worker_method?(node)

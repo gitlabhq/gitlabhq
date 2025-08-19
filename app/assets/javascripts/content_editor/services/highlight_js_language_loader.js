@@ -275,6 +275,7 @@ export default {
   vbscript: () =>
     import(/* webpackChunkName: 'hl-vbscript' */ 'highlight.js/lib/languages/vbscript'),
   verilog: () => import(/* webpackChunkName: 'hl-verilog' */ 'highlight.js/lib/languages/verilog'),
+  veryl: () => import(/* webpackChunkName: 'hl-veryl' */ 'highlightjs-veryl'),
   vhdl: () => import(/* webpackChunkName: 'hl-vhdl' */ 'highlight.js/lib/languages/vhdl'),
   vim: () => import(/* webpackChunkName: 'hl-vim' */ 'highlight.js/lib/languages/vim'),
   wasm: () => import(/* webpackChunkName: 'hl-wasm' */ 'highlight.js/lib/languages/wasm'),

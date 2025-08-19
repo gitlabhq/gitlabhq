@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :skip_live_env, product_group: :container_registry do
+  RSpec.describe 'Package', :orchestrated, :skip_live_env, feature_category: :container_registry do
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken
 

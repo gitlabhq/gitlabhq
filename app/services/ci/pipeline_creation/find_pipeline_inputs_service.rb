@@ -34,7 +34,8 @@ module Ci
         # but inside the included file.
         if project_config.internal_include_prepended?
           # We need to read the uninterpolated YAML of the included file.
-          yaml_content = ::Gitlab::Ci::Config::Yaml.load!(project_config.content)
+          yaml_context = ::Gitlab::Ci::Config::Yaml::Context.new
+          yaml_content = ::Gitlab::Ci::Config::Yaml.load!(project_config.content, yaml_context)
           yaml_result = yaml_result_of_internal_include(yaml_content)
           return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 

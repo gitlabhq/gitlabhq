@@ -46,7 +46,7 @@ module ActiveContext
           yield(ref)
           successful_refs << ref
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, ref: ref.serialize)
+          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, ref: ref.serialize)
           failed_refs << ref
         end
 
@@ -61,7 +61,7 @@ module ActiveContext
 
           { successful: refs, failed: [] }
         rescue *error_types => e
-          ::ActiveContext::Logger.retryable_exception(e, refs: refs.map(&:serialize))
+          ::ActiveContext::Logger.retryable_exception(e, class: self.class.name, refs: refs.map(&:serialize))
 
           { successful: [], failed: refs }
         end

@@ -14,8 +14,8 @@ The Cloud Connector **JWT** contains a custom claim, which represents the list o
 
 ## Unit Primitives and Configuration
 
-As per the [Architecture Decision Record (ADR) 003](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/decisions/003_unit_primitives/),
-we have decided to extract the configuration of unit primitives to an external library called [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector).
+According to the [Architecture Decision Record (ADR) 003](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/decisions/003_unit_primitives/),
+this configuration of unit primitives is maintained in the [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector) library.
 This library serves as the Single Source of Truth (SSoT) for all Cloud Connector configurations and is available as both a Ruby gem and a Python package.
 
 ### Configuration format and structure
@@ -65,7 +65,7 @@ The configuration for each unit primitive adhere to the following schema.
 | `unit_primitive_issue_url` | string | Issue URL proposing the unit primitive introduction.  |
 | `deprecated_by_url` | string | Merge request URL that deprecated the unit primitive. |
 | `deprecation_message` | string | Explanation of deprecation context and reasons.       |
-| `cut_off_date` | datetime | UTC timestamp when free access ends (if applicable).  |
+| `cut_off_date` | datetime | UTC timestamp when free access ends (if applicable). **NOTE:** If you do not define a cut-off date, the `add_ons` element is not enforced and the feature remains in free access. |
 | `min_gitlab_version` | string | Minimum required GitLab version (for example, `17.8`).          |
 | `min_gitlab_version_for_free_access` | string | Minimum version for free access period (for example, `17.8`).   |
 
@@ -75,7 +75,7 @@ The configuration for each unit primitive adhere to the following schema.
 |-------|------|-------------------------------------------------------------------------|
 | `license_types` | array[string] | GitLab license types that can access this primitive. Possible values must match the name field in corresponding files under `config/license_types` (for example, `premium`).|
 | `backend_services` | array[string] | Backend services hosting this primitive. Possible values must match the name field in corresponding files under `config/backend_services` (for example, `ai_gateway`).|
-| `add_ons` | array[string] | Add-on products including this primitive. Possible values must match the name field in corresponding files under `config/add_ons` (for example, `duo_pro`). |
+| `add_ons` | array[string] | Add-on products including this primitive. To have access to this feature, you must have all listed add-ons. Possible values must match the name field in corresponding files under `config/add_ons` (for example, `duo_pro`). **NOTE:** This field is enforced only with a defined `cut_off_date` beyond which a feature moves out of free access or beta status. |
 
 Example unit primitive configuration:
 
@@ -84,7 +84,7 @@ Example unit primitive configuration:
 ---
 name: new_feature
 description: Description of the new feature
-cut_off_date: 2024-10-17T00:00:00+00:00  # Optional, set if not free
+cut_off_date: 2024-10-17T00:00:00+00:00  # Optional; always set for paid features
 min_gitlab_version: '16.9'
 min_gitlab_version_for_free_access: '16.8'
 group: group::your_group
@@ -99,6 +99,24 @@ license_types:
   - premium
   - ultimate
 ```
+
+According to this definition, the feature:
+
+- Describes "New Feature" owned by "Your Group".
+- Is available in beta (free of charge) starting with GitLab 16.8.
+- It is only available via paid add-ons on GitLab versions 16.9 or newer.
+- It transitions from free access to paid access on October 17, 2024 at midnight UTC. Beyond this point, you must have either Duo Pro or Duo Enterprise, and a Premium or Ultimate subscription.
+- If the above listed conditions hold true, a Cloud Connector token will carry this feature
+  in its `scopes` claim, allowing backend services to verify access accordingly.
+- This feature is only relevant for requests to the AI gateway. The corresponding entry in `scopes` does not need to be present
+  in `scopes` when a token is attached to requests sent to other backend services.
+
+{{< alert type="note" >}}
+
+Not setting any `cut_off_date` implies a feature remains freely available, regardless of what
+`add_ons` are defined.
+
+{{< /alert >}}
 
 #### Related Configurations
 

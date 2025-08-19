@@ -850,6 +850,16 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
             it { is_expected.to be_falsey }
           end
+
+          context 'when user has dismissed the callout' do
+            before do
+              allow(user).to receive(:dismissed_callout_for_project?)
+                .with(feature_name: :lfs_misconfiguration_banner, project: project)
+                .and_return(true)
+            end
+
+            it { is_expected.to be_falsey }
+          end
         end
       end
 
@@ -1407,6 +1417,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
       it { is_expected.to be(false) }
     end
+
+    context 'with archived group' do
+      let_it_be(:group) { create(:group, :archived) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it { is_expected.to be(true) }
+    end
   end
 
   describe '#show_inactive_project_deletion_banner?' do
@@ -1459,13 +1476,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#inactive_project_deletion_date' do
-    let(:tracker) { instance_double(::Gitlab::InactiveProjectsDeletionWarningTracker) }
+    let(:tracker) { instance_double(::Gitlab::DormantProjectsDeletionWarningTracker) }
 
     before do
       stub_application_setting(inactive_projects_delete_after_months: 2)
       stub_application_setting(inactive_projects_send_warning_email_after_months: 1)
 
-      allow(::Gitlab::InactiveProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
+      allow(::Gitlab::DormantProjectsDeletionWarningTracker).to receive(:new).with(project.id).and_return(tracker)
       allow(tracker).to receive(:scheduled_deletion_date).and_return('2022-03-01')
     end
 
@@ -2044,6 +2061,99 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         domain_options = pages_domains.map { |domain| [domain.url, domain.url] }
 
         expect(subject).to eq(options_for_select(blank_option + domain_options + gitlab_default_option))
+      end
+    end
+  end
+
+  describe '#project_archive_settings_app_data' do
+    let_it_be(:project) { create(:project) }
+
+    subject { helper.project_archive_settings_app_data(project) }
+
+    it 'returns correct data' do
+      is_expected.to match({
+        resource_type: 'project',
+        resource_id: project.id,
+        resource_path: including(project.full_path),
+        help_path: '/help/user/project/working_with_projects.md#archive-a-project'
+      })
+    end
+  end
+
+  describe '#project_unarchive_settings_app_data' do
+    let_it_be_with_reload(:ancestor) { create(:group) }
+    let_it_be(:project) { create(:project, group: ancestor) }
+
+    subject { helper.project_unarchive_settings_app_data(project) }
+
+    context 'when ancestor is not archived' do
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'project',
+          resource_id: project.id,
+          resource_path: including(project.full_path),
+          ancestors_archived: 'false',
+          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+        })
+      end
+    end
+
+    context 'when ancestor is archived' do
+      before do
+        ancestor.archive
+      end
+
+      it 'returns correct data' do
+        is_expected.to match({
+          resource_type: 'project',
+          resource_id: project.id,
+          resource_path: including(project.full_path),
+          ancestors_archived: 'true',
+          help_path: '/help/user/project/working_with_projects.md#unarchive-a-project'
+        })
+      end
+    end
+  end
+
+  describe '#show_archived_badge?' do
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
+
+    subject { helper.show_archived_badge?(project) }
+
+    context 'when project is archived' do
+      before do
+        project.update!(archived: true)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when ancestor is archived' do
+      before do
+        group.archive
+      end
+
+      it { is_expected.to be(true) }
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when project and ancestor is not archived' do
+      it { is_expected.to be(false) }
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be(false) }
       end
     end
   end

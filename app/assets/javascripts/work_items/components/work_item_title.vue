@@ -1,13 +1,15 @@
 <script>
 import { uniqueId } from 'lodash';
-import { GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlFormGroup, GlFormInput, GlFormCharacterCount } from '@gitlab/ui';
+import { n__, __ } from '~/locale';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { TITLE_LENGTH_MAX } from '../../issues/constants';
 
 export default {
   components: {
     GlFormGroup,
     GlFormInput,
+    GlFormCharacterCount,
   },
   directives: {
     SafeHtml,
@@ -47,9 +49,28 @@ export default {
       inputId: uniqueId('work-item-title-'),
     };
   },
+  computed: {
+    invalidFeedback() {
+      return this.titleHtml || this.title ? '' : this.$options.i18n.requiredFieldFeedback;
+    },
+  },
   safeHtmlConfig: {
     ADD_TAGS: ['use', 'gl-emoji'],
   },
+  methods: {
+    overLimitText(count) {
+      return n__('%d character over limit.', '%d characters over limit.', count);
+    },
+    emitField($event) {
+      this.$emit('updateDraft', $event);
+    },
+    // Used in ./create_work_item.vue
+    // eslint-disable-next-line vue/no-unused-properties
+    focusInput() {
+      this.$refs.workitemTitleField.focus();
+    },
+  },
+  TITLE_LENGTH_MAX,
 };
 </script>
 
@@ -58,20 +79,31 @@ export default {
     v-if="isEditing"
     :label="$options.i18n.titleLabel"
     :label-for="inputId"
-    :invalid-feedback="$options.i18n.requiredFieldFeedback"
+    :invalid-feedback="invalidFeedback"
     :state="isValid"
   >
     <gl-form-input
       :id="inputId"
+      ref="workitemTitleField"
       class="gl-w-full"
       :value="title"
       :state="isValid"
       autofocus
+      aria-describedby="character-count-text"
       data-testid="work-item-title-input"
       @keydown.meta.enter="$emit('updateWorkItem')"
       @keydown.ctrl.enter="$emit('updateWorkItem')"
-      @input="$emit('updateDraft', $event)"
+      @input="emitField"
     />
+    <template #description>
+      <gl-form-character-count
+        :value="title"
+        :limit="$options.TITLE_LENGTH_MAX"
+        count-text-id="character-count-text"
+      >
+        <template #over-limit-text="{ count }">{{ overLimitText(count) }}</template>
+      </gl-form-character-count>
+    </template>
   </gl-form-group>
   <component
     :is="isModal ? 'h2' : 'h1'"

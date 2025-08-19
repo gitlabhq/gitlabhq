@@ -31,7 +31,7 @@ module Gitlab
         # The modification causes problems with our multipart middleware
         request = ActionDispatch::Request.new(env.dup)
 
-        return true if malformed_path?(request.path)
+        return true if malformed_path?(request.path) || malformed_path?(request.referer)
         return true if credentials_malformed?(request)
 
         request.params.values.any? do |value|
@@ -46,6 +46,8 @@ module Gitlab
       end
 
       def malformed_path?(path)
+        return false if path.nil?
+
         string_malformed?(Rack::Utils.unescape(path))
       rescue ArgumentError
         # Rack::Utils.unescape raised this, path is malformed.

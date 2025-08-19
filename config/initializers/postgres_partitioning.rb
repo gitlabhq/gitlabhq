@@ -25,18 +25,24 @@ Gitlab::Database::Partitioning.register_models(
     Ci::JobAnnotation,
     Ci::JobArtifact,
     Ci::JobArtifactReport,
+    Ci::JobDefinition,
+    Ci::JobDefinitionInstance,
+    Ci::JobInput,
     Ci::Pipeline,
     Ci::PipelineVariable,
     Ci::RunnerManagerBuild,
     Ci::Stage,
     Ci::Workloads::Workload,
+    Ci::Workloads::VariableInclusions,
     CommitStatus,
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,
+    PartitionedSentNotification,
     Users::GroupVisit,
     Users::ProjectVisit,
     MergeRequest::CommitsMetadata,
-    WebHookLog
+    WebHookLog,
+    MergeRequests::GeneratedRefCommit
   ])
 
 if Gitlab.ee?
@@ -91,16 +97,5 @@ unless Gitlab.jh?
       }
     ])
 end
-
-# The following table will not be used with a model yet. Will just be backfilled for now.
-Gitlab::Database::Partitioning.register_tables(
-  [
-    {
-      limit_connection_names: %i[main],
-      table_name: 'sent_notifications_7abbf02cb6',
-      partitioned_column: :created_at, strategy: :monthly, retain_for: 1.year
-    }
-  ]
-)
 
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

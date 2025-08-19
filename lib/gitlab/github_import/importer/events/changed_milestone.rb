@@ -32,9 +32,7 @@ module Gitlab
 
             created_event = ResourceMilestoneEvent.create!(attrs)
 
-            return unless mapper.user_mapping_enabled?
-
-            push_with_record(created_event, :user_id, issue_event[:actor]&.id, mapper.user_mapper)
+            push_reference(project, created_event, :user_id, issue_event[:actor]&.id)
           end
 
           def action(event_type)

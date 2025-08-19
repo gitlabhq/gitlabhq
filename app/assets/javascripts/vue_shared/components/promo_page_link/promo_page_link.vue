@@ -8,7 +8,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
  *
  * @example
  * <promo-page-link path="pricing">
- *   Usage Quotas help.
+ *   Usage quotas help.
  * </promo-page-link>
  */
 export default {

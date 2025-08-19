@@ -7,6 +7,10 @@ module Mutations
         graphql_name 'UpdateNote'
         description "Updates a Note.\n#{QUICK_ACTION_ONLY_WARNING}"
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         argument :body,
           GraphQL::Types::String,
           required: false,

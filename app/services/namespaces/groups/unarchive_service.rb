@@ -25,10 +25,15 @@ module Namespaces
         return AlreadyUnarchivedError unless group.archived
         return UnarchivingFailedError unless group.unarchive
 
+        after_unarchive
         ServiceResponse.success
       end
 
       private
+
+      def after_unarchive
+        system_hook_service.execute_hooks_for(group, :update)
+      end
 
       def error_response(message)
         ServiceResponse.error(message: message)
@@ -36,3 +41,5 @@ module Namespaces
     end
   end
 end
+
+Namespaces::Groups::UnarchiveService.prepend_mod

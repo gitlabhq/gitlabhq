@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
     end
 
     it 'contains standard properties' do
-      standard_properties = [:user_id, :project_id, :namespace_id, :plan, :unique_instance_id]
+      standard_properties = [:user_id, :project_id, :namespace_id, :plan, :unique_instance_id, :instance_id, :realm]
       expect(snowplow_context.to_json[:data].keys).to include(*standard_properties)
     end
 
@@ -74,10 +74,12 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       let(:hostname) { 'example.com' }
       let(:version) { '17.3.0' }
       let(:json_data) { snowplow_context.to_json.fetch(:data) }
+      let(:instance_id) { SecureRandom.uuid }
 
       before do
         allow(Gitlab.config.gitlab).to receive(:host).and_return(hostname)
         allow(Gitlab).to receive(:version_info).and_return(Gitlab::VersionInfo.parse(version))
+        allow(Gitlab::GlobalAnonymousId).to receive(:instance_id).and_return(instance_id)
       end
 
       subject do
@@ -96,6 +98,8 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:global_user_id]).to eq(Gitlab::GlobalAnonymousId.user_id(user))
         expect(json_data[:unique_instance_id]).to eq(Gitlab::GlobalAnonymousId.instance_uuid)
         expect(json_data[:user_type]).to eq(user.user_type)
+        expect(json_data[:instance_id]).to eq(instance_id)
+        expect(json_data[:realm]).to eq(described_class::GITLAB_REALM_SELF_MANAGED)
       end
 
       describe 'user_id' do

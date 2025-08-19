@@ -346,7 +346,7 @@ If the uploaded package has more than one `package.json` file, only the first on
 
 When publishing by using a CI/CD pipeline, you can use the
 [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}`
-to authenticate with your project's package registry. GitLab uses these variables to create a `.npmrc` file
+to authenticate with your project's package registry. You can use these variables to create a `.npmrc` file
 for authentication during execution of your CI/CD job.
 
 {{< alert type="note" >}}
@@ -400,7 +400,7 @@ Prerequisites:
    npm config set @scope:registry https://<domain_name>.com/api/v4/packages/npm/
    ```
 
-   - Replace `@scope` with the [top-level group](#naming-convention) of the project you're installing to the package from.
+   - Replace `@scope` with the [top-level group](#naming-convention) of the project you're installing the package from.
    - Replace `<domain_name>` with your domain name, for example `gitlab.com`.
 
 1. Install the package:
@@ -425,7 +425,7 @@ Prerequisites:
    npm config set @scope:registry=https://<domain_name>/api/v4/groups/<group_id>/-/packages/npm/
    ```
 
-   - Replace `@scope` with the [top-level group](#naming-convention) of the group you're installing to the package from.
+   - Replace `@scope` with the [top-level group](#naming-convention) of the group you're installing the package from.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
    - Replace `<group_id>` with your group ID, found on the group's home page.
 
@@ -444,7 +444,7 @@ Prerequisites:
    npm config set @scope:registry=https://<domain_name>/api/v4/projects/<project_id>/packages/npm/
    ```
 
-   - Replace `@scope` with the [top-level group](#naming-convention) of the project you're installing to the package from.
+   - Replace `@scope` with the [top-level group](#naming-convention) of the project you're installing the package from.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
    - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
@@ -453,6 +453,43 @@ Prerequisites:
    ```shell
    npm install @scope/my-package
    ```
+
+### Install a package inside a CI/CD pipeline
+
+When installing a package inside a CI/CD pipeline, you can use the
+[predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}`
+to authenticate with your project's package registry. You can use these variables to create a `.npmrc` file
+for authentication during execution of your CI/CD job.
+
+{{< alert type="note" >}}
+
+When you generate the `.npmrc` file, do not specify the port after `${CI_SERVER_HOST}` if it is a default port.
+`http` URLs default to `80`, and `https` URLs default to `443`.
+
+{{< /alert >}}
+
+In the GitLab project containing your `package.json`, edit or create a `.gitlab-ci.yml` file. For example:
+
+```yaml
+default:
+  image: node:latest
+
+stages:
+  - deploy
+
+publish-npm:
+  stage: deploy
+  script:
+    - echo "@scope:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+    - echo "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken=${CI_JOB_TOKEN}" >> .npmrc
+    - npm install @scope/my-package
+```
+
+Replace `@scope` with the [scope](https://docs.npmjs.com/cli/v10/using-npm/scope/) of the package that is being installed, as well as the package name.
+
+The previous example uses the project-level endpoint. To use a group- or instance-level endpoint,
+configure the registry and authentication token URLs as described in [Install from a group](#install-from-a-group) or
+[Install from an instance](#install-from-an-instance).
 
 ### Package forwarding to npmjs.com
 

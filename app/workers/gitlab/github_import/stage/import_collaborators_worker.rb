@@ -13,8 +13,15 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          return skip_to_next_stage(project) if import_settings(project).disabled?(:collaborators_import) ||
-            !has_push_access?(client, project.import_source)
+          import_settings = import_settings(project)
+
+          return move_to_next_stage(project, {}) if import_settings.disabled?(:collaborators_import) ||
+            import_settings.map_to_personal_namespace_owner?
+
+          unless has_push_access?(client, project.import_source)
+            log_no_push_access(project)
+            return move_to_next_stage(project, {})
+          end
 
           info(project.id, message: 'starting importer', importer: 'Importer::CollaboratorsImporter')
 
@@ -29,7 +36,7 @@ module Gitlab
           client.repository(repo).dig(:permissions, :push)
         end
 
-        def skip_to_next_stage(project)
+        def log_no_push_access(project)
           Gitlab::GithubImport::Logger.warn(
             log_attributes(
               project.id,
@@ -37,7 +44,6 @@ module Gitlab
               importer: 'Importer::CollaboratorsImporter'
             )
           )
-          move_to_next_stage(project, {})
         end
 
         def move_to_next_stage(project, waiters = {})

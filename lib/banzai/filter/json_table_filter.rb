@@ -44,6 +44,7 @@ module Banzai
 
         # JSON not valid, let the frontend handle this block
         return unless json
+        return unless json.is_a?(Hash)
         return unless json['markdown']
 
         @fields = json['fields']

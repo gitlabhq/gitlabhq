@@ -120,10 +120,9 @@ ports:
 vscode:
   extensions:
     - GitLab.gitlab-workflow
-    - rebornix.ruby@0.28.1
-    - wingrunr21.vscode-ruby@0.28.0
+    - shopify.ruby-lsp@0.9.30
     - karunamurti.haml@1.4.1
     - octref.vetur@0.37.3
-    - dbaeumer.vscode-eslint@2.4.0
-    - DavidAnson.vscode-markdownlint@0.49.0
+    - dbaeumer.vscode-eslint@3.0.10
+    - DavidAnson.vscode-markdownlint@0.60.0
     - esbenp.prettier-vscode

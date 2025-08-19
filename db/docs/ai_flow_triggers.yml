@@ -1,0 +1,13 @@
+---
+table_name: ai_flow_triggers
+classes:
+- Ai::FlowTrigger
+feature_categories:
+- duo_workflow
+description: Stores configurations to trigger an AI flow on event.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200396
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

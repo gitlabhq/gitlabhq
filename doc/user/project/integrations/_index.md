@@ -1,8 +1,9 @@
 ---
-stage: Create
-group: Import
+stage: none
+group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project integrations
+description: "User documentation for project and group integrations. Includes a list of available integrations."
 ---
 
 {{< details >}}
@@ -173,6 +174,7 @@ The following integrations add links to [external issue trackers](../../../integ
 | [ClickUp](clickup.md)                                        | Use ClickUp as an issue tracker.                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | [Custom issue tracker](custom_issue_tracker.md)              | Use a custom issue tracker.                                                              | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | [Engineering Workflow Management (EWM)](ewm.md)              | Use EWM as an issue tracker.                                                             | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Linear](linear.md)                                          | Use Linear as an issue tracker.                                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | [Phorge](phorge.md)                                          | Use Phorge as an issue tracker.                                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Redmine](redmine.md)                                        | Use Redmine as an issue tracker.                                                         | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [YouTrack](youtrack.md)                                      | Use JetBrains YouTrack as your project's issue tracker.                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
@@ -237,5 +239,5 @@ You can disable SSL verification when you configure
 
 ## Related topics
 
-- [Integrations API](../../../api/integrations.md)
+- [Integrations API](../../../api/project_integrations.md)
 - [GitLab Developer Portal](https://developer.gitlab.com)

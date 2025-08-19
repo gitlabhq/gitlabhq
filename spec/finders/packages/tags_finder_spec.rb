@@ -1,38 +1,48 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe Packages::TagsFinder do
-  let(:package) { create(:npm_package) }
-  let(:project) { package.project }
-  let!(:tag1) { create(:packages_tag, package: package) }
-  let!(:tag2) { create(:packages_tag, package: package) }
-  let(:package_name) { package.name }
+RSpec.describe Packages::TagsFinder, feature_category: :package_registry do
+  let_it_be(:package) { create(:npm_package) }
+  let_it_be(:project) { package.project }
+  let_it_be(:tag1) { create(:packages_tag, package: package) }
+  let_it_be(:tag2) { create(:packages_tag, package: package) }
+  let_it_be(:package_name) { package.name }
+  let_it_be(:package_maven) { create(:maven_package, project: project, name: package_name) }
+
   let(:params) { {} }
 
   describe '#execute' do
+    let_it_be(:tag_maven) { create(:packages_tag, package: package_maven, name: tag1.name) }
+
     subject { described_class.new(project, package_name, params).execute }
 
-    it { is_expected.to match_array([tag1, tag2]) }
+    it { is_expected.to contain_exactly(tag1, tag2, tag_maven) }
 
     context 'with package type' do
-      let(:package_maven) { create(:maven_package, project: project) }
-      let!(:tag_maven) { create(:packages_tag, package: package_maven) }
-      let(:package_name) { package_maven.name }
       let(:params) { { package_type: package_maven.package_type } }
 
-      it { is_expected.to match_array([tag_maven]) }
-    end
+      it { is_expected.to contain_exactly(tag1, tag2, tag_maven) }
 
-    context 'with blank package type' do
-      let(:params) { { package_type: '   ' } }
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
 
-      it { is_expected.to match_array([tag1, tag2]) }
-    end
+        it { is_expected.to contain_exactly(tag_maven) }
+      end
 
-    context 'with nil package type' do
-      let(:params) { { package_type: nil } }
+      context 'with blank package type' do
+        let(:params) { { package_type: '   ' } }
 
-      it { is_expected.to match_array([tag1, tag2]) }
+        it { is_expected.to contain_exactly(tag1, tag2, tag_maven) }
+      end
+
+      context 'with nil package type' do
+        let(:params) { { package_type: nil } }
+
+        it { is_expected.to contain_exactly(tag1, tag2, tag_maven) }
+      end
     end
 
     context 'with unknown package name' do
@@ -40,27 +50,65 @@ RSpec.describe Packages::TagsFinder do
 
       it { is_expected.to be_empty }
     end
+
+    context 'with packages class' do
+      let(:params) { { packages_class: ::Packages::Maven::Package } }
+
+      it { is_expected.to contain_exactly(tag_maven) }
+
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
+
+        it { is_expected.to contain_exactly(tag1, tag2, tag_maven) }
+      end
+    end
   end
 
   describe '#find_by_name' do
-    let(:tag_name) { tag1.name }
+    let_it_be(:tag_name) { tag1.name }
 
-    subject { described_class.new(project, package_name, params).execute.find_by_name(tag_name) }
+    subject { described_class.new(project, package_name, params).find_by_name(tag_name) }
 
     it { is_expected.to eq(tag1) }
 
     context 'with package type' do
-      let(:package_maven) { create(:maven_package, project: project) }
-      let!(:tag_maven) { create(:packages_tag, package: package_maven) }
-      let(:package_name) { package_maven.name }
-      let(:params) { { package_type: package_maven.package_type } }
-      let(:tag_name) { tag_maven.name }
+      let_it_be(:tag_maven) { create(:packages_tag, package: package_maven) }
 
-      it { is_expected.to eq(tag_maven) }
+      let(:params) { { package_type: :maven } }
+
+      it { is_expected.to eq(tag1) }
+
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        let_it_be(:tag_maven) { create(:packages_tag, package: package_maven, name: tag_name) }
+
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
+
+        it { is_expected.to eq(tag_maven) }
+      end
+    end
+
+    context 'with packages class' do
+      let(:params) { { packages_class: ::Packages::Maven::Package } }
+
+      it { is_expected.to be_nil }
+
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        let_it_be(:tag_maven) { create(:packages_tag, package: package_maven) }
+
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
+
+        it { is_expected.to eq(tag1) }
+      end
     end
 
     context 'with unknown tag_name' do
-      let(:tag_name) { 'foobar' }
+      let_it_be(:tag_name) { 'foobar' }
 
       it { is_expected.to be_nil }
     end

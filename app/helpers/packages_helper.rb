@@ -23,10 +23,9 @@ module PackagesHelper
     expose_url(package_registry_project_path)
   end
 
-  def package_from_presenter(package)
-    presenter = ::Packages::Detail::PackagePresenter.new(package)
-
-    presenter.detail_view.to_json
+  def terraform_module_presenter(package)
+    presenter = ::Packages::TerraformModule::PackagePresenter.new(package)
+    presenter.to_json
   end
 
   def pypi_registry_url(project)
@@ -40,7 +39,7 @@ module PackagesHelper
     if project.project_feature.public_packages?
       full_url
     else
-      full_url.sub!('://', '://__token__:<your_personal_token>@')
+      full_url.sub!('://', '://gitlab-ci-token:<your_personal_token>@')
     end
   end
 

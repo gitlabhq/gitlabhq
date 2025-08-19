@@ -505,6 +505,12 @@ To use a `url` passthrough, add the following to `.gitlab/secret-detection-rules
 
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 
+#### With a scan execution policy
+
+To extend and enforce the ruleset with a scan execution policy:
+
+- Follow the steps in [Set up a pipeline secret detection configuration with a scan execution policy](https://support.gitlab.com/hc/en-us/articles/18863735262364-How-to-set-up-a-centrally-managed-pipeline-secret-detection-configuration-applied-via-Scan-Execution-Policy).
+
 ### Ignore patterns and paths
 
 There may be situations in which you need to ignore a certain pattern or path from being detected by pipeline secret detection. For example, you may have a file including fake secrets to be used in a test suite.

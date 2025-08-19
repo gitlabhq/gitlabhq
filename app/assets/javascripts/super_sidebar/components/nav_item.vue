@@ -237,13 +237,14 @@ export default {
       :is="navItemLinkComponent"
       #default="{ isActive }"
       v-bind="linkProps"
-      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-min-h-7 gl-items-center gl-gap-3 gl-py-2 !gl-text-default !gl-no-underline focus:gl-focus"
+      class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-2 gl-font-semibold gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
       :aria-label="item.title"
       @nav-link-click="$emit('nav-link-click')"
     >
       <div
+        v-if="!isFlyout"
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
         class="active-indicator gl-absolute gl-bottom-2 gl-left-2 gl-top-2 gl-transition-all gl-duration-slow"
         aria-hidden="true"

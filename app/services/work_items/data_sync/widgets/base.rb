@@ -8,6 +8,10 @@ module WorkItems
 
         BATCH_SIZE = 100
 
+        def self.cleanup_source_work_item_data?(work_item)
+          Feature.enabled?(:cleanup_data_source_work_item_data, work_item.resource_parent)
+        end
+
         def initialize(work_item:, target_work_item:, current_user:, params: {})
           @work_item = work_item
           @target_work_item = target_work_item

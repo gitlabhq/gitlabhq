@@ -431,5 +431,17 @@ describe('packages_list_row', () => {
       expect(findPackageUsername().text()).toBe('gitlab-org+gitlab-test');
       expect(findPackageChannel().text()).toBe('stable');
     });
+
+    it('hides Conan metadata with default values', () => {
+      mountComponent({
+        packageEntity: {
+          ...packageWithoutTags,
+          packageType: 'CONAN',
+          metadata: { ...conanMetadata(), packageChannel: '_', packageUsername: '_' },
+        },
+      });
+
+      expect(findConanMetadata().exists()).toBe(false);
+    });
   });
 });

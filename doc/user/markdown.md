@@ -689,21 +689,21 @@ When rendered, the examples look similar to:
 Using link references:
 
 <!--
-The following codeblock uses HTML to skip the Vale ReferenceLinks test.
-Do not change it back to a markdown codeblock.
+The following codeblock uses extra spaces to avoid the Vale ReferenceLinks test.
+Do not remove the two-space nesting.
 -->
 
-<pre class="highlight"><code>
-- This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
-- You can [use numbers for reference-style link definitions, see below][1]
-- Or leave it empty and use the [link text itself][], see below.
+  ```markdown
+  - This line shows a [reference-style link, see below][Arbitrary case-insensitive reference text]
+  - You can [use numbers for reference-style link definitions, see below][1]
+  - Or leave it empty and use the [link text itself][], see below.
 
-Some text to show that the reference links can follow later.
+  Some text to show that the reference links can follow later.
 
-&#91;arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
-&#91;1]: https://slashdot.org
-&#91;link text itself]: https://about.gitlab.com/
-</code></pre>
+  [arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+  [1]: https://slashdot.org
+  [link text itself]: https://about.gitlab.com/
+  ```
 
 <!--
 The example below uses in-line links to pass the Vale ReferenceLinks test.
@@ -1757,6 +1757,27 @@ This example only works when [rendered in GitLab](https://gitlab.com/gitlab-org/
 - `HSL(540,70%,50%)`
 - `HSLA(540,70%,50%,0.3)`
 
+### Escape color codes
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/359069) in GitLab 18.3.
+
+{{< /history >}}
+
+To display a color code as inline code without generating a color chip, prefix it with a backslash (`` \ ``).
+
+For example:
+
+- `\#FF0000`
+- `\RGB(255,0,0)`
+- `\HSL(0,100%,50%)`
+
+In all cases, the backslash is removed, and no color chip is rendered in the output.
+
+This is especially useful when you want to include values like issue numbers in inline code
+without accidentally triggering a color chip.
+
 ## Emoji
 
 You can use emoji anywhere GitLab Flavored Markdown is supported.
@@ -1990,9 +2011,9 @@ The syntax is `%{PLACEHOLDER}`.
 | `%{project_namespace}`    | `gitlab-org`        | Project namespace of a project |
 | `%{project_title}`        | `GitLab`            | Title of a project |
 | `%{group_name}`           | `gitlab-org`        | Group of a project |
-| `%{default_branch}`       | `master`            | Default branch name configured for a project’s repository |
-| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project’s repository |
-| `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project’s repository |
+| `%{default_branch}`       | `main`              | Default branch name configured for a project's repository |
+| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project's repository |
+| `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project's repository |
 
 ## Escape characters
 
@@ -2259,6 +2280,58 @@ When rendered, the example looks similar to:
 <!-- vale gitlab_base.Spelling = YES -->
 
 GitLab Flavored Markdown doesn't support the Redcarpet superscript syntax ( `x^2` ).
+
+### HTML comments
+
+You can use HTML comments in GitLab Flavored Markdown to add notes or explanations that aren't
+visible in the rendered output.
+
+Use HTML comments to:
+
+- Add notes for other contributors.
+- Temporarily hide content without deleting it.
+- Provide context or explanations that shouldn't appear in the final document.
+- Add metadata or processing instructions.
+
+When using HTML comments, you should:
+
+- Use them sparingly to avoid cluttering the source.
+- Keep them concise and relevant.
+- Use them for temporary notes rather than permanent documentation.
+- Avoid including sensitive or confidential information. HTML comments are visible to anyone who can view the Markdown source.
+
+HTML comments use the standard HTML syntax `<!-- comment text -->` and can span single or multiple
+lines:
+
+```html
+<!-- This is a single-line comment -->
+
+<!--
+This is a multi-line comment
+that spans several lines
+and won't be visible in the rendered output
+-->
+
+This text is visible.
+<!-- This comment between paragraphs is hidden -->
+This text is also visible.
+```
+
+When rendered, only the visible text appears:
+
+> This text is visible.
+> This text is also visible.
+
+#### Comments in code blocks
+
+HTML comments inside code blocks are treated as literal text and are displayed:
+
+````markdown
+```html
+<!-- This comment will be visible in the code block -->
+<div>Content</div>
+```
+````
 
 ## References
 

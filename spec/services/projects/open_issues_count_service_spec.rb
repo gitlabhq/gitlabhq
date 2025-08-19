@@ -100,5 +100,20 @@ RSpec.describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_c
         end
       end
     end
+
+    describe "#delete_cache" do
+      before do
+        create(:issue, :opened, project: project)
+        create(:issue, :opened, project: project)
+        create(:issue, :opened, confidential: true, project: project)
+        subject.refresh_cache # we use this method to add the counts in the cache
+      end
+
+      it "clears the cache" do
+        expect { subject.delete_cache }
+        .to change { Rails.cache.read(subject.public_count_cache_key) }.from(2).to(nil)
+        .and change { Rails.cache.read(subject.total_count_cache_key) }.from(3).to(nil)
+      end
+    end
   end
 end

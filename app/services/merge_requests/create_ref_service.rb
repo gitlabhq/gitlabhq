@@ -39,6 +39,9 @@ module MergeRequests
       result = maybe_rebase!(**result)
       result = maybe_merge!(**result)
 
+      # Store generated ref commits if conditions are met
+      store_generated_ref_commits_if_needed(result[:commit_sha])
+
       ServiceResponse.success(payload: result)
     rescue CreateRefError => error
       ServiceResponse.error(message: error.message)
@@ -46,11 +49,56 @@ module MergeRequests
 
     private
 
+    def store_generated_ref_commits_if_needed(final_commit_sha)
+      return unless should_store_generated_ref_commits?
+
+      store_generated_ref_commits(final_commit_sha)
+    end
+
+    # Default CE implementation - can be overridden in EE
+    def should_store_generated_ref_commits?
+      false # only available in ee for merge trains for now
+    end
+
     attr_reader :current_user, :merge_request, :target_ref, :first_parent_ref, :first_parent_sha, :source_sha,
       :merge_params
 
     delegate :target_project, to: :merge_request
     delegate :repository, to: :target_project
+
+    def store_generated_ref_commits(final_commit_sha)
+      commit_shas = commit_shas_between_refs(final_commit_sha, limit: 500)
+      return unless commit_shas.any?
+
+      GeneratedRefCommit.transaction do
+        # Prepare records for bulk insert
+        records = commit_shas.map do |commit_sha|
+          {
+            merge_request_iid: merge_request.iid,
+            commit_sha: commit_sha,
+            project_id: merge_request.project_id,
+            created_at: Time.current,
+            updated_at: Time.current
+          }
+        end
+        GeneratedRefCommit.upsert_all(records, unique_by: [:id, :project_id])
+      end
+    rescue ::PG::Error => e
+      # Log error but don't break the main flow
+      Gitlab::AppLogger.error("Failed to store generated ref commits for MR #{merge_request.id}: #{e.message}")
+    end
+
+    def commits_between_refs(final_commit_sha, limit: nil)
+      return [] unless final_commit_sha && first_parent_sha
+
+      safe_gitaly_operation do
+        repository.commits_between(first_parent_sha, final_commit_sha, limit: limit)
+      end
+    end
+
+    def commit_shas_between_refs(final_commit_sha, limit: nil)
+      commits_between_refs(final_commit_sha, limit: limit).map(&:sha)
+    end
 
     def maybe_squash!(commit_sha:, **rest)
       if merge_request.squash_on_merge?

@@ -79,11 +79,49 @@ When creating a support request, provide the following information:
 
 ## Certificate errors
 
-{{< alert type="warning" >}}
+If your machine connects to your GitLab instance through a proxy, you might encounter
+SSL certificate errors in Eclipse. GitLab Duo attempts to detect certificates in your system store;
+however, Language Server cannot do this. If you see errors from the Language Server
+about certificates, try enabling the option to pass a Certificate Authority (CA) certificate:
 
-You may experience errors connecting to GitLab if you connect to GitLab through a proxy or using custom certificates.
-[Support for HTTP proxies](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/35)
-and [support for custom certificates](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/36)
-are proposed for a future release.
+To do this:
 
-{{< /alert >}}
+1. On the bottom right corner of your IDE, select the GitLab icon.
+1. On the dialog, select **Show Settings**. This opens the **Settings** dialog to **Tools > GitLab Duo**.
+1. Select **GitLab Language Server** to expand the section.
+1. Select **HTTP Agent Options** to expand it.
+1. Either:
+   - Select an option **Pass CA certificate from Duo to the Language Server**.
+   - In **Certificate authority (CA)**, specify the path to your `.pem` file with CA certificates.
+1. Restart your IDE.
+
+### Ignore certificate errors
+
+If GitLab Duo still fails to connect, you might need to
+ignore certificate errors. You might see errors in the GitLab Language Server logs after enabling
+debug mode:
+
+```plaintext
+2024-10-31T10:32:54:165 [error]: fetch: request to https://gitlab.com/api/v4/personal_access_tokens/self failed with:
+request to https://gitlab.com/api/v4/personal_access_tokens/self failed, reason: unable to get local issuer certificate
+FetchError: request to https://gitlab.com/api/v4/personal_access_tokens/self failed, reason: unable to get local issuer certificate
+```
+
+By design, this setting represents a security risk:
+these errors alert you to potential security breaches. You should enable this
+setting only if you are absolutely certain the proxy causes the problem.
+
+Prerequisites:
+
+- You have verified the certificate chain is valid, using your system browser,
+  or you have confirmed with your machine's administrator that this error is safe to ignore.
+
+To do this:
+
+1. Refer to Eclipse documentation on SSL certificates.
+1. Go to your IDE's top menu bar and select **Settings**.
+1. On the left sidebar, select **Tools > GitLab Duo**.
+1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
+1. Enable the **Ignore certificate errors** option.
+1. Select **Verify setup**.
+1. Select **OK** or **Save**.

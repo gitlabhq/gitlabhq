@@ -17,10 +17,18 @@ module Keeps
 
     RUBOCOP_PATH = 'rubocop/rubocop-migrations.yml'
 
-    def each_change
+    def each_identified_change
       return unless tables_to_update.any?
 
-      change = build_change(tables_to_update.keys)
+      change = ::Gitlab::Housekeeper::Change.new
+      change.identifiers = change_identifiers
+      change.context = { tables_to_update: tables_to_update }
+      yield(change)
+    end
+
+    def make_change!(change)
+      tables_to_update = change.context[:tables_to_update]
+      build_change_details(change, tables_to_update.keys)
       change.changed_files = []
 
       tables_to_update.each do |table_name, classification|
@@ -30,7 +38,7 @@ module Keeps
       update_rubocop_migrations_file(tables_to_update)
       change.changed_files << RUBOCOP_PATH
 
-      yield(change)
+      change
     end
 
     private
@@ -82,10 +90,8 @@ module Keeps
     end
     strong_memoize_attr :tables_to_update
 
-    def build_change(table_names)
-      change = ::Gitlab::Housekeeper::Change.new
+    def build_change_details(change, table_names)
       change.title = "Update table_size database dictionary entries".truncate(70, omission: '')
-      change.identifiers = change_identifiers
       change.changelog_type = 'added'
       change.labels = labels
       change.reviewers = reviewer('maintainer::database')
@@ -99,8 +105,6 @@ module Keeps
 
       Verify this MR by inspecting the `postgres_table_sizes` view for each affected table.
       MARKDOWN
-
-      change
     end
 
     def update_dictionary_file(table_name, size)

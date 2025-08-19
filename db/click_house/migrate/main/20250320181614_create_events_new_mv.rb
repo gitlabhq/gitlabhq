@@ -24,12 +24,12 @@ class CreateEventsNewMv < ClickHouse::Migration
               WHEN cte.group_id != 0 THEN group_lookups.traversal_path
               ELSE '0/'
           END AS path,
-          cte.author_id,
+          cte.author_id AS author_id,
           cte.action AS action,
           cte.target_type AS target_type,
           cte.target_id AS target_id,
-          cte.created_at,
-          cte.updated_at,
+          cte.created_at AS created_at,
+          cte.updated_at AS updated_at,
           cte._siphon_replicated_at AS version,
           cte._siphon_deleted AS deleted
       FROM cte

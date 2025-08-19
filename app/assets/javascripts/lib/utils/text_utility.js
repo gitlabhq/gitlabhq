@@ -580,3 +580,17 @@ export const sha256 = async (str) => {
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 };
+
+// A simple, cryptographically insecure 32-bit hash that's short, fast, and has no dependencies.
+// Output is always 8 characters. Useful for generating unique IDs when collisions are rare
+// for small datasets. For example, when rendering some GLQL blocks (less than 100) on a page.
+// This is better than sha256 for this case since this is also available without needing https.
+// https://stackoverflow.com/a/7616484/102994
+export const simpleHash = (string) => {
+  let hash = 0;
+  for (let i = 0; i < string.length; i += 1) {
+    const char = string.charCodeAt(i);
+    hash = (hash << 5) - hash + char; // eslint-disable-line no-bitwise
+  }
+  return (hash >>> 0).toString(16).padStart(8, '0'); // eslint-disable-line no-bitwise
+};

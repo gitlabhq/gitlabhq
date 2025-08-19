@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
   describe '#dry_run?' do
     subject { command.dry_run? }
 
-    let(:command) { described_class.new(dry_run: dry_run) }
+    let(:command) { described_class.new(dry_run: dry_run, origin_ref: project.default_branch_or_main) }
     let(:dry_run) { false }
 
     it { is_expected.to eq(false) }
@@ -50,7 +50,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
 
     subject { command.readonly? }
 
-    let(:command) { described_class.new(dry_run: dry_run, linting: linting) }
+    let(:command) do
+      described_class.new(dry_run: dry_run, linting: linting, origin_ref: project.default_branch_or_main)
+    end
 
     where(:dry_run, :linting, :result) do
       false | false | false

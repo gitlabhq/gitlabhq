@@ -288,6 +288,14 @@ export const secondsToMilliseconds = (seconds) => seconds * 1000;
 export const millisecondsToSeconds = (milliseconds) => milliseconds / 1000;
 
 /**
+ * Converts the supplied number of seconds to minutes.
+ *
+ * @param {Number} seconds
+ * @return {Number} number of minutes
+ */
+export const secondsToMinutes = (seconds) => seconds / 60;
+
+/**
  * Converts the supplied number of seconds to days.
  *
  * @param {Number} seconds

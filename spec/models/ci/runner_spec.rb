@@ -25,6 +25,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to have_many(:runner_namespaces).inverse_of(:runner) }
     it { is_expected.to have_many(:groups).through(:runner_namespaces) }
     it { is_expected.to have_one(:owner_runner_namespace).class_name('Ci::RunnerNamespace') }
+    it { is_expected.to have_one(:owner_runner_project).class_name('Ci::RunnerProject') }
 
     it { is_expected.to have_many(:taggings).class_name('Ci::RunnerTagging').inverse_of(:runner) }
     it { is_expected.to have_many(:tags).class_name('Ci::Tag') }
@@ -60,11 +61,41 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
   end
 
   describe '#owner_runner_namespace' do
-    it 'considers the first group' do
-      runner = create(:ci_runner, :group, groups: [group])
+    let!(:runner) { build(:ci_runner, :group, groups: [group]) }
 
-      with_cross_joins_prevented do
-        expect(runner.owner_runner_namespace.namespace_id).to eq(runner.groups.first.id)
+    subject { runner.owner_runner_namespace }
+
+    context 'when not persisted' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when persisted' do
+      before do
+        runner.save!
+      end
+
+      it 'returns the first runner_namespace association' do
+        is_expected.to have_attributes(runner_id: runner.id, namespace_id: runner.groups.first.id)
+      end
+    end
+  end
+
+  describe '#owner_runner_project' do
+    let!(:runner) { build(:ci_runner, :project, projects: [project, other_project]) }
+
+    subject { runner.owner_runner_project }
+
+    context 'when not persisted' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when persisted' do
+      before do
+        runner.save!
+      end
+
+      it 'returns the first runner_project' do
+        is_expected.to have_attributes(runner_id: runner.id, project_id: runner.projects.first.id)
       end
     end
   end
@@ -127,22 +158,12 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
-    it { is_expected.to validate_presence_of(:sharding_key_id) }
     it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
 
     context 'when runner is instance type' do
       let(:runner) { build(:ci_runner, :instance_type) }
 
       it { expect(runner).to be_valid }
-
-      context 'when sharding_key_id is present' do
-        let(:runner) { build(:ci_runner, :instance_type, sharding_key_id: non_existing_record_id) }
-
-        it 'is invalid' do
-          expect(runner).to be_invalid
-          expect(runner.errors.full_messages).to contain_exactly('Runner cannot have sharding_key_id assigned')
-        end
-      end
 
       context 'when organization_id is present' do
         let(:runner) { build(:ci_runner, :instance_type, organization_id: non_existing_record_id) }
@@ -320,9 +341,13 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     context 'when runner has creator' do
       let(:creator) { create(:user) }
-      let(:runner) { build(:ci_runner, creator: creator) }
+      let!(:runner) { build(:ci_runner, creator: creator) }
 
       it { is_expected.to eq creator }
+
+      it 'memoizes the result' do
+        expect(ActiveRecord::QueryRecorder.new { 2.times { owner } }.count).to eq(1)
+      end
     end
   end
 
@@ -969,7 +994,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     let_it_be(:projects) { create_list(:project, 2, group: group) }
 
     describe '#owner' do
-      let(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
+      let!(:project_runner) { create(:ci_runner, :project, projects: associated_projects) }
 
       subject(:owner) { project_runner.owner }
 
@@ -977,6 +1002,13 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         let(:associated_projects) { projects }
 
         it { is_expected.to eq projects.first }
+
+        it 'memoizes the result' do
+          # loads runner_projects and project
+          expect(ActiveRecord::QueryRecorder
+                    .new { 4.times { owner } }
+                    .count).to eq(2)
+        end
       end
 
       context 'with project2 as first project associated with runner' do
@@ -1013,6 +1045,17 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
               is_expected.to eq projects.last
             end
           end
+        end
+      end
+
+      context 'when not persisted' do
+        let!(:project_runner) { build(:ci_runner, :project, projects: [project]) }
+
+        it 'returns the project from in-memory runner_projects collection' do
+          expect(project_runner).not_to receive(:owner_runner_project)
+          expect(project_runner).to receive(:runner_projects).and_call_original
+
+          expect(owner).to eq(project)
         end
       end
     end
@@ -1481,24 +1524,34 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
       context 'with runner assigned to group' do
         let(:owner_group) { create(:group) }
-        let(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
+        let!(:runner) { create(:ci_runner, :group, groups: [owner_group]) }
 
         it { is_expected.to eq owner_group }
 
-        context 'and owner group is deleted' do
+        context 'and owner group and runner_namespaces are deleted' do
           before do
             owner_group.destroy!
-          end
-
-          it { is_expected.to eq owner_group }
-
-          it "becomes nil when corresponding runner namespace is deleted" do
             runner.runner_namespaces.where(namespace_id: group.id).delete_all
             runner.clear_memoization(:owner)
-            runner.reload
-
-            is_expected.to be_nil
           end
+
+          it { is_expected.to be_nil }
+        end
+
+        it 'memoizes the result' do
+          # loads runner_namespaces & namespace
+          expect(ActiveRecord::QueryRecorder.new { 4.times { owner } }.count).to eq(2)
+        end
+      end
+
+      context 'when not persisted' do
+        let!(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+        it 'returns the group from in-memory runner_namespaces collection' do
+          expect(runner).not_to receive(:owner_runner_namespace)
+          expect(runner).to receive(:runner_namespaces).and_call_original
+
+          expect(owner).to eq(group)
         end
       end
 
@@ -1614,7 +1667,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     shared_examples 'a group runner encrypted token' do |prefix|
       let(:runner_type) { :group_type }
-      let(:attrs) { { groups: [group], sharding_key_id: group.id } }
+      let(:attrs) { { groups: [group], organization_id: group.organization_id } }
 
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { group }
@@ -1623,7 +1676,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
 
     shared_examples 'a project runner encrypted token' do |prefix|
       let(:runner_type) { :project_type }
-      let(:attrs) { { projects: [project], sharding_key_id: project.id } }
+      let(:attrs) { { projects: [project], organization_id: project.organization_id } }
 
       it_behaves_like 'an encrypted routable token for resource', prefix do
         let(:resource) { project }
@@ -1844,48 +1897,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
-  describe '#ensure_organization_id' do
-    context 'with group runner' do
-      let(:runner) { build(:ci_runner, :group, groups: [group]) }
-
-      specify { expect(runner).to be_valid }
-
-      context 'when organization_id is not present' do
-        before do
-          runner.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from owner on save', :aggregate_failures do
-          expect { runner.save! }
-            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
-        end
-      end
-    end
-
-    context 'with project runner' do
-      let(:runner) { build(:ci_runner, :project, projects: [project]) }
-
-      specify { expect(runner).to be_valid }
-
-      context 'when organization_id is not present' do
-        before do
-          runner.save!
-
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
-        end
-
-        it 'populates organization_id from owner on save', :aggregate_failures do
-          expect { runner.save! }
-            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
-        end
-      end
-    end
-  end
-
   describe '#ensure_manager' do
     subject(:ensure_manager) { runner.ensure_manager(system_xid) }
 
@@ -1908,16 +1919,27 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
             .from([]).to([runner.organization_id])
       end
 
-      context 'when organization_id is not present' do
+      context 'when runner sharding_key_id is not NULL' do
         before do
-          # Simulate a pre-existing record with a NULL organization_id value
-          runner.update_columns(organization_id: nil)
+          runner.update!(sharding_key_id: runner.owner.id)
         end
 
-        it 'populates organization_id from owner' do
+        it "populates with runner's sharding_key_id" do
           expect { ensure_manager }
-            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
-              .from([]).to([runner.owner.organization_id])
+            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
+              .from([]).to([runner.sharding_key_id])
+        end
+      end
+
+      context 'when runner sharding_key_id is NULL' do
+        before do
+          runner.update!(sharding_key_id: nil)
+        end
+
+        it 'populates a bogus sharding_key_id' do
+          expect { ensure_manager }
+            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
+              .from([]).to([-1])
         end
       end
     end

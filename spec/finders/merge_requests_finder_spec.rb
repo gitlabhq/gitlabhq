@@ -64,7 +64,7 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           let_it_be(:factory_params) { [:simple, :unique_branches] }
           let_it_be(:search_params) { { project_id: issuable_parent.id } }
 
-          it_behaves_like 'filterable by group handle'
+          it_behaves_like 'filterable by group handle for', :author
         end
 
         context 'filters by author or assignee' do
@@ -573,6 +573,16 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
               expect(merge_requests).not_to include(merge_request1, merge_request2)
             end
           end
+        end
+
+        context 'using a group handle' do
+          let_it_be(:issuable_parent) { create(:project) }
+          let_it_be(:issuable_attributes) { { source_project: issuable_parent, target_project: issuable_parent } }
+          let_it_be(:issuable_factory) { :merge_request }
+          let_it_be(:factory_params) { [:simple, :unique_branches] }
+          let_it_be(:search_params) { { project_id: issuable_parent.id } }
+
+          it_behaves_like 'filterable by group handle for', :assignees
         end
       end
 

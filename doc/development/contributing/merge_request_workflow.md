@@ -287,7 +287,7 @@ requirements.
 1. Description includes any steps or setup required to ensure reviewers can view the changes you've made (for example, include any information about feature flags).
 1. [Changelog entry added](../changelog.md), if necessary.
 1. If your merge request introduces changes that require additional steps when
-   installing GitLab from source, add them to `doc/install/installation.md` in
+   self-compiling GitLab, add them to `doc/install/self_compiled/_index.md` in
    the same merge request.
 1. If your merge request introduces changes that require additional steps when
    upgrading GitLab from source, add them to
@@ -333,10 +333,10 @@ request:
 1. Note the addition in the [release blog post](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/)
    (create one if it doesn't exist yet).
 1. [The upgrade guide](../../update/upgrading_from_source.md).
-1. The [GitLab Installation Guide](../../install/installation.md#1-packages-and-dependencies).
+1. The [GitLab Installation Guide](../../install/self_compiled/_index.md#1-packages-and-dependencies).
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
 1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/prepare_build.sh).
-1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
+1. The [Linux package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).
 1. The [Cloud Native GitLab Dockerfiles](https://gitlab.com/gitlab-org/build/CNG)
 
 ## Incremental improvements

@@ -25,10 +25,15 @@ module Namespaces
         return AncestorAlreadyArchivedError if group.ancestors_archived?
         return ArchivingFailedError unless group.archive
 
+        after_archive
         ServiceResponse.success
       end
 
       private
+
+      def after_archive
+        system_hook_service.execute_hooks_for(group, :update)
+      end
 
       def error_response(message)
         ServiceResponse.error(message: message)
@@ -36,3 +41,5 @@ module Namespaces
     end
   end
 end
+
+Namespaces::Groups::ArchiveService.prepend_mod

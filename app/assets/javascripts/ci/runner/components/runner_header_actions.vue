@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import RunnerEditButton from './runner_edit_button.vue';
 import RunnerPauseButton from './runner_pause_button.vue';
 import RunnerEditDisclosureDropdownItem from './runner_edit_disclosure_dropdown_item.vue';
@@ -43,8 +43,17 @@ export default {
     canDelete() {
       return this.runner.userPermissions?.deleteRunner;
     },
-    moreActionsTooltip() {
+    dropdownTooltip() {
       return !this.isDropdownVisible ? __('More actions') : '';
+    },
+    dropdownAttrs() {
+      return {
+        icon: 'ellipsis_v',
+        category: 'tertiary',
+        noCaret: true,
+        textSrOnly: true,
+        toggleText: s__('Runner|Runner actions'),
+      };
     },
   },
   methods: {
@@ -63,34 +72,33 @@ export default {
 
 <template>
   <div v-if="canUpdate || canDelete">
-    <div class="gl-flex gl-gap-3">
-      <runner-edit-button v-if="canUpdate" :href="editPath" class="gl-hidden sm:gl-inline-flex" />
-      <runner-pause-button v-if="canUpdate" :runner="runner" class="gl-hidden sm:gl-inline-flex" />
+    <gl-disclosure-dropdown
+      v-gl-tooltip="dropdownTooltip"
+      class="gl-block sm:gl-hidden"
+      data-testid="compact-runner-actions"
+      v-bind="dropdownAttrs"
+      @shown="showDropdown"
+      @hidden="hideDropdown"
+    >
+      <runner-edit-disclosure-dropdown-item v-if="canUpdate" :href="editPath" />
+      <runner-pause-disclosure-dropdown-item v-if="canUpdate" :runner="runner" />
+      <runner-delete-disclosure-dropdown-item
+        v-if="canDelete"
+        :runner="runner"
+        @deleted="onDeleted"
+      />
+    </gl-disclosure-dropdown>
+    <div class="gl-hidden gl-gap-3 sm:gl-flex" data-testid="expanded-runner-actions">
+      <runner-edit-button v-if="canUpdate" :href="editPath" />
+      <runner-pause-button v-if="canUpdate" :runner="runner" />
       <gl-disclosure-dropdown
-        v-gl-tooltip="moreActionsTooltip"
-        icon="ellipsis_v"
-        :toggle-text="s__('Runner|Runner actions')"
-        text-sr-only
-        category="tertiary"
-        no-caret
+        v-if="canDelete"
+        v-gl-tooltip="dropdownTooltip"
+        v-bind="dropdownAttrs"
         @shown="showDropdown"
         @hidden="hideDropdown"
       >
-        <runner-edit-disclosure-dropdown-item
-          v-if="canUpdate"
-          :href="editPath"
-          class="sm:gl-hidden"
-        />
-        <runner-pause-disclosure-dropdown-item
-          v-if="canUpdate"
-          :runner="runner"
-          class="sm:gl-hidden"
-        />
-        <runner-delete-disclosure-dropdown-item
-          v-if="canDelete"
-          :runner="runner"
-          @deleted="onDeleted"
-        />
+        <runner-delete-disclosure-dropdown-item :runner="runner" @deleted="onDeleted" />
       </gl-disclosure-dropdown>
     </div>
   </div>

@@ -49,7 +49,6 @@ export default {
     'issuableType',
     'isGroupBoard',
     'fullPath',
-    'commentTemplatePaths',
   ],
   props: {
     boardId: {
@@ -89,7 +88,6 @@ export default {
   },
   data() {
     return {
-      boardHeight: null,
       highlightedLists: [],
       columnsThatCannotFindActiveItem: 0,
       draggedType: null,
@@ -381,7 +379,6 @@ export default {
           :open="Boolean(activeIssuable && activeIssuable.iid)"
           :active-item="activeIssuable"
           :issuable-type="issuableType"
-          :new-comment-template-paths="commentTemplatePaths"
           click-outside-exclude-selector=".board-card"
           is-board
           @close="

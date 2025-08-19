@@ -40,6 +40,7 @@ module Gitlab
                       links: 'Releases::Link',
                       commit_author: 'MergeRequest::DiffCommitUser',
                       committer: 'MergeRequest::DiffCommitUser',
+                      merge_request_commits_metadata: 'MergeRequest::CommitsMetadata',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
                       work_item_type: 'WorkItems::Type',
                       user_contributions: 'User',
@@ -68,6 +69,7 @@ module Gitlab
           Ci::ExternalPullRequest
           DesignManagement::Design
           MergeRequest::DiffCommitUser
+          MergeRequest::CommitsMetadata
           MergeRequestDiffCommit
           WorkItems::Type
         ].freeze

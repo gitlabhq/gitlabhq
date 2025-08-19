@@ -7,8 +7,8 @@
     .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
         - namespace_id = namespace_id_from(params)
-        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || current_user.namespace.full_path,
-          namespace_id: namespace_id || current_user.namespace_id,
+        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path,
+          namespace_id: namespace_id,
           input_id: 'namespace_id',
           input_name: 'namespace_id',
           root_url: root_url,

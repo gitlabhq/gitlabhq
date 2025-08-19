@@ -193,12 +193,12 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('QA_INFLUXDB_TIMEOUT', "10")
     end
 
-    context 'with product group tag' do
-      let(:expected_data) { data.tap { |d| d[:tags][:product_group] = :import } }
+    context 'with feature category tag' do
+      let(:expected_data) { data.tap { |d| d[:tags][:feature_category] = :system_access } }
 
-      it 'exports data with correct product group tag' do
+      it 'exports data with correct feature category tag' do
         run_spec do
-          it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+          it('spec', feature_category: :system_access, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).with(data: [expected_data])

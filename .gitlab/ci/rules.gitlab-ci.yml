@@ -45,8 +45,12 @@
       || $FORCE_GITLAB_CI
       '
 
+# weekly pipeline is opt-in and should not automatically run every job
 .if-default-branch-refs: &if-default-branch-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null && $SCHEDULE_TYPE != "weekly"'
+
+.if-default-branch-push: &if-default-branch-push
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.
@@ -152,9 +156,6 @@
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
 
-.if-merge-request-not-labels-pipeline-run-e2e-omnibus-once: &if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS !~ /pipeline:run-e2e-omnibus-once/)'
-
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
@@ -199,6 +200,12 @@
 
 .if-default-branch-schedule-weekly: &if-default-branch-schedule-weekly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
+
+.if-ruby-branch-schedule: &if-ruby-branch-schedule
+  if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+
+.if-rails-branch-schedule: &if-rails-branch-schedule
+  if: '$CI_COMMIT_BRANCH == "rails-next" && $CI_PIPELINE_SOURCE == "schedule" && $RUN_WITH_NEXT_RAILS_VERSION == "true"'
 
 .if-ruby-branch-schedule-nightly: &if-ruby-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == "ruby-next" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
@@ -461,6 +468,10 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
+.search-version-patterns: &search-version-patterns
+  - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
+  - "GITLAB_ZOEKT_VERSION"
+
 # Redis patterns
 .redis-patterns: &redis-patterns
   - "{,ee/,jh/}{,spec/}app/models/concerns/redis_cacheable{,_spec}.rb"
@@ -496,7 +507,6 @@
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"
   - "spec/support/database_cleaner.rb"
-  - "config/prometheus/common_metrics.yml"  # Used by Gitlab::DatabaseImporters::CommonMetrics::Importer
   - "{,ee/,jh/}app/models/project_statistics.rb"  # Used to calculate sizes in migration specs
   - "{,ee/,jh/}app/{,models/,services/,workers/}loose_foreign_keys/**/*"
   # Gitaly has interactions with background migrations: https://gitlab.com/gitlab-org/gitlab/-/issues/336538
@@ -522,7 +532,7 @@
 .qa-patterns: &qa-patterns
   - ".dockerignore"
   - "{,jh/}qa/**/*"
-  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,test-on-gdk}/*"
+  - ".gitlab/ci/{test-on-omnibus,qa-common,test-on-cng,test-on-gdk,performance-on-cng}/*"
 
 # See https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/470
 # for the reasons why we only match those patterns.
@@ -642,6 +652,7 @@
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
   - "{,ee/,jh/}app/policies/**/*"
+  - "{,ee/,jh/}app/serializers/**/*"
   # Auto-generated files
   - "doc/api/openapi/openapi_v2.yaml"
 
@@ -825,6 +836,14 @@
   - "ee/lib/ee/gitlab/observability.rb"
   - "ee/lib/api/internal/observability.rb"
 
+.gem-change-patterns: &gem-change-patterns
+  - Gemfile
+  - Gemfile.lock
+  - Gemfile.checksum
+  - Gemfile.next
+  - Gemfile.next.lock
+  - Gemfile.next.checksum
+
 ##################
 # Conditions set #
 ##################
@@ -845,6 +864,8 @@
       changes: *search-backend-patterns
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
+    - <<: *if-merge-request
+      changes: *search-version-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:
@@ -1047,7 +1068,7 @@
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
-      when: never
+      when: always
 
 ################
 # Shared rules #
@@ -1058,12 +1079,6 @@
     - <<: *if-security-schedule
     - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
-
-.shared:rules:update-gitaly-binaries-cache:
-  rules:
-    - <<: *if-merge-request-labels-update-caches
-    - <<: *if-default-refs
-      changes: *gitaly-patterns
 
 # This rule is used by new cache implementation which updates cache automatically when cache is invalidated by changes
 .shared:rules:update-cache-v2:
@@ -1165,9 +1180,6 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        BABEL_ENV: "istanbul"
-        CACHE_ASSETS_AS_PACKAGE: "false"
     - <<: *if-default-branch-refs
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-cs-evaluation
@@ -1209,53 +1221,8 @@
 #################
 # Caching rules #
 #################
-.caching:rules:cache-workhorse:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: ["workhorse/**/*"]
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/gitlab_component_helpers.sh"
-      when: manual
-      allow_failure: true
-
-.caching:rules:cache-assets:
-  rules:
-    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
-    - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
-      when: never
-    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *assets-compilation-patterns
-    - <<: *if-tag
-    - <<: *if-sync-changes-on-stable-branches
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/gitlab_component_helpers.sh"
-        - "lib/tasks/gitlab/assets.rake"
-      when: manual
-      allow_failure: true
-    - if: '$ENABLE_CACHE_ASSETS == "true"'
-      when: manual
-      allow_failure: true
-    - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
-
 .caching:rules:packages-cleanup:
   rules:
-    # The new strategy to cache assets as generic packages is experimental and can be disabled by removing the `CACHE_ASSETS_AS_PACKAGE` variable
-    - if: '$CACHE_ASSETS_AS_PACKAGE != "true"'
-      when: never
     - <<: *if-not-ee
       when: never
     # The security mirror doesn't use the package registry
@@ -1270,6 +1237,28 @@
         - "scripts/packages/automated_cleanup.rb"
       when: manual
       allow_failure: true
+
+# rules for gem cache population
+.caching:rules:gem-cache:
+  rules:
+    # populate cache in merge-train pipeline to ensure cache for non protected branches will exist in case 2 separate
+    # merge requests updating gems are being merged at the same time
+    - <<: *if-merge-train
+      changes: *gem-change-patterns
+    - <<: *if-merge-request
+      changes: *gem-change-patterns
+    - <<: *if-sync-changes-on-stable-branches
+      changes: *gem-change-patterns
+    - <<: *if-default-branch-push
+      changes: *gem-change-patterns
+    - *if-merge-request-labels-update-caches
+
+# e2e runners are only available in .com and in gitlab-org grouped projects
+.caching:rules:e2e-gem-cache-e2e-runners:
+  rules:
+    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
+      when: never
+    - !reference [.shared:rules:update-cache-v2, rules]
 
 ######################
 # CI Templates Rules #
@@ -1565,6 +1554,22 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.frontend:rules:test-storybook:
+  rules:
+    # From .frontend:rules:default-frontend-jobs
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    # If the MR isn't approved, only run when jest predictive jobs would
+    - <<: *if-merge-request-not-approved
+      changes:
+        - '{,ee/}app/**/*.vue'
+        - '{,ee/}app/**/*.stories.js'
+    - <<: *if-default-refs
+      changes:
+        - '{,ee/}app/**/*.vue'
+        - '{,ee/}app/**/*.stories.js'
+
 .frontend:rules:upload-frontend-fixtures:
   rules:
     # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
@@ -1745,42 +1750,6 @@
 ############
 # QA rules #
 ############
-.qa:rules:update-gem-cache:
-  rules:
-    - <<: *if-merge-train
-      when: never
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
-      changes:
-        - qa/Gemfile.lock
-    - <<: *if-merge-request
-      changes:
-        - qa/Gemfile.lock
-    - when: manual
-      allow_failure: true
-
-.qa:rules:update-gem-cache-e2e:
-  rules:
-    - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
-      when: never
-    - !reference [.qa:rules:update-gem-cache, rules]
-
-.qa:rules:update-orchestrator-gem-cache:
-  rules:
-    - <<: *if-merge-train
-      when: never
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\//'
-      changes:
-        - qa/gems/gitlab-orchestrator/Gemfile.lock
-    - <<: *if-merge-request
-      changes:
-        - qa/gems/gitlab-orchestrator/Gemfile.lock
-    - when: manual
-      allow_failure: true
-
 .qa:rules:metadata-lint:
   rules:
     - <<: *if-default-refs
@@ -2063,6 +2032,29 @@
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
+
+.qa:rules:e2e:perf-on-cng:
+  rules:
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
+    - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
+      when: never
+    - <<: *if-not-canonical-namespace
+      when: never
+    # Do not run for scheduled pipeline for ruby-next branch
+    - <<: *if-ruby-branch-schedule
+      when: never
+    # Do not run for scheduled pipeline for rails-next branch
+    - <<: *if-rails-branch-schedule
+      when: never
+    - <<: *if-merge-request
+      changes: *cng-dependency-patterns
+      when: manual
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
+    - *if-dot-com-gitlab-org-schedule
 
 .qa:rules:test-on-omnibus-nightly:
   rules:
@@ -2850,7 +2842,7 @@
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
 
-.reports:rules:gemnasium-dependency_scanning:
+.reports:rules:dependency_scanning:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -2860,17 +2852,6 @@
     - <<: *if-default-branch-refs
     - <<: *if-default-refs
       changes: *dependency-patterns
-
-.reports:rules:gemnasium-python-dependency_scanning:
-  rules:
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - if: '$DEPENDENCY_SCANNING_DISABLED || $GITLAB_FEATURES !~ /\bdependency_scanning\b/ || $DS_EXCLUDED_ANALYZERS =~ /gemnasium-python/'
-      when: never
-    # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/504908#note_2218591981 is resolved
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
-      changes: *python-patterns
 
 .reports:rules:test-dast:
   rules:
@@ -3232,6 +3213,8 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-default-refs
       changes: *gdk-update-patterns
     - <<: *if-default-refs
@@ -3280,6 +3263,8 @@
       when: never
     - !reference [".strict-ee-only-rules", rules]
     - *if-merge-request-labels-as-if-foss
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:as-if-foss-run-once/'
+      when: never
     - !reference [".prevent-tier-2-and-below", "rules"]
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
@@ -3385,7 +3370,7 @@
   rules:
     - if: '$AIGW_TAGGING_ACCESS_TOKEN == null'
       when: never
-    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(-ee)?$/'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/'
       # Only run when a version tag is created (release is cut)
 
 ###################

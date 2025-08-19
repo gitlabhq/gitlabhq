@@ -188,6 +188,28 @@ describe('WorkItemProjectsListbox', () => {
       expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
     });
 
+    it('auto-selects the frequently used project', async () => {
+      setLocalstorageFrequentItems();
+
+      await createComponent({
+        isGroup: false,
+        selectedProjectFullPath: '/group-a/example-project-a',
+      });
+
+      expect(findDropdownToggle().text()).toBe('Example project B');
+
+      removeLocalstorageFrequentItems();
+    });
+
+    it('auto-selects the selected project when frequently used projects are not available', async () => {
+      await createComponent({
+        isGroup: false,
+        selectedProjectFullPath: '/group-a/example-project-a',
+      });
+
+      expect(findDropdownToggle().text()).toBe('Example project A');
+    });
+
     it('supports selecting a project', async () => {
       removeLocalstorageFrequentItems();
 

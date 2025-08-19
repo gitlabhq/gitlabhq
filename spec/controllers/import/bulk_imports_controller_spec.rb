@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::BulkImportsController, feature_category: :importers do
+RSpec.describe Import::BulkImportsController, :with_organization_url_helpers, feature_category: :importers do
   let_it_be(:user) { create(:user) }
+  let_it_be(:current_organization) { user.organization }
 
   before do
     stub_application_setting(bulk_import_enabled: true)
@@ -417,14 +418,14 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[0], { url: instance_url, access_token: pat },
-            fallback_organization: Organizations::Organization.default_organization
+            fallback_organization: current_organization
           ) do |service|
             allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
           end
 
           expect_next_instance_of(
             ::BulkImports::CreateService, user, bulk_import_params[1], { url: instance_url, access_token: pat },
-            fallback_organization: Organizations::Organization.default_organization
+            fallback_organization: current_organization
           ) do |service|
             allow(service).to receive(:execute).and_return(error_response)
           end
@@ -458,7 +459,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
 
             expect_next_instance_of(
               ::BulkImports::CreateService, user, entity, { url: instance_url, access_token: pat },
-              fallback_organization: Organizations::Organization.default_organization
+              fallback_organization: current_organization
             ) do |service|
               allow(service).to receive(:execute).and_return(ServiceResponse.success(payload: bulk_import))
             end
@@ -497,7 +498,7 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
           end
         end
 
-        context 'when current organization is set', :with_current_organization do
+        context 'when current organization is set' do
           it 'passes the current organization to the ::BulkImports::CreateService' do
             expect_next_instance_of(
               ::BulkImports::CreateService, anything, anything, anything, fallback_organization: current_organization

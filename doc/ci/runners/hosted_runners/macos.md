@@ -1,6 +1,6 @@
 ---
-stage: Verify
-group: Runner
+stage: Production Engineering
+group: Runners Platform
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Hosted runners on macOS
 ---
@@ -20,7 +20,7 @@ Our [Mobile DevOps section](../../mobile_devops/mobile_devops_tutorial_ios.md#se
 Hosted runners on macOS are in [beta](../../../policy/development_stages_support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
 [General availability](../../../policy/development_stages_support.md#generally-available) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
-Review the list of [known issues and usage constraints](#known-issues-and-usage-constraints) that affect hosted runners on macOS before you use them.  
+Review the list of [known issues and usage constraints](#known-issues-and-usage-constraints) that affect hosted runners on macOS before you use them.
 
 ## Machine types available for macOS
 

@@ -18,6 +18,7 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_TASK,
@@ -30,6 +31,7 @@ const CURSOR_GRAB = 'gl-cursor-grab';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
   directives: {
     SafeHtml,
     GlTooltip: GlTooltipDirective,
@@ -219,7 +221,9 @@ export default {
       return container.firstChild;
     },
     initCheckboxes() {
-      this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
+      this.checkboxes = this.$el.querySelectorAll(
+        '.task-list-item-checkbox:not([data-inapplicable])',
+      );
 
       // enable boxes, disabled by default in markdown
       this.disableCheckboxes(false);
@@ -360,6 +364,7 @@ export default {
       v-else
       ref="description"
       class="js-work-item-description work-item-description description md gl-relative gl-clearfix"
+      :class="{ '-gl-ml-6 gl-overflow-y-hidden gl-pl-6': isTruncated }"
     >
       <div
         ref="gfm-content"
@@ -368,7 +373,7 @@ export default {
         :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
         @change="toggleCheckboxes"
       ></div>
-      <div v-if="isTruncated" class="description-more gl-block gl-w-full">
+      <div v-if="isTruncated" class="description-more -gl-ml-6 gl-block gl-w-full gl-pl-6">
         <div class="show-all-btn gl-flex gl-w-full gl-items-center gl-justify-center">
           <gl-button
             ref="show-all-btn"
@@ -383,6 +388,7 @@ export default {
       </div>
     </div>
     <create-work-item-modal
+      :creation-context="$options.CREATION_CONTEXT_DESCRIPTION_CHECKLIST"
       :description="childDescription"
       :full-path="fullPath"
       hide-button

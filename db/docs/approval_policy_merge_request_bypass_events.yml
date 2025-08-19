@@ -1,0 +1,14 @@
+
+---
+table_name: approval_policy_merge_request_bypass_events
+classes:
+- Security::ApprovalPolicyMergeRequestBypassEvent
+feature_categories:
+- security_policy_management
+description: Stores events of bypasses of approval policies for merge requests.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199151
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

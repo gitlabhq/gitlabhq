@@ -25,15 +25,15 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
     )
   end
 
+  let(:service) { described_class.new(project: project, current_user: user, params: opts) }
+  let(:opts) { { assignee_ids: [user2.id] } }
+
   before do
     project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
     merge_request.errors.clear
   end
-
-  let(:service) { described_class.new(project: project, current_user: user, params: opts) }
-  let(:opts) { { assignee_ids: [user2.id] } }
 
   describe 'execute' do
     def update_merge_request

@@ -43,11 +43,6 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
     context 'when params are valid' do
       let_it_be(:labels) { create_pair(:label, project: project) }
 
-      before_all do
-        project.add_guest(user)
-        project.add_guest(assignee)
-      end
-
       let(:opts) do
         { title: 'Awesome issue',
           issue_type: :task,
@@ -57,6 +52,11 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
           milestone_id: milestone.id,
           milestone: milestone,
           due_date: Date.tomorrow }
+      end
+
+      before_all do
+        project.add_guest(user)
+        project.add_guest(assignee)
       end
 
       context 'when an unauthorized project_id is provided' do

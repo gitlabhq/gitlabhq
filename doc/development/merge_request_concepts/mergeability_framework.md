@@ -53,7 +53,7 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
          end
 
          # If we return true here, we need to create the method def cache_key and provide
-         # an approriate cache key that will invalidate correctly.
+         # an appropriate cache key that will invalidate correctly.
          def cacheable?
            false
          end

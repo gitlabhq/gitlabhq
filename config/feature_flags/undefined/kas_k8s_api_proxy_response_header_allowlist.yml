@@ -1,0 +1,10 @@
+---
+name: kas_k8s_api_proxy_response_header_allowlist
+description: Enables the allowlist for response headers that are proxied in the KAS Kubernetes API.
+feature_issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200492
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560088
+milestone: '18.3'
+group: group::environments
+type: undefined
+default_enabled: false

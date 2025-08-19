@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Repository Usage Quota', :skip_live_env, product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Repository Usage Quota', :skip_live_env do
       let(:project) { create(:project) }
 
       # Previously, GitLab could report a size many times larger than a cloned copy. For example, 37Gb reported for a

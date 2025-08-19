@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_execution do
+  RSpec.describe 'Verify', feature_category: :continuous_integration do
     describe 'Run pipeline with manual jobs' do
       let(:executor) { "qa-runner-#{SecureRandom.hex(4)}" }
 

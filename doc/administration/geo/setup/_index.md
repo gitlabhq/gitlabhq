@@ -77,7 +77,7 @@ You should [configure unified URLs](../secondary_proxy/_index.md#set-up-a-unifie
 
 ## Geo and self-compiled installations
 
-Geo is not supported when you use a [self-compiled GitLab installation](../../../install/installation.md).
+Geo is not supported when you use a [self-compiled GitLab installation](../../../install/self_compiled/_index.md).
 
 ## Post-installation documentation
 

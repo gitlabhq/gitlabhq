@@ -12,6 +12,10 @@ module Mutations
 
       authorize :read_work_item
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       argument :award_emoji_widget,
         ::Types::WorkItems::Widgets::AwardEmojiUpdateInputType,
         required: false,
@@ -62,8 +66,13 @@ module Mutations
         description: copy_field_description(Types::WorkItemType, :title)
 
       field :work_item, ::Types::WorkItemType,
-        null: true,
+        null: true, scopes: [:api, :ai_workflows],
         description: 'Updated work item.'
+
+      field :errors, [GraphQL::Types::String],
+        null: false,
+        scopes: [:api, :ai_workflows],
+        description: 'Errors encountered during the mutation.'
 
       def resolve(id:, **attributes)
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408575')

@@ -16,7 +16,8 @@ module Users
       # and cleaned up https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129924
       namespace_storage_pre_enforcement_banner: 4, # EE-only
       # 5,6,7 were removed https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118330
-      license_check_deprecation_alert: 8 # EE-only
+      license_check_deprecation_alert: 8, # EE-only
+      lfs_misconfiguration_banner: 9
     }
 
     validates :project, presence: true

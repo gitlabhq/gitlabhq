@@ -149,11 +149,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_work_item
     prevent :create_package
     prevent :create_projects
-    prevent :create_runner
+    prevent :create_runners
     prevent :create_subgroup
     prevent :edit_billing
     prevent :import_projects
-    prevent :remove_group
     prevent :reopen_issue
     prevent :transfer_projects
     prevent :update_issue
@@ -179,7 +178,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { guest }.policy do
     enable :read_group
-    enable :upload_file
     enable :guest_access
     enable :read_release
     enable :award_emoji
@@ -236,7 +234,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_namespace
     enable :read_upload
     enable :read_group_metadata
+    enable :upload_file
   end
+
+  rule { anonymous }.prevent :upload_file
 
   rule { ~achievements_enabled }.policy do
     prevent :read_achievement
@@ -269,6 +270,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { developer }.policy do
     enable :create_custom_emoji
+    enable :create_observability_access_request
     enable :create_package
     enable :developer_access
     enable :admin_crm_organization
@@ -276,6 +278,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
     enable :read_cluster_agent
     enable :read_group_all_available_runners
+    enable :read_observability_portal
     enable :use_k8s_proxies
   end
 
@@ -315,7 +318,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_upload
     enable :import_projects
     enable :read_deploy_token
-    enable :read_group_runners
+    enable :read_runners
     enable :update_cluster
   end
 
@@ -328,20 +331,20 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_package
     enable :admin_protected_environments
-    enable :admin_runner
+    enable :admin_runners
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control
     enable :change_visibility_level
     enable :create_deploy_token
-    enable :create_runner
+    enable :create_runners
     enable :create_subgroup
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing
     enable :manage_merge_request_settings
     enable :read_billing
-    enable :read_group_runners
+    enable :read_runners
     enable :read_runners_registration_token
     enable :read_usage_quotas
     enable :register_group_runners
@@ -465,7 +468,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { ~admin & ~group_runner_registration_allowed }.policy do
     prevent :register_group_runners
-    prevent :create_runner
+    prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do
@@ -479,9 +482,9 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_resource_access_tokens
   end
 
-  rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
+  rule { can?(:admin_group) | can?(:admin_runners) }.enable :admin_group_or_admin_runners
 
-  rule { can?(:remove_group) }.enable :view_edit_page
+  rule { can?(:remove_group) | can?(:archive_group) }.enable :view_edit_page
 
   # TODO: Remove this rule and move :read_package permission from reporter to guest
   # with the rollout of the FF allow_guest_plus_roles_to_pull_packages

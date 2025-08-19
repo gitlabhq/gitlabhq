@@ -13,14 +13,15 @@ Below are available schemas related to Cells and Organizations:
 
 | Schema | Description |
 | ------ | ----------- |
-| `gitlab_main` (deprecated) | This is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
-| `gitlab_main_cell`| To be renamed to `gitlab_main_org`. Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
+| `gitlab_main` (deprecated) | This is being replaced with `gitlab_main_org`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
+| `gitlab_main_cell` (deprecated) | This is being replaced with `gitlab_main_org` |
+| `gitlab_main_org`| Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
 | `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_main_clusterwide` (deprecated) | All tables in the `main:` database where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `plans`. For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
 | `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
-| `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_cell` instead (e.g. commenting on an issue). For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
+| `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_org` instead (e.g. commenting on an issue). For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
 
 Most tables will require a [sharding key](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables) to be defined.
 
@@ -35,7 +36,7 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 ## What schema to choose if the feature can be cluster-wide?
 
 The `gitlab_main_clusterwide` schema is now deprecated.
-We will ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required.
+We will ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_org` as required.
 This requires adding sharding keys to these tables, and may require
 additional changes to related features to scope them to the Organizational level.
 
@@ -44,7 +45,7 @@ Clusterwide features are
 and there are [no plans to perform any cluster-wide synchronization](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/014_clusterwide_syncing_in_cells_1_0/).
 
 Choose a different schema from the list of available GitLab [schemas](#available-cells--organization-schemas) instead.
-We expect most tables to use the `gitlab_main_cell` schema, especially if the
+We expect most tables to use the `gitlab_main_org` schema, especially if the
 table in the table is related to `projects`, or `namespaces`.
 Another alternative is the `gitlab_main_cell_local` schema.
 
@@ -130,12 +131,11 @@ Solution: Use globally unique references, not a database sequence.
 If possible, hard-code static data in application code, instead of using the
 database.
 
-In this case, the `plans` table can be dropped, and replaced with a fixed model:
+In this case, the `plans` table can be dropped, and replaced with a fixed model
+(details can be found in the [configurable status design doc](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items_custom_status/#fixed-items-models-and-associations)):
 
 ```ruby
 class Plan
-  include ActiveModel::Model
-  include ActiveModel::Attributes
   include ActiveRecord::FixedItemsModel::Model
 
   ITEMS = [
@@ -151,19 +151,36 @@ class Plan
     {:id=>10, :name=>"opensource", :title=>"Opensource"}
   ]
 
-  attribute :id, :integer
   attribute :name, :string
   attribute :title, :string
 end
 ```
 
+You can use model validations and use ActiveRecord-like methods like `all`, `where`, `find_by` and `find`:
+
+```ruby
+Plan.find(4)
+Plan.find_by(name: 'premium')
+Plan.where(name: 'gold').first
+```
+
 The `hosted_plan_id` column will also be updated to refer to the fixed model's
 `id` value.
+
+You can also store associations with other models. For example:
+
+```ruby
+class CurrentStatus < ApplicationRecord
+  belongs_to_fixed_items :system_defined_status, fixed_items_class: WorkItems::Statuses::SystemDefined::Status
+end
+```
 
 Examples of hard-coding static data include:
 
 - [VisibilityLevel](https://gitlab.com/gitlab-org/gitlab/-/blob/5ae43dface737373c50798ccd909174bcdd9b664/lib/gitlab/visibility_level.rb#L25-27)
 - [Static defaults for work item statuses](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178180)
+- [`Ai::Catalog::BuiltInTool`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197300)
+- [`WorkItems::SystemDefined::RelatedLinkRestriction`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199664)
 
 ## Cells Routing
 

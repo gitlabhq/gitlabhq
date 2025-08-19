@@ -705,6 +705,7 @@ Gitlab/AvoidFeatureGet:
 
 Gitlab/FeatureFlagKeyDynamic:
   Enabled: true
+  SafeAutoCorrect: false
 
 RSpec/WebMockEnable:
   Enabled: true
@@ -752,7 +753,7 @@ RSpec/FactoriesInMigrationSpecs:
 RSpec/FeatureCategory:
   Enabled: true
   Exclude:
-    - 'qa/**/*.rb'
+    - 'qa/spec/**/*.rb'
     - 'gems/**/*.rb'
 
 RSpec/FactoryBot/AvoidCreate:
@@ -1031,6 +1032,11 @@ Cop/PutGroupRoutesUnderScope:
   Include:
     - 'config/routes/group.rb'
     - 'ee/config/routes/group.rb'
+
+Mcp/UseApiService:
+  Enabled: true
+  Include:
+    - 'app/services/mcp/tools/*'
 
 Migration/ComplexIndexesRequireName:
   Exclude:
@@ -1374,6 +1380,7 @@ Cop/ActiveRecordDependent:
 
 Gitlab/Rails/AttrEncrypted:
   Enabled: true
+  SafeAutoCorrect: false
   Include:
   - '{,ee/,jh/}app/models/**/*.rb'
   - 'db/migrate/*.rb'
@@ -1415,3 +1422,11 @@ RSpec/Dialect:
   # This cop rule produces too many false positives.
   # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/173889#note_2232088196
   Enabled: false
+
+Gitlab/UseParamKeyForConvertingClassName:
+  Enabled: true
+
+Gitlab/NoHelpersInPresenters:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}app/presenters/**/*.rb'

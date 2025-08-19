@@ -25,6 +25,8 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
       descendants = create(:namespace_descendants, namespace: group)
 
       expect(descendants).to have_attributes(
+        self_and_descendant_ids: [group.id, subgroup.id, project1.project_namespace_id,
+          project2.project_namespace_id, project3.project_namespace_id],
         self_and_descendant_group_ids: [group.id, subgroup.id],
         all_project_ids: [project1.id, project2.id, project3.id],
         all_unarchived_project_ids: [project1.id, project2.id],
@@ -36,6 +38,7 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
       descendants = create(:namespace_descendants, namespace: subgroup)
 
       expect(descendants).to have_attributes(
+        self_and_descendant_ids: [subgroup.id, project1.project_namespace_id],
         self_and_descendant_group_ids: [subgroup.id],
         all_project_ids: [project1.id],
         all_unarchived_project_ids: [project1.id],
@@ -138,6 +141,7 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
     it 'updates the namespace descendant record', :freeze_time do
       described_class.upsert_with_consistent_data(
         namespace: cache.namespace,
+        self_and_descendant_ids: [1, 2, 3, 4, 5],
         self_and_descendant_group_ids: [1, 2, 3],
         all_project_ids: [5, 6, 7],
         all_unarchived_project_ids: [5, 6]
@@ -147,6 +151,7 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
 
       expect(cache).to have_attributes(
         traversal_ids: cache.namespace.traversal_ids,
+        self_and_descendant_ids: [1, 2, 3, 4, 5],
         self_and_descendant_group_ids: [1, 2, 3],
         all_project_ids: [5, 6, 7],
         all_unarchived_project_ids: [5, 6],
@@ -165,6 +170,7 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
 
           described_class.upsert_with_consistent_data(
             namespace: cache.namespace,
+            self_and_descendant_ids: [1, 2, 3, 4, 5],
             self_and_descendant_group_ids: [1, 2, 3],
             all_project_ids: [5, 6, 7],
             all_unarchived_project_ids: [5, 6],
@@ -183,6 +189,7 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
 
           described_class.upsert_with_consistent_data(
             namespace: cache.namespace,
+            self_and_descendant_ids: [1, 2, 3, 4, 5],
             self_and_descendant_group_ids: [1, 2, 3],
             all_project_ids: [5, 6, 7],
             all_unarchived_project_ids: [5, 6],

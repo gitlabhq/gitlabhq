@@ -15,119 +15,15 @@
 
 = render ::Layouts::PageHeadingComponent.new(title, options: { class: 'gl-mb-3' })
 
-- if Feature.enabled?(:redesign_user_account_otp, current_user)
-  = render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
-    - c.with_body do
-      = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
-- else
-  = render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
-    - c.with_description do
-      = _('Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
-      - if current_user.two_factor_otp_enabled?
-        = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
-      - else
-        - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
-        = register_2fa_token.html_safe
-        = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-a-one-time-password-authenticator'), target: '_blank', rel: 'noopener noreferrer'
-    - c.with_body do
-      - if current_user.two_factor_otp_enabled?
-        .gl-inline-block.gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
-
-      - else
-        .gl-inline-block.gl-p-3.gl-pb-2.gl-mb-5{ style: 'background: #fff' }
-          = raw @qr_code
-        .gl-mb-5
-          = render Pajamas::CardComponent.new do |c|
-            - c.with_body do
-              %h3.gl-mt-0.gl-mt-0.gl-mb-3.gl-font-bold.gl-leading-reset.gl-text-base.gl-text-default
-                = _("Can't scan the code?")
-              %p.gl-mt-0.gl-mb-3
-                = _("To add the entry manually, provide the following details to the application on your phone.")
-              %p.gl-my-0
-                = _('Account: %{account}') % { account: @account_string }
-              %p.gl-my-0{ data: { testid: 'otp-secret-content' } }
-                = _('Key:')
-                %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
-              %p.gl-mb-0.two-factor-new-manual-content
-                = _('Time based: Yes')
-        = form_tag profile_two_factor_auth_path, method: :post do |f|
-          - if @otp_error
-            = render Pajamas::AlertComponent.new(title: @otp_error[:message],
-              variant: :danger,
-              alert_options: { class: 'gl-mb-3' },
-              dismissible: false) do |c|
-              - c.with_body do
-                = troubleshooting_link
-          - if current_password_required?
-            .form-group
-              = label_tag :current_password, _('Current password'), class: 'label-bold'
-              = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
-              %p.form-text.gl-text-subtle
-                = _('Your current password is required to register a two-factor authenticator app.')
-          .form-group
-            = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
-            = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { testid: 'pin-code-field' }
-          .gl-mt-3
-            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'register-2fa-app-button' } }) do
-              = _('Register with two-factor app')
-
-= render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |c|
-  - c.with_description do
-    = _('Set up a hardware device to enable two-factor authentication (2FA).')
-    = _("Not all browsers support WebAuthn. You must save your recovery codes after you first register a two-factor authenticator to be able to sign in, even from an unsupported browser.")
+= render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
   - c.with_body do
-    - if @webauthn_registration.errors.present?
-      = form_errors(@webauthn_registration)
+    = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
 
-    #js-device-registration{ data: device_registration_data(current_password_required: current_password_required?, target_path: create_webauthn_profile_two_factor_auth_path, webauthn_error: @webauthn_error) }
+= render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |s|
+  - s.with_body do
+    = render 'webauthn_registration'
 
-    = render ::Layouts::CrudComponent.new(_('WebAuthn Devices'),
-      icon: 'lock',
-      count: @registrations.length) do |c|
-      - c.with_body do
-        - if @registrations.present?
-          .table-responsive
-            %table.table.gl-table
-              %colgroup
-                %col{ width: "50%" }
-                %col{ width: "30%" }
-                %col{ width: "20%" }
-              %thead
-                %tr
-                  %th= _('Name')
-                  %th= s_('2FADevice|Registered On')
-                  %th
-              %tbody
-                - @registrations.each do |registration|
-                  %tr
-                    %td
-                      - if registration[:name].present?
-                        = registration[:name]
-                      - else
-                        %span.gl-text-subtle
-                          = _("no name set")
-                    %td= registration[:created_at].to_date.to_fs(:medium)
-                    %td{ class: '!gl-py-3' }
-                      .gl-float-right
-                        .js-two-factor-action-confirm{ data: delete_webauthn_device_data(current_password_required?, registration[:delete_path]) }
 
-        - else
-          .gl-text-subtle
-            = _("You don't have any WebAuthn devices registered yet.")
-
-= render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |c|
-  - c.with_description do
-    = _('Use this section to disable your one-time password authenticator and WebAuthn devices. You can also generate new recovery codes.')
-  - c.with_body do
-    - if current_user.two_factor_enabled?
-      %p
-        = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
-      .gl-flex.gl-flex-wrap.gl-gap-3
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
-    - else
-      %p
-        = _("Register a one-time password authenticator or a WebAuthn device first.")
+= render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |s|
+  - s.with_body do
+    = render 'recovery_codes'

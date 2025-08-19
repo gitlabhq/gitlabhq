@@ -112,12 +112,7 @@ export default {
           />
         </template>
 
-        <blob-body
-          v-if="hasCode(file)"
-          :file="file"
-          :position="position(index)"
-          :system-color-scheme="systemColorScheme"
-        />
+        <blob-body v-if="hasCode(file)" :file="file" :position="position(index)" />
 
         <template v-if="hasMore(file)" #footer>
           <blob-footer :file="file" :position="position(index)" />

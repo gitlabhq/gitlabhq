@@ -173,7 +173,7 @@ module Gitlab
           oldrev: commits.last&.id,
           newrev: commits.first&.id,
           ref: ref,
-          commits: commits)
+          commits: commits.reverse)
       end
 
       def sample_data(is_tag = false)

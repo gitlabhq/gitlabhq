@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* https://gist.github.com/qguv/7936275 */
 
 @import '../common';
@@ -114,6 +116,7 @@ $solarized-light-il: #2aa198;
   --diff-expansion-background-color: #{$gl-color-neutral-100};
 
   --code-background: #{$solarized-light-pre-bg};
+  --code-empty-background: #{color.adjust(color.adjust($solarized-light-pre-bg, $lightness: -3%), $saturation: -30%)};
 
   --code-line-number-background-color: #{$solarized-light-line-bg};
   --code-line-number-color: #{$solarized-light-line-color};
@@ -141,7 +144,7 @@ $solarized-light-il: #2aa198;
   --code-diff-hunk-header-color: #{$gl-color-alpha-dark-24};
 
   --code-highlighted-line-background-color: #{$solarized-light-hll-bg};
-  --code-highlighted-line-border-color: #{darken($solarized-light-hll-bg, 15%)};
+  --code-highlighted-line-border-color: #{color.adjust($solarized-light-hll-bg, $lightness: -15%)};
 
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
@@ -211,7 +214,7 @@ $solarized-light-il: #2aa198;
     td.line-coverage.hll,
     td.line_content.hll {
       background-color: $solarized-light-hll-bg;
-      border-color: darken($solarized-light-hll-bg, 15%);
+      border-color: color.adjust($solarized-light-hll-bg, $lightness: -15%);
     }
 
     .line-coverage {
@@ -421,3 +424,5 @@ $solarized-light-il: #2aa198;
   .vi { color: $solarized-light-vi; } /* Name.Variable.Instance */
   .il { color: $solarized-light-il; } /* Literal.Number.Integer.Long */
 }
+
+@include merge-conflicts-syntax-highlight-theme('solarized-light');

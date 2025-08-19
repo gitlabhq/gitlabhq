@@ -187,25 +187,34 @@ class Repository
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
   def find_commits_by_message(query, ref = nil, path = nil, limit = 1000, offset = 0)
-    unless exists? && has_visible_content? && query.present?
-      return []
-    end
+    return [] unless exists? && has_visible_content? && query.present?
 
-    commits = raw_repository.find_commits_by_message(query.strip, ref, path, limit, offset).map do |c|
-      commit(c)
-    end
+    raw_commits = raw_repository.find_commits_by_message(query.strip, ref, path, limit, offset)
+    commits = raw_commits.map { |c| commit(c) }
     CommitCollection.new(container, commits, ref)
   end
 
-  def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
-    return [] unless exists?
-    return [] unless has_visible_content?
-    return [] unless ref.present?
+  def list_commits(
+    ref:,
+    query: nil,
+    author: nil,
+    committed_before: nil,
+    committed_after: nil,
+    pagination_params: { page_token: nil, limit: 1000 }
+  )
+    return [] unless exists? && has_visible_content? && ref.present?
 
-    commits = raw_repository.list_commits_by(
-      query, ref, author: author, before: before, after: after, limit: limit).map do |c|
-      commit(c)
-    end
+    pagination_params[:limit] ||= 1000
+
+    raw_commits = raw_repository.list_commits(
+      ref: ref,
+      query: query,
+      author: author,
+      committed_before: committed_before,
+      committed_after: committed_after,
+      pagination_params: pagination_params
+    )
+    commits = raw_commits.map { |c| commit(c) }
     CommitCollection.new(container, commits, ref)
   end
 
@@ -1018,16 +1027,16 @@ class Repository
 
   # If this method is not provided a set of branch names to check merge status,
   # it fetches all branches.
-  def merged_branch_names(branch_names = [])
+  def merged_branch_names(branch_names = [], include_identical: false)
     # Currently we should skip caching if requesting all branch names
     # This is only used in a few places, notably app/services/branches/delete_merged_service.rb,
     # and it could potentially result in a very large cache.
-    return raw_repository.merged_branch_names(branch_names) if branch_names.empty?
+    return raw_repository.merged_branch_names(branch_names, include_identical: include_identical) if branch_names.empty? || include_identical
 
     cache = redis_hash_cache
 
     merged_branch_names_hash = cache.fetch_and_add_missing(:merged_branch_names, branch_names) do |missing_branch_names, hash|
-      merged = raw_repository.merged_branch_names(missing_branch_names)
+      merged = raw_repository.merged_branch_names(missing_branch_names, include_identical: include_identical)
 
       missing_branch_names.each do |bn|
         # Redis only stores strings in hset keys, use a fancy encoder

@@ -1,0 +1,30 @@
+---
+key_path: sums.sum_value_from_failed_usage_time
+description: Sum of all time spent in failed flow of CLI
+product_group: analytics_instrumentation
+product_categories:
+- service_ping
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.6'
+introduced_by_url: TODO
+time_frame:
+- 28d
+- 7d
+- all
+data_source: internal_events
+data_category: optional
+tiers:
+- free
+- premium
+- ultimate
+events:
+- name: internal_events_cli_opened
+  filter:
+    label: failure
+  operator: sum(value)
+- name: internal_events_cli_used
+  filter:
+    property: flow
+  operator: sum(value)

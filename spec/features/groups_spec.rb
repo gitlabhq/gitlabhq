@@ -189,6 +189,33 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
         expect(page).not_to have_content('Now, personalize your GitLab experience')
       end
     end
+
+    context 'with default active instance integration' do
+      it 'creates a new group with default integration' do
+        integration = create(:jira_integration, :instance, active: true)
+
+        expect(integration.active?).to be(true)
+        expect(integration.instance?).to be(true)
+
+        fill_in 'Group name', with: 'with-default-active-integration'
+        find("input[name='group[visibility_level]'][value='#{Gitlab::VisibilityLevel::PUBLIC}']").click
+        click_button 'Create group'
+
+        group = Group.find_by(name: 'with-default-active-integration')
+
+        expect(page).to have_content("Group with-default-active-integration was successfully created.")
+
+        visit(group_settings_integrations_path(group))
+
+        within_testid('active-integrations-table') do
+          expect(page).to have_content("Jira issues")
+          expect(page).to have_content("Use Jira as this project's issue tracker.")
+        end
+
+        expect(group.jira_integration).to be_present
+        expect(group.jira_integration.inherit_from_id).to eq(integration.id)
+      end
+    end
   end
 
   describe 'create a nested group', :js do

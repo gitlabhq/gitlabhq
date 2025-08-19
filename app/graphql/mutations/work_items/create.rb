@@ -17,6 +17,10 @@ module Mutations
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
       DISABLED_FF_ERROR = 'create_group_level_work_items feature flag is disabled. Only project paths allowed.'
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       argument :created_at, Types::TimeType,
         required: false,
         description: 'Timestamp when the work item was created. Available only for admins and project owners.'
@@ -73,8 +77,13 @@ module Mutations
 
       field :work_item,
         ::Types::WorkItemType,
-        null: true,
+        null: true, scopes: [:api, :ai_workflows],
         description: 'Created work item.'
+
+      field :errors, [GraphQL::Types::String],
+        null: false,
+        scopes: [:api, :ai_workflows],
+        description: 'Errors encountered during the mutation.'
 
       def ready?(**args)
         if args.slice(:project_path, :namespace_path)&.length != 1

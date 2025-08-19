@@ -16,7 +16,9 @@ import { __, s__, sprintf } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getJobQuery from '../graphql/queries/get_job.query.graphql';
+import jobCiStatusUpdatedSubscription from '../graphql/subscriptions/job_ci_status_updated.subscription.graphql';
 
 export default {
   components: {
@@ -33,6 +35,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     projectPath: {
       default: '',
@@ -51,7 +54,6 @@ export default {
   apollo: {
     job: {
       query: getJobQuery,
-      pollInterval: 10000,
       variables() {
         return {
           fullPath: this.projectPath,
@@ -67,6 +69,39 @@ export default {
           captureError: true,
           error,
         });
+      },
+      subscribeToMore: {
+        document: jobCiStatusUpdatedSubscription,
+        variables() {
+          return {
+            jobId: convertToGraphQLId(TYPENAME_CI_BUILD, this.jobId),
+          };
+        },
+        skip() {
+          // ensure we have job data before updateQuery is called
+          return !this.jobId || !this.job;
+        },
+        updateQuery(
+          previousData,
+          {
+            subscriptionData: {
+              data: { ciJobStatusUpdated },
+            },
+          },
+        ) {
+          if (ciJobStatusUpdated) {
+            return {
+              project: {
+                ...previousData.project,
+                job: {
+                  ...previousData.project.job,
+                  detailedStatus: ciJobStatusUpdated.detailedStatus,
+                },
+              },
+            };
+          }
+          return previousData;
+        },
       },
     },
   },

@@ -22,7 +22,8 @@ Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-an
 
 {{< /history >}}
 
-Get the list of all instance-level variables.
+Get the list of all instance-level variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
+parameters to control the pagination of results.
 
 ```plaintext
 GET /admin/ci/variables

@@ -96,8 +96,8 @@ class PartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.1]
 
   def up
     partition_table_by_int_range(
-      'merge_request_diff_commits', 
-      'merge_request_diff_id', 
+      'merge_request_diff_commits',
+      'merge_request_diff_id',
       partition_size: 10_000_000,
       primary_key: %w[merge_request_diff_id relative_order]
     )

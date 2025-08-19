@@ -18,9 +18,9 @@ RSpec.describe ::API::Helpers::Packages::Npm, feature_category: :package_registr
     end
   end
 
-  describe '#enqueue_sync_metadata_cache_worker' do
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
-      subject { object.enqueue_sync_metadata_cache_worker(project, package_name) }
+  describe '#enqueue_sync_npm_metadata_cache_worker' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
+      subject { object.enqueue_sync_npm_metadata_cache_worker(project, package_name) }
     end
   end
 end

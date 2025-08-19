@@ -1,12 +1,12 @@
-import { GlDrawer, GlInfiniteScroll } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { GlDrawer } from '@gitlab/ui';
+import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { mockTracking, unmockTracking, triggerEvent } from 'helpers/tracking_helper';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import App from '~/whats_new/components/app.vue';
-import SkeletonLoader from '~/whats_new/components/skeleton_loader.vue';
+import FeaturedCarousel from '~/whats_new/components/featured_carousel.vue';
 import { getDrawerBodyHeight } from '~/whats_new/utils/get_drawer_body_height';
 
 const MOCK_DRAWER_BODY_HEIGHT = 42;
@@ -21,17 +21,18 @@ describe('App', () => {
   let wrapper;
   let store;
   let actions;
-  let state;
   let trackingSpy;
 
   const withClose = jest.fn();
 
-  const buildProps = () => ({
-    withClose,
-    versionDigest: 'version-digest',
-  });
+  const createWrapper = (options = {}) => {
+    const {
+      glFeatures = {},
+      shallow = false,
+      includeWithClose = false,
+      stateOverrides = {},
+    } = options;
 
-  const buildWrapper = () => {
     actions = {
       openDrawer: jest.fn(),
       closeDrawer: jest.fn(),
@@ -39,50 +40,85 @@ describe('App', () => {
       setDrawerBodyHeight: jest.fn(),
     };
 
-    state = {
-      open: true,
-      features: [],
-      drawerBodyHeight: null,
-      fetching: false,
-    };
-
     store = new Vuex.Store({
       actions,
-      state,
-    });
-
-    wrapper = mount(App, {
-      store,
-      propsData: buildProps(),
-      directives: {
-        GlResizeObserver: createMockDirective('gl-resize-observer'),
+      state: {
+        open: false,
+        features: [],
+        drawerBodyHeight: MOCK_DRAWER_BODY_HEIGHT,
+        fetching: false,
+        pageInfo: {},
+        ...stateOverrides,
       },
-      attachTo: document.body,
     });
-  };
 
-  const getDrawer = () => wrapper.findComponent(GlDrawer);
-  const findInfiniteScroll = () => wrapper.findComponent(GlInfiniteScroll);
-  const findSkeletonLoader = () => wrapper.findComponent(SkeletonLoader);
+    const mountOptions = {
+      store,
+      propsData: {
+        versionDigest: 'version-digest',
+        ...(includeWithClose && { withClose }),
+      },
+      ...(Object.keys(glFeatures).length > 0 && { provide: { glFeatures } }),
+      ...(!shallow && {
+        directives: {
+          GlResizeObserver: createMockDirective('gl-resize-observer'),
+        },
+        attachTo: document.body,
+      }),
+    };
+
+    wrapper = shallow ? shallowMount(App, mountOptions) : mount(App, mountOptions);
+  };
 
   const setup = async (features, fetching) => {
     document.body.dataset.page = 'test-page';
     document.body.dataset.namespaceId = 'namespace-840';
 
     trackingSpy = mockTracking('_category_', null, jest.spyOn);
-    buildWrapper();
 
-    store.state.features = features;
-    store.state.fetching = fetching;
-    store.state.drawerBodyHeight = MOCK_DRAWER_BODY_HEIGHT;
+    createWrapper({
+      includeWithClose: true,
+      stateOverrides: {
+        open: true,
+        features,
+        fetching,
+      },
+    });
+
     await nextTick();
   };
 
+  const getDrawer = () => wrapper.findComponent(GlDrawer);
+  const findFeaturedCarousel = () => wrapper.findComponent(FeaturedCarousel);
+
   afterEach(() => {
-    unmockTracking();
+    if (trackingSpy) {
+      unmockTracking();
+      trackingSpy = null;
+    }
   });
 
-  describe('gitlab.com', () => {
+  describe('with feature flag `whatsNewFeaturedCarousel`', () => {
+    it('when enabled it renders FeaturedCarousel component', () => {
+      createWrapper({
+        glFeatures: { whatsNewFeaturedCarousel: true },
+        shallow: true,
+      });
+
+      expect(findFeaturedCarousel().exists()).toBe(true);
+    });
+
+    it('when disabled it does not render FeaturedCarousel component', () => {
+      createWrapper({
+        glFeatures: { whatsNewFeaturedCarousel: false },
+        shallow: true,
+      });
+
+      expect(findFeaturedCarousel().exists()).toBe(false);
+    });
+  });
+
+  describe('drawer behavior', () => {
     describe('with features', () => {
       beforeEach(() => {
         setup(
@@ -127,60 +163,7 @@ describe('App', () => {
 
       it('renders features when provided via ajax', () => {
         expect(actions.fetchItems).toHaveBeenCalled();
-        expect(wrapper.find('[data-testid="feature-name"]').text()).toBe('Whats New Drawer');
-      });
-
-      it('send an event when feature item is clicked', () => {
-        trackingSpy = mockTracking('_category_', wrapper.element, jest.spyOn);
-
-        const link = wrapper.find('[data-testid="whats-new-item-link"]');
-        triggerEvent(link.element);
-
-        expect(trackingSpy.mock.calls[1]).toMatchObject([
-          '_category_',
-          'click_whats_new_item',
-          {
-            label: 'Whats New Drawer',
-            property: 'www.url.com',
-          },
-        ]);
-      });
-
-      it('renders infinite scroll', () => {
-        const scroll = findInfiniteScroll();
-        const skeletonLoader = findSkeletonLoader();
-
-        expect(skeletonLoader.exists()).toBe(false);
-
-        expect(scroll.props()).toMatchObject({
-          fetchedItems: store.state.features.length,
-          maxListHeight: MOCK_DRAWER_BODY_HEIGHT,
-        });
-      });
-
-      describe('bottomReached', () => {
-        const emitBottomReached = () => findInfiniteScroll().vm.$emit('bottomReached');
-
-        beforeEach(() => {
-          actions.fetchItems.mockClear();
-        });
-
-        it('when nextPage exists it calls fetchItems', () => {
-          store.state.pageInfo = { nextPage: 840 };
-          emitBottomReached();
-
-          expect(actions.fetchItems).toHaveBeenCalledWith(expect.anything(), {
-            page: 840,
-            versionDigest: 'version-digest',
-          });
-        });
-
-        it('when nextPage does not exist it does not call fetchItems', () => {
-          store.state.pageInfo = { nextPage: null };
-          emitBottomReached();
-
-          expect(actions.fetchItems).not.toHaveBeenCalled();
-        });
+        expect(wrapper.find('[data-testid="toggle-feature-name"]').text()).toBe('Whats New Drawer');
       });
 
       it('calls getDrawerBodyHeight and setDrawerBodyHeight when resize directive is triggered', () => {
@@ -194,32 +177,6 @@ describe('App', () => {
           expect.any(Object),
           MOCK_DRAWER_BODY_HEIGHT,
         );
-      });
-    });
-
-    describe('without features', () => {
-      it('renders skeleton loader when fetching', async () => {
-        setup([], true);
-
-        await nextTick();
-
-        const scroll = findInfiniteScroll();
-        const skeletonLoader = findSkeletonLoader();
-
-        expect(scroll.exists()).toBe(false);
-        expect(skeletonLoader.exists()).toBe(true);
-      });
-
-      it('renders infinite scroll loader when NOT fetching', async () => {
-        setup([], false);
-
-        await nextTick();
-
-        const scroll = findInfiniteScroll();
-        const skeletonLoader = findSkeletonLoader();
-
-        expect(scroll.exists()).toBe(true);
-        expect(skeletonLoader.exists()).toBe(false);
       });
     });
 

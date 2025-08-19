@@ -21,6 +21,7 @@ module RuboCop
 
         MESSAGE = "Don't use 'page' as a name for a Page Object. Use `%s` instead."
 
+        # @!method ambiguous_page?(node)
         def_node_matcher :ambiguous_page?, <<~PATTERN
           (block
             (send

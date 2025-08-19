@@ -16,7 +16,7 @@ DAST site and scanner profiles save information related to your applications and
 Once you define a profile, you can use it for pipeline and on-demand DAST jobs.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
-and DAST site profiles are included in the [audit log](../../../administration/audit_event_reports.md).
+and DAST site profiles are included in the [audit log](../../../administration/compliance/audit_event_reports.md).
 
 ## Site profile
 

@@ -15,6 +15,7 @@
     - .with-ci-node-image
   variables:
     SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false" # skip bundle install from default prepare_build script
     WEBPACK_VENDOR_DLL: "true"
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
@@ -22,10 +23,7 @@
     WEBPACK_COMPILE_LOG_PATH: "tmp/webpack-output.log"
   stage: prepare
   needs:
-    - job: cache:ruby-gems
-      optional: true
-    - job: cache:node-modules
-      optional: true
+    - cache:assets-hash
   script:
     - run_with_custom_exit_code scripts/compile_assets
     - run_with_custom_exit_code scripts/build_assets_image
@@ -47,6 +45,7 @@ compile-production-assets:
     - !reference [.compile-assets-base, before_script]
     - !reference [.buildx-setup, before_script]
   after_script:
+    - !reference [.compile-assets-base, after_script]
     - source scripts/utils.sh
     - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
   artifacts:
@@ -55,9 +54,9 @@ compile-production-assets:
     paths:
       # These assets are used in:
       # - GitLab UI for integration tests: https://gitlab.com/gitlab-org/gitlab-ui/-/blob/e88493b3c855aea30bf60baee692a64606b0eb1e/.storybook/preview-head.pug#L1
-      - cached-assets-hash.txt
       - public/assets/
-      - "${WEBPACK_COMPILE_LOG_PATH}"
+      - ${WEBPACK_COMPILE_LOG_PATH}
+      - ${GLCI_GITLAB_ASSETS_HASH_FILE}
     when: always
     reports:
       dotenv: $GLCI_ASSETS_TAG_ENV_FILE_PATH
@@ -104,31 +103,8 @@ build-vite-prod:
 gdk:compile-test-assets:
   extends:
     - compile-test-assets
+    - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
-
-update-assets-compile-production-cache:
-  extends:
-    - compile-production-assets
-    - .assets-compile-cache-push
-    - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
-
-update-assets-compile-test-cache:
-  extends:
-    - compile-test-assets
-    - .assets-compile-cache-push
-    - .shared:rules:update-cache
-  artifacts: {}  # This job's purpose is only to update the cache.
-
-update-storybook-yarn-cache:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .storybook-yarn-cache-push
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - yarn_install_script_storybook
 
 retrieve-frontend-fixtures:
   variables:
@@ -444,7 +420,7 @@ jest predictive:
   script:
     - |
       function jest_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --predictive
         fi
       }
@@ -463,7 +439,7 @@ jest-with-fixtures predictive:
   script:
     - |
       function jest_with_fixtures_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --predictive --fixtures
         fi
       }
@@ -480,7 +456,7 @@ jest vue3 predictive:
   script:
     - |
       function jest_vue3_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --vue3 --predictive
         fi
       }
@@ -497,7 +473,7 @@ jest-with-fixtures vue3 predictive:
   script:
     - |
       function jest_with_fixtures_vue3_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
         fi
       }
@@ -515,7 +491,7 @@ jest vue3 check quarantined predictive:
   script:
     - |
       function jest_vue_check_quarantined_predictive() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           ./scripts/frontend/check_jest_vue3_quarantine.js
         fi
       }
@@ -545,7 +521,7 @@ jest vue3 check quarantined:
   script:
     - |
       function jest_vue3_check_quarantined() {
-        if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then
+        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
           ./scripts/frontend/check_jest_vue3_quarantine.js --all
         fi
       }
@@ -677,7 +653,7 @@ webpack-dev-server:
 compile-storybook:
   extends:
     - .frontend-test-base
-    - .storybook-yarn-cache
+    - .storybook-yarn-cache-pull-push
     - .repo-from-artifacts
     - .frontend:rules:compile-storybook
   stage: pages
@@ -695,3 +671,33 @@ compile-storybook:
   script:
     - yarn_install_script_storybook
     - yarn run storybook:build
+
+test-storybook:
+  extends:
+    - .frontend-test-base
+    - .storybook-yarn-cache
+    - .repo-from-artifacts
+    - .frontend:rules:test-storybook
+  stage: test-frontend
+  needs:
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+    - !reference [.with-graphql-schema-dump-needs, needs]
+  allow_failure: true
+  timeout: 30m
+  artifacts:
+    name: storybook-test-results
+    access: developer
+    expire_in: 31d
+    when: always
+    paths:
+      - storybook/storybook-results.json
+  script:
+    - yarn_install_script_storybook
+    - yarn --cwd ./storybook playwright install --with-deps chromium
+    - yarn run storybook:start &
+    - STORYBOOK_PID=$!
+    - until curl -f http://localhost:6006 >/dev/null 2>&1; do sleep 1; done  # Wait for Storybook to start
+    - yarn run storybook:dev:test
+    - kill $STORYBOOK_PID || true

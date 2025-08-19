@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /* https://github.com/richleland/pygments-css/blob/master/monokai.css */
 
 @import '../common';
@@ -14,7 +16,7 @@ $monokai-line-num-color: rgba(255, 255, 255, 0.3);
 $monokai-line-num-color-new: #707565;
 $monokai-line-num-color-old: #7e736f;
 $monokai-line-empty-bg: #49483e;
-$monokai-line-empty-border: darken($monokai-line-empty-bg, 15%);
+$monokai-line-empty-border: color.adjust($monokai-line-empty-bg, $lightness: -15%);
 $monokai-diff-border: #808080;
 $monokai-highlight-bg: #ffe792;
 $monokai-expanded-bg: #3e3e3e;
@@ -105,6 +107,7 @@ $monokai-gh: #75715e;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
   --code-background: #{$monokai-bg};
+  --code-empty-background: #{color.adjust($monokai-bg, $lightness: -1.5%)};
 
   --code-line-number-background-color: #{$monokai-bg};
   --code-line-number-color: #{$monokai-line-num-color};
@@ -418,3 +421,5 @@ $monokai-gh: #75715e;
   .gi { color: $monokai-gi; } /* Generic.Inserted & Diff Inserted */
   .gh { color: $monokai-gh; } /* Generic.Heading */
 }
+
+@include merge-conflicts-syntax-highlight-theme('monokai');

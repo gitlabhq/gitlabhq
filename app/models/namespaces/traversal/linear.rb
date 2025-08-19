@@ -282,7 +282,7 @@ module Namespaces
           # The SELECT includes an extra depth attribute. We wrap the SQL in a
           # standard SELECT to avoid mismatched attribute errors when trying to
           # chain future ActiveRelation commands, and retain the ordering.
-          skope = self.class
+          skope = skope.klass
             .from(skope, self.class.table_name)
             .select(skope.arel_table[Arel.star])
             .order(depth: hierarchy_order)

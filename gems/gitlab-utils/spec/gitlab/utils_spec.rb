@@ -771,4 +771,40 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
       expect(actual).to eq(expected)
     end
   end
+
+  describe '.param_key' do
+    where(:name, :result) do
+      'User'                                | 'user'
+      'SecureFile'                          | 'secure_file'
+      'Ci::SecureFile'                      | 'ci_secure_file'
+      'Gitlab::Ci::Reports::Security::Flag' | 'gitlab_ci_reports_security_flag'
+      'A::B::SomeClass'                     | 'a_b_some_class'
+      'HTTPSConnection'                     | 'https_connection'
+      'API::V4::ProjectsController'         | 'api_v4_projects_controller'
+      'OAuth2Provider'                      | 'o_auth2_provider'
+      'Special_Module::TestClass'           | 'special_module_test_class'
+    end
+
+    with_them do
+      context 'with defined classes' do
+        before do
+          stub_const(name, Class.new)
+        end
+
+        let(:klass) { name.constantize }
+
+        it 'converts class name to snake_case' do
+          expect(described_class.param_key(klass)).to eq(result)
+        end
+      end
+    end
+
+    context 'with anonymous classes' do
+      let(:klass) { Class.new }
+
+      it 'raises an error for anonymous classes' do
+        expect { described_class.param_key(klass) }.to raise_error(NoMethodError, /undefined method.*for nil/)
+      end
+    end
+  end
 end

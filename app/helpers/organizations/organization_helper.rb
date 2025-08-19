@@ -47,12 +47,6 @@ module Organizations
       }.to_json
     end
 
-    def home_organization_setting_app_data
-      {
-        initial_selection: current_user.home_organization_id
-      }.to_json
-    end
-
     def organization_groups_new_app_data(organization)
       {
         default_visibility_level: default_group_visibility
@@ -103,7 +97,7 @@ module Organizations
     def shared_new_settings_general_app_data
       {
         preview_markdown_path: preview_markdown_organizations_path,
-        organizations_path: organizations_path,
+        organizations_path: organizations_scope_path,
         root_url: root_url
       }
     end

@@ -25,6 +25,14 @@ To build and launch Storybook locally, in the root directory of the `gitlab` pro
    yarn storybook:start
    ```
 
+1. Test Storybook entries:
+
+   ```shell
+   yarn storybook:dev:test
+   ```
+
+Discover more details about automated accessibility tests with [Accessibility Storybook tests](accessibility/storybook_tests.md).
+
 ## Adding components to Storybook
 
 Stories can be added for any Vue component in the `gitlab` repository.

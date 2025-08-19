@@ -26,6 +26,11 @@ module Resolvers
       description: 'Include labels from ancestor groups.',
       default_value: false
 
+    argument :archived, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Filters archived labels. Defaults to false.'
+
     before_connection_authorization do |nodes, current_user|
       Preloaders::LabelsPreloader.new(nodes, current_user).preload_all
     end

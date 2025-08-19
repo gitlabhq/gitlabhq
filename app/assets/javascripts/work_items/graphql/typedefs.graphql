@@ -133,8 +133,33 @@ type ActiveDesignDiscussion {
   source: String
 }
 
+type LocalWorkItemStatus {
+  id: ID
+  name: String
+  description: String
+  iconName: String
+  color: String
+  position: Int
+}
+
+type LocalLifecycle {
+  id: ID
+  name: String
+  defaultClosedStatus: LocalWorkItemStatus
+  defaultDuplicateStatus: LocalWorkItemStatus
+  defaultOpenStatus: LocalWorkItemStatus
+  workItemTypes: [WorkItemType]
+  statuses: [LocalWorkItemStatus]
+}
+
+type LocalNamespace {
+  id: ID
+  lifecycle: LocalLifecycle
+}
+
 extend type Query {
   activeDesignDiscussion: ActiveDesignDiscussion
+  namespaceDefaultLifecycle: LocalNamespace
 }
 
 type LocalWorkItemChildIsExpanded {

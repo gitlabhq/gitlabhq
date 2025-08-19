@@ -16,6 +16,7 @@ title: CI/CD pipelines in the VS Code extension
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1895) in GitLab VS Code extension 6.14.0 for GitLab 18.1 and later.
+- Added [downstream pipeline logs](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1895) for GitLab 18.1 and later.
 
 {{< /history >}}
 
@@ -80,6 +81,11 @@ To view the output for a CI/CD job for your current branch:
 1. Select your desired job to open it in a new VS Code tab:
 
    ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](img/view_job_output_v17_6.png)
+
+   The downstream pipelines appear under the pipelines. To open a downstream pipeline job log:
+
+   1. Select the arrow icons to expand or collapse the visibility of the downstream pipelines.
+   1. Select a downstream pipeline. The job log opens in a new VS Code tab.
 
 ### Test GitLab CI/CD configuration
 

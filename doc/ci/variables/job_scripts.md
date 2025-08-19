@@ -285,3 +285,5 @@ job:
   script:
     - 'eval "$LS_CMD"'  # Executes 'ls -al $TMP_DIR'
 ```
+
+This does not work when [passing a CI/CD variable to a downstream pipeline](../pipelines/downstream_pipelines_troubleshooting.md#variable-with--character-does-not-get-passed-to-a-downstream-pipeline-properly).

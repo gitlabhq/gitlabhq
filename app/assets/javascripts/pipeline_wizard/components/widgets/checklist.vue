@@ -27,11 +27,6 @@ export default {
       validator: (v) => v.every(isValidItemDefinition),
       default: () => [],
     },
-    validate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     id: {
       type: String,
       required: false,

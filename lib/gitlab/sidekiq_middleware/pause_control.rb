@@ -12,6 +12,7 @@ module Gitlab
         zoekt: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Zoekt,
         none: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::None,
         advanced_search: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::AdvancedSearch,
+        active_context: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::ActiveContext,
         deprecated: ::Gitlab::SidekiqMiddleware::PauseControl::Strategies::Deprecated
       }.freeze
 

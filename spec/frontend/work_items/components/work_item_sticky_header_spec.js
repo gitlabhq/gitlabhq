@@ -26,6 +26,7 @@ describe('WorkItemStickyHeader', () => {
     duplicatedToWorkItemUrl = null,
     promotedToEpicUrl = null,
     slots = {},
+    isDrawer = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
@@ -40,11 +41,11 @@ describe('WorkItemStickyHeader', () => {
           promotedToEpicUrl,
         }).data.workItem,
         isStickyHeaderShowing: true,
-        workItemNotificationsSubscribed: true,
         updateInProgress: false,
         showWorkItemCurrentUserTodos: true,
         currentUserTodos: [],
         workItemState: STATE_OPEN,
+        isDrawer,
       },
       provide: {
         glFeatures: {
@@ -104,6 +105,28 @@ describe('WorkItemStickyHeader', () => {
   it('renders the state badge', () => {
     createComponent();
     expect(findWorkItemStateBadge().exists()).toBe(true);
+  });
+
+  describe('positioning classes', () => {
+    it('applies absolute positioning classes when isDrawer is true', () => {
+      createComponent({ isDrawer: true });
+
+      const stickyHeader = findStickyHeader();
+      expect(stickyHeader.classes()).toContain('gl-absolute');
+      expect(stickyHeader.classes()).toContain('gl-left-0');
+      expect(stickyHeader.classes()).toContain('gl-top-10');
+      expect(stickyHeader.classes()).not.toContain('gl-fixed');
+    });
+
+    it('applies fixed positioning classes when isDrawer is false', () => {
+      createComponent({ isDrawer: false });
+
+      const stickyHeader = findStickyHeader();
+      expect(stickyHeader.classes()).toContain('gl-fixed');
+      expect(stickyHeader.classes()).not.toContain('gl-absolute');
+      expect(stickyHeader.classes()).not.toContain('gl-left-0');
+      expect(stickyHeader.classes()).not.toContain('gl-top-10');
+    });
   });
 
   describe('edit button', () => {

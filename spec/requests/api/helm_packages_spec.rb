@@ -31,6 +31,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     let(:channel) { 'stable' }
     let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
+    it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
+      subject(:execute) { get api(url) }
+    end
+
     context 'with a project id' do
       it_behaves_like 'handling helm chart index requests'
     end
@@ -79,6 +83,42 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
           api_request
 
           expect(response.body).to include("appVersion: #{expected_app_version}")
+        end
+      end
+    end
+
+    context 'when metadata cache exists' do
+      subject(:api_request) { get api(url) }
+
+      let_it_be(:channel) { 'stable' }
+      let_it_be(:metadata_cache) { create(:helm_metadata_cache, project: project, channel: channel) }
+
+      it 'returns response from metadata cache' do
+        expect(metadata_cache).to receive(:file).and_call_original
+
+        api_request
+
+        expect(response.body).to eq(metadata_cache.file.read)
+      end
+
+      it 'updates last_downloaded_at' do
+        freeze_time do
+          api_request
+
+          metadata_cache.reload
+          expect(metadata_cache.last_downloaded_at).to eq(Time.zone.now.utc.strftime('%Y-%m-%dT%H:%M:%S.%NZ'))
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(packages_helm_metadata_cache: false)
+        end
+
+        it 'does not take response from metadata cache' do
+          expect(metadata_cache).not_to receive(:file)
+
+          api_request
         end
       end
     end
@@ -136,6 +176,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
       it_behaves_like 'rejects helm packages access', :maintainer, :not_found, '{"message":"404 Format prov Not Found"}'
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/helm/api/:channel/charts/authorize' do
@@ -185,6 +229,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     end
 
     it_behaves_like 'rejects helm access with unknown project id'
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:id/packages/helm/api/:channel/charts' do
@@ -274,6 +322,10 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'returning response status', :bad_request
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
   end
 end

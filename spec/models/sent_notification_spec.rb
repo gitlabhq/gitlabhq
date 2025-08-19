@@ -120,6 +120,44 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
   end
 
+  describe '.for' do
+    let_it_be(:sent_notification) { create(:sent_notification, project: project) }
+
+    subject { described_class.for(reply_key) }
+
+    context 'when reply key uses old format' do
+      let(:reply_key) { sent_notification.reply_key }
+
+      it { is_expected.to eq(sent_notification) }
+
+      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
+        before do
+          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
+        end
+
+        it { is_expected.to eq(sent_notification) }
+      end
+    end
+
+    context 'when reply key uses partitioned table format' do
+      let(:reply_key) do
+        # TODO: This can be simplified to calling partitioned_reply_key when the FF is removed
+        microseconds = (sent_notification.created_at.to_r * 1_000_000).to_i
+        "i_#{sent_notification.id}-k_#{sent_notification.reply_key}-t_#{microseconds}"
+      end
+
+      it { is_expected.to eq(sent_notification) }
+
+      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
+        before do
+          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '.record' do
     let_it_be(:issue) { create(:issue) }
 
@@ -132,7 +170,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       let!(:issue_email_participant) { create(:issue_email_participant, issue: issue) }
 
       subject(:sent_notification) do
-        described_class.record(issue, user.id, described_class.reply_key, {
+        described_class.record(issue, user.id, {
           issue_email_participant: issue_email_participant
         })
       end

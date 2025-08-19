@@ -82,24 +82,6 @@ describe('GroupItemComponent', () => {
       });
     });
 
-    describe('hasAvatar', () => {
-      it('should return boolean value representing if group has any avatar present', () => {
-        const group = { ...mockParentGroupItem };
-
-        group.avatarUrl = null;
-        wrapper = createComponent({ group });
-
-        expect(wrapper.vm.hasAvatar).toBe(false);
-        wrapper.destroy();
-
-        group.avatarUrl = '/uploads/group_avatar.png';
-        wrapper = createComponent({ group });
-
-        expect(wrapper.vm.hasAvatar).toBe(true);
-        wrapper.destroy();
-      });
-    });
-
     describe('isGroup', () => {
       it('should return boolean value representing if group item is of type `group` or not', () => {
         const group = { ...mockParentGroupItem };

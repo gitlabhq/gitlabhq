@@ -22,6 +22,7 @@ module RuboCop
         GITLAB_MIGRATION_CLASS = 'Gitlab::Database::Migration'
         ACTIVERECORD_MIGRATION_CLASS = 'ActiveRecord::Migration'
 
+        # @!method includes_helpers?(node)
         def_node_search :includes_helpers?, <<~PATTERN
         (send nil? :include
           (const

@@ -46,8 +46,15 @@ describe('parse', () => {
     "display": "list",
     "fields": "title",
   },
-  "query": "query GLQL {
-  issues(assigneeUsernames: "root") {
+  "fields": [
+    {
+      "key": "title",
+      "label": "Title",
+      "name": "title",
+    },
+  ],
+  "query": "query GLQL($before: String, $after: String, $limit: Int) {
+  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
       id
       iid
@@ -67,7 +74,20 @@ describe('parse', () => {
   }
 }
 ",
-  "variables": [],
+  "variables": {
+    "after": {
+      "type": "String",
+      "value": null,
+    },
+    "before": {
+      "type": "String",
+      "value": null,
+    },
+    "limit": {
+      "type": "Int",
+      "value": null,
+    },
+  },
 }
 `);
   });
@@ -86,8 +106,25 @@ assignee = currentUser()`),
     "display": "table",
     "fields": "title, assignees, dueDate",
   },
-  "query": "query GLQL {
-  issues(assigneeUsernames: "root") {
+  "fields": [
+    {
+      "key": "title",
+      "label": "Title",
+      "name": "title",
+    },
+    {
+      "key": "assignees",
+      "label": "Assignees",
+      "name": "assignees",
+    },
+    {
+      "key": "dueDate",
+      "label": "Due date",
+      "name": "dueDate",
+    },
+  ],
+  "query": "query GLQL($before: String, $after: String, $limit: Int) {
+  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
       id
       iid
@@ -117,7 +154,20 @@ assignee = currentUser()`),
   }
 }
 ",
-  "variables": [],
+  "variables": {
+    "after": {
+      "type": "String",
+      "value": null,
+    },
+    "before": {
+      "type": "String",
+      "value": null,
+    },
+    "limit": {
+      "type": "Int",
+      "value": null,
+    },
+  },
 }
 `);
   });
@@ -137,8 +187,25 @@ query: assignee = currentUser()
     "fields": "title, assignees, dueDate",
     "limit": 20,
   },
-  "query": "query GLQL {
-  issues(assigneeUsernames: "root", first: 20) {
+  "fields": [
+    {
+      "key": "title",
+      "label": "Title",
+      "name": "title",
+    },
+    {
+      "key": "assignees",
+      "label": "Assignees",
+      "name": "assignees",
+    },
+    {
+      "key": "dueDate",
+      "label": "Due date",
+      "name": "dueDate",
+    },
+  ],
+  "query": "query GLQL($before: String, $after: String, $limit: Int) {
+  issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
       id
       iid
@@ -168,7 +235,20 @@ query: assignee = currentUser()
   }
 }
 ",
-  "variables": [],
+  "variables": {
+    "after": {
+      "type": "String",
+      "value": null,
+    },
+    "before": {
+      "type": "String",
+      "value": null,
+    },
+    "limit": {
+      "type": "Int",
+      "value": null,
+    },
+  },
 }
 `);
   });
@@ -209,8 +289,13 @@ describe('parseQuery', () => {
     const { query: result } = await parseQuery(query, config);
 
     expect(prettify(result)).toMatchInlineSnapshot(`
-"query GLQL {
-  issues(assigneeUsernames: "foobar", first: 50) {
+"query GLQL($before: String, $after: String, $limit: Int) {
+  issues(
+    assigneeUsernames: "foobar"
+    before: $before
+    after: $after
+    first: $limit
+  ) {
     nodes {
       id
       iid
@@ -247,12 +332,14 @@ describe('parseQuery', () => {
     const { query: result } = await parseQuery(query, config);
 
     expect(prettify(result)).toMatchInlineSnapshot(`
-"query GLQL {
+"query GLQL($before: String, $after: String, $limit: Int) {
   project(fullPath: "gitlab-org/gitlab") {
     issues(
       assigneeUsernames: "foobar"
       or: {labelNames: ["bug", "feature"]}
-      first: 50
+      before: $before
+      after: $after
+      first: $limit
     ) {
       nodes {
         id

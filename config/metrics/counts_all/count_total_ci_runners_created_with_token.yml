@@ -3,7 +3,6 @@ key_path: counts.count_total_ci_runners_created_with_token
 description: Count of runners created using a runner registration token
 product_group: runner
 product_categories:
-- fleet_visibility
 - runner
 performance_indicator_type: []
 value_type: number

@@ -7,6 +7,7 @@ import initPipelines from '~/commit/pipelines/pipelines_bundle';
 import MergeRequest from '~/merge_request';
 import CompareApp from '~/merge_requests/components/compare_app.vue';
 import { __ } from '~/locale';
+import { createRapidDiffsApp } from '~/rapid_diffs';
 
 const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
 if (mrNewCompareNode) {
@@ -119,6 +120,7 @@ if (mrNewCompareNode) {
   // eslint-disable-next-line no-new
   new MergeRequest({
     action: mrNewSubmitNode.dataset.mrSubmitAction,
+    createRapidDiffsApp,
   });
   initPipelines();
   initMarkdownEditor();

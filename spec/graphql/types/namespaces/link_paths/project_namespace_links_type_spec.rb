@@ -6,7 +6,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:user, :notification_email) }
 
   subject(:type) { described_class.resolve_type(namespace, {}) }
 
@@ -31,6 +31,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
         "incoming+#{namespace.project.full_path_slug}-#{namespace.project.id}-" \
           "#{user.incoming_email_token}-issue@localhost.com"
       end
+      :user_export_email | lazy { user.notification_email_or_default }
     end
 
     with_them do

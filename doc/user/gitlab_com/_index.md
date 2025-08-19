@@ -167,6 +167,13 @@ operations, like `git clone`. When these limits are exceeded, a
 `fatal: remote error: GitLab is currently unable to handle this request due to load` message is
 returned to the client.
 
+A fetch or clone operation is concurrent when the operation starts before a previous operation finishes.
+
+| Operation               | GitLab.com limit         |
+|:------------------------|:-------------------------|
+| HTTP fetches and clones | 60 concurrent operations |
+| SSH fetches and clones  | 30 concurrent operations |
+
 For administrator documentation, see
 [limit RPC concurrency](../../administration/gitaly/concurrency_limiting.md#limit-rpc-concurrency).
 
@@ -301,29 +308,6 @@ To configure an IP-based firewall, you must allow both [AWS IP address ranges](h
 
 See how to look up [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
-## Logs on GitLab.com
-
-[Fluentd](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#fluentd)
-parses our logs, then sends them to:
-
-- [Stackdriver Logging](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#stackdriver),
-  which stores logs long-term in Google Cold Storage (GCS).
-- [Cloud Pub/Sub](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#cloud-pubsub),
-  which forwards logs to an [Elastic cluster](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#elastic) using [`pubsubbeat`](https://gitlab.com/gitlab-com/runbooks/tree/master/logging/doc#pubsubbeat-vms).
-
-For more information, see our runbooks:
-
-- A [detailed list of what we're logging](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#what-are-we-logging)
-- Our [current log retention policies](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#retention)
-- A [diagram of our logging infrastructure](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/logging#logging-infrastructure-overview)
-
-### Job logs
-
-By default, GitLab does not expire job logs. Job logs are retained indefinitely,
-and can't be configured on GitLab.com to expire. You can erase job logs
-[manually with the Jobs API](../../api/jobs.md#erase-a-job) or by
-[deleting a pipeline](../../ci/pipelines/_index.md#delete-a-pipeline)
-
 ## Maximum number of reviewers and assignees
 
 {{< history >}}
@@ -400,10 +384,11 @@ Settings related to the deletion of projects and groups.
 
 - Delayed group deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven days to 30 days in 18.0.2.
 
 {{< /history >}}
 
-Groups are permanently deleted after a seven-day delay.
+Groups are permanently deleted after a 30-day delay.
 
 See how to [view and restore groups marked for deletion](../group/_index.md#restore-a-group).
 
@@ -413,10 +398,11 @@ See how to [view and restore groups marked for deletion](../group/_index.md#rest
 
 - Delayed project deletion enabled by default for GitLab Premium and GitLab Ultimate in GitLab 16.1.
 - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Increased deletion period](https://gitlab.com/groups/gitlab-org/-/epics/17375) from seven-days to 30 days in 18.0.2.
 
 {{< /history >}}
 
-Projects are permanently deleted after a seven-day delay.
+Projects are permanently deleted after a 30-day delay.
 
 See how to [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
 

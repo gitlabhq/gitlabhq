@@ -112,14 +112,14 @@ curl --fail-with-body \
 - `<registry_id>`: The Maven virtual registry ID.
 - `<upstream_name>`: The upstream registry name.
 - `<upstream_url>`: The Maven upstream URL.
-- `<upstream_username>`: The username to use with the Maven upstream. Required if an `<upstream_password>` is set.
-- `<upstream_password>`: The password to use with the Maven upstream. Required if an `<upstream_username>` is set.
-- `<upstream_cache_validity_hours>`: (optional) The [cache validity period](../_index.md#cache-validity-period) in hours. The default value is `24`. To turn off cache entry checks, set to `0`.
+- `<upstream_username>`: Optional. The username to use with the Maven upstream. Required if an `<upstream_password>` is set.
+- `<upstream_password>`: Optional. The password to use with the Maven upstream. Required if an `<upstream_username>` is set.
+- `<upstream_cache_validity_hours>`: Optional. The [cache validity period](../_index.md#cache-validity-period) in hours. The default value is `24`. To turn off cache entry checks, set to `0`.
   - if the `<upstream_url>` is set to Maven central:
     - You must use the following URL: `https://repo1.maven.org/maven2`
     - The validity period is set to `0` by default. All files on Maven central are immutable.
 
-`<upstream_username>` and `<upstream_password>` are optional. If not set, a public (anonymous) request is used to access the upstream.
+If `<upstream_username>` and `<upstream_password>` are not set, a public (anonymous) request is used to access the upstream.
 
 For more information about other endpoints and examples, like updating the upstream registry position in the list, see the [API](../../../../api/maven_virtual_registries.md#manage-upstream-registries).
 

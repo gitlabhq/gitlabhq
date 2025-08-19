@@ -7,7 +7,6 @@ source "$(dirname "$0")/utils.sh"
 REGISTRY="${CI_REGISTRY}/${CI_PROJECT_PATH}"
 SHA_TAG="${CI_COMMIT_SHA}"
 BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
-STABLE_BRANCH_PATTERN="^[0-9-]+-stable-ee$"
 
 IMAGE="${REGISTRY}/gitlab-qa-gdk"
 

@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin issues labels', feature_category: :team_planning do
+RSpec.describe 'admin issues labels', :with_current_organization, feature_category: :team_planning do
   include Spec::Support::Helpers::ModalHelpers
 
-  let!(:bug_label) { Label.create!(title: 'bug', template: true) }
-  let!(:feature_label) { Label.create!(title: 'feature', template: true) }
+  let!(:bug_label) { create(:admin_label, title: 'bug', organization: current_organization) }
+  let!(:feature_label) { create(:admin_label, title: 'feature', organization: current_organization) }
 
   before do
     admin = create(:admin)

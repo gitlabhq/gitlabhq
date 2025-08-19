@@ -38,14 +38,18 @@ module Gitlab
           def no_pipeline_to_create?
             # If there are security policy pipelines,
             # they will be merged onto the pipeline in PipelineExecutionPolicies::ApplyPolicies
-            stage_names.empty? && !@command.pipeline_policy_context&.has_execution_policy_pipelines?
+            stage_names.empty? && !has_execution_policy_pipelines?
+          end
+
+          def has_execution_policy_pipelines?
+            @command.pipeline_policy_context&.pipeline_execution_context&.has_execution_policy_pipelines?
           end
 
           def stage_names
             # We filter out `.pre/.post` stages, as they alone are not considered
             # a complete pipeline:
             # https://gitlab.com/gitlab-org/gitlab/issues/198518
-            pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::EdgeStagesInjector::EDGES
+            pipeline.stages.map(&:name) - ::Gitlab::Ci::Config::Stages::EDGES
           end
         end
       end

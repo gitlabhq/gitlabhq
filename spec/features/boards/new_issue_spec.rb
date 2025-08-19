@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_management do
+  include ListboxHelpers
+
   let_it_be(:project)        { create(:project, :public) }
   let_it_be(:board)          { create(:board, project: project) }
   let_it_be(:label)          { create(:label, project: project, name: 'Label 1') }
@@ -12,6 +14,10 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
 
   let(:board_list_header) { first('[data-testid="board-list-header"]') }
   let(:project_select_dropdown) { find_by_testid('project-select-dropdown') }
+
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
 
   context 'when issues drawer is disabled' do
     before do
@@ -61,7 +67,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
         end
       end
 
-      it 'creates new issue, places it on top of the list, and opens sidebar' do
+      it 'creates new issue, places it on top of the list, opens drawer, and loads labels in drawer' do
         page.within(first('.board')) do
           click_button 'Create new issue'
         end
@@ -86,27 +92,12 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
           expect(page).to have_link(issue.title, href: /#{issue_path(issue)}/)
         end
 
-        expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
-      end
+        expect(page).to have_selector('[data-testid="work-item-drawer"]')
 
-      it 'successfully loads labels to be added to newly created issue' do
-        page.within(first('.board')) do
-          click_button 'Create new issue'
-        end
-
-        page.within(first('.board-new-issue-form')) do
-          find('.form-control').set('new issue')
-          click_button 'Create issue'
-        end
-
-        wait_for_requests
-
-        within_testid('sidebar-labels') do
+        within_testid('work-item-labels') do
           click_button 'Edit'
 
-          wait_for_requests
-
-          expect(page).to have_content 'Label 1'
+          expect_listbox_item('Label 1')
         end
       end
 

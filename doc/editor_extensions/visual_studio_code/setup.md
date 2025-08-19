@@ -66,3 +66,14 @@ To configure the code security settings, go to **Settings > Extensions > GitLab 
 - To enable SAST scanning of the active file, select the **Enable Real-time SAST scan** checkbox.
 - Optional. To enable SAST scanning of the active file when you save it, select the
   **Enable scanning on file save** checkbox.
+
+### Install pre-release versions of the extension
+
+GitLab publishes pre-release builds of the extension to the VS Code Extension Marketplace.
+
+To install a pre-release build:
+
+1. Open VS Code.
+1. Under **Extensions > GitLab Workflow**, select **Switch to Pre-release Version**.
+1. Select **Restart Extensions**.
+   1. Alternatively **Reload Window** to refresh any outdated webviews after updating.

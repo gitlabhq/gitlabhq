@@ -23,7 +23,7 @@ RSpec.describe 'User searches project settings', :js, feature_category: :groups_
       visit project_settings_integrations_path(project)
     end
 
-    it_behaves_like 'can highlight results', 'third-party applications'
+    it_behaves_like 'can highlight results', 'external applications'
   end
 
   context 'in access tokens page' do

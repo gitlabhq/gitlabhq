@@ -27,8 +27,8 @@ It enables the linter to analyze some of the Pajamas components by mapping them 
 Uncover accessibility problems and ensure that your features stay accessible over time by
 [implementing automated A11Y tests](automated_testing.md).
 
-- [When to add accessibility tests](automated_testing.md#when-to-add-accessibility-tests)
-- [How to add accessibility tests](automated_testing.md#how-to-add-accessibility-tests)
+- [Accessibility Storybook tests](storybook_tests.md)
+- [Accessibility feature tests](feature_tests.md)
 
 ## Accessibility best practices
 

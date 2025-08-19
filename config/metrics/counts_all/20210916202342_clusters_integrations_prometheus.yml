@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.monitor.clusters_integrations_prometheus
 description: Users creating clusters with Prometheus integration enabled in last 28 days.
 product_group: platform_insights
 value_type: number
-status: active
+status: removed
 time_frame: all
 data_source: database
 tiers:
@@ -14,3 +14,5 @@ tiers:
 performance_indicator_type: []
 milestone: "14.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199217
+milestone_removed: "18.3"

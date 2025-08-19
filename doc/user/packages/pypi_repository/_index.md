@@ -297,7 +297,7 @@ If this is a private registry, you can authenticate in a couple of ways. For exa
 - Using your `requirements.txt` file:
 
   ```plaintext
-  --extra-index-url https://__token__:<personal_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
+  --extra-index-url https://gitlab-ci-token:<personal_token>@gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple
   package-name==1.0.0
   ```
 
@@ -305,7 +305,7 @@ If this is a private registry, you can authenticate in a couple of ways. For exa
 
   ```plaintext
   machine gitlab.example.com
-  login __token__
+  login gitlab-ci-token
   password <personal_token>
   ```
 

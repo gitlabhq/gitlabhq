@@ -72,12 +72,20 @@ export default class FormErrorTracker {
     return FormErrorTracker.inputErrorMessage(element);
   }
 
+  static formattedLabel(fieldName) {
+    return `${fieldName}_is_invalid`;
+  }
+
   static inputErrorMessage(element) {
     return convertToSnakeCase(element.validationMessage);
   }
 
   static action(element) {
-    return `track_${element.dataset.trackActionForErrors}_error`;
+    return FormErrorTracker.formattedAction(element.dataset.trackActionForErrors);
+  }
+
+  static formattedAction(baseActionName) {
+    return `track_${baseActionName}_error`;
   }
 
   static label(element, message) {

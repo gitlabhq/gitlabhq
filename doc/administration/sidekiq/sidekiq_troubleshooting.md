@@ -236,7 +236,7 @@ It requires at least the `SYS_PTRACE` capability, otherwise it terminates with a
 
 {{< tabs >}}
 
-::: TabTitle Kubernetes
+{{< tab title="Kubernetes" >}}
 
 ```yaml
 securityContext:
@@ -244,6 +244,8 @@ securityContext:
     add:
       - SYS_PTRACE
 ```
+
+{{< /tab >}}
 
 {{< tab title="Docker" >}}
 
@@ -537,21 +539,11 @@ that proper rollback of transactions is implemented.
 Gitlab::SidekiqDaemon::Monitor.cancel_job('job-id')
 ```
 
-> This requires the Sidekiq to be run with `SIDEKIQ_MONITOR_WORKER=1`
-> environment variable.
+This requires the Sidekiq to be run with `SIDEKIQ_MONITOR_WORKER=1`
+environment variable.
 
 To perform of the interrupt we use `Thread.raise` which
-has number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and Thread.raise is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/):
-
-> This is where the implications get interesting, and terrifying. This means that an exception can get raised:
->
-> - during a network request (ok, as long as the surrounding code is prepared to catch Timeout::Error)
-> - during the cleanup for the network request
-> - during a rescue block
-> - while creating an object to save to the database afterwards
-> - in any of your code, regardless of whether it could have possibly raised an exception before
->
-> Nobody writes code to defend against an exception being raised on literally any line. That's not even possible. So Thread.raise is basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that's unlikely :)
+has number of drawbacks, as mentioned in [Why Ruby's Timeout is dangerous (and `Thread.raise` is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/#timeout-how-it-works-and-why-thread-raise-is-terrifying).
 
 ## Manually trigger a cron job
 

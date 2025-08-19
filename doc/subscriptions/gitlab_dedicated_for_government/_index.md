@@ -136,7 +136,7 @@ The following GitLab application features are not available:
 - Reply-by email
 - Service Desk
 - Some GitLab Duo AI capabilities
-  - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
+  - View the [list of AI features to see which ones are supported](../../user/gitlab_duo/_index.md).
   - For more information, see [category direction - GitLab Dedicated](https://about.gitlab.com/direction/gitlab_dedicated/#supporting-ai-features-on-gitlab-dedicated).
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Any functionality or feature behind a Feature Flag that is toggled `off` by default.

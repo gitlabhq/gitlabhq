@@ -12,7 +12,7 @@
     .js-gitlab-version-check-badge{ data: { "size": "md", "actionable": "true", "version": gitlab_version_check.to_json } }
 
 - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-  %p.slead
+  %p.gl-mb-4.gl-leading-24
     = _('GitLab is open source software to collaborate on code.')
     %br
     = _('Manage git repositories with fine-grained access controls that keep your code secure.')
@@ -23,7 +23,7 @@
     %br
     = _('Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.')
     %br
-    - link_to_promo = link_to(promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
+    - link_to_promo = link_to(::Gitlab::Saas.promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer')
     = _("Read more about GitLab at %{link_to_promo}.").html_safe % { link_to_promo: link_to_promo }
 
 %p= link_to _('Check the current instance configuration '), help_instance_configuration_url
@@ -46,5 +46,5 @@
           %button.gl-border-none.gl-rounded-none.gl-p-0.btn-link.gl-button.js-trigger-shortcut{ type: 'button', class: "!gl-bg-transparent !gl-outline-none !gl-shadow-none" }
             = _('Use shortcuts')
         - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-          %li= link_to _('Get a support subscription'), "#{ApplicationHelper.promo_url}/pricing/", { class: '!gl-text-link' }
-          %li= link_to _('Compare GitLab editions'), "#{ApplicationHelper.promo_url}/features/#compare", { class: '!gl-text-link' }
+          %li= link_to _('Get a support subscription'), promo_pricing_url, { class: '!gl-text-link' }
+          %li= link_to _('Compare GitLab editions'), promo_url(path: '/features/', anchor: 'compare'), { class: '!gl-text-link' }

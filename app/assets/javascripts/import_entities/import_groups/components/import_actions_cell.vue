@@ -29,11 +29,6 @@ export default {
     anchor: 'configuration',
   }),
   props: {
-    id: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     isFinished: {
       type: Boolean,
       required: true,

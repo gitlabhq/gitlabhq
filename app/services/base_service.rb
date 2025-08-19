@@ -11,6 +11,8 @@ class BaseService
   include BaseServiceUtility
   include Gitlab::Experiment::Dsl
 
+  UnauthorizedError = ServiceResponse.error(message: 'You are not authorized to perform this action')
+
   attr_accessor :project, :current_user, :params
 
   def initialize(project, user = nil, params = {})

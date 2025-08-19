@@ -17,6 +17,10 @@ class GroupChildEntity < Grape::Entity
     can_edit?
   end
 
+  expose :can_archive do |_instance|
+    can_archive?
+  end
+
   expose :edit_path do |instance|
     # We know `type` will be one either `project` or `group`.
     # The `edit_polymorphic_path` helper would try to call the path helper
@@ -51,7 +55,9 @@ class GroupChildEntity < Grape::Entity
   # Project only attributes
   expose :last_activity_at, if: ->(instance) { project? }
 
-  expose :star_count, :archived, if: ->(_instance, _options) { project? }
+  expose :star_count, if: ->(_instance, _options) { project? }
+
+  expose :self_or_ancestors_archived?, as: :archived
 
   # Group only attributes
   expose :children_count, :parent_id, unless: ->(_instance, _options) { project? }
@@ -139,6 +145,13 @@ class GroupChildEntity < Grape::Entity
     else
       can?(request.current_user, :admin_group, object)
     end
+  end
+
+  def can_archive?
+    return false unless request.try(:current_user)
+
+    ability = project? ? :archive_project : :archive_group
+    can?(request.current_user, ability, object)
   end
 
   def marked_for_deletion_on

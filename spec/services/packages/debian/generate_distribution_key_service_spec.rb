@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Packages::Debian::GenerateDistributionKeyService, feature_category: :package_registry do
   let(:params) { {} }
 
-  subject { described_class.new(params: params) }
-
   let(:response) { subject.execute }
+
+  subject { described_class.new(params: params) }
 
   it 'returns an Hash', :aggregate_failures do
     expect(GPGME::Ctx).to receive(:new).with(armor: true, offline: true).and_call_original

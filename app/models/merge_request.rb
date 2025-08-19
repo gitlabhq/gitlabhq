@@ -39,6 +39,8 @@ class MergeRequest < ApplicationRecord
     updated_by_id_convert_to_bigint
   ], remove_with: '18.3', remove_after: '2025-07-17'
 
+  ignore_column :sprint_id, remove_with: '18.5', remove_after: '2025-09-18'
+
   extend ::Gitlab::Utils::Override
 
   sha_attribute :squash_commit_sha
@@ -72,7 +74,12 @@ class MergeRequest < ApplicationRecord
     -> { regular }, inverse_of: :merge_request
   has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
-
+  has_many :generated_ref_commits,
+    primary_key: [:iid, :target_project_id],
+    class_name: 'MergeRequests::GeneratedRefCommit',
+    foreign_key: :merge_request_iid,
+    inverse_of: :merge_request,
+    query_constraints: [:merge_request_iid, :project_id]
   has_one :merge_request_diff,
     -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
   has_one :merge_head_diff,
@@ -329,6 +336,7 @@ class MergeRequest < ApplicationRecord
   scope :by_source_or_target_branch, ->(branch_name) do
     where("source_branch = :branch OR target_branch = :branch", branch: branch_name)
   end
+
   scope :by_milestone, ->(milestone) { where(milestone_id: milestone) }
   scope :of_projects, ->(ids) { where(target_project_id: ids) }
   scope :from_project, ->(project) { where(source_project_id: project) }
@@ -415,13 +423,12 @@ class MergeRequest < ApplicationRecord
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
       :merge_schedule, :merge_user,
-      target_project: [:project_feature, :project_setting, { project_namespace: :namespace_settings_with_ancestors_inherited_settings }],
+      target_project: [:project_feature, :project_setting, { namespace: :namespace_settings_with_ancestors_inherited_settings }],
       metrics: [:latest_closed_by, :merged_by]
     )
   }
 
   scope :with_csv_entity_associations, -> { preload(:assignees, :approved_by_users, :author, :milestone, metrics: [:merged_by]) }
-  scope :recently_unprepared, -> { where(prepared_at: nil).where(created_at: 2.hours.ago..).order(:created_at, :id) } # id is the tie-breaker
 
   scope :by_target_branch_wildcard, ->(wildcard_branch_name) do
     where("target_branch LIKE ?", ApplicationRecord.sanitize_sql_like(wildcard_branch_name).tr('*', '%'))
@@ -594,7 +601,13 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :without_hidden, -> {
-    where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    if Feature.enabled?(:optimize_merge_requests_banned_users_query, :instance)
+      # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
+      # loading of all banned user IDs for certain queries
+      where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
+    else
+      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
+    end
   }
 
   scope :merged_without_state_event_source, -> {
@@ -1003,7 +1016,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def non_latest_diffs
-    merge_request_diffs.where.not(id: merge_request_diff.id)
+    merge_request_diffs.id_not_in(merge_request_diff.id)
   end
 
   def note_positions_for_paths(paths, user = nil)
@@ -1297,12 +1310,19 @@ class MergeRequest < ApplicationRecord
     merge_request_diff.persisted? || create_merge_request_diff
   end
 
-  def create_merge_request_diff
+  def create_merge_request_diff(preload_gitaly: false)
     fetch_ref!
 
     # n+1: https://gitlab.com/gitlab-org/gitlab/-/issues/19377
     Gitlab::GitalyClient.allow_n_plus_1_calls do
-      merge_request_diffs.create!
+      if preload_gitaly
+        new_diff = merge_request_diffs.build
+        new_diff.preload_gitaly_data
+        new_diff.save!
+      else
+        merge_request_diffs.create!
+      end
+
       reload_merge_request_diff
     end
   end
@@ -1790,6 +1810,14 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Returns the description (without the first line/title) of the first multiline commit
+  def first_multiline_commit_description
+    strong_memoize(:first_multiline_commit_description) do
+      commit = first_multiline_commit
+      commit&.description
+    end
+  end
+
   def squash_on_merge?
     return true if squash_always?
     return false if squash_never?
@@ -1981,7 +2009,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.has_test_reports?
+    else
+      diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:test))
+    end
   end
 
   # rubocop: disable Metrics/AbcSize -- Despite being long, this method is quite straightforward. Splitting it in smaller chunks would likely reduce readability.
@@ -2121,16 +2153,21 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+    if Feature.enabled?(:show_child_security_reports_in_mr_widget, project)
       !!diff_head_pipeline&.complete_or_manual? &&
-        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:sast))&.exists?
+        pipeline_has_report_in_self_or_descendants?(:sast)
     else
       !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
     end
   end
 
   def has_secret_detection_reports?
-    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    if Feature.enabled?(:show_child_security_reports_in_mr_widget, project)
+      !!diff_head_pipeline&.complete_or_manual? &&
+        pipeline_has_report_in_self_or_descendants?(:secret_detection)
+    else
+      !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    end
   end
 
   def compare_sast_reports(current_user)
@@ -2353,8 +2390,8 @@ class MergeRequest < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def update_project_counter_caches
-    Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
+  def invalidate_project_counter_caches
+    Projects::OpenMergeRequestsCountService.new(target_project).delete_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
 
@@ -2660,10 +2697,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def report_type_enabled?(report_type)
+    supported_report_types_for_child_pipelines = [:sast, :secret_detection, :container_scanning]
+
     if report_type == :license_scanning
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
-    elsif report_type == :sast && Feature.enabled?(:show_child_reports_in_mr_page, project)
-      !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))&.exists?
+    elsif supported_report_types_for_child_pipelines.include?(report_type) && Feature.enabled?(:show_child_security_reports_in_mr_widget, project)
+      pipeline_has_report_in_self_or_descendants?(report_type)
     else
       !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
     end
@@ -2675,6 +2714,12 @@ class MergeRequest < ApplicationRecord
     else
       [description, 'false']
     end
+  end
+
+  def pipeline_has_report_in_self_or_descendants?(report_type)
+    !!diff_head_pipeline
+      &.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))
+      &.exists?
   end
 end
 

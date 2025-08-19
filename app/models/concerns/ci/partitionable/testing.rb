@@ -22,6 +22,9 @@ module Ci
         Ci::JobAnnotation
         Ci::JobArtifact
         Ci::JobArtifactReport
+        Ci::JobDefinition
+        Ci::JobDefinitionInstance
+        Ci::JobInput
         Ci::JobVariable
         Ci::Pipeline
         Ci::PendingBuild
@@ -37,6 +40,7 @@ module Ci
         Ci::Stage
         Ci::UnitTestFailure
         Ci::Workloads::Workload
+        Ci::Workloads::VariableInclusions
       ].freeze
 
       def self.check_inclusion(klass)

@@ -53,10 +53,11 @@ After you sign in to Switchboard, follow these steps to create your instance:
 
    - **Tenant URL**: Your instance URL is automatically generated as `<tenant_name>.gitlab-dedicated.com`.
 
-   - **Primary region**: Select the primary AWS region to use for data storage. Note the
-     [available AWS regions](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
+   - **Primary region**: Select the primary AWS region to use for data storage. For more information, see [available AWS regions](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions).
+     - Optional. Select Availability Zone IDs for the primary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
 
    - **Secondary region**: Select a secondary AWS region to use for data storage and [disaster recovery](../disaster_recovery.md). This field does not appear for Geo migrations from an existing GitLab Self-Managed instance. Some regions have [limited support](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
+     - Optional. Select Availability Zone IDs for the secondary region. Otherwise, AZ IDs are selected automatically during instance provisioning.
 
    - **Backup region**: Select a region to replicate and store your primary data backups.
      You can use the same option as your primary or secondary regions, or choose a different region for [increased redundancy](../../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
@@ -114,5 +115,10 @@ To view all available infrastructure configuration options, see [Configure your 
 {{< alert type="note" >}}
 
 New GitLab Dedicated instances use the same default settings as GitLab Self-Managed. A GitLab administrator can change these settings from the [Admin Area](../../admin_area.md).
+
+For instances created in GitLab 18.0 and later, [Duo Core](../../../subscriptions/subscription-add-ons.md#gitlab-duo-core) features are turned on by default for all users.
+
+If your organization requires data to remain within your specified regions or has restrictions on AI feature usage,
+you can [turn off Duo Core](../../../user/gitlab_duo/turn_on_off.md#for-an-instance).
 
 {{< /alert >}}

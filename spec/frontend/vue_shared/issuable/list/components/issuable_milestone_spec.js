@@ -4,6 +4,8 @@ import { useFakeDate } from 'helpers/fake_date';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
+jest.mock('~/lib/utils/url_utility');
+
 describe('IssuableMilestone component', () => {
   useFakeDate(2020, 11, 11); // 2020 Dec 11
 
@@ -31,6 +33,15 @@ describe('IssuableMilestone component', () => {
     expect(findWorkItemAttribute().props('title')).toBe('My milestone');
     expect(milestoneEl.findComponent(GlIcon).props('name')).toBe('milestone');
     expect(findWorkItemAttribute().props('href')).toBe('/milestone/webPath');
+    expect(findWorkItemAttribute().props('isLink')).toBe(true);
+  });
+
+  it('navigates to milestone link when clicked', () => {
+    wrapper = mountComponent();
+    const milestoneLink = findWorkItemAttribute().props('href');
+
+    expect(milestoneLink).toBe('/milestone/webPath');
+    expect(findWorkItemAttribute().props('isLink')).toBe(true);
   });
 
   describe.each`

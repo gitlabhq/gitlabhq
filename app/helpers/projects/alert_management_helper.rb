@@ -38,7 +38,6 @@ module Projects::AlertManagementHelper
   def alert_management_enabled?(project)
     !!(
       project.alert_management_alerts.any? ||
-      project.prometheus_integration_active? ||
       AlertManagement::HttpIntegrationsFinder.new(project, active: true).execute.any?
     )
   end

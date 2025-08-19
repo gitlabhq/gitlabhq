@@ -28,7 +28,6 @@ For more information about managing the SSH keys associated with your GitLab acc
 
 After you [create an SSH key](../../../ssh.md#generate-an-ssh-key-pair) and
 [add it to your GitLab account](../../../ssh.md#add-an-ssh-key-to-your-gitlab-account)
-or [generate it using a password manager](../../../ssh.md#generate-an-ssh-key-pair-with-a-password-manager),
 configure Git to begin using the key.
 
 Prerequisites:

@@ -1,8 +1,0 @@
----
-name: import_export_work_items_csv
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111935
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/390330
-milestone: '15.9'
-type: development
-group: group::product planning
-default_enabled: false

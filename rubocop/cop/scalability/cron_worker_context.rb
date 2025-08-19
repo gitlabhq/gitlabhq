@@ -14,14 +14,17 @@ module RuboCop
           Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
         MSG
 
+        # @!method includes_cronjob_queue?(node)
         def_node_matcher :includes_cronjob_queue?, <<~PATTERN
           (send nil? :include (const nil? :CronjobQueue))
         PATTERN
 
+        # @!method defines_contexts?(node)
         def_node_search :defines_contexts?, <<~PATTERN
          (send nil? :with_context _)
         PATTERN
 
+        # @!method schedules_with_batch_context?(node)
         def_node_search :schedules_with_batch_context?, <<~PATTERN
           (send (...) {:bulk_perform_async_with_contexts :bulk_perform_in_with_contexts} _*)
         PATTERN

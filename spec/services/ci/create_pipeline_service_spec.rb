@@ -1188,14 +1188,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
 
       let(:pipeline) { response.payload }
+      let(:ref_name) { 'refs/heads/feature' }
+      let(:source_sha) { project.commit(ref_name).id }
+      let(:target_sha) { nil }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
       end
-
-      let(:ref_name) { 'refs/heads/feature' }
-      let(:source_sha) { project.commit(ref_name).id }
-      let(:target_sha) { nil }
 
       context 'when source is external pull request' do
         let(:source) { :external_pull_request_event }
@@ -1344,14 +1343,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
 
       let(:pipeline) { response.payload }
+      let(:ref_name) { 'refs/heads/feature' }
+      let(:source_sha) { project.commit(ref_name).id }
+      let(:target_sha) { nil }
 
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
       end
-
-      let(:ref_name) { 'refs/heads/feature' }
-      let(:source_sha) { project.commit(ref_name).id }
-      let(:target_sha) { nil }
 
       context 'when source is merge request' do
         let(:source) { :merge_request_event }

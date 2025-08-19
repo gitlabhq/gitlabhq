@@ -8,7 +8,7 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
     let_it_be(:project) { create(:project) }
     let_it_be(:work_item) { create(:work_item, project: project) }
     let_it_be(:task) { create(:work_item, :task, project: project) }
-    let_it_be(:parent_link) { create(:parent_link, work_item: task, work_item_parent: work_item) }
+    let_it_be(:parent_link, refind: true) { create(:parent_link, work_item: task, work_item_parent: work_item) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
 
@@ -87,6 +87,16 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
           .to not_change(parent_link_class, :count).from(1)
           .and not_change(WorkItems::ResourceLinkEvent, :count)
         expect(SystemNoteService).not_to receive(:unrelate_work_item)
+      end
+
+      context 'when skip_policy_check is true' do
+        it 'removes relation' do
+          expect(SystemNoteService).to receive(:unrelate_work_item)
+
+          expect { described_class.new(parent_link, user, skip_policy_check: true).execute }
+            .to change { WorkItems::ParentLink.count }.by(-1)
+            .and change { WorkItems::ResourceLinkEvent.count }.by(1)
+        end
       end
     end
   end

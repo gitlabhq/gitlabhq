@@ -25,6 +25,7 @@ export default {
   <gl-disclosure-dropdown
     :items="items"
     placement="bottom"
+    class="super-sidebar-mr-menu-dropdown"
     @shown="$emit('shown')"
     @hidden="$emit('hidden')"
   >

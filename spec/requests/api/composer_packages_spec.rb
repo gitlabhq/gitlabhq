@@ -145,6 +145,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           end
         end
       end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { build_token_auth_header(personal_access_token.token) }
+      end
     end
 
     it_behaves_like 'rejects Composer access with unknown group id'
@@ -218,6 +222,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
           end
         end
+      end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { build_token_auth_header(personal_access_token.token) }
       end
 
       it_behaves_like 'Composer access with deploy tokens'
@@ -312,6 +320,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         end
       end
 
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { build_token_auth_header(personal_access_token.token) }
+      end
+
       it_behaves_like 'Composer access with deploy tokens'
     end
 
@@ -393,6 +405,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
           end
         end
+      end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { build_token_auth_header(personal_access_token.token) }
       end
 
       it_behaves_like 'Composer access with deploy tokens'
@@ -544,6 +560,11 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
         it_behaves_like 'process Composer api request', member_role: :developer, expected_status: :unprocessable_entity
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+      let(:params) { { tag: 'v1.2.99' } }
     end
   end
 
@@ -718,6 +739,10 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
           it_behaves_like 'returning response status', :success
         end
+      end
+
+      it_behaves_like 'updating personal access token last used' do
+        let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
       end
     end
 

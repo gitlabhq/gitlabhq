@@ -118,7 +118,8 @@ RSpec.describe 'Query', feature_category: :shared do
   end
 
   describe '.ciPipelineStage' do
-    let_it_be(:ci_stage) { create(:ci_stage, name: 'graphql test stage', project: project) }
+    let_it_be(:ci_pipeline) { create(:ci_empty_pipeline, project: project) }
+    let_it_be(:ci_stage) { create(:ci_stage, name: 'graphql test stage', project: project, pipeline: ci_pipeline) }
 
     let(:query) do
       <<~GRAPHQL

@@ -9,6 +9,14 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
     expect(described_class).to require_graphql_authorizations(:read_user)
   end
 
+  it 'contains attributes related to a user' do
+    expected_fields = %w[
+      id runners
+    ]
+
+    expect(described_class).to include_graphql_fields(*expected_fields)
+  end
+
   describe 'work_items field' do
     subject { described_class.fields['workItems'] }
 
@@ -43,6 +51,8 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
         updatedAfter
         updatedBefore
         parentIds
+        hierarchyFilters
+        includeDescendantWorkItems
         crmContactId
         crmOrganizationId
         releaseTagWildcardId

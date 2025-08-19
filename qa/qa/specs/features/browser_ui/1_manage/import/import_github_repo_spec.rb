@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', :github, :requires_admin, product_group: :import do
+  RSpec.describe 'Manage', :github, :requires_admin, feature_category: :importers do
     describe 'GitHub import',
       quarantine: {
         type: :investigating,

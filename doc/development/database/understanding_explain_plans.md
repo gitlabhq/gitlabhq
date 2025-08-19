@@ -770,23 +770,24 @@ exec SET max_parallel_workers_per_gather = 0
 
 ### Rails console
 
-Using the [`activerecord-explain-analyze`](https://github.com/6/activerecord-explain-analyze)
+Using the Rails 7.1 [explain method](https://guides.rubyonrails.org/active_record_querying.html#explain-options)
 you can directly generate the query plan from the Rails console:
 
 ```ruby
-pry(main)> require 'activerecord-explain-analyze'
-=> true
-pry(main)> Project.where('build_timeout > ?', 3600).explain(analyze: true)
+pry(main)> Project.where('build_timeout > ?', 3600).explain(:analyze, :buffers, :verbose)
   Project Load (1.9ms)  SELECT "projects".* FROM "projects" WHERE (build_timeout > 3600)
   ↳ (pry):12
 => EXPLAIN for: SELECT "projects".* FROM "projects" WHERE (build_timeout > 3600)
 Seq Scan on public.projects  (cost=0.00..2.17 rows=1 width=742) (actual time=0.040..0.041 rows=0 loops=1)
   Output: id, name, path, description, created_at, updated_at, creator_id, namespace_id, ...
-  Filter: (projects.build_timeout > 3600)
-  Rows Removed by Filter: 14
-  Buffers: shared hit=2
-Planning time: 0.411 ms
-Execution time: 0.113 ms
+   Filter: (projects.build_timeout > 3600)
+   Rows Removed by Filter: 16
+   Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=6
+ Planning Time: 0.230 ms
+ Execution Time: 0.033 ms
+(9 rows)
 ```
 
 ## Further reading

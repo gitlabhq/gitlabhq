@@ -120,6 +120,14 @@ namespace :admin do
 
   resource :health_check, controller: 'health_check', only: [:show]
   resource :background_jobs, controller: 'background_jobs', only: [:show]
+  resources :database_diagnostics, controller: 'database_diagnostics', only: [:index] do
+    collection do
+      post :run_collation_check
+      get :collation_check_results
+      post :run_schema_check
+      get :schema_check_results
+    end
+  end
 
   resource :system_info, controller: 'system_info', only: [:show]
 

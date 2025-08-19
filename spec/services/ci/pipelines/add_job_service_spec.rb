@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
-  let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
-
-  let(:job) { build(:ci_build) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline, partition_id: ci_testing_partition_id) }
+  let(:stage) { create(:ci_stage, pipeline: pipeline, partition_id: pipeline.partition_id) }
+  let(:job) { build(:ci_build, ci_stage: stage) }
 
   subject(:service) { described_class.new(pipeline) }
 
@@ -35,8 +35,6 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
     end
 
     it 'assigns partition_id to job and metadata' do
-      pipeline.partition_id = ci_testing_partition_id
-
       expect { execute }
         .to change(job, :partition_id).to(pipeline.partition_id)
         .and change { job.metadata.partition_id }.to(pipeline.partition_id)
@@ -53,6 +51,22 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
       execute
     end
 
+    context 'when the block raises a state transition error' do
+      subject(:execute) do
+        service.execute!(job) do |job|
+          raise StateMachines::InvalidTransition.new(job, job.class.state_machine, :enqueue)
+        end
+      end
+
+      it 'returns a service response with the error and the job as payload' do
+        expect(execute).to be_error
+        expect(execute.payload[:job]).to eq(job)
+        expect(execute.message).to eq(
+          "Cannot transition status via :enqueue from :pending (Reason(s): Transition halted)"
+        )
+      end
+    end
+
     context 'when the block raises an error' do
       subject(:execute) do
         service.execute!(job) do |job|
@@ -61,6 +75,7 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
       end
 
       it 'returns a service response with the error and the job as payload' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).at_least(:once)
         expect(execute).to be_error
         expect(execute.payload[:job]).to eq(job)
         expect(execute.message).to eq('this is an error')

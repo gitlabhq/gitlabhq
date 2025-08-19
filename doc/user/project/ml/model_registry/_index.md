@@ -36,8 +36,8 @@ For more information about model registry features and capabilities, see [epic 9
 
 ## Access the model registry
 
-The model registry is controlled by the package registry setting. 
-Before using the model registry, make 
+The model registry is controlled by the package registry setting.
+Before using the model registry, make
 sure the [package registry is enabled](../../../../administration/packages/_index.md#enable-or-disable-the-package-registry).
 
 To access the model registry, on the left sidebar, select **Deploy > Model registry**.

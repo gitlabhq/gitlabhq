@@ -43,6 +43,8 @@ RSpec.describe SshHostKey do
   let(:url) { 'ssh://example.com:2222' }
   let(:compare_host_keys) { nil }
 
+  let(:project) { build(:project) }
+
   def stub_ssh_keyscan(args, status: true, stdout: "", stderr: "")
     stdin = StringIO.new
     stdout = double(:stdout, read: stdout)
@@ -53,8 +55,6 @@ RSpec.describe SshHostKey do
 
     stdin
   end
-
-  let(:project) { build(:project) }
 
   subject(:ssh_host_key) { described_class.new(project: project, url: url, compare_host_keys: compare_host_keys) }
 

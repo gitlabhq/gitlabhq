@@ -23,23 +23,26 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       is_expected.not_to be_nil
     end
 
-    %w[id
-       full_name
-       full_path
-       avatar_url
-       name
-       description
-       markdown_description
-       visibility
-       type
-       can_edit
-       visibility
-       permission
-       permission_integer
-       relative_path
-       web_url].each do |attribute|
+    %i[
+      id
+      full_name
+      full_path
+      avatar_url
+      name
+      description
+      markdown_description
+      visibility
+      type
+      can_archive
+      can_edit
+      visibility
+      permission
+      permission_integer
+      relative_path
+      web_url
+    ].each do |attribute|
       it "includes #{attribute}" do
-        expect(json[attribute.to_sym]).to be_present
+        expect(json[attribute]).not_to be_nil
       end
     end
   end
@@ -292,6 +295,138 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
 
       expect(json[:can_edit]).to eq(false)
+    end
+  end
+
+  describe 'archived attribute' do
+    describe 'for a project' do
+      let_it_be_with_reload(:group) { create(:group) }
+      let_it_be_with_reload(:project) { create(:project, namespace: group) }
+
+      let(:object) { project }
+
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      context 'when project is archived' do
+        before_all do
+          project.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when project and parent group are not archived' do
+        it 'returns archived as false' do
+          expect(json[:archived]).to be(false)
+        end
+      end
+    end
+
+    describe 'for a group' do
+      let_it_be_with_reload(:parent_group) { create(:group) }
+      let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+      let(:object) { group }
+
+      before_all do
+        group.add_owner(user)
+      end
+
+      context 'when group is archived' do
+        before_all do
+          group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when group is not archived but parent group is archived' do
+        before_all do
+          parent_group.update!(archived: true)
+        end
+
+        it 'returns archived as true' do
+          expect(json[:archived]).to be(true)
+        end
+      end
+
+      context 'when group and its ancestors are not archived' do
+        it 'returns archived as false' do
+          expect(json[:archived]).to be(false)
+        end
+      end
+    end
+  end
+
+  describe 'can_archive attribute' do
+    subject { json[:can_archive] }
+
+    shared_examples 'archive permission attribute' do
+      context 'when user has archive permission' do
+        before do
+          object.add_owner(user)
+        end
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when user does not have archive permission' do
+        before do
+          object.add_guest(user)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when user is not a member' do
+        it { is_expected.to be(false) }
+      end
+
+      context 'when current_user is nil' do
+        before do
+          allow(request).to receive(:current_user).and_return(nil)
+        end
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'when request does not respond to current_user' do
+        before do
+          allow(request).to receive(:respond_to?).with(:current_user).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    describe 'for a project' do
+      let_it_be_with_reload(:project) { create(:project) }
+      let(:object) { project }
+
+      include_examples 'archive permission attribute'
+    end
+
+    describe 'for a group' do
+      let_it_be_with_reload(:group) { create(:group) }
+      let(:object) { group }
+
+      include_examples 'archive permission attribute'
     end
   end
 end

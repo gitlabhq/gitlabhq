@@ -184,7 +184,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           expect(json_response.first).not_to have_key('note')
           expect(json_response.first).not_to have_key('namespace_id')
           expect(json_response.first).not_to have_key('created_by')
-          expect(json_response.first).not_to have_key('email_reset_offered_at')
         end
       end
 
@@ -197,7 +196,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
             expect(json_response.first).not_to have_key('note')
             expect(json_response.first).not_to have_key('namespace_id')
             expect(json_response.first).not_to have_key('created_by')
-            expect(json_response.first).not_to have_key('email_reset_offered_at')
           end
         end
 
@@ -207,7 +205,6 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
             expect(response).to have_gitlab_http_status(:success)
             expect(json_response.first).to have_key('note')
-            expect(json_response.first).to have_key('email_reset_offered_at')
             expect(json_response.first['note']).to eq '2018-11-05 | 2FA removed | user requested | www.gitlab.com'
           end
 
@@ -319,6 +316,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               get api(path, admin, admin_mode: true)
 
               expect(json_response).to have_key('note')
+              expect(json_response).to have_key('preferred_language')
               expect(json_response['note']).to eq(admin.note)
             end
           end
@@ -781,6 +779,38 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
         expect(json_response.first['id']).to eq(admin.id)
+      end
+    end
+
+    context 'public email' do
+      it 'returns one user by public_email' do
+        user_with_public_email = create(:user)
+        unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: user_with_public_email, email: unique_email)
+        user_with_public_email.update!(public_email: unique_email)
+
+        second_user_with_public_email = create(:user)
+        second_unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: second_user_with_public_email, email: second_unique_email)
+        second_user_with_public_email.update!(public_email: second_unique_email)
+
+        get api(path, user), params: { public_email: unique_email }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(1)
+        expect(json_response.first['id']).to eq(user_with_public_email.id)
+      end
+
+      it 'returns no users if public_email does not match' do
+        user_with_public_email = create(:user)
+        unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: user_with_public_email, email: unique_email)
+        user_with_public_email.update!(public_email: unique_email)
+
+        get api(path, user), params: { public_email: 'nonexistent@example.com' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(0)
       end
     end
   end
@@ -3271,6 +3301,18 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     it_behaves_like 'get user info', 'v3'
     it_behaves_like 'get user info', 'v4'
+
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      subject(:get_user) { get api("/user", oauth_access_token: oauth_token) }
+
+      it 'is successful' do
+        get_user
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 
   describe "GET /user/preferences" do
@@ -5043,9 +5085,9 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
     let(:expires_at) { 3.days.from_now.to_date.to_s }
-    let(:scopes) { %w[k8s_proxy] }
+    let(:allowed_scopes) { %w[k8s_proxy self_rotate] }
     let(:path) { "/user/personal_access_tokens" }
-    let(:params) { { name: name, expires_at: expires_at, description: description, scopes: scopes } }
+    let(:params) { { name: name, expires_at: expires_at, description: description, scopes: [] } }
 
     let(:all_scopes) do
       ::Gitlab::Auth::API_SCOPES + ::Gitlab::Auth::AI_FEATURES_SCOPES + ::Gitlab::Auth::OPENID_SCOPES +
@@ -5062,7 +5104,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     context 'when scope is not allowed' do
       where(:disallowed_scopes) do
-        all_scopes - [::Gitlab::Auth::K8S_PROXY_SCOPE]
+        all_scopes - [::Gitlab::Auth::K8S_PROXY_SCOPE, ::Gitlab::Auth::SELF_ROTATE_SCOPE]
       end
 
       with_them do
@@ -5083,7 +5125,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
 
     it 'returns a 401 error when not authenticated' do
-      post api(path), params: params
+      post api(path), params: params.merge({ scopes: %w[k8s_proxy] })
 
       expect(response).to have_gitlab_http_status(:unauthorized)
       expect(json_response['message']).to eq('401 Unauthorized')
@@ -5091,7 +5133,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
     it 'returns a 403 error when called with a read_api-scoped PAT' do
       read_only_pat = create(:personal_access_token, scopes: ['read_api'], user: user)
-      post api(path, personal_access_token: read_only_pat), params: params
+      post api(path, personal_access_token: read_only_pat), params: params.merge({ scopes: %w[k8s_proxy] })
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
@@ -5107,23 +5149,31 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
 
-    it 'creates a personal access token' do
-      post api(path, user), params: params
+    context 'with all allowed scope combinations' do
+      where(:scopes) do
+        (1..allowed_scopes.size).flat_map { |n| allowed_scopes.combination(n).to_a }.map { |s| [s] }
+      end
 
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['name']).to eq(name)
-      expect(json_response['description']).to eq(description)
-      expect(json_response['scopes']).to eq(scopes)
-      expect(json_response['expires_at']).to eq(expires_at)
-      expect(json_response['id']).to be_present
-      expect(json_response['created_at']).to be_present
-      expect(json_response['active']).to be_truthy
-      expect(json_response['revoked']).to be_falsey
-      expect(json_response['token']).to be_present
+      with_them do
+        it 'creates a personal access token' do
+          post api(path, user), params: params.merge({ scopes: scopes })
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['name']).to eq(name)
+          expect(json_response['description']).to eq(description)
+          expect(json_response['scopes']).to eq(scopes)
+          expect(json_response['expires_at']).to eq(expires_at)
+          expect(json_response['id']).to be_present
+          expect(json_response['created_at']).to be_present
+          expect(json_response['active']).to be_truthy
+          expect(json_response['revoked']).to be_falsey
+          expect(json_response['token']).to be_present
+        end
+      end
     end
 
     context 'when expires_at at is given' do
-      let(:params) { { name: name, scopes: scopes, expires_at: expires_at, description: description } }
+      let(:params) { { name: name, scopes: %w[k8s_proxy], expires_at: expires_at, description: description } }
 
       context 'when expires_at is in the past' do
         let(:expires_at) { 1.day.ago }
@@ -5151,7 +5201,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
 
       it 'returns the error' do
-        post api(path, personal_access_token: admin_personal_access_token), params: params
+        post api(path, personal_access_token: admin_personal_access_token), params: params.merge({ scopes: %w[k8s_proxy] })
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq(error_message)

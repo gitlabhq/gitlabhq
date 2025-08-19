@@ -35,13 +35,19 @@ Follow the steps below on how to use this React Native Mobile App sample project
   1. Copy the provided files into your project
   1. Configure the required CI/CD variables in your project settings
   1. Make sure the project is marked as a CI/CD catalog project. For more information, see [publish a component project](../../ci/components/_index.md#publish-a-component-project).
-  > There is a public GitLab Snyk component on GitLab.com, if you are on SaaS, and you are able to access the public GitLab Snyk component, to set up your own Snyk CI/CD catalog project is not needed, and you can follow the documentation in the public GitLab Snyk component on GitLab.com to use the component directly.
+
+  {{< alert type="note" >}}
+
+  There is a public GitLab Snyk component on GitLab.com, if you are on SaaS, and you are able to access the public GitLab Snyk component, to set up your own Snyk CI/CD catalog project is not needed, and you can follow the documentation in the public GitLab Snyk component on GitLab.com to use the component directly.
+
+  {{< /alert >}}
+
 - Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. [Here](../../solutions/components/integrated_servicenow.md) is the documentation link to the change control workflow with ServiceNow solution component, and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
-- Copy the CI YAML files into your project: 
+- Copy the CI YAML files into your project:
   - `.gitlab-ci.yml`
   - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
   - `build-ios.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-ios.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-ios.yml` file for the build job.
-   
+
    ```yaml
    include:
   - local: "pipelines/build-ios.yml"
@@ -93,7 +99,7 @@ There are multiple third party tools integrated in the mobile pipeline workflow.
 
 ### Snyk Integration using the Component
 
-In order to use the GitLab Snyk CI/CD component for security scans, make sure your group or project in GitLab is already connected with Snyk, if not, follow [this tutorial](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/gitlab) to configure it. 
+In order to use the GitLab Snyk CI/CD component for security scans, make sure your group or project in GitLab is already connected with Snyk, if not, follow [this tutorial](https://docs.snyk.io/scm-ide-and-ci-cd-integrations/snyk-scm-integrations/gitlab) to configure it.
 
 In the mobile app project, add the required variables for the Snyk integration.
 
@@ -103,16 +109,16 @@ In the mobile app project, add the required variables for the Snyk integration.
 |----------|-------------|---------------|
 | `SNYK_TOKEN` | API token to access Snyk | `d7da134c-xxxxxxxxxx` |
 
-This mobile app demo project uses a private Snyk component, that's the reason why we added the following additional variables for the mobile app project to access the private Snyk component project, but this is not needed if your Snyk component is public or accessible within your group. 
+This mobile app demo project uses a private Snyk component, that's the reason why we added the following additional variables for the mobile app project to access the private Snyk component project, but this is not needed if your Snyk component is public or accessible within your group.
 
 ```yaml
 SNYK_PROJECT_ACCESS_USERNAME: "MOBILE_APP_SNYK_COMPONENT_ACCESS"
 DOCKER_AUTH_CONFIG: '{"auths":{"registry.gitlab.com":{"username":"$SNYK_PROJECT_ACCESS_USERNAME","password":"$SNYK_PROJECT_ACCESS_TOKEN"}}}'
 ```
 
-#### Update the component path 
+#### Update the component path
 
-Update the component path in the `.gitlab-ci.yml` file so that the pipeline can successfully reference the Snyk component. 
+Update the component path in the `.gitlab-ci.yml` file so that the pipeline can successfully reference the Snyk component.
 
 ```yaml
  - component: $CI_SERVER_FQDN/gitlab-com/product-accelerator/work-streams/packaging/snyk/snyk@1.0.0 #snky sast scan, this examples uses the component in GitLab the product accelerator group. Please update the path and stage accordingly.
@@ -123,7 +129,7 @@ Update the component path in the `.gitlab-ci.yml` file so that the pipeline can 
 
 ### Sauce Labs Intergration
 
-This mobile app demo project CI/CD is integrated with Sauce Labs for automated functional testing. In order to run the automated test in Sauce Labs, the application needs to be uploaded into Sauce Labs app storage. You will need to set the required variables for the project in GitLab to access Sauce Labs and upload the artifacts. 
+This mobile app demo project CI/CD is integrated with Sauce Labs for automated functional testing. In order to run the automated test in Sauce Labs, the application needs to be uploaded into Sauce Labs app storage. You will need to set the required variables for the project in GitLab to access Sauce Labs and upload the artifacts.
 
 #### Required CI/CD Variables
 
@@ -150,15 +156,15 @@ const SAUCE_ACCESS_KEY = process.env.SAUCE_ACCESS_KEY;
 
 #### App Distribution (Android and iOS)
 
-GitLab pipeline distributes the app builds to SauceLabs TestFairy for demo purposes. SauceLabs TestFairy allows users to get new versions of the app to testers for review and testing. 
+GitLab pipeline distributes the app builds to SauceLabs TestFairy for demo purposes. SauceLabs TestFairy allows users to get new versions of the app to testers for review and testing.
 
 ### ServiceNow Integration
 
-This mobile app demo project CI/CD is integrated with ServiceNow for change controls. When the pipeline reaches the deployment job that has the change control enabled in ServiceNow, it will automatically create a change request. Once the change request is approved, the deployment job will resume. With this demo project, the beta release approval job is gated in ServiceNow and requires manual approval to proceed. 
+This mobile app demo project CI/CD is integrated with ServiceNow for change controls. When the pipeline reaches the deployment job that has the change control enabled in ServiceNow, it will automatically create a change request. Once the change request is approved, the deployment job will resume. With this demo project, the beta release approval job is gated in ServiceNow and requires manual approval to proceed.
 
 #### CI/CD Variables
 
-In order for the pipeline to communicate with ServiceNow, the webhook integrations need to be created. If you are using API endpoints to communicates with ServiceNow, you will need to include the following variables. However, this is not required when using the ServiceNow DevOps Change Velocity integration. As part of the ServiceNow DevOps Change Velocity onboarding, the webhooks will be created. 
+In order for the pipeline to communicate with ServiceNow, the webhook integrations need to be created. If you are using API endpoints to communicates with ServiceNow, you will need to include the following variables. However, this is not required when using the ServiceNow DevOps Change Velocity integration. As part of the ServiceNow DevOps Change Velocity onboarding, the webhooks will be created.
 
 | Variable | Description | Example Value |
 |----------|-------------|---------------|

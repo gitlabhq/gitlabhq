@@ -5,9 +5,9 @@ module Gitlab
     module Importer
       class NoteImporter
         include Gitlab::Import::UsernameMentionRewriter
-        include Gitlab::GithubImport::PushPlaceholderReferences
+        include ::Import::PlaceholderReferences::Pusher
 
-        attr_reader :note, :project, :client, :user_finder, :mapper
+        attr_reader :note, :project, :client, :user_finder
 
         # note - An instance of `Gitlab::GithubImport::Representation::Note`.
         # project - An instance of `Project`.
@@ -17,7 +17,6 @@ module Gitlab
           @project = project
           @client = client
           @user_finder = GithubImport::UserFinder.new(project, client)
-          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
         end
 
         def execute
@@ -51,7 +50,7 @@ module Gitlab
           # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
           ids = ApplicationRecord.legacy_bulk_insert(Note.table_name, [attributes], return_ids: true) # rubocop:disable Gitlab/BulkInsert
 
-          push_refs_with_ids(ids, Note, note[:author]&.id, mapper.user_mapper) if mapper.user_mapping_enabled?
+          push_references_by_ids(project, ids, Note, :author_id, note[:author]&.id)
         end
 
         # Returns the ID of the issue or merge request to create the note for.

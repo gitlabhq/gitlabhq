@@ -142,8 +142,23 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
     end
   end
 
+  shared_examples 'appends user information to the logs' do
+    it 'sets the sent notification recipient as authenticated user' do
+      expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+        method.call(payload)
+
+        expect(payload[:user_id]).to eq(user.id)
+        expect(payload[:username]).to eq(user.username)
+      end
+
+      perform_request
+    end
+  end
+
   describe 'GET unsubscribe' do
     context 'when the user is not logged in' do
+      it_behaves_like 'appends user information to the logs'
+
       context 'when the force param is passed' do
         let(:perform_request) { force_unsubscribe }
 
@@ -375,6 +390,14 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
         end
       end
     end
+
+    context 'when different user is logged in' do
+      before do
+        sign_in(create(:user))
+      end
+
+      it_behaves_like 'appends user information to the logs'
+    end
   end
 
   describe 'POST unsubscribe' do
@@ -385,6 +408,7 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
       ForgeryProtection.with_forgery_protection { example.run }
     end
 
+    it_behaves_like 'appends user information to the logs'
     it_behaves_like 'validates parameters and records'
 
     context 'when the user is not logged in' do

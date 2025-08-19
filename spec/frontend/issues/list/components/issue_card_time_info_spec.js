@@ -102,9 +102,9 @@ describe('CE IssueCardTimeInfo component', () => {
 
     describe('due date', () => {
       describe('when upcoming', () => {
-        it('renders', () => {
+        it('renders with "No start date" prefix when no start date is present', () => {
           wrapper = mountComponent({ issue: object({ dueDate: '2020-12-12' }) });
-          expect(findWorkItemAttribute().props('title')).toBe('Dec 12, 2020');
+          expect(findWorkItemAttribute().props('title')).toBe('No start date – Dec 12, 2020');
           expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
           expect(findDueDateIcon().props()).toMatchObject({
             variant: 'current',
@@ -124,8 +124,9 @@ describe('CE IssueCardTimeInfo component', () => {
 
       describe('when in the past', () => {
         describe('when issue is open', () => {
-          it('renders in red with overdue icon', () => {
+          it('renders in red with overdue icon and "No start date" prefix', () => {
             wrapper = mountComponent({ issue: object({ dueDate: '2020-01-01' }) });
+            expect(findWorkItemAttribute().props('title')).toBe('No start date – Jan 1, 2020');
             expect(findDueDateIcon().props()).toMatchObject({
               variant: 'danger',
               name: 'calendar-overdue',
@@ -134,11 +135,12 @@ describe('CE IssueCardTimeInfo component', () => {
         });
 
         describe('when issue is closed', () => {
-          it('does not render in red with overdue icon', () => {
+          it('does not render in red with overdue icon but shows "No start date" prefix', () => {
             wrapper = mountComponent({
               issue: object({ dueDate: '2020-01-01', state: STATUS_CLOSED }),
             });
 
+            expect(findWorkItemAttribute().props('title')).toBe('No start date – Jan 1, 2020');
             expect(findDueDateIcon().props()).toMatchObject({
               variant: 'current',
               name: 'calendar',

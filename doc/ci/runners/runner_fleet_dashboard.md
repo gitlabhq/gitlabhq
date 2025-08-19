@@ -37,8 +37,14 @@ The following metrics are available in the runner fleet dashboard:
 | Online                        | Number of runners that are online for the entire instance. |
 | Offline                       | Number of runners that are currently offline. Runners that were registered but never connected to GitLab are not included in this count. |
 | Active runners                | The total number of runners that are currently active. |
-| Runner usage (previous month) | The total compute minutes used by each project or group runner in the previous month. You can export this data as a CSV file for cost analysis. |
-| Wait time to pick a job       | The average time a job waits in the queue before a runner picks it up. This metric provides insights into whether your runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives (SLOs). This data is updated every 24 hours. |
+| Runner usage (previous month) | **Requires ClickHouse**: The total compute minutes used by each project or group runner in the previous month. You can export this data as a CSV file for cost analysis. |
+| Wait time to pick a job       | **Requires ClickHouse**: The average time a job waits in the queue before a runner picks it up. This metric provides insights into whether your runners are capable of servicing the CI/CD job queue in your organization's target service-level objectives (SLOs). This data is updated every 24 hours. |
+
+{{< alert type="note" >}}
+
+If you do not configure ClickHouse, the Fleet Dashboard page does not populate the widgets that rely on the ClickHouse backend.
+
+{{< /alert >}}
 
 ## View the runner fleet dashboard
 

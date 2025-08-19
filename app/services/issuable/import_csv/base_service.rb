@@ -5,6 +5,10 @@ module Issuable
     class BaseService < ::ImportCsv::BaseService
       extend ::Gitlab::Utils::Override
 
+      def self.required_headers
+        %w[title description].freeze
+      end
+
       private
 
       override :attributes_for
@@ -20,7 +24,7 @@ module Issuable
       override :validate_headers_presence!
       def validate_headers_presence!(headers)
         headers.downcase! if headers
-        return if headers && headers.include?('title') && headers.include?('description')
+        return if headers && self.class.required_headers.all? { |rh| headers.include?(rh) }
 
         raise CSV::MalformedCSVError.new('Invalid CSV format - missing required headers.', 1)
       end

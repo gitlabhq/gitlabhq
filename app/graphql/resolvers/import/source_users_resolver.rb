@@ -27,8 +27,6 @@ module Resolvers
       alias_method :namespace, :object
 
       def resolve_with_lookahead(**args)
-        return [] if Feature.disabled?(:importer_user_mapping, current_user)
-
         apply_lookahead(::Import::SourceUsersFinder.new(namespace, context[:current_user], args).execute)
       end
 

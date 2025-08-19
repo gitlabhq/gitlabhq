@@ -25,6 +25,7 @@ module Gitlab
     PRIVATE  = 0 unless const_defined?(:PRIVATE)
     INTERNAL = 10 unless const_defined?(:INTERNAL)
     PUBLIC   = 20 unless const_defined?(:PUBLIC)
+    LEVELS_FOR_ADMINS = [PRIVATE, INTERNAL, PUBLIC].freeze
 
     class << self
       delegate :values, to: :options
@@ -33,7 +34,7 @@ module Gitlab
         return [PUBLIC] unless user
 
         if user.can_read_all_resources?
-          [PRIVATE, INTERNAL, PUBLIC]
+          LEVELS_FOR_ADMINS
         elsif user.external?
           [PUBLIC]
         else

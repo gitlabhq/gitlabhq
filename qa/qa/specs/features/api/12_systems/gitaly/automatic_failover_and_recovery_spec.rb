@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Systems', product_group: :gitaly do
+  RSpec.describe 'Systems', feature_category: :gitaly do
     context 'with Gitaly automatic failover and recovery', :orchestrated, :gitaly_cluster do
       # Variables shared between contexts. They're used and shared between
       # contexts so they can't be `let` variables.

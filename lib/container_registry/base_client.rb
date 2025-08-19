@@ -61,6 +61,8 @@ module ContainerRegistry
           return unless [:path, :new_path, :project].all? { |key| config[key].present? }
 
           Auth::ContainerRegistryAuthenticationService.push_pull_move_repositories_access_token(config[:path], config[:new_path], project: config[:project])
+        when :statistics_token
+          Auth::ContainerRegistryAuthenticationService.statistics_token
         end
       end
     end

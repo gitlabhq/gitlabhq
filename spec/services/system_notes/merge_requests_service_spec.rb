@@ -123,12 +123,11 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
     let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
     let(:merge_request) { discussion.noteable }
     let(:change_position) { discussion.position }
+    let(:service) { described_class.new(container: project, author: author) }
 
     def reloaded_merge_request
       MergeRequest.find(merge_request.id)
     end
-
-    let(:service) { described_class.new(container: project, author: author) }
 
     subject { service.diff_discussion_outdated(discussion, change_position) }
 
@@ -176,6 +175,19 @@ RSpec.describe ::SystemNotes::MergeRequestsService, feature_category: :code_revi
 
       it 'does not create a link' do
         expect(subject.note).to eq('changed this line in version 1 of the diff')
+      end
+    end
+
+    context 'when change position is nil' do
+      let(:change_position) { nil }
+
+      it 'creates a new note in the discussion' do
+        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
+        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      end
+
+      it 'does not create a link' do
+        expect(subject.note).to eq('changed this file in version 1 of the diff')
       end
     end
   end

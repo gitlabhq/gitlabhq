@@ -36,28 +36,36 @@ module Keeps
       super
     end
 
-    def each_change
+    def each_identified_change
       indexes_to_drop.each do |table_name, indexes|
-        change = build_change(table_name, indexes)
-        change.changed_files = []
-
-        indexes.each do |index_to_drop, _|
-          migration_file, migration_number = generate_migration_file(table_name, index_to_drop)
-          update_duplicated_indexes_file(table_name)
-
-          change.changed_files << migration_file
-          change.changed_files << Pathname.new('db').join('schema_migrations', migration_number).to_s
-          change.changed_files << DUPLICATED_INDEXES_FILE
-        end
-
-        migrate
-
-        change.changed_files << Pathname.new('db').join('structure.sql').to_s
-
+        change = ::Gitlab::Housekeeper::Change.new
+        change.identifiers = [self.class.name.demodulize, table_name]
+        change.context = { table_name: table_name, indexes: indexes }
         yield(change)
-
-        reset_db
       end
+    end
+
+    def make_change!(change)
+      table_name = change.context[:table_name]
+      indexes = change.context[:indexes]
+      build_change_details(change, table_name, indexes)
+      change.changed_files = []
+
+      indexes.each do |index_to_drop, _|
+        migration_file, migration_number = generate_migration_file(table_name, index_to_drop)
+        update_duplicated_indexes_file(table_name)
+
+        change.changed_files << migration_file
+        change.changed_files << Pathname.new('db').join('schema_migrations', migration_number).to_s
+        change.changed_files << DUPLICATED_INDEXES_FILE
+      end
+
+      migrate
+
+      change.changed_files << Pathname.new('db').join('structure.sql').to_s
+
+      reset_db
+      change
     end
 
     private
@@ -79,10 +87,8 @@ module Keeps
       end
     end
 
-    def build_change(table_name, indexes)
-      change = ::Gitlab::Housekeeper::Change.new
+    def build_change_details(change, table_name, indexes)
       change.title = "Remove duplicated index from #{table_name}".truncate(70, omission: '')
-      change.identifiers = [self.class.name.demodulize, table_name]
       change.labels = labels(table_name)
       change.reviewers = pick_reviewers(table_name, change.identifiers).uniq
 

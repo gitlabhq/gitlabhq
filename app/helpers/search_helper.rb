@@ -304,8 +304,9 @@ module SearchHelper
       { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown.md") },
       { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions.md") },
       { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access.md") },
-      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/_index.md") },
-      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh.md") },
+      { category: "Help", label: _("Rake Tasks Help"),
+        url: help_page_path("administration/raketasks/_index.md") },
+      { category: "Help", label: _("SSH Keys Help"), url: help_page_path("user/ssh.md") },
       {
         category: "Help",
         label: s_("Webhooks|System hooks help"),

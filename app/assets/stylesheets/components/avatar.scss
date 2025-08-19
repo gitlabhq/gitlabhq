@@ -189,21 +189,6 @@ $avatar-sizes: (
 }
 
 .user-popover {
-  // GlAvatarLabeled doesn't expose any prop to override internal classes
-
-  // Max width of popover container is set by gl-max-w-48
-  // so we need to ensure that name/username/status container doesn't overflow
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-avatar-labeled-labels {
-    max-width: px-to-rem(290px);
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-avatar-labeled-label,
-  .gl-avatar-labeled-sublabel {
-    @apply gl-truncate;
-  }
-
   &.user-popover-cannot-merge {
     .popover-header {
       background-color: var(--gl-feedback-warning-background-color);

@@ -43,4 +43,3 @@ Style/RedundantReturn:
     - 'qa/qa/specs/helpers/context_selector.rb'
     - 'qa/qa/support/formatters/context_formatter.rb'
     - 'rubocop/cop/background_migration/dictionary_file.rb'
-    - 'tooling/lib/tooling/mappings/graphql_base_type_mappings.rb'

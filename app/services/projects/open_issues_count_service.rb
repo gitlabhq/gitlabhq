@@ -57,6 +57,12 @@ module Projects
       end
     end
 
+    def delete_cache
+      [public_count_cache_key, total_count_cache_key].each do |key|
+        Rails.cache.delete(key)
+      end
+    end
+
     # We only show issues count including confidential for planners, who are allowed to view confidential issues.
     # This will still show a discrepancy on issues number but should be less than before.
     # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/38418 description.

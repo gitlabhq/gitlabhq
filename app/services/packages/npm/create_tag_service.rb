@@ -24,10 +24,18 @@ module Packages
 
       def existing_tag
         Packages::TagsFinder
-            .new(package.project, package.name, package_type: package.package_type)
+            .new(package.project, package.name, tags_finder_options)
             .find_by_name(tag_name)
       end
       strong_memoize_attr :existing_tag
+
+      def tags_finder_options
+        if Feature.enabled?(:packages_tags_finder_use_packages_class, package.project)
+          { packages_class: ::Packages::Npm::Package }
+        else
+          { package_type: package.package_type }
+        end
+      end
     end
   end
 end

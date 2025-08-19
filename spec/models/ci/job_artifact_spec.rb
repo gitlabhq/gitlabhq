@@ -10,6 +10,7 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     it { is_expected.to belong_to(:job).class_name('Ci::Build').with_foreign_key(:job_id).inverse_of(:job_artifacts) }
     it { is_expected.to validate_presence_of(:job) }
     it { is_expected.to validate_presence_of(:partition_id) }
+    it { is_expected.to validate_length_of(:exposed_as).is_at_most(100) }
   end
 
   it { is_expected.to respond_to(:file) }
@@ -500,6 +501,35 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
 
             it { is_expected.not_to be_valid }
           end
+        end
+      end
+    end
+  end
+
+  describe 'validates exposed_paths' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject(:job_artifact) { build(:ci_job_artifact, exposed_paths: exposed_paths) }
+
+    where(:exposed_paths, :valid) do
+      nil                  | true
+      123                  | false
+      { path: 'test' }     | false
+      []                   | true
+      ['path']             | true
+      ['p/path2', 'path3'] | true
+      ['path/*']           | false
+      [1, 2, 3]            | true # Array elements are automatically cast as String
+    end
+
+    with_them do
+      it 'provides the expected validation result' do
+        if valid
+          expect(job_artifact).to be_valid
+        else
+          expect(job_artifact).not_to be_valid
+          expect(job_artifact.errors.full_messages)
+            .to contain_exactly('Exposed paths must be an array of strings without `*`')
         end
       end
     end

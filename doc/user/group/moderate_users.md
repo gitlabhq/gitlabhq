@@ -84,8 +84,12 @@ To unban a user:
 
 {{< /details >}}
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461339) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `group_remove_dormant_members`. Disabled by default.
-> [Released](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178851) as a [beta](../../policy/development_stages_support.md#beta) feature in GitLab 17.9.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461339) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `group_remove_dormant_members`. Disabled by default.
+- [Released](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178851) as a [beta](../../policy/development_stages_support.md#beta) feature in GitLab 17.9.
+
+{{< /history >}}
 
 Prerequisites:
 

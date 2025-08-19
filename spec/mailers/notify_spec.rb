@@ -596,6 +596,32 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
 
+    describe 'pipeline variables migration complete' do
+      let(:updated_count) { 5 }
+      let(:skipped_count) { 2 }
+
+      subject { described_class.pipeline_variables_migration_complete_email(recipient, group, { updated_count: updated_count, skipped_count: skipped_count }) }
+
+      it_behaves_like 'an email sent to a user'
+      it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'it should not have Gmail Actions links'
+      it_behaves_like "a user cannot unsubscribe through footer link"
+      it_behaves_like 'appearance header and footer enabled'
+      it_behaves_like 'appearance header and footer not enabled'
+
+      it 'has the correct subject and body' do
+        is_expected.to have_subject("#{group.name} | Pipeline variables settings migration complete")
+        is_expected.to have_body_text('All projects in the')
+        is_expected.to have_body_text(group.name)
+        is_expected.to have_body_text('group were checked for pipeline variables usage')
+        is_expected.to have_body_text("#{updated_count} projects were not using pipeline variables")
+        is_expected.to have_body_text('CI/CD settings were updated to prevent future pipeline variable usage')
+        is_expected.to have_body_text("#{skipped_count} have used pipeline variables in the past")
+        is_expected.to have_body_text('These projects\' CI/CD settings were not updated as there is a risk')
+        is_expected.to have_body_text('Projects that could not be updated need manual review')
+      end
+    end
+
     def invite_to_project(project, inviter:, user: nil)
       create(
         :project_member,
@@ -658,7 +684,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it_behaves_like 'it should show Gmail Actions View Merge request link'
-        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'an unsubscribeable thread' do
+          before do
+            group.add_developer(recipient)
+          end
+        end
+
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -775,7 +806,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it_behaves_like 'it should show Gmail Actions View Merge request link'
-        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'an unsubscribeable thread' do
+          before do
+            group.add_developer(recipient)
+          end
+        end
+
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -808,7 +844,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it_behaves_like 'it should show Gmail Actions View Issue link'
-        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'an unsubscribeable thread' do
+          before do
+            group.add_developer(recipient)
+          end
+        end
+
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -846,7 +887,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         end
 
         it_behaves_like 'it should show Gmail Actions View Wiki link'
-        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'an unsubscribeable thread' do
+          before do
+            group.add_developer(recipient)
+          end
+        end
+
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
 
@@ -949,7 +995,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it_behaves_like 'an email for a note on a diff discussion', :diff_note_on_merge_request
         it_behaves_like 'it should show Gmail Actions View Merge request link'
-        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'an unsubscribeable thread' do
+          before do
+            group.add_developer(recipient)
+          end
+        end
+
         it_behaves_like 'appearance header and footer enabled'
         it_behaves_like 'appearance header and footer not enabled'
       end
@@ -1490,7 +1541,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           end
 
           it_behaves_like 'it should show Gmail Actions View Issue link', group_level
-          it_behaves_like 'an unsubscribeable thread'
+          it_behaves_like 'an unsubscribeable thread', group_level do
+            before do
+              group.add_developer(recipient)
+            end
+          end
+
           it_behaves_like 'appearance header and footer enabled'
           it_behaves_like 'appearance header and footer not enabled'
 

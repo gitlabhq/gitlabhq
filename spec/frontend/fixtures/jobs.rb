@@ -91,12 +91,12 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     end
 
     it_behaves_like 'graphql queries', 'ci/jobs_page/graphql/queries', 'get_jobs.query.graphql' do
-      let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
+      let(:variables) { { fullPath: 'frontend-fixtures/builds-project', kind: 'BUILD' } }
       let(:success_path) { %w[project jobs] }
     end
 
     it_behaves_like 'graphql queries', 'ci/jobs_page/graphql/queries', 'get_jobs_count.query.graphql', true do
-      let(:variables) { { fullPath: 'frontend-fixtures/builds-project' } }
+      let(:variables) { { fullPath: 'frontend-fixtures/builds-project', kind: 'BUILD' } }
       let(:success_path) { %w[project jobs] }
     end
 

@@ -15,22 +15,6 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
   describe '.execute' do
     subject(:execute_service) { service.execute }
 
-    context 'when ci_auto_switch_to_dynamic_partitions is disabled' do
-      before do
-        stub_feature_flags(ci_auto_switch_to_dynamic_partitions: false)
-
-        allow_next_found_instance_of(Ci::Partition) do |partition|
-          allow(partition).to receive(:all_partitions_exist?).and_return(true)
-        end
-      end
-
-      it 'marks the next available partition as ready' do
-        expect { execute_service }
-          .to change { next_ci_partition.reload.status }
-          .from(preparing_status).to(ready_status)
-      end
-    end
-
     context 'when ci_partition is nil' do
       let(:ci_partition) { nil }
 

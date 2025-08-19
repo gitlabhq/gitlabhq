@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import IterationPopover from 'ee_component/issuable/popover/components/iteration_popover.vue';
 import createDefaultClient from '~/lib/graphql';
 import IssuePopover from './components/issue_popover.vue';
 import MRPopover from './components/mr_popover.vue';
@@ -12,6 +13,7 @@ export const componentsByReferenceTypeMap = {
   work_item: IssuePopover,
   merge_request: MRPopover,
   milestone: MilestonePopover,
+  iteration: IterationPopover,
 };
 
 let renderFn;

@@ -1,0 +1,117 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'bundler/inline'
+require 'optparse'
+require 'fileutils'
+
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'gitlab', '~> 5.1'
+  gem 'test_file_finder', '~> 0.3'
+  # loaded from standard library by gitlab and will stop working on ruby 3.4
+  gem 'base64'
+  gem 'csv'
+end
+
+require_relative '../lib/tooling/predictive_tests/metrics_exporter'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
+
+  opts.on('--export-backend-metrics', 'Export predictive test metrics for rspec') do
+    options[:export_backend_metrics] = true
+  end
+
+  opts.on('--export-frontend-metrics', 'Export predictive test metrics for frontend') do
+    options[:export_frontend_metrics] = true
+  end
+
+  opts.on('--failed-backend-tests-file [string]', String, 'File with list of failed rspec tests') do |value|
+    options[:failed_backend_tests_file] = value
+  end
+
+  opts.on('--failed-frontend-tests-file [string]', String, 'File with list of failed jest tests') do |value|
+    options[:failed_frontend_tests_file] = value
+  end
+
+  opts.on('--knapsack-report-file [string]', String, 'Knapsack report JSON file with specs runtimes') do |value|
+    options[:knapsack_report_file] = value
+  end
+
+  opts.on('--output-dir [string]', String, 'Output directory for generated metrics files') do |value|
+    options[:output_dir] = value
+  end
+
+  opts.on('--debug', 'Enable debug logging') do
+    options[:debug] = true
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end.parse!
+
+results = []
+log_level = options[:debug] ? :debug : :info
+
+def empty_arg?(arg)
+  arg.nil? || arg.empty?
+end
+
+export_backend = options[:export_backend_metrics]
+failed_backend_tests_file = options[:failed_backend_tests_file]
+export_frontend = options[:export_frontend_metrics]
+failed_frontend_tests_file = options[:failed_frontend_tests_file]
+knapsack_report_file = options[:knapsack_report_file]
+
+# Validate at least one option is provided
+if [export_backend, export_frontend].all?(&:nil?)
+  puts <<~MSG
+    Error: Please specify at least one of these flags:
+      1. --export-backend-metrics
+      2. --export-frontend-metrics
+  MSG
+
+  exit 1
+end
+
+if export_backend
+  if empty_arg?(failed_backend_tests_file)
+    puts "[predictive tests] Error: Missing argument: --failed-backend-tests-file"
+    puts "[predictive tests] skipping backend metrics export"
+    results << false
+  else
+    # scripts that fetch failed tests do not create empty file when no failures were detected
+    FileUtils.touch(failed_backend_tests_file) unless File.exist?(failed_backend_tests_file)
+    results << Tooling::PredictiveTests::MetricsExporter.new(
+      test_type: :backend,
+      output_dir: options[:output_dir],
+      all_failed_tests_file: failed_backend_tests_file,
+      test_runtime_report_file: knapsack_report_file,
+      log_level: log_level
+    ).execute
+  end
+end
+
+if export_frontend
+  if empty_arg?(failed_frontend_tests_file)
+    puts "[predictive tests] Error: Missing argument: --failed-frontend-tests-file"
+    puts "[predictive tests] skipping frontend metrics export"
+    results << false
+  else
+    # scripts that fetch failed tests do not create empty file when no failures were detected
+    FileUtils.touch(failed_frontend_tests_file) unless File.exist?(failed_frontend_tests_file)
+    results << Tooling::PredictiveTests::MetricsExporter.new(
+      test_type: :frontend,
+      output_dir: options[:output_dir],
+      all_failed_tests_file: options[:failed_frontend_tests_file],
+      log_level: log_level
+    ).execute
+  end
+end
+
+results.include?(false) ? exit(1) : exit(0)

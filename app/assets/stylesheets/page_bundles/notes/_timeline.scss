@@ -25,6 +25,14 @@
   }
 }
 
+.internal-note-bg {
+  background-color: var(--timeline-entry-internal-note-background-color) !important;
+}
+
+.note-footer:has(.internal-note) .reply-placeholder-input-field {
+  @apply gl-mt-4;
+}
+
 .timeline-entry {
   @apply gl-text-default;
 

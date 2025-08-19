@@ -15,7 +15,7 @@ title: GitLab Pages administration for self-compiled installations
 {{< alert type="note" >}}
 
 Before attempting to enable GitLab Pages, first make sure you have
-[installed GitLab](../../install/installation.md) successfully.
+[installed GitLab](../../install/self_compiled/_index.md) successfully.
 
 {{< /alert >}}
 

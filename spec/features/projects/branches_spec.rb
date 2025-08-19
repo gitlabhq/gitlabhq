@@ -469,9 +469,7 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
   end
 
   def view_branch_rules
-    page.within('.nav-controls') do
-      click_link s_("Branches|View branch rules")
-    end
+    find_by_testid('view-branch-rules').click
     wait_for_requests
   end
 end

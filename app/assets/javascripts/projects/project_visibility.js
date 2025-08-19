@@ -22,9 +22,13 @@ function setVisibilityOptions({ name, visibility, showPath, editPath }) {
         const optionName = optionTitle ? optionTitle.innerText.toLowerCase() : '';
         // eslint-disable-next-line no-unsanitized/property
         reason.innerHTML = sprintf(
-          __(
-            'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group.',
-          ),
+          editPath
+            ? __(
+                'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}. To make this project %{visibilityLevel}, you must first %{openEditLink}change the visibility%{closeEditLink} of the parent group.',
+              )
+            : __(
+                'This project cannot be %{visibilityLevel} because the visibility of %{openShowLink}%{name}%{closeShowLink} is %{visibility}.',
+              ),
           {
             visibilityLevel: optionName,
             name: escape(name),

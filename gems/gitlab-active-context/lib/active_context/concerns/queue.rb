@@ -5,7 +5,6 @@ module ActiveContext
     module Queue
       def self.included(base)
         base.extend(ClassMethods)
-        base.register!
       end
 
       def initialize(shard)

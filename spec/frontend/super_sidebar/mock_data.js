@@ -14,7 +14,7 @@ export const createNewMenuGroups = [
       },
       {
         text: 'New work item',
-        component: 'create_new_group_work_item_modal',
+        component: 'create_new_work_item_modal',
       },
       {
         text: 'Invite members',
@@ -47,6 +47,7 @@ export const createNewMenuProjects = [
     items: [
       {
         text: 'New work item',
+        href: 'issues/new',
         component: 'create_new_work_item_modal',
       },
       {

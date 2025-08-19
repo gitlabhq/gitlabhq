@@ -78,6 +78,9 @@ describe('BoardOptions component', () => {
           propsData: {
             showEpicLaneOption: expected,
           },
+          stubs: {
+            ToggleEpicsSwimlanes,
+          },
         });
         expect(wrapper.findComponent(ToggleEpicsSwimlanes).exists()).toBe(expected);
       },

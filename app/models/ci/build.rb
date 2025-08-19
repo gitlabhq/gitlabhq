@@ -84,7 +84,15 @@ module Ci
       inverse_of: :job
     # rubocop:enable Cop/ActiveRecordDependent
 
+    has_many :inputs,
+      ->(build) { in_partition(build) },
+      class_name: 'Ci::JobInput',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job
+
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id, inverse_of: :job
+
     has_many :job_annotations,
       ->(build) { in_partition(build) },
       class_name: 'Ci::JobAnnotation',
@@ -164,15 +172,10 @@ module Ci
     scope :eager_load_for_api, -> do
       preload(
         :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        :job_definition,
         pipeline: :project,
         user: [:user_preference, :user_detail, :followees, :followers]
       )
-    end
-
-    # TODO: Remove this scope when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
-    scope :with_exposed_artifacts, -> do
-      joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
-        .includes(:metadata, :job_artifacts_metadata)
     end
 
     scope :with_artifacts_not_expired, -> { with_downloadable_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.current) }
@@ -415,6 +418,11 @@ module Ci
       ::Ci::BuildTag
     end
 
+    def self.keep_artifacts!
+      update_all(artifacts_expire_at: nil)
+      Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
+    end
+
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
     end
@@ -589,6 +597,7 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         break variables unless persisted? && persisted_environment.present?
 
+        variables.append(key: 'CI_ENVIRONMENT_ID', value: persisted_environment.id.to_s)
         variables.append(key: 'CI_ENVIRONMENT_SLUG', value: environment_slug)
 
         # Here we're passing unexpanded environment_url for runner to expand,
@@ -746,14 +755,6 @@ module Ci
       Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id, project_id)
     end
 
-    def artifacts_expose_as
-      options.dig(:artifacts, :expose_as)
-    end
-
-    def artifacts_paths
-      options.dig(:artifacts, :paths)
-    end
-
     def needs_touch?
       Time.current - updated_at > 15.minutes.to_i
     end
@@ -864,11 +865,6 @@ module Ci
       has_expiring_artifacts? && job_artifacts_archive.present?
     end
 
-    def self.keep_artifacts!
-      update_all(artifacts_expire_at: nil)
-      Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
-    end
-
     def keep_artifacts!
       update(artifacts_expire_at: nil)
       job_artifacts.update_all(expire_at: nil)
@@ -962,7 +958,7 @@ module Ci
     end
 
     def publishes_artifacts_reports?
-      options&.dig(:artifacts, :reports)&.any?
+      reports_definitions&.any?
     end
 
     def supports_artifacts_exclude?
@@ -1209,6 +1205,11 @@ module Ci
     end
 
     private
+
+    def reports_definitions
+      options.dig(:artifacts, :reports)
+    end
+    strong_memoize_attr :reports_definitions
 
     def use_jwt_for_ci_cd_job_token?
       namespace&.root_ancestor&.namespace_settings&.jwt_ci_cd_job_token_enabled?

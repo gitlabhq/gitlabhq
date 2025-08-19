@@ -6,9 +6,9 @@ classes:
 feature_categories:
 - groups_and_projects
 description: Stores uploads for Project model
-introduced_by_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175203
 milestone: '17.11'
-table_size: small
+table_size: medium
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects

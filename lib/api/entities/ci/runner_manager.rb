@@ -6,6 +6,8 @@ module API
       class RunnerManager < Grape::Entity
         include ::API::Ci::Helpers::RunnerJobExecutionStatusHelper
 
+        # NOTE: instance runner managers are exposed by default to any authenticated user,
+        # remember to protect any sensitive fields
         expose :id, documentation: { type: 'integer', example: 8 }
         expose :system_xid, as: :system_id, documentation: { type: 'string', example: 'runner-1' }
         expose :version, documentation: { type: 'string', example: '16.11.0' }

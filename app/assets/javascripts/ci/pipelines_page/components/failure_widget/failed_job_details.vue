@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, s__, sprintf } from '~/locale';
+import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -60,9 +60,6 @@ export default {
         ? this.$options.i18n.cannotRetryTrigger
         : this.$options.i18n.cannotRetry;
     },
-    tooltipText() {
-      return sprintf(this.$options.i18n.jobActionTooltipText, { jobName: this.job.name });
-    },
     isBuildJob() {
       return this.job.kind === BUILD_KIND;
     },
@@ -97,7 +94,6 @@ export default {
     cannotReadBuild: s__("Job|You do not have permission to read this job's log."),
     cannotRetry: s__('Job|You do not have permission to run this job again.'),
     cannotRetryTrigger: s__('Job|You cannot rerun trigger jobs from this list.'),
-    jobActionTooltipText: s__('Pipelines|Retry %{jobName} Job'),
     retry: __('Run again'),
     retryError: __('There was an error while running this job again'),
   },

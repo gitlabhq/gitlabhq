@@ -317,7 +317,7 @@ for the same queries while the environment is in either state.
 Index bloat shouldn't typically cause noticeable performance problems, but it can lead to high disk usage, particularly if there are [autovacuum issues](https://gitlab.com/gitlab-org/gitlab/-/issues/412672#note_1401807864).
 
 The query below calculates bloat percentage from PostgreSQL's own `postgres_index_bloat_estimates`
-table, and orders the results by percentage value. PostgresSQL needs some amount of
+table, and orders the results by percentage value. PostgreSQL needs some amount of
 bloat to run correctly, so around 25% still represents standard behavior.
 
 ```sql

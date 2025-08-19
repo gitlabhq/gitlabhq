@@ -29,7 +29,8 @@
         help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }
     .form-group
       = f.label :require_admin_two_factor_authentication, _('Enforce Two-Factor authentication for administrator users'), class: 'label-bold'
-      = f.gitlab_ui_checkbox_component :require_admin_two_factor_authentication, _('Require administrators to enable 2FA')
+      = f.gitlab_ui_checkbox_component :require_admin_two_factor_authentication, _('Require administrators to enable 2FA'),
+        help_text: (s_('MemberRole|Also applies to users that are assigned a custom admin role.') if custom_admin_roles_available?)
     .form-group
       = f.label :two_factor_authentication, _('Two-factor grace period'), class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control gl-form-input', placeholder: '0'

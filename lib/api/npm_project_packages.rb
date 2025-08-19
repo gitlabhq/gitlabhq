@@ -168,7 +168,7 @@ module API
             break
           end
 
-          enqueue_sync_metadata_cache_worker(project, package_name)
+          enqueue_sync_npm_metadata_cache_worker(project, package_name)
 
           metadata = generate_metadata_service(packages).execute.payload
           present metadata, with: ::API::Entities::NpmPackage

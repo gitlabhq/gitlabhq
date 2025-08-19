@@ -62,7 +62,7 @@ export default {
 </script>
 <template>
   <div class="gl-px-8">
-    <gl-skeleton-loader :unique-key="uniqueKey" class="gl-p-8">
+    <gl-skeleton-loader :unique-key="uniqueKey">
       <rect
         v-for="(y, index) in $options.GRID_YS"
         :key="`grid-${index}`"

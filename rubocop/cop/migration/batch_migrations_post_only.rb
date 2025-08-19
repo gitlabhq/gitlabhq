@@ -20,6 +20,7 @@ module RuboCop
 
         SYMBOLIZED_MATCHER = FORBIDDEN_METHODS.map { |w| ":#{w}" }.join(' | ')
 
+        # @!method on_forbidden_method(node)
         def_node_matcher :on_forbidden_method, <<~PATTERN
           (send nil? {#{SYMBOLIZED_MATCHER}} ...)
         PATTERN
@@ -28,7 +29,7 @@ module RuboCop
           on_forbidden_method(node) do
             break if in_post_deployment_migration?(node)
 
-            add_offense(node, message: MSG)
+            add_offense(node)
           end
         end
       end

@@ -105,7 +105,7 @@ export default {
         } else {
           this.isLoading = false;
         }
-        if (data) {
+        if (data?.workspace) {
           this.newCustomEmojiPath =
             findAwardEmojiWidget(data.workspace?.workItem)?.newCustomEmojiPath || '';
           this.$emit('emoji-updated', data.workspace?.workItem);
@@ -193,8 +193,10 @@ export default {
       const sourceData = cache.readQuery(query);
 
       const newData = produce(sourceData, (draftState) => {
-        const widgetAwardEmoji = findAwardEmojiWidget(draftState.workspace.workItem);
-        widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
+        const widgetAwardEmoji = findAwardEmojiWidget(draftState.workspace?.workItem);
+        if (widgetAwardEmoji && widgetAwardEmoji.awardEmoji) {
+          widgetAwardEmoji.awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
+        }
       });
 
       cache.writeQuery({ ...query, data: newData });

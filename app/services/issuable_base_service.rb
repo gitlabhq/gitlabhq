@@ -50,8 +50,10 @@ class IssuableBaseService < ::BaseContainerService
 
   def self.constructor_container_arg(value)
     # TODO: Dynamically determining the type of a constructor arg based on the class is an antipattern,
-    # but the root cause is that Epics::BaseService has some issues that inheritance may not be the
-    # appropriate pattern. See more details in comments at the top of Epics::BaseService#initialize.
+    # but the root cause is that epic services had inheritance issues where inheritance may not be the
+    # appropriate pattern. Epic services like WorkItems::LegacyEpics::UpdateService need to use `group:`
+    # as the container arg while other issuable services use `container:` or `project:`.
+    # See more details in WorkItems::LegacyEpics::UpdateService comments.
     # Follow on issue to address this:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/328438
 
@@ -237,7 +239,7 @@ class IssuableBaseService < ::BaseContainerService
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees) unless issuable.allows_reviewers?
 
-      issuable.update_project_counter_caches
+      issuable.invalidate_project_counter_caches
     end
 
     issuable
@@ -350,7 +352,7 @@ class IssuableBaseService < ::BaseContainerService
         )
 
         execute_triggers
-        issuable.update_project_counter_caches if update_project_counters
+        issuable.invalidate_project_counter_caches if update_project_counters
       end
     end
 

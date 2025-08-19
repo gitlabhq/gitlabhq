@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_management do
+RSpec.describe 'Dashboard snippets', :js, :with_organization_url_helpers, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
+  let_it_be(:current_organization) { user.organization }
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_snippets_path, :snippets
 

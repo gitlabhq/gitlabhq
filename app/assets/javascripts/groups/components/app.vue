@@ -229,7 +229,7 @@ export default {
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
       size="lg"
-      class="loading-animation prepend-top-20"
+      class="loading-animation gl-mt-5"
     />
     <template v-else>
       <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />

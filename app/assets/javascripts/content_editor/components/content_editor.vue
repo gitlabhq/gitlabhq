@@ -178,6 +178,13 @@ export default {
         tiptapOptions: {
           autofocus,
           editable,
+          editorProps: {
+            attributes: {
+              'aria-controls': 'content-editor-suggestions',
+              'aria-label': __('Rich text editor'),
+              class: 'rte-text-box',
+            },
+          },
         },
       }),
     );
@@ -188,16 +195,59 @@ export default {
     markdownEditorEventHub.$emit(CONTENT_EDITOR_READY_EVENT);
     markdownEditorEventHub.$on(CONTENT_EDITOR_PASTE, this.pasteContent);
 
-    // Set Aria label
-    if (this.contentEditor?.tiptapEditor?.view?.dom) {
-      this.contentEditor.tiptapEditor.view.dom.setAttribute('aria-label', __('Rich text editor'));
-    }
+    // Set editor height if stored
+    this.contentEditor.tiptapEditor.view.dom.style.minHeight = this.getEditorSelectorDataset();
+
+    // Add event listener for custom resize event
+    document.addEventListener('mousedown', this.handleManualResize);
   },
   beforeDestroy() {
     markdownEditorEventHub.$off(CONTENT_EDITOR_PASTE, this.pasteContent);
     this.contentEditor.dispose();
   },
   methods: {
+    editorSelector() {
+      return this.contentEditor?.tiptapEditor?.view?.dom?.closest('.js-editor');
+    },
+    setEditorSelectorDataset(value) {
+      this.editorSelector().dataset.gfmEditorMinHeight = value;
+    },
+    getEditorSelectorDataset() {
+      return this.editorSelector()?.dataset?.gfmEditorMinHeight;
+    },
+    handleManualResize(e) {
+      const textarea = this.contentEditor.tiptapEditor.view.dom;
+      const rect = textarea.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      const cornerSize = 16;
+      const isInBottomRight =
+        mouseX >= rect.right - cornerSize &&
+        mouseX <= rect.right &&
+        mouseY >= rect.bottom - cornerSize &&
+        mouseY <= rect.bottom;
+
+      if (isInBottomRight) {
+        this.isManuallyResizing = true;
+        textarea.style.minHeight = null;
+        this.setEditorSelectorDataset(null);
+
+        document.addEventListener('mouseup', this.handleManualResizeUp);
+      }
+    },
+    handleManualResizeUp() {
+      const textarea = this.contentEditor.tiptapEditor.view.dom;
+
+      // Set current height as min height, so autogrow will still work
+      if (textarea) {
+        const editorHeight = `${textarea.offsetHeight}px`;
+        textarea.style.minHeight = editorHeight;
+        // Store minHeight in global variable for RTE
+        this.setEditorSelectorDataset(editorHeight);
+      }
+
+      document.removeEventListener('mouseup', this.handleManualResizeUp);
+    },
     pasteContent(content) {
       this.contentEditor.tiptapEditor.chain().focus().pasteContent(content).run();
     },
@@ -224,6 +274,7 @@ export default {
         this.notifyLoadingError();
       }
     },
+    // eslint-disable-next-line vue/no-unused-properties -- focus() is part of the component's public API.
     focus() {
       this.contentEditor.tiptapEditor.commands.focus();
     },

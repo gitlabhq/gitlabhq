@@ -179,9 +179,8 @@ module SystemNotes
     #   "changed title from **Old** to **New**"
     #
     # Returns the created Note object
-    def change_title(org_title)
-      new_title = ERB::Util.html_escape(noteable.title)
-      old_title = ERB::Util.html_escape(org_title)
+    def change_title(old_title)
+      new_title = noteable.title
 
       old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
 
@@ -251,7 +250,9 @@ module SystemNotes
     def cross_reference(mentioned_in)
       return if cross_reference_disallowed?(mentioned_in)
 
-      gfm_reference = mentioned_in.gfm_reference(noteable.project || noteable.group)
+      from = noteable.project || noteable.try(:group) || noteable.try(:namespace)
+
+      gfm_reference = mentioned_in.gfm_reference(from)
       body = cross_reference_note_content(gfm_reference)
 
       if noteable.is_a?(ExternalIssue)
@@ -266,7 +267,7 @@ module SystemNotes
         track_cross_reference_action
 
         created_at = mentioned_in.created_at if USE_COMMIT_DATE_FOR_CROSS_REFERENCE_NOTE && mentioned_in.is_a?(Commit)
-        create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at))
+        create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference', created_at: created_at), skip_touch_noteable: true)
       end
     end
 

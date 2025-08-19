@@ -124,6 +124,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:ci_refs) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:bridges) }
     it { is_expected.to have_many(:build_report_results) }
     it { is_expected.to have_many(:runner_projects) }
     it { is_expected.to have_many(:runners) }
@@ -164,7 +165,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:repository_storage_moves) }
     it { is_expected.to have_many(:reviews).inverse_of(:project) }
     it { is_expected.to have_many(:packages).class_name('Packages::Package') }
-    it { is_expected.to have_many(:package_files).class_name('Packages::PackageFile') }
     it { is_expected.to have_many(:rpm_repository_files).class_name('Packages::Rpm::RepositoryFile').inverse_of(:project).dependent(:destroy) }
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::ProjectDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:npm_metadata_caches).class_name('Packages::Npm::MetadataCache') }
@@ -1005,7 +1005,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'validates the visibility' do
       expect_any_instance_of(described_class).to receive(:visibility_level_allowed_as_fork).twice.and_call_original
-      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_group).twice.and_call_original
+      expect_any_instance_of(described_class).to receive(:visibility_level_allowed_by_namespace).twice.and_call_original
 
       create(:project)
     end
@@ -1312,33 +1312,38 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#self_or_ancestors_archived?' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:subgroup) { create(:group, parent: group) }
-    let_it_be(:user_namespace_project) { create(:project) }
-
+    let_it_be_with_reload(:group) { create(:group) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:user_namespace_project) { create(:project) }
     let_it_be_with_reload(:group_project) { create(:project, group: group) }
     let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
 
     context 'when project itself is archived' do
-      it 'returns true' do
+      before do
         group_project.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent group is archived' do
-      it 'returns true' do
-        group.archive
+      before do
+        group.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(group_project.self_or_ancestors_archived?).to eq(true)
       end
     end
 
     context 'when project is not archived but parent subgroup is archived' do
-      it 'returns true' do
-        subgroup.archive
+      before do
+        subgroup.update!(archived: true)
+      end
 
+      it 'returns true' do
         expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
       end
     end
@@ -1352,6 +1357,100 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'when project and any its ancestor are not archived' do
       it 'returns false' do
         expect(user_namespace_project.self_or_ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when namespace_settings_with_ancestors_inherited_settings is preload' do
+      context 'when project itself is archived' do
+        before do
+          group_project.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent group is archived' do
+        before do
+          group.update!(archived: true)
+          group.namespace_settings_with_ancestors_inherited_settings
+          allow(group_project).to receive(:namespace).and_return(group)
+        end
+
+        it 'returns true' do
+          expect(group_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when project is not archived but parent subgroup is archived' do
+        before do
+          subgroup.update!(archived: true)
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns true' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(true)
+        end
+      end
+
+      context 'when neither project nor any ancestor group is archived' do
+        before do
+          subgroup.namespace_settings_with_ancestors_inherited_settings
+          allow(subgroup_project).to receive(:namespace).and_return(subgroup)
+        end
+
+        it 'returns false' do
+          expect(subgroup_project.self_or_ancestors_archived?).to eq(false)
+        end
+      end
+    end
+  end
+
+  describe '#ancestors_archived?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:user_namespace_project) { create(:project) }
+
+    let_it_be_with_reload(:group_project) { create(:project, group: group) }
+    let_it_be_with_reload(:subgroup_project) { create(:project, group: subgroup) }
+
+    context 'when project itself is archived' do
+      it 'returns false' do
+        group_project.update!(archived: true)
+
+        expect(group_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project is not archived but parent group is archived' do
+      it 'returns true' do
+        group.archive
+
+        expect(group_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when project is not archived but parent subgroup is archived' do
+      it 'returns true' do
+        subgroup.archive
+
+        expect(subgroup_project.ancestors_archived?).to eq(true)
+      end
+    end
+
+    context 'when neither project nor any ancestor group is archived' do
+      it 'returns false' do
+        expect(subgroup_project.ancestors_archived?).to eq(false)
+      end
+    end
+
+    context 'when project and any its ancestor are not archived' do
+      it 'returns false' do
+        expect(user_namespace_project.ancestors_archived?).to eq(false)
       end
     end
   end
@@ -1547,7 +1646,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
-    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace) }
+    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace).allow_nil }
+    it { is_expected.to delegate_method(:archived_ancestor).to(:project_namespace).allow_nil }
 
     describe 'read project settings' do
       %i[
@@ -1595,7 +1695,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'push_repository_for_job_token_allowed' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_',
           'id_token_sub_claim_components' => 'ci_',
-          'delete_pipelines_in_seconds' => 'ci_'
+          'delete_pipelines_in_seconds' => 'ci_',
+          'display_pipeline_variables' => 'ci_'
         }
       end
 
@@ -1608,6 +1709,62 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           merge_trains_skip_train_allowed
           restrict_pipeline_cancellation_role
         ]
+      end
+    end
+
+    describe '#archived_ancestor' do
+      let_it_be_with_reload(:root_namespace) { create(:group) }
+      let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }
+      let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
+      let_it_be_with_reload(:project) { create(:project, namespace: child_namespace) }
+
+      context 'when no ancestors are archived' do
+        it 'returns nil' do
+          expect(project.archived_ancestor).to be_nil
+        end
+      end
+
+      context 'when one ancestor is archived' do
+        before do
+          parent_namespace.update!(archived: true)
+        end
+
+        it 'returns the archived ancestor' do
+          expect(project.archived_ancestor).to eq(parent_namespace)
+        end
+      end
+
+      context 'when multiple ancestors are archived' do
+        before do
+          root_namespace.update!(archived: true)
+          parent_namespace.update!(archived: true)
+        end
+
+        it 'returns the first archived ancestor closest to the project' do
+          expect(project.archived_ancestor).to eq(parent_namespace)
+        end
+      end
+
+      context 'when the project itself is archived' do
+        before do
+          project.update!(archived: true)
+        end
+
+        it 'does not return itself, only ancestors' do
+          expect(project.archived_ancestor).to be_nil
+        end
+      end
+
+      context 'with mixed archived and non-archived ancestors' do
+        before do
+          root_namespace.update!(archived: true)
+          # parent_namespace remains non-archived
+          child_namespace.update!(archived: true)
+        end
+
+        it 'returns the first archived ancestor closest to the project' do
+          expect(project.archived_ancestor).to eq(child_namespace)
+        end
       end
     end
 
@@ -1681,6 +1838,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#ci_push_repository_for_job_token_allowed?' do
       it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
         let(:delegated_method) { :push_repository_for_job_token_allowed? }
+      end
+    end
+
+    describe '#ci_display_pipeline_variables?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :display_pipeline_variables? }
       end
     end
 
@@ -2974,10 +3137,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '.include_integration' do
     it 'avoids n + 1', :aggregate_failures do
-      create(:prometheus_integration)
-      run_test = -> { described_class.include_integration(:prometheus_integration).map(&:prometheus_integration) }
+      create(:confluence_integration)
+      run_test = -> { described_class.include_integration(:confluence_integration).map(&:confluence_integration) }
       control = ActiveRecord::QueryRecorder.new { run_test.call }
-      create(:prometheus_integration)
+      create(:confluence_integration)
 
       expect(run_test.call.count).to eq(2)
       expect { run_test.call }.not_to exceed_query_limit(control)
@@ -3299,6 +3462,55 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#visibility_level_allowed_by_namespace?' do
+    context 'when checking projects from groups' do
+      let_it_be(:private_group)    { build(:group, visibility_level: 0)  }
+      let_it_be(:internal_group)   { build(:group, visibility_level: 10) }
+
+      let_it_be(:private_project)  { build(:project, :private, group: private_group) }
+      let_it_be(:internal_project) { build(:project, :internal, group: internal_group) }
+
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+    end
+
+    context 'when checking projects from personal namespaces' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:private_namespace) { create(:namespace, owner: user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:internal_namespace) { create(:namespace, owner: user, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+
+      let_it_be(:private_project)  { build(:project, :private, namespace: private_namespace) }
+      let_it_be(:internal_project) { build(:project, :internal, namespace: internal_namespace) }
+
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be false }
+      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be false }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+      context 'when the feature flag is disabled' do
+        before do
+          stub_feature_flags(user_namespace_allowed_visibility: false)
+        end
+
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+        it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be true }
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be true }
+        it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PRIVATE)).to be true }
+      end
+    end
+  end
+
   describe '#pages_show_onboarding?' do
     let(:project) { create(:project) }
 
@@ -3572,22 +3784,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'returns projects with a matching name regardless of the casing' do
       expect(described_class.search_by_title('KITTENS')).to eq([project])
-    end
-  end
-
-  context 'when checking projects from groups' do
-    let(:private_group)    { build(:group, visibility_level: 0)  }
-    let(:internal_group)   { build(:group, visibility_level: 10) }
-
-    let(:private_project)  { build(:project, :private, group: private_group) }
-    let(:internal_project) { build(:project, :internal, group: internal_group) }
-
-    context 'when group is private project can not be internal' do
-      it { expect(private_project.visibility_level_allowed?(Gitlab::VisibilityLevel::INTERNAL)).to be_falsey }
-    end
-
-    context 'when group is internal project can not be public' do
-      it { expect(internal_project.visibility_level_allowed?(Gitlab::VisibilityLevel::PUBLIC)).to be_falsey }
     end
   end
 
@@ -5257,14 +5453,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe 'inside_path' do
+  context 'with inside_path' do
     let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
     let!(:project2) { create(:project) }
     let!(:project3) { create(:project, namespace: create(:namespace, path: 'namespace')) }
     let!(:path) { project1.namespace.full_path }
 
-    it 'returns correct project' do
-      expect(described_class.inside_path(path)).to eq([project1])
+    describe 'inside_path' do
+      it 'returns correct project' do
+        expect(described_class.inside_path(path)).to eq([project1])
+      end
+    end
+
+    describe '.inside_path_preloaded' do
+      it 'preloads the specified associations' do
+        projects = described_class.inside_path_preloaded(path)
+
+        project = projects.first
+
+        expect(project.association(:topics)).to be_loaded
+        expect(project.association(:project_topics)).to be_loaded
+        expect(project.association(:route)).to be_loaded
+      end
     end
   end
 
@@ -5492,7 +5702,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'validates the visibility' do
       expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_namespace).and_call_original
 
       project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
     end
@@ -5526,7 +5736,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'does not validate the visibility' do
       expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
-      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_namespace).and_call_original
 
       project.update!(updated_at: Time.current)
     end
@@ -7525,8 +7735,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'with disabled integrations' do
       before do
-        allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover teamcity])
-        allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+        allow(Integration).to receive(:available_integration_names).and_return(%w[zentao pushover teamcity])
+        allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
       end
 
       it 'returns only enabled integrations sorted' do
@@ -7554,19 +7764,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#find_or_initialize_integration' do
     it 'avoids N+1 database queries' do
-      allow(Integration).to receive(:available_integration_names).and_return(%w[prometheus pushover])
+      allow(Integration).to receive(:available_integration_names).and_return(%w[asana pushover])
 
-      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('prometheus') }
+      control = ActiveRecord::QueryRecorder.new { subject.find_or_initialize_integration('asana') }
 
       allow(Integration).to receive(:available_integration_names).and_call_original
 
-      expect { subject.find_or_initialize_integration('prometheus') }.not_to exceed_query_limit(control)
+      expect { subject.find_or_initialize_integration('asana') }.not_to exceed_query_limit(control)
     end
 
     it 'returns nil if integration is disabled' do
-      allow(subject).to receive(:disabled_integrations).and_return(%w[prometheus])
+      allow(subject).to receive(:disabled_integrations).and_return(%w[zentao])
 
-      expect(subject.find_or_initialize_integration('prometheus')).to be_nil
+      expect(subject.find_or_initialize_integration('zentao')).to be_nil
     end
 
     it 'returns nil if integration does not exist' do
@@ -7577,28 +7787,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       subject { create(:project) }
 
       before do
-        create(:prometheus_integration, project: subject, api_url: 'https://prometheus.project.com/')
+        create(:confluence_integration, project: subject, confluence_url: 'https://project.atlassian.net/wiki')
       end
 
       it 'retrieves the integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.project.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://project.atlassian.net/wiki')
       end
     end
 
     context 'with an instance-level integration' do
       before do
-        create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
+        create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
       end
 
       it 'builds the integration from the instance integration' do
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to eq('https://prometheus.instance.com/')
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to eq('https://instance.atlassian.net/wiki')
       end
     end
 
     context 'without an existing integration or instance-level' do
       it 'builds the integration' do
-        expect(subject.find_or_initialize_integration('prometheus')).to be_a(::Integrations::Prometheus)
-        expect(subject.find_or_initialize_integration('prometheus').api_url).to be_nil
+        expect(subject.find_or_initialize_integration('confluence')).to be_a(::Integrations::Confluence)
+        expect(subject.find_or_initialize_integration('confluence').confluence_url).to be_nil
       end
     end
 
@@ -7762,27 +7972,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'returns all available clusters for this project' do
         expect(subject).to contain_exactly(cluster, group_cluster, instance_cluster)
-      end
-    end
-  end
-
-  describe '#object_pool_params' do
-    let(:project) { create(:project, :repository, :public) }
-
-    subject { project.object_pool_params }
-
-    context 'when the objects cannot be pooled' do
-      let(:project) { create(:project, :repository, :private) }
-
-      it { is_expected.to be_empty }
-    end
-
-    context 'when a pool is created' do
-      it 'returns that pool repository' do
-        expect(subject).not_to be_empty
-        expect(subject[:pool_repository]).to be_persisted
-
-        expect(project.reload.pool_repository).to eq(subject[:pool_repository])
       end
     end
   end
@@ -8042,7 +8231,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#parent_organization_match' do
-    let_it_be(:group) { create(:group, :with_organization) }
+    let_it_be(:group) { create(:group) }
 
     subject(:project) { build(:project, namespace: group, organization: organization) }
 
@@ -8376,30 +8565,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#prometheus_integration_active?' do
-    let(:project) { create(:project) }
-
-    subject { project.prometheus_integration_active? }
-
-    before do
-      create(:prometheus_integration, project: project, manual_configuration: manual_configuration)
-    end
-
-    context 'when project has an activated prometheus integration' do
-      let(:manual_configuration) { true }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when project has an inactive prometheus integration' do
-      let(:manual_configuration) { false }
-
-      it 'the integration is marked as inactive' do
-        expect(subject).to be_falsey
-      end
-    end
-  end
-
   describe '#add_export_job' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project) }
@@ -8659,68 +8824,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it 'includes self, ancestors and linked groups' do
         expect(project.related_group_ids).to contain_exactly(group.id, sub_group.id, linked_group.id)
-      end
-    end
-  end
-
-  describe '#package_already_taken?' do
-    let_it_be(:namespace) { create(:namespace, path: 'test') }
-    let_it_be(:project) { create(:project, :public, namespace: namespace) }
-    let_it_be_with_reload(:package) { create(:npm_package, project: project, name: "@#{namespace.path}/foo", version: '1.2.3') }
-
-    subject { project.package_already_taken?(package_name, package_version, package_type: :npm) }
-
-    context 'within the package project' do
-      where(:package_name, :package_version, :expected_result) do
-        '@test/bar' | '1.2.3' | false
-        '@test/bar' | '5.5.5' | false
-        '@test/foo' | '1.2.3' | false
-        '@test/foo' | '5.5.5' | false
-      end
-
-      with_them do
-        it { is_expected.to eq expected_result }
-      end
-    end
-
-    context 'within a different project' do
-      let_it_be(:alt_project) { create(:project, :public, namespace: namespace) }
-
-      subject { alt_project.package_already_taken?(package_name, package_version, package_type: :npm) }
-
-      where(:package_name, :package_version, :expected_result) do
-        '@test/bar' | '1.2.3' | false
-        '@test/bar' | '5.5.5' | false
-        '@test/foo' | '1.2.3' | true
-        '@test/foo' | '5.5.5' | false
-      end
-
-      with_them do
-        it { is_expected.to eq expected_result }
-      end
-
-      context 'for a different package type' do
-        it 'returns false' do
-          result = alt_project.package_already_taken?(package.name, package.version, package_type: :nuget)
-          expect(result).to be false
-        end
-      end
-
-      context 'with a pending_destruction package' do
-        before do
-          package.pending_destruction!
-        end
-
-        where(:package_name, :package_version, :expected_result) do
-          '@test/bar' | '1.2.3' | false
-          '@test/bar' | '5.5.5' | false
-          '@test/foo' | '1.2.3' | false
-          '@test/foo' | '5.5.5' | false
-        end
-
-        with_them do
-          it { is_expected.to eq expected_result }
-        end
       end
     end
   end
@@ -9448,32 +9551,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#glql_integration_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
-      let(:feature_flag) { :glql_integration }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#glql_load_on_click_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
     it_behaves_like 'checks parent group and self feature flag' do
       let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
       let(:feature_flag) { :glql_load_on_click }
-      let(:subject_project) { group_project }
-    end
-  end
-
-  describe '#work_items_bulk_edit_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :work_items_bulk_edit_feature_flag_enabled? }
-      let(:feature_flag) { :work_items_bulk_edit }
       let(:subject_project) { group_project }
     end
   end
@@ -9494,6 +9577,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'checks parent group feature flag' do
       let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
       let(:feature_flag) { :work_items_alpha }
+      let(:subject_project) { group_project }
+    end
+  end
+
+  describe '#work_items_project_issues_list_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_project_issues_list_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_project_issues_list }
       let(:subject_project) { group_project }
     end
   end
@@ -10214,24 +10307,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#job_token_policies_enabled?' do
-    let_it_be(:project) { build_stubbed(:project) }
-
-    subject { project.job_token_policies_enabled? }
-
-    where(:setting_enabled) { [true, false] }
-
-    before do
-      project.clear_memoization(:job_token_policies_enabled?)
-      allow(project).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings,
-        :job_token_policies_enabled?).and_return(setting_enabled)
-    end
-
-    with_them do
-      it { is_expected.to eq(setting_enabled) }
-    end
-  end
-
   context 'with loose foreign key on projects.pool_repository_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:pool_repository) }
@@ -10264,6 +10339,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.repository).to receive(:merge_base).once.and_call_original
 
       2.times { project.merge_base_commit(commit1.id, commit2.id) }
+    end
+  end
+
+  describe '#ensure_pool_repository' do
+    let_it_be_with_reload(:project) { create(:project) }
+
+    it 'returns existing pool repository when present' do
+      pool_repo = create(:pool_repository, source_project: project)
+
+      expect(project.ensure_pool_repository).to eq(pool_repo)
+    end
+
+    it 'creates new pool repository when none exists' do
+      expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
+      expect(project.ensure_pool_repository).to be_a(PoolRepository)
     end
   end
 end

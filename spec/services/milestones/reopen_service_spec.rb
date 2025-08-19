@@ -32,53 +32,34 @@ RSpec.describe Milestones::ReopenService, feature_category: :team_planning do
       end
     end
 
-    shared_examples 'reopens the milestone' do |with_project_hooks:|
-      it 'executes hooks with reopen action and creates new event' do
-        expect(service).to receive(:execute_hooks).with(milestone, 'reopen').and_call_original
-        expect(project).to receive(:execute_hooks).with(kind_of(Hash), :milestone_hooks) if with_project_hooks
-
-        expect { service.execute(milestone) }.to change { Event.count }.by(1)
-      end
-    end
-
-    shared_examples 'does not reopen the milestone' do
-      it 'does not execute hooks and does not create new event' do
-        expect(service).not_to receive(:execute_hooks)
-
-        expect { service.execute(milestone) }.not_to change { Event.count }
-      end
-    end
-
     context 'when milestone is successfully reopened' do
-      let(:milestone) { create(:milestone, :closed, project: project) }
+      context 'when milestone is a project milestone' do
+        let(:milestone) { create(:milestone, :closed, project: project) }
 
-      context 'when project has active milestone hooks' do
-        let(:project) do
-          create(:project).tap do |project|
-            create(:project_hook, project: project, milestone_events: true)
+        context 'when project has active milestone hooks' do
+          before do
+            allow(project).to receive(:has_active_hooks?).with(:milestone_hooks).and_return(true)
           end
+
+          it_behaves_like 'reopens the milestone', with_hooks: true, with_event: true
         end
 
-        it_behaves_like 'reopens the milestone', with_project_hooks: true
-      end
+        context 'when project has no active milestone hooks' do
+          it_behaves_like 'reopens the milestone', with_hooks: false, with_event: true
+        end
 
-      context 'when project has no active milestone hooks' do
-        it_behaves_like 'reopens the milestone', with_project_hooks: false
-      end
-    end
+        context 'when milestone fails to reopen' do
+          context 'when milestone is already active' do
+            let(:milestone) { create(:milestone, project: project) }
 
-    context 'when milestone fails to reopen' do
-      context 'when milestone is already active' do
-        let(:milestone) { create(:milestone, project: project) }
+            it 'does not execute hooks and does not create new event' do
+              expect(service).not_to receive(:execute_hooks)
+              expect { service.execute(milestone) }.not_to change { Event.count }
 
-        it_behaves_like 'does not reopen the milestone'
-      end
-
-      context 'when milestone is a group milestone' do
-        let(:group) { create(:group) }
-        let(:milestone) { create(:milestone, :closed, group: group) }
-
-        it_behaves_like 'does not reopen the milestone'
+              expect { service.execute(milestone) }.not_to change { milestone.state }
+            end
+          end
+        end
       end
     end
   end

@@ -56,6 +56,76 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 - **Compliance and audit trails**: The integration creates comprehensive audit trails that link code changes to system behavior, which can be valuable for compliance requirements and post-incident analysis.
 - **Reduced tool switching**: Your development teams can access monitoring data, alerts, and performance insights without leaving their familiar GitLab environment, helping to improve productivity and reduce cognitive overhead.
 
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+## Prerequisites
+
+- You must have Developer role or higher to the group
+- Your group must have GitLab Observability enabled
+
+## Request access to GitLab Observability
+
+If GitLab Observability is not yet enabled for your group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Observability**.
+1. Select **Request Access**.
+1. Select **Enable Observability**.
+1. Wait for an email notification confirming your observability instance is ready.
+
+The email includes your OpenTelemetry (`OTEL`) endpoint URL for instrumenting your applications.
+
+![Enable Observability Button](img/gitLab_o11y_enable_button_v18_1.png "Enable Observability Button")
+
+## Access GitLab Observability
+
+Once access is granted:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Observability**.
+
+If **Observability** isn't displayed on the left sidebar, go directly to `https://gitlab.com/groups/<group_path>/-/observability/services`.
+
+![GitLab.com Observability Dashboard](img/gitLab_o11y_gitlab_com_dashboard_v18_1.png "GitLab.com Observability Dashboard")
+
+## Send telemetry data to GitLab.com Observability
+
+Use the OTEL endpoint URL provided in your access confirmation email to configure your application's OpenTelemetry instrumentation.
+
+### Example configuration
+
+Replace `YOUR_OTEL_ENDPOINT_URL` with the URL from your confirmation email:
+
+```ruby
+require 'opentelemetry/sdk'
+require 'opentelemetry/exporter/otlp'
+
+OpenTelemetry::SDK.configure do |c|
+resource = OpenTelemetry::SDK::Resources::Resource.create({
+'service.name' => 'your-service-name',
+'service.version' => '1.0.0',
+'deployment.environment' => 'production'
+})
+c.resource = resource
+
+c.add_span_processor(
+OpenTelemetry::SDK::Trace::Export::BatchSpanProcessor.new(
+OpenTelemetry::Exporter::OTLP::Exporter.new(
+endpoint: 'YOUR_OTEL_ENDPOINT_URL'
+)
+)
+)
+end
+```
+
+For other programming languages, refer to the [OpenTelemetry documentation](https://opentelemetry.io/docs/instrumentation/).
+
+{{< /tab >}}
+
+{{< tab title="Self Hosted" >}}
+
 ## Set up a GitLab Observability instance
 
 Observability data is collected in a separate application outside of your GitLab.com instance. Problems with your GitLab instance do not impact collecting or viewing your observability data and vice-versa.
@@ -67,6 +137,7 @@ Prerequisites:
   - Recommended: t3.xlarge (4 vCPU, 16 GB RAM) for production use.
   - At least 100 GB storage space.
 - Docker and Docker Compose must be installed.
+- Your GitLab version must be 18.1 or later
 - Your GitLab instance must be connected to the Observability instance.
 
 ### Provision server and storage
@@ -204,25 +275,9 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
 
 1. Access the Rails console:
 
-   {{< tabs >}}
-
-   {{< tab title="Linux package (Omnibus)" >}}
-
-   ```shell
-   sudo gitlab-rails console
-   ```
-
-   {{< /tab >}}
-
-   {{< tab title="Docker" >}}
-
    ```shell
    docker exec -it gitlab gitlab-rails console
    ```
-
-   {{< /tab >}}
-
-   {{< /tabs >}}
 
 1. Configure the observability settings for your group and enable the feature flag:
 
@@ -249,6 +304,10 @@ Configure the GitLab O11y URL for your group and enable the feature flag using t
    - Encryption key with a secure 32+ character string
 
    The last command should return `true` to confirm the feature is enabled.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Use Observability with GitLab
 
@@ -348,6 +407,34 @@ To add OpenTelemetry instrumentation to your applications:
 1. Add spans and attributes to track operations and metadata.
 
 Refer to the [OpenTelemetry documentation](https://opentelemetry.io/docs/instrumentation/) for language-specific guidelines.
+
+## GitLab Observability Templates
+
+GitLab provides pre-built dashboard templates to help you get started with observability quickly. These templates are available at [Experimental Observability O11y Templates](https://gitlab.com/gitlab-org/embody-team/experimental-observability/o11y-templates/).
+
+### Available templates
+
+**Standard OpenTelemetry dashboards**: If you instrument your application with standard OpenTelemetry libraries, you can use these plug-and-play dashboard templates:
+
+- Application performance monitoring dashboards
+- Service dependency visualizations
+- Error rate and latency tracking
+
+**GitLab-specific dashboards**: When you send GitLab OpenTelemetry data to your GitLab O11y instance, use these dashboards for out-of-the-box insights:
+
+- GitLab application performance metrics
+- GitLab service health monitoring
+- GitLab-specific trace analysis
+
+**CI/CD observability**: The repository includes an example GitLab CI/CD pipeline with OpenTelemetry instrumentation that works with the GitLab O11y CI/CD dashboard template JSON file. This helps you monitor your CI/CD pipeline performance and identify bottlenecks.
+
+### Using the templates
+
+1. Clone or download the templates from the repository.
+1. Update the service name in the example application dashboards to match your service name.
+1. Import the JSON files into your GitLab O11y instance.
+1. Configure your applications to send telemetry data using standard OpenTelemetry libraries as described in the [Instrument your application](#instrument-your-application) section.
+1. The dashboards are now available with your application's telemetry data in GitLab O11y.
 
 ## Troubleshooting
 

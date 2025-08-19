@@ -1,20 +1,18 @@
 <script>
-import { GlCard, GlToggle, GlButton } from '@gitlab/ui';
+import { GlToggle, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
-import { duoHelpPath, amazonQHelpPath } from '../constants';
+import { amazonQHelpPath, duoFlowHelpPath, duoHelpPath } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
 
 export default {
-  i18n: {
-    saveChanges: __('Save changes'),
-  },
   name: 'GitlabDuoSettings',
   components: {
-    GlCard,
     GlToggle,
+    GlSprintf,
+    GlLink,
     GlButton,
     ProjectSettingRow,
     CascadingLockIcon,
@@ -57,15 +55,24 @@ export default {
       required: false,
       default: () => ({}),
     },
+    initialDuoFlowEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       autoReviewEnabled: this.amazonQAutoReviewEnabled,
       duoEnabled: this.duoFeaturesEnabled,
-      exclusionRules: this.duoContextExclusionSettings?.exclusion_rules || [],
+      exclusionRules: this.duoContextExclusionSettings?.exclusionRules || [],
+      duoFlowEnabled: this.initialDuoFlowEnabled,
     };
   },
   computed: {
+    areDuoFlowsAvailable() {
+      return this.duoEnabled && this.glFeatures.duoWorkflowInCi;
+    },
     duoEnabledSetting() {
       if (this.amazonQAvailable) {
         return {
@@ -115,15 +122,15 @@ export default {
       });
     },
   },
+  duoFlowHelpPath,
+  i18n: {
+    saveChanges: __('Save changes'),
+  },
 };
 </script>
 
 <template>
-  <gl-card
-    class="project-visibility-setting"
-    body-class="gl-flex gl-flex-col gl-gap-6"
-    data-testid="gitlab-duo-settings-card"
-  >
+  <div class="project-visibility-setting" data-testid="gitlab-duo-settings">
     <project-setting-row
       v-if="duoEnabledSetting"
       data-testid="duo-settings"
@@ -169,14 +176,44 @@ export default {
             :label="s__('AI|Auto Review')"
             label-position="hidden"
             name="project[amazon_q_auto_review_enabled]"
-            data-testid="amazon_q_auto_review_enabled"
+            data-testid="amazon-q-auto-review-enabled"
           />
+        </project-setting-row>
+      </div>
+      <div
+        v-else-if="areDuoFlowsAvailable"
+        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7"
+      >
+        <project-setting-row
+          :label="s__('DuoAgentPlatform|Allow flow execution')"
+          class="gl-mt-5"
+          :help-text="
+            s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.')
+          "
+        >
+          <gl-toggle
+            v-model="duoFlowEnabled"
+            class="gl-mt-2"
+            :disabled="duoFeaturesLocked || !duoEnabled"
+            :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
+            label-position="hidden"
+            name="project[project_setting_attributes][duo_remote_flows_enabled]"
+            data-testid="duo-remote-flows-enabled"
+          />
+          <template #help-link>
+            <gl-sprintf :message="s__('DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?')">
+              <template #link="{ content }">
+                <gl-link :href="$options.duoFlowHelpPath" target="_blank">{{ content }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </template>
         </project-setting-row>
       </div>
     </project-setting-row>
 
     <exclusion-settings
       v-if="shouldShowExclusionSettings"
+      class="gl-mt-6"
       :exclusion-rules="exclusionRules"
       @update="handleExclusionRulesUpdate"
     />
@@ -202,15 +239,14 @@ export default {
       />
     </div>
 
-    <template #footer>
-      <gl-button
-        variant="confirm"
-        type="submit"
-        data-testid="gitlab-duo-save-button"
-        :disabled="duoFeaturesLocked"
-      >
-        {{ $options.i18n.saveChanges }}
-      </gl-button>
-    </template>
-  </gl-card>
+    <gl-button
+      variant="confirm"
+      type="submit"
+      class="gl-mt-6"
+      data-testid="gitlab-duo-save-button"
+      :disabled="duoFeaturesLocked"
+    >
+      {{ $options.i18n.saveChanges }}
+    </gl-button>
+  </div>
 </template>

@@ -100,7 +100,7 @@ and holds header information about the commit.
   merge_request_diff_id: 28,
   relative_order: 0,
   sha: "bb5206fee213d983da88c47f9cf4cc6caf9c66dc",
-  message: "Feature conflcit added\n\nSigned-off-by: Sample User <sample.user@example.com>\n",
+  message: "Feature conflict added\n\nSigned-off-by: Sample User <sample.user@example.com>\n",
   trailers: {},
   commit_author_id: 19,
   committer_id: 19>
@@ -480,7 +480,7 @@ sequenceDiagram
     break when ETag header is present and is not stale
         .#diffs_batch-->>+Frontend: return 304 HTTP
     end
-    opt Cache higlights and stats when viewing HEAD, latest or specific version
+    opt Cache highlights and stats when viewing HEAD, latest or specific version
         .#diffs_batch->>+Gitlab_Diff_FileCollection_MergeRequestDiffBatch: write_cache()
         Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_HighlightCache: write_if_empty()
         Gitlab_Diff_FileCollection_MergeRequestDiffBatch->>+Gitlab_Diff_StatsCache: write_if_empty()

@@ -23,7 +23,7 @@ export const I18N_USER_ACTIONS = {
   untrust: s__('AdminUsers|Untrust user'),
 };
 
-const createTokenConfig = (options) => ({
+export const createTokenConfig = (options) => ({
   token: GlFilteredSearchToken,
   operators: OPERATORS_IS,
   unique: true,
@@ -31,7 +31,7 @@ const createTokenConfig = (options) => ({
 });
 
 // This is exported so the EE version of constants.js can call it.
-export const getTokenConfigs = (accessLevelOptions) => [
+export const getFilterTokenConfigs = (accessLevelOptions) => [
   createTokenConfig({
     title: s__('AdminUsers|Access level'),
     type: 'access_level',
@@ -74,10 +74,15 @@ export const getTokenConfigs = (accessLevelOptions) => [
   }),
 ];
 
-export const TOKEN_CONFIGS = getTokenConfigs([
+// Overridden in EE.
+// NOTE: If you add a config, also add the querystring key to app/helpers/sorting_helper.rb.
+// Otherwise, changing the sort will remove the querystring for the config.
+export const getStandardTokenConfigs = () => [];
+// Overridden in EE.
+export const ACCESS_LEVEL_OPTIONS = [
   { value: 'admins', title: s__('AdminUsers|Administrator') },
   { value: 'external', title: s__('AdminUsers|External') },
-]);
+];
 
 export const SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT = 10;
 

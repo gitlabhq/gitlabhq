@@ -1,0 +1,16 @@
+---
+description: click_learn_more_in_duo_core_featured_update_card
+internal_events: true
+status: active
+action: click_learn_more_in_duo_core_featured_update_card
+identifiers:
+- user
+product_group: acquisition
+product_categories:
+- acquisition
+milestone: '18.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196883
+tiers:
+- free
+- premium
+- ultimate

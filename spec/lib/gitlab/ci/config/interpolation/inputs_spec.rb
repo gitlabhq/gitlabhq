@@ -29,6 +29,26 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Inputs, feature_category: :pip
     end
   end
 
+  context 'when inputs options are valid integers but no type is specified' do
+    let(:specs) { { foo: { default: 1, options: [1, 2, 3, 4, 5] } } }
+
+    context 'and the value is selected' do
+      let(:args) { { foo: 2 } }
+
+      it 'assigns the selected value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: "2" })
+      end
+    end
+
+    context 'and the value is not selected' do
+      it 'assigns the default value' do
+        expect(inputs).to be_valid
+        expect(inputs.to_hash).to eq({ foo: "1" })
+      end
+    end
+  end
+
   context 'when inputs options are valid integers' do
     let(:specs) { { foo: { default: 1, options: [1, 2, 3, 4, 5], type: 'number' } } }
 

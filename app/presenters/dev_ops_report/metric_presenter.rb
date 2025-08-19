@@ -59,7 +59,7 @@ module DevOpsReport
           title: 'Environments',
           description: 'created per active user',
           feature: 'environments',
-          blog: 'https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/',
+          blog: promo_url(path: '/2016/08/26/ci-deployment-and-environments/'),
           docs: help_page_path('ci/environments/_index.md')
         ),
         Card.new(

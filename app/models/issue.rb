@@ -56,9 +56,6 @@ class Issue < ApplicationRecord
   # This default came from the enum `issue_type` column. Defined as default in the DB
   DEFAULT_ISSUE_TYPE = :issue
 
-  # prevent caching this column by rails, as we want to easily remove it after the backfilling
-  ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
-
   # Interim columns to convert integer IDs to bigint
   ignore_column :author_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :closed_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
@@ -70,6 +67,8 @@ class Issue < ApplicationRecord
   ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
+
+  ignore_column :external_key, remove_with: '18.5', remove_after: '2025-09-18'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -209,6 +208,8 @@ class Issue < ApplicationRecord
   scope :preload_awardable, -> { preload(:award_emoji) }
   scope :preload_namespace, -> { preload(:namespace) }
   scope :preload_routables, -> { preload(project: [:route, { namespace: :route }]) }
+  scope :preload_namespace_routables, -> { preload(namespace: [:route, { parent: :route }]) }
+  scope :preload_for_rss, -> { preload(:author, :assignees, :labels, :milestone, :work_item_type, :project, { project: :namespace }) }
 
   scope :with_alert_management_alerts, -> { joins(:alert_management_alert) }
   scope :with_api_entity_associations, -> {
@@ -541,6 +542,17 @@ class Issue < ApplicationRecord
     branch_name
   end
 
+  def self.supported_keyset_orderings
+    {
+      id: [:asc, :desc],
+      title: [:asc, :desc],
+      created_at: [:asc, :desc],
+      updated_at: [:asc, :desc],
+      due_date: [:asc, :desc],
+      relative_position: [:asc, :desc]
+    }
+  end
+
   # Temporary disable moving null elements because of performance problems
   # For more information check https://gitlab.com/gitlab-com/gl-infra/production/-/issues/4321
   def check_repositioning_allowed!
@@ -675,12 +687,10 @@ class Issue < ApplicationRecord
   end
 
   # rubocop: disable CodeReuse/ServiceClass
-  def update_project_counter_caches
-    # TODO: Fix counter cache for issues in group
-    # TODO: see https://gitlab.com/gitlab-org/gitlab/-/work_items/393125
+  def invalidate_project_counter_caches
     return unless project
 
-    Projects::OpenIssuesCountService.new(project).refresh_cache
+    Projects::OpenIssuesCountService.new(project).delete_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
 

@@ -16,12 +16,28 @@ module Ci
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
     has_one :trigger, through: :pipeline
+    has_one :job_environment, class_name: 'Environments::Job', inverse_of: :job
+    has_one :job_definition_instance, ->(job) { in_partition(job) },
+      class_name: 'Ci::JobDefinitionInstance',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :job,
+      autosave: true
+
+    has_one :job_definition, ->(job) { in_partition(job) },
+      class_name: 'Ci::JobDefinition',
+      foreign_key: :job_id,
+      partition_foreign_key: :partition_id,
+      inverse_of: :jobs,
+      through: :job_definition_instance
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs
+    accepts_nested_attributes_for :job_definition_instance
 
     scope :preload_needs, -> { preload(:needs) }
+    scope :preload_job_definition_instances, -> { preload(:job_definition_instance) }
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
 
     scope :with_needs, ->(names = nil) do
@@ -104,10 +120,6 @@ module Ci
       end
     end
 
-    def assign_resource_from_resource_group(processable)
-      Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
-    end
-
     def self.select_with_aggregated_needs(project)
       aggregated_needs_names = Ci::BuildNeed
         .scoped_build
@@ -132,6 +144,10 @@ module Ci
       )
     end
 
+    def assign_resource_from_resource_group(processable)
+      Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_async(processable.resource_group_id)
+    end
+
     validates :type, presence: true
     validates :scheduling_type, presence: true, on: :create, unless: :importing?
 
@@ -151,6 +167,16 @@ module Ci
       if persisted_environment.present?
         new_attributes[:metadata_attributes] ||= {}
         new_attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
+      end
+
+      # We don't check for job_definition because loading the jsonb field from the database is expensive
+      if job_definition_instance
+        new_attributes[:job_definition_instance_attributes] ||= {}
+        new_attributes[:job_definition_instance_attributes].merge!(
+          project_id: project_id,
+          job_definition_id: job_definition_instance.job_definition_id,
+          partition_id: job_definition_instance.partition_id
+        )
       end
 
       new_attributes[:user] = current_user

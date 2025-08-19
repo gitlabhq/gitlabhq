@@ -154,7 +154,7 @@ Group permissions for [group features](group/_index.md):
 | Edit [epic](group/epics/_index.md) comments (posted by any user)                            |       |    ✓    |          |           |     ✓      |   ✓   |
 | Fork project into a group                                                                   |       |         |          |           |     ✓      |   ✓   |
 | View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
-| View group [Usage Quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
+| View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
 | [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
 | Delete group                                                                                |       |         |          |           |            |   ✓   |
 | Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |
@@ -654,7 +654,7 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Edit comments posted by other users                                                    |       |         |          |           |     ✓      |   ✓   |
 | Add [deploy keys](project/deploy_keys/_index.md)                                       |       |         |          |           |     ✓      |   ✓   |
 | Manage [project operations](../operations/_index.md)                                   |       |         |          |           |     ✓      |   ✓   |
-| View [Usage Quotas](storage_usage_quotas.md) page                                      |       |         |          |           |     ✓      |   ✓   |
+| View [Usage quotas](storage_usage_quotas.md) page                                      |       |         |          |           |     ✓      |   ✓   |
 | Globally delete [snippets](snippets.md)                                                |       |         |          |           |     ✓      |   ✓   |
 | Globally edit [snippets](snippets.md)                                                  |       |         |          |           |     ✓      |   ✓   |
 | Archive project                                                                        |       |         |          |           |            |   ✓   |

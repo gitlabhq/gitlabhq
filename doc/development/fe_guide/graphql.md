@@ -1601,7 +1601,7 @@ it('testing failure', () => {
   createComponent();
   await waitForPromises();
 
-  // code below now will be executred
+  // code below now will be executed
 })
 ```
 

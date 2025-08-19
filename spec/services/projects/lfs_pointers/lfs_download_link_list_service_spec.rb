@@ -14,6 +14,13 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
   let(:success_net_response) { Net::HTTPOK.new('', '', '') }
   let(:response) { Gitlab::HTTP::Response.new(request_object, net_response, parsed_block) }
 
+  let(:invalid_object_response) do
+    [
+      'oid' => 'whatever',
+      'size' => 123
+    ]
+  end
+
   def objects_response(oids)
     body = oids.map do |oid, size|
       {
@@ -33,13 +40,6 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
   def custom_response(net_response, body = nil)
     allow(net_response).to receive(:body).and_return(body)
     Gitlab::HTTP::Response.new(request_object, net_response, parsed_block)
-  end
-
-  let(:invalid_object_response) do
-    [
-      'oid' => 'whatever',
-      'size' => 123
-    ]
   end
 
   subject(:service) { described_class.new(project, remote_uri: remote_uri) }

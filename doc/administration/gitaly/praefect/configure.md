@@ -5,29 +5,29 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure Gitaly Cluster (Praefect)
 ---
 
-Configure Gitaly Cluster using either:
+Configure Gitaly Cluster (Praefect) using either:
 
-- Gitaly Cluster configuration instructions available as part of
+- Gitaly Cluster (Praefect) configuration instructions available as part of
   [reference architectures](../../reference_architectures/_index.md) for installations of up to:
-  - [60 RPS or 3,000 users](../../reference_architectures/3k_users.md#configure-gitaly-cluster).
-  - [100 RPS or 5,000 users](../../reference_architectures/5k_users.md#configure-gitaly-cluster).
-  - [200 RPS or 10,000 users](../../reference_architectures/10k_users.md#configure-gitaly-cluster).
-  - [500 RPS or 25,000 users](../../reference_architectures/25k_users.md#configure-gitaly-cluster).
-  - [1000 RPS or 50,000 users](../../reference_architectures/50k_users.md#configure-gitaly-cluster).
+  - [60 RPS or 3,000 users](../../reference_architectures/3k_users.md#configure-gitaly-cluster-praefect).
+  - [100 RPS or 5,000 users](../../reference_architectures/5k_users.md#configure-gitaly-cluster-praefect).
+  - [200 RPS or 10,000 users](../../reference_architectures/10k_users.md#configure-gitaly-cluster-praefect).
+  - [500 RPS or 25,000 users](../../reference_architectures/25k_users.md#configure-gitaly-cluster-praefect).
+  - [1000 RPS or 50,000 users](../../reference_architectures/50k_users.md#configure-gitaly-cluster-praefect).
 - The custom configuration instructions that follow on this page.
 
 Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
 {{< alert type="note" >}}
 
-Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
+Gitaly Cluster (Praefect) is not yet supported in Kubernetes, Amazon ECS, or similar container environments. For more information, see
 [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
 {{< /alert >}}
 
 ## Requirements
 
-The minimum recommended configuration for a Gitaly Cluster requires:
+The minimum recommended configuration for a Gitaly Cluster (Praefect) requires:
 
 - 1 load balancer
 - 1 PostgreSQL server (a [supported version](../../../install/requirements.md#postgresql))
@@ -55,7 +55,7 @@ default value. The default value depends on the GitLab version.
 
 ### Network latency and connectivity
 
-Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
+Network latency for Gitaly Cluster (Praefect) should ideally be measurable in single-digit milliseconds. Latency is particularly
 important for:
 
 - Gitaly node health checks. Nodes must be able to respond within 1 second.
@@ -66,13 +66,13 @@ Achieving acceptable latency between Gitaly nodes:
 
 - On physical networks generally means high bandwidth, single location connections.
 - On the cloud generally means in the same region, including allowing cross availability zone replication. These links
-  are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster.
+  are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster (Praefect).
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
 more information, see [Comparison to Geo](_index.md#comparison-to-geo).
 
-Gitaly Cluster [components](_index.md#components) communicate with each other over many routes. Your firewall rules must
-allow the following for Gitaly Cluster to function properly:
+Gitaly Cluster (Praefect) [components](_index.md#components) communicate with each other over many routes. Your firewall rules must
+allow the following for Gitaly Cluster (Praefect) to function properly:
 
 | From                   | To                     | Default port | TLS port |
 |:-----------------------|:-----------------------|:-------------|:---------|
@@ -142,7 +142,8 @@ You also need the IP/host address for each node:
 1. `GITALY_HOST_*`: the IP or host address of each Gitaly server
 1. `GITLAB_HOST`: the IP/host address of the GitLab server
 
-If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC) you can use the private addresses for each cloud instance (corresponds to "internal address" for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
+If you are using Google Cloud Platform, SoftLayer, or any other vendor that provides a virtual private cloud (VPC), you
+can use the private addresses for each cloud instance (corresponds to "internal address" for Google Cloud Platform) for `PRAEFECT_HOST`, `GITALY_HOST_*`, and `GITLAB_HOST`.
 
 #### Secrets
 
@@ -523,6 +524,11 @@ praefect['configuration'] = {
 
 ### Praefect
 
+Before configuring Praefect, refer to the
+[example Praefect configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.praefect.toml.example)
+to familiarize yourself. If you used the Linux package to install GitLab, the settings in the example file must be
+converted into Ruby.
+
 If there are multiple Praefect nodes:
 
 1. Designate one node as the deploy node, and configure it using the following steps.
@@ -657,7 +663,7 @@ Updates to example must be made at:
 
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
    afterwards.
 
    {{< /alert >}}
@@ -907,12 +913,6 @@ For self-compiled installations:
 1. Save the file and [restart GitLab](../../restart_gitlab.md#self-compiled-installations).
 
 #### Service discovery
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
-
-{{< /history >}}
 
 Prerequisites:
 
@@ -1180,9 +1180,17 @@ For more information on Gitaly server configuration, see our
      1. Edit `/etc/gitlab/gitlab.rb`.
      1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
 
-        ```ruby
-        gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-        ```
+        - GitLab 17.5 and later:
+
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+        - GitLab 17.4 and earlier:
+
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
 
 1. Configure an `internal_api_url`, which is also needed for `git push` operations:
 
@@ -1366,7 +1374,7 @@ Particular attention should be shown to:
    {{< alert type="warning" >}}
 
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster (Praefect) storage](_index.md#migrate-to-gitaly-cluster-praefect)
    first.
 
    {{< /alert >}}
@@ -1410,11 +1418,19 @@ Particular attention should be shown to:
    - Method 2:
 
      1. Edit `/etc/gitlab/gitlab.rb`.
-     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret:
 
-        ```ruby
-        gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
-        ```
+        - GitLab 17.5 and later:
+
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+        - GitLab 17.4 and earlier:
+
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
 
 1. Add Prometheus monitoring settings by editing `/etc/gitlab/gitlab.rb`. If Prometheus
    is enabled on a different node, make edits on that node instead.
@@ -1456,8 +1472,10 @@ Particular attention should be shown to:
    ```
 
 1. Verify on each Gitaly node the Git Hooks can reach GitLab. On each Gitaly node run:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml
+   ```
 
 1. Verify that GitLab can reach Praefect:
 
@@ -1480,7 +1498,7 @@ Particular attention should be shown to:
 
 #### Use TCP for existing GitLab instances
 
-When adding Gitaly Cluster to an existing Gitaly instance, the existing Gitaly storage
+When adding Gitaly Cluster (Praefect) to an existing Gitaly instance, the existing Gitaly storage
 must be listening on TCP/TLS. If `gitaly_address` is not specified, then a Unix socket is used,
 which prevents the communication with the cluster.
 
@@ -1570,7 +1588,7 @@ If `default_replication_factor` is unset, the repositories are always replicated
 `virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are
 replicated to the node automatically.
 
-For large Gitaly Cluster deployments with many storage nodes, replicating a repository to every storage node is often not
+For large Gitaly Cluster (Praefect) deployments with many storage nodes, replicating a repository to every storage node is often not
 sensible and can cause problems. A replication factor of 3 is usually sufficient, which means replicate repositories to
 three storages even if more are available. Higher replication factors increase the pressure on the primary storage.
 
@@ -1621,17 +1639,11 @@ repository storage redundancy.
 
 For a replication factor:
 
-- Of `1`: Gitaly and Gitaly Cluster have roughly the same storage requirements.
+- Of `1`: Gitaly and Gitaly Cluster (Praefect) have roughly the same storage requirements.
 - More than `1`: The amount of required storage is `used space * replication factor`. `used space`
   should include any planned future growth.
 
 ## Repository verification
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
-
-{{< /history >}}
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
 without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is
@@ -1773,7 +1785,7 @@ to a newly-elected primary Gitaly node if the current primary node is found to b
 
 ### Repository-specific primary nodes
 
-Gitaly Cluster elects a primary Gitaly node separately for each repository. Combined with
+Gitaly Cluster (Praefect) elects a primary Gitaly node separately for each repository. Combined with
 [configurable replication factors](#configure-replication-factor), you can horizontally scale storage capacity and distribute write load across Gitaly nodes.
 
 Primary elections are run lazily. Praefect doesn't immediately elect a new primary node if the current

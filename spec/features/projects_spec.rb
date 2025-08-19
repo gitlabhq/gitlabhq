@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Project', feature_category: :source_code_management do
   include ProjectForksHelper
   include MobileHelpers
+  include ListboxHelpers
 
   describe 'template' do
     let(:user) { create(:user) }
@@ -26,6 +27,10 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         click_link 'Create from template'
         find(".project-template #{sub_template_tab}").click if sub_template_tab
         find("label[for=#{template.name}]").click
+
+        click_on 'Pick a group or namespace'
+        select_listbox_item user.username
+
         fill_in("project_name", with: template.name)
 
         page.within '#content-body' do
@@ -57,6 +62,10 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         focused_template = page.find(':focus').ancestor(template_option_selector)
         focused_template_name = focused_template.find(template_name_selector).text
         focused_template.find(choose_template_selector).send_keys :enter
+
+        click_on 'Pick a group or namespace'
+        select_listbox_item user.username
+
         fill_in "project_name", with: project_name
 
         expect(selected_template).to have_text(focused_template_name)
@@ -271,8 +280,8 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     end
   end
 
-  describe 'removal', :js do
-    let_it_be(:user) { create(:user) }
+  describe 'removal', :with_current_organization, :js do
+    let_it_be(:user) { create(:user, organization: current_organization) }
     let_it_be(:group) { create(:group, :public, owners: user) }
     let_it_be_with_reload(:project_to_delete) { create(:project, group: group) }
 

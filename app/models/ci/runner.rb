@@ -20,16 +20,18 @@ module Ci
 
     self.primary_key = :id
 
+    ignore_column :token, remove_with: '18.5', remove_after: '2025-09-21'
+
     add_authentication_token_field :token,
-      encrypted: :optional,
+      encrypted: :required,
       expires_at: :compute_token_expiration,
       format_with_prefix: :prefix_for_new_and_legacy_runner,
       routable_token: {
         if: ->(token_owner_record) { token_owner_record.owner },
         payload: {
           o: ->(token_owner_record) { token_owner_record.owner.try(:organization_id) },
-          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.sharding_key_id : nil },
-          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.sharding_key_id : nil },
+          g: ->(token_owner_record) { token_owner_record.group_type? ? token_owner_record.owner.id : nil },
+          p: ->(token_owner_record) { token_owner_record.project_type? ? token_owner_record.owner.id : nil },
           u: ->(token_owner_record) { token_owner_record.creator_id },
           t: ->(token_owner_record) { token_owner_record.partition_id }
         }
@@ -105,12 +107,12 @@ module Ci
 
     # currently we have only 1 namespace assigned, but order is here for consistency
     has_one :owner_runner_namespace, -> { order(:id) }, class_name: 'Ci::RunnerNamespace'
+    has_one :owner_runner_project, -> { order(:id) }, class_name: 'Ci::RunnerProject'
 
     has_one :last_build, -> { order('id DESC') }, class_name: 'Ci::Build'
 
     belongs_to :creator, class_name: 'User', optional: true
 
-    before_validation :ensure_organization_id, on: :update
     before_save :ensure_token
     after_destroy :cleanup_runner_queue
 
@@ -243,7 +245,6 @@ module Ci
     scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints
-    validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
@@ -252,7 +253,6 @@ module Ci
     validates :registration_type, presence: true
 
     validate :no_projects, unless: :project_type?
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
@@ -290,7 +290,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      where(token: query).or(fuzzy_search(query, [:description]))
+      with_encrypted_tokens(encode(query)).or(fuzzy_search(query, [:description]))
     end
 
     def self.online_contact_time_deadline
@@ -420,16 +420,14 @@ module Ci
     def owner
       case runner_type
       when 'instance_type'
-        ::User.find_by_id(creator_id)
+        memoize_owner { ::User.find_by_id(creator_id) }
       when 'group_type'
-        runner_namespaces.first&.namespace
+        persisted? ? memoize_owner { owner_runner_namespace&.namespace } : runner_namespaces.first&.namespace
       when 'project_type'
         # If runner projects are not yet saved (e.g. when calculating `routable_token`), use in-memory collection
-        candidates = persisted? ? runner_projects.order(:id) : runner_projects
-        candidates.first&.project
+        persisted? ? memoize_owner { owner_runner_project&.project } : runner_projects.first&.project
       end
     end
-    strong_memoize_attr :owner
 
     def belongs_to_one_project?
       runner_projects.one?
@@ -550,11 +548,11 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
-        ensure_organization_id # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/523850
-
         m.runner_type = runner_type
-        m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
+
+        # Use a bogus sharding_key_id instead of copying a potentially NULL value from the runner
+        m.sharding_key_id = instance_type? ? nil : (sharding_key_id || -1)
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
@@ -627,13 +625,6 @@ module Ci
         .min&.from_now
     end
 
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
-    def ensure_organization_id
-      return if instance_type?
-
-      self.organization_id ||= owner&.organization_id
-    end
-
     def cleanup_runner_queue
       ::Gitlab::Workhorse.cleanup_key(runner_queue_key)
     end
@@ -661,10 +652,6 @@ module Ci
         errors.add(:tags_list,
           "Too many tags specified. Please limit the number of tags to #{TAG_LIST_MAX_LENGTH}")
       end
-    end
-
-    def no_sharding_key_id
-      errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
     end
 
     def no_organization_id
@@ -702,6 +689,12 @@ module Ci
       return REGISTRATION_RUNNER_TOKEN_PREFIX if registration_token_registration_type?
 
       CREATED_RUNNER_TOKEN_PREFIX
+    end
+
+    def memoize_owner
+      strong_memoize(:owner) do # rubocop: disable Gitlab/StrongMemoizeAttr -- need to memoize with conditions
+        yield
+      end
     end
   end
 end

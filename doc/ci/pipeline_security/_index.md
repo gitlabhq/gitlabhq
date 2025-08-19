@@ -57,6 +57,24 @@ a secrets management solution and want to store sensitive data in a CI/CD variab
 - [Hide the variables](../variables/_index.md#hide-a-cicd-variable).
 - [Protect the variables](../variables/_index.md#protect-a-cicd-variable) when possible.
 
+## Pass parameters to CI/CD pipelines
+
+For passing parameters to CI/CD pipelines, use [CI/CD inputs](../inputs/_index.md)
+instead of pipeline variables.
+
+Inputs provide:
+
+- Type-safe validation at pipeline creation.
+- Explicit parameter contracts.
+- Scoped availability that enhances security.
+
+Consider [disabling pipeline variables](../variables/_index.md#restrict-pipeline-variables)
+when implementing inputs to prevent security vulnerabilities, because pipeline variables:
+
+- Lack type validation.
+- Can override predefined variables causing unexpected behavior.
+- Share the same permission scope as sensitive secrets.
+
 ## Pipeline Integrity
 
 The key security principles of ensuring pipeline integrity include:
@@ -200,23 +218,6 @@ Then you can include the local copy:
 include:
   - local: '/ci/security-scan.yml'  # Verified and stored in the repository
 ```
-
-### SLSA provenance generation
-
-GitLab offers a SLSA Level 1 compliant provenance statement that can be
-[automatically generated for all build artifacts produced by the GitLab Runner](../runners/configure_runners.md#artifact-provenance-metadata).
-This provenance statement is produced by the runner itself.
-
-#### Sign and verify SLSA provenance with a CI/CD Component
-
-The [GitLab SLSA CI/CD component](https://gitlab.com/explore/catalog/components/slsa)
-provides configurations for:
-
-- Signing runner-generated provenance statements.
-- Generating [Verification Summary Attestations (VSA)](https://slsa.dev/spec/v1.0/verification_summary)
-  for job artifacts.
-
-For more information and example configurations, see the [SLSA Component documentation](https://gitlab.com/components/slsa#slsa-supply-chain-levels-for-software-artifacts).
 
 ### Related topics
 

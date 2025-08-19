@@ -207,6 +207,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
         'http://gitlab.example/api/v4/resource',
         hash_including(
           stream_body: true,
+          headers: { 'Accept-Encoding' => 'identity' },
           query: {
             page: described_class::DEFAULT_PAGE,
             per_page: described_class::DEFAULT_PER_PAGE,

@@ -114,7 +114,6 @@ RSpec.describe WorkItems::DataSync::CloneService, feature_category: :team_planni
           duplicated_to_id: nil,
           moved_to_id: nil,
           promoted_to_epic_id: nil,
-          external_key: nil,
           upvotes_count: 0,
           blocking_issues_count: 0,
           service_desk_reply_to: service_desk_alias_address

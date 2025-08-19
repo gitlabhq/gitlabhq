@@ -80,7 +80,7 @@ module Clusters
     end
 
     def model_name
-      self.class.name.underscore.tr('/', '_')
+      ::Gitlab::Utils.param_key(self.class)
     end
 
     private

@@ -13,7 +13,7 @@ retrieve-tests-metadata:
     - .fast-no-clone-job
     - .test-metadata:rules:retrieve-tests-metadata
   # We use a smaller image for this job only (update-tests-metadata compiles some gems)
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.21
   stage: prepare
   needs: []
   variables:
@@ -74,31 +74,34 @@ verify-tests-metadata:
     - run_with_custom_exit_code scripts/setup/tests-metadata.rb verify
 
 export-predictive-test-metrics:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
-  extends:
-    - .predictive:rules:default
   stage: post-test
-  allow_failure: true
-  dependencies: []
+  extends:
+    - .yarn-cache
+    - .with-ci-node-image
+    - .predictive:rules:default
   variables:
-    GLCI_CRYSTALBALL_MAPPING_DIR: "tmp/crystalball_mappings"
     GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR: "tmp/predictive_tests"
-    GLCI_ALL_FAILED_RSPEC_TESTS_FILE: "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt"
+  dependencies:
+    # required to generate predictive jest test list
+    - graphql-schema-dump
+    # required to fetch knapsack report and get the projected test runtime metric
+    - retrieve-tests-metadata
   before_script:
-    - apt update && apt install -y curl
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
+    - yarn_install_script
     - retrieve_failed_tests "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}" "oneline" "latest"
-    - |
-      mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class"
-      retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class/mapping.json"
-    - |
-      mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage"
-      retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/coverage/mapping.json"
   script:
-    - tooling/bin/predictive_tests --export-selected-test-metrics
+    - |
+      tooling/bin/predictive_test_metrics \
+        --export-backend-metrics \
+        --failed-backend-tests-file ${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/rspec_all_failed_tests.txt \
+        --export-frontend-metrics \
+        --failed-frontend-tests-file ${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}/jest_failed_tests.txt \
+        --knapsack-report-file ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}
   artifacts:
     expire_in: 7d
     paths:
-      - $GLCI_CRYSTALBALL_MAPPING_DIR
       - $GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
+    when: always
+  allow_failure: true

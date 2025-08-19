@@ -669,6 +669,8 @@ export const setTreeOpen = ({ commit }, { path, opened }) => {
 };
 
 export const setCurrentFileHash = ({ commit }, hash) => {
+  if (hash.startsWith('note_')) return;
+
   commit(types.SET_CURRENT_DIFF_FILE, hash);
 };
 

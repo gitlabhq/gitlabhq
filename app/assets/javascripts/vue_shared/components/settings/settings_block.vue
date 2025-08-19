@@ -46,7 +46,7 @@ export default {
       return this.id || uniqueId('settings-block-');
     },
     isChevronUp() {
-      return this.expanded;
+      return this.localExpanded;
     },
   },
   watch: {
@@ -76,7 +76,7 @@ export default {
         <gl-button
           category="tertiary"
           size="small"
-          class="settings-toggle gl-shrink-0 !gl-px-0"
+          class="settings-toggle gl-shrink-0 !gl-px-0 !gl-pl-2"
           :aria-label="toggleButtonAriaLabel"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"

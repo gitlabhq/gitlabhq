@@ -74,6 +74,9 @@ export default {
     showBlame: {
       handler(isVisible) {
         toggleBlameClasses(this.blameData, isVisible);
+
+        if (!isVisible) this.blameData = [];
+
         this.requestBlameInfo(this.renderedChunks[0]);
       },
       immediate: true,

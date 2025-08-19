@@ -34,7 +34,7 @@ describe('tags list row', () => {
   const tagWithOCIMediaType = tagsMock[2];
   const tagWithListMediaType = tagsMock[3];
 
-  const defaultProps = { tag, isMobile: false, index: 0 };
+  const defaultProps = { tag, isMobile: false, index: 0, canDelete: true };
 
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findName = () => wrapper.findByTestId('name');
@@ -80,10 +80,8 @@ describe('tags list row', () => {
       expect(findCheckbox().exists()).toBe(true);
     });
 
-    it("does not exist when the row can't be deleted", () => {
-      const customTag = { ...tag, userPermissions: { destroyContainerRepositoryTag: false } };
-
-      mountComponent({ ...defaultProps, tag: customTag });
+    it('is hidden when canDelete is false', () => {
+      mountComponent({ ...defaultProps, canDelete: false });
 
       expect(findCheckbox().exists()).toBe(false);
     });
@@ -97,7 +95,7 @@ describe('tags list row', () => {
     `(
       'disabled attribute is set to $isDisabled when the digest $digest and disabled is $disabled',
       ({ digest, disabled, isDisabled }) => {
-        mountComponent({ tag: { ...tag, digest }, disabled });
+        mountComponent({ ...defaultProps, tag: { ...tag, digest }, disabled });
 
         expect(findCheckbox().attributes().disabled).toBe(isDisabled);
       },
@@ -355,11 +353,8 @@ describe('tags list row', () => {
       expect(findAdditionalActionsMenu().classes('gl-pointer-events-none')).toBe(false);
     });
 
-    it('is not rendered when tag.userPermissions.destroyContainerRegistryTag is false', () => {
-      mountComponent({
-        ...defaultProps,
-        tag: { ...tag, userPermissions: { destroyContainerRepositoryTag: false } },
-      });
+    it('is not rendered when canDelete is false', () => {
+      mountComponent({ ...defaultProps, canDelete: false });
 
       expect(findAdditionalActionsMenu().exists()).toBe(false);
     });
@@ -595,6 +590,24 @@ describe('tags list row', () => {
         expect(findIndexBadge().text()).toBe('index');
       }
       expect(findSize().exists()).toBe(expectedSize);
+    });
+  });
+
+  describe('when `selectable` prop is false', () => {
+    beforeEach(() => {
+      mountComponent({ ...defaultProps, selectable: false });
+    });
+
+    it('disables checkbox', () => {
+      expect(findCheckbox().attributes().disabled).toBe('true');
+    });
+
+    it('disables additional actions menu', () => {
+      expect(findAdditionalActionsMenu().props('disabled')).toBe(true);
+    });
+
+    it('does not disable clipboard button', () => {
+      expect(findClipboardButton().attributes('disabled')).not.toBeDefined();
     });
   });
 });

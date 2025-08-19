@@ -21,6 +21,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[get put post delete].freeze
 
+        # @!method httparty_basic_auth?(node)
         def_node_matcher :httparty_basic_auth?, <<~PATTERN
           (send
             (const _ :HTTParty)

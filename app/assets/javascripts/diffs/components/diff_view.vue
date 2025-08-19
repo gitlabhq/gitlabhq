@@ -187,6 +187,9 @@ export default {
     lineHasDrafts(line, side) {
       return this.lineDrafts(line, side).length > 0;
     },
+    isFullWidthGridComment(line) {
+      return line.left?.type === null && line.right?.type === null;
+    },
   },
 };
 </script>
@@ -256,8 +259,12 @@ export default {
       <div
         v-if="line.renderCommentRow"
         :key="`dcr-${line.lineCode}`"
-        :class="line.commentRowClasses"
-        class="diff-grid-comments diff-tr notes_holder"
+        data-testid="notes-holder"
+        :class="[
+          line.commentRowClasses,
+          isFullWidthGridComment(line) ? 'diff-grid-comments-full-width' : '',
+        ]"
+        class="diff-tr notes_holder diff-grid-comments"
       >
         <div
           v-if="line.left || !inline"

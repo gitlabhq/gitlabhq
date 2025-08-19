@@ -1,13 +1,12 @@
 <script>
-import { GlAnimatedSidebarIcon, GlButton, GlSprintf, GlTooltip } from '@gitlab/ui';
+import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
-import { h } from 'vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { __ } from '~/locale';
 import {
   keysFor,
   MR_TOGGLE_FILE_BROWSER,
-  MR_TOGGLE_FILE_BROWSER_DEPRECATED,
+  MR_FOCUS_FILE_BROWSER,
 } from '~/behaviors/shortcuts/keybindings';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -35,41 +34,32 @@ export default {
     },
   },
   created() {
-    // we need to create the VNode in advance because `h` in Vue 2 only works here and in `mounted`
-    this.legacyVNode = this.createLegacyShortcutVNode();
     this.initFileBrowserVisibility();
   },
   mounted() {
     if (this.shortcutsEnabled) {
-      Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED), this.toggleFileBrowserLegacy);
+      Mousetrap.bind(keysFor(MR_FOCUS_FILE_BROWSER), this.focusFileBrowser);
       Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggleFileBrowserVisibility);
     }
   },
   beforeDestroy() {
     if (this.shortcutsEnabled) {
-      Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED));
+      Mousetrap.unbind(keysFor(MR_FOCUS_FILE_BROWSER));
       Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER));
     }
   },
   methods: {
-    ...mapActions(useFileBrowser, ['toggleFileBrowserVisibility', 'initFileBrowserVisibility']),
-    toggleFileBrowserLegacy() {
-      if (!sessionStorage.getItem('notifiedOnLegacyFileBrowserToggle')) {
-        this.$toast.show([this.legacyVNode]);
-        sessionStorage.setItem('notifiedOnLegacyFileBrowserToggle', 'true');
-      }
-      this.toggleFileBrowserVisibility();
-    },
-    createLegacyShortcutVNode() {
-      const message = __('The %{old} shortcut is deprecated. Use %{new} shortcut instead.');
-      return h(GlSprintf, {
-        props: { message },
-        scopedSlots: {
-          old: () =>
-            h(Shortcut, { props: { shortcuts: MR_TOGGLE_FILE_BROWSER_DEPRECATED.defaultKeys } }),
-          new: () => h(Shortcut, { props: { shortcuts: MR_TOGGLE_FILE_BROWSER.defaultKeys } }),
-        },
-      });
+    ...mapActions(useFileBrowser, [
+      'toggleFileBrowserVisibility',
+      'setFileBrowserVisibility',
+      'initFileBrowserVisibility',
+    ]),
+    async focusFileBrowser(event) {
+      // event is empty when testing using Mousetrap.trigger
+      event?.preventDefault?.();
+      this.setFileBrowserVisibility(true);
+      await this.$nextTick();
+      document.querySelector('#diff-tree-search').focus();
     },
   },
 };
@@ -86,10 +76,23 @@ export default {
     :selected="fileBrowserVisible"
     @click="toggleFileBrowserVisibility"
   >
-    <gl-tooltip v-if="shortcutsEnabled" :target="() => $refs.toggle.$el">
+    <gl-tooltip
+      v-if="shortcutsEnabled"
+      custom-class="file-browser-toggle-tooltip"
+      :target="() => $refs.toggle.$el"
+    >
       {{ toggleFileBrowserTitle }}
-      <shortcut :shortcuts="$options.MR_TOGGLE_FILE_BROWSER.defaultKeys" />
+      <shortcut
+        class="gl-whitespace-nowrap"
+        :shortcuts="$options.MR_TOGGLE_FILE_BROWSER.defaultKeys"
+      />
     </gl-tooltip>
     <gl-animated-sidebar-icon :is-on="fileBrowserVisible" class="gl-button-icon" />
   </gl-button>
 </template>
+
+<style>
+.file-browser-toggle-tooltip .tooltip-inner {
+  max-width: 210px;
+}
+</style>

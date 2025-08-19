@@ -17,6 +17,18 @@ module Gitlab
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'
       GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
+      DEFAULT_LOG_OPTIONS = {
+        limit: 10,
+        offset: 0,
+        path: nil,
+        author: nil,
+        follow: false,
+        skip_merges: false,
+        after: nil,
+        before: nil,
+        all: false,
+        message_regex: nil
+      }.freeze
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
       CommitNotFound = Class.new(::Gitlab::Git::BaseError)
@@ -360,23 +372,13 @@ module Gitlab
       #     path: 'app/models',
       #     limit: 10,
       #     offset: 5,
-      #     after: Time.new(2016, 4, 21, 14, 32, 10)
+      #     after: Time.new(2016, 4, 21, 14, 32, 10),
+      #     message_regex: 'project'
       #   )
       def log(options)
-        default_options = {
-          limit: 10,
-          offset: 0,
-          path: nil,
-          author: nil,
-          follow: false,
-          skip_merges: false,
-          after: nil,
-          before: nil,
-          all: false
-        }
+        raise ArgumentError, 'Invalid message_regex pattern' unless valid_message_regex?(options[:message_regex])
 
-        options = default_options.merge(options)
-        options[:offset] ||= 0
+        options = DEFAULT_LOG_OPTIONS.merge(options)
 
         limit = options[:limit]
         if limit == 0 || !limit.is_a?(Integer)
@@ -488,18 +490,18 @@ module Gitlab
         gitaly_commit_client.ancestor?(from, to)
       end
 
-      def merged_branch_names(branch_names = [])
+      def merged_branch_names(branch_names = [], include_identical: false)
         return [] unless root_ref
 
-        root_sha = find_branch(root_ref)&.target
+        root_branch = find_branch(root_ref)
+        return [] unless root_branch
 
-        return [] unless root_sha
+        root_sha = root_branch.target
+        root_branch_name = root_branch.name
 
-        branches = wrapped_gitaly_errors do
-          gitaly_merged_branch_names(branch_names, root_sha)
+        wrapped_gitaly_errors do
+          Set.new(gitaly_merged_branch_names(branch_names, root_sha, root_branch_name, include_identical: include_identical))
         end
-
-        Set.new(branches)
       end
 
       # Returns an array of DiffBlob objects that represent a diff between
@@ -508,6 +510,15 @@ module Gitlab
       def diff_blobs(...)
         wrapped_gitaly_errors do
           gitaly_diff_client.diff_blobs(...)
+        end
+      end
+
+      # Returns an array of DiffBlob objects that represent diffs between
+      # pairs of blobs in a repository using raw changed path information.
+      # More efficient for large batches of files compared to diff_blobs.
+      def diff_blobs_with_raw_info(...)
+        wrapped_gitaly_errors do
+          gitaly_diff_client.diff_blobs_with_raw_info(...)
         end
       end
 
@@ -535,13 +546,13 @@ module Gitlab
         empty_diff_stats
       end
 
-      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false)
+      def find_changed_paths(treeish_objects, merge_commit_diff_mode: nil, find_renames: false, diff_filters: nil)
         processed_objects = treeish_objects.compact
 
         return [] if processed_objects.empty?
 
         wrapped_gitaly_errors do
-          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames)
+          gitaly_commit_client.find_changed_paths(processed_objects, merge_commit_diff_mode: merge_commit_diff_mode, find_renames: find_renames, diff_filters: diff_filters)
         end
       rescue CommandError, TypeError, NoRepository
         []
@@ -1119,31 +1130,37 @@ module Gitlab
         gitaly_repository_client.search_files_by_regexp(ref, filter, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
+      rescue GRPC::NotFound
+        raise NoRepository
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
         wrapped_gitaly_errors do
-          gitaly_commit_client
-            .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
-            .map { |c| commit(c) }
+          gitaly_commit_client.commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
         end
       end
 
-      def list_commits_by(query, ref, author: nil, before: nil, after: nil, limit: 1000)
-        params = {
-          author: author,
-          ignore_case: true,
-          commit_message_patterns: query,
-          before: before,
-          after: after,
-          reverse: false,
-          pagination_params: { limit: limit }
-        }
+      def list_commits(
+        ref:,
+        query: nil,
+        author: nil,
+        committed_before: nil,
+        committed_after: nil,
+        pagination_params: { page_token: nil, limit: 1000 }
+      )
+        pagination_params[:limit] ||= 1000
 
         wrapped_gitaly_errors do
-          gitaly_commit_client
-            .list_commits([ref], params)
-            .map { |c| commit(c) }
+          gitaly_commit_client.list_commits(
+            [ref],
+            author: author,
+            ignore_case: true,
+            commit_message_patterns: query,
+            before: committed_before,
+            after: committed_after,
+            reverse: false,
+            pagination_params: pagination_params
+          )
         end
       end
 
@@ -1258,6 +1275,14 @@ module Gitlab
 
       private
 
+      def valid_message_regex?(pattern)
+        return true unless pattern
+
+        !!Gitlab::UntrustedRegexp.new(pattern)
+      rescue RegexpError
+        false
+      end
+
       def check_blobs_generated(base, head, changed_paths)
         wrapped_gitaly_errors do
           gitaly_analysis_client.check_blobs_generated(base, head, changed_paths)
@@ -1280,12 +1305,13 @@ module Gitlab
         end
       end
 
-      def gitaly_merged_branch_names(branch_names, root_sha)
+      def gitaly_merged_branch_names(branch_names, root_sha, root_branch_name, include_identical: false)
         qualified_branch_names = branch_names.map { |b| "refs/heads/#{b}" }
+        merged_branches = gitaly_ref_client.merged_branches(qualified_branch_names)
 
-        gitaly_ref_client.merged_branches(qualified_branch_names)
-          .reject { |b| b.target == root_sha }
-          .map(&:name)
+        return merged_branches.reject { |b| b.name == root_branch_name }.map(&:name) if include_identical
+
+        merged_branches.reject { |b| b.target == root_sha }.map(&:name)
       end
 
       def process_count_commits_options(options)

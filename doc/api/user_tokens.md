@@ -83,9 +83,7 @@ Example response:
 
 Creates a personal access token for your account. For security purposes, the token:
 
-- Is limited to the [`k8s_proxy` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
-  This scope grants permission to perform Kubernetes API calls using the agent for Kubernetes.
-- By default, expires at the end of the day it was created on.
+- Is limited to the [`k8s_proxy` and `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 
 Token values are included with the response, but cannot be retrieved later.
 
@@ -103,7 +101,7 @@ Supported attributes:
 |:-------------|:-------|:---------|:------------|
 | `name`       | string | yes      | Name of personal access token |
 | `description`| string | no       | Description of personal access token |
-| `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy`. |
+| `scopes`     | array  | yes      | Array of approved scopes. Only accepts `k8s_proxy` and `self_rotate`. |
 | `expires_at` | array  | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:

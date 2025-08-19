@@ -5,7 +5,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Ask GitLab Duo Chat
 ---
 
-As part of GitLab Duo's AI-native features, GitLab Duo Chat helps you:
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+GitLab Duo Chat helps you:
 
 - Get explanations of code, errors, and GitLab features.
 - Generate or refactor code, write tests, and fix issues.
@@ -27,9 +35,6 @@ The example questions on this page, including the [slash commands](#gitlab-duo-c
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, and JetBrains IDEs
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -62,9 +67,7 @@ To keep Chat up to date with the documentation, its knowledge base is updated da
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -100,9 +103,7 @@ For tips on how GitLab Duo Chat can improve your productivity with issues and ep
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -134,9 +135,7 @@ If the epic contains a large amount of text (more than 40,000 words), GitLab Duo
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -168,9 +167,7 @@ While in the merge request, open Chat and type your question. For example:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -193,9 +190,7 @@ You can ask about a specific GitLab commit. For example:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -219,9 +214,7 @@ You can ask about a specific GitLab pipeline job. For example:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -249,12 +242,11 @@ If the work item contains a large amount of text (more than 40,000 words), GitLa
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -301,11 +293,9 @@ In the GitLab UI, you can also explain code in:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
@@ -340,12 +330,10 @@ You can also ask Chat to generate code. For example:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for GitLab.com: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
@@ -372,12 +360,10 @@ A follow-up to the question `How to start a C# project?` could be:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2)
-- LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM for GitLab.com: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
@@ -400,11 +386,9 @@ Programming languages that require compiling the source code may throw cryptic e
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
@@ -440,7 +424,7 @@ For example, if you are developing an e-commerce app, you can add the `cart_serv
 
 {{< alert type="note" >}}
 
-You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-view) to add files or ask questions about files added for Chat's context.
+You cannot use [Quick Chat](_index.md#in-an-editor-window) to add files or ask questions about files added for Chat's context.
 
 {{< /alert >}}
 
@@ -448,12 +432,11 @@ You cannot use [Quick Chat](_index.md#in-gitlab-duo-quick-chat-in-the-editor-vie
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -493,12 +476,11 @@ For more information, see:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -530,12 +512,11 @@ You can include additional instructions to be considered. For example:
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -571,11 +552,9 @@ For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
@@ -587,7 +566,7 @@ For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-
 - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696) from Claude 3 Sonnet to Claude 3.5 Sonnet in GitLab 17.2.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - [Enabled](https://gitlab.com/groups/gitlab-org/-/epics/15227) for [self-hosted model configuration](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms) as well as the [default GitLab external AI vendor configuration](../../administration/gitlab_duo_self_hosted/_index.md#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms) in GitLab 17.9.
-- [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/issues/521034) from Claude 3.5 Sonnet to Claude 3.7 Sonnet in GitLab 17.10.
+- [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/issues/521034) from Claude 3.5 Sonnet to Claude 4.0 Sonnet in GitLab 17.10.
 
 {{< /history >}}
 
@@ -610,12 +589,11 @@ Alternatively, you can use GitLab Duo Root Cause Analysis to [troubleshoot faile
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -676,10 +654,10 @@ To troubleshoot a failed CI/CD job from the job log:
 
 - Tier: Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
-- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -697,7 +675,6 @@ For more information, see [Explaining a vulnerability](../application_security/v
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro or Enterprise
 - Offering: GitLab.com
 - Editors: GitLab UI
@@ -745,9 +722,7 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
 
 {{< /details >}}
@@ -767,7 +742,7 @@ Use the commands to quickly accomplish specific tasks.
 
 {{< alert type="note" >}}
 
-On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations-with-chat), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
+On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_index.md#have-multiple-conversations), the `/clear` and `/reset` slash commands are replaced by the [`/new` slash command](#gitlab-ui).
 
 {{< /alert >}}
 
@@ -775,9 +750,7 @@ On GitLab.com, in GitLab 17.10 and later, when having [multiple conversations](_
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: GitLab UI
 
 {{< /details >}}
@@ -795,15 +768,13 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
 | /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
-| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations-with-chat). GitLab 17.10 and later.         | All |
+| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations). GitLab 17.10 and later.         | All |
 
 ### IDE
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Editors: Web IDE, VS Code, JetBrains IDEs
 
 {{< /details >}}

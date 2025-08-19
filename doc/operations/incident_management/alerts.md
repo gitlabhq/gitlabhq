@@ -72,7 +72,7 @@ The **Alert details** tab has two sections. The top section provides a short lis
 
 ### Metrics tab
 
-This tab shows a metrics chart for alerts coming from Prometheus. In many cases, alerts are associated to metrics. You can upload screenshots of metric charts in the **Metrics** tab.
+In many cases, alerts are associated to metrics. You can upload screenshots of metric charts in the **Metrics** tab.
 
 To do so, either:
 

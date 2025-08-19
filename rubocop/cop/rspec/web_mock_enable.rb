@@ -22,6 +22,7 @@ module RuboCop
 
         MESSAGE = 'Use webmock_enable! instead of calling WebMock.disable_net_connect! directly.'
 
+        # @!method webmock_disable_net_connect?(node)
         def_node_matcher :webmock_disable_net_connect?, <<~PATTERN
           (send (const nil? :WebMock) :disable_net_connect! ...)
         PATTERN

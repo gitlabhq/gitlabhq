@@ -24,26 +24,25 @@ For more information, see also [Sharing projects and groups](../project/members/
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Moved to Settings/Repository](https://gitlab.com/gitlab-org/gitlab/-/issues/220365) in GitLab 15.4.
-
-{{< /history >}}
-
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
 To configure push rules for a group:
 
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
 1. Select **Save push rules**.
 
-The group's new subgroups have push rules set for them based on either:
+New projects inherit push rules from:
 
 - The closest parent group with push rules defined.
 - Push rules set for the entire instance, if no parent groups have push rules defined.
+
+Only projects inherit push rules. Subgroups don't inherit push
+rules from parent groups. To verify which push rules apply to new projects,
+create a project in the subgroup and check the project's push rules.
 
 ## Restrict Git access protocols
 
@@ -258,7 +257,7 @@ Existing forks are not removed.
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
 
-For example, if you want to lock the group for an [audit event](../../administration/audit_event_reports.md),
+For example, if you want to lock the group for an [audit event](../../administration/compliance/audit_event_reports.md),
 you can guarantee that project membership cannot be modified during the audit.
 
 If group membership lock is enabled, the group Owner can still:
@@ -393,16 +392,13 @@ Now you can edit the user's permissions from the **Members** page.
 
 {{< /history >}}
 
-This setting controls the default value of the [minimum role allowed to run a new pipeline with pipeline variables](../../ci/variables/_index.md#restrict-pipeline-variables)
-project setting, for new projects created in the group.
-
-This setting is not an enforced option. After the project is created, the project setting
-can be changed by a Maintainer or Owner.
+This group setting controls the default value of the [minimum role allowed to run a new pipeline with pipeline variables](../../ci/variables/_index.md#restrict-pipeline-variables)
+project setting. New projects created in the group have this value selected by default.
 
 Prerequisites:
 
-- You must be a maintainer in the group.
-- The group must be the top level group, not a subgroup.
+- You must have at least the Maintainer role in the group.
+- The group must be the top-level group, not a subgroup.
 
 To set the default minimum role:
 
@@ -411,6 +407,9 @@ To set the default minimum role:
 1. Under **Default role to use pipeline variables** select a minimum role, or select
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.
+
+After a new project is created, project members with at least the Maintainer role
+can change the project setting to another value if needed.
 
 ## Troubleshooting
 

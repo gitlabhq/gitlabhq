@@ -132,6 +132,20 @@ module Tooling
         end
       end
 
+      def prohibit_key_path_changes!
+        modified_config_files.each do |filename|
+          helper.changed_lines(filename).each do |mod_line, _i|
+            next unless /^-\s*key_path:.*$/.match?(mod_line)
+
+            add_suggestion(
+              filename: filename,
+              regex: /key_path/,
+              comment_text: 'Key path is changed. This is an extremely dangerous action and can lead to data loss. See the [metrics lifecycle](https://docs.gitlab.com/development/internal_analytics/metrics/metrics_lifecycle/#change-an-existing-metric) for more information'
+            )
+          end
+        end
+      end
+
       private
 
       def modified_config_files

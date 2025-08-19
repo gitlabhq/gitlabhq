@@ -12,14 +12,14 @@ RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus, feature_category: :too
 
   shared_examples 'offense' do |bad, good|
     it 'registers an offense', :aggregate_failures do
-      expect_offense(<<~CODE, node: bad)
+      expect_offense(<<~RUBY, node: bad)
         %{node}
         ^{node} [...]
-      CODE
+      RUBY
 
-      expect_correction(<<~CODE)
+      expect_correction(<<~RUBY)
         #{good}
-      CODE
+      RUBY
     end
   end
 
@@ -31,10 +31,10 @@ RSpec.describe RuboCop::Cop::RSpec::HaveGitlabHttpStatus, feature_category: :too
 
   shared_examples 'offense with no autocorrect' do |code|
     it 'does not autocorrect' do
-      expect_offense(<<~CODE, node: code)
+      expect_offense(<<~RUBY, node: code)
         %{node}
         ^{node} [...]
-      CODE
+      RUBY
 
       expect_no_corrections
     end

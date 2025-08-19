@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security' do
-    describe 'Group access tokens', product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', feature_category: :system_access do
+    describe 'Group access tokens' do
       let(:group_access_token) { QA::Resource::GroupAccessToken.fabricate_via_browser_ui! }
 
       it(

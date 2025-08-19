@@ -3,6 +3,7 @@ stage: Growth
 group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Instance review
+description: Request a free instance review.
 ---
 
 {{< details >}}
@@ -28,8 +29,5 @@ To request an instance review:
 1. Sign in as an administrator.
 1. On the left sidebar, select your avatar.
 1. Select **Get a free instance review**.
-
-   ![Instance review](img/instance_review_v14_7.png)
-
 1. On the instance review page, enter your contact details.
 1. Select **Request Instance Review**.

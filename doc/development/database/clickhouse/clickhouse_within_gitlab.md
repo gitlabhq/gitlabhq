@@ -133,7 +133,7 @@ bundle exec rake gitlab:clickhouse:migrate
 
 ## Writing database queries
 
-For the ClickHouse database we don't use ORM (Object Relational Mapping). The main reason is that the GitLab application has many customizations for the `ActiveRecord` PostgresSQL adapter and the application generally assumes that all databases are using `PostgreSQL`. Since ClickHouse-related features are still in a very early stage of development, we decided to implement a simple HTTP client to avoid hard to discover bugs and long debugging time when dealing with multiple `ActiveRecord` adapters.
+For the ClickHouse database we don't use ORM (Object Relational Mapping). The main reason is that the GitLab application has many customizations for the `ActiveRecord` PostgreSQL adapter and the application generally assumes that all databases are using `PostgreSQL`. Since ClickHouse-related features are still in a very early stage of development, we decided to implement a simple HTTP client to avoid hard to discover bugs and long debugging time when dealing with multiple `ActiveRecord` adapters.
 
 Additionally, ClickHouse might not be used the same way as other adapters for `ActiveRecord`. The access patterns differ from traditional transactional databases, in that ClickHouse:
 
@@ -199,10 +199,10 @@ In case there are placeholders with the same name but different values the query
 
 ### Writing query conditions
 
-When working with complex forms where multiple filter conditions are present, building queries by concatenating query fragments as string can get out of hands very quickly. For queries with several conditions you may use the `ClickHouse::QueryBuilder` class. The class uses the `Arel` gem to generate queries and provides a similar query interface like `ActiveRecord`.
+When working with complex forms where multiple filter conditions are present, building queries by concatenating query fragments as string can get out of hands very quickly. For queries with several conditions you may use the `ClickHouse::Client::QueryBuilder` class. The class uses the `Arel` gem to generate queries and provides a similar query interface like `ActiveRecord`.
 
 ```ruby
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 query = builder
   .where(builder.table[:created_at].lteq(Date.today))
@@ -267,7 +267,7 @@ Usage:
 
 ```ruby
 connection = ClickHouse::Connection.new(:main)
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
 iterator.each_batch(column: :id, of: 100_000) do |scope|
@@ -279,7 +279,7 @@ In case you want to iterate over specific rows, you could add filters to the que
 
 ```ruby
 connection = ClickHouse::Connection.new(:main)
-builder = ClickHouse::QueryBuilder.new('events')
+builder = ClickHouse::Client::QueryBuilder.new('events')
 
 # filtering by target type and stringified traversal ids/path
 builder = builder.where(target_type: 'Issue')
@@ -438,6 +438,13 @@ To resolve this, you should add a migration to add the column to ClickHouse too.
 
 If you need further assistance, reach out to `#f_siphon` internally.
 
-### Getting help
+## Troubleshooting
+
+If you experience `MEMORY_LIMIT_EXCEEDED` errors when executing queries, increase the `clickhouse.max_memory_usage` and `clickhouse.max_server_memory_usage` settings
+in your `gdk.yml` file.
+
+Consult the `gdk.example.yml` file for the default settings. You must reconfigure GDK for changes to take effect.
+
+## Getting help
 
 For additional information or specific questions, reach out to the ClickHouse Datastore working group in the `#f_clickhouse` Slack channel, or mention `@gitlab-org/maintainers/clickhouse` in a comment on GitLab.com.

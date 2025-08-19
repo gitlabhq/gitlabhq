@@ -7,7 +7,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
  *
  * @example
  * <help-page-link href="user/storage_usage_quotas">
- *   Usage Quotas help.
+ *   Usage quotas help.
  * <help-page-link>
  */
 export default {

@@ -96,8 +96,8 @@ RSpec.describe RuboCop::Cop::Gitlab::NamespacedClass, feature_category: :shared 
     end
 
     it 'does not flag a truly compact namespaced class definition' do
-      expect_no_offenses(<<~RUBY, namespace: namespace)
-        class %{namespace}::MyModule::MyClass < ApplicationRecord
+      expect_no_offenses(<<~RUBY)
+        class #{namespace}::MyModule::MyClass < ApplicationRecord
         end
       RUBY
     end

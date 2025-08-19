@@ -128,8 +128,23 @@ RSpec.shared_examples Integrations::Base::Asana do
       end
     end
 
-    context 'when closing via url' do
-      let(:message) { 'closes https://app.asana.com/19292/956299/42' }
+    context 'when closing via url (v0 format)' do
+      let(:message) { 'closes https://app.asana.com/0/956299/42' }
+
+      it 'calls Asana integration to close via url' do
+        expect(Gitlab::HTTP)
+          .to receive(:post)
+          .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task)
+        expect(Gitlab::HTTP)
+          .to receive(:put)
+          .with("https://app.asana.com/api/1.0/tasks/42", completed_message).once.and_return(asana_task)
+
+        execute_integration
+      end
+    end
+
+    context 'when closing via url (v1 format)' do
+      let(:message) { 'closes https://app.asana.com/1/19292/project/956299/task/42' }
 
       it 'calls Asana integration to close via url' do
         expect(Gitlab::HTTP)
@@ -147,7 +162,7 @@ RSpec.shared_examples Integrations::Base::Asana do
       let(:message) do
         <<-MESSAGE
         minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
-        ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12,
+        ref https://app.asana.com/0/956299/42 and closing https://app.asana.com/1/19292/project/956299/task/12,
         bug fixing and worked on #11, will be fixed
         in #222
         MESSAGE

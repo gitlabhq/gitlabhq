@@ -1,5 +1,10 @@
 @use 'constants';
 
+.rd-diff-file[data-virtual="text_parallel"],
+.rd-diff-file[data-virtual="text_inline"] {
+  --rd-body-intrinsic-height: calc(#{constants.$code-row-height-target} * var(--virtual-total-rows));
+}
+
 .rd-text-view-root {
   --rd-code-border-adjust: var(--code-border-lightness-adjust, -0.075);
   --rd-line-added-background-color: var(--custom-diff-addition-color, var(--code-new-diff-background-color, $line-number-new));
@@ -201,6 +206,10 @@
   --background-color: var(--rd-line-background-color-override, var(--rd-line-background-color));
   --rd-line-border-color: oklch(from var(--background-color) calc(l + var(--rd-code-border-adjust)) c h);
   background-color: var(--background-color);
+}
+
+.rd-line-number-empty {
+  --rd-line-background-color: var(--code-empty-background);
 }
 
 .rd-line-content[data-change=removed] + .rd-line-number[data-change=added] {

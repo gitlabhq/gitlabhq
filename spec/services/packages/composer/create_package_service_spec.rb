@@ -19,10 +19,9 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
   describe '#execute' do
     let(:tag) { nil }
     let(:branch) { nil }
+    let(:created_package) { ::Packages::Composer::Package.last }
 
     subject { described_class.new(project, user, params).execute }
-
-    let(:created_package) { ::Packages::Composer::Package.last }
 
     context 'without an existing package' do
       context 'with a branch' do
@@ -35,8 +34,8 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
           expect(created_package.name).to eq package_name
           expect(created_package.version).to eq 'dev-master'
-          expect(created_package.composer_metadatum.target_sha).to eq branch.target
-          expect(created_package.composer_metadatum.composer_json.to_json).to eq json
+          expect(created_package.target_sha).to eq branch.target
+          expect(created_package.composer_json.to_json).to eq json
         end
 
         it_behaves_like 'assigns the package creator' do

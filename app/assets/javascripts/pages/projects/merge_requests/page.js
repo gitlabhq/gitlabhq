@@ -4,7 +4,6 @@ import initMrNotes from 'ee_else_ce/mr_notes';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED } from '~/diffs/constants';
-import store from '~/mr_notes/stores';
 import initSidebarBundle from '~/sidebar/sidebar_bundle';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { parseBoolean } from '~/lib/utils/common_utils';
@@ -53,7 +52,6 @@ const initMrStickyHeader = () => {
     new Vue({
       el,
       name: 'MergeRequestStickyHeaderRoot',
-      store,
       pinia,
       apolloProvider,
       components: {
@@ -91,7 +89,6 @@ const initReviewDrawer = () => {
   new Vue({
     el,
     pinia,
-    store,
     apolloProvider,
     provide: {
       newCommentTemplatePaths: JSON.parse(el.dataset.newCommentTemplatePaths),
@@ -105,7 +102,7 @@ const initReviewDrawer = () => {
 
 export function initMrPage(createRapidDiffsApp) {
   initMrNotes(createRapidDiffsApp);
-  initShow(store, pinia);
+  initShow();
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });
 
@@ -127,7 +124,7 @@ export function initMrPage(createRapidDiffsApp) {
   });
 
   requestIdleCallback(() => {
-    initSidebarBundle(store, pinia);
+    initSidebarBundle();
     initMrStickyHeader();
     initReviewDrawer();
   });

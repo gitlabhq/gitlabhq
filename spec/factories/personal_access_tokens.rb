@@ -3,13 +3,17 @@
 FactoryBot.define do
   factory :personal_access_token do
     user
-    organization
+    organization { user&.organization || association(:common_organization) }
     sequence(:name) { |n| "PAT #{n}" }
     description { "Token description" }
     revoked { false }
     expires_at { 30.days.from_now }
     scopes { ['api'] }
     impersonation { false }
+
+    after(:build) do |token|
+      token.user_type = token.user.user_type
+    end
 
     trait :impersonation do
       impersonation { true }

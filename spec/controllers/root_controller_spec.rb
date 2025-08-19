@@ -200,6 +200,10 @@ RSpec.describe RootController, feature_category: :shared do
             expect(response).to render_template 'dashboard/projects/index'
           end
 
+          it 'does not track user_views_homepage event' do
+            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
+          end
+
           context 'when the `merge_request_dashboard` feature flag is enabled' do
             before do
               stub_feature_flags(merge_request_dashboard: true)
@@ -210,10 +214,13 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests",
+                activity_path: "/dashboard/activity",
                 assigned_merge_requests_path: "/dashboard/merge_requests",
                 assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
                 authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
-                duo_code_review_bot_username: duo_code_review_bot.username
+                duo_code_review_bot_username: duo_code_review_bot.username,
+                merge_requests_review_requested_title: "Review requested",
+                merge_requests_your_merge_requests_title: "Your merge requests"
               })
             end
           end
@@ -228,10 +235,13 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
+                activity_path: "/dashboard/activity",
                 assigned_merge_requests_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
                 assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
                 authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
-                duo_code_review_bot_username: duo_code_review_bot.username
+                duo_code_review_bot_username: duo_code_review_bot.username,
+                merge_requests_review_requested_title: "Review requested",
+                merge_requests_your_merge_requests_title: "Your merge requests"
               })
             end
           end
@@ -247,6 +257,10 @@ RSpec.describe RootController, feature_category: :shared do
 
             expect(response).to render_template 'root/index'
           end
+
+          it 'tracks user_views_homepage event' do
+            expect { get :index }.to trigger_internal_events('user_views_homepage').with(user: user)
+          end
         end
       end
 
@@ -260,6 +274,10 @@ RSpec.describe RootController, feature_category: :shared do
             get :index
 
             expect(response).to render_template 'dashboard/projects/index'
+          end
+
+          it 'does not track user_views_homepage event' do
+            expect { get :index }.not_to trigger_internal_events('user_views_homepage')
           end
         end
 

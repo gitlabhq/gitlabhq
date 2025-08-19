@@ -87,8 +87,9 @@ module Resolvers
         :group,
         :invited_groups,
         :project_setting,
+        :project_namespace,
         {
-          project_namespace: [:namespace_settings_with_ancestors_inherited_settings]
+          namespace: [:namespace_settings_with_ancestors_inherited_settings]
         }
       ]
     end
@@ -108,7 +109,7 @@ module Resolvers
         marked_for_deletion_on: args[:marked_for_deletion_on],
         visibility_level: args[:visibility_level],
         active: args[:active],
-        current_organization: ::Current.organization
+        organization: ::Current.organization
       }
     end
 

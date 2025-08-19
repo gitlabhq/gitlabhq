@@ -5,6 +5,7 @@ import { fetchPolicies } from '~/lib/graphql';
 
 import { I18N_FETCH_ERROR } from '~/ci/runner/constants';
 import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
+import projectAssignableRunnersQuery from '~/ci/runner/graphql/list/project_assignable_runners.query.graphql';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerName from '~/ci/runner/components/runner_name.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
@@ -38,8 +39,14 @@ export default {
       type: String,
       required: true,
     },
+    useAssignableQuery: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   emits: ['error'],
+  expose: ['refresh'],
   data() {
     return {
       loading: 0, // Initialized to 0 as this is used by a "loadingKey". See https://apollo.vuejs.org/api/smart-query.html#options
@@ -53,14 +60,17 @@ export default {
   },
   apollo: {
     runners: {
-      query: projectRunnersQuery,
+      query() {
+        return this.useAssignableQuery ? projectAssignableRunnersQuery : projectRunnersQuery;
+      },
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       loadingKey: 'loading',
       variables() {
         return this.variables;
       },
       update(data) {
-        const { edges = [], pageInfo = {}, count } = data?.project?.runners || {};
+        const parent = this.useAssignableQuery ? data?.currentUser : data?.project;
+        const { edges = [], pageInfo = {}, count } = parent?.runners || {};
         const items = edges.map(({ node, webUrl, editUrl }) => ({ ...node, webUrl, editUrl }));
 
         return {
@@ -92,12 +102,14 @@ export default {
     },
   },
   methods: {
+    onDeleted({ message }) {
+      this.$root.$toast?.show(message);
+    },
     onPaginationInput(value) {
       this.pagination = value;
     },
 
     // Component API
-    // eslint-disable-next-line vue/no-unused-properties
     refresh() {
       this.$apollo.queries.runners.refresh();
     },
@@ -133,7 +145,12 @@ export default {
         <runner-name v-else :runner="runner" />
       </template>
       <template #runner-actions-cell="{ runner }">
-        <runner-actions-cell :runner="runner" size="small" :edit-url="runner.editUrl">
+        <runner-actions-cell
+          :runner="runner"
+          size="small"
+          :edit-url="runner.editUrl"
+          @deleted="onDeleted"
+        >
           <slot name="other-runner-actions" :runner="runner"></slot>
         </runner-actions-cell>
       </template>

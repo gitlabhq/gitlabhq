@@ -34,7 +34,7 @@ Always use an [Entity](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/ap
 
 ## Documentation
 
-Each new or updated API endpoint must come with documentation, unless it is internal or behind a feature flag.
+Each new or updated API endpoint must come with documentation.
 The docs should be in the same merge request, or, if strictly necessary,
 in a follow-up with the same milestone as the original merge request.
 
@@ -183,7 +183,7 @@ allowed. For more details, see the Ruby Grape [documentation for `declared()`](h
 ### Exclude parameters from parent namespaces
 
 By default `declared(params)` includes parameters that were defined in all
-parent namespaces. For more details, see the Ruby Grape [documetation for `include_parent_namespaces`](https://github.com/ruby-grape/grape#include-parent-namespaces).
+parent namespaces. For more details, see the Ruby Grape [documentation for `include_parent_namespaces`](https://github.com/ruby-grape/grape#include-parent-namespaces).
 
 In most cases you should exclude parameters from the parent namespaces:
 

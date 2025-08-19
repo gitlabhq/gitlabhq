@@ -12,7 +12,7 @@ import { createAlert } from '~/alert';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
-import { BULK_UPDATE_UNASSIGNED } from '~/work_items/constants';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 
 jest.mock('~/alert');
 
@@ -122,7 +122,51 @@ describe('WorkItemBulkEditAssignee component', () => {
           {
             text: 'Unassigned',
             textSrOnly: true,
-            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
+          },
+          {
+            text: 'All',
+            textSrOnly: true,
+            options: [
+              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
+              expect.objectContaining({ text: 'rookie', value: 'gid://gitlab/User/5' }),
+            ],
+          },
+        ]);
+      });
+
+      it('renders all users with current user Administrator at the top even when current user is not in response', async () => {
+        createComponent({
+          searchQueryHandler: jest.fn().mockResolvedValue({
+            data: {
+              workspace: {
+                id: 'gid://gitlab/Project/7',
+                __typename: 'Project',
+                users: [
+                  {
+                    __typename: 'AutocompletedUser',
+                    id: 'gid://gitlab/User/5',
+                    avatarUrl: '/avatar2',
+                    name: 'rookie',
+                    username: 'rookie',
+                    webUrl: 'rookie',
+                    webPath: '/rookie',
+                    status: null,
+                  },
+                ],
+              },
+            },
+          }),
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(findListbox().props('items')).toEqual([
+          {
+            text: 'Unassigned',
+            textSrOnly: true,
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
           },
           {
             text: 'All',
@@ -146,7 +190,7 @@ describe('WorkItemBulkEditAssignee component', () => {
           {
             text: 'Unassigned',
             textSrOnly: true,
-            options: [{ text: 'Unassigned', value: BULK_UPDATE_UNASSIGNED }],
+            options: [{ text: 'Unassigned', value: BULK_EDIT_NO_VALUE }],
           },
           {
             text: 'Selected',
@@ -176,8 +220,8 @@ describe('WorkItemBulkEditAssignee component', () => {
             text: 'All',
             textSrOnly: true,
             options: [
-              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
               expect.objectContaining({ text: 'rookie', value: 'gid://gitlab/User/5' }),
+              expect.objectContaining({ text: 'Administrator', value: 'gid://gitlab/User/1' }),
             ],
           },
         ]);
@@ -208,7 +252,7 @@ describe('WorkItemBulkEditAssignee component', () => {
       it('renders "Unassigned"', async () => {
         createComponent();
 
-        await openListboxAndSelect('unassigned');
+        await openListboxAndSelect(BULK_EDIT_NO_VALUE);
 
         expect(findListbox().props('toggleText')).toBe('Unassigned');
       });

@@ -6,9 +6,6 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
   include GraphqlHelpers
 
   describe '#resolve' do
-    let(:obj) { nil }
-    let(:args) { {} }
-
     subject(:resolve_scope) do
       resolve(
         described_class,
@@ -20,6 +17,10 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
     end
 
     include_context 'runners resolver setup'
+
+    let(:user) { build(:user, :admin) }
+    let(:obj) { nil }
+    let(:args) { {} }
 
     # First, we can do a couple of basic real tests to verify common cases. That ensures that the code works.
     context 'when user cannot see runners' do

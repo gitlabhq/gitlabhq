@@ -16,6 +16,7 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_VULNERABILITIES,
+  WIDGET_TYPE_STATUS,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -26,6 +27,7 @@ import { preserveDetailsState } from '~/work_items/utils';
 
 export const linkedItems = makeVar({});
 export const currentAssignees = makeVar({});
+export const availableStatuses = makeVar({});
 
 export const config = {
   typeDefs,
@@ -250,8 +252,25 @@ export const config = {
                     const items = resultNodes
                       .filter((node) => node.workItem)
                       // normally we would only get a `__ref` for nested properties but we need to extract the full work item
-                      // eslint-disable-next-line no-underscore-dangle
-                      .map((node) => context.cache.extract()[node.workItem.__ref]);
+                      .map((node) => {
+                        /* eslint-disable no-underscore-dangle */
+                        const itemRef = context.cache.extract()[node.workItem.__ref];
+                        const { __typename, id, name, iconName } =
+                          context.cache.extract()[itemRef.workItemType.__ref];
+                        /* eslint-enable no-underscore-dangle */
+
+                        const workItem = {
+                          ...itemRef,
+                          workItemType: {
+                            __typename,
+                            id,
+                            name,
+                            iconName,
+                          },
+                        };
+
+                        return workItem;
+                      });
 
                     // Ensure that any existing linked items are retained
                     const existingLinkedItems = linkedItems();
@@ -328,9 +347,44 @@ export const config = {
             },
           },
           widgetDefinitions: {
-            merge(existing = [], incoming) {
+            merge(existing = [], incoming, context) {
               if (existing.length === 0) {
                 return incoming;
+              }
+
+              if (context.variables.fullPath) {
+                const existingAvailableStatuses = availableStatuses();
+                const cacheNodes = context.cache.extract();
+
+                // Get available work item types for the namespace
+                const workItemTypes = Object.keys(cacheNodes).filter((cacheKey) =>
+                  cacheKey.includes('WorkItemType:'),
+                );
+
+                // Collect available statuses per work item type
+                const statusesForTypes = workItemTypes.reduce((acc, currentType) => {
+                  const typeWidgetDefs = cacheNodes[currentType].widgetDefinitions;
+                  if (typeWidgetDefs) {
+                    const { allowedStatuses } =
+                      typeWidgetDefs.find((widget) => widget.type === WIDGET_TYPE_STATUS) || {};
+
+                    // Only capture once statuses are available in cache
+                    if (allowedStatuses) {
+                      // Normalize type ID key name
+                      acc[currentType.split('WorkItemType:').pop()] = allowedStatuses.map(
+                        // eslint-disable-next-line no-underscore-dangle
+                        (status) => cacheNodes[status.__ref],
+                      );
+                    }
+                  }
+                  return acc;
+                }, {});
+
+                // Set type-to-status map in reactive prop
+                availableStatuses({
+                  ...existingAvailableStatuses,
+                  [context.variables.fullPath]: statusesForTypes,
+                });
               }
 
               return existing.map((existingWidget) => {

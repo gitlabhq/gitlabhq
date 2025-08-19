@@ -50,6 +50,7 @@ module RuboCop
         FORBIDDEN_METHODS = ALTERNATIVES.keys.map(&:inspect).join(' ')
         RESTRICT_ON_SEND = ALTERNATIVES.keys
 
+        # @!method forbidden_method_usage(node)
         def_node_matcher :forbidden_method_usage, <<~PATTERN
           (send nil? ${#{FORBIDDEN_METHODS}} ...)
         PATTERN

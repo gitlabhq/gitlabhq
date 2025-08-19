@@ -91,13 +91,12 @@ RSpec.shared_examples 'set up an integration' do |endpoint:, integration:, paren
       request
 
       current_integration = parent_resource.integrations.by_name(integration).first
-      manual_or_special = current_integration&.manual_activation? ||
-        current_integration.is_a?(::Integrations::Prometheus)
-      delta = manual_or_special ? 1 : 0
+      manual_activation = current_integration&.manual_activation?
+      delta = manual_activation ? 1 : 0
 
       expect(parent_resource.integrations.by_name(integration).count).to eq(initial_count + delta)
 
-      if manual_or_special
+      if manual_activation
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['slug']).to eq(dashed_integration)
 
@@ -189,19 +188,11 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:,
   end
 
   def deactive_integration!
-    return initialized_integration.deactivate! unless initialized_integration.is_a?(::Integrations::Prometheus)
-
-    # Integrations::Prometheus sets `#active` itself within a `before_save`:
-    initialized_integration.manual_configuration = false
-    initialized_integration.save!
+    initialized_integration.deactivate!
   end
 
   def activate_integration!
-    return initialized_integration.activate! unless initialized_integration.is_a?(::Integrations::Prometheus)
-
-    # Integrations::Prometheus sets `#active` itself within a `before_save`:
-    initialized_integration.manual_configuration = true
-    initialized_integration.save!
+    initialized_integration.activate!
   end
 
   context 'when the integration is not active' do

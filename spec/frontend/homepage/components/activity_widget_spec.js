@@ -1,13 +1,15 @@
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ActivityWidget from '~/homepage/components/activity_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/utils/datetime_utility');
 
 describe('ActivityWidget', () => {
   let wrapper;
@@ -16,14 +18,23 @@ describe('ActivityWidget', () => {
   const MOCK_CURRENT_USERNAME = 'administrator';
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findActivityFeedSelector = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findErrorMessage = () =>
+    wrapper.findByText(
+      'Your activity feed is not available. Please refresh the page to try again.',
+    );
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findEventsList = () => wrapper.findByTestId('events-list');
   const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findAllActivityLink = () => wrapper.find('a[href="/foo/bar"]');
 
   function createWrapper() {
     gon.current_username = MOCK_CURRENT_USERNAME;
-    wrapper = shallowMountExtended(ActivityWidget);
+    wrapper = shallowMountExtended(ActivityWidget, {
+      propsData: {
+        activityPath: '/foo/bar',
+      },
+    });
   }
 
   beforeEach(() => {
@@ -38,31 +49,29 @@ describe('ActivityWidget', () => {
     createWrapper();
 
     expect(findSkeletonLoader().exists()).toBe(true);
-    expect(findAlert().exists()).toBe(false);
+    expect(findErrorMessage().exists()).toBe(false);
     expect(findEmptyState().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
   });
 
-  it('shows an alert if the request errors out', async () => {
+  it('shows an error message if the request errors out', async () => {
     mockAxios
-      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
       .reply(500);
     createWrapper();
     await waitForPromises();
 
-    expect(findAlert().exists()).toBe(true);
+    expect(findErrorMessage().exists()).toBe(true);
     expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
     expect(Sentry.captureException).toHaveBeenCalled();
-    expect(findAlert().text()).toBe(
-      'The activity feed is not available. Please refresh the page to try again.',
-    );
+    expect(findErrorMessage().exists()).toBe(true);
   });
 
   it('shows an empty state if the user has no activity yet', async () => {
     mockAxios
-      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
       .reply(200, '');
     createWrapper();
     await waitForPromises();
@@ -77,7 +86,7 @@ describe('ActivityWidget', () => {
     const EVENT_TEXT = 'Some event';
 
     mockAxios
-      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
       .reply(200, {
         html: `<li data-testid="${EVENT_TESTID}">${EVENT_TEXT}</li>`,
       });
@@ -85,12 +94,80 @@ describe('ActivityWidget', () => {
     await waitForPromises();
 
     expect(findEventsList().exists()).toBe(true);
-    expect(findAlert().exists()).toBe(false);
+    expect(findErrorMessage().exists()).toBe(false);
     expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
 
     expect(wrapper.findByTestId(EVENT_TESTID).exists()).toBe(true);
     expect(wrapper.findByTestId(EVENT_TESTID).text()).toBe(EVENT_TEXT);
+  });
+
+  it('initializes timeago when timestamps are inserted', async () => {
+    const timestampHtml =
+      '<time class="js-timeago" title="Jul 4, 2025 12:09pm" datetime="2025-07-04T12:09:51Z" tabindex="0" aria-label="Jul 4, 2025 12:09pm" data-toggle="tooltip" data-placement="top" data-container="body">Jul 04, 2025</time>';
+    mockAxios
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+      .reply(200, {
+        html: timestampHtml,
+      });
+    createWrapper();
+    await waitForPromises();
+
+    const timestampEls = wrapper.vm.$el.querySelectorAll('.js-timeago');
+    expect(timestampEls).toHaveLength(1);
+    expect(localTimeAgo).toHaveBeenCalledWith(timestampEls);
+  });
+
+  it('populates the activity feed seletor with the correct options', () => {
+    createWrapper();
+
+    expect(findActivityFeedSelector().props('items')).toEqual([
+      { text: 'Your activity', value: null },
+      { text: 'Starred projects', value: 'starred' },
+      { text: 'Followed users', value: 'followed' },
+    ]);
+  });
+
+  it("fetches the starred projects' activity feed", async () => {
+    mockAxios.onGet('*').reply(200, {
+      html: '',
+    });
+    createWrapper();
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(1);
+
+    findActivityFeedSelector().vm.$emit('select', 'starred');
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(2);
+    expect(mockAxios.history.get[1].url).toBe(
+      '/dashboard/activity?limit=5&offset=0&filter=starred',
+    );
+  });
+
+  it("fetches the followed users' activity feed", async () => {
+    mockAxios.onGet('*').reply(200, {
+      html: '',
+    });
+    createWrapper();
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(1);
+
+    findActivityFeedSelector().vm.$emit('select', 'followed');
+    await waitForPromises();
+
+    expect(mockAxios.history.get).toHaveLength(2);
+    expect(mockAxios.history.get[1].url).toBe(
+      '/dashboard/activity?limit=5&offset=0&filter=followed',
+    );
+  });
+
+  it('shows a link to all activity', () => {
+    createWrapper();
+
+    expect(findAllActivityLink().text()).toBe('All activity');
   });
 
   describe('refresh functionality', () => {
@@ -106,6 +183,30 @@ describe('ActivityWidget', () => {
 
       expect(reloadSpy).toHaveBeenCalled();
       reloadSpy.mockRestore();
+    });
+  });
+
+  describe('session saved filters', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    afterEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('switches between different filter options and persists them', async () => {
+      createWrapper();
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe(null);
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe('starred');
+
+      findActivityFeedSelector().vm.$emit('select', 'followed');
+      await waitForPromises();
+      expect(sessionStorage.getItem('homepage-activity-filter')).toBe('followed');
     });
   });
 });

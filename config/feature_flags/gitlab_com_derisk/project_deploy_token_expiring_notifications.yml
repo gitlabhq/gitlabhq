@@ -1,0 +1,10 @@
+---
+name: project_deploy_token_expiring_notifications
+description: Enable email notifications for project deploy tokens that are about to expire.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/512197
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195254
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555470
+milestone: '18.3'
+type: gitlab_com_derisk
+group: group::environments
+default_enabled: false

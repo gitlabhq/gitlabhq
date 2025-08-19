@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import { hasTouchCapability } from '~/lib/utils/touch_detection';
 import { JS_TOGGLE_EXPAND_CLASS, JS_TOGGLE_COLLAPSE_CLASS, sidebarState } from '../constants';
 import { toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
 
@@ -43,6 +44,10 @@ export default {
       return this.type === 'expand';
     },
     tooltip() {
+      if (hasTouchCapability()) {
+        return null;
+      }
+
       return this.isTypeExpand ? this.$options.tooltipExpand : this.$options.tooltipCollapse;
     },
     ariaExpanded() {

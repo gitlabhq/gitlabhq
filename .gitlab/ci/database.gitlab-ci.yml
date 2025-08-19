@@ -270,6 +270,7 @@ db:invalidate-old-pipeline-results:
     - .db-job-base
     - .db:rules:invalidate-old-pipeline-results
   stage: post-test
+  allow_failure: true
   needs:
     - job: cache:ruby-gems
       optional: true

@@ -117,7 +117,9 @@ To build images without Docker daemon dependency, add a job similar to this exam
 
 ```yaml
 build-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -140,7 +142,9 @@ to specify the target platforms. For example:
 
 ```yaml
 build-multiarch-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -164,7 +168,9 @@ import and export in your build job. For example:
 
 ```yaml
 build-cached-rootless:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -183,6 +189,38 @@ build-cached-rootless:
         --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
 ```
 
+### Use a registry mirror in rootless mode
+
+Registry mirrors provide faster image pulls and can help with rate limiting or network restrictions.
+
+To configure registry mirrors, create a `buildkit.toml` file that specifies the mirror endpoints. For example:
+
+```yaml
+build-mirror-rootless:
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
+  stage: build
+  variables:
+    BUILDKITD_FLAGS: --oci-worker-no-process-sandbox --config /tmp/buildkit.toml
+  before_script:
+    - mkdir -p ~/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > ~/.docker/config.json
+    - cat <<'EOF' > /tmp/buildkit.toml
+      [registry."docker.io"]
+        mirrors = ["mirror.example.com"]
+      EOF
+  script:
+    - |
+      buildctl-daemonless.sh build \
+        --frontend dockerfile.v0 \
+        --local context=. \
+        --local dockerfile=. \
+        --output type=image,name=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA,push=true
+```
+
+In this example, replace `mirror.example.com` with your registry mirror URL.
+
 ### Configure proxy settings
 
 If your GitLab Runner operates behind an HTTP(S) proxy, configure proxy settings
@@ -190,7 +228,9 @@ as variables in your job. For example:
 
 ```yaml
 build-behind-proxy:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -221,7 +261,9 @@ container's certificate store before building. For example:
 
 ```yaml
 build-with-custom-certs:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   stage: build
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
@@ -271,7 +313,9 @@ After, with BuildKit rootless:
 
 ```yaml
 build:
-  image: moby/buildkit:rootless
+  image:
+    name: moby/buildkit:rootless
+    entrypoint: [""]
   variables:
     BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
   before_script:
@@ -430,6 +474,29 @@ For permission-related issues in rootless mode:
 - Ensure `BUILDKITD_FLAGS: --oci-worker-no-process-sandbox` is set.
 - Verify that the GitLab Runner has sufficient resources allocated.
 - Check that no privileged operations are attempted in your `Dockerfile`.
+
+If you receive `[rootlesskit:child ] error: failed to share mount point: /: permission denied`
+on a Kubernetes runner, AppArmor is blocking the mount syscall required for BuildKit.
+
+To resolve this issue, add the following to your runner configuration:
+
+```toml
+[runners.kubernetes.pod_annotations]
+  "container.apparmor.security.beta.kubernetes.io/build" = "unconfined"
+```
+
+### Error: `invalid local: stat path/to/image/Dockerfile: not a directory`
+
+You might get an error that states `invalid local: stat path/to/image/Dockerfile: not a directory`.
+
+This issue occurs when you specify a file path instead of a directory path for the
+`--local dockerfile=` parameter. BuildKit expects a directory path that contains
+a file named `Dockerfile`.
+
+To resolve this issue, use the directory path instead of the full file path. For example:
+
+- Use: `--local dockerfile=path/to/image`
+- Instead of: `--local dockerfile=path/to/image/Dockerfile`
 
 ### Multi-platform builds fail
 

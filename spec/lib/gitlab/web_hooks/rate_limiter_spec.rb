@@ -11,6 +11,10 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
 
   using RSpec::Parameterized::TableSyntax
 
+  before do
+    stub_feature_flags(no_webhook_rate_limit: false)
+  end
+
   describe '#rate_limit!' do
     def rate_limit!(hook)
       described_class.new(hook).rate_limit!
@@ -42,6 +46,14 @@ RSpec.describe Gitlab::WebHooks::RateLimiter, :clean_gitlab_redis_rate_limiting 
       end
 
       with_them do
+        context 'when webhooks rate limit is disabled' do
+          before do
+            stub_feature_flags(no_webhook_rate_limit: true)
+          end
+
+          it_behaves_like 'a hook that is never rate limited'
+        end
+
         if params[:limitless_hook_type]
           it_behaves_like 'a hook that is never rate limited'
         else

@@ -58,7 +58,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
 
   describe '#set_current_organization' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:current_organization) { create(:organization, users: [user]) }
+    let_it_be(:current_organization) { user.organization }
 
     before do
       sign_in user
@@ -69,17 +69,29 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
 
     it 'sets current organization' do
-      get :index, format: :json
+      get :index, format: :html
 
       expect(Current.organization).to eq(current_organization)
+    end
+
+    context 'when X-GitLab-Organization-ID header is provided' do
+      let_it_be(:header_organization) { create(:organization) }
+
+      it 'sets the organization from header' do
+        request.headers['X-GitLab-Organization-ID'] = header_organization.id.to_s
+
+        get :index, format: :html
+
+        expect(Current.organization).to eq(header_organization)
+      end
     end
 
     context 'when multiple calls in one example are done' do
       it 'does not update the organization' do
         expect(Current).to receive(:organization=).once.and_call_original
 
-        get :index, format: :json
-        get :index, format: :json
+        get :index, format: :html
+        get :index, format: :html
       end
     end
   end

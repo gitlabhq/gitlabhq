@@ -171,7 +171,7 @@ Using inputs to control pipeline behavior offers improved security and flexibili
 
 ### Pass pipeline inputs in the API call
 
-You can pass pipeline inputs in the trigger API call. [Inputs](../yaml/inputs.md)
+You can pass pipeline inputs in the trigger API call. [Inputs](../inputs/_index.md)
 provide a structured way to parameterize your pipelines with built-in validation and documentation.
 
 The parameter format is `inputs[name]=value`, for example:
@@ -245,6 +245,9 @@ A response of `{"message":"404 Not Found"}` when triggering a pipeline might be 
 by using a [personal access token](../../user/profile/personal_access_tokens.md)
 instead of a pipeline trigger token. [Create a new trigger token](#create-a-pipeline-trigger-token)
 and use it instead of the personal access token.
+
+A response of `{"message":"404 Not Found"}` when triggering a pipeline might also be caused
+by using a `GET` request. Pipelines can only be triggered using a `POST` request.
 
 ### `The requested URL returned error: 400` when triggering a pipeline
 

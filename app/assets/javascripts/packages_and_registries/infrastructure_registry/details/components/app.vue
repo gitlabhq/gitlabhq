@@ -24,6 +24,7 @@ import {
   SHOW_DELETE_SUCCESS_ALERT,
 } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
+import Markdown from '~/vue_shared/components/markdown/markdown_content.vue';
 import PackageFiles from './package_files.vue';
 import PackageHistory from './package_history.vue';
 
@@ -42,7 +43,7 @@ export default {
     PackageHistory,
     TerraformInstallation,
     PackageFiles,
-    Markdown: () => import('~/vue_shared/components/markdown/markdown_content.vue'),
+    Markdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,

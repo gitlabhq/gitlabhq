@@ -81,3 +81,14 @@ annotations-report-annotations-not-string:
   artifacts:
     reports:
       annotations: 1
+
+# Negative artifacts:reports:accessibility tests on schema
+accessibility-report-left-blank:
+  artifacts:
+    reports:
+      accessibility:
+
+accessibility-report-not-string:
+  artifacts:
+    reports:
+      accessibility: 1

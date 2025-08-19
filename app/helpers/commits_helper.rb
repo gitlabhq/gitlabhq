@@ -36,6 +36,21 @@ module CommitsHelper
     }
   end
 
+  def commit_list_app_data
+    {
+      'project_full_path' => @project.full_path,
+      'project_root_path' => project_path(@project),
+      'project_path' => @project.path,
+      'project_id' => @project.id.to_s,
+      'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(@ref),
+      'ref_type' => @ref_type.to_s,
+      'root_ref' => @project.default_branch,
+      'path' => @path,
+      "browse_files_path" => path_to_browse_file_or_directory(@project, @ref, @path),
+      "commits_feed_path" => project_commits_path(@project, @id, rss_url_options)
+    }
+  end
+
   # Breadcrumb links for a Project and, if applicable, a tree path
   def commits_breadcrumbs
     return unless @project && @ref
@@ -67,12 +82,6 @@ module CommitsHelper
     end
 
     crumbs.html_safe
-  end
-
-  # Return Project default branch, if it present in array
-  # Else - first branch in array (mb last actual branch)
-  def commit_default_branch(project, branches)
-    branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
   end
 
   # Returns a link formatted as a commit branch link

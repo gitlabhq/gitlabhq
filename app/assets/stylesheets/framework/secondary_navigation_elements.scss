@@ -16,10 +16,18 @@
       @apply gl-py-5 gl-px-4 gl-text-default gl-text-base gl-leading-normal gl-border-0 gl-whitespace-nowrap;
 
       &:hover,
-      &:active,
+       &:active {
+        text-decoration: none;
+        color: var(--gl-text-default);
+        box-shadow: inset 0 -2px 0 0 var(--gl-tab-selected-indicator-color-default);
+      }
+
       &:focus {
-        @apply gl-text-default gl-no-underline;
-        box-shadow: inset 0 -2px 0 0 var(--gl-border-color-strong);
+        text-decoration: none;
+        color: var(--gl-text-default);
+        outline: 2px solid var(--gl-focus-ring-color, var(--gl-tab-selected-indicator-color-default));
+        outline-offset: 2px;
+        box-shadow: none;
       }
     }
 

@@ -44,6 +44,7 @@ const initApp = (el, component, userPropKey, props = {}, provide = {}) => {
 export const initAdminUsersFilterApp = () => {
   return new Vue({
     el: document.querySelector('#js-admin-users-filter-app'),
+    apolloProvider,
     render: (createElement) => createElement(AdminUsersFilterApp),
   });
 };

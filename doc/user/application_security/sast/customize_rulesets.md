@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Customize SAST analyzer rules in GitLab by disabling, overriding, or replacing predefined rules.
 title: Customize rulesets
 ---
 
@@ -35,7 +36,7 @@ You can disable predefined rules for any SAST analyzer.
 
 When you disable a rule:
 
-- All SAST analyzers that support custom rulesets still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](_index.md#download-a-sast-report).
+- All SAST analyzers that support custom rulesets still scan for the vulnerability. The results are removed as a processing step after the scan completes, and they don't appear in the [`gl-sast-report.json` artifact](_index.md#download-a-sast-report). GitLab Advanced SAST differs by excluding disabled rules from the initial scan.
 - Findings for the disabled rule no longer appear in the [pipeline security tab](../detect/security_scanning_results.md).
 - Existing findings for the disabled rule on the default branch are marked as [`No longer detected`](../vulnerability_report/_index.md#activity-filter) in the [vulnerability report](../vulnerability_report/_index.md).
 
@@ -536,7 +537,7 @@ With the following custom ruleset configuration, two `raw` passthroughs
 are used to iteratively assemble the `/sgrules/my-rules.yml` file, which
 is then provided to Semgrep as the ruleset. Each passthrough appends a
 single rule to the ruleset. The first passthrough is responsible for
-initialising the top-level `rules` object, according to the
+initializing the top-level `rules` object, according to the
 [Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax).
 
 ```toml

@@ -3,7 +3,7 @@
 # version of the login test that only runs against GDK
 
 module QA
-  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, product_group: :cells_infrastructure do
+  RSpec.describe 'Tenant Scale', :skip_live_env, :requires_admin, feature_category: :cell do
     describe 'Multiple Cells' do
       it(
         'user logged into one Cell is logged into all',

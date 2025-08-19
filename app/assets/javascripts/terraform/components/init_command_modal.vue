@@ -5,9 +5,15 @@ import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 
 export default {
   i18n: {
-    title: s__('Terraform|Terraform init command'),
+    title: s__('Terraform|Terraform init'),
     explanatoryText: s__(
-      `Terraform|To get access to this terraform state from your local computer, run the following command at the command line. The first line requires a personal access token with API read and write access. %{linkStart}How do I create a personal access token?%{linkEnd}.`,
+      `Terraform|To access this Terraform state from your local computer, use either GitLab CLI (glab) or the REST API.`,
+    ),
+    explanatoryGlabText: s__(
+      `Terraform|Recommended. Run the following command with glab. You must use glab 1.66 or later:`,
+    ),
+    explanatoryPlainText: s__(
+      `Terraform|Alternatively, use the Terraform or OpenTofu CLI directly. You must use a personal access token with the scope set to api. %{linkStart}How do I create a personal access token?%{linkEnd}.`,
     ),
     closeText: __('Close'),
     copyToClipboardText: __('Copy'),
@@ -18,7 +24,7 @@ export default {
     GlLink,
     ModalCopyButton,
   },
-  inject: ['accessTokensPath', 'terraformApiUrl', 'username'],
+  inject: ['accessTokensPath', 'terraformApiUrl', 'username', 'projectPath'],
   props: {
     modalId: {
       type: String,
@@ -39,7 +45,12 @@ export default {
     },
   },
   methods: {
-    getModalInfoCopyStr() {
+    getModalInfoGlabCopyStr() {
+      const stateName = this.stateName ? this.stateName : 'default';
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `glab opentofu init -R '${this.projectPath}' '${stateName}'`;
+    },
+    getModalInfoPlainCopyStr() {
       const stateNameEncoded = this.stateName ? encodeURIComponent(this.stateName) : 'default';
 
       return `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
@@ -67,7 +78,30 @@ terraform init \\
     :action-cancel="closeModalProps"
   >
     <p data-testid="init-command-explanatory-text">
-      <gl-sprintf :message="$options.i18n.explanatoryText">
+      {{ $options.i18n.explanatoryText }}
+    </p>
+
+    <p data-testid="init-command-explanatory-glab-text">
+      {{ $options.i18n.explanatoryGlabText }}
+    </p>
+
+    <div class="gl-mb-3 gl-flex">
+      <pre
+        class="code-block rounded gl-border gl-mb-0 gl-w-full gl-py-2"
+        data-testid="glab-command"
+        >{{ getModalInfoGlabCopyStr() }}</pre
+      >
+      <modal-copy-button
+        :title="$options.i18n.copyToClipboardText"
+        :text="getModalInfoGlabCopyStr()"
+        :modal-id="$options.modalId"
+        css-classes="gl-self-start gl-ml-2"
+        data-testid="glab-command-copy-button"
+      />
+    </div>
+
+    <p data-testid="init-command-explanatory-plain-text">
+      <gl-sprintf :message="$options.i18n.explanatoryPlainText">
         <template #link="{ content }">
           <gl-link :href="accessTokensPath" target="_blank">{{ content }}</gl-link>
         </template>
@@ -76,13 +110,14 @@ terraform init \\
 
     <div class="gl-flex">
       <pre class="gl-bg-gray gl-whitespace-pre-wrap" data-testid="terraform-init-command">{{
-        getModalInfoCopyStr()
+        getModalInfoPlainCopyStr()
       }}</pre>
       <modal-copy-button
         :title="$options.i18n.copyToClipboardText"
-        :text="getModalInfoCopyStr()"
+        :text="getModalInfoPlainCopyStr()"
         :modal-id="$options.modalId"
         css-classes="gl-self-start gl-ml-2"
+        data-testid="terraform-init-command-copy-button"
       />
     </div>
   </gl-modal>

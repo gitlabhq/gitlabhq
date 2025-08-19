@@ -5,7 +5,6 @@ import {
   GlCollapsibleListbox,
   GlDisclosureDropdown,
   GlIcon,
-  GlLink,
   GlLoadingIcon,
   GlSprintf,
   GlTooltipDirective,
@@ -13,7 +12,6 @@ import {
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
@@ -21,7 +19,6 @@ import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/in
 import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import autopopulateAllowlistMutation from '../graphql/mutations/autopopulate_allowlist.mutation.graphql';
 import getCiJobTokenScopeAllowlistQuery from '../graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import getAuthLogCountQuery from '../graphql/queries/get_auth_log_count.query.graphql';
@@ -38,19 +35,14 @@ import RemoveAutopopulatedEntriesModal from './remove_autopopulated_entries_moda
 
 export default {
   i18n: {
-    radioGroupTitle: s__('CICD|Authorized groups and projects'),
     radioGroupDescription: s__(
       `CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}.`,
     ),
     cardHeaderTitle: s__('CICD|CI/CD job token allowlist'),
-    cardHeaderDescription: s__(
-      `CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist.`,
-    ),
     settingDisabledMessage: s__(
       'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project.',
     ),
     add: __('Add'),
-    addGroupOrProject: __('Add group or project'),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     saveButtonTitle: __('Save Changes'),
@@ -78,7 +70,6 @@ export default {
     GlCollapsibleListbox,
     GlDisclosureDropdown,
     GlIcon,
-    GlLink,
     GlLoadingIcon,
     GlSprintf,
     CrudComponent,
@@ -91,7 +82,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit', 'isJobTokenPoliciesEnabled'],
+  inject: ['enforceAllowlist', 'fullPath', 'projectAllowlistLimit'],
   apollo: {
     authLogCount: {
       query: getAuthLogCountQuery,
@@ -126,37 +117,20 @@ export default {
     },
     groupsAndProjectsWithAccess: {
       query() {
-        return this.isJobTokenPoliciesEnabled
-          ? getCiJobTokenScopeAllowlistQuery
-          : inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery;
+        return getCiJobTokenScopeAllowlistQuery;
       },
       variables() {
         return { fullPath: this.fullPath };
       },
       update({ project }) {
-        let groups;
-        let projects;
-
-        if (this.isJobTokenPoliciesEnabled) {
-          const allowlist = project?.ciJobTokenScopeAllowlist;
-          groups = this.mapAllowlistNodes(allowlist?.groupsAllowlist);
-          projects = this.mapAllowlistNodes(allowlist?.projectsAllowlist);
-          // Add a dummy entry for the current project. The new ciJobTokenScopeAllowlist endpoint doesn't have an entry
-          // for the current project like the old ciJobTokenScope endpoint did, so we have to add it in manually, if it
-          // doesn't exist yet.
-          if (!projects.some(({ id }) => id === project.id))
-            projects.push({ ...project, defaultPermissions: true, jobTokenPolicies: [] });
-        } else {
-          projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
-          groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
-          const groupAllowlistAutopopulatedIds =
-            project?.ciJobTokenScope?.groupAllowlistAutopopulatedIds ?? [];
-          const inboundAllowlistAutopopulatedIds =
-            project?.ciJobTokenScope?.inboundAllowlistAutopopulatedIds ?? [];
-
-          projects = this.addAutopopulatedAttribute(projects, inboundAllowlistAutopopulatedIds);
-          groups = this.addAutopopulatedAttribute(groups, groupAllowlistAutopopulatedIds);
-        }
+        const allowlist = project?.ciJobTokenScopeAllowlist;
+        const groups = this.mapAllowlistNodes(allowlist?.groupsAllowlist);
+        const projects = this.mapAllowlistNodes(allowlist?.projectsAllowlist);
+        // Add a dummy entry for the current project. The new ciJobTokenScopeAllowlist endpoint doesn't have an entry
+        // for the current project like the old ciJobTokenScope endpoint did, so we have to add it in manually, if it
+        // doesn't exist yet.
+        if (!projects.some(({ id }) => id === project.id))
+          projects.push({ ...project, defaultPermissions: true, jobTokenPolicies: [] });
 
         return { projects, groups };
       },
@@ -188,11 +162,6 @@ export default {
         this.$apollo.queries.groupsAndProjectsWithAccess.loading ||
         this.allowlistLoadingMessage.length > 0
       );
-    },
-    ciJobTokenHelpPage() {
-      return helpPagePath('ci/jobs/ci_job_token', {
-        anchor: 'control-job-token-access-to-your-project',
-      });
     },
     crudFormActions() {
       const actions = [
@@ -418,12 +387,6 @@ export default {
       this.namespaceToEdit = namespace;
       showFormFn();
     },
-    addAutopopulatedAttribute(collection, idList) {
-      return collection.map((item) => ({
-        ...item,
-        autopopulated: idList.includes(item.id),
-      }));
-    },
   },
 };
 </script>
@@ -443,18 +406,6 @@ export default {
       @hide="hideSelectedAction"
       @remove-entries="removeAutopopulatedEntries"
     />
-    <div class="gl-font-bold">
-      {{ $options.i18n.radioGroupTitle }}
-    </div>
-    <div class="gl-mb-3">
-      <gl-sprintf :message="$options.i18n.radioGroupDescription">
-        <template #link="{ content }">
-          <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
-            content
-          }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </div>
     <gl-form-radio-group
       v-if="!enforceAllowlist"
       v-model="inboundJobTokenScopeEnabled"
@@ -491,7 +442,6 @@ export default {
     </gl-alert>
     <crud-component
       :title="$options.i18n.cardHeaderTitle"
-      :description="$options.i18n.cardHeaderDescription"
       class="gl-mt-5"
       @hideForm="hideSelectedAction"
     >
@@ -502,6 +452,7 @@ export default {
           :toggle-text="$options.i18n.add"
           data-testid="form-selector"
           size="small"
+          placement="bottom-end"
           @select="selectAction($event, showForm)"
         />
         <gl-disclosure-dropdown
@@ -545,7 +496,6 @@ export default {
           :items="allowlist"
           :loading="isAllowlistLoading"
           :loading-message="allowlistLoadingMessage"
-          :show-policies="isJobTokenPoliciesEnabled"
           @editItem="showNamespaceForm($event, showForm)"
           @removeItem="namespaceToRemove = $event"
         />

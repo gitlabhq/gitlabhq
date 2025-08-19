@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Analytics' do
-    describe 'Service ping default checked', product_group: :analytics_instrumentation do
+  RSpec.describe 'Analytics', feature_category: :service_ping do
+    describe 'Service ping default checked' do
       context 'when using default gitlab.yml config', :requires_admin, :skip_live_env do
         before do
           Flow::Login.sign_in_as_admin

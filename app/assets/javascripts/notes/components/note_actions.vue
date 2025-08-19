@@ -116,6 +116,7 @@ export default {
       required: false,
       default: false,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- resolvable is part of the component's public API.
     resolvable: {
       type: Boolean,
       required: false,
@@ -131,6 +132,7 @@ export default {
       required: false,
       default: false,
     },
+    // eslint-disable-next-line vue/no-unused-properties -- resolvedBy is part of the component's public API.
     resolvedBy: {
       type: Object,
       required: false,

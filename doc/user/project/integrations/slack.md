@@ -1,11 +1,11 @@
 ---
-stage: Create
-group: Import
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Slack notifications (deprecated)
 ---
 
-<!--- start_remove The following content will be removed on remove_date: '2025-05-15' -->
+<!--- start_remove The following content will be removed on remove_date: '2026-05-16' -->
 
 {{< details >}}
 
@@ -100,6 +100,7 @@ The following triggers are available for Slack notifications:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417751) in GitLab 16.4.
+- Restrictions on notification triggers [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134677) in GitLab 18.3 [with a feature flag](../../../administration/feature_flags/_index.md) named `group_mention_access_check`. Disabled by default.
 
 {{< /history >}}
 
@@ -107,6 +108,9 @@ To trigger a [notification event](#triggers-for-slack-notifications) for a group
 
 - Issue and merge request descriptions
 - Comments on issues, merge requests, and commits
+
+Notifications are triggered only if all direct group members have permission to view the resource
+(for example, merge request) where the mention is made. A notification will only be sent to at most 3 groups per event.
 
 ## Troubleshooting
 

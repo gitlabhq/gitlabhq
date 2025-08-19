@@ -1,0 +1,14 @@
+= gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-cicd-variables-settings'), authenticity_token: true do |form|
+  .form-group
+    %h5= s_('CiVariables|Display manually-defined pipeline variables')
+    %p.gl-text-subtle
+      = s_('CiVariables|Display all manually-defined variables in the pipeline details page after running a pipeline manually.')
+      = link_to _('Learn more.'), help_page_path('ci/pipelines/_index.md', anchor: 'run-a-pipeline-manually'), target: '_blank'
+
+    = form.gitlab_ui_checkbox_component :ci_display_pipeline_variables,
+      s_('CiVariables|Display pipeline variables')
+
+    %p.gl-text-secondary.gl-font-sm.gl-mt-2
+      = s_('CiVariables|All manually-defined CI/CD variables and their values are visible to maintainers, which is a security risk if including credentials or other secrets in variables. Do not enable this feature if variables could contain sensitive data. Developers can only view manually-defined variables in their own manual pipelines.')
+    .gl-mt-5
+      = form.submit _('Save changes'), pajamas_button: true

@@ -73,7 +73,7 @@ export default {
         :class="{
           'issue-token-title issue-token-end gl-flex gl-items-baseline gl-overflow-hidden gl-pl-3 gl-text-subtle':
             isCondensed,
-          'issue-title block-truncated': !isCondensed,
+          'issue-title gl-truncate': !isCondensed,
           'gl-rounded-br-small gl-rounded-tr-small gl-pr-3': !canRemove,
         }"
         class="js-issue-token-title"

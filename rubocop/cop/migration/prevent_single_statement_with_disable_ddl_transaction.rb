@@ -43,10 +43,12 @@ module RuboCop
               "So there's no reason to use `disable_ddl_transaction!`, if you're only " \
               "executing validate_foreign_key."
 
+        # @!method disable_ddl_transaction?(node)
         def_node_matcher :disable_ddl_transaction?, <<~PATTERN
           (send _ :disable_ddl_transaction! ...)
         PATTERN
 
+        # @!method validate_foreign_key?(node)
         def_node_matcher :validate_foreign_key?, <<~PATTERN
           (send :validate_foreign_key ...)
         PATTERN
@@ -76,7 +78,7 @@ module RuboCop
             end
 
             if disable_ddl_transaction_node && has_validate_foreign_key && statement_count == 1
-              add_offense(disable_ddl_transaction_node, message: MSG)
+              add_offense(disable_ddl_transaction_node)
             end
           end
         end

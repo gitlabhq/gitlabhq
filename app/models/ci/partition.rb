@@ -3,8 +3,8 @@
 module Ci
   class Partition < Ci::ApplicationRecord
     INITIAL_PARTITION_VALUE = 100
-    LATEST_PARTITION_VALUE = 102
-    DEFAULT_PARTITION_VALUES = (INITIAL_PARTITION_VALUE..LATEST_PARTITION_VALUE).to_a.freeze
+    LAST_STATIC_PARTITION_VALUE = 102
+    DEFAULT_PARTITION_VALUES = (INITIAL_PARTITION_VALUE..LAST_STATIC_PARTITION_VALUE).to_a.freeze
 
     validates :id, :status, presence: true
     validates :status, uniqueness: { if: ->(partition) { partition.status_changed? && partition.current? } }

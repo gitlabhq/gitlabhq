@@ -1,0 +1,101 @@
+# This pipeline runs performance tests against CNG build which is deployed via helm chart on a job local kind kubernetes cluster
+stages:
+  - prepare
+  - test
+
+include:
+  - local: .gitlab/ci/cng/main.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
+
+workflow:
+  rules:
+    - when: always
+
+
+# ==========================================
+# Pre stage
+# ==========================================
+build-cng-env:
+  stage: .pre
+  extends: .build-cng-env
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: clone-gitlab-repo
+  variables:
+    CNG_COMMIT_SHA: $GITLAB_CNG_MIRROR_REF
+    CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN
+    CNG_SKIP_REDUNDANT_JOBS: "true"
+    GIT_STRATEGY: none
+
+build-cng:
+  stage: .pre
+  extends: .build-cng
+  needs: [build-cng-env]
+  variables:
+    # use larger runner for complex rails build jobs
+    HIGH_CAPACITY_RUNNER_TAG: e2e
+
+# ==========================================
+# Test stage
+# ==========================================
+
+dotenv-vars:
+  stage: prepare
+  needs:
+    - job: build-cng-env
+    - job: build-cng
+  script:
+    - echo "JOB_WITH_ARTIFACTS=$CI_JOB_NAME" >> variables.env
+    - echo "JOB_WITH_ARTIFACTS_ID=$CI_JOB_ID" >> variables.env
+    - echo "GITLAB_HELM_CHART_REF=$GITLAB_HELM_CHART_REF" >> variables.env
+    - echo $CI_PROJECT_NAMESPACE
+    - echo $GITLAB_HELM_CHART_REF
+    - echo $CI_PIPELINE_SOURCE
+    - echo $CI_COMMIT_BRANCH
+    - echo $CI_PROJECT_NAMESPACE
+    - cat variables.env
+  artifacts:
+    paths:
+      - qa/performance_test/
+      - variables.env
+    expire_in: 5d
+    reports:
+      dotenv: variables.env
+
+run-performance-tests:
+  stage: test
+  needs:
+    - build-cng-env
+    - build-cng
+    - dotenv-vars
+  trigger:
+    project: gitlab-org/quality/component-performance-testing
+    branch: main
+    strategy: depend
+    forward:
+      pipeline_variables: true
+      yaml_variables: true
+  variables:
+    JOB_WITH_ARTIFACTS: $JOB_WITH_ARTIFACTS
+    JOB_WITH_ARTIFACTS_ID: $JOB_WITH_ARTIFACTS_ID
+    PARENT_PIPELINE_BRANCH_NAME: $CI_COMMIT_REF_NAME
+    PARENT_PIPELINE_CI_DEFAULT_BRANCH: $CI_DEFAULT_BRANCH
+    PROJECT_ID: $CI_PROJECT_ID
+    PARENT_PIPELINE_COMMIT_BRANCH: $CI_COMMIT_BRANCH
+    PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
+    COMPONENT_MR_CI_COMMIT_SHA: $CI_COMMIT_SHORT_SHA
+    COMPONENT_SERVICE_NAME: "gitlab"
+    TEST_FILE_LOCATION: "qa/performance_test/k6_test"
+    GITLAB_HELM_CHART_REF: $GITLAB_HELM_CHART_REF
+    RUN_ON_CNG: true
+    COMMENT_ON_MR: true
+    DATA_SEEDER_FILE_NAME: mr_seed.rb
+    CPT_PACKAGE_REGISTRY_API_TOKEN: $CPT_PACKAGE_REGISTRY_API_TOKEN
+    CPT_BASELINE_PACKAGE_NAME: "gitlab-org-gitlab"
+  rules:
+    - if: '$PARENT_CI_PIPELINE_SOURCE == "merge_request_event" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org?($|\/)/'
+      variables:
+        PARENT_PIPELINE_CONTEXT: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_BRANCH == "master"
+      variables:
+        PARENT_PIPELINE_CONTEXT: "master"

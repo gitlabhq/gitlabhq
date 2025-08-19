@@ -6,7 +6,10 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
   include Import::UserMappingHelper
 
   let_it_be_with_reload(:project) do
-    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+    create(
+      :project, :repository, :bitbucket_server_import, :in_group,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
   end
 
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -105,6 +108,56 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Appro
           .and not_change { merge_request.reviewers.count }
 
         expect(merge_request.approvals).to be_empty
+      end
+    end
+
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let_it_be(:project) do
+        project.update!(namespace: user_namespace)
+        project
+      end
+
+      let_it_be(:source_user) { generate_source_user(project, approved_event[:approver_username]) }
+
+      it 'does not push placeholder references' do
+        importer.execute(approved_event)
+
+        expect(cached_references).to be_empty
+      end
+
+      it 'creates the approval, reviewer and approval note mapped to the personal namespace owner' do
+        importer.execute(approved_event)
+
+        expect(merge_request.approvals.first.user_id).to eq(user_namespace.owner_id)
+        expect(merge_request.notes.first.author_id).to eq(user_namespace.owner_id)
+        expect(merge_request.reviewers.first.id).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references' do
+          importer.execute(approved_event)
+
+          expect(cached_references).to contain_exactly(
+            ['Approval', instance_of(Integer), 'user_id', source_user.id],
+            ['MergeRequestReviewer', instance_of(Integer), 'user_id', source_user.id],
+            ['Note', instance_of(Integer), 'author_id', source_user.id]
+          )
+        end
+
+        it 'creates the approval, reviewer and approval note mapped to the placeholder user' do
+          importer.execute(approved_event)
+
+          expect(merge_request.approvals.first.user_id).to eq(source_user.mapped_user_id)
+          expect(merge_request.notes.first.author_id).to eq(source_user.mapped_user_id)
+          expect(merge_request.reviewers.first.id).to eq(source_user.mapped_user_id)
+        end
       end
     end
 

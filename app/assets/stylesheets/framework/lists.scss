@@ -72,25 +72,6 @@ ul.content-list {
     white-space: nowrap;
   }
 
-  .row-main-content {
-    flex: 1 1 auto;
-    overflow: hidden;
-    padding-right: 8px;
-  }
-
-  .row-fixed-content {
-    flex: 0 0 auto;
-    margin-left: auto;
-  }
-
-  .row-title {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .row-second-line {
-    display: block;
-  }
-
   .dropdown {
     .btn-block {
       margin-bottom: 0;

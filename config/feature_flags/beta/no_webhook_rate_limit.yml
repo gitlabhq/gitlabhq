@@ -1,0 +1,10 @@
+---
+name: no_webhook_rate_limit
+description: This is a temporary FF only used to unblock specific customers as we work towards a long term solution
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201530
+rollout_issue_url:
+milestone: '18.3'
+group: group::pipeline execution
+type: beta
+default_enabled: false

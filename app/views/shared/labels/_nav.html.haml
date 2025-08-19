@@ -1,13 +1,19 @@
 - subscribed = params[:subscribed]
+- archived = params[:archived]
 
 .top-area.adjust
   = gl_tabs_nav({ class: 'gl-grow gl-border-0' }) do
-    = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' }
+    - if Feature.enabled?(:labels_archive, :instance)
+      = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' && archived != 'true' }
+      = gl_tab_link_to _('Archived'), labels_filter_path(archived: 'true'), { item_active: archived == 'true' }
+    - else
+      = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' }
     - if current_user
       = gl_tab_link_to _('Subscribed'), labels_filter_path(subscribed: 'true'), { item_active: subscribed == 'true' }
   .nav-controls
     = form_tag labels_filter_path, method: :get do
       = hidden_field_tag :subscribed, params[:subscribed]
+      = hidden_field_tag :archived, params[:archived]
       = hidden_field_tag :sort, 'relevance'
       .input-group.gl-flex-nowrap
         = search_field_tag :search, params[:search], { placeholder: _('Search'), id: 'label-search', "aria-label": _('Search labels'), class: 'form-control search-text-input input-short', spellcheck: false, autofocus: true }

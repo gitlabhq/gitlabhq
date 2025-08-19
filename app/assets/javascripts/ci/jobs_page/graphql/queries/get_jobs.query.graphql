@@ -7,6 +7,7 @@ query getJobs(
   $statuses: [CiJobStatus!]
   $sources: [CiJobSource!]
   $name: String
+  $kind: CiJobKind! = BUILD
 ) {
   project(fullPath: $fullPath) {
     id
@@ -18,6 +19,7 @@ query getJobs(
       statuses: $statuses
       sources: $sources
       name: $name
+      kind: $kind
     ) {
       pageInfo {
         endCursor

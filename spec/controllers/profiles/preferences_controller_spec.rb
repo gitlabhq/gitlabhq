@@ -2,13 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Profiles::PreferencesController do
-  let_it_be(:home_organization) { create(:organization) }
+RSpec.describe Profiles::PreferencesController, feature_category: :user_profile do
   let(:user) { create(:user) }
 
   before do
     sign_in(user)
-    create(:organization_user, organization: home_organization, user: user)
 
     allow(subject).to receive(:current_user).and_return(user)
   end
@@ -31,7 +29,6 @@ RSpec.describe Profiles::PreferencesController do
         color_mode_id: '1',
         color_scheme_id: '1',
         dashboard: 'stars',
-        home_organization_id: home_organization.id,
         theme_id: '1'
       )
 
@@ -54,7 +51,6 @@ RSpec.describe Profiles::PreferencesController do
           diffs_deletion_color: '#123456',
           diffs_addition_color: '#abcdef',
           dashboard: 'stars',
-          home_organization_id: home_organization.id.to_s,
           theme_id: '2',
           first_day_of_week: '1',
           preferred_language: 'jp',

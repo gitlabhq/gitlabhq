@@ -1,6 +1,7 @@
 import { map } from 'lodash';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WIDGET_TYPE_LINKED_ITEMS,
   NEW_WORK_ITEM_IID,
   STATE_CLOSED,
@@ -233,6 +234,7 @@ export const workItemQueryResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -389,6 +391,7 @@ export const workItemWithEpicParentQueryResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       state: 'OPEN',
       description: 'description',
       confidential: false,
@@ -474,6 +477,7 @@ export const updateWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: 'description',
         confidential: false,
@@ -633,6 +637,7 @@ export const convertWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: 'description',
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
@@ -750,6 +755,7 @@ export const mockParticipantWidget = {
   __typename: 'WorkItemWidgetParticipants',
   type: 'PARTICIPANTS',
   participants: {
+    count: 1,
     nodes: [
       {
         __typename: 'UserCore',
@@ -1276,6 +1282,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/root',
             id: 'gid://gitlab/User/1',
             name: 'Administrator',
+            username: 'root',
             webPath: '/root',
             avatarUrl:
               'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
@@ -1376,6 +1383,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/root',
             id: 'gid://gitlab/User/1',
             name: 'Administrator',
+            username: 'root',
             webPath: '/root',
             avatarUrl:
               'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
@@ -1416,6 +1424,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/contributor_001',
             id: 'gid://gitlab/User/50',
             name: 'Contributor',
+            username: 'contributor_001',
             webPath: '/contributor_001',
             avatarUrl:
               'https://www.gravatar.com/avatar/0425546bf992b09bf77c16afe53f3824a919c5f4a5ef3355d493155740dfaaf5?s=80&d=identicon',
@@ -1425,6 +1434,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/reported_user_17',
             id: 'gid://gitlab/User/40',
             name: "Amira O'Keefe",
+            username: 'reported_user_17',
             webPath: '/reported_user_17',
             avatarUrl:
               'https://www.gravatar.com/avatar/4650f7f452b5606f219ac12ed4c2869705752e62b94e28d3263aa9a5598c6ab8?s=80&d=identicon',
@@ -1434,6 +1444,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/reported_user_5',
             id: 'gid://gitlab/User/28',
             name: 'Echo Littel',
+            username: 'reported_user_5',
             webPath: '/reported_user_5',
             avatarUrl:
               'https://www.gravatar.com/avatar/3dcc93993fcf6705adb708f460d314d0994463ec2cb0a693e1e0597111acd3c7?s=80&d=identicon',
@@ -1443,6 +1454,7 @@ export const workItemDevelopmentMRNodes = [
             webUrl: 'http://127.0.0.1:3000/root',
             id: 'gid://gitlab/User/1',
             name: 'Administrator',
+            username: 'root',
             webPath: '/root',
             avatarUrl:
               'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
@@ -1725,6 +1737,7 @@ export const workItemResponseFactory = ({
   errorTrackingWidgetPresent = true,
   hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
+  linkedResourcesWidgetPresent = true,
   crmContactsWidgetPresent = true,
   emailParticipantsWidgetPresent = true,
   colorWidgetPresent = true,
@@ -1760,6 +1773,7 @@ export const workItemResponseFactory = ({
   statusWidgetPresent = false,
   statusWidgetValues = null,
   customFieldValues = null,
+  showPlanUpgradePromotion = false,
   movedToWorkItemUrl = null,
   duplicatedToWorkItemUrl = null,
   promotedToEpicUrl = null,
@@ -1788,6 +1802,7 @@ export const workItemResponseFactory = ({
       movedToWorkItemUrl,
       duplicatedToWorkItemUrl,
       promotedToEpicUrl,
+      showPlanUpgradePromotion,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -1930,6 +1945,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetParticipants',
               type: 'PARTICIPANTS',
               participants: {
+                count: 1,
                 nodes: [
                   {
                     __typename: 'UserCore',
@@ -2074,6 +2090,21 @@ export const workItemResponseFactory = ({
         linkedItemsWidgetPresent
           ? { ...linkedItems, blockingCount, blockedByCount }
           : { type: 'MOCK TYPE' },
+        linkedResourcesWidgetPresent
+          ? {
+              type: 'LINKED_RESOURCES',
+              linkedResources: {
+                nodes: [
+                  {
+                    url: 'http://zoom.example.com/j/1234567890?pwd=abcdefghijklmnopqrstuvwxyz',
+                    __typename: 'WorkItemLinkedResource',
+                  },
+                ],
+                __typename: 'WorkItemLinkedResourceConnection',
+              },
+              __typename: 'WorkItemWidgetLinkedResources',
+            }
+          : { type: 'MOCK TYPE' },
         colorWidgetPresent
           ? {
               color,
@@ -2178,6 +2209,7 @@ export const createWorkItemMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
@@ -2274,6 +2306,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       movedToWorkItemUrl: null,
       duplicatedToWorkItemUrl: null,
       promotedToEpicUrl: null,
+      showPlanUpgradePromotion: false,
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         name: 'Issue',
@@ -3500,6 +3533,7 @@ export const changeWorkItemParentMutationResponse = {
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         title: '_Foo_',
         titleHtml: '<em>Foo</em>',
         confidential: false,
@@ -4132,6 +4166,9 @@ export const mockWorkItemNotesResponse = {
                 resolved: false,
                 resolvable: false,
                 resolvedBy: null,
+                userPermissions: {
+                  resolveNote: true,
+                },
                 notes: {
                   nodes: [
                     {
@@ -4153,8 +4190,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
-                        resolveNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4183,6 +4218,9 @@ export const mockWorkItemNotesResponse = {
                 resolved: false,
                 resolvable: false,
                 resolvedBy: null,
+                userPermissions: {
+                  resolveNote: true,
+                },
                 notes: {
                   nodes: [
                     {
@@ -4204,8 +4242,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
-                        resolveNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4234,6 +4270,9 @@ export const mockWorkItemNotesResponse = {
                 resolved: false,
                 resolvable: false,
                 resolvedBy: null,
+                userPermissions: {
+                  resolveNote: true,
+                },
                 notes: {
                   nodes: [
                     {
@@ -4254,8 +4293,6 @@ export const mockWorkItemNotesResponse = {
                       userPermissions: {
                         adminNote: false,
                         awardEmoji: true,
-                        createNote: true,
-                        resolveNote: true,
                         __typename: 'NotePermissions',
                       },
                       systemNoteMetadata: {
@@ -4322,6 +4359,9 @@ export const mockWorkItemNotesByIidResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4343,8 +4383,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4376,6 +4414,9 @@ export const mockWorkItemNotesByIidResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4397,8 +4438,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4430,6 +4469,9 @@ export const mockWorkItemNotesByIidResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4451,8 +4493,6 @@ export const mockWorkItemNotesByIidResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4521,6 +4561,9 @@ export const mockMoreWorkItemNotesResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4542,8 +4585,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4575,6 +4616,9 @@ export const mockMoreWorkItemNotesResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4596,8 +4640,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4629,6 +4671,9 @@ export const mockMoreWorkItemNotesResponse = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -4649,8 +4694,6 @@ export const mockMoreWorkItemNotesResponse = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -4704,6 +4747,9 @@ export const createWorkItemNoteResponse = ({
           resolved: false,
           resolvable: true,
           resolvedBy: null,
+          userPermissions: {
+            resolveNote: true,
+          },
           notes: {
             nodes: [
               {
@@ -4735,8 +4781,6 @@ export const createWorkItemNoteResponse = ({
                 userPermissions: {
                   adminNote: true,
                   awardEmoji: true,
-                  createNote: true,
-                  resolveNote: true,
                   __typename: 'NotePermissions',
                 },
                 awardEmoji: {
@@ -4780,8 +4824,6 @@ export const mockWorkItemCommentNote = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    createNote: true,
-    resolveNote: true,
     __typename: 'NotePermissions',
   },
   systemNoteMetadata: null,
@@ -4814,6 +4856,9 @@ export const mockWorkItemDiscussion = {
   resolved: false,
   resolvable: true,
   resolvedBy: null,
+  userPermissions: {
+    resolveNote: true,
+  },
   notes: {
     nodes: [mockWorkItemCommentNote],
   },
@@ -4849,6 +4894,9 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                     resolved,
                     resolvable: true,
                     resolvedBy: null,
+                    userPermissions: {
+                      resolveNote: true,
+                    },
                     notes: {
                       nodes: [
                         {
@@ -4880,8 +4928,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            createNote: true,
-                            resolveNote: true,
                             __typename: 'NotePermissions',
                           },
                           awardEmoji: {
@@ -4918,8 +4964,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: true,
                             awardEmoji: true,
-                            createNote: true,
-                            resolveNote: true,
                             __typename: 'NotePermissions',
                           },
                           awardEmoji: {
@@ -4937,6 +4981,9 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                     resolved,
                     resolvable: true,
                     resolvedBy: null,
+                    userPermissions: {
+                      resolveNote: true,
+                    },
                     notes: {
                       nodes: [
                         {
@@ -4957,8 +5004,6 @@ export const mockWorkItemNotesResponseWithComments = (resolved = false) => {
                           userPermissions: {
                             adminNote: false,
                             awardEmoji: true,
-                            createNote: true,
-                            resolveNote: true,
                             __typename: 'NotePermissions',
                           },
                           systemNoteMetadata: null,
@@ -5014,6 +5059,9 @@ export const workItemNotesCreateSubscriptionResponse = {
         resolved: false,
         resolvable: false,
         resolvedBy: null,
+        userPermissions: {
+          resolveNote: true,
+        },
         notes: {
           nodes: [
             {
@@ -5034,8 +5082,6 @@ export const workItemNotesCreateSubscriptionResponse = {
               userPermissions: {
                 adminNote: false,
                 awardEmoji: true,
-                createNote: true,
-                resolveNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: {
@@ -5063,8 +5109,6 @@ export const workItemNotesCreateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        createNote: true,
-        resolveNote: true,
         __typename: 'NotePermissions',
       },
       systemNoteMetadata: {
@@ -5109,8 +5153,6 @@ export const workItemNotesUpdateSubscriptionResponse = {
       userPermissions: {
         adminNote: false,
         awardEmoji: true,
-        createNote: true,
-        resolveNote: true,
         __typename: 'NotePermissions',
       },
       systemNoteMetadata: {
@@ -5173,8 +5215,6 @@ export const workItemSystemNoteWithMetadata = {
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
-    createNote: true,
-    resolveNote: true,
     __typename: 'NotePermissions',
   },
   systemNoteMetadata: {
@@ -5224,6 +5264,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -5255,8 +5298,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -5288,6 +5329,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -5319,8 +5363,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -5352,6 +5394,9 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                   resolved: false,
                   resolvable: false,
                   resolvedBy: null,
+                  userPermissions: {
+                    resolveNote: true,
+                  },
                   notes: {
                     nodes: [
                       {
@@ -5383,8 +5428,6 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                         userPermissions: {
                           adminNote: false,
                           awardEmoji: true,
-                          createNote: true,
-                          resolveNote: true,
                           __typename: 'NotePermissions',
                         },
                         systemNoteMetadata: {
@@ -6057,12 +6100,29 @@ export const updateWorkItemMutationResponseFactory = (options) => {
   };
 };
 
+export const workItemNotificationsResponse = (subscribed) => ({
+  data: {
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetNotifications',
+          type: 'NOTIFICATIONS',
+          subscribed,
+        },
+      ],
+    },
+  },
+});
+
 export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
   data: {
     workItemSubscribe: {
       workItem: {
         id: 'gid://gitlab/WorkItem/1',
-
+        iid: 1,
         widgets: [
           {
             __typename: 'WorkItemWidgetNotifications',
@@ -6291,6 +6351,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
         movedToWorkItemUrl: null,
         duplicatedToWorkItemUrl: null,
         promotedToEpicUrl: null,
+        showPlanUpgradePromotion: false,
         state: 'OPEN',
         description: '',
         confidential: false,
@@ -6357,6 +6418,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
             lastEditedAt: '2024-05-09T05:57:04Z',
             lastEditedBy: {
               name: 'Administrator',
+              username: 'root',
               webPath: '/root',
               __typename: 'UserCore',
             },
@@ -6520,6 +6582,9 @@ export const mockToggleResolveDiscussionResponse = {
           name: 'Administrator',
           __typename: 'UserCore',
         },
+        userPermissions: {
+          resolveNote: true,
+        },
         notes: {
           nodes: [
             {
@@ -6553,8 +6618,6 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                createNote: true,
-                resolveNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: null,
@@ -6591,8 +6654,6 @@ export const mockToggleResolveDiscussionResponse = {
               userPermissions: {
                 adminNote: true,
                 awardEmoji: true,
-                createNote: true,
-                resolveNote: true,
                 __typename: 'NotePermissions',
               },
               systemNoteMetadata: null,
@@ -6671,6 +6732,19 @@ export const mockProjectPermissionsQueryResponse = ({
         __typename: 'ProjectPermissions',
       },
       __typename: 'Project',
+    },
+  },
+});
+
+export const mockGroupPermissionsQueryResponse = ({ adminWorkItemLifecycle = true } = {}) => ({
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Group/24',
+      userPermissions: {
+        adminWorkItemLifecycle,
+        __typename: 'GroupPermissions',
+      },
+      __typename: 'Group',
     },
   },
 });
@@ -6951,14 +7025,6 @@ export const errorTrackingQueryResponseWithStackTrace = getErrorTrackingQueryRes
 
 export const mockRolledUpHealthStatus = [];
 
-export const workItemParentQueryResponse = {
-  data: {
-    namespace: {
-      id: 'gid://gitlab/Group/1',
-    },
-  },
-};
-
 export const mockCreateWorkItemDraftData = {
   workspace: {
     __typename: 'Namespace',
@@ -7159,6 +7225,7 @@ export const mockCreateWorkItemDraftData = {
 
 export const mockNewWorkItemCache = {
   fullPath: 'gitlab-org',
+  context: CREATION_CONTEXT_LIST_ROUTE,
   widgetDefinitions: [
     {
       __typename: 'WorkItemWidgetDefinitionGeneric',
@@ -7243,7 +7310,7 @@ export const mockNewWorkItemCache = {
       type: WIDGET_TYPE_CUSTOM_FIELDS,
     },
   ],
-  workItemType: 'EPIC',
+  workItemType: 'Epic',
   workItemTypeId: 'gid://gitlab/WorkItems::Type/8',
   workItemTypeIconName: 'issue-type-epic',
 };
@@ -7443,6 +7510,9 @@ export const namespaceWorkItemTypesQueryResponse = {
     workspace: {
       id: 'gid://gitlab/Project/8',
       webUrl: 'web/url',
+      userPermissions: {
+        setNewWorkItemMetadata: true,
+      },
       workItemTypes: {
         nodes: [
           {
@@ -8550,6 +8620,9 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
     workspace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/9',
       webUrl: 'http://localhost/group2/project-4',
+      userPermissions: {
+        setNewWorkItemMetadata: true,
+      },
       workItemTypes: {
         nodes: [
           {
@@ -8864,6 +8937,56 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
           },
         ],
         __typename: 'WorkItemTypeConnection',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
+export const availableBulkEditWidgetsQueryResponse = {
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      workItemsWidgets: [
+        'ASSIGNEES',
+        'AWARD_EMOJI',
+        'CRM_CONTACTS',
+        'CURRENT_USER_TODOS',
+        'CUSTOM_FIELDS',
+        'DESCRIPTION',
+        'DESIGNS',
+        'DEVELOPMENT',
+        'EMAIL_PARTICIPANTS',
+        'ERROR_TRACKING',
+        'HEALTH_STATUS',
+        'HIERARCHY',
+        'ITERATION',
+        'LABELS',
+        'LINKED_ITEMS',
+        'LINKED_RESOURCES',
+        'MILESTONE',
+        'NOTES',
+        'NOTIFICATIONS',
+        'PARTICIPANTS',
+        'START_AND_DUE_DATE',
+        'STATUS',
+        'TIME_TRACKING',
+        'VULNERABILITIES',
+        'WEIGHT',
+      ],
+    },
+  },
+};
+
+export const namespacePathsQueryResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+      markdownPaths: {
+        markdownPreviewPath: '/flightjs/Flight/-/preview_markdown?target_type=WorkItem',
+        uploadsPath: '/flightjs/Flight/uploads',
+        __typename: 'ProjectNamespaceMarkdownPaths',
       },
       __typename: 'Namespace',
     },

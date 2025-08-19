@@ -688,7 +688,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(107)
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
 
         project = create(:project, namespace: group2, path: 'Foo')
         project2 = create(:project, namespace: group2, path: 'Foo2')
@@ -827,6 +827,16 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect do
           get api("/groups/#{group1.id}", user1)
         end.not_to exceed_query_limit(control)
+      end
+
+      context 'with oauth token that has ai_workflows scope' do
+        let(:token) { create(:oauth_access_token, user: user1, scopes: [:ai_workflows]) }
+
+        it "allows access" do
+          get api("/groups/#{group1.id}", oauth_access_token: token)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 
@@ -3364,7 +3374,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       context 'when using a group path in URL' do
         context 'with a valid group path' do
           it "transfers project to group" do
-            post api("/groups/#{group1.path}/projects/#{project_path}", admin, admin_mode: true)
+            post api("/groups/#{group1.reload.path}/projects/#{project_path}", admin, admin_mode: true)
 
             expect(response).to have_gitlab_http_status(:created)
           end

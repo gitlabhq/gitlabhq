@@ -53,7 +53,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     post '/oauth/token',
       params: {
         grant_type: 'authorization_code',
-        code: access_grant.token,
+        code: access_grant.plaintext_token,
         redirect_uri: application.redirect_uri,
         client_id: application.uid,
         client_secret: application.secret
@@ -61,7 +61,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
   end
 
   def request_user_info!
-    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.token}" }
+    get '/oauth/userinfo', params: {}, headers: { 'Authorization' => "Bearer #{access_token.plaintext_token}" }
   end
 
   before do
@@ -274,7 +274,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
     let(:expected_scopes) do
       %w[
         admin_mode api read_user read_api read_repository write_repository sudo openid profile email
-        read_observability write_observability create_runner manage_runner k8s_proxy ai_features read_service_ping ai_workflows
+        read_observability write_observability create_runner manage_runner mcp k8s_proxy ai_features read_service_ping ai_workflows
         user:* self_rotate
       ]
     end

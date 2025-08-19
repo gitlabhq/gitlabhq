@@ -42,6 +42,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       .inverse_of(:build)
   end
 
+  it { is_expected.to have_many(:inputs).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:job_variables).with_foreign_key(:job_id) }
   it { is_expected.to have_many(:report_results).with_foreign_key(:build_id) }
   it { is_expected.to have_many(:pages_deployments).with_foreign_key(:ci_build_id) }
@@ -78,11 +79,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'partition query' do
     subject { build.reload }
 
+    it_behaves_like 'including partition key for relation', :inputs
     it_behaves_like 'including partition key for relation', :trace_chunks
     it_behaves_like 'including partition key for relation', :build_source
     it_behaves_like 'including partition key for relation', :job_artifacts
     it_behaves_like 'including partition key for relation', :job_annotations
     it_behaves_like 'including partition key for relation', :runner_manager_build
+
     Ci::JobArtifact.file_types.each_key do |key|
       it_behaves_like 'including partition key for relation', :"job_artifacts_#{key}"
     end
@@ -398,36 +401,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build is still running' do
       let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
-
-      it 'returns an empty array' do
-        is_expected.to be_empty
-      end
-    end
-  end
-
-  describe '.with_exposed_artifacts' do
-    subject { described_class.with_exposed_artifacts }
-
-    let_it_be(:job1) { create(:ci_build, pipeline: pipeline) }
-    let_it_be(:job3) { create(:ci_build, pipeline: pipeline) }
-
-    let!(:job2) { create(:ci_build, options: options, pipeline: pipeline) }
-
-    context 'when some jobs have exposed artifacts and some not' do
-      let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
-
-      before_all do
-        job1.ensure_metadata.update!(has_exposed_artifacts: nil)
-        job3.ensure_metadata.update!(has_exposed_artifacts: false)
-      end
-
-      it 'selects only the jobs with exposed artifacts' do
-        is_expected.to eq([job2])
-      end
-    end
-
-    context 'when job does not expose artifacts' do
-      let(:options) { nil }
 
       it 'returns an empty array' do
         is_expected.to be_empty
@@ -2229,14 +2202,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'does not persist data in build' do
       expect(build.read_attribute(:options)).to be_nil
     end
-
-    context 'when options include artifacts:expose_as' do
-      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }, pipeline: pipeline) }
-
-      it 'saves the presence of expose_as into build metadata' do
-        expect(build.metadata).to have_exposed_artifacts
-      end
-    end
   end
 
   describe '#other_scheduled_actions' do
@@ -2579,6 +2544,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           { key: 'CI_PROJECT_NAME', value: project.path, public: true, masked: false },
           { key: 'CI_PROJECT_TITLE', value: project.title, public: true, masked: false },
           { key: 'CI_PROJECT_DESCRIPTION', value: project.description, public: true, masked: false },
+          { key: 'CI_PROJECT_TOPICS', value: project.topic_list.first(20).join(',').downcase, public: true, masked: false },
           { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
           { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },
@@ -2703,7 +2669,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
 
           before do
-            create(:environment, project: build.project, name: 'staging')
+            environment = create(:environment, project: build.project, name: 'staging')
 
             build.yaml_variables = [{ key: 'YAML_VARIABLE', value: 'var', public: true }]
             build.environment = 'staging'
@@ -2720,6 +2686,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             insert_expected_predefined_variables(
               [
                 { key: 'YAML_VARIABLE', value: 'staging', public: true, masked: false },
+                { key: 'CI_ENVIRONMENT_ID', value: environment.id, public: true, masked: false },
                 { key: 'CI_ENVIRONMENT_SLUG', value: 'start', public: true, masked: false },
                 { key: 'CI_ENVIRONMENT_URL', value: 'https://gitlab.com', public: true, masked: false }
               ],
@@ -2834,6 +2801,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when build has an environment' do
       let(:expected_environment_variables) do
         [
+          { key: 'CI_ENVIRONMENT_ID', value: build.persisted_environment.id.to_s, public: true, masked: false },
           { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true, masked: false },
           { key: 'CI_ENVIRONMENT_ACTION', value: 'start', public: true, masked: false },
           { key: 'CI_ENVIRONMENT_TIER', value: 'production', public: true, masked: false },
@@ -4976,20 +4944,43 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#read_metadata_attribute' do
     let(:build) { create(:ci_build, :degenerated, pipeline: pipeline) }
-    let(:build_options) { { key: "build" } }
-    let(:metadata_options) { { key: "metadata" } }
-    let(:default_options) { { key: "default" } }
+    let(:build_options) { { key: 'build' } }
+    let(:job_definition_options) { { key: 'definition' } }
+    let(:metadata_options) { { key: 'metadata' } }
+    let(:default_options) { { key: 'default' } }
 
-    subject { build.send(:read_metadata_attribute, :options, :config_options, default_options) }
+    subject { build.send(:read_metadata_attribute, :options, :config_options, :options, default_options) }
 
-    context 'when build and metadata options is set' do
+    context 'when all destination options are set' do
       before do
         build.write_attribute(:options, build_options)
         build.ensure_metadata.write_attribute(:config_options, metadata_options)
+        build.build_job_definition.write_attribute(:config, { options: job_definition_options })
       end
 
       it 'prefers build options' do
         is_expected.to eq(build_options)
+      end
+    end
+
+    context 'when only job definition and metadata options are set' do
+      before do
+        build.ensure_metadata.write_attribute(:config_options, metadata_options)
+        build.build_job_definition.write_attribute(:config, { options: job_definition_options })
+      end
+
+      it 'returns job definition options' do
+        is_expected.to eq(job_definition_options)
+      end
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it 'returns metadata options' do
+          is_expected.to eq(metadata_options)
+        end
       end
     end
 

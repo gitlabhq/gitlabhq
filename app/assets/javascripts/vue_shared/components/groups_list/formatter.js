@@ -9,7 +9,7 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
       fullName,
       parent,
       maxAccessLevel: accessLevel,
-      descendantGroupsCount,
+      hasChildren,
       children,
       fullPath,
       ...group
@@ -22,10 +22,9 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
         parent: parent?.id || null,
         accessLevel,
         availableActions: availableGraphQLGroupActions(group),
-        descendantGroupsCount,
         children: children?.length ? formatGraphQLGroups(children, callback) : [],
         childrenLoading: false,
-        hasChildren: Boolean(descendantGroupsCount),
+        hasChildren: Boolean(hasChildren),
         fullPath,
         relativeWebUrl: joinPaths('/', gon.relative_url_root, fullPath),
       };

@@ -13,7 +13,8 @@ RSpec.describe Gitlab::GitalyClient::Diff do
       to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
       patch: 'a' * 100,
       collapsed: false,
-      too_large: false
+      too_large: false,
+      binary: false
     }
   end
 
@@ -28,6 +29,7 @@ RSpec.describe Gitlab::GitalyClient::Diff do
   it { is_expected.to respond_to(:patch) }
   it { is_expected.to respond_to(:collapsed) }
   it { is_expected.to respond_to(:too_large) }
+  it { is_expected.to respond_to(:binary) }
 
   describe '#==' do
     it { expect(subject).to eq(described_class.new(diff_fields)) }

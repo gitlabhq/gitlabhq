@@ -62,7 +62,7 @@ docker exec -it <container-id> gitlab-psql
 
 {{< tab title="Self-compiled (source)" >}}
 
-Use the `psql` command that's part of [your PostgreSQL installation](../../install/installation.md#7-database).
+Use the `psql` command that's part of [your PostgreSQL installation](../../install/self_compiled/_index.md#7-database).
 
 ```shell
 sudo -u git -H psql -d gitlabhq_production
@@ -285,7 +285,7 @@ connection to server at "xxx.xxx.xxx.xxx", port 5432 failed: Connection refused
 ```
 
 ```shell
-psql: error: connection to server on socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432" failed: 
+psql: error: connection to server on socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432" failed:
 FATAL:  sorry, too many clients already
 ```
 

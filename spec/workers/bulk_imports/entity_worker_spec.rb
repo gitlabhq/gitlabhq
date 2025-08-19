@@ -103,8 +103,7 @@ RSpec.describe BulkImports::EntityWorker, feature_category: :importers do
           .to receive(:perform_async)
           .with(
             Import::SOURCE_DIRECT_TRANSFER,
-            entity.bulk_import_id,
-            'current_user_id' => entity.bulk_import.user_id
+            entity.bulk_import_id
           )
 
         subject

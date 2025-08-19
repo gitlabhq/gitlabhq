@@ -17,10 +17,6 @@ export default {
       type: Object,
       required: true,
     },
-    showMetrics: {
-      type: Boolean,
-      required: true,
-    },
   },
   computed: {
     computedDeploymentStatus() {
@@ -44,7 +40,6 @@ export default {
           <deployment-info
             :computed-deployment-status="computedDeploymentStatus"
             :deployment="deployment"
-            :show-metrics="showMetrics"
           />
           <deployment-actions
             :deployment="deployment"

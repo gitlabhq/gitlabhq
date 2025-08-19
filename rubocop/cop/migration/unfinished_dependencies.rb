@@ -20,6 +20,7 @@ module RuboCop
           it has to be finalized before the current migration.
         MESSAGE
 
+        # @!method dependent_migration_versions(node)
         def_node_matcher :dependent_migration_versions, <<~PATTERN
           (casgn nil? :DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS (array $...))
         PATTERN

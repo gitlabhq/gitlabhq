@@ -30,11 +30,13 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
       end
 
       create_pipelines
+      manual_pipeline = create(:ci_pipeline, project: project, status: :success)
+      manual_stage = create(:ci_stage, name: 'manual', status: 'skipped', pipeline: manual_pipeline)
+      create(:ci_build, :manual, stage: manual_stage)
 
-      # There appears to be one extra query for Pipelines#has_warnings? for some reason
-      expect { get_pipelines_index }.not_to exceed_all_query_limit(control).with_threshold(1)
+      expect { get_pipelines_index }.to issue_same_number_of_queries_as(control)
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['pipelines'].count).to eq(11)
+      expect(json_response['pipelines'].count).to eq(12)
     end
 
     def create_pipelines

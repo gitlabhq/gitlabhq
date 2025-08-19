@@ -6,6 +6,7 @@ RSpec.describe 'kroki rendering', :js, feature_category: :markdown do
   let_it_be(:project) { create(:project, :public) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     stub_application_setting(kroki_enabled: true, kroki_url: 'http://localhost:8000')
   end
 
@@ -24,6 +25,8 @@ RSpec.describe 'kroki rendering', :js, feature_category: :markdown do
     visit project_issue_path(project, issue)
 
     within('.description') do
+      click_button 'Read more'
+
       expect(page).to have_css('img')
       expect(page).not_to have_text 'Warning: Displaying this diagram might cause performance issues on this page.'
     end

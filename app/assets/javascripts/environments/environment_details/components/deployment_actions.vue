@@ -80,7 +80,7 @@ export default {
       return this.approvalEnvironment.environment;
     },
     isRollbackAvailable() {
-      return Boolean(this.rollback?.lastDeployment);
+      return Boolean(this.rollback?.lastDeployment && this.rollback?.retryUrl);
     },
     rollbackIcon() {
       return this.rollback.lastDeployment.isLast ? 'repeat' : 'redo';

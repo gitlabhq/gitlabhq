@@ -69,6 +69,9 @@ module QA
 
             test_user = user || Runtime::User::Store.test_user
 
+            # Requires refresh to get updated valid session cookie from server
+            page.refresh if QA::Runtime::Env.running_against_cell?
+
             if test_user.ldap_user?
               sign_in_using_ldap_credentials(user: test_user)
             else
@@ -191,6 +194,10 @@ module QA
           Profile::Password.perform do |new_password_page|
             password = user.password
             new_password_page.set_new_password(password, password)
+          end
+
+          Support::Waiter.wait_until(message: "on_login_page? failed") do
+            Page::Main::Login.perform(&:on_login_page?)
           end
         end
 

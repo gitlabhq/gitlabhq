@@ -39,24 +39,23 @@ module RapidDiffs
       Viewers::NoPreviewComponent
     end
 
+    def viewer_component_instance
+      viewer_component.new(diff_file: @diff_file)
+    end
+
     def default_header
       render RapidDiffs::DiffFileHeaderComponent.new(diff_file: @diff_file)
     end
 
-    def total_rows
-      return 0 unless !@diff_file.no_preview? && @diff_file.diffable_text?
-
-      count = 0
-      @diff_file.viewer_hunks.each do |hunk|
-        count += 1 if hunk.header
-        count += @parallel_view ? hunk.parallel_lines.count : hunk.lines.count
-      end
-      count
-    end
-
     # enables virtual rendering through content-visibility: auto, significantly boosts client performance
     def virtual?
-      total_rows > 0
+      viewer_component_instance.virtual_rendering_params != nil
+    end
+
+    def virtual_rendering_styles
+      viewer_component_instance.virtual_rendering_params.each_with_object([]) do |(key, value), acc|
+        acc << "--virtual-#{key.to_s.dasherize}: #{value}"
+      end.join(';')
     end
 
     def heading_id

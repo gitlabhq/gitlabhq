@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import API
+description: "Import repositories from GitHub or Bitbucket Server with the REST API."
 ---
 
 {{< details >}}
@@ -12,14 +13,28 @@ title: Import API
 
 {{< /details >}}
 
+{{< history >}}
+
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
 {{< alert type="note" >}}
 
 User contribution mapping is not supported when you import projects to a [personal namespace](../user/namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to
-a single non-functional user called `Import User` and they cannot be reassigned.
-[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+When you import to a personal namespace and the `user_mapping_to_personal_namespace_owner` feature flag
+is enabled, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
+When the `user_mapping_to_personal_namespace_owner` feature flag is disabled, all contributions are
+assigned to a single non-functional user called `Import User` and they cannot be reassigned.
 
 {{< /alert >}}
 

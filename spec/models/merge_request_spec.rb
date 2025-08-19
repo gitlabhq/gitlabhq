@@ -332,14 +332,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    describe '.recently_unprepared' do
-      it 'only returns the recently unprepared mrs' do
-        merge_request5 = create(:merge_request, :unprepared, :unique_branches, created_at: merge_request3.created_at)
-
-        expect(described_class.recently_unprepared).to eq([merge_request3, merge_request5])
-      end
-    end
-
     describe '.distinct_source_branches' do
       let_it_be(:project) { create(:project, :repository) }
       let_it_be(:mr1) { create(:merge_request, source_branch: 'feature-1', source_project: project) }
@@ -383,6 +375,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'only returns public issuables' do
         expect(described_class.without_hidden).not_to include(hidden_merge_request)
+      end
+
+      context 'when optimize_merge_requests_banned_users_query is disabled' do
+        before do
+          stub_feature_flags(optimize_merge_requests_banned_users_query: false)
+        end
+
+        it 'only returns public issuables' do
+          expect(described_class.without_hidden).not_to include(hidden_merge_request)
+        end
       end
     end
 
@@ -3081,6 +3083,38 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  shared_examples_for 'reports in child pipelines' do |report_type|
+    context 'when the child pipeline has reports' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, report_type, pipeline: child_pipeline) }
+
+      context 'when the pipeline is still running' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :running, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+
+        it 'returns false if head pipeline is running' do
+          expect(subject).to eq(false)
+        end
+      end
+
+      it 'returns true if head pipeline is finished' do
+        expect(subject).to eq(true)
+      end
+
+      context 'when feature flags are disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+          stub_feature_flags(show_child_security_reports_in_mr_widget: false)
+        end
+
+        it 'returns false regardless of child pipeline reports' do
+          expect(subject).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#has_test_reports?' do
     subject { merge_request.has_test_reports? }
 
@@ -3095,6 +3129,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it { is_expected.to be_falsey }
     end
+
+    it_behaves_like 'reports in child pipelines', :test_reports
   end
 
   describe '#has_accessibility_reports?' do
@@ -3164,51 +3200,35 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#has_terraform_reports?' do
-    context 'when head pipeline has terraform reports' do
-      it 'returns true' do
-        merge_request = create(:merge_request, :with_terraform_reports)
+    subject { merge_request.has_terraform_reports? }
 
-        expect(merge_request.has_terraform_reports?).to be_truthy
+    context 'when head pipeline has terraform reports' do
+      let_it_be(:merge_request) { create(:merge_request, :with_terraform_reports, source_project: project) }
+
+      it 'returns true' do
+        expect(subject).to be_truthy
       end
     end
 
     context 'when head pipeline does not have terraform reports' do
-      it 'returns false' do
-        merge_request = create(:merge_request)
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
-        expect(merge_request.has_terraform_reports?).to be_falsey
+      it 'returns false' do
+        expect(subject).to be_falsey
       end
     end
 
     context 'when head pipeline is not finished and has terraform reports' do
+      let_it_be(:merge_request) { create(:merge_request, :with_terraform_reports, source_project: project) }
+
       it 'returns true' do
-        merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)
 
-        expect(merge_request.has_terraform_reports?).to be_falsey
+        expect(subject).to be_falsey
       end
     end
 
-    context 'when child pipeline has terraform reports' do
-      let_it_be(:merge_request_with_pipeline) { create(:merge_request, :with_head_pipeline) }
-      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
-
-      it 'returns true even if head pipeline does not have reports' do
-        merge_request_with_pipeline.head_pipeline.update!(status: :success)
-
-        expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
-      end
-
-      context 'when FF show_child_reports_in_mr_page is disabled' do
-        before do
-          stub_feature_flags(show_child_reports_in_mr_page: false)
-        end
-
-        it 'does not take into account child pipeline reports' do
-          expect(merge_request_with_pipeline.has_terraform_reports?).to be_falsey
-        end
-      end
-    end
+    it_behaves_like 'reports in child pipelines', :terraform_reports
   end
 
   describe '#has_sast_reports?' do
@@ -3240,47 +3260,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { is_expected.to be_falsey }
     end
 
-    context 'when the child pipeline has sast reports' do
-      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
-      let_it_be(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
-      let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
-      let_it_be(:child_build) { create(:ci_build, :sast_report, pipeline: child_pipeline) }
-
-      context 'when the pipeline is still running' do
-        let_it_be(:pipeline) { create(:ci_pipeline, :running, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
-
-        it 'returns false if head pipeline is running' do
-          expect(subject).to eq(false)
-        end
-      end
-
-      it 'returns true if head pipeline is finished' do
-        expect(subject).to eq(true)
-      end
-
-      context 'when FF show_child_reports_in_mr_page is disabled' do
-        before do
-          stub_feature_flags(show_child_reports_in_mr_page: false)
-        end
-
-        it 'returns false regardless of child pipeline reports' do
-          expect(subject).to eq(false)
-        end
-      end
-    end
+    it_behaves_like 'reports in child pipelines', :sast_report
   end
 
   describe '#has_secret_detection_reports?' do
     subject { merge_request.has_secret_detection_reports? }
 
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       stub_licensed_features(secret_detection: true)
     end
 
     context 'when head pipeline has secret detection reports' do
-      let(:merge_request) { create(:merge_request, :with_secret_detection_reports, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, :with_secret_detection_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
 
@@ -3294,10 +3287,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when head pipeline does not have secrets detection reports' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       it { is_expected.to be_falsey }
     end
+
+    it_behaves_like 'reports in child pipelines', :secret_detection_report
   end
 
   describe '#calculate_reactive_cache' do
@@ -4796,8 +4791,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context "with diffs" do
       let(:project) { create(:project, :repository) }
 
-      subject { create(:merge_request, source_project: project) }
-
       let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
           base_sha: subject.merge_request_diff.base_commit_sha,
@@ -4805,6 +4798,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           head_sha: subject.merge_request_diff.head_commit_sha
         )
       end
+
+      subject { create(:merge_request, source_project: project) }
 
       it "does not touch the repository" do
         subject # Instantiate the object
@@ -5005,6 +5000,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#create_merge_request_diff' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    context 'when preload_gitaly is true' do
+      subject(:create_merge_request_diff) { merge_request.create_merge_request_diff(preload_gitaly: true) }
+
+      it 'fetches the ref' do
+        expect(merge_request).to receive(:fetch_ref!).and_call_original
+
+        create_merge_request_diff
+      end
+
+      it 'reloads the diff' do
+        expect { create_merge_request_diff }
+          .to change { merge_request.merge_request_diff }
+      end
+
+      it 'preload the gitaly data' do
+        expect_next_instance_of(MergeRequestDiff) do |diff|
+          expect(diff).to receive(:preload_gitaly_data).and_call_original
+        end
+
+        create_merge_request_diff
+      end
+    end
+
+    context 'when preload_gitaly defaults to false' do
+      subject(:create_merge_request_diff) { merge_request.create_merge_request_diff }
+
+      it 'fetches the ref' do
+        expect(merge_request).to receive(:fetch_ref!).and_call_original
+
+        create_merge_request_diff
+      end
+
+      it 'reloads the diff' do
+        expect { create_merge_request_diff }
+          .to change { merge_request.merge_request_diff }
+      end
+
+      it 'does not preload the gitaly data' do
+        expect_next_instance_of(MergeRequestDiff) do |diff|
+          expect(diff).not_to receive(:preload_gitaly_data).and_call_original
+        end
+
+        create_merge_request_diff
+      end
+    end
+  end
+
   describe '#pipeline_coverage_delta' do
     let!(:merge_request) { create(:merge_request) }
 
@@ -5190,11 +5235,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#merge_request_diff_for' do
     let(:project) { create(:project, :repository) }
 
-    subject { create(:merge_request, importing: true, source_project: project) }
-
     let!(:merge_request_diff1) { subject.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
     let!(:merge_request_diff2) { subject.merge_request_diffs.create!(head_commit_sha: nil) }
     let!(:merge_request_diff3) { subject.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+
+    subject { create(:merge_request, importing: true, source_project: project) }
 
     context 'with diff refs' do
       it 'returns the diffs' do
@@ -5223,11 +5268,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#version_params_for' do
     let(:project) { create(:project, :repository) }
 
-    subject { create(:merge_request, importing: true, source_project: project) }
-
     let!(:merge_request_diff1) { subject.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
     let!(:merge_request_diff2) { subject.merge_request_diffs.create!(head_commit_sha: nil) }
     let!(:merge_request_diff3) { subject.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+
+    subject { create(:merge_request, importing: true, source_project: project) }
 
     context 'when the diff refs are for an older merge request version' do
       let(:diff_refs) { merge_request_diff1.diff_refs }
@@ -6510,17 +6555,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           let(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
           let!(:child_build) { create(:ci_build, artifact_report, pipeline: child_pipeline) }
 
-          it 'returns true for sast reports' do
-            if feature == :sast
-              is_expected.to be_truthy
-            else
-              is_expected.to be_falsy
-            end
-          end
+          it { is_expected.to be_truthy }
 
-          context 'with FF show_child_reports_in_mr_page disabled' do
+          context 'with FF show_child_security_reports_in_mr_widget disabled' do
             before do
-              stub_feature_flags(show_child_reports_in_mr_page: false)
+              stub_feature_flags(show_child_security_reports_in_mr_widget: false)
             end
 
             it { is_expected.to be_falsy }
@@ -7351,6 +7390,17 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe ".invalidate_project_counter_caches" do
+    let(:count_service) { instance_double(Projects::OpenMergeRequestsCountService) }
+
+    it "calls Projects::OpenIssuesCountService" do
+      allow(Projects::OpenMergeRequestsCountService).to receive(:new).with(project).and_return(count_service)
+      expect(count_service).to receive(:delete_cache)
+
+      subject.invalidate_project_counter_caches
     end
   end
 end

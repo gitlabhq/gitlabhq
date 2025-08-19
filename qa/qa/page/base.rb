@@ -288,6 +288,10 @@ module QA
           prosemirror.send_keys [mod, 'a']
           prosemirror.send_keys :delete
           prosemirror.send_keys content
+
+          # Wait for the hidden input field to be updated
+          # The hidden field contains markdown serialized by RTE
+          has_field?(type: 'hidden', with: content, wait: 3)
         end
       end
 
@@ -344,6 +348,12 @@ module QA
         wait_for_requests
 
         page.has_text?(text, wait: wait)
+      end
+
+      def has_field?(type:, with:, wait: Capybara.default_max_wait_time)
+        wait_for_requests
+
+        page.has_field?(type: type, with: with, wait: wait)
       end
 
       def has_no_text?(text, wait: Capybara.default_max_wait_time)

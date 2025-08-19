@@ -223,3 +223,17 @@ To provide feedback on this feature, leave a comment on [issue 463391](https://g
 When you visit the job log page for a running job, there could be a delay of up to
 60 seconds before a log update. The default refresh time is 60 seconds, but after
 the log is viewed in the UI one time, log updates should occur every 3 seconds.
+
+### Error: `This job does not have a trace` in GitLab 18.0 or later
+
+After upgrading a GitLab Self-Managed instance to 18.0 or later, you might see
+`This job does not have a trace` errors. This could be caused by a failed upgrade migration
+on an instance with both:
+
+- Object storage enabled
+- Incremental logging previously enabled with the removed feature flag `ci_enable_live_trace`.
+  This feature flag is enabled by default in GitLab Environment Toolkit or Helm Chart deployments,
+  but could also be enabled manually.
+
+To restore the ability to view job logs on affected jobs,
+[re-enable incremental logging](../../administration/settings/continuous_integration.md#configure-incremental-logging)

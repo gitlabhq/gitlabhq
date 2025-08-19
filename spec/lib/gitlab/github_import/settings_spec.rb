@@ -72,6 +72,8 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
         .to be true
       expect(project.import_data.data['pagination_limit'])
         .to eq(50)
+      expect(project.import_data.data['user_mapping_to_personal_namespace_owner_enabled'])
+        .to be true
     end
   end
 
@@ -105,14 +107,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
       project.build_or_assign_import_data(credentials: { user: 'token' })
     end
 
-    shared_examples 'when :importer_user_mapping is disabled' do
-      before do
-        Feature.disable(:importer_user_mapping)
-      end
-
-      it { is_expected.to be(false) }
-    end
-
     shared_examples 'when :github_user_mapping is disabled' do |expected_enabled:|
       before do
         Feature.disable(:github_user_mapping)
@@ -132,7 +126,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
     context 'when the project is a GitHub import' do
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
     end
@@ -144,7 +137,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(true) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
     end
@@ -156,7 +148,6 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
     end
@@ -168,9 +159,97 @@ RSpec.describe Gitlab::GithubImport::Settings, feature_category: :importers do
 
       it { is_expected.to be(false) }
 
-      it_behaves_like 'when :importer_user_mapping is disabled'
       it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
       it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+    end
+  end
+
+  describe '#map_to_personal_namespace_owner?' do
+    let_it_be(:group) { create(:group) }
+
+    subject do
+      settings.write(data_input)
+      settings.map_to_personal_namespace_owner?
+    end
+
+    shared_examples 'when :github_user_mapping is disabled' do |expected_enabled:|
+      before do
+        Feature.disable(:github_user_mapping)
+      end
+
+      it { is_expected.to be(expected_enabled) }
+    end
+
+    shared_examples 'when :gitea_user_mapping is disabled' do |expected_enabled:|
+      before do
+        Feature.disable(:gitea_user_mapping)
+      end
+
+      it { is_expected.to be(expected_enabled) }
+    end
+
+    shared_examples 'disabled when project is imported into a group' do
+      before_all do
+        project.update!(namespace: group)
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    before do
+      project.build_or_assign_import_data(credentials: { user: 'token' })
+    end
+
+    context 'when the project is a GitHub import' do
+      it { is_expected.to be(true) }
+
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: true
+      it_behaves_like 'disabled when project is imported into a group'
+    end
+
+    context 'when the project is a Gitea import' do
+      before do
+        project.update!(import_type: ::Import::SOURCE_GITEA.to_s)
+      end
+
+      it { is_expected.to be(true) }
+
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: true
+      it_behaves_like 'disabled when project is imported into a group'
+    end
+
+    context 'when the project does not have an import_type' do
+      before do
+        project.update!(import_type: nil)
+      end
+
+      it { is_expected.to be(false) }
+
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'disabled when project is imported into a group'
+    end
+
+    context 'when the project has an import_type without a user mapping flag' do
+      before do
+        project.update!(import_type: ::Import::SOURCE_BITBUCKET.to_s)
+      end
+
+      it { is_expected.to be(false) }
+
+      it_behaves_like 'when :gitea_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'when :github_user_mapping is disabled', expected_enabled: false
+      it_behaves_like 'disabled when project is imported into a group'
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(user_mapping_to_personal_namespace_owner: false)
+      end
+
+      it { is_expected.to be(false) }
     end
   end
 end

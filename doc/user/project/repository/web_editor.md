@@ -278,7 +278,7 @@ dropdown list. From this menu, you can:
 To complete these actions:
 
 1. Open the file in GitLab.
-1. In the upper-right corner, next to a file name, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. In the upper-right corner, next to a filename, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select your desired action.
 
 ## Create a directory

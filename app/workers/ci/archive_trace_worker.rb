@@ -7,6 +7,7 @@ module Ci
     data_consistency :sticky
 
     sidekiq_options retry: 3
+    max_concurrency_limit_percentage 0.32
     include PipelineBackgroundQueue
 
     def perform(job_id)

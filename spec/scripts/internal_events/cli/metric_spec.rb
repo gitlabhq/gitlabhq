@@ -9,13 +9,15 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
   let(:identifier) { 'user' }
   let(:actions) { ['action_1'] }
   let(:filters) { nil }
+  let(:operator) { 'unique_count' }
 
   subject(:metric) do
     described_class.new(
       time_frame: time_frame,
       identifier: identifier,
       actions: actions,
-      filters: filters
+      filters: filters,
+      operator: operator
     )
   end
 
@@ -77,6 +79,16 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
       expect(metric.technical_description).to eq("Weekly count of unique values for 'label' from action_1 occurrences")
     end
 
+    context "when sum by value" do
+      let(:identifier) { 'value' }
+      let(:operator) { 'sum' }
+
+      it 'has expected description content' do
+        expect(metric.description_prefix).to eq('Weekly sum of all')
+        expect(metric.technical_description).to eq("Weekly sum of all values for 'value' from action_1 occurrences")
+      end
+    end
+
     context 'when filtered' do
       let(:filters) { [] }
 
@@ -86,6 +98,18 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
           "Weekly count of unique values for 'label' from the selected events occurrences"
         )
       end
+
+      context "when sum by value" do
+        let(:identifier) { 'value' }
+        let(:operator) { 'sum' }
+
+        it 'has expected description content' do
+          expect(metric.description_prefix).to eq('Weekly sum of all')
+          expect(metric.technical_description).to eq(
+            "Weekly sum of all values for 'value' from the selected events occurrences"
+          )
+        end
+      end
     end
   end
 end
@@ -93,13 +117,16 @@ end
 RSpec.describe InternalEventsCli::Metric::Identifier, :aggregate_failures, feature_category: :service_ping do
   subject(:identifier) { described_class.new(value) }
 
+  let(:operator) { InternalEventsCli::Metric::Operator.new('unique_count') }
+
   context 'with no value' do
     let(:value) { nil }
+    let(:operator) { InternalEventsCli::Metric::Operator.new('count') }
 
     it 'has expected components' do
       expect(identifier.value).to eq(nil)
-      expect(identifier.description).to eq('count of %s occurrences')
-      expect(identifier.key_path).to eq('total')
+      expect(identifier.description).to eq('%s occurrences')
+      expect(identifier.key_path(operator)).to eq('total')
     end
   end
 
@@ -108,8 +135,8 @@ RSpec.describe InternalEventsCli::Metric::Identifier, :aggregate_failures, featu
 
     it 'has expected components' do
       expect(identifier.value).to eq('user')
-      expect(identifier.description).to eq('count of unique users who triggered %s')
-      expect(identifier.key_path).to eq('distinct_user_id_from')
+      expect(identifier.description).to eq('users who triggered %s')
+      expect(identifier.key_path(operator)).to eq('distinct_user_id_from')
     end
   end
 
@@ -118,8 +145,8 @@ RSpec.describe InternalEventsCli::Metric::Identifier, :aggregate_failures, featu
 
     it 'has expected components' do
       expect(identifier.value).to eq('namespace')
-      expect(identifier.description).to eq('count of unique namespaces where %s occurred')
-      expect(identifier.key_path).to eq('distinct_namespace_id_from')
+      expect(identifier.description).to eq('namespaces where %s occurred')
+      expect(identifier.key_path(operator)).to eq('distinct_namespace_id_from')
     end
   end
 
@@ -128,8 +155,19 @@ RSpec.describe InternalEventsCli::Metric::Identifier, :aggregate_failures, featu
 
     it 'has expected components' do
       expect(identifier.value).to eq('label')
-      expect(identifier.description).to eq("count of unique values for 'label' from %s occurrences")
-      expect(identifier.key_path).to eq('distinct_label_from')
+      expect(identifier.description).to eq("values for 'label' from %s occurrences")
+      expect(identifier.key_path(operator)).to eq('distinct_label_from')
+    end
+  end
+
+  context 'when summing value' do
+    let(:operator) { InternalEventsCli::Metric::Operator.new('sum') }
+    let(:value) { 'value' }
+
+    it 'has expected components' do
+      expect(identifier.value).to eq('value')
+      expect(identifier.description).to eq("values for 'value' from %s occurrences")
+      expect(identifier.key_path(operator)).to eq('value_from')
     end
   end
 end

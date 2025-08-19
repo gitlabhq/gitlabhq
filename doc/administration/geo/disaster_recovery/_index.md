@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Disaster Recovery (Geo)
+description: Recover from a disaster, using a Geo instance.
 ---
 
 {{< details >}}
@@ -417,6 +418,20 @@ and after that you also need two extra steps.
 Now we need to make each **secondary** site listen to changes on the new **primary** site. To do that you need
 to [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) again but this time
 for another **primary** site. All the old replication settings are overwritten.
+
+Existing secondary sites will all have populated databases so you may see a message like this:
+
+```shell
+Found data inside the gitlabhq_production database! If you are sure you are in the secondary server, override with --force
+```
+
+After you have confirmed that you are on the appropriate secondary site, initiate the replication with `--force`.
+
+{{< alert type="warning" >}}
+
+Using `--force` causes **all existing data in the database on that secondary server to be deleted**.
+
+{{< /alert >}}
 
 ## Promoting a secondary Geo cluster in the GitLab Helm chart
 

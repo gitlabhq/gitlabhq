@@ -21,11 +21,6 @@ RSpec.shared_context 'with service desk mailer' do
       end
 
       # this method is implemented in Notify class, we don't need to test it
-      def reply_key
-        'b7721fc7e8419911a8bea145236a0519'
-      end
-
-      # this method is implemented in Notify class, we don't need to test it
       def sender(author_id, params = {})
         author_id
       end

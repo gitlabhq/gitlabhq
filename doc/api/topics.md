@@ -34,7 +34,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/topics?search=git"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/topics?search=git"
 ```
 
 Example response:
@@ -88,7 +89,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/topics/1"
+curl --request GET \
+  --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
 Example response:
@@ -135,9 +137,9 @@ Example request:
 
 ```shell
 curl --request POST \
-     --data "name=topic1&title=Topic 1" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics"
+    --data "name=topic1&title=Topic 1" \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics"
 ```
 
 Example response:
@@ -176,9 +178,9 @@ Example request:
 
 ```shell
 curl --request PUT \
-     --data "name=topic1" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics/1"
+    --data "name=topic1" \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
 Example response:
@@ -204,9 +206,9 @@ cURL to post data using the header `Content-Type: multipart/form-data`. The
 
 ```shell
 curl --request PUT \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics/1" \
-     --form "avatar=@/tmp/example.png"
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics/1" \
+    --form "avatar=@/tmp/example.png"
 ```
 
 ### Remove a topic avatar
@@ -217,9 +219,9 @@ Example request:
 
 ```shell
 curl --request PUT \
-     --data "avatar=" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics/1"
+    --data "avatar=" \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
 ## Delete a project topic
@@ -241,8 +243,8 @@ Example request:
 
 ```shell
 curl --request DELETE \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics/1"
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics/1"
 ```
 
 ## Merge topics
@@ -277,9 +279,9 @@ Example request:
 
 ```shell
 curl --request POST \
-     --data "source_topic_id=2&target_topic_id=1" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/topics/merge"
+    --data "source_topic_id=2&target_topic_id=1" \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/topics/merge"
 ```
 
 Example response:

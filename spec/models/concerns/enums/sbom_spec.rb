@@ -25,11 +25,12 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
       :deb                  | 11
       'cbl-mariner'         | 12
       :wolfi                | 13
-      'unknown-pkg-manager' | 0
-      'Python (unknown)'    | 0
+      'unknown-pkg-manager' | 999
+      'Python (unknown)'    | 999
       :swift                | 15
       :conda                | 16
       :pub                  | 17
+      ''                    | 0
     end
 
     with_them do
@@ -41,7 +42,14 @@ RSpec.describe Enums::Sbom, feature_category: :dependency_management do
     end
 
     it 'contains all of the dependency scanning and container scanning purl types' do
-      expect((described_class::DEPENDENCY_SCANNING_PURL_TYPES + described_class::CONTAINER_SCANNING_PURL_TYPES).sort)
+      all_types = [
+        described_class::DEPENDENCY_SCANNING_PURL_TYPES,
+        described_class::CONTAINER_SCANNING_PURL_TYPES,
+        "not_provided",
+        "unknown"
+      ].flatten.sort
+
+      expect(all_types)
         .to eql(described_class::PURL_TYPES.keys.sort)
     end
   end

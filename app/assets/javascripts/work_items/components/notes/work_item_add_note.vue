@@ -152,7 +152,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -172,6 +172,11 @@ export default {
     autosaveKey() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return this.discussionId ? `${this.discussionId}-comment` : `${this.workItemId}-comment`;
+    },
+    autosaveKeyInternalNote() {
+      return this.discussionId
+        ? `${this.discussionId}-internal-note`
+        : `${this.workItemId}-internal-note`;
     },
     // eslint-disable-next-line vue/no-unused-properties
     tracking() {
@@ -271,6 +276,7 @@ export default {
         this.messages = messages?.join(' ');
         this.$emit('replied');
         clearDraft(this.autosaveKey);
+        clearDraft(this.autosaveKeyInternalNote);
         this.cancelEditing();
         this.doFullPageReloadIfUnsupportedTypeChange(commentText);
       } catch (error) {
@@ -389,6 +395,7 @@ export default {
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"
             :autosave-key="autosaveKey"
+            :autosave-key-internal-note="autosaveKeyInternalNote"
             :is-new-discussion="isNewDiscussion"
             :autocomplete-data-sources="autocompleteDataSources"
             :markdown-preview-path="markdownPreviewPath"

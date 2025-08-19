@@ -19,7 +19,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node, message: MSG) if license_feature_available?(node)
+          add_offense(node) if license_feature_available?(node)
         end
       end
     end

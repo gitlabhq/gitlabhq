@@ -51,7 +51,7 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
 
       it_behaves_like 'removes group from project'
 
-      context 'project authorizations refresh' do
+      context 'project authorizations refresh', :sidekiq_inline do
         it 'calls AuthorizedProjectUpdate::ProjectRecalculateWorker to update project authorizations' do
           expect(AuthorizedProjectUpdate::ProjectRecalculateWorker)
             .to receive(:perform_async).with(group_link.project.id)
@@ -77,6 +77,21 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
           expect { subject.execute(group_link) }.to(
             change { Ability.allowed?(group_user, :read_project, project) }
               .from(true).to(false))
+        end
+
+        context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
+          before do
+            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
+          end
+
+          it 'executes refresh_members_authorized_projects' do
+            expect(group)
+              .to receive(:refresh_members_authorized_projects)
+              .with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
+              .once
+
+            subject.execute(group_link)
+          end
         end
       end
 

@@ -21,6 +21,8 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
 
   describe 'associations' do
     it { is_expected.to belong_to(:label) }
+
+    it { is_expected.to belong_to(:namespace) }
   end
 
   describe 'validations' do
@@ -67,6 +69,57 @@ RSpec.describe ResourceLabelEvent, feature_category: :team_planning, type: :mode
         expect(subject.issuable).to receive(:broadcast_notes_changed)
 
         subject.destroy!
+      end
+    end
+
+    describe '#ensure_namespace_id' do
+      context 'when label_event belongs to a project issue' do
+        let(:label_event) { described_class.new(issue: issue) }
+
+        it 'sets the namespace id from the issue namespace id' do
+          expect(label_event.namespace_id).to be_nil
+
+          label_event.valid?
+
+          expect(label_event.namespace_id).to eq(issue.namespace.id)
+        end
+      end
+
+      context 'when label_event belongs to a group issue' do
+        let(:issue) { create(:issue, :group_level, namespace: group) }
+        let(:label_event) { described_class.new(issue: issue) }
+
+        it 'sets the namespace id from the issue namespace id' do
+          expect(label_event.namespace_id).to be_nil
+
+          label_event.valid?
+
+          expect(label_event.namespace_id).to eq(issue.namespace.id)
+        end
+      end
+
+      context 'when label_event belongs to a merge request' do
+        let(:label_event) { described_class.new(merge_request: merge_request) }
+
+        it 'sets the namespace id from the merge request project namespace id' do
+          expect(label_event.namespace_id).to be_nil
+
+          label_event.valid?
+
+          expect(label_event.namespace_id).to eq(merge_request.project.project_namespace_id)
+        end
+      end
+
+      context 'when label_event has no issuable' do
+        let(:label_event) { described_class.new }
+
+        it 'returns nil and does not fail' do
+          expect(label_event.namespace_id).to be_nil
+
+          label_event.valid?
+
+          expect(label_event.namespace_id).to be_nil
+        end
       end
     end
   end

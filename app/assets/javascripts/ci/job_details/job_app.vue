@@ -4,7 +4,7 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
-import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
+import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
@@ -314,7 +314,7 @@ export default {
             @exitFullscreen="exitFullscreen"
           />
 
-          <log :search-results="searchResults" />
+          <log :search-results="searchResults" @toggleCollapsibleLine="updateScroll" />
 
           <nav
             v-if="displayStickyFooter"

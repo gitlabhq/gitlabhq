@@ -33,6 +33,7 @@ Prevent sensitive data from being committed to your repository.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Protect your project with secret push protection](../user/application_security/secret_detection/push_protection_tutorial.md) | Enable secret push protection in your project. | {{< icon name="star" >}} |
+| [Detect secrets committed to a project](../user/application_security/secret_detection/pipeline/tutorial.md) | Learn how to detect and remediate secrets committed to your project's repository. | {{< icon name="star" >}} |
 | [Remove a secret from your commits](../user/application_security/secret_detection/remove_secrets_tutorial.md) | Learn how to remove a secret from your commit history. | {{< icon name="star" >}} |
 
 ## Implement security policies and governance

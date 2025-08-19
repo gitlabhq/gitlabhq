@@ -782,6 +782,136 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
         end
       end
     end
+
+    context 'with self_heal_build_trace_chunk_flushing feature flag' do
+      where(:data_store, :redis_class) do
+        [
+          [:redis, Ci::BuildTraceChunks::Redis],
+          [:redis_trace_chunks, Ci::BuildTraceChunks::RedisTraceChunks]
+        ]
+      end
+
+      with_them do
+        let(:data) { 'a' * described_class::CHUNK_SIZE }
+
+        before do
+          build_trace_chunk.send(:unsafe_set_data!, data)
+        end
+
+        context 'when feature flag is enabled' do
+          before do
+            stub_feature_flags(self_heal_build_trace_chunk_flushing: true)
+          end
+
+          context 'when save operation succeeds' do
+            before do
+              allow(build_trace_chunk).to receive_messages(changed?: true, save!: true)
+            end
+
+            it 'deletes old data from redis store' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              subject
+
+              expect(redis_class.new.data(build_trace_chunk)).to be_nil
+            end
+          end
+
+          context 'when save operation fails' do
+            before do
+              allow(build_trace_chunk).to receive_messages(changed?: true, save!: false)
+            end
+
+            it 'preserves old data to allow self-healing' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              expect { subject }.to raise_error(described_class::FailedToPersistDataError)
+
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+            end
+          end
+
+          context 'when save operation returns nil' do
+            before do
+              allow(build_trace_chunk).to receive_messages(changed?: true, save!: nil)
+            end
+
+            it 'preserves old data to allow self-healing' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              expect { subject }.to raise_error(described_class::FailedToPersistDataError)
+
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+            end
+          end
+
+          context 'when save is not called due to no changes' do
+            before do
+              allow(build_trace_chunk).to receive(:changed?).and_return(false)
+            end
+
+            it 'preserves old data since save was not attempted' do
+              allow(build_trace_chunk).to receive(:changed?).and_return(false)
+
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              expect { subject }.to raise_error(described_class::FailedToPersistDataError)
+
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+            end
+          end
+
+          context 'when save raises an exception' do
+            before do
+              allow(build_trace_chunk).to receive(:changed?).and_return(true)
+              allow(build_trace_chunk).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+            end
+
+            it 'preserves old data and re-raises exception' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+            end
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(self_heal_build_trace_chunk_flushing: false)
+          end
+
+          context 'when data is not saved' do
+            before do
+              allow(build_trace_chunk).to receive(:unsafe_set_data!).and_return(nil)
+            end
+
+            it 'deletes old data' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              subject
+
+              expect(redis_class.new.data(build_trace_chunk)).to be_nil
+            end
+          end
+
+          context 'when data is saved' do
+            before do
+              allow(build_trace_chunk).to receive(:unsafe_set_data!).and_return(true)
+            end
+
+            it 'deletes old data' do
+              expect(redis_class.new.data(build_trace_chunk)).to eq(data)
+
+              subject
+
+              expect(redis_class.new.data(build_trace_chunk)).to be_nil
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'final?' do

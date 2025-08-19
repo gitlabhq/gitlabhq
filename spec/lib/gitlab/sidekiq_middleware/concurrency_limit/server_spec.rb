@@ -176,10 +176,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         end
 
         context 'when limit is not defined' do
-          before do
-            ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.remove_instance_variable(:@data)
-          end
-
           it_behaves_like 'track execution'
         end
       end
@@ -225,10 +221,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
           end
 
           context 'when limit is not defined' do
-            before do
-              ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.remove_instance_variable(:@data)
-            end
-
             it_behaves_like 'track execution'
           end
         end

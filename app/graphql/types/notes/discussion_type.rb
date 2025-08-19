@@ -13,7 +13,8 @@ module Types
       field :noteable, Types::NoteableType, null: true,
         description: 'Object which the discussion belongs to.'
       field :notes, Types::Notes::NoteType.connection_type, null: false,
-        description: 'All notes in the discussion.'
+        description: 'All notes in the discussion.',
+        max_page_size: 200
 
       def noteable
         noteable = object.noteable

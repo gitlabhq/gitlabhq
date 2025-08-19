@@ -128,20 +128,11 @@ export default {
     listStatusIconName() {
       return this.listStatus?.iconName;
     },
-    isIterationList() {
-      return this.listType === ListType.iteration;
-    },
     showListHeaderButton() {
       return !this.disabled && this.listType !== ListType.closed;
     },
-    showMilestoneListDetails() {
-      return this.listType === ListType.milestone && this.list.milestone && this.showListDetails;
-    },
     showAssigneeListDetails() {
       return this.listType === ListType.assignee && this.showListDetails;
-    },
-    showIterationListDetails() {
-      return this.isIterationList && this.showListDetails;
     },
     showListDetails() {
       return !this.list.collapsed || !this.isSwimlanesHeader;

@@ -3,6 +3,7 @@ stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Install the GitLab agent server for Kubernetes (KAS)
+description: Manage the GitLab agent for Kubernetes.
 ---
 
 {{< details >}}
@@ -213,22 +214,22 @@ gitlab_kas['env'] = {
 
 ##### Agent server node settings
 
-| Setting | Description                                                                                                                                                                                      |
-|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `gitlab_kas['private_api_listen_network']` | The network family KAS listens on. Defaults to `tcp` for both IPv4 and IPv6 networks. Set to `tcp4` for IPv4 or `tcp6` for IPv6.                                                   |
-| `gitlab_kas['private_api_listen_address']` | The address the KAS listens on. Set to `0.0.0.0:8155` or to an IP:PORT reachable by other nodes in the cluster.                                                                         |
-| `gitlab_kas['api_secret_key']` | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long.                                                           |
-| `gitlab_kas['private_api_secret_key']` | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long.                                                  |
-| `OWN_PRIVATE_API_SCHEME` | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`.                                                                             |
-| `OWN_PRIVATE_API_URL` | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
-| `OWN_PRIVATE_API_HOST` | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file.                                    |
-| `OWN_PRIVATE_API_PORT` | Optional value used to specify what port to use when constructing `OWN_PRIVATE_API_URL`.                                                                                                         |
-| `OWN_PRIVATE_API_CIDR` | Optional value used to specify which IP addresses from the available networks to use when constructing `OWN_PRIVATE_API_URL`.                                                                                       |
-| `gitlab_kas['client_timeout_seconds']` | The timeout for the client to connect to the KAS.                                                                                                                                       |
-| `gitlab_kas_external_url` | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL.  |
-| `gitlab_rails['gitlab_kas_external_url']` | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`.                                                                                            |
-| `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`.                                                                                 |
-| `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS.                                                                                                                       |
+| Setting                                             | Description |
+|-----------------------------------------------------|-------------|
+| `gitlab_kas['private_api_listen_network']`          | The network family KAS listens on. Defaults to `tcp` for both IPv4 and IPv6 networks. Set to `tcp4` for IPv4 or `tcp6` for IPv6. |
+| `gitlab_kas['private_api_listen_address']`          | The address the KAS listens on. Set to `0.0.0.0:8155` or to an IP and port reachable by other nodes in the cluster. |
+| `gitlab_kas['api_secret_key']`                      | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
+| `gitlab_kas['private_api_secret_key']`              | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
+| `OWN_PRIVATE_API_SCHEME`                            | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`. |
+| `OWN_PRIVATE_API_URL`                               | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
+| `OWN_PRIVATE_API_HOST`                              | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file. |
+| `OWN_PRIVATE_API_PORT`                              | Optional value used to specify what port to use when constructing `OWN_PRIVATE_API_URL`. |
+| `OWN_PRIVATE_API_CIDR`                              | Optional value used to specify which IP addresses from the available networks to use when constructing `OWN_PRIVATE_API_URL`. |
+| `gitlab_kas['client_timeout_seconds']`              | The timeout for the client to connect to the KAS. |
+| `gitlab_kas_external_url`                           | The user-facing URL for the in-cluster `agentk`. Can be a fully qualified domain or subdomain, <sup>2</sup> or a GitLab external URL. <sup>3</sup> If blank, defaults to a GitLab external URL. |
+| `gitlab_rails['gitlab_kas_external_url']`           | The user-facing URL for the in-cluster `agentk`. If blank, defaults to the `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`. |
+| `gitlab_rails['gitlab_kas_internal_url']`           | The internal URL the GitLab backend uses to communicate with KAS. |
 
 **Footnotes**:
 
@@ -286,6 +287,44 @@ To enable receptive agents:
 1. Expand **GitLab Agent for Kubernetes**.
 1. Turn on the **Enable receptive mode** toggle.
 
+## Configure Kubernetes API proxy response header allowlist
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/642) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `kas_k8s_api_proxy_response_header_allowlist`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+The Kubernetes API proxy in KAS uses an allowlist for the response headers.
+Secure and well-known Kubernetes and HTTP headers are allowed by default.
+
+For a list of allowed response headers, see the [response header allowlist](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/internal/module/kubernetes_api/server/proxy_headers.go).
+
+If you require response headers
+that are not in the default allowlist,
+you can add your response headers
+in the KAS configuration.
+
+To add extra allowed response headers:
+
+```yaml
+agent:
+  kubernetes_api:
+    extra_allowed_response_headers:
+      - 'X-My-Custom-Header-To-Allow'
+```
+
+Support for the addition of more response headers is tracked in
+[issue 550614](https://gitlab.com/gitlab-org/gitlab/-/issues/550614).
+
 ## Troubleshooting
 
 If you have issues while using the agent server for Kubernetes, view the
@@ -314,7 +353,7 @@ The path is incorrect for either:
 
 To fix this issue, ensure that the paths are correct.
 
-### `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
+### Error: `dial tcp <GITLAB_INTERNAL_IP>:443: connect: connection refused`
 
 If you are running GitLab Self-Managed and:
 
@@ -369,7 +408,7 @@ sudo gitlab-ctl reconfigure
 gitlab-ctl restart gitlab-kas
 ```
 
-### GRPC::DeadlineExceeded in Clusters::Agents::NotifyGitPushWorker
+### Error: `GRPC::DeadlineExceeded in Clusters::Agents::NotifyGitPushWorker`
 
 This error likely occurs when the client does not receive a response within the default timeout period (5 seconds). To resolve the issue, you can increase the client timeout by modifying the `/etc/gitlab/gitlab.rb` configuration file.
 
@@ -390,3 +429,20 @@ gitlab-ctl reconfigure
 #### Note
 
 You can adjust the timeout value to suit your specific needs. Testing is recommended to ensure the issue is resolved without impacting system performance.
+
+### Error: `Blocked Kubernetes API proxy response header`
+
+If HTTP response headers are lost when sent from the Kubernetes cluster to the user through the Kubernetes API proxy, check the KAS logs or Sentry instance for the following error:
+
+```plaintext
+Blocked Kubernetes API proxy response header. Please configure extra allowed headers for your instance in the KAS config with `extra_allowed_response_headers` and have a look at the troubleshooting guide at https://docs.gitlab.com/administration/clusters/kas/#troubleshooting.
+```
+
+This error means that the Kubernetes API proxy blocked response headers because
+they are not defined in the response header allowlist.
+
+For more information on adding response headers,
+see [configure the response header allowlist](#configure-kubernetes-api-proxy-response-header-allowlist).
+
+Support for the addition of more response headers is tracked in
+[issue 550614](https://gitlab.com/gitlab-org/gitlab/-/issues/550614).

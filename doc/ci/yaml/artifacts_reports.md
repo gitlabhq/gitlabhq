@@ -297,7 +297,8 @@ reports can be downloaded from the pipeline details page. If necessary, you can 
 [artifacts:access](_index.md#artifactsaccess) to restrict the users that can download
 the report artifacts in a job.
 
-The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv#rules) are:
+GitLab uses the [`dotenv` gem](https://github.com/bkeepers/dotenv) for handling dotenv files,
+and handles dotenv files differently than [the original dotenv rules](https://github.com/motdotla/dotenv?tab=readme-ov-file#what-rules-does-the-parsing-engine-follow):
 
 - The variable key can contain only letters, digits, and underscores (`_`).
 - The maximum size of the `.env` file is 5 KB.
@@ -424,7 +425,7 @@ The collected SAST report uploads to GitLab as an artifact.
 
 For more information, see:
 
-- [View SAST results](../../user/application_security/sast/_index.md#view-sast-results)
+- [View SAST results](../../user/application_security/sast/_index.md#understanding-the-results)
 - [SAST output](../../user/application_security/sast/_index.md#download-a-sast-report)
 
 ## `artifacts:reports:secret_detection`

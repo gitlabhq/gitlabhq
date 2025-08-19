@@ -16,7 +16,7 @@ title: GitLab authentication and authorization
 GitLab integrates with a number of [OmniAuth providers](../../integration/omniauth.md#supported-providers),
 and the following external authentication and authorization providers:
 
-- [LDAP](ldap/_index.md): Includes Active Directory, Apple Open Directory, Open LDAP,
+- [LDAP](ldap/_index.md): Includes Active Directory, Apple Open Directory, OpenLDAP,
   and 389 Server.
   - [Google Secure LDAP](ldap/google_secure_ldap.md)
 - [SAML for GitLab.com groups](../../user/group/saml_sso/_index.md)

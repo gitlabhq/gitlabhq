@@ -1,0 +1,16 @@
+- title: "User setting to disable exact code search"
+  removal_milestone: "18.6"
+  announcement_milestone: "18.3"
+  breaking_change: false
+  reporter: changzhengliu
+  stage: ai-powered
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554933
+  impact: low
+  impact_offering: [GitLab.com]
+  scope: instance
+  resolution_role: Developer
+  manual_task: false
+  body: |  # (required) Don't change this line.
+    The user setting to disable exact code search is now deprecated. On GitLab.com, you can no longer disable exact code search in profile preferences.
+
+    Exact code search provides a better user experience and is compatible with existing search APIs. This user setting is planned for removal in GitLab 18.6 to ensure all users benefit from improved search functionality.

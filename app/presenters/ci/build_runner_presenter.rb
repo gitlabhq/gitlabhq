@@ -43,6 +43,24 @@ module Ci
       project.repository_object_format.to_s
     end
 
+    def runner_inputs
+      return [] unless options&.key?(:inputs)
+
+      input_values = inputs.index_by(&:name)
+
+      options.fetch(:inputs, {}).map do |name, spec|
+        input_value = input_values[name.to_s]&.value || spec[:default]
+
+        {
+          key: name,
+          value: {
+            content: input_value,
+            type: spec[:input_type]
+          }
+        }
+      end
+    end
+
     def runner_variables
       variables
         .sort_and_expand_all(keep_undefined: true, expand_file_refs: false, expand_raw_refs: false)

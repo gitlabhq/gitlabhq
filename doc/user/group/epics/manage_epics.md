@@ -132,12 +132,9 @@ To reorder list items, when viewing an epic:
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200186) more bulk editing attributes in GitLab 18.3.
 
 {{< /history >}}
-
-Users with at least the Planner role can manage epics.
-
-When bulk editing epics in a group, you can edit their labels.
 
 Prerequisites:
 
@@ -150,6 +147,16 @@ To update multiple epics at the same time:
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
+
+When bulk editing epics in a group, you can edit the following attributes:
+
+- State (open or closed)
+- [Assignees](#assignees)
+- [Milestone](../../project/milestones/_index.md)
+- [Labels](../../project/labels.md)
+- [Health status](#health-status)
+- [Notification](../../profile/notifications.md) subscription
+- [Confidentiality](#make-an-epic-confidential)
 
 ## Prevent truncating descriptions with "Read more"
 

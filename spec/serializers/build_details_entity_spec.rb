@@ -273,7 +273,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       let(:user) { create(:project_member, :guest, project: project).user }
 
       context 'when the build has public archive type artifacts' do
-        let(:build) { create(:ci_build, :artifacts) }
+        let(:build) { create(:ci_build, :artifacts, project: project) }
 
         it 'exposes public artifact details' do
           expect(subject[:artifact].keys).to include(:download_path, :browse_path, :locked)

@@ -76,10 +76,6 @@ export default class MRWidgetService {
     return axios.post(url);
   }
 
-  static fetchMetrics(metricsUrl) {
-    return axios.get(`${metricsUrl}.json`);
-  }
-
   static fetchInitialData() {
     return Promise.all([
       axios.get(window.gl.mrWidgetData.merge_request_cached_widget_path),

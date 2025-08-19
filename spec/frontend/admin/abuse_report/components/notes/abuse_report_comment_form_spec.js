@@ -32,7 +32,6 @@ describe('Abuse Report Comment Form', () => {
   const findCommentButton = () => wrapper.find('[data-testid="comment-button"]');
 
   const createComponent = ({
-    abuseReportId = mockAbuseReportId,
     isSubmitting = false,
     initialValue = mockInitialValue,
     autosaveKey = mockAutosaveKey,
@@ -40,7 +39,6 @@ describe('Abuse Report Comment Form', () => {
   } = {}) => {
     wrapper = shallowMount(AbuseReportCommentForm, {
       propsData: {
-        abuseReportId,
         isSubmitting,
         initialValue,
         autosaveKey,

@@ -586,7 +586,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
         additional_properties: {
           label: 'string', # TODO
           value: 72, # Time the CLI ran before closing (seconds)
-          custom_key: custom_value # The extra custom property name
+          custom_key: 'custom_value' # The extra custom property name
         }
       )
 
@@ -606,7 +606,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           additional_properties: {
             label: 'string',
             value: 72,
-            custom_key: custom_value
+            custom_key: 'custom_value'
           }
         )
       end
@@ -636,7 +636,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
               {
                 label: 'string', // TODO
                 value: 72, // Time the CLI ran before closing (seconds)
-                custom_key: custom_value, // The extra custom property name
+                custom_key: 'custom_value', // The extra custom property name
               },
             );
           },
@@ -665,7 +665,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           {
             label: 'string', // TODO
             value: 72, // Time the CLI ran before closing (seconds)
-            custom_key: custom_value, // The extra custom property name
+            custom_key: 'custom_value', // The extra custom property name
           },
         );
 
@@ -694,7 +694,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           data-event-tracking="internal_events_cli_used"
           data-event-label="string"
           data-event-value=72
-          data-event-custom_key=custom_value
+          data-event-custom_key="custom_value"
         >
           Click Me
         </gl-button>
@@ -716,7 +716,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           data-event-tracking-load="internal_events_cli_used"
           data-event-label="string"
           data-event-value=72
-          data-event-custom_key=custom_value
+          data-event-custom_key="custom_value"
         >
           Click Me
         </gl-button>
@@ -731,18 +731,18 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
       --------------------------------------------------
       # HAML -- ON-CLICK
 
-      .inline-block{ data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } }
+      .inline-block{ data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: 'custom_value' } }
         = _('Important Text')
 
       --------------------------------------------------
       # HAML -- COMPONENT ON-CLICK
 
-      = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } })
+      = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: 'custom_value' } })
 
       --------------------------------------------------
       # HAML -- COMPONENT ON-LOAD
 
-      = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: true, event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: custom_value } })
+      = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: true, event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72, event_custom_key: 'custom_value' } })
 
       --------------------------------------------------
       TEXT
@@ -781,6 +781,189 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           expected_vue_template_example,
           expected_haml_example
         )
+      end
+    end
+
+    context 'for an event with sum operator metrics' do
+      let(:expected_rspec_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RSPEC
+
+        it "triggers an internal event" do
+          expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+            project: project,
+            user: user,
+            additional_properties: {
+              label: 'string',
+              value: 72,
+              custom_key: 'custom_value'
+            }
+          ).and increment_usage_metrics(
+            'sums.sum_value_from_internal_events_cli_used_monthly',
+            'sums.sum_value_from_internal_events_cli_used_weekly',
+            'sums.sum_value_from_internal_events_cli_used'
+          ).by(72)
+        end
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      before do
+        File.write(
+          'config/metrics/counts_all/sum_value_from_internal_events_cli_used.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/sum_single_event.yml')
+        )
+      end
+
+      it 'shows examples with additional properties included' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "Exit", # Filters to this item
+          "\n" # select: Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_rspec_example)
+        end
+      end
+
+      context 'for an event with sum operator metrics and non-sum operator metrics' do
+        let(:expected_rspec_example) do
+          <<~TEXT.chomp
+          --------------------------------------------------
+          # RSPEC
+
+          it "triggers an internal event" do
+            expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+              project: project,
+              user: user,
+              additional_properties: {
+                label: 'string',
+                value: 72,
+                custom_key: 'custom_value'
+              }
+            ).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
+            ).and increment_usage_metrics(
+              'sums.sum_value_from_internal_events_cli_used_monthly',
+              'sums.sum_value_from_internal_events_cli_used_weekly',
+              'sums.sum_value_from_internal_events_cli_used'
+            ).by(72)
+          end
+
+          --------------------------------------------------
+          TEXT
+        end
+
+        before do
+          File.write(
+            'config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml',
+            File.read('spec/fixtures/scripts/internal_events/metrics/user_id_single_event.yml')
+          )
+        end
+
+        it 'shows examples with additional properties included' do
+          queue_cli_inputs([
+            "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+            'internal_events_cli_used', # Filters to this event
+            "\n", # Select: config/events/internal_events_cli_used.yml
+            "\e[B", # Arrow down to: rspec
+            "\n", # Select: rspec
+            "Exit", # Filters to this item
+            "\n" # select: Exit
+          ])
+
+          with_cli_thread do
+            expect { plain_last_lines }.to eventually_include_cli_text(expected_rspec_example)
+          end
+        end
+      end
+    end
+
+    context 'for an event without identifiers' do
+      let(:event_filepath) { 'config/events/internal_events_cli_used.yml' }
+      let(:event_content) { internal_event_fixture('events/event_with_additional_properties_without_identifiers.yml') }
+
+      let(:expected_rails_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RAILS
+
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(
+          'internal_events_cli_used',
+          additional_properties: {
+            label: 'string', # TODO
+            value: 72, # Time the CLI ran before closing (seconds)
+            custom_key: 'custom_value' # The extra custom property name
+          }
+        )
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_rspec_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RSPEC
+
+        it "triggers an internal event" do
+          expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+            additional_properties: {
+              label: 'string',
+              value: 72,
+              custom_key: 'custom_value'
+            }
+          )
+        end
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      before do
+        File.write(event_filepath, File.read(event_content))
+      end
+
+      it 'shows examples with additional properties included' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\n", # Select: ruby/rails
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "\e[B", # Arrow down to: js vue
+          "\n", # Select: js vue
+          "\e[B", # Arrow down to: js plain
+          "\n", # Select: js plain
+          "\e[B", # Arrow down to: vue template
+          "\n", # Select: vue template
+          "\e[B", # Arrow down to: haml
+          "\n", # Select: haml
+          "Exit", # Filters to this item
+          "\n" # select: Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(
+            expected_rails_example,
+            expected_rspec_example,
+            expected_vue_example,
+            expected_js_example,
+            expected_vue_template_example,
+            expected_haml_example
+          )
+        end
       end
     end
   end

@@ -28,21 +28,26 @@ module QA
       include Support::Waiter
       include Support::Repeater
       include Ci::Helpers
+      include SharedResourceDeletion
 
       IGNORED_RESOURCES = %w[
+        QA::Resource::Ci::RunnerManager
         QA::Resource::CICDSettings
         QA::Resource::CiVariable
-        QA::Resource::Repository::Commit
         QA::Resource::Design
+        QA::Resource::Fork
         QA::Resource::InstanceOauthApplication
+        QA::Resource::PersonalAccessToken
+        QA::Resource::Repository::Commit
+        QA::Resource::UserGPG
         QA::EE::Resource::ComplianceFramework
         QA::EE::Resource::GroupIteration
-        QA::EE::Resource::Settings::Elasticsearch
-        QA::EE::Resource::VulnerabilityItem
-        QA::EE::Resource::SecurityScanPolicyProject
+        QA::EE::Resource::InstanceAuditEventExternalDestination
         QA::EE::Resource::ScanResultPolicyCommit
         QA::EE::Resource::ScanResultPolicyProject
-        QA::EE::Resource::InstanceAuditEventExternalDestination
+        QA::EE::Resource::SecurityScanPolicyProject
+        QA::EE::Resource::Settings::Elasticsearch
+        QA::EE::Resource::VulnerabilityItem
       ].freeze
 
       PERSONAL_RESOURCES = %w[QA::Resource::Snippet].freeze
@@ -50,15 +55,12 @@ module QA
       PROJECT = 'gitlab-qa-resources'
       BUCKET  = 'failed-test-resources'
 
-      SUCCESS_CODES = [200, 202, 204].freeze
-
       def initialize(file_pattern = nil)
         @file_pattern = file_pattern
       end
 
       def run_delete
-        failures = []
-        files.flat_map do |file|
+        results = files.flat_map do |file|
           resources = read_file(file)
           if resources.nil?
             logger.info("#{file} is empty, next...")
@@ -72,15 +74,10 @@ module QA
           end
 
           resource_list = organize_resources(filtered_resources)
-          failures << delete_resources(resource_list)
-        end
+          delete_resources(resource_list)
+        end.compact
 
-        failures.flatten!
-
-        return puts "\nDone" if failures.empty?
-
-        puts "\nFailed to delete #{failures.size} resources:\n"
-        puts failures
+        log_results(results)
       end
 
       # Upload resources from failed test suites to GCS bucket
@@ -130,6 +127,14 @@ module QA
 
       private
 
+      # Returns a memoized GitLab API client instance
+      #
+      # Creates and caches a Runtime::API::Client configured with the GitLab instance
+      # address and authentication token. The client is used for all API operations
+      # including resource deletion, fetching, and GraphQL requests.
+      #
+      # @return [Runtime::API::Client] Configured API client instance
+      # @raise [SystemExit] If GITLAB_ADDRESS environment variable is not set
       def api_client
         abort("\nPlease provide GITLAB_ADDRESS") unless ENV['GITLAB_ADDRESS']
 
@@ -139,93 +144,73 @@ module QA
         )
       end
 
-      def delete_group_or_project(resource, key, failures)
-        resource_info = resource_info(resource, key)
-        delete_response = delete_resource(resource['api_path'])
+      # Deletes a personal resource using the original author's credentials
+      #
+      # @param [Hash] resource The resource to delete, must contain [:author][:username]
+      # @param [Boolean] delayed_verification Wait until the end of the script to verify deletion
+      # @param [Boolean] permanent Permanently delete the resource instead of marking for deletion
+      # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes
+      # @return [Array<String, Hash>, Hash] Deletion result or resource for delayed verification
+      def delete_personal_resource(resource, delayed_verification, permanent, skip_verification)
+        username = resource[:author][:username]
+        user_client = set_api_client_by_username(username)
 
-        if success?(delete_response&.code) || delete_response.include?('has been already marked for deletion')
-          if !resource_not_found?(resource['api_path'])
-            logger.info("Successfully marked #{resource_info} for deletion...")
-
-            failures << resource_info unless delete_resource_permanently(resource, key)
-          else
-            logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
-          end
-        else
-          logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
-          failures << resource_info
+        with_api_client(user_client) do
+          delete_resource(resource, delayed_verification, permanent, skip_verification)
         end
       end
 
-      def delete_personal_resource(resource)
-        response = get_resource(resource['api_path'])
-        return response unless success?(response&.code)
+      # Deletes resources from a structured hash organized by resource type
+      #
+      # @param [Hash<String, Array<Hash>>] resources_hash Hash where keys are resource class names
+      # @param [Boolean] delayed_verification Wait until the end of the script to verify deletions. Defaults to false
+      # @param [Boolean] permanent Permanently delete resources instead of marking for deletion. Defaults to true
+      # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes. Defaults to false
+      # @return [Array<Array<String, Hash>>] Array of deletion results
+      def delete_resources(resources_hash, delayed_verification = false, permanent = true, skip_verification = false)
+        unverified_deletions = []
+        results = []
 
-        parsed_body = parse_body(response)
-        username = parsed_body[:author][:username]
-        user_api_client = set_api_client_by_username(username)
+        resources_hash.each do |(key, value)|
+          type = key.split('::').last.downcase
 
-        delete_resource(resource['api_path'], user_api_client)
-      end
+          value.each do |resource_hash|
+            next if resource_not_found?(resource_hash['api_path'])
 
-      def delete_resource(api_path, client = api_client)
-        delete(Runtime::API::Request.new(client, api_path).url)
-      end
+            resource = get_resource(resource_hash['api_path'])
+            next unless resource
 
-      def delete_resource_permanently(resource, key)
-        resource_info = resource_info(resource, key)
-        type = key.split('::').last.downcase
-        full_path = get_full_path(resource, type)
-
-        return unless full_path
-
-        response = delete_resource("#{resource['api_path']}?permanently_remove=true&full_path=#{full_path}")
-
-        if success?(response&.code)
-          wait_for_resource_deletion(resource['api_path'])
-
-          unless resource_not_found?(resource['api_path'])
-            logger.info("Permanently deleting #{resource_info}..." \
-              "\e[31mFAILED - #{response} - Resource still exists\e[0m")
-
-            return false
-          end
-
-          logger.info("Permanently deleting #{resource_info}... \e[32mSUCCESS\e[0m")
-          true
-        else
-          logger.info("Permanently deleting #{resource_info}... \e[31mFAILED - #{response}\e[0m")
-          false
-        end
-      end
-
-      def delete_resources(resources)
-        resources.each_with_object([]) do |(key, value), failures|
-          value.each do |resource|
-            next if resource_not_found?(resource['api_path'])
-
-            resource_info = resource_info(resource, key)
+            resource_info = resource_info(resource_hash, key)
             logger.info("Processing #{resource_info}...")
 
-            if group_or_project_resource?(key)
-              delete_group_or_project(resource, key, failures)
-              next
-            elsif personal_resource?(key)
-              delete_response = delete_personal_resource(resource)
-            else
-              delete_response = delete_resource(resource['api_path'])
-            end
+            resource[:api_path] = resource_hash['api_path']
+            resource[:type] = type
 
-            if success?(delete_response&.code)
-              logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
+            result = if personal_resource?(key)
+                       delete_personal_resource(resource, delayed_verification, permanent, skip_verification)
+                     elsif type == 'user'
+                       delete_resource(resource, true, permanent, skip_verification)
+                     else
+                       delete_resource(resource, delayed_verification, permanent, skip_verification)
+                     end
+
+            if result.is_a?(Array)
+              results.append(result)
             else
-              logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
-              failures << resource_info
+              unverified_deletions << result
             end
           end
         end
+
+        results.concat(verify_deletions(unverified_deletions, permanent)) unless unverified_deletions.empty?
+
+        results
       end
 
+      # Gathers and validates JSON files matching the configured @file_pattern
+      #
+      # @return [Array<String>] Array of file paths that match the pattern and contain data
+      # @raise [SystemExit] Exits with status 0 if no files match the pattern or all files are empty
       def files
         logger.info("Gathering JSON files using pattern #{@file_pattern}...")
         files = Dir.glob(@file_pattern)
@@ -247,6 +232,17 @@ module QA
         files
       end
 
+      # Filters resources to keep only those that are safe and appropriate for deletion
+      #
+      # Removes resources that match exclusion criteria to prevent accidental deletion
+      # of protected or system resources. Filters out sandbox groups, non-deletable
+      # GET requests, invalid API paths, GraphQL endpoints, and resource types listed
+      # in IGNORED_RESOURCES constant.
+      #
+      # @param [Hash<String, Array<Hash>>] resources Hash where keys are resource class names
+      #   and values are arrays of resource attribute hashes
+      # @return [Hash<String, Array<Hash>>, nil] Filtered resources hash with unsafe resources
+      #   removed, or nil if no deletable resources remain
       def filter_resources(resources)
         logger.info('Filtering resources - Only keep deletable resources...')
 
@@ -254,39 +250,23 @@ module QA
           v.reject do |attributes|
             attributes['info']&.match(/with full_path 'gitlab-e2e-sandbox-group(-\d)?'/) ||
               (attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-")) ||
-              attributes['api_path'] == 'Cannot find resource API path'
+              attributes['api_path'] == 'Cannot find resource API path' ||
+              attributes['api_path'] == '/graphql'
           end
         end
 
         transformed_values.reject! { |k, v| v.empty? || IGNORED_RESOURCES.include?(k) }
       end
 
-      def get_full_path(resource, type)
-        # We need to get the full path of the project again since marking it for deletion changes the name
-        if type == 'project'
-          response = get_resource(resource['api_path'])
-          if success?(response&.code)
-            project = parse_body(response)
-            project[:path_with_namespace]
-          end
-        else
-          resource['info'].split("'").last
-        end
-      end
-
-      def get_resource(api_path)
-        response = nil
-        repeat_until(max_attempts: 3, sleep_interval: 1, raise_on_failure: false) do
-          response = get(Runtime::API::Request.new(api_client, api_path).url)
-
-          success?(response&.code)
-        end
-
-        logger.warn("Getting resource #{api_path}... \e[31mFAILED - #{response}\e[0m") unless success?(response&.code)
-
-        response
-      end
-
+      # Returns a memoized Google Cloud Storage client instance
+      #
+      # Creates and caches a Fog::Google::Storage client configured with the project
+      # and authentication credentials. Automatically detects whether the json_key
+      # is a file path (uses google_json_key_location) or a JSON string (uses
+      # google_json_key_string) for authentication.
+      #
+      # @return [Fog::Google::Storage] Configured GCS client instance
+      # @raise [SystemExit] Aborts program execution if JSON key file/string is invalid
       def gcs_storage
         @gcs_storage ||= Fog::Google::Storage.new(
           google_project: PROJECT,
@@ -296,12 +276,15 @@ module QA
         abort("\nThere might be something wrong with the JSON key file - [ERROR] #{e}")
       end
 
-      def group_or_project_resource?(key)
-        key == 'QA::Resource::Group' || key == 'QA::Resource::Project'
-      end
-
-      # Path to GCS service account json key file
-      # Or the content of the key file as a hash
+      # Returns the GCS service account JSON key for authentication
+      #
+      # Retrieves and memoizes the Google Cloud Storage authentication credentials
+      # from the QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS environment variable.
+      # The value can be either a file path to a JSON key file or the JSON key
+      # content as a string.
+      #
+      # @return [String] Either the file path to the JSON key file or the JSON key content as a string
+      # @raise [SystemExit] Aborts program execution if QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS is not set
       def json_key
         unless ENV['QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS']
           abort("\nPlease provide QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS")
@@ -310,14 +293,25 @@ module QA
         @json_key ||= ENV["QA_FAILED_TEST_RESOURCES_GCS_CREDENTIALS"]
       end
 
-      # It is more efficient to delete resources in hierarchical order
-      # Groups first, then projects, then other resources, then users
+      # Organizes resources in hierarchical deletion order for efficient cleanup
+      #
+      # Reorders resources to respect dependency relationships during deletion.
+      # The deletion order prevents dependency conflicts by removing parent resources
+      # before child resources, and system resources before user resources.
+      #
+      # @param [Hash<String, Array<Hash>>] filtered_resources Hash where keys are resource
+      #   class names and values are arrays of resource data hashes
+      # @return [Hash<String, Array<Hash>>] Reorganized resources hash in deletion order:
+      #   1. Sandboxes, 2. Groups, 3. Projects, 4. Other resources, 5. Users
       def organize_resources(filtered_resources)
         organized_resources = {}
+
+        sandboxes = filtered_resources.delete('QA::Resource::Sandbox')
         groups = filtered_resources.delete('QA::Resource::Group')
         projects = filtered_resources.delete('QA::Resource::Project')
         users = filtered_resources.delete('QA::Resource::User')
 
+        organized_resources['QA::Resource::Sandbox'] = sandboxes if sandboxes
         organized_resources['QA::Resource::Group'] = groups if groups
         organized_resources['QA::Resource::Project'] = projects if projects
         organized_resources.merge!(filtered_resources) unless filtered_resources.empty?
@@ -326,9 +320,15 @@ module QA
         organized_resources
       end
 
-      # In environments that we can run tests with admin scope,
-      # we should use GITLAB_QA_ADMIN_ACCESS_TOKEN to clean up resources.
-      # This is necessary for cleaning up User resources.
+      # Returns the appropriate personal access token for API authentication
+      #
+      # Retrieves and memoizes a GitLab personal access token, prioritizing admin tokens
+      # when available. Admin tokens (GITLAB_QA_ADMIN_ACCESS_TOKEN) are preferred for
+      # environments that support admin scope operations, as they're required for
+      # cleaning up User resources and other admin-level operations.
+      #
+      # @return [String] Personal access token for GitLab API authentication
+      # @raise [SystemExit] Aborts program execution if neither token environment variable is set
       def personal_access_token
         if ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'].blank? && ENV['GITLAB_QA_ACCESS_TOKEN'].blank?
           abort("\nPlease provide either GITLAB_QA_ADMIN_ACCESS_TOKEN or GITLAB_QA_ACCESS_TOKEN")
@@ -337,10 +337,18 @@ module QA
         @personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'] || ENV['GITLAB_QA_ACCESS_TOKEN']
       end
 
+      # Checks if a resource key is included in the PERSONAL_RESOURCES constant
+      #
+      # @param [String] key The resource key to check
+      # @return [Boolean] true if the key is in PERSONAL_RESOURCES, false otherwise
       def personal_resource?(key)
         PERSONAL_RESOURCES.include?(key)
       end
 
+      # Reads and parses a JSON file
+      #
+      # @param [String] file Path to the file to read
+      # @return [Hash, Array, nil] Parsed JSON content, or nil if parsing fails
       def read_file(file)
         logger.info("Reading and processing #{file}...")
         JSON.parse(File.read(file))
@@ -349,15 +357,39 @@ module QA
         nil
       end
 
+      # Generates a descriptive string for a resource
+      #
+      # @param [Hash] resource The resource hash containing resource data
+      # @param [String] key The resource type key (e.g., 'QA::Resource::Project')
+      # @return [String] Formatted resource description using 'info' if available, otherwise 'api_path'
       def resource_info(resource, key)
         resource['info'] ? "#{key} - #{resource['info']}" : "#{key} at #{resource['api_path']}"
       end
 
+      # Checks if a resource exists by making a GET request to its API path
+      #
+      # @param [String] api_path The API path to check, may include query parameters
+      # @return [Boolean] true if resource returns 404 (not found), false otherwise
       def resource_not_found?(api_path)
         # if api path contains param "?hard_delete=<boolean>", remove it
         get(Runtime::API::Request.new(api_client, api_path.split('?').first).url).code.eql? 404
       end
 
+      # Creates a GitLab API request URL from a resource or path
+      #
+      # @param [Hash, String] resource_or_path Either a resource hash containing :api_path or a direct API path string
+      # @param [Hash] options Additional options to pass to the API request
+      # @return [String] The complete API request URL
+      def resource_request(resource_or_path, **options)
+        api_path = resource_or_path.is_a?(Hash) ? resource_or_path[:api_path] : resource_or_path
+
+        Runtime::API::Request.new(api_client, api_path, **options).url
+      end
+
+      # Creates an API client using the appropriate personal access token for a given username
+      #
+      # @param [String] username The username to create an API client for
+      # @return [Runtime::API::Client] API client configured with the user's personal access token
       def set_api_client_by_username(username)
         user_pat = if username == "gitlab-qa" && ENV['GITLAB_QA_ACCESS_TOKEN']
                      ENV['GITLAB_QA_ACCESS_TOKEN']
@@ -372,14 +404,26 @@ module QA
         Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: user_pat)
       end
 
-      def success?(code)
-        SUCCESS_CODES.include?(code)
-      end
-
-      def wait_for_resource_deletion(api_path)
-        wait_until(max_duration: 20, sleep_interval: 1, raise_on_failure: false) do
-          resource_not_found?(api_path)
-        end
+      # Temporarily switches the API client context for the duration of the block
+      #
+      # This method allows for temporary client switching, which is useful for operations
+      # that need to be performed with different authentication credentials (e.g., personal
+      # resource deletion with user-specific tokens).
+      #
+      # @param [Runtime::API::Client] client The API client to use temporarily
+      # @yield [] The block to execute with the temporary client
+      # @return [Object] The return value of the yielded block
+      # @example
+      #   user_client = set_api_client_by_username('gitlab-qa-user1')
+      #   with_api_client(user_client) do
+      #     delete_resource(personal_resource)
+      #   end
+      def with_api_client(client)
+        original_client = @api_client
+        @api_client = client
+        yield
+      ensure
+        @api_client = original_client
       end
     end
   end

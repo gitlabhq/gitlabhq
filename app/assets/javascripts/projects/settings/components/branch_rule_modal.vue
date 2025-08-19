@@ -93,7 +93,7 @@ export default {
     },
     formDescriptionText() {
       return s__(
-        'BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/ are supported',
+        'BranchRules|Wildcards such as %{stable} or %{production} are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}',
       );
     },
   },
@@ -139,6 +139,12 @@ export default {
       </gl-collapsible-listbox>
       <div data-testid="help-text" class="gl-mt-2 gl-text-subtle">
         <gl-sprintf :message="formDescriptionText">
+          <template #stable
+            ><code>{{ __('*-stable') }}</code></template
+          >
+          <template #production
+            ><code>{{ __('production/*') }}</code></template
+          >
           <template #link="{ content }">
             <gl-link :href="$options.wildcardsHelpDocLink">
               {{ content }}

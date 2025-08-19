@@ -15,6 +15,10 @@ to AI that you think could benefit from being in this list, add it!
 
 A variation on Fine Tuning. Instead of opening the model and adjusting the layer weights, new trained layers are added onto the model or hosted in an upstream standalone model. Also known as Adapter-based Models. By selectively fine-tuning these specific modules rather than the entire model, Adapters facilitate the customisation of pre-trained models for distinct tasks, requiring only a minimal increase in parameters. This method enables precise, task-specific adjustments of the model without altering its foundational structure.
 
+### AI catalog
+
+The [Workflow Catalog Group](https://handbook.gitlab.com/handbook/engineering/ai/workflow-catalog/) is focused on developing Workflow Catalog, a catalog of Agents, tools, and flows that can be created, curated, and shared across organizations, groups, and projects.
+
 ### AI gateway
 
 Standalone service used to give access to AI features to non-SaaS GitLab users. This logic will be moved to Cloud Connector when that service is ready. Eventually, the AI gateway will be used to host endpoints that proxy requests to AI providers, removing the need for the GitLab Rails monolith to integrate and communicate directly with third-party Large Language Models (LLMs). [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
@@ -77,7 +81,7 @@ A LLM which cannot be fine-tuned (also Frozen LLM).
 
 ### GitLab Duo
 
-AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/ai_features.md) features page.
+AI-assisted features across the GitLab DevSecOps platform. These features aim to help increase velocity and solve key pain points across the software development lifecycle. See also the [GitLab Duo](../../user/gitlab_duo/_index.md) features page.
 
 ### GitLab Managed Model
 
@@ -97,11 +101,7 @@ A LLM running on a user's workstation. [More information](https://gitlab.com/gro
 
 ### LLM
 
-A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/ai_features.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
-
-### Model Validation
-
-Group within the AI-powered Stage working on the Prompt Library, supporting AI Validation of GitLab Duo features, and researching AI/ML models to support other use-cases for AI at GitLab. [Team handbook section](https://handbook.gitlab.com/handbook/product/categories/features/index.html#ai-powered-ai-model-validation-group)
+A Large Language Model, or LLM, is a very large-scale neural network trained to understand and generate human-like text. For [GitLab Duo features](../../user/gitlab_duo/_index.md), GitLab is currently working with frozen models hosted at [Google and Anthropic](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2864#note_1787040242)
 
 ### Offline Model
 
@@ -111,9 +111,9 @@ A model that runs without internet or intranet connection (for example, you are 
 
 Models that are published with their source code and weights and are available for modifications and re-distribution. Examples: Llama / Llama 2, BLOOM, Falcon, Mistral, Gemma.
 
-### Prompt library
+### Centralized Evaluation Framework
 
-The ["Prompt Library"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for testing different prompting techniques with LLMs. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. Key features include the ability to manage and run dataflow pipelines using Apache Beam, and the execution of multiple evaluation experiments in a single pipeline run on prompts with various third-party AI Services. [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
+The ["Centralized Evaluation Framework"](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library) is a Python library that provides a CLI for evaluating GitLab AI features. It enables data-driven improvements to LLM applications by facilitating hypothesis testing. [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 
 ### Prompt Registry
 
@@ -170,28 +170,32 @@ sufficient or if an additional tool must be used to answer the question.
 
 ## Core Layer Concepts (GitLab-specific)
 
-### Flow 
+### Flow
 
 A **goal-oriented, structured graph** that orchestrates agents and tools to deliver a single, economically-valuable outcome (e.g., *create a code-review MR*, *triage issues*).
 
-- **Structure** – Explicit phases: planning → execution → completion  
-- **Nodes** – Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
-- **Trigger & Terminator** – Every flow has one or many defined start trigger(s) and a defined end state  
+- **Structure** - Explicit phases: planning → execution → completion
+- **Nodes** - Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
+- **Trigger & Terminator** - Every flow has one or many defined start trigger(s) and a defined end state
 - **Input** - Each Flow must have an input. Inputs set the context for the Flow session and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
-- **Session** – One execution of an flow; sessions carry user-specific goals and data
+- **Session** - One execution of an flow; sessions carry user-specific goals and data
 
-> **Analogy:** *competency / job description* – the "what & when" of getting work done.
+{{< alert type="note" >}}
+
+**Analogy:** *competency / job description* - the "what & when" of getting work done.
+
+{{< /alert >}}
 
 ### Agent
 
 A **specialized, LLM-powered decision-maker** that owns a single node inside an flow. Can be defined independently and reused across multiple flows as a reusable component.
 
-- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents    
-- **Prompt (Goal)** – Receives the session-specific objective from the flow
-- **Tools** – May call only the tools granted by the flow node definition and the user/company definition of available tools
-- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available 
-- **Reasoning** – Uses an LLM to decompose its goal into dynamic subtasks  
-- **Context awareness** – Gains project / repo / issue data through tool calls  
+- **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents
+- **Prompt (Goal)** - Receives the session-specific objective from the flow
+- **Tools** - May call only the tools granted by the flow node definition and the user/company definition of available tools
+- **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available
+- **Reasoning** - Uses an LLM to decompose its goal into dynamic subtasks
+- **Context awareness** - Gains project / repo / issue data through tool calls
 
 GitLab agents are **specialists**, not generalists, to maximize reliability and UX.
 
@@ -199,18 +203,18 @@ GitLab agents are **specialists**, not generalists, to maximize reliability and 
 
 A **discrete, deterministic capability** an agent (or flow step) invokes to perform read/write actions. Tools can be used to perform these in GitLab or in 3rd party applications via MCP or other protocols.
 
-*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.  
+*Examples:* read GitLab issues, clone a repository, commit & push changes, call a REST API.
 Tools expose data or side-effects; they themselves perform **no reasoning**.
 
-## Flow types 
+## Flow types
 
-### Current implementation 
+### Current implementation
 
-- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner 
+- **Sequence** - The Flow is executing agents that handover their output to the next agent in a pre set manner
 
-### Future implementations 
+### Future implementations
 
-- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations  
+- **Single Agent** - A single agent is executing the entire flow to completion, suitable for small defined tasks with latency considerations
 - **Multi Agent** - A pool of agents are working to complete a task in a manner where each agent is getting a chance to solve it, and/or a supervisor chooses the final solution. Can support different graph topologies
 
 ## Supporting Terminology
@@ -227,7 +231,7 @@ Tools expose data or side-effects; they themselves perform **no reasoning**.
 | **Autonomous Agent** | Historical term for an agent that can loop without human approval. In GitLab, autonomy level is governed by flow design, not by a separate agent type. |
 | **Framework** | A platform for building multi-agent systems. GitLab Duo Agent Platform uses **LangGraph**, an extension to LangChain that natively models agent graphs. |
 
-## Execution 
+## Execution
 
 Flows are executed in the following ways:
 

@@ -28,6 +28,12 @@ RSpec.describe Integrations::ExecuteWorker, '#perform', feature_category: :integ
     worker.perform(integration.id, {})
   end
 
+  it 'logs executed integration class name' do
+    expect(worker).to receive(:log_extra_metadata_on_done).with(:integration_class, 'Integrations::Jira')
+
+    worker.perform(integration.id, {})
+  end
+
   context 'when integration cannot be found' do
     it 'completes silently and does not log an error' do
       expect(Gitlab::IntegrationsLogger).not_to receive(:error)

@@ -96,7 +96,7 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
             end.to change { work_item2.reload.confidential }.from(false).to(true)
               .and change { work_item2.assignee_ids }.from([]).to([assignee.id])
               .and change { work_item2.milestone_id }.from(nil).to(milestone.id)
-              .and change { work_item2.label_ids }.from([label1.id]).to([label1.id, label2.id])
+              .and change { work_item2.label_ids }.from([label1.id]).to(match_array([label1.id, label2.id]))
           end
         end
 

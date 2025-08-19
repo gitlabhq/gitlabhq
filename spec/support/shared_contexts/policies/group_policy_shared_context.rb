@@ -7,6 +7,9 @@ RSpec.shared_context 'GroupPolicy context' do
       organization: organization)
   end
 
+  let_it_be(:subgroup) { create(:group, :private, parent: group) }
+
+  let_it_be(:anonymous) { nil }
   let_it_be(:guest) { create(:user, guest_of: group) }
   let_it_be(:planner) { create(:user, planner_of: group) }
   let_it_be(:reporter) { create(:user, reporter_of: group) }
@@ -16,6 +19,8 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_group_member) { create(:user) }
   let_it_be(:external_user) { create(:user, :external) }
+  let_it_be(:subgroup_guest) { create(:user, guest_of: subgroup) }
+  let_it_be(:subgroup_maintainer) { create(:user, maintainer_of: subgroup) }
 
   let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 
@@ -30,7 +35,7 @@ RSpec.shared_context 'GroupPolicy context' do
 
   let(:guest_permissions) do
     %i[
-      read_label read_group read_group_metadata upload_file read_namespace_via_membership read_group_activity
+      read_label read_group read_group_metadata read_namespace_via_membership read_group_activity
       read_group_issues read_group_boards read_group_labels read_group_milestones
       read_group_merge_requests
     ]
@@ -65,7 +70,9 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       create_custom_emoji
       create_package
+      create_observability_access_request
       read_cluster
+      read_observability_portal
     ]
   end
 
@@ -77,7 +84,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_upload destroy_upload
       admin_achievement
       award_achievement
-      read_group_runners
+      read_runners
       admin_push_rules
     ]
   end
@@ -90,7 +97,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_namespace
       admin_group_member
       admin_package
-      admin_runner
+      admin_runners
       change_visibility_level
       set_note_created_at
       create_subgroup

@@ -3,7 +3,7 @@
 require 'digest'
 
 module QA
-  RSpec.describe 'Create', :requires_admin, product_group: :source_code do
+  RSpec.describe 'Create', :requires_admin, feature_category: :source_code_management do
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
       include Support::API
 

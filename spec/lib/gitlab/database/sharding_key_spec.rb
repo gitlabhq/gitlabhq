@@ -9,7 +9,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_sharding_key) do
     [
-      'web_hook_logs_daily' # temporary copy of web_hook_logs
+      'web_hook_logs_daily', # temporary copy of web_hook_logs
+      'ci_gitlab_hosted_runner_monthly_usages', # Dedicated only table, to be sharded
+      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
     ]
   end
 
@@ -19,12 +21,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     [
       'analytics_devops_adoption_segments.namespace_id',
       *['badges.project_id', 'badges.group_id'],
-      'ci_pipeline_schedules.project_id',
       'ci_sources_pipelines.project_id',
-      'ci_triggers.project_id',
-      'gpg_signatures.project_id',
-      *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
-      *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *['todos.project_id', 'todos.group_id'],
       *uploads_and_partitions
@@ -33,30 +30,30 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
   # The following tables are work in progress as part of
   # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-  # TODO: Remove these excepttions once the issue is closed.
+  # TODO: Remove these exceptions once the issue is closed.
   let(:uploads_and_partitions) do
-    [
-      "achievement_uploads.namespace_id",
-      "ai_vectorizable_file_uploads.project_id",
-      "alert_management_alert_metric_image_uploads.project_id",
-      "bulk_import_export_upload_uploads.project_id", "bulk_import_export_upload_uploads.namespace_id",
-      "dependency_list_export_part_uploads.organization_id",
-      "dependency_list_export_uploads.organization_id", "dependency_list_export_uploads.namespace_id",
-      "dependency_list_export_uploads.project_id",
-      "design_management_action_uploads.namespace_id",
-      "import_export_upload_uploads.project_id", "import_export_upload_uploads.namespace_id",
-      "issuable_metric_image_uploads.namespace_id",
-      "namespace_uploads.namespace_id",
-      "note_uploads.namespace_id",
-      "organization_detail_uploads.organization_id",
-      "project_import_export_relation_export_upload_uploads.project_id",
-      "project_topic_uploads.organization_id",
-      "project_uploads.project_id",
-      "snippet_uploads.organization_id",
-      "vulnerability_export_part_uploads.organization_id",
-      "vulnerability_export_uploads.organization_id",
-      "vulnerability_archive_export_uploads.project_id",
-      "vulnerability_remediation_uploads.project_id"
+    %w[
+      achievement_uploads.namespace_id
+      ai_vectorizable_file_uploads.project_id
+      alert_management_alert_metric_image_uploads.project_id
+      bulk_import_export_upload_uploads.project_id bulk_import_export_upload_uploads.namespace_id
+      dependency_list_export_part_uploads.organization_id
+      dependency_list_export_uploads.organization_id dependency_list_export_uploads.namespace_id
+      dependency_list_export_uploads.project_id
+      design_management_action_uploads.namespace_id
+      import_export_upload_uploads.project_id import_export_upload_uploads.namespace_id
+      issuable_metric_image_uploads.namespace_id
+      namespace_uploads.namespace_id
+      note_uploads.namespace_id
+      organization_detail_uploads.organization_id
+      project_import_export_relation_export_upload_uploads.project_id
+      project_topic_uploads.organization_id
+      project_uploads.project_id
+      snippet_uploads.organization_id
+      vulnerability_export_part_uploads.organization_id
+      vulnerability_export_uploads.organization_id
+      vulnerability_archive_export_uploads.project_id
+      vulnerability_remediation_uploads.project_id
     ]
   end
 
@@ -101,8 +98,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'gitlab_subscription_histories.namespace_id',
       # allowed as it points to itself
       'organizations.id',
-      # allowed as it points to itself
-      'users.id',
       # contains an object storage reference. Group_id is the sharding key but we can't use the usual cascade delete FK.
       'virtual_registries_packages_maven_cache_entries.group_id',
       # The table contains references in the object storage and thus can't have cascading delete
@@ -248,7 +243,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
-      "snippets" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476216',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
       "oauth_access_tokens" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
@@ -290,6 +284,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       # End of uploads related tables
       "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "clusters" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553452",
       "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "group_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "project_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
@@ -305,7 +300,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "issue_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549030",
       "jira_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549032",
       "zentao_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549043",
-      "users" => "https://gitlab.com/gitlab-org/gitlab/-/issues/546559"
+      "abuse_reports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553435"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
@@ -378,6 +373,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     tables_exempted_from_sharding.each do |entry|
       expect(entry.sharding_key).to be_nil,
         "#{entry.table_name} is exempted from sharding and hence should not have a sharding key defined"
+    end
+  end
+
+  it 'does not allow tables in sharded schemas to be permanently exempted', :aggregate_failures do
+    sharded_schemas = Gitlab::Database
+      .all_gitlab_schemas
+      .select { |s| Gitlab::Database::GitlabSchema.require_sharding_key?(s) }
+
+    tables_exempted_from_sharding.each do |entry|
+      expect(entry.gitlab_schema).not_to be_in(sharded_schemas),
+        "#{entry.table_name} is in a schema (#{entry.gitlab_schema}) " \
+          "that requires sharding so is not allowed to be exempted from sharding"
     end
   end
 
@@ -460,7 +467,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   def tables_missing_sharding_key(starting_from_milestone:)
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        !entry.exempt_from_sharding? &&
         entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
@@ -469,10 +475,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   def tables_missing_sharding_key_or_sharding_in_progress
     ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
       entry.table_name if entry.sharding_key.blank? &&
-        !entry.exempt_from_sharding? &&
-        ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema) &&
         entry.sharding_key_issue_url.blank? &&
-        entry.desired_sharding_key.blank?
+        entry.desired_sharding_key.blank? &&
+        ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
     end
   end
 

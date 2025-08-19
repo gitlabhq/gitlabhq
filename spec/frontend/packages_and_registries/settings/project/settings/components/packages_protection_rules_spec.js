@@ -529,7 +529,7 @@ describe('Packages protection rules project settings', () => {
   describe.each`
     description                                       | beforeFn                                                | rule                              | title                     | toastMessage
     ${'when `Add protection rule` button is clicked'} | ${() => findAddProtectionRuleButton().trigger('click')} | ${null}                           | ${'Add protection rule'}  | ${'Package protection rule created.'}
-    ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')}     | ${packagesProtectionRulesData[0]} | ${'Edit protection rule'} | ${'Package protection rule updated.'}
+    ${'when `Edit` button for a rule is clicked'}     | ${() => findTableRowButtonEdit(0).trigger('click')}     | ${packagesProtectionRulesData[0]} | ${'Edit protection rule'} | ${'Changes saved.'}
   `('$description', ({ beforeFn, title, rule, toastMessage }) => {
     beforeEach(async () => {
       createComponent();

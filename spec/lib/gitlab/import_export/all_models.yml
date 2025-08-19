@@ -155,6 +155,8 @@ label:
 - priorities
 - epic_board_labels
 - epic_lists
+- group
+- organization
 milestone:
 - group
 - project
@@ -287,6 +289,8 @@ merge_requests:
 - running_scan_result_policy_violations
 - failed_scan_result_policy_violations
 - approval_metrics
+- approval_policy_merge_request_bypass_events
+- generated_ref_commits
 external_pull_requests:
 - project
 merge_request_diff:
@@ -299,6 +303,11 @@ merge_request_diff_commits:
 - merge_request_diff
 - commit_author
 - committer
+- merge_request_commits_metadata
+merge_request_commits_metadata:
+- commit_author
+- committer
+- merge_request_diff_commits
 merge_request_diff_detail:
 - merge_request_diff
 merge_request_diff_files:
@@ -346,6 +355,7 @@ ci_pipelines: &pipeline_definition
 - external_pull_request
 - deployments
 - environments
+- job_environments
 - chat_data
 - source_pipeline
 - ref_status
@@ -423,12 +433,14 @@ builds:
 - trigger
 - erased_by
 - deployment
+- job_environment
 - pending_state
 - queuing_entry
 - runtime_metadata
 - trace_chunks
 - report_results
 - namespace
+- inputs
 - job_artifacts
 - job_variables
 - sourced_pipelines
@@ -464,6 +476,8 @@ builds:
 - job_artifacts_cyclonedx
 - job_artifacts_requirements_v2
 - job_artifacts_repository_xray
+- job_definition
+- job_definition_instance
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -489,10 +503,13 @@ bridges:
 - pipeline
 - auto_canceled_by
 - ci_stage
+- job_definition
+- job_definition_instance
 - needs
 - resource
 - sourced_pipeline
 - deployment
+- job_environment
 - resource_group
 - metadata
 - trigger
@@ -573,6 +590,7 @@ container_repositories:
 - project
 - name
 project:
+- ai_flow_triggers
 - instance_runner_monthly_usages
 - hosted_runner_monthly_usages
 - catalog_resource
@@ -618,6 +636,7 @@ project:
 - alert_hooks_integrations
 - incident_hooks_integrations
 - vulnerability_hooks_integrations
+- ready_active_context_code_repository
 - apple_app_store_integration
 - google_cloud_platform_artifact_registry_integration
 - google_cloud_platform_workload_identity_federation_integration
@@ -665,6 +684,7 @@ project:
 - ewm_integration
 - clickup_integration
 - external_wiki_integration
+- linear_integration
 - mock_ci_integration
 - mock_monitoring_integration
 - squash_tm_integration
@@ -713,6 +733,7 @@ project:
 - stages
 - ci_refs
 - builds
+- bridges
 - processables
 - runner_projects
 - runners
@@ -815,6 +836,7 @@ project:
 - package_protection_rules
 - rpm_repository_files
 - npm_metadata_caches
+- helm_metadata_caches
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
 - alerting_setting
@@ -971,6 +993,7 @@ resource_label_events:
 - merge_request
 - epic
 - label
+- namespace
 error_tracking_setting:
 - project
 suggestions:

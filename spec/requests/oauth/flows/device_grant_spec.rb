@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organization, feature_category: :system_access do
   let_it_be(:organization) { current_organization }
-  let_it_be(:application) { create(:oauth_application, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', confidential: false) }
+  let_it_be(:application) do
+    create(:oauth_application, redirect_uri: 'urn:ietf:wg:oauth:2.0:oob', confidential: false, scopes: 'read_user')
+  end
+
   let_it_be(:user) { create(:user, :with_namespace, organizations: [organization]) }
   let_it_be(:client_id) { application.uid }
   let_it_be(:client_secret) { application.secret }
@@ -12,7 +15,7 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organiz
   let(:device_authorization_params) do
     {
       client_id: client_id,
-      scope: 'api'
+      scope: 'read_user'
     }
   end
 
@@ -47,7 +50,7 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organiz
   end
 
   describe 'Device Authorization Request' do
-    context 'with valid client_id' do
+    context 'with valid client_id and scope' do
       it 'returns device code and verification URI' do
         response_body = fetch_device_code
 
@@ -62,6 +65,36 @@ RSpec.describe 'Gitlab OAuth2 Device Authorization Grant', :with_current_organiz
 
         expect(response).to have_gitlab_http_status(:unauthorized)
         expect(json_response['error']).to eq('invalid_client')
+      end
+    end
+
+    context 'with invalid scope request' do
+      shared_examples 'rejects device authorization with invalid_scope error' do
+        it 'rejects the request with invalid_scope error' do
+          fetch_device_code
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('invalid_scope')
+        end
+      end
+
+      context 'when requesting scopes beyond application limits' do
+        let(:device_authorization_params) { super().merge(scope: 'api') }
+
+        include_examples 'rejects device authorization with invalid_scope error'
+      end
+
+      context 'when no requesting scope is specified' do
+        # As no default behaviour is currently specified in gem or configuration when scope is blank
+        let(:device_authorization_params) { super().except(:scope) }
+
+        include_examples 'rejects device authorization with invalid_scope error'
+      end
+
+      context 'when requesting multiple scopes with mixed validity' do
+        let(:device_authorization_params) { super().merge(scope: 'read_user api') }
+
+        include_examples 'rejects device authorization with invalid_scope error'
       end
     end
   end

@@ -25,18 +25,27 @@ module Keeps
       super
     end
 
-    def each_change
+    def each_identified_change
       workers_by_feature_category.deep_dup.each do |feature_category, workers|
-        remove_workers_from_list(workers.pluck(:path)) # rubocop:disable CodeReuse/ActiveRecord -- small dataset
-
-        workers.each do |worker|
-          file_helper = ::Keeps::Helpers::FileHelper.new(worker[:path])
-          node = file_helper.data_consistency_node
-          File.write(worker[:path], file_helper.replace_as_string(node, ':sticky'))
-        end
-
-        yield(build_change(feature_category, workers))
+        change = build_change(feature_category, workers)
+        change.context = { feature_category: feature_category, workers: workers }
+        yield(change)
       end
+    end
+
+    def make_change!(change)
+      workers = change.context[:workers]
+
+      remove_workers_from_list(workers.pluck(:path)) # rubocop:disable CodeReuse/ActiveRecord -- small dataset
+
+      workers.each do |worker|
+        file_helper = ::Keeps::Helpers::FileHelper.new(worker[:path])
+        node = file_helper.data_consistency_node
+        File.write(worker[:path], file_helper.replace_as_string(node, ':sticky'))
+      end
+
+      change.changed_files = workers.pluck(:path).prepend(WORKERS_DATA_CONSISTENCY_PATH) # rubocop:disable CodeReuse/ActiveRecord -- small dataset
+      change
     end
 
     private
@@ -61,7 +70,6 @@ module Keeps
       change.identifiers = workers.map { |worker| worker[:name].to_s }.prepend(feature_category)
       change.labels = labels(feature_category)
       change.reviewers = pick_reviewers(feature_category, change.identifiers)
-      change.changed_files = workers.pluck(:path).prepend(WORKERS_DATA_CONSISTENCY_PATH) # rubocop:disable CodeReuse/ActiveRecord -- small dataset
 
       change.description = <<~MARKDOWN.chomp
         ## What does this MR

@@ -347,7 +347,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             end
 
             it 'raises and logs an error because the embedding content cannot be blank' do
-              expect(ActiveContext::Logger).to receive(:retryable_exception).with(vertex_blank_error, refs: anything)
+              expect(ActiveContext::Logger).to receive(:retryable_exception)
+                .with(vertex_blank_error, class: 'Class', refs: anything)
 
               expect { preprocessed_result }.not_to change { reference.documents.count }
               expect(preprocessed_result[:successful]).to be_empty
@@ -397,7 +398,8 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
             end
 
             it 'raises and logs an error because the embedding content cannot be blank' do
-              expect(ActiveContext::Logger).to receive(:retryable_exception).with(vertex_blank_error, refs: anything)
+              expect(ActiveContext::Logger).to receive(:retryable_exception)
+                .with(vertex_blank_error, class: 'Class', refs: anything)
 
               expect { preprocessed_result }.not_to change { reference.documents.count }
               expect(preprocessed_result[:successful]).to be_empty

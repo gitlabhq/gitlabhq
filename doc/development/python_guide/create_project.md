@@ -253,7 +253,7 @@ test:
 
 ## Adding reviewer roulette
 
-We recommend reviewer roulette to distribute review workload across reviewers and maintainers. A pool of Python Reviewers is available 
+We recommend reviewer roulette to distribute review workload across reviewers and maintainers. A pool of Python Reviewers is available
 for small Python projects and can be configured following [these steps](maintainership.md#how-to-set-up-a-python-code-review-process).
 
 To create a pool of reviewers specific to a project:

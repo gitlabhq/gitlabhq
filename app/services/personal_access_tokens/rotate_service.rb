@@ -32,6 +32,8 @@ module PersonalAccessTokens
         track_rotation_event
       end
 
+      NotificationService.new.access_token_rotated(token.user, token.name) if response.success?
+
       response
     end
 

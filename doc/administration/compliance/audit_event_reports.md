@@ -28,7 +28,7 @@ To view instance audit events:
    - Project
    - Date Range
 
-Instance audit events can also be accessed using the [instance audit events API](../../api/audit_events.md#instance-audit-events). Instance audit event queries are limited to a maximum of 30 days.
+Instance audit events can also be accessed using the [instance audit events API](../../api/audit_events.md#instance-audit-events).
 
 ## Exporting audit events
 

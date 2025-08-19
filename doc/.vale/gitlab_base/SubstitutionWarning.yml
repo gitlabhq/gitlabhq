@@ -63,6 +63,7 @@ swap:
   once the: "after the"
   once you: "after you"
   open telemetry: "OpenTelemetry"
+  open ldap: "OpenLDAP"
   pack file: packfile
   pack files: packfiles
   pop-up window: "dialog"

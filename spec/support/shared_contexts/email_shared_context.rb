@@ -204,7 +204,7 @@ RSpec.shared_examples 'note handler shared examples' do |forwardable|
 
     let!(:sent_notification) do
       allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
-      SentNotification.record_note(note, support_bot.id, mail_key)
+      SentNotification.record_note(note, support_bot.id, { reply_key: mail_key })
     end
 
     context 'is enabled' do

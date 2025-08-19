@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import your project from Gitea to GitLab
+description: "Import projects from Gitea to GitLab."
 ---
 
 {{< details >}}
@@ -114,7 +115,7 @@ of mapping user contributions for GitLab.com and GitLab Self-Managed.
 ### Old method of user contribution mapping
 
 You can use the old user contribution mapping method for imports to GitLab Self-Managed and GitLab Dedicated instances.
-To use this method, `importer_user_mapping` and `gitea_user_mapping` must be disabled.
+To use this method, `gitea_user_mapping` must be disabled.
 For imports to GitLab.com, you must
 use the [improved method](_index.md#user-contribution-and-membership-mapping) instead.
 

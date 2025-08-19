@@ -304,11 +304,14 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
   end
 
   describe '#change_title' do
-    let(:noteable) { create(:issue, project: project, title: '_Lorem_ ipsum') }
+    let(:noteable) { create(:issue, project: project, title: new_title) }
 
-    subject { service.change_title('Old **title**') }
+    subject { service.change_title(old_title) }
 
     context 'when noteable responds to `title`' do
+      let(:new_title) { '_Lorem_ ipsum' }
+      let(:old_title) { 'Old **title**' }
+
       it_behaves_like 'a system note' do
         let(:action) { 'title' }
       end
@@ -318,6 +321,16 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
       it 'sets the note text' do
         expect(subject.note)
           .to eq %q(<p>changed title from <code class="idiff"><span class="idiff left right deletion">Old **title**</span></code> to <code class="idiff"><span class="idiff left right addition">_Lorem_ ipsum</span></code></p>)
+      end
+
+      context 'when changes are only parts of the title' do
+        let(:new_title) { '_title_ (foo)' }
+        let(:old_title) { 'Resolve "**title** (foo)"' }
+
+        it 'sets the note text' do
+          expect(subject.note)
+            .to eq %q(<p>changed title from <code class="idiff"><span class="idiff left deletion">Resolve &quot;**</span>title<span class="idiff deletion">**</span> (foo)<span class="idiff right deletion">&quot;</span></code> to <code class="idiff"><span class="idiff left addition">_</span>title<span class="idiff right addition">_</span> (foo)</code></p>)
+        end
       end
     end
   end
@@ -415,6 +428,16 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it_behaves_like 'a note with overridable created_at'
 
+      it 'does not touch the updated_at column of the noteable' do
+        existing_updated_at = noteable.updated_at
+
+        travel_to(2.days.from_now) do
+          subject
+
+          expect(noteable.reload.updated_at).to be_like_time(existing_updated_at)
+        end
+      end
+
       describe 'note_body' do
         context 'cross-project' do
           let(:project2) { create(:project, :repository) }
@@ -461,6 +484,24 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
           note = service.cross_reference(mentioned_in)
 
           expect(note.created_at).to be_like_time(mentioned_in.created_at)
+        end
+      end
+
+      context 'with WorkItem' do
+        context 'on project level' do
+          let(:noteable) { create(:work_item, project: project) }
+
+          it 'references the mentioning object' do
+            expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(project)}"
+          end
+        end
+
+        context 'on group level' do
+          let(:noteable) { create(:work_item, :group_level) }
+
+          it 'references the mentioning object' do
+            expect(subject.note).to eq "mentioned in issue #{mentioned_in.to_reference(noteable.namespace)}"
+          end
         end
       end
 

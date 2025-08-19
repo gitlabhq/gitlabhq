@@ -56,7 +56,8 @@ flowchart RL
       D{{Inherited shared member}}
       E{{Shared member}}
     end
-    A-->|Inherited membership in Project X\nDirect membership in Group A|C
+    A-->|Inherited membership in Project X
+         Direct membership in Group A|C
   end
   subgraph Group C
     G(Direct member)
@@ -64,8 +65,11 @@ flowchart RL
   subgraph Group B
     F(Direct member)
   end
-  F-->|Group B\ninvited to\nGroup A|B
-  B-->|Inherited membership in Project X\nIndirect membership in Group A|D
+  F-->|Group B
+       invited to
+       Group A|B
+  B-->|Inherited membership in Project X
+       Indirect membership in Group A|D
   G-->|Group C invited to Project X|E
 ```
 

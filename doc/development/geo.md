@@ -77,12 +77,12 @@ the state of every repository in the [tracking database](#tracking-database).
 
 There are a few ways a repository gets replicated by the:
 
-- [Repository Sync worker](#repository-sync-worker).
+- [Repository Registry Sync worker](#repository-registry-sync-worker).
 - [Geo Log Cursor](#geo-log-cursor-daemon).
 
-#### Project Registry
+#### Project Repository Registry
 
-The `Geo::ProjectRegistry` class defines the model used to track the
+The `Geo::ProjectRepositoryRegistry` class defines the model used to track the
 state of repository replication. For each project in the main
 database, one record in the tracking database is kept.
 
@@ -97,17 +97,17 @@ It records the following about repositories:
 
 It also stores these attributes for project wikis in dedicated columns.
 
-#### Repository Sync worker
+#### Repository Registry Sync worker
 
-The `Geo::RepositorySyncWorker` class runs periodically in the
-background and it searches the `Geo::ProjectRegistry` model for
+The `Geo::RepositoryRegistrySyncWorker` class runs periodically in the
+background and it searches the `Geo::ProjectRepositoryRegistry` model for
 projects that need updating. Those projects can be:
 
 - Unsynced: Projects that have never been synced on the **secondary**
   site and so do not exist yet.
 - Updated recently: Projects that have a `last_repository_updated_at`
   timestamp that is more recent than the `last_repository_successful_sync_at`
-  timestamp in the `Geo::ProjectRegistry` model.
+  timestamp in the `Geo::ProjectRepositoryRegistry` model.
 - Manual: The administrator can manually flag a repository to resync in the
   [Geo **Admin** area](../administration/geo_sites.md).
 
@@ -449,6 +449,8 @@ By default, Geo does not replicate objects that are stored in object storage. De
 - [Enable GitLab-managed object storage replication](../administration/geo/replication/object_storage.md#enabling-gitlab-managed-object-storage-replication).
 - Use their cloud provider's built-in services to replicate object storage across Geo sites.
 - Configure secondary Geo sites to access the same object storage endpoint as the primary site.
+
+Read more about [Object Storage replication tests](geo/geo_validation_tests.md#object-storage-replication-tests).
 
 ## Verification
 

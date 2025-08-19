@@ -3,9 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe ::API::Entities::Project do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:parent_group) { create(:group, :allow_runner_registration_token) }
-  let_it_be(:project) { create(:project, :public, group: parent_group) }
+  let_it_be_with_reload(:grandparent_group) { create(:group) }
+  let_it_be_with_reload(:parent_group) do
+    create(:group, :allow_runner_registration_token, parent: grandparent_group)
+  end
+
+  let_it_be_with_reload(:project) { create(:project, :public, group: parent_group) }
 
   let(:options) { { current_user: current_user } }
   let(:entity) do
@@ -47,6 +53,31 @@ RSpec.describe ::API::Entities::Project do
     context 'when a user can not admin project' do
       it 'is empty' do
         expect(json[:service_desk_address]).to be_nil
+      end
+    end
+  end
+
+  describe '.archived' do
+    where(:project_archived, :parent_archived, :grandparent_archived, :expected_result) do
+      true  | false | false | true
+      true  | false | true  | true
+      true  | true  | false | true
+      true  | true  | true  | true
+      false | true  | true  | true
+      false | true  | false | true
+      false | false | true  | true
+      false | false | false | false
+    end
+
+    with_them do
+      before do
+        project.update!(archived: project_archived)
+        parent_group.update!(archived: parent_archived)
+        grandparent_group.update!(archived: grandparent_archived)
+      end
+
+      it 'returns the expected result' do
+        expect(json[:archived]).to eq(expected_result)
       end
     end
   end

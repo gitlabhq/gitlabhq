@@ -50,8 +50,8 @@ RSpec.shared_examples 'push hook data' do
     expect(data[:after]).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0')
     expect(data[:commits].size).to eq(3)
     expect(data[:total_commits_count]).to eq(3)
-    expect(data[:commits].first[:added]).to eq(['bar/branch-test.txt'])
-    expect(data[:commits].first[:modified]).to eq([])
-    expect(data[:commits].first[:removed]).to eq([])
+    expect(data[:commits].last[:added]).to eq(['bar/branch-test.txt'])
+    expect(data[:commits].last[:modified]).to eq([])
+    expect(data[:commits].last[:removed]).to eq([])
   end
 end

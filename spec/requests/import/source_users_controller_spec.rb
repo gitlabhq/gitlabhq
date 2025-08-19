@@ -2,19 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::SourceUsersController, feature_category: :importers do
-  shared_examples 'it requires feature flag' do
-    context 'when :improved_user_mapping is disabled' do
-      it 'returns 404' do
-        stub_feature_flags(importer_user_mapping: false)
-
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
+RSpec.describe Import::SourceUsersController, :with_organization_url_helpers, feature_category: :importers do
   shared_examples 'it requires the user to be signed in' do
     context 'when the user is not signed in' do
       it 'redirects to the login screen' do
@@ -46,6 +34,8 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       expect(flash[:raw]).to match(/Reassignment not available/)
     end
   end
+
+  let(:current_organization) { source_user.reassign_to_user.organization }
 
   let_it_be_with_reload(:source_user) do
     create(:import_source_user, :with_reassigned_by_user, :awaiting_approval)
@@ -92,7 +82,6 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       it_behaves_like 'it requires the user is the reassign to user'
     end
 
-    it_behaves_like 'it requires feature flag'
     it_behaves_like 'it requires the user to be signed in'
   end
 
@@ -133,7 +122,6 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       it_behaves_like 'it requires the user is the reassign to user'
     end
 
-    it_behaves_like 'it requires feature flag'
     it_behaves_like 'it requires the user to be signed in'
   end
 
@@ -158,7 +146,6 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       it_behaves_like 'it requires the user is the reassign to user'
     end
 
-    it_behaves_like 'it requires feature flag'
     it_behaves_like 'it requires the user to be signed in'
   end
 end

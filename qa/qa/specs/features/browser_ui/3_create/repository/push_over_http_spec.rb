@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Git push over HTTP', product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Git push over HTTP' do
       it 'user pushes code to the repository', :smoke, :skip_fips_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347747' do
         Flow::Login.sign_in

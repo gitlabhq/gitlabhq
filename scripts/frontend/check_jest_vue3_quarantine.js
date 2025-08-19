@@ -135,10 +135,11 @@ async function changedFiles() {
     return [];
   }
 
-  const { RSPEC_CHANGED_FILES_PATH, RSPEC_MATCHING_JS_FILES_PATH } = process.env;
+  const { GLCI_PREDICTIVE_CHANGED_FILES_PATH, GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH } =
+    process.env;
 
   const files = await Promise.all(
-    [RSPEC_CHANGED_FILES_PATH, RSPEC_MATCHING_JS_FILES_PATH].map((path) =>
+    [GLCI_PREDICTIVE_CHANGED_FILES_PATH, GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH].map((path) =>
       readFile(path, 'UTF-8').then((content) => content.split(/\s+/).filter(Boolean)),
     ),
   );

@@ -186,6 +186,19 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       let(:request) { delete api(url), params: { job_token: target_job.token } }
     end
 
+    context 'when package type is helm' do
+      let_it_be(:package) { create(:helm_package, project: project, without_package_files: true) }
+      let_it_be(:channel) { 'stable' }
+      let_it_be(:package_file) { create(:helm_package_file, package: package, channel: channel) }
+      let(:package_file_id) { package_file.id }
+
+      subject(:execute) { api_request }
+
+      it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
+        subject(:execute) { api_request }
+      end
+    end
+
     context 'when project is public' do
       context 'without user' do
         let(:user) { nil }

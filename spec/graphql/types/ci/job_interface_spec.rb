@@ -39,6 +39,7 @@ RSpec.describe Types::Ci::JobInterface, feature_category: :continuous_integratio
       ref_path
       retried
       retryable
+      retry_path
       runner
       scheduled
       scheduled_at

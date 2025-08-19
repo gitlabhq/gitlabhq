@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', :smoke, product_group: :organizations do
+  RSpec.describe 'Tenant Scale', :smoke, feature_category: :organization do
     describe 'Project Member' do
       it 'adds a project member', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347887' do
         Flow::Login.sign_in

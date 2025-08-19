@@ -2,7 +2,7 @@ import ClipboardButton from './clipboard_button.vue';
 
 export default {
   component: ClipboardButton,
-  title: 'vue_shared/components/clipboard_button',
+  title: 'vue_shared/clipboard_button',
 };
 
 const Template = (args, { argTypes }) => ({

@@ -145,7 +145,7 @@ module Sidebars
 
         def usage_quotas_menu_item
           ::Sidebars::MenuItem.new(
-            title: s_('UsageQuota|Usage Quotas'),
+            title: s_('UsageQuota|Usage quotas'),
             link: project_usage_quotas_path(context.project),
             active_routes: { path: 'usage_quotas#index' },
             item_id: :usage_quotas

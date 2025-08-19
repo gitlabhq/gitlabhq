@@ -44,6 +44,8 @@ module API
           variable = find_variable(user_project, params)
           not_found!('Variable') unless variable
 
+          audit_variable_access(variable, user_project)
+
           present variable, with: Entities::Ci::Variable
         end
 

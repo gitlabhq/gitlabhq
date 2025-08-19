@@ -227,7 +227,7 @@ export default {
           iid,
         },
         update(data) {
-          return data.workspace.workItem;
+          return data.workspace?.workItem;
         },
       });
     },

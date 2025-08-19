@@ -5,7 +5,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { useLocalStorageSpy, useWithoutLocalStorage } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { mockTracking } from 'helpers/tracking_helper';
 import { sidebarData } from '../mock_data';
@@ -114,6 +114,18 @@ describe('HelpCenter component', () => {
         ...getDefaultHelpItems(),
         PRIVACY_HELP_ITEM,
       ]);
+    });
+
+    describe('when localStorage is disabled', () => {
+      useWithoutLocalStorage();
+
+      beforeEach(() => {
+        createWrapper();
+      });
+
+      it('renders component without errors', () => {
+        expect(findDropdown().exists()).toBe(true);
+      });
     });
 
     describe('compare plans URL', () => {

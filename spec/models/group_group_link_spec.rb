@@ -35,6 +35,12 @@ RSpec.describe GroupGroupLink, feature_category: :groups_and_projects do
     it { is_expected.to belong_to(:shared_with_group) }
   end
 
+  describe '.default_access' do
+    it 'returns DEVELOPER access level' do
+      expect(described_class.default_access).to eq(Gitlab::Access::DEVELOPER)
+    end
+  end
+
   describe 'scopes' do
     context 'for scopes fetching records based on access levels' do
       let_it_be(:group_group_link_guest) { create :group_group_link, :guest }

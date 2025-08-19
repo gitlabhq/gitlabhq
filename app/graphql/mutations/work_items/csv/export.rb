@@ -46,9 +46,9 @@ module Mutations
         end
 
         def check_export_available_for!(project)
-          return if Feature.enabled?(:import_export_work_items_csv, project)
+          return if project.work_items_project_issues_list_feature_flag_enabled?
 
-          error = '`import_export_work_items_csv` feature flag is disabled.'
+          error = '`work_items_project_issues_list` feature flag is disabled.'
 
           raise_resource_not_available_error! error
         end

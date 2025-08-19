@@ -1,8 +1,8 @@
 ---
-stage: Create
-group: Import
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Programmatic interaction with GitLab.
+description: "Troubleshooting the GitLab REST API. Includes status codes, error responses, spam detection, and reverse proxy issues."
 title: Troubleshooting the REST API
 ---
 
@@ -46,7 +46,7 @@ The following table shows the possible return codes for API requests.
 | `403 Forbidden`           | The request isn't allowed. For example, the user isn't allowed to delete a project. |
 | `404 Not Found`           | A resource couldn't be accessed. For example, an ID for a resource couldn't be found, or the user isn't authorized to access the resource. |
 | `405 Method Not Allowed`  | The request isn't supported. |
-| `409 Conflict`            | A conflicting resource already exists. For example, creating a project with a name that already exists. |
+| `409 Conflict`            | A conflicting resource already exists. |
 | `412 Precondition Failed` | The request was denied. This can happen if the `If-Unmodified-Since` header is provided when trying to delete a resource, which was modified in between. |
 | `422 Unprocessable`       | The entity couldn't be processed. |
 | `429 Too Many Requests`   | The user exceeded the [application rate limits](../../administration/instance_limits.md#rate-limits). |
@@ -119,7 +119,9 @@ The HTTP response headers can provide extra information when troubleshooting.
 To include HTTP response headers in the response, use the `--include` option:
 
 ```shell
-curl --include "https://gitlab.example.com/api/v4/projects"
+curl --request GET \
+  --include \
+  --url "https://gitlab.example.com/api/v4/projects"
 HTTP/2 200
 ...
 ```
@@ -131,7 +133,9 @@ The HTTP exit code in the API response can provide extra information when troubl
 To include the HTTP exit code, include the `--fail` option:
 
 ```shell
-curl --fail "https://gitlab.example.com/api/v4/does-not-exist"
+curl --request GET \
+  --fail \
+  --url "https://gitlab.example.com/api/v4/does-not-exist"
 curl: (22) The requested URL returned error: 404
 ```
 
@@ -162,10 +166,12 @@ REST API requests can be detected as spam. If a request is detected as spam and:
     ```shell
     export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
     export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
-    curl --request POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --header "X-GitLab-Captcha-
-    Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID"
-    "https://gitlab.example.com/api/v4/snippets?
-    title=Title&file_name=FileName&content=Content&visibility=public"
+
+    curl --request POST \
+      --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" \
+      --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" \
+      --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" \
+      --url "https://gitlab.example.com/api/v4/snippets?title=Title&file_name=FileName&content=Content&visibility=public"
     ```
 
 ## Error: `404 Not Found` when using a reverse proxy

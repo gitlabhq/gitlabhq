@@ -18,7 +18,7 @@ To try GitLab Duo, you can get access for a limited time with a free trial.
 During the trial period, you'll have access to the full feature set for whichever add-on you chose.
 When the trial period is over, to maintain your access, you can purchase the add-on.
 
-Trials of the GitLab Duo add-ons last 60 days.
+Trials of the GitLab Duo add-ons last 30 days.
 
 ## Start GitLab Duo Pro trial
 
@@ -31,7 +31,7 @@ You can get a trial of GitLab Duo Pro if you have the Premium tier on GitLab.com
 
 Prerequisites:
 
-- You must have the Owner role for a top-level group that has an active paid Premium subscription.
+- You must have the Owner role for a top-level group that has an active paid Premium subscription. Indirect ownership through group membership is not sufficient.
 
 To start a GitLab Duo Pro trial on GitLab.com:
 

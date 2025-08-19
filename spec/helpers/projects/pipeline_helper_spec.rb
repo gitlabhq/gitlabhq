@@ -35,19 +35,9 @@ RSpec.describe Projects::PipelineHelper do
         artifacts_expired_image_path: match_asset_path('illustrations/empty-state/empty-pipeline-md.svg'),
         tests_count: pipeline.test_report_summary.total[:count],
         can_read_variables: true.to_s,
-        manual_variables_count: pipeline.variables.count
+        manual_variables_count: pipeline.variables.count,
+        display_pipeline_variables: pipeline.project.ci_display_pipeline_variables?.to_s
       })
-    end
-
-    context 'when FF :ci_show_manual_variables_in_pipeline is disabled' do
-      before do
-        stub_feature_flags(ci_show_manual_variables_in_pipeline: false)
-      end
-
-      it 'does not include manual variables tab data' do
-        expect(pipeline_tabs_data).not_to have_key(:manual_variables_count)
-        expect(pipeline_tabs_data).not_to have_key(:can_read_variables)
-      end
     end
   end
 

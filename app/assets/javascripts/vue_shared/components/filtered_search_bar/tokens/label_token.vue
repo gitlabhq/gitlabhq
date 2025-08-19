@@ -79,7 +79,8 @@ export default {
       return label.name || label.title;
     },
     updateListOfAllLabels() {
-      this.labels.forEach((label) => {
+      const dedupedLabels = this.dedupeLabels(this.labels);
+      dedupedLabels.forEach((label) => {
         if (!this.findLabelById(label.id)) {
           this.allLabels.push(label);
         }
@@ -93,7 +94,8 @@ export default {
           // We'd want to avoid doing this check but
           // labels.json and /groups/:id/labels & /projects/:id/labels
           // return response differently.
-          this.labels = Array.isArray(res) ? res : res.data;
+          const rawLabels = Array.isArray(res) ? res : res.data;
+          this.labels = this.dedupeLabels(rawLabels);
           this.updateListOfAllLabels();
 
           if (this.config.fetchLatestLabels) {
@@ -116,7 +118,8 @@ export default {
           // We'd want to avoid doing this check but
           // labels.json and /groups/:id/labels & /projects/:id/labels
           // return response differently.
-          this.labels = Array.isArray(res) ? res : res.data;
+          const rawLabels = Array.isArray(res) ? res : res.data;
+          this.labels = this.dedupeLabels(rawLabels);
           this.updateListOfAllLabels();
         })
         .catch(() =>
@@ -124,6 +127,17 @@ export default {
             message: __('There was a problem fetching latest labels.'),
           }),
         );
+    },
+    dedupeLabels(labels) {
+      const seen = new Set();
+      return labels.filter((label) => {
+        const labelName = this.getLabelName(label);
+        if (seen.has(labelName)) {
+          return false;
+        }
+        seen.add(labelName);
+        return true;
+      });
     },
   },
 };

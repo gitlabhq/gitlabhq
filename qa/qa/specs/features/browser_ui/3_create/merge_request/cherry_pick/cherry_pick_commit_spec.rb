@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Cherry picking a commit', :smoke, product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Cherry picking a commit', :smoke do
       let(:file_name) { "secret_file.md" }
       let(:project) { create(:project, :with_readme) }
       let(:commit) do

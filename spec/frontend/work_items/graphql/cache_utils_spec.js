@@ -250,12 +250,12 @@ describe('work items graphql cache utils', () => {
       apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
 
       localStorage.setItem(
-        `autosave/new-gitlab-org-epic-draft`,
+        `autosave/new-gitlab-org-list-route-epic-draft`,
         JSON.stringify(mockCreateWorkItemDraftData),
       );
 
       localStorage.setItem(
-        `autosave/new-gitlab-org-widgets-draft`,
+        `autosave/new-gitlab-org-list-route-widgets-draft`,
         JSON.stringify(getWorkItemWidgets(mockCreateWorkItemDraftData)),
       );
     });

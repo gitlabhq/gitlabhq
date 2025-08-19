@@ -104,7 +104,8 @@ module Gitlab
               protocol: protocol,
               logger: logger,
               commits: commits,
-              gitaly_context: gitaly_context
+              gitaly_context: gitaly_context,
+              push_options: push_options
             )
           end
       end

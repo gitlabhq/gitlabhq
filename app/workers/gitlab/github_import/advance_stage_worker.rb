@@ -47,7 +47,9 @@ module Gitlab
         project = Project.find_by_id(project_id)
         import_settings = Gitlab::GithubImport::Settings.new(project)
 
-        load_references(project) if import_settings.user_mapping_enabled?
+        if import_settings.user_mapping_enabled? && !import_settings.map_to_personal_namespace_owner?
+          load_references(project)
+        end
 
         super
       end
@@ -59,8 +61,8 @@ module Gitlab
       def load_references(project)
         ::Import::LoadPlaceholderReferencesWorker.perform_async(
           ::Import::SOURCE_GITHUB,
-          project.import_state.id,
-          { 'current_user_id' => project.creator_id })
+          project.import_state.id
+        )
       end
     end
   end

@@ -649,32 +649,48 @@ RSpec.shared_examples 'graphql issue list request spec' do
       QUERY
     end
 
-    it 'avoids N+1 queries' do
-      control = ActiveRecord::QueryRecorder.new { post_query }
-
-      create(:alert_management_alert, :with_incident, project: public_projects.first)
-
-      expect { post_query }.not_to exceed_query_limit(control)
-    end
-
-    it 'returns the alert data' do
-      post_query
-
-      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
-      expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
-
-      expect(alert_titles).to contain_exactly(*expected_titles)
-    end
-
-    it 'returns the alerts data' do
-      post_query
-
-      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlerts', 'nodes') }
-      expected_titles = issues.map do |issue|
-        issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_incident_management_features: false)
       end
 
-      expect(alert_titles).to contain_exactly(*expected_titles)
+      it 'avoids N+1 queries' do
+        control = ActiveRecord::QueryRecorder.new { post_query }
+
+        create(:alert_management_alert, :with_incident, project: public_projects.first)
+
+        expect { post_query }.not_to exceed_query_limit(control)
+      end
+
+      it 'returns the alert data' do
+        post_query
+
+        alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
+        expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
+
+        expect(alert_titles).to contain_exactly(*expected_titles)
+      end
+
+      it 'returns the alerts data' do
+        post_query
+
+        alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlerts', 'nodes') }
+        expected_titles = issues.map do |issue|
+          issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
+        end
+
+        expect(alert_titles).to contain_exactly(*expected_titles)
+      end
+    end
+
+    context 'when the feature flag is enabled' do
+      it 'does not return alert data' do
+        post_query
+
+        alert_titles = issues_data.pluck('alertManagementAlerts')
+
+        expect(alert_titles).to all(be_nil)
+      end
     end
   end
 

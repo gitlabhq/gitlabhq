@@ -73,23 +73,6 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
           expect(page).to have_content(s_('Environments|Get started with environments'))
         end
       end
-
-      context 'when cluster is not reachable' do
-        let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:integration_prometheus) { create(:clusters_integrations_prometheus, cluster: cluster) }
-
-        before do
-          allow_next_instance_of(Kubeclient::Client) do |instance|
-            allow(instance).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
-          end
-        end
-
-        it 'shows one environment without error' do
-          visit_environments(project, scope: 'active')
-
-          expect(page).to have_link(environment.name, href: project_environment_path(project, environment))
-        end
-      end
     end
 
     describe 'with one stopped environment' do

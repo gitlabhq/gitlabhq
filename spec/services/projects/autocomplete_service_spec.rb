@@ -313,6 +313,30 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
         end
       end
     end
+
+    context 'with archived labels' do
+      let!(:archived_label) { create(:label, :archived, project: project) }
+
+      subject(:results) { described_class.new(project, user).labels_as_hash(nil) }
+
+      it 'does not return archived labels' do
+        expected_labels = [label1, label2, parent_group_label]
+
+        expect_labels_to_equal(results, expected_labels)
+      end
+
+      context 'with feature flag labels_archive disabled' do
+        before do
+          stub_feature_flags(labels_archive: false)
+        end
+
+        it 'returns archived labels as well' do
+          expected_labels = [label1, label2, parent_group_label, archived_label]
+
+          expect_labels_to_equal(results, expected_labels)
+        end
+      end
+    end
   end
 
   describe '#commands' do

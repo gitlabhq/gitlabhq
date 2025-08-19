@@ -49,7 +49,7 @@ export default {
       data-testid="bulk-delete-container"
     >
       <div class="gl-flex gl-items-center">
-        <div>
+        <div data-testid="banner-text">
           <gl-sprintf :message="$options.i18n.banner(checkedCount)">
             <template #strong="{ content }">
               <strong>{{ content }}</strong>

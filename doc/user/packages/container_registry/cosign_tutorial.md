@@ -94,6 +94,7 @@ In the `script` section of the `.gitlab-ci.yml` file, enter the following comman
 - IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE_URI")
 - |
   cosign sign "$IMAGE_DIGEST" \
+    --registry-referrers-mode oci-1-1 \
     --annotations "com.gitlab.ci.user.name=$GITLAB_USER_NAME" \
     --annotations "com.gitlab.ci.pipeline.id=$CI_PIPELINE_ID" \
     # Additional annotations removed for readability
@@ -169,6 +170,7 @@ build_and_sign:
     # the tag->digest mapping (https://github.com/sigstore/cosign?tab=readme-ov-file#tag-signing)
     - |
       cosign sign "$IMAGE_DIGEST" \
+        --registry-referrers-mode oci-1-1 \
         --annotations "com.gitlab.ci.user.name=$GITLAB_USER_NAME" \
         --annotations "com.gitlab.ci.pipeline.id=$CI_PIPELINE_ID" \
         --annotations "com.gitlab.ci.pipeline.url=$CI_PIPELINE_URL" \

@@ -38,7 +38,7 @@
             = description
   .info-well
     .well-segment
-      - if Gitlab.com? && !@pre_auth.client.application.owner
+      - if Gitlab.com? && !@pre_auth.client.application.owner && !@pre_auth.client.application.dynamic?
         %p.gl-text-success
           = sprite_icon('tanuki-verified', css_class: 'gl-fill-icon-success')
           = _('This application is provided by GitLab.')
@@ -50,7 +50,7 @@
             tag_pair(tag.strong, :strong_start, :strong_end))
       %p
         = safe_format(_('%{owner} %{created_date} ago.'),
-          { owner: auth_app_owner_text(@pre_auth.client.application.owner),
+          { owner: auth_app_owner_text(@pre_auth.client.application),
             created_date: time_ago_in_words(@pre_auth.client.application.created_at.to_date) })
         - domain = URI.parse(@pre_auth.redirect_uri).host.gsub(/^www\./, '')
         - if @pre_auth.redirect_uri.start_with?('http://', 'https://') && domain != 'localhost'

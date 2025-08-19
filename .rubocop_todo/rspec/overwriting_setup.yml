@@ -8,7 +8,6 @@ RSpec/OverwritingSetup:
     - 'spec/finders/packages/helm/packages_finder_spec.rb'
     - 'spec/finders/packages/npm/package_finder_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
-    - 'spec/models/packages/package_file_spec.rb'
     - 'spec/models/todo_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/policies/ci/build_policy_spec.rb'

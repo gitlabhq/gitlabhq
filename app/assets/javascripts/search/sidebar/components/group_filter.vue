@@ -22,7 +22,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(['query', 'groups', 'fetchingGroups', 'groupInitialJson', 'useSidebarNavigation']),
+    ...mapState(['query', 'groups', 'fetchingGroups', 'groupInitialJson']),
     ...mapGetters(['frequentGroups', 'currentScope']),
     selectedGroup() {
       return isEmpty(this.groupInitialJson) ? ANY_OPTION : this.groupInitialJson;

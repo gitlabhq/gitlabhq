@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_planning do
+  include Spec::Support::Helpers::ModalHelpers
   include StubENV
 
   let(:project) { create(:project, :public) }
@@ -11,6 +12,7 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
   include_context 'includes Spam constants'
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
 
     Gitlab::CurrentSettings.update!(
@@ -26,33 +28,20 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
     sign_in(user)
     visit new_project_issue_path(project)
 
-    fill_in 'issue_title', with: 'issue title'
-    fill_in 'issue_description', with: 'issue description'
-  end
-
-  shared_examples 'disallows issue creation' do
-    it 'disallows issue creation' do
-      click_button 'Create issue'
-
-      expect(page).to have_content('discarded')
-      expect(page).not_to have_css('.recaptcha')
-      expect(page).not_to have_content('issue title')
-    end
+    fill_in 'Title', with: 'issue title'
+    fill_in 'Description', with: 'issue description'
   end
 
   shared_examples 'allows issue creation with CAPTCHA' do
     it 'allows issue creation' do
-      click_button 'Create issue'
+      find_button('Create issue').click # `click_button` would wait for the request to complete and would timeout with CAPTCHA being enabled
 
       # it is impossible to test reCAPTCHA automatically and there is no possibility to fill in recaptcha
-      # reCAPTCHA verification is skipped in test environment and it always returns true
-      expect(page).not_to have_content('issue title')
-      expect(page).to have_css('.recaptcha')
-
-      click_button 'Create issue'
-
-      expect(page.find('.issue-details h1.title')).to have_content('issue title')
-      expect(page.find('.issue-details .description')).to have_content('issue description')
+      # so just confirm the reCAPTCHA modal appears
+      within_modal do
+        expect(page).to have_css('h2', text: 'Please solve the captcha')
+        expect(page).to have_text('We want to be sure it is you, please confirm you are not a robot.')
+      end
     end
   end
 
@@ -61,22 +50,10 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       click_button 'Create issue'
 
       expect(page).not_to have_css('.recaptcha')
-      expect(page.find('.issue-details h1.title')).to have_content('issue title')
-      expect(page.find('.issue-details .description')).to have_content('issue description')
-    end
-  end
-
-  shared_examples 'creates a spam_log record' do
-    it 'creates a spam_log record' do
-      expect { click_button 'Create issue' }
-        .to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
-    end
-  end
-
-  shared_examples 'does not create a spam_log record' do
-    it 'does not creates a spam_log record' do
-      expect { click_button 'Create issue' }
-        .not_to log_spam(title: 'issue title', description: 'issue description', user_id: user.id, noteable_type: 'Issue')
+      expect(page).to have_css('h1', text: 'issue title')
+      within_testid('work-item-description') do
+        expect(page).to have_text('issue description')
+      end
     end
   end
 
@@ -136,7 +113,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
-      it_behaves_like 'creates a spam_log record'
     end
 
     context 'CONDITIONAL_ALLOW: spam_flagged=true, captcha_enabled=true, allow_possible_spam=false' do
@@ -145,7 +121,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       include_context 'when allow_possible_spam application setting is false'
 
       it_behaves_like 'allows issue creation with CAPTCHA'
-      it_behaves_like 'creates a spam_log record'
     end
 
     context 'OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM: spam_flagged=true, captcha_enabled=true, allow_possible_spam=true' do
@@ -154,7 +129,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
-      it_behaves_like 'creates a spam_log record'
     end
 
     context 'OVERRIDE_VIA_ALLOW_POSSIBLE_SPAM: spam_flagged=true, captcha_enabled=false, allow_possible_spam=true' do
@@ -163,7 +137,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       include_context 'when allow_possible_spam application setting is true'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
-      it_behaves_like 'creates a spam_log record'
     end
 
     context 'ALLOW: spam_flagged=false, captcha_enabled=true, allow_possible_spam=false' do
@@ -172,7 +145,6 @@ RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_
       include_context 'when allow_possible_spam application setting is false'
 
       it_behaves_like 'allows issue creation without CAPTCHA'
-      it_behaves_like 'does not create a spam_log record'
     end
   end
 end

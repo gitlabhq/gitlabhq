@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Configure', :orchestrated, :mattermost, product_group: :organizations do
+  RSpec.describe 'Configure', :orchestrated, :mattermost, feature_category: :organization do
     describe 'Mattermost support' do
       it 'user creates a group with a mattermost team',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347890' do

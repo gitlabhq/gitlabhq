@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormSelect, GlLink, GlLoadingIcon, GlSprintf } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
@@ -21,6 +21,7 @@ import WorkItemProjectsListbox from '~/work_items/components/work_item_links/wor
 import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_namespace_listbox.vue';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
@@ -80,7 +81,6 @@ describe('Create work item component', () => {
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
-  const { webUrl: namespaceWebUrl } = namespaceWorkItemTypesQueryResponse.data.workspace;
   const mockRelatedItem = {
     id: 'gid://gitlab/WorkItem/22',
     type: 'Issue',
@@ -99,6 +99,7 @@ describe('Create work item component', () => {
   const findParentWidget = () => wrapper.findComponent(WorkItemParent);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
   const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
   const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
@@ -115,13 +116,13 @@ describe('Create work item component', () => {
     props = {},
     provide = {},
     mutationHandler = createWorkItemSuccessHandler,
+    namespaceQueryResponse = namespaceWorkItemTypesQueryResponse,
+    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
   } = {}) => {
-    const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
+    const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
-    const namespaceResponse = isGroupWorkItem
-      ? namespaceResponseCopy
-      : namespaceWorkItemTypesQueryResponse;
+    const namespaceResponse = isGroupWorkItem ? namespaceResponseCopy : namespaceQueryResponse;
 
     const namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
 
@@ -137,9 +138,10 @@ describe('Create work item component', () => {
     wrapper = shallowMountExtended(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
+        creationContext: CREATION_CONTEXT_LIST_ROUTE,
         fullPath: 'full-path',
         projectNamespaceFullPath: 'full-path',
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        preselectedWorkItemType,
         ...props,
       },
       provide: {
@@ -147,6 +149,7 @@ describe('Create work item component', () => {
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
+        issuesSettings: '/groups/twitter/-/settings/issues',
         ...provide,
       },
       stubs: {
@@ -204,8 +207,6 @@ describe('Create work item component', () => {
     it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
       jest.spyOn(mockApollo.defaultClient, 'mutate');
       const mockInput = {
-        workItemType: 'Issue',
-        fullPath: 'full-path',
         assignees: [
           {
             __typename: 'CurrentUser',
@@ -223,8 +224,11 @@ describe('Create work item component', () => {
         mutation: updateNewWorkItemMutation,
         variables: {
           input: {
-            ...mockInput,
+            fullPath: 'full-path',
+            context: CREATION_CONTEXT_LIST_ROUTE,
+            workItemType: 'Epic',
             relatedItemId: mockRelatedItem.id,
+            ...mockInput,
           },
         },
       });
@@ -248,8 +252,8 @@ describe('Create work item component', () => {
     it('Default', async () => {
       createComponent();
       await waitForPromises();
-      const typeSpecificAutosaveKey = `new-full-path-epic-draft`;
-      const sharedWidgetsAutosaveKey = 'new-full-path-widgets-draft';
+      const typeSpecificAutosaveKey = 'new-full-path-list-route-epic-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-list-route-widgets-draft';
 
       findCancelButton().vm.$emit('click');
       await nextTick();
@@ -290,6 +294,7 @@ describe('Create work item component', () => {
 
         expect(setNewWorkItemCache).toHaveBeenCalledWith({
           fullPath: 'full-path',
+          context: CREATION_CONTEXT_LIST_ROUTE,
           widgetDefinitions: expect.any(Array),
           workItemType: expectedWorkItemTypeData.name,
           workItemTypeId: expectedWorkItemTypeData.id,
@@ -349,6 +354,17 @@ describe('Create work item component', () => {
   });
 
   describe('Work item types dropdown', () => {
+    it('renders with loading icon when namespaceWorkItemTypes query is loading', async () => {
+      createComponent({ props: { preselectedWorkItemType: null, showProjectSelector: true } });
+      await waitForPromises();
+
+      findProjectsSelector().vm.$emit('selectProject', 'fullPath');
+      await nextTick();
+
+      expect(findSelect().attributes('disabled')).not.toBeUndefined();
+      expect(findLoadingIcon().exists()).toBe(true);
+    });
+
     it('displays a list of work item types including "Select type" option when preselectedWorkItemType is not provided', async () => {
       createComponent({ props: { preselectedWorkItemType: null } });
       await waitForPromises();
@@ -426,6 +442,7 @@ describe('Create work item component', () => {
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
         fullPath: 'full-path',
+        context: CREATION_CONTEXT_LIST_ROUTE,
         widgetDefinitions: expect.any(Array),
         workItemType: mockId,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
@@ -446,6 +463,7 @@ describe('Create work item component', () => {
 
       expect(updateDraftWorkItemType).toHaveBeenCalledWith({
         fullPath: 'full-path',
+        context: CREATION_CONTEXT_LIST_ROUTE,
         relatedItemId: mockRelatedItem.id,
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
@@ -499,8 +517,8 @@ describe('Create work item component', () => {
     });
 
     it('clears autosave draft on successful mutation', async () => {
-      const typeSpecificAutosaveKey = 'new-full-path-epic-related-22-draft';
-      const sharedWidgetsAutosaveKey = 'new-full-path-related-22-widgets-draft';
+      const typeSpecificAutosaveKey = 'new-full-path-list-route-related-id-22-epic-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-list-route-related-id-22-widgets-draft';
       updateDraft(typeSpecificAutosaveKey, JSON.stringify({ foo: 'bar' }));
       updateDraft(sharedWidgetsAutosaveKey, JSON.stringify({ foo: 'bar' }));
       createComponent({
@@ -881,22 +899,22 @@ describe('Create work item component', () => {
   });
 
   describe('form buttons', () => {
-    it('shows buttons on right and sticky when stickyFormSubmit', async () => {
-      createComponent({ props: { stickyFormSubmit: true } });
+    it('shows buttons on right and sticky when isModal', async () => {
+      createComponent({ props: { isModal: true } });
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
-      expect(findFormButtons().classes('gl-items-end')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
 
-    it('shows buttons on left and inside the grid when not stickyFormSubmit', async () => {
-      createComponent({ props: { stickyFormSubmit: false } });
+    it('shows buttons on left and sticky when not isModal', async () => {
+      createComponent({ props: { isModal: false } });
       await waitForPromises();
 
-      expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-items-end')).toBe(false);
+      expect(findFormButtons().classes('gl-sticky')).toBe(true);
+      expect(findFormButtons().classes('gl-justify-between')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
     });
@@ -955,6 +973,27 @@ describe('Create work item component', () => {
     });
   });
 
+  it('does not show work item widgets when userPermissions.setNewWorkItemMetadata is false', async () => {
+    const namespaceQueryResponse = {
+      data: {
+        workspace: {
+          ...namespaceWorkItemTypesQueryResponse.data.workspace,
+          userPermissions: {
+            setNewWorkItemMetadata: false,
+          },
+        },
+      },
+    };
+
+    createComponent({ namespaceQueryResponse });
+    await waitForPromises();
+
+    const widgetsContainer = wrapper.findByTestId('work-item-overview-right-sidebar');
+    expect(widgetsContainer.exists()).toBe(true);
+    expect(widgetsContainer.find('strong').text()).toContain('Limited access');
+    expect(widgetsContainer.find('div').text()).toContain('Only project members can add metadata.');
+  });
+
   describe('title and description query parameters', () => {
     it('saves to the cache when the backend provides them', async () => {
       setHTMLFixture(`
@@ -984,6 +1023,7 @@ describe('Create work item component', () => {
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
         fullPath: expect.anything(),
+        context: CREATION_CONTEXT_LIST_ROUTE,
         widgetDefinitions: expect.anything(),
         workItemType: expect.anything(),
         workItemTypeId: expect.anything(),
@@ -1091,18 +1131,4 @@ describe('Create work item component', () => {
       });
     });
   });
-
-  it.each`
-    isGroupWorkItem | uploadsPath
-    ${true}         | ${`${namespaceWebUrl}/-/uploads`}
-    ${false}        | ${`${namespaceWebUrl}/uploads`}
-  `(
-    'passes correct uploads path for markdown editor when isGroupWorkItem is $isGroupWorkItem',
-    async ({ isGroupWorkItem, uploadsPath }) => {
-      createComponent({ isGroupWorkItem });
-      await waitForPromises();
-
-      expect(findDescriptionWidget().props('uploadsPath')).toBe(uploadsPath);
-    },
-  );
 });

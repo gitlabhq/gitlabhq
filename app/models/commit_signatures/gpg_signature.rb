@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CommitSignatures
   class GpgSignature < ApplicationRecord
     include CommitSignature
@@ -11,6 +12,8 @@ module CommitSignatures
     belongs_to :gpg_key_subkey
 
     validates :gpg_key_primary_keyid, presence: true
+
+    ignore_column :author_email, remove_with: '18.5', remove_after: '2025-09-13'
 
     def signed_by_user
       return gpg_key.user if gpg_key

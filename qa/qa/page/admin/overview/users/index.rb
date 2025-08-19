@@ -27,8 +27,8 @@ module QA
             def choose_pending_approval_filter
               within_element('filtered-search-block') do
                 find(INPUT_SELECTORS).click
-                click_link('State')
-                click_link('Pending approval')
+                click_button('State')
+                click_button('Pending approval')
               end
             end
 

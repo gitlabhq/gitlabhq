@@ -3,7 +3,9 @@ import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import MockAdapter from 'axios-mock-adapter';
 import VueRouter from 'vue-router';
+import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -26,6 +28,7 @@ import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_IS,
@@ -44,15 +47,20 @@ import {
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_UPDATED,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
+import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
+  CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   STATE_CLOSED,
   WORK_ITEM_TYPE_ENUM_EPIC,
@@ -76,11 +84,15 @@ jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
 
+const showToast = jest.fn();
+
 const skipReason = new SkipReason({
   name: 'WorkItemsListApp component',
   reason: 'Caught error after test environment was torn down',
   issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/478775',
 });
+
+const RELEASES_ENDPOINT = '/test/project/-/releases.json';
 
 describeSkipVue3(skipReason, () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
@@ -111,6 +123,7 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
+  const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 
   const mountComponent = ({
     provide = {},
@@ -123,6 +136,8 @@ describeSkipVue3(skipReason, () => {
     workItemPlanningView = false,
     props = {},
     additionalHandlers = [],
+    canReadCrmOrganization = true,
+    canReadCrmContact = true,
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -146,6 +161,8 @@ describeSkipVue3(skipReason, () => {
           okrsMvc: true,
           workItemPlanningView,
         },
+        canReadCrmOrganization,
+        canReadCrmContact,
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
@@ -163,6 +180,9 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         showNewWorkItem: true,
         workItemType: null,
+        hasStatusFeature: true,
+        releasesPath: RELEASES_ENDPOINT,
+        metadataLoading: false,
         ...provide,
       },
       propsData: {
@@ -171,6 +191,11 @@ describeSkipVue3(skipReason, () => {
       },
       stubs: {
         WorkItemBulkEditSidebar: true,
+      },
+      mocks: {
+        $toast: {
+          show: showToast,
+        },
       },
     });
   };
@@ -218,6 +243,17 @@ describeSkipVue3(skipReason, () => {
         recentSearchesStorageKey: 'issues',
         showWorkItemTypeIcon: true,
         tabs: WorkItemsListApp.issuableListTabs,
+      });
+    });
+
+    it('renders the WorkItemUserPreferences component', () => {
+      expect(findWorkItemUserPreferences().props()).toMatchObject({
+        isEpicsList: false, // default work item is null so not an epics list
+        fullPath: 'full/path',
+        displaySettings: {
+          commonPreferences: { shouldOpenItemsInSidePanel: true },
+          namespacePreferences: {},
+        },
       });
     });
 
@@ -480,10 +516,12 @@ describeSkipVue3(skipReason, () => {
         TOKEN_TYPE_ASSIGNEE,
         TOKEN_TYPE_AUTHOR,
         TOKEN_TYPE_CONFIDENTIAL,
+        TOKEN_TYPE_CONTACT,
         TOKEN_TYPE_GROUP,
         TOKEN_TYPE_LABEL,
         TOKEN_TYPE_MILESTONE,
         TOKEN_TYPE_MY_REACTION,
+        TOKEN_TYPE_ORGANIZATION,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_TYPE,
@@ -515,12 +553,14 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_AUTHOR,
           TOKEN_TYPE_CLOSED,
           TOKEN_TYPE_CONFIDENTIAL,
+          TOKEN_TYPE_CONTACT,
           TOKEN_TYPE_CREATED,
           TOKEN_TYPE_DUE_DATE,
           TOKEN_TYPE_GROUP,
           TOKEN_TYPE_LABEL,
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -546,15 +586,188 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_ASSIGNEE,
           TOKEN_TYPE_AUTHOR,
           TOKEN_TYPE_CONFIDENTIAL,
+          TOKEN_TYPE_CONTACT,
           customToken.type,
           TOKEN_TYPE_GROUP,
           TOKEN_TYPE_LABEL,
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
+          TOKEN_TYPE_ORGANIZATION,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
         ]);
+      });
+    });
+
+    describe('Organization filter token', () => {
+      describe('when canReadCrmOrganization is true', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('configures organization token with correct properties', () => {
+          const organizationToken = findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_ORGANIZATION);
+
+          expect(organizationToken).toMatchObject({
+            fullPath: 'full/path',
+            isProject: true,
+            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-crm-organizations',
+            operators: [{ description: 'is', value: '=' }],
+          });
+        });
+      });
+
+      describe('when canReadCrmOrganization is false', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false, canReadCrmOrganization: false } });
+          await waitForPromises();
+        });
+
+        it('does not include organization token in available tokens', () => {
+          const tokens = findIssuableList()
+            .props('searchTokens')
+            .map((token) => token.type);
+
+          expect(tokens).not.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_ORGANIZATION,
+              }),
+            ]),
+          );
+        });
+      });
+    });
+
+    describe('Contact filter token', () => {
+      describe('when canReadCrmOrganization is true', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('configures contact token with correct properties', () => {
+          const contactToken = findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_CONTACT);
+
+          expect(contactToken).toMatchObject({
+            fullPath: 'full/path',
+            isProject: true,
+            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-crm-contacts',
+            operators: [{ description: 'is', value: '=' }],
+          });
+        });
+      });
+
+      describe('when canReadCrmContact is false', () => {
+        beforeEach(async () => {
+          mountComponent({ provide: { isGroup: false, canReadCrmContact: false } });
+          await waitForPromises();
+        });
+
+        it('does not include contact token in available tokens', () => {
+          const tokens = findIssuableList()
+            .props('searchTokens')
+            .map((token) => token.type);
+
+          expect(tokens).not.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_CONTACT,
+              }),
+            ]),
+          );
+        });
+      });
+    });
+
+    describe('release token', () => {
+      describe('fetchReleases', () => {
+        const mockReleases = [
+          { tag: 'v1.0.0', name: 'Release 1.0.0' },
+          { tag: 'v2.0.0', name: 'Release 2.0.0' },
+          { tag: 'v1.1.0', name: 'Release 1.1.0' },
+        ];
+
+        let mockAxios;
+
+        beforeEach(() => {
+          mockAxios = new MockAdapter(axios);
+        });
+
+        const getReleaseToken = () =>
+          findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_RELEASE);
+
+        it('fetches releases from API when cache is empty', async () => {
+          mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+
+          const releaseToken = getReleaseToken();
+          const result = await releaseToken.fetchReleases();
+
+          expect(result).toEqual(mockReleases);
+        });
+
+        it('returns cached releases when cache is populated', async () => {
+          mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+
+          const releaseToken = getReleaseToken();
+
+          // First call to populate cache
+          await releaseToken.fetchReleases();
+
+          // Second call should use cache
+          const result = await releaseToken.fetchReleases();
+
+          expect(result).toEqual(mockReleases);
+          expect(mockAxios.history.get).toHaveLength(1); // Only one API call
+        });
+
+        it('filters cached releases when search is provided', async () => {
+          mockAxios.onGet(RELEASES_ENDPOINT).reply(HTTP_STATUS_OK, mockReleases);
+          mountComponent({ provide: { isGroup: false } });
+          await waitForPromises();
+
+          const releaseToken = getReleaseToken();
+
+          // Populate cache first
+          await releaseToken.fetchReleases();
+
+          const result = await releaseToken.fetchReleases('v1');
+
+          expect(result).toHaveLength(2);
+          expect(result.map((r) => r.tag)).toEqual(['v1.0.0', 'v1.1.0']);
+        });
+      });
+
+      it('excludes release token when isGroup is true', async () => {
+        mountComponent({ provide: { isGroup: true } });
+        await waitForPromises();
+        const tokens = findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type);
+
+        expect(tokens).not.toContain(TOKEN_TYPE_RELEASE);
+      });
+
+      it('includes release token when isGroup is false (project context)', async () => {
+        mountComponent({ provide: { isGroup: false } });
+        await waitForPromises();
+        const tokens = findIssuableList()
+          .props('searchTokens')
+          .map((token) => token.type);
+
+        expect(tokens).toContain(TOKEN_TYPE_RELEASE);
       });
     });
   });
@@ -1172,6 +1385,13 @@ describeSkipVue3(skipReason, () => {
       expect(findCreateWorkItemModal().exists()).toBe(showNewWorkItem);
     });
 
+    it('renders with "list route" creation context', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      expect(findCreateWorkItemModal().props('creationContext')).toBe(CREATION_CONTEXT_LIST_ROUTE);
+    });
+
     describe('allowedWorkItemTypes', () => {
       it('returns empty array when group', async () => {
         mountComponent({ provide: { isGroup: true } });
@@ -1300,6 +1520,21 @@ describeSkipVue3(skipReason, () => {
 
       expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
     });
+
+    it('creates a toast when the success event includes a toast message', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findBulkEditStartButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+
+      findBulkEditSidebar().vm.$emit('success', { toastMessage: 'hello!' });
+      await nextTick();
+
+      expect(showToast).toHaveBeenCalledWith('hello!');
+    });
   });
 
   describe('when workItemPlanningView flag is enabled', () => {
@@ -1308,6 +1543,14 @@ describeSkipVue3(skipReason, () => {
       await waitForPromises();
 
       expect(findWorkItemListHeading().exists()).toBe(true);
+    });
+
+    it('skips the work item queries when metadata is loading', async () => {
+      mountComponent({ provide: { metadataLoading: true } });
+      await waitForPromises();
+
+      expect(defaultQueryHandler).not.toHaveBeenCalled();
+      expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
     });
   });
 });

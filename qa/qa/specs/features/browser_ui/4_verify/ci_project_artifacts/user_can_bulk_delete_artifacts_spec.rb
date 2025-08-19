@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_execution do
+  RSpec.describe 'Verify', feature_category: :continuous_integration do
     describe 'Project artifacts' do
       context 'when user tries bulk deletion' do
         let(:total_jobs_count) { 20 }

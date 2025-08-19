@@ -6,9 +6,14 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementPerActionedResource,
   :freeze_time, :clean_gitlab_redis_rate_limiting do
   let(:cache_key) { 'test' }
   let(:expiry) { 60 }
+  let(:key_does_not_exist) { -2 }
 
-  def increment(resource_key)
-    described_class.new(resource_key).increment(cache_key, expiry)
+  def increment(resource_key, ttl = expiry)
+    described_class.new(resource_key).increment(cache_key, ttl)
+  end
+
+  def ttl
+    Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
   end
 
   describe '#increment' do
@@ -20,15 +25,11 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementPerActionedResource,
       expect(increment('resource_3')).to eq(3)
     end
 
-    it 'sets time to live (TTL) for the key' do
-      def ttl
-        Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
-      end
-
-      key_does_not_exist = -2
-
+    it 'sets time to live (TTL) for the key on first increment' do
       expect(ttl).to eq key_does_not_exist
       expect { increment('resource_1') }.to change { ttl }.by(a_value > 0)
+      expect { increment('resource_1', expiry + 1) }.not_to change { ttl }
+      expect { increment('resource_2', expiry + 2) }.not_to change { ttl }
     end
   end
 

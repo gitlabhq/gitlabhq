@@ -1,40 +1,12 @@
 <script>
-import { GlBadge } from '@gitlab/ui';
-import { __ } from '~/locale';
+import NullPresenter from './null.vue';
 
-const badgeVariants = {
-  onTrack: 'success',
-  needsAttention: 'warning',
-  atRisk: 'danger',
-};
-
-const badgeLabels = {
-  onTrack: __('On track'),
-  needsAttention: __('Needs attention'),
-  atRisk: __('At risk'),
-};
-
+// EE feature, for CE, delegate to null presenter
 export default {
   name: 'HealthPresenter',
-  components: {
-    GlBadge,
-  },
-  props: {
-    data: {
-      required: true,
-      type: String,
-    },
-  },
-  computed: {
-    badgeVariant() {
-      return badgeVariants[this.data];
-    },
-    badgeLabel() {
-      return badgeLabels[this.data];
-    },
-  },
+  components: { NullPresenter },
 };
 </script>
 <template>
-  <gl-badge :variant="badgeVariant">{{ badgeLabel }}</gl-badge>
+  <null-presenter />
 </template>

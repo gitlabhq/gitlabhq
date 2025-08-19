@@ -13,7 +13,7 @@ module Sidebars
 
         override :title
         def title
-          _('Comment Templates')
+          _('Comment templates')
         end
 
         override :sprite_icon

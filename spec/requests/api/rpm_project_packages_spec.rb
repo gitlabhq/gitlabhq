@@ -135,6 +135,10 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
     it_behaves_like 'a job token for RPM requests', :success
     it_behaves_like 'a deploy token for RPM requests', :success
     it_behaves_like 'a user token for RPM requests', :success
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do
@@ -147,6 +151,10 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
     it_behaves_like 'a job token for RPM requests'
     it_behaves_like 'a deploy token for RPM requests'
     it_behaves_like 'a user token for RPM requests'
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rpm' do
@@ -246,6 +254,10 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+    end
+
     it_behaves_like 'a deploy token for RPM requests'
     it_behaves_like 'a job token for RPM requests'
   end
@@ -271,6 +283,10 @@ RSpec.describe API::RpmProjectPackages, feature_category: :package_registry do
       end
 
       it_behaves_like 'returning response status', :not_found
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
     end
   end
 end

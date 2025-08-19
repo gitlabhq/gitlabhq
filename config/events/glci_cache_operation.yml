@@ -1,0 +1,52 @@
+---
+# This internal event is used to track cache operations (hit/miss/create) in CI/CD pipelines.
+#
+# See https://gitlab.com/gitlab-org/quality/analytics/team/-/issues/196
+description: CI cache operation (hit, miss, create) occurred
+internal_events: true
+action: glci_cache_operation
+identifiers:
+- project
+- namespace
+additional_properties:
+  # Refer https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
+  # label, value and property are fixed keys we can use to store anything needed
+  label:
+    description: Cache operation result (hit, miss, created)
+  property:
+    description: Cache type (ruby-gems, yarn, ...)
+  value:
+    description: Cache operation duration in seconds
+  cache_key:
+    description: Full cache key identifier
+  cache_operation:
+    description: Cache operation type (pull, push)
+  job_id:
+    description: GitLab CI job ID
+  job_name:
+    description: GitLab CI job name
+  pipeline_id:
+    description: GitLab CI pipeline ID
+  ref:
+    description: Git branch or tag name
+  operation_command:
+    description: Command associated with cache operation
+  operation_duration_seconds:
+    description: Duration of the operation in seconds
+  operation_success:
+    description: Whether the operation completed successfully
+  cache_size_bytes:
+    description: Cache size in bytes
+  merge_request_iid:
+    description: Merge request internal ID
+  merge_request_target_branch:
+    description: Target branch name for merge request pipelines
+  pipeline_source:
+    description: Pipeline trigger source (merge_request_event, push, schedule, etc.)
+product_group: development_analytics
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TBD
+tiers:
+- free
+- premium
+- ultimate

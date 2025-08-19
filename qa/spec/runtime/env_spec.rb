@@ -291,4 +291,48 @@ RSpec.describe QA::Runtime::Env do
       it { is_expected.to be_empty }
     end
   end
+
+  describe '.running_against_cell?' do
+    context 'when QA_COOKIES is not set' do
+      before do
+        stub_env('QA_COOKIES', nil)
+      end
+
+      it 'returns false' do
+        expect(described_class.running_against_cell?).to be false
+      end
+    end
+
+    context 'when QA_COOKIES is empty' do
+      before do
+        stub_env('QA_COOKIES', '')
+      end
+
+      it 'returns false' do
+        expect(described_class.running_against_cell?).to be false
+      end
+    end
+
+    context 'when QA_COOKIES contains _gitlab_session with cell prefix' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:cookie_value, :expected_result) do
+        '_gitlab_session=cell-1-abc123' | true
+        'gitlab_canary=false\;_gitlab_session=cell-5-hash123' | true
+        '_gitlab_session=cell-5-hash123\;gitlab_canary=true' | true
+        '_gitlab_session=production-session-123' | false
+        'gitlab_canary=true' | false
+      end
+
+      with_them do
+        before do
+          stub_env('QA_COOKIES', cookie_value)
+        end
+
+        it "returns #{params[:expected_result]}" do
+          expect(described_class.running_against_cell?).to eq(expected_result)
+        end
+      end
+    end
+  end
 end

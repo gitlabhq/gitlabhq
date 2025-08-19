@@ -11,14 +11,13 @@ RSpec.describe Events::DestroyService, feature_category: :user_profile do
   let_it_be(:user) { create(:user) }
 
   let!(:unrelated_event) { create(:event, :merged, project: another_project, target: another_project, author: user) }
+  let(:events) { project.events }
 
   before do
     create(:event, :created, project: project, target: project, author: user)
     create(:event, :created, project: project, target: merge_request, author: user)
     create(:event, :merged, project: project, target: merge_request, author: user)
   end
-
-  let(:events) { project.events }
 
   describe '#execute', :aggregate_failures do
     it 'deletes the events' do

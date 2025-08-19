@@ -202,9 +202,9 @@ it might affect one of the following projects:
 ## Further reading
 
 - [Documentation: Database required stops](database/required_stops.md)
-- [Documentation: Upgrading GitLab](../update/_index.md)
+- [Documentation: Upgrade GitLab](../update/_index.md)
   - [Package (Omnibus) upgrade](../update/package/_index.md)
-  - [Docker upgrade](../install/docker/upgrade.md)
+  - [Docker upgrade](../update/docker/_index.md)
   - [GitLab chart](https://docs.gitlab.com/charts/installation/upgrade.html)
 - [Example of required stop planning issue (17.3)](https://gitlab.com/gitlab-org/gitlab/-/issues/457453)
 - [Issue: Put in place measures to avoid addition/proliferation of GitLab upgrade path stops](https://gitlab.com/gitlab-org/gitlab/-/issues/375553)

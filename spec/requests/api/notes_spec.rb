@@ -314,16 +314,15 @@ RSpec.describe API::Notes, feature_category: :team_planning do
   context "when noteable is a Merge Request" do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
     let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }
+    let(:request_body) { 'Hi!' }
+    let(:params) { { body: request_body } }
+    let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
 
     it_behaves_like "noteable API", 'projects', 'merge_requests', 'iid' do
       let(:parent) { project }
       let(:noteable) { merge_request }
       let(:note) { merge_request_note }
     end
-
-    let(:request_body) { 'Hi!' }
-    let(:params) { { body: request_body } }
-    let(:request_path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
 
     subject { post api(request_path, user), params: params }
 

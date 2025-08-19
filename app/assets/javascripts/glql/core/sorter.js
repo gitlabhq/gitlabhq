@@ -10,12 +10,23 @@ const states = {
   merged: 3,
 };
 
+const statusCategories = {
+  triage: 1,
+  to_do: 2,
+  in_progress: 3,
+  done: 4,
+  canceled: 5,
+};
+
 const sortFieldsByType = {
   Issue: 'title',
   Epic: 'title',
-  Milestone: 'title',
   Label: 'title',
   UserCore: 'username',
+  MergeRequestAuthor: 'username',
+  MergeRequestReviewer: 'username',
+  MergeRequestAssignee: 'username',
+  Project: 'nameWithNamespace',
 };
 
 function valueByType(field, type) {
@@ -28,6 +39,11 @@ function valueByFieldName(fieldValue, fieldName) {
       return healthStatuses[fieldValue];
     case 'state':
       return states[fieldValue];
+    case 'status':
+      return statusCategories[fieldValue.category];
+    case 'milestone':
+    case 'iteration':
+      return new Date(fieldValue.dueDate);
     default:
       return null;
   }
@@ -73,40 +89,17 @@ export function sorterFor(fieldName, ascending = true) {
   };
 }
 
-export default class Sorter {
-  #items;
-  #options = {
-    fieldName: null,
-    ascending: true,
+export function sortBy(items, fieldName, prevSortOptions = { fieldName: null, ascending: true }) {
+  const newOptions = { ...prevSortOptions };
+  if (newOptions.fieldName === fieldName) {
+    newOptions.ascending = !newOptions.ascending;
+  } else {
+    newOptions.fieldName = fieldName;
+    newOptions.ascending = true;
+  }
+
+  return {
+    items: items.toSorted(sorterFor(newOptions.fieldName, newOptions.ascending)),
+    options: newOptions,
   };
-
-  constructor(items) {
-    this.#items = items;
-  }
-
-  get options() {
-    return this.#options;
-  }
-
-  #sort() {
-    return this.#items.sort(sorterFor(this.#options.fieldName, this.#options.ascending));
-  }
-
-  sortBy(fieldName) {
-    if (this.#options.fieldName === fieldName) {
-      this.#options.ascending = !this.#options.ascending;
-    } else {
-      this.#options.fieldName = fieldName;
-      this.#options.ascending = true;
-    }
-
-    return this.#sort();
-  }
-
-  clone(items) {
-    const sorter = new Sorter(items);
-    sorter.#options = { ...this.#options };
-    sorter.#sort();
-    return sorter;
-  }
 }

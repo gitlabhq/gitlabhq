@@ -1,4 +1,4 @@
-import { GRAY_100 } from '@gitlab/ui/src/tokens/build/js/tokens';
+import { GRAY_100 } from '@gitlab/ui/dist/tokens/build/js/tokens';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
 import * as ColorUtils from '~/lib/utils/color_utils';

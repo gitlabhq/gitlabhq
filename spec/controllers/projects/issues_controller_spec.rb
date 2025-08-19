@@ -1731,7 +1731,10 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
 
       it 'allows CSV export' do
         expect(IssuableExportCsvWorker).to receive(:perform_async)
-          .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST))
+          .with(:issue, viewer.id, project.id, hash_including(
+            'issue_types' => Issue::TYPES_FOR_LIST,
+            'include_subepics' => true
+          ))
 
         request_csv
 

@@ -39,6 +39,9 @@
           -
             :host: <%= sentinel[:host] %>
             :port: <%= sentinel[:port] %>
+            <% if sentinel[:password] && !sentinel[:password].empty? %>
+            :password: <%= sentinel[:password] %>
+            <% end %>
           <% end %>
         <% end %>
       <% elsif config[:delivery_method] == Gitlab::MailRoom::DELIVERY_METHOD_WEBHOOK %>
@@ -62,6 +65,9 @@
           -
             :host: <%= sentinel[:host] %>
             :port: <%= sentinel[:port] %>
+            <% if sentinel[:password] && !sentinel[:password].empty? %>
+            :password: <%= sentinel[:password] %>
+            <% end %>
           <% end %>
         <% end %>
   <% end %>

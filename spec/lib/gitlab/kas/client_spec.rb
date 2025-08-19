@@ -34,6 +34,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
   describe 'gRPC calls' do
     let(:token) { instance_double(JSONWebToken::HMACToken, encoded: 'test-token') }
     let(:kas_url) { 'grpc://example.kas.internal' }
+    let(:feature_flags) { { 'kas-feature-a' => 'true', 'kas-feature-b': 'false' } }
 
     before do
       allow(Gitlab::Kas).to receive(:enabled?).and_return(true)
@@ -45,6 +46,8 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       allow(token).to receive(:issuer=).with(Settings.gitlab.host)
       allow(token).to receive(:audience=).with(described_class::JWT_AUDIENCE)
+
+      allow(::Feature::Kas).to receive(:server_feature_flags_for_grpc_request).and_return(feature_flags)
     end
 
     describe '#get_server_info' do
@@ -64,33 +67,33 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:get_server_info)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
       it { is_expected.to eq(server_info) }
     end
 
-    describe '#get_connected_agents_by_agent_ids' do
+    describe '#get_connected_agentks_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
-      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest) }
-      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsResponse, agents: connected_agents) }
+      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest) }
+      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsResponse, agents: connected_agents) }
 
       let(:connected_agents) { [double] }
 
-      subject { client.get_connected_agents_by_agent_ids(agent_ids: [agent.id]) }
+      subject { client.get_connected_agentks_by_agent_ids(agent_ids: [agent.id]) }
 
       before do
         expect(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub).to receive(:new)
           .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
           .and_return(stub)
 
-        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest).to receive(:new)
+        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest).to receive(:new)
           .with(agent_ids: [agent.id])
           .and_return(request)
 
-        expect(stub).to receive(:get_connected_agents_by_agent_i_ds)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+        expect(stub).to receive(:get_connected_agentks_by_agent_i_ds)
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -129,7 +132,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:list_agent_config_files)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -191,7 +194,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
             .and_return(request)
 
           expect(stub).to receive(:cloud_event)
-            .with(request, metadata: { 'authorization' => 'bearer test-token' })
+            .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
             .and_return(response)
         end
 
@@ -226,7 +229,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:git_push_event)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -278,7 +281,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:get_environment_template)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -302,7 +305,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:get_default_environment_template)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -340,7 +343,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:render_environment_template)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -378,7 +381,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           .and_return(request)
 
         expect(stub).to receive(:ensure_environment)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 
@@ -408,7 +411,7 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
           ).and_return(request)
 
         expect(stub).to receive(:delete_environment)
-          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .with(request, metadata: { 'authorization' => 'bearer test-token', **feature_flags })
           .and_return(response)
       end
 

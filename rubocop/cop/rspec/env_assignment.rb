@@ -23,6 +23,7 @@ module RuboCop
 
         MESSAGE = "Don't assign to ENV, use `stub_env` instead."
 
+        # @!method env_assignment?(node)
         def_node_search :env_assignment?, <<~PATTERN
           (send (const nil? :ENV) :[]= ...)
         PATTERN

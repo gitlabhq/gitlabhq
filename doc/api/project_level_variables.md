@@ -16,7 +16,8 @@ Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-
 
 ## List project variables
 
-Get list of a project's variables.
+Get list of a project's variables. Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination)
+parameters to control the pagination of results.
 
 ```plaintext
 GET /projects/:id/variables

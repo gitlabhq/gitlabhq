@@ -121,7 +121,7 @@ export default {
       @un-snoozed="$emit('change')"
     />
     <gl-button
-      v-gl-tooltip.hover
+      v-gl-tooltip
       data-testid="toggle-status-button"
       :icon="isDone ? 'redo' : 'check'"
       :aria-label="isDone ? $options.i18n.markAsPending : $options.i18n.markAsDone"

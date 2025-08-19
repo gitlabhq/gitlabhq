@@ -13,6 +13,6 @@ module SafeUrl
     uri.password = '*****' if uri.password
     uri.user = '*****' if uri.user && allowed_usernames.exclude?(uri.user)
     Addressable::URI.unescape(uri.to_s)
-  rescue URI::Error, TypeError
+  rescue URI::Error, TypeError, Addressable::URI::InvalidURIError
   end
 end

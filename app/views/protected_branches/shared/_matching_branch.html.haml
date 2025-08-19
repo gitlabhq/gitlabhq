@@ -1,10 +1,12 @@
+- branch_name = Gitlab::Git.ref_name(matching_branch.name, types: 'branch')
+
 %tr
   %td
-    = link_to matching_branch.name, project_ref_path(@project, matching_branch.name), class: 'ref-name'
+    = link_to branch_name, project_ref_path(@project, branch_name), class: 'ref-name'
 
-    - if @project.root_ref?(matching_branch.name)
+    - if @project.root_ref?(branch_name)
       = gl_badge_tag s_('ProtectedBranch|default'), { variant: :info }, { class: 'gl-ml-2' }
   %td
-    - commit = @project.commit(matching_branch.name)
+    - commit = @project.commit(branch_name)
     = link_to(commit.short_id, project_commit_path(@project, commit.id), class: 'commit-sha')
     = time_ago_with_tooltip(commit.committed_date)

@@ -16,3 +16,9 @@ RSpec/EnvAssignment:
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+Rails/Pluck:
+  Enabled: false
+
+Rails/UniqBeforePluck:
+  Enabled: false

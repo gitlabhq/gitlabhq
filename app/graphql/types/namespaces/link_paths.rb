@@ -79,6 +79,28 @@ module Types
         fallback_value: nil,
         calls_gitaly: true
 
+      field :emails_help_page_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Help page path for emails.'
+
+      field :markdown_help_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Help page path for Markdown.'
+
+      field :quick_actions_help_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Help page path for quick actions.'
+
+      field :user_export_email,
+        GraphQL::Types::String,
+        null: true,
+        description: 'User email for export CSV. Returns `null` for user namespaces.',
+        fallback_value: nil,
+        experiment: { milestone: '18.3' }
+
       def self.type_mappings
         TYPE_MAPPINGS
       end
@@ -99,6 +121,22 @@ module Types
 
       def sign_in
         url_helpers.new_user_session_path(redirect_to_referer: 'yes')
+      end
+
+      def emails_help_page_path
+        url_helpers.help_page_path('development/emails.md', anchor: 'email-namespace')
+      end
+
+      def markdown_help_path
+        url_helpers.help_page_path('user/markdown.md')
+      end
+
+      def quick_actions_help_path
+        url_helpers.help_page_path('user/project/quick_actions.md')
+      end
+
+      def user_export_email
+        current_user&.notification_email_or_default
       end
 
       private

@@ -56,7 +56,7 @@ module Issuable
 
     def update_issuables(type, ids)
       model_class = type.classify.constantize
-      update_class = type.classify.pluralize.constantize::UpdateService
+      update_class = update_class(type)
       items = find_issuables(parent, model_class, ids)
       authorized_issuables = []
 
@@ -72,6 +72,11 @@ module Issuable
       end
 
       authorized_issuables
+    end
+
+    # overridden in EE
+    def update_class(type)
+      type.classify.pluralize.constantize::UpdateService
     end
 
     def find_issuables(parent, model_class, ids)

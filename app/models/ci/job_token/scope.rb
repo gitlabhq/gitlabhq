@@ -38,12 +38,11 @@ module Ci
       end
 
       def policies_allowed?(accessed_project, policies)
-        # We capture policies even if job token policies or allowlists are disabled, or the project is not allowlisted
+        # We capture policies even if allowlists are disabled, or the project is not allowlisted
         Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
 
-        return true unless accessed_project.job_token_policies_enabled?
         return true unless accessed_project.ci_inbound_job_token_scope_enabled?
-        return false unless accessible?(accessed_project)
+        return false unless inbound_accessible?(accessed_project)
 
         policies_allowed_for_accessed_project?(accessed_project, policies)
       end

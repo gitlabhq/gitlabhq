@@ -8,6 +8,9 @@ class Admin::GroupsController < Admin::ApplicationController
   feature_category :groups_and_projects, [:create, :destroy, :edit, :index, :members_update, :new, :show, :update]
 
   def index
+    # Groups are loaded via GraphQL query on frontend
+    return if Feature.enabled?(:admin_groups_vue, current_user)
+
     @groups = groups.sort_by_attribute(@sort = pagination_params[:sort])
     @groups = @groups.search(safe_params[:name]) if safe_params[:name].present?
     @groups = @groups.page(pagination_params[:page])

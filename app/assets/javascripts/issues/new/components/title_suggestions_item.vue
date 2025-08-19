@@ -1,6 +1,5 @@
 <script>
 import { GlLink, GlTooltip, GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { __ } from '~/locale';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -26,22 +25,6 @@ export default {
     },
   },
   computed: {
-    counts() {
-      return [
-        {
-          id: uniqueId(),
-          icon: 'thumb-up',
-          tooltipTitle: __('Upvotes'),
-          count: this.suggestion.upvotes,
-        },
-        {
-          id: uniqueId(),
-          icon: 'comment',
-          tooltipTitle: __('Comments'),
-          count: this.suggestion.userNotesCount,
-        },
-      ].filter(({ count }) => count);
-    },
     isClosed() {
       return this.suggestion.state === STATUS_CLOSED;
     },
@@ -83,55 +66,54 @@ export default {
         {{ suggestion.title }}
       </gl-link>
     </div>
-    <div class="suggestion-footer gl-text-subtle">
-      <span ref="state">
-        <gl-icon :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
-      </span>
-      <gl-tooltip :target="() => $refs.state" placement="bottom">
-        <span class="gl-block">
-          <span class="gl-font-bold"> {{ stateTitle }} </span>
-          {{ timeFormatted(closedOrCreatedDate) }}
-        </span>
-        <span class="gl-text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
-      </gl-tooltip>
-      #{{ suggestion.iid }} &bull;
-      <timeago-tooltip
-        :time="suggestion.createdAt"
-        tooltip-placement="bottom"
-        class="gl-cursor-help"
-      />
-      {{ __('by') }}
-      <gl-link :href="suggestion.author.webUrl">
-        <user-avatar-image
-          :img-src="suggestion.author.avatarUrl"
-          :size="16"
-          css-classes="mr-0 float-none"
+    <div class="suggestion-footer gl-flex gl-justify-between gl-gap-2 gl-text-sm gl-text-subtle">
+      <div class="gl-inline-flex gl-items-center gl-gap-2">
+        <div ref="state" class="gl-mb-1 gl-inline-flex gl-self-center">
+          <gl-icon
+            :name="stateIconName"
+            :class="stateIconClass"
+            class="gl-cursor-help"
+            :size="14"
+          />
+        </div>
+
+        <gl-tooltip :target="() => $refs.state" placement="bottom">
+          <span class="gl-block">
+            <span class="gl-font-bold"> {{ stateTitle }} </span>
+            {{ timeFormatted(closedOrCreatedDate) }}
+          </span>
+          <span class="gl-text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
+        </gl-tooltip>
+        #{{ suggestion.iid }} &bull;
+        {{ __('opened') }}
+        <timeago-tooltip
+          :time="suggestion.createdAt"
           tooltip-placement="bottom"
-          class="gl-inline-block"
-        >
-          <span class="gl-block gl-font-bold">{{ __('Author') }}</span> {{ suggestion.author.name }}
-          <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
-        </user-avatar-image>
-      </gl-link>
-      <template v-if="hasUpdated">
-        &bull; {{ __('updated') }}
+          class="gl-cursor-help"
+        />
+        {{ __('by') }}
+        <gl-link :href="suggestion.author.webUrl">
+          <user-avatar-image
+            :img-src="suggestion.author.avatarUrl"
+            :size="16"
+            tooltip-placement="bottom"
+            class="gl-inline-block"
+          >
+            <span class="gl-block gl-font-bold">{{ __('Author') }}</span>
+            {{ suggestion.author.name }}
+            <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
+          </user-avatar-image>
+        </gl-link>
+      </div>
+
+      <div v-if="hasUpdated">
+        {{ __('updated') }}
         <timeago-tooltip
           :time="suggestion.updatedAt"
           tooltip-placement="bottom"
           class="gl-cursor-help"
         />
-      </template>
-      <span class="suggestion-counts">
-        <span
-          v-for="{ count, icon, tooltipTitle, id } in counts"
-          :key="id"
-          v-gl-tooltip.bottom
-          :title="tooltipTitle"
-          class="gl-ml-3 gl-cursor-help gl-text-subtle"
-        >
-          <gl-icon :name="icon" /> {{ count }}
-        </span>
-      </span>
+      </div>
     </div>
   </div>
 </template>

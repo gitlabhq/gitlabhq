@@ -25,7 +25,7 @@ you with a collection of metrics, ratings, and charts for the vulnerabilities de
 The data provided by the Security Dashboards can be used supply to insight on what decisions can be made to improve your security posture. For example, using the 365 day trend view, you can see on which days a significant number of vulnerabilities were introduced. Then you can examine the code changes performed on those particular days in order perform a root-cause analysis to create better policies for preventing the introduction of vulnerabilities in the future.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=Uo-pDns1OpQ).
+For an overview, see [Security Dashboard - Advanced Security Testing](https://www.youtube.com/watch?v=Uo-pDns1OpQ).
 
 ## Vulnerability metrics in the Value Streams Dashboard
 

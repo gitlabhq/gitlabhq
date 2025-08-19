@@ -112,10 +112,9 @@ You can [configure different ports in the Helm chart](https://docs.gitlab.com/ch
 
 ## PROXY protocol support
 
-When a load balancer is used in front of `gitlab-sshd`, GitLab reports the IP
-address of the proxy instead of the actual IP address of the client. `gitlab-sshd`
-supports the [PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt) to
-obtain the real IP address.
+Load balancers in front of `gitlab-sshd` cause GitLab to report the proxy IP address instead of the
+client IP address. To obtain the real IP address, `gitlab-sshd` supports the
+[PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt).
 
 {{< tabs >}}
 

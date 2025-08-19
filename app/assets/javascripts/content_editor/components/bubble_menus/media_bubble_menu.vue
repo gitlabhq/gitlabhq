@@ -23,23 +23,11 @@ const MEDIA_TYPES = [Audio.name, Image.name, Video.name, DrawioDiagram.name];
 
 export default {
   i18n: {
-    copySourceLabels: {
-      [Audio.name]: __('Copy audio URL'),
-      [DrawioDiagram.name]: __('Copy diagram URL'),
-      [Image.name]: __('Copy image URL'),
-      [Video.name]: __('Copy video URL'),
-    },
     editLabels: {
       [Audio.name]: __('Edit audio description'),
       [DrawioDiagram.name]: __('Edit diagram URL and alt text'),
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
-    },
-    deleteLabels: {
-      [Audio.name]: __('Delete audio'),
-      [DrawioDiagram.name]: __('Delete diagram'),
-      [Image.name]: __('Delete image'),
-      [Video.name]: __('Delete video'),
     },
   },
   components: {
@@ -74,17 +62,11 @@ export default {
     };
   },
   computed: {
-    copySourceLabel() {
-      return this.$options.i18n.copySourceLabels[this.mediaType];
-    },
     editLabel() {
       return this.$options.i18n.editLabels[this.mediaType];
     },
     editDiagramLabel() {
       return __('Make changes to the diagram');
-    },
-    deleteLabel() {
-      return this.$options.i18n.deleteLabels[this.mediaType];
     },
     showProgressIndicator() {
       return this.uploading || this.isUpdating;
@@ -188,14 +170,6 @@ export default {
         .run();
 
       this.$refs.fileSelector.value = '';
-    },
-
-    copyMediaSrc() {
-      navigator.clipboard.writeText(this.mediaCanonicalSrc);
-    },
-
-    deleteMedia() {
-      this.tiptapEditor.chain().focus().deleteSelection().run();
     },
   },
 

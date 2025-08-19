@@ -15,6 +15,7 @@ import {
   i18n,
   SECRET_PUSH_PROTECTION,
   SECRET_DETECTION,
+  LICENSE_INFORMATION_SOURCE,
 } from '../constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
@@ -26,9 +27,9 @@ import TrainingProviderList from './training_provider_list.vue';
 export default {
   i18n,
   components: {
-    ApplySecurityLabels: () =>
+    ApplySecurityAttributes: () =>
       import(
-        'ee_component/security_configuration/security_labels/components/apply_security_labels.vue'
+        'ee_component/security_configuration/security_attributes/components/apply_security_attributes.vue'
       ),
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
@@ -53,6 +54,10 @@ export default {
     PageHeading,
     VulnerabilityArchives: () =>
       import('ee_component/security_configuration/components/vulnerability_archives.vue'),
+    LicenseInformationSourceFeatureCard: () =>
+      import(
+        'ee_component/security_configuration/components/license_information_source_feature_card.vue'
+      ),
   },
   directives: { SafeHtml },
   mixins: [glFeatureFlagsMixin()],
@@ -117,9 +122,9 @@ export default {
     shouldShowVulnerabilityArchives() {
       return this.glFeatures?.vulnerabilityArchival;
     },
-    shouldShowSecurityLabels() {
+    shouldShowSecurityAttributes() {
       return (
-        window.gon?.licensed_features?.securityLabels && this.glFeatures?.securityContextLabels
+        window.gon?.licensed_features?.securityAttributes && this.glFeatures?.securityContextLabels
       );
     },
   },
@@ -133,6 +138,9 @@ export default {
       }
       if (feature.type === SECRET_DETECTION) {
         return 'pipeline-secret-detection-feature-card';
+      }
+      if (feature.type === LICENSE_INFORMATION_SOURCE) {
+        return 'license-information-source-feature-card';
       }
 
       return 'feature-card';
@@ -270,11 +278,11 @@ export default {
         <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
       </gl-tab>
       <gl-tab
-        v-if="shouldShowSecurityLabels"
-        :title="s__('SecurityLabels|Security labels')"
-        query-param-value="security-labels"
+        v-if="shouldShowSecurityAttributes"
+        :title="s__('SecurityAttributes|Security attributes')"
+        query-param-value="security-attributes"
       >
-        <apply-security-labels />
+        <apply-security-attributes />
       </gl-tab>
     </gl-tabs>
   </article>

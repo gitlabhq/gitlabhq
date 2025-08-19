@@ -7,6 +7,5 @@ feature_categories:
 description: Records that an admin has accepted GitLab Testing Terms for an instance
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155231
 milestone: '17.1'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_setting
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553440

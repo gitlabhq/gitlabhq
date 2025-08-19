@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projects do
   include GraphqlHelpers
+  using RSpec::Parameterized::TableSyntax
 
   it 'implements the Types::Namespaces::GroupInterface' do
     expect(described_class.interfaces).to include(::Types::Namespaces::GroupInterface)
@@ -17,7 +18,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   it 'has the expected fields' do
     expected_fields = %w[
-      id name path full_name full_path description description_html visibility
+      id name path full_name full_path description description_html visibility archived
       lfs_enabled request_access_enabled projects root_storage_statistics
       web_url avatar_url share_with_group_lock project_creation_level
       descendant_groups_count group_members_count projects_count
@@ -101,7 +102,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
   it_behaves_like 'a GraphQL type with labels' do
     let(:labels_resolver_arguments) do
-      [:search_term, :includeAncestorGroups, :includeDescendantGroups, :onlyGroupLabels, :searchIn, :title]
+      [:search_term, :includeAncestorGroups, :includeDescendantGroups, :onlyGroupLabels, :searchIn, :title, :archived]
     end
   end
 
@@ -140,6 +141,45 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       create_list(:milestone, 2, group: subgroup)
 
       expect { clean_state_query }.not_to exceed_all_query_limit(control)
+    end
+  end
+
+  describe 'archived' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
+
+    let(:group_full_path) { group.full_path }
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group_full_path}") {
+            archived
+          }
+        }
+      )
+    end
+
+    subject(:group_archived_result) do
+      result = GitlabSchema.execute(query).as_json
+      result.dig('data', 'group', 'archived')
+    end
+
+    where(:group_archived, :parent_archived, :expected_result) do
+      false | false | false
+      false | true  | true
+      true  | false | true
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        parent_group.update!(archived: parent_archived)
+        group.update!(archived: group_archived)
+      end
+
+      it 'returns expected archived result' do
+        expect(group_archived_result).to eq(expected_result)
+      end
     end
   end
 
@@ -413,6 +453,10 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
             }
           }
         })
+      end
+
+      before do
+        Current.organization = user.organization
       end
 
       it 'avoids N+1 queries' do

@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Personal Productivity
+stage: Growth
+group: Engagement
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 title: 'Tutorial: Use the left sidebar to navigate GitLab'
 ---
@@ -29,7 +29,7 @@ At the top of the left sidebar are several shortcuts. Use these shortcuts to
 show and hide the left sidebar, create new items, search, and view your profile. You can also view your list of issues,
 merge requests, and to-do items.
 
-![Top section of the left sidebar with assigned issues, merge requests, To-Do List, and avatar.](img/sidebar_top_v16_4.png)
+![Top section of the left sidebar with assigned issues, merge requests, To-Do List, and avatar.](img/sidebar_top_v18_3.png)
 
 {{< alert type="note" >}}
 
@@ -41,7 +41,7 @@ The next area of the left sidebar changes based on the information you're viewin
 you might be viewing a project, exploring projects or groups, or viewing your profile.
 To switch to other areas of the left sidebar, use **Search or go to**.
 
-![Context switching from the left sidebar.](img/sidebar_middle_v16_4.png)
+![Context switching from the left sidebar.](img/sidebar_middle_v18_3.png)
 
 The rest of the left sidebar is populated based on the option you choose. For example,
 if you're in a project, the sidebar is project-specific.
@@ -56,11 +56,11 @@ To start, we will find the project we want to work on.
 1. Choose from the list of frequently visited projects, or
    type a colon `:` followed by the project name:
 
-   ![Search projects](img/search_projects_v16_4.png)
+   ![Search bar to find your projects and frequently visited projects.](img/search_projects_v18_3.png)
 
 The left sidebar now shows project-specific options.
 
-![Project-specific options](img/project_selected_v16_4.png)
+![Project-specific options](img/project_selected_v18_3.png)
 
 ## Pin frequently used items
 
@@ -69,11 +69,11 @@ You can pin menu items if you tend to use them frequently.
 1. Expand the sections until you are viewing the item you want to pin.
 1. Hover over and select the pin ({{< icon name="thumbtack" >}}).
 
-   ![pin](img/pin_v16_0.png)
+   ![A selected pin icon.](img/pin_v18_3.png)
 
 The item is displayed in the **Pinned** section:
 
-![pinned item](img/pinned_v16_0.png)
+![An item in the Pinned section.](img/pinned_v18_3.png)
 
 {{< alert type="note" >}}
 
@@ -84,9 +84,9 @@ The items you pin while you're viewing a project are different than the items yo
 ## Use a more focused view
 
 On the left sidebar, you can also choose a more focused view into the areas you have access to.
-Select **Search or go to** and then select **Your work**:
+Select **Search or go to** and then select **Your work**.
 
-![Your work](img/your_work_v16_4.png)
+![The search bar and the Your work item.](img/your_work_v18_3.png)
 
 Then, on the left sidebar, **Your work** is displayed.
 
@@ -94,4 +94,15 @@ Then, on the left sidebar, **Your work** is displayed.
 
 The **Admin** area is also available on the left sidebar at the bottom:
 
-![**Admin** area](img/admin_area_v16_7.png)
+![The Admin area button.](img/admin_area_v18_3.png)
+
+## Access What's new
+
+The **What's new** feature shows users some of the highlights of new features from the last 10 GitLab versions.
+
+To access the unread **What's new** items, on the left sidebar, at the bottom, select **What's new**.
+
+To access previously read **What's new** items:
+
+1. On the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
+1. Select **What's new** from the menu.

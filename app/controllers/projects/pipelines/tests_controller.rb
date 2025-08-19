@@ -6,8 +6,8 @@ module Projects
       urgency :low, [:show, :summary]
 
       before_action :authorize_read_build!
-      before_action :builds, only: [:show]
       before_action :validate_test_reports!, only: [:show]
+      before_action :check_requested_builds!, only: [:show]
 
       feature_category :code_testing
 
@@ -37,8 +37,17 @@ module Projects
         render json: { errors: 'Test report artifacts not found' }, status: :not_found unless pipeline.has_test_reports?
       end
 
+      def check_requested_builds!
+        render_404 unless builds.present?
+      end
+
       def builds
-        @builds ||= pipeline.latest_builds.id_in(build_ids).presence || render_404
+        @builds ||=
+          if Feature.enabled?(:show_child_reports_in_mr_page, project)
+            pipeline.latest_test_report_builds_in_self_and_project_descendants.id_in(build_ids)
+          else
+            pipeline.latest_test_report_builds.id_in(build_ids)
+          end
       end
 
       def build_ids

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Archived Project', :js, feature_category: :groups_and_projects do
-  let_it_be(:user) { create :user }
+RSpec.describe 'Dashboard Archived Project', :js, :with_current_organization, feature_category: :groups_and_projects do
+  let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be(:project) { create :project }
   let_it_be(:archived_project) { create(:project, :archived) }
   let_it_be(:archived_project_2) { create(:project, :archived) }

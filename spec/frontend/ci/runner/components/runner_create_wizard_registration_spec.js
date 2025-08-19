@@ -45,6 +45,7 @@ describe('Create New Runner Registration', () => {
   const findToken = () => wrapper.findByTestId('token-input');
   const findCopyTokenButton = () => wrapper.findByTestId('copy-token-to-clipboard');
   const findLoadingIcon = () => wrapper.findByTestId('loading-icon-wrapper');
+  const findRunnerRegisteredAlert = () => wrapper.findByTestId('runner-registered-alert');
 
   describe('form', () => {
     beforeEach(() => {
@@ -74,15 +75,17 @@ describe('Create New Runner Registration', () => {
     });
   });
 
-  describe('loading state', () => {
-    it('shows the loading icon when data is not yet available', () => {
+  describe('on form submit', () => {
+    it('displays loading state while runner registration is in progress', () => {
       createComponent();
       expect(findLoadingIcon().exists()).toBe(true);
+      expect(findRunnerRegisteredAlert().exists()).toBe(false);
     });
 
-    it('removes the loading icon when data is available', async () => {
+    it('displays success alert after runner registration completes', async () => {
       await createComponent();
       expect(findLoadingIcon().exists()).toBe(false);
+      expect(findRunnerRegisteredAlert().exists()).toBe(true);
     });
   });
 });

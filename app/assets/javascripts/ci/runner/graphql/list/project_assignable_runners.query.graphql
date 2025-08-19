@@ -1,0 +1,24 @@
+#import "~/ci/runner/graphql/list/runner_connection.fragment.graphql"
+
+query getProjectAssignableRunners(
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $type: CiRunnerType
+  $fullPath: ID!
+) {
+  currentUser {
+    id
+    runners(
+      before: $before
+      after: $after
+      first: $first
+      last: $last
+      type: $type
+      assignableToProjectPath: $fullPath
+    ) {
+      ...RunnerConnection
+    }
+  }
+}

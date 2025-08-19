@@ -19,7 +19,7 @@ GitLab Self-Managed instance. If you are an administrator, to access the **Admin
 - In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
 - In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.
 - In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin**.
-- In GitLab 16.0 and earlier: on the top bar, select **Main menu > Admin**.
+- In GitLab 16.0 and earlier: on the top bar, select **Main menu** > **Admin**.
 
 If the GitLab instance uses Admin Mode, you must
 [enable Admin Mode for your session](settings/sign_in_restrictions.md#turn-on-admin-mode-for-your-session) before
@@ -34,44 +34,59 @@ On GitLab.com, the **Admin** area feature is not available.
 
 ## Administering projects
 
-To administer all projects in the GitLab instance from the **Admin** area's Projects page:
+{{< history >}}
+
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17782) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_projects_vue`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/549452) in GitLab 18.3. Feature flag `admin_projects_vue` removed.
+
+{{< /history >}}
+
+To administer all projects in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Projects**.
-1. Select the **All**, **Private**, **Internal**, or **Public** tab to list only
-   projects of that criteria.
-1. Optional. Combine these filter and sort options to find your desired projects:
+1. Select **Overview** > **Projects**. The page shows each project's:
 
-   - Select **Filter by name**. Enter the project name you want to find, and GitLab filters
-     projects as you enter text.
+   - Name
+   - Description
+   - Visibility level
+   - Role
+   - Topics
+   - Status
+   - Storage size
+   - Number of stars
+   - Number of forks
+   - Number of merge requests
+   - Number of issues
 
-   - Select **Sort by** to sort projects by:
+1. Optional. Select a tab:
 
-     - Updated date
-     - Last created
-     - Name
-     - Most stars
-     - Oldest created
-     - Oldest updated
-     - Largest repository
+   - **Active** shows all active projects.
+   - **Inactive** shows projects that are archived or pending deletion.
 
-   - Select **Sort by** to filter projects:
+1. Optional. Combine filters to find your desired projects. Filter by:
 
-     - Hide (or show) archived projects
-     - Show archived projects only
-     - Owned by anyone
-     - Owned by me
+   - Name. You must enter at least three characters.
+   - Visibility, either public, internal, or private.
+   - Programming language.
+   - Group or user namespace.
+   - Projects where you have the Owner role.
 
-   - To filter to projects in a namespace, select **Namespace**. Enter text to filter for your desired
-     namespace, then select it.
+1. Optional. To change the sort order, select the sort dropdown list and choose the desired order.
+   The available sort options are:
+
+   - Name
+   - Created date
+   - Updated date
+   - Stars
+   - Storage size
 
 ### Edit a project
 
 To edit a project's name or description from the **Admin** area's Projects page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Projects**.
-1. Next to the project you want to edit, select **Edit**.
+1. Select **Overview** > **Projects**.
+1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
 1. Edit the **Project name** or **Project description**.
 1. Select **Save Changes**.
 
@@ -80,8 +95,9 @@ To edit a project's name or description from the **Admin** area's Projects page:
 To delete a project:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Projects**.
-1. Next to the project you want to edit, select **Delete**.
+1. Select **Overview** > **Projects**.
+1. Find the project you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Yes, delete project**.
 
 ## Administering users
 
@@ -103,7 +119,7 @@ The **Admin** area's Users page shows this information for each user:
 To administer all users from the **Admin** area's Users page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Optional. To change the sort order, which defaults to user name:
 
    1. Select the sort dropdown list.
@@ -126,7 +142,7 @@ To edit a user, find the user's row and select **Edit**.
 To delete the user, or delete the user and their contributions, from the **Admin** area's Users page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Find the user you want to delete. In the row, select **User administration**
    ({{< icon name="ellipsis_v">}}), then select the desired option.
 
@@ -139,7 +155,7 @@ To impersonate a user:
 
 - Through the UI:
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Overview > Users**.
+  1. On the left sidebar, select **Overview** > **Users**.
   1. From the list of users, select a user.
   1. On the top right, select **Impersonate**.
   1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito">}}).
@@ -170,7 +186,7 @@ SCIM-related issues and confirm the identities being used for an account.
 To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. From the list of users, select a user.
 1. Select **Identities**.
 
@@ -198,7 +214,7 @@ in groups and projects. It includes this data, and is limited to the first 100,0
 To export user permissions for all active users in your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. On the top right, select **Export permissions as CSV** ({{< icon name="export" >}}).
 
 ### Users statistics
@@ -210,14 +226,14 @@ calculated daily. User changes made after the last update are not reflected. The
 - Blocked users
 - Total users
 
-GitLab billing is based on the number of [billable users](../subscriptions/self_managed/_index.md#billable-users).
+GitLab billing is based on the number of [billable users](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ### Add email to user
 
 To add email addresses to user accounts manually:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
 1. In **Email**, enter the new email address. This adds the new email address to the
@@ -233,7 +249,7 @@ The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and
 By default, users can create top-level groups. To prevent a user from creating a top-level group:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Locate the user and select them.
 1. Select **Edit**.
 1. Clear the **Can create top-level group** checkbox.
@@ -244,31 +260,68 @@ It is also possible to limit which roles can
 
 ## Administering groups
 
+{{< history >}}
+
+- New look [introduced](https://gitlab.com/groups/gitlab-org/-/epics/17783) in GitLab 18.2 [with a flag](feature_flags/_index.md) named `admin_groups_vue`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 To administer all groups in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Groups**. The page shows the group's:
+1. Select **Overview** > **Groups**. The page shows each group's:
 
-   - Name.
-   - Description.
-   - Size.
-   - Number of projects in the group.
-   - Member count.
-   - Privacy level: whether the group is private, internal, or public.
+   - Name
+   - Description
+   - Visibility level
+   - Role
+   - Status
+   - Storage size
+   - Number of subgroups
+   - Number of projects
+   - Member count
 
-1. To manage a group, find the group's row and select **Edit** or **Delete**.
+1. Optional. Select a tab:
+
+   - **Active** shows all active groups.
+   - **Inactive** shows groups that are pending deletion.
+
 1. Optional. To change the sort order, select the sort dropdown list and choose the desired order.
    The available sort options are:
 
-   - Created date (default).
-   - Updated date.
-   - Storage size. This option sorts groups by the total storage used, including Git repositories
-     and Large File Storage (LFS) for all projects in the group. For more information, see
-     [usage quotas](../user/storage_usage_quotas.md).
+   - Name
+   - Created date
+   - Updated date
+   - [Storage size](../user/storage_usage_quotas.md)
 
-1. Optional. To search for groups by name, enter your criteria in the search field. The group search is
-   case-insensitive, and applies partial matching.
+1. Optional. To filter groups by name, in the search bar, enter at least three characters.
 1. Optional. To [create a new group](../user/group/_index.md#create-a-group) select **New group**.
+
+### Edit a group
+
+To edit a group's name or description from the **Admin** area's Groups page:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview** > **Groups**.
+1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Edit**.
+1. Edit the **Group name** or **Group description**.
+1. Select **Save Changes**.
+
+### Delete a group
+
+To delete a group:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview** > **Groups**.
+1. Find the group you want to edit and select **Actions** ({{< icon name="ellipsis_v" >}}) > **Delete**.
+1. On the confirmation dialog, select **Confirm**.
 
 ## Administering topics
 
@@ -285,14 +338,14 @@ Categorize and find similar projects with [topics](../user/project/project_topic
 To view all topics in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 
 For each topic, the page displays its name and the number of projects labeled with the topic.
 
 ### Search for topics
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 1. In the search box, enter your search criteria.
    The topic search is case-insensitive and applies partial matching.
 
@@ -301,7 +354,7 @@ For each topic, the page displays its name and the number of projects labeled wi
 To create a topic:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 1. Select **New topic**.
 1. Enter the **Topic slug (name)** and **Topic title**.
 1. Optional. Enter a **Description** and add a **Topic avatar**.
@@ -319,7 +372,7 @@ You can edit a topic's name, title, description, and avatar at any time.
 To edit a topic:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 1. Select **Edit** in that topic's row.
 1. Edit the topic slug (name), title, description, or avatar.
 1. Select **Save changes**.
@@ -330,7 +383,7 @@ If you no longer need a topic, you can permanently remove it.
 To remove a topic:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 1. To remove a topic, select **Remove** in that topic's row.
 
 ### Merge topics
@@ -342,7 +395,7 @@ After a merged topic is deleted, you cannot restore it.
 To merge topics:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Topics**.
+1. Select **Overview** > **Topics**.
 1. Select **Merge topics**.
 1. From the **Source topic** dropdown list, select the topic you want to merge and remove.
 1. From the **Target topic** dropdown list, select the topic you want to merge the source topic into.
@@ -356,7 +409,7 @@ page. For more details, see [Gitaly](gitaly/_index.md).
 To access the **Gitaly servers** page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Gitaly servers**.
+1. Select **Overview** > **Gitaly servers**.
 
 The page includes this information about each Gitaly server:
 
@@ -396,7 +449,7 @@ they were last updated. Each project shows:
 To administer all organizations in the GitLab instance from this page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Organizations**.
+1. Select **Overview** > **Organizations**.
 
 ## CI/CD section
 
@@ -404,14 +457,14 @@ To administer all organizations in the GitLab instance from this page:
 
 {{< history >}}
 
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview** > **Runners** to **CI/CD** > **Runners** in GitLab 15.8.
 
 {{< /history >}}
 
 To administer all runners in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **CI/CD > Runners**.
+1. Select **CI/CD** > **Runners**.
 
 This information is shown for each runner:
 
@@ -456,7 +509,7 @@ To filter runners by status, type, and tag:
 To delete multiple runners at the same time:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Runners**.
+1. Select **Overview** > **Runners**.
 1. To the left of the runner you want to delete, select the checkbox.
    To select all runners on the page, select the checkbox above
    the list.
@@ -466,14 +519,14 @@ To delete multiple runners at the same time:
 
 {{< history >}}
 
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview** > **Jobs** to **CI/CD** > **Jobs** in GitLab 15.8.
 
 {{< /history >}}
 
 To administer all jobs in the GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **CI/CD > Jobs**. All jobs are listed, in descending order of job ID.
+1. Select **CI/CD** > **Jobs**. All jobs are listed, in descending order of job ID.
 1. Select the **All** tab to list all jobs. Select the **Pending**, **Running**, or **Finished**
    tab to list only jobs of that status.
 

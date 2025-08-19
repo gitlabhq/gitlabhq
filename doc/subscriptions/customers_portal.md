@@ -15,7 +15,7 @@ See the following pages for specific instructions on managing your subscription:
 - [Manage subscription](manage_subscription.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
-For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).
+For more information, see [Customers that purchased through a reseller](#subscription-purchased-through-a-reseller).
 
 ## Sign in to Customers Portal
 
@@ -169,18 +169,6 @@ To change the billing contact:
      1. Enter the contact details.
      1. Select **Save changes**.
 
-### Troubleshooting your billing or subscription contact's name
-
-If the billing account manager's email is linked to contacts with different first or last names, you will be prompted to update the name.
-
-If you are the billing account manager, follow the instructions to [update your personal profile](#change-profile-owner-information).
-
-If you are not the billing account manager, notify them to update their personal profile.
-
-### Troubleshooting your subscription contact
-
-If the subscription contact is no longer a billing account manager, you will be prompted to select a new contact. Follow the instructions to [change your subscription contact](#change-your-subscription-contact).
-
 ## Change your payment method
 
 Purchases in the Customers Portal require a credit card on record as a payment method. You can add
@@ -267,7 +255,14 @@ If your business isn't registered for indirect taxes (due to size thresholds or 
 
 For detailed Tax ID formats by country and additional information, see our [complete Tax ID reference guide](https://handbook.gitlab.com/handbook/finance/tax/#frequently-asked-questions---tax-id-for-non-us-customers).
 
-## Customers that purchased through a reseller
+## Troubleshooting
+
+If you encounter issues or have questions about your GitLab subscription,
+visit the [Contact us](https://customers.gitlab.com/contact_us) page.
+This page lists resources, services, and contact options of the sales, billing, and support teams,
+which ensures quick access to the right help.
+
+### Subscription purchased through a reseller
 
 If you purchased a subscription through an authorized reseller (including GCP and AWS marketplaces), you have access to the Customers Portal to:
 
@@ -288,7 +283,16 @@ After your subscription order is processed, you will receive several emails:
 - A "Welcome to the Customers Portal" email, including instructions on how to sign in.
 - A purchase confirmation email with instructions on how to provision access.
 
-## Get support
+### Billing and subscription contact's names don't match
 
-If you encounter issues or have questions about your GitLab subscription, visit the [Contact us](https://customers.gitlab.com/contact_us) page.
-This page lists resources, services, and contact options of the sales, billing, and support teams, ensuring quick access to the right help.
+If the billing account manager's email is linked to contacts with different first or last names,
+you will be prompted to update the name.
+
+If you are the billing account manager, follow the instructions to [update your personal profile](#change-profile-owner-information).
+
+If you are not the billing account manager, notify them to update their personal profile.
+
+### Subscription contact is no longer account manager
+
+If the subscription contact is no longer a billing account manager, you will be prompted to select a new contact.
+Follow the instructions to [change your subscription contact](#change-your-subscription-contact).

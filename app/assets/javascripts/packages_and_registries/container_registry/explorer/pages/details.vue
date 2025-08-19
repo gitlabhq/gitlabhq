@@ -18,7 +18,6 @@ import {
   ALERT_DANGER_IMAGE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   UNFINISHED_STATUS,
-  MISSING_OR_DELETED_IMAGE_BREADCRUMB,
   MISSING_OR_DELETED_IMAGE_TITLE,
   MISSING_OR_DELETED_IMAGE_MESSAGE,
 } from '../constants/index';
@@ -41,7 +40,7 @@ export default {
     GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [Tracking.mixin()],
-  inject: ['breadCrumbState', 'config'],
+  inject: ['config'],
   i18n: {
     MISSING_OR_DELETED_IMAGE_TITLE,
     MISSING_OR_DELETED_IMAGE_MESSAGE,
@@ -63,9 +62,6 @@ export default {
       query: getContainerRepositoryDetailsQuery,
       variables() {
         return this.queryVariables;
-      },
-      result() {
-        this.updateBreadcrumb();
       },
       error() {
         createAlert({ message: FETCH_IMAGES_LIST_ERROR_MESSAGE });
@@ -108,12 +104,6 @@ export default {
     },
   },
   methods: {
-    updateBreadcrumb() {
-      const name = this.containerRepository?.id
-        ? this.containerRepository?.name || this.containerRepository?.project?.path
-        : MISSING_OR_DELETED_IMAGE_BREADCRUMB;
-      this.breadCrumbState.updateName(name);
-    },
     confirmDelete() {
       this.$refs.deleteImage.doDelete();
     },
@@ -177,6 +167,7 @@ export default {
         :id="$route.params.id"
         :is-image-loading="isLoading"
         :is-mobile="isMobile"
+        :disabled="pageActionsAreDisabled"
         @delete="showAlert"
       />
 

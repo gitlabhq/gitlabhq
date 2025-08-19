@@ -145,7 +145,20 @@ module Types
 
     field :archived, GraphQL::Types::Boolean,
       null: true,
-      description: 'Indicates the archived status of the project.'
+      description: 'Indicates the archived status of the project.',
+      method: :self_or_ancestors_archived?
+
+    field :is_self_deletion_in_progress, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if project deletion is in progress.',
+      method: :self_deletion_in_progress?,
+      experiment: { milestone: '18.3' }
+
+    field :is_self_deletion_scheduled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if project deletion is scheduled.',
+      method: :self_deletion_scheduled?,
+      experiment: { milestone: '18.3' }
 
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: true,
@@ -294,6 +307,7 @@ module Types
     field :statistics_details_paths, Types::ProjectStatisticsRedirectType,
       null: true,
       description: 'Redirects for Statistics of the project.',
+      scopes: [:api, :read_api, :ai_workflows],
       calls_gitaly: true
 
     field :repository, Types::RepositoryType,
@@ -908,8 +922,8 @@ module Types
       field "#{feature}_enabled", GraphQL::Types::Boolean, null: true,
         description: "Indicates if #{name_string} enabled for the current user"
 
-      define_method "#{feature}_enabled" do
-        object.feature_available?(feature, context[:current_user])
+      define_method "#{feature}_enabled" do # rubocop:disable Performance/StringIdentifierArgument
+        object.feature_available?(feature, context[:current_user]) # rubocop:disable Gitlab/FeatureAvailableUsage
       end
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Deploy', product_group: :environments do
+  RSpec.describe 'Deploy', feature_category: :environment_management do
     describe 'Deploy key creation' do
       it 'user adds a deploy key', :smoke,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348023' do

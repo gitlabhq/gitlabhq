@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group webhooks API
+description: "Set up and manage webhooks for a group with the REST API."
 ---
 
 {{< details >}}
@@ -36,7 +37,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks"
 ```
 
 Example response:
@@ -70,6 +73,7 @@ Example response:
     "deployment_events": false,
     "feature_flag_events": false,
     "releases_events": false,
+    "milestone_events": false,
     "subgroup_events": false,
     "emoji_events": false,
     "resource_access_token_events": false,
@@ -103,7 +107,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1"
 ```
 
 Example response:
@@ -130,6 +136,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": false,
   "releases_events": true,
+  "milestone_events": false,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -176,7 +183,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/events"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/events"
 ```
 
 Example response:
@@ -458,7 +467,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/events/1/resend"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/events/1/resend"
 ```
 
 Example response:
@@ -500,6 +511,7 @@ Supported attributes:
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
 | `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
 | `project_events`             | boolean        | no       | Trigger hook on project events. |
@@ -543,6 +555,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": true,
   "releases_events": true,
+  "milestone_events": true,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -589,6 +602,7 @@ Supported attributes:
 | `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
 | `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
 | `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
 | `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
 | `member_events`              | boolean        | no       | Trigger hook on member events. |
 | `project_events`             | boolean        | no       | Trigger hook on project events. |
@@ -633,6 +647,7 @@ Example response:
   "deployment_events": true,
   "feature_flag_events": true,
   "releases_events": true,
+  "milestone_events": true,
   "subgroup_events": true,
   "member_events": true,
   "project_events": true,
@@ -671,7 +686,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1"
 ```
 
 On success, no message is returned.
@@ -699,12 +716,14 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 |-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                                                                                           |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/test/push_events"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/test/push_events"
 ```
 
 Example response:
@@ -739,7 +758,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key?value='header_value'"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key?value='header_value'"
 ```
 
 On success, no message is returned.
@@ -769,7 +790,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/custom_headers/header_key"
 ```
 
 On success, no message is returned.
@@ -798,7 +821,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key?value='my_key_value'"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key?value='my_key_value'"
 ```
 
 On success, no message is returned.
@@ -826,7 +851,9 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/3/hooks/1/url_variables/my_key"
 ```
 
 On success, no message is returned.

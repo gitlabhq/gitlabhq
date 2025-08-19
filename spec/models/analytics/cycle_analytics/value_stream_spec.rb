@@ -55,7 +55,7 @@ RSpec.describe Analytics::CycleAnalytics::ValueStream, type: :model, feature_cat
   end
 
   describe 'ordering of stages' do
-    let(:group) { create(:group, :with_organization) }
+    let(:group) { create(:group) }
     let(:value_stream) do
       create(:cycle_analytics_value_stream, namespace: group, stages: [
         create(:cycle_analytics_stage, namespace: group, name: "stage 1", relative_position: 5),

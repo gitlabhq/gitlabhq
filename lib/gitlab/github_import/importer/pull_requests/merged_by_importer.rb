@@ -5,7 +5,7 @@ module Gitlab
     module Importer
       module PullRequests
         class MergedByImporter
-          include Gitlab::GithubImport::PushPlaceholderReferences
+          include ::Import::PlaceholderReferences::Pusher
 
           # pull_request - An instance of
           #                `Gitlab::GithubImport::Representation::PullRequest`
@@ -16,7 +16,6 @@ module Gitlab
             @project = project
             @client = client
             @merged_by = pull_request.merged_by
-            @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
           end
 
           def execute
@@ -26,8 +25,8 @@ module Gitlab
 
             metrics_upsert(gitlab_user_id)
 
-            if mapper.user_mapping_enabled?
-              push_with_record(merge_request.metrics, :merged_by_id, merged_by&.id, mapper.user_mapper)
+            if user_mapping_enabled?(project) && !map_to_personal_namespace_owner?(project)
+              push_reference(project, merge_request.metrics, :merged_by_id, merged_by&.id)
             else
               add_legacy_note!
             end
@@ -35,7 +34,7 @@ module Gitlab
 
           private
 
-          attr_reader :project, :pull_request, :client, :mapper, :merged_by
+          attr_reader :project, :pull_request, :client, :merged_by
 
           def metrics_upsert(gitlab_user_id)
             MergeRequest::Metrics.upsert({

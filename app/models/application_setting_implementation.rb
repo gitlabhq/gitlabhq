@@ -31,7 +31,7 @@ module ApplicationSettingImplementation
   ].freeze
 
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
-  DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 7
+  DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 30
 
   class_methods do
     def defaults # rubocop:disable Metrics/AbcSize
@@ -124,6 +124,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        inactive_resource_access_tokens_delete_after_days: 30,
         include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_level_ai_beta_features_enabled: false,
         invisible_captcha_enabled: false,
@@ -336,6 +337,7 @@ module ApplicationSettingImplementation
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
+        pages_unique_domain_default_enabled: true,
         scan_execution_policies_action_limit: 0,
         scan_execution_policies_schedule_limit: 0,
         seat_control: 0,
@@ -347,7 +349,9 @@ module ApplicationSettingImplementation
         reindexing_minimum_relative_bloat_size: 0.2,
         git_push_pipeline_limit: 4,
         disable_invite_members: false,
-        enforce_pipl_compliance: true
+        enforce_pipl_compliance: true,
+        model_prompt_cache_enabled: true,
+        lock_model_prompt_cache_enabled: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

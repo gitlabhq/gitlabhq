@@ -117,7 +117,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           context 'when canceling' do
-            it 'indicates that pipeline was canceled', :sidekiq_inline do
+            it 'indicates that pipeline was canceled', :sidekiq_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541901' do
               find('.js-pipelines-cancel-button').click
               click_button 'Stop pipeline'
 
@@ -127,7 +127,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
             end
 
-            it 'targets the pipeline the cancel action was invoked on' do
+            it 'targets the pipeline the cancel action was invoked on', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514513' do
               allow_next_instance_of(Gitlab::EtagCaching::Store) do |instance|
                 allow(instance).to receive(:get).and_return(nil)
               end

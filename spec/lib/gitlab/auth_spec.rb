@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to match_array %i[api read_user read_api create_runner manage_runner k8s_proxy self_rotate]
+      expect(subject::API_SCOPES).to match_array %i[api read_user read_api create_runner manage_runner k8s_proxy self_rotate mcp]
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
@@ -50,7 +50,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it 'contains all non-default scopes' do
-      expect(subject.all_available_scopes).to match_array(subject::UI_SCOPES_ORDERED_BY_PERMISSION)
+      # MCP_SCOPE is available, but not in the UI.
+      expect(subject.all_available_scopes - [subject::MCP_SCOPE]).to match_array(subject::UI_SCOPES_ORDERED_BY_PERMISSION)
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access and without observability scopes' do
@@ -58,7 +59,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository write_repository read_registry write_registry
-        create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry
+        create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
       ]
     end
 
@@ -67,7 +68,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository read_service_ping write_repository read_registry write_registry
-        sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry
+        sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
       ]
     end
 
@@ -75,7 +76,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(project)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate
+        self_rotate mcp
       ]
     end
 
@@ -85,7 +86,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(group)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate read_virtual_registry write_virtual_registry
+        self_rotate read_virtual_registry write_virtual_registry mcp
       ]
     end
 
@@ -102,6 +103,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         email
         k8s_proxy
         manage_runner
+        mcp
         openid
         profile
         read_api
@@ -134,7 +136,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry
+            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -146,7 +148,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate
+            k8s_proxy ai_features self_rotate mcp
           ]
         end
       end
@@ -167,7 +169,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry
+            self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -176,7 +178,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(user)).to match_array %i[
             api read_user read_api read_repository write_repository read_registry write_registry read_service_ping
-            sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry
+            sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -184,7 +186,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate
+            self_rotate mcp
           ]
         end
 
@@ -197,7 +199,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(other_group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry
+            self_rotate read_virtual_registry write_virtual_registry mcp
           ]
         end
 
@@ -210,7 +212,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(other_project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
-            create_runner manage_runner k8s_proxy ai_features self_rotate
+            create_runner manage_runner k8s_proxy ai_features self_rotate mcp
           ]
         end
       end
@@ -571,7 +573,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           'read_api'            | described_class.read_only_authentication_abilities
           'read_repository'     | %i[download_code]
           'write_repository'    | %i[download_code push_code]
-          'create_runner'       | %i[create_instance_runner create_runner]
+          'create_runner'       | %i[create_instance_runners create_runners]
           'manage_runner'       | %i[assign_runner update_runner delete_runner]
           'read_user'           | []
           'sudo'                | []
@@ -645,7 +647,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       it 'succeeds for personal access tokens with the `create_runner` scope' do
         personal_access_token = create(:personal_access_token, scopes: ['create_runner'])
 
-        expect_results_with_abilities(personal_access_token, %i[create_instance_runner create_runner])
+        expect_results_with_abilities(personal_access_token, %i[create_instance_runners create_runners])
       end
 
       it 'succeeds for personal access tokens with the `manage_runner` scope' do
@@ -667,15 +669,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
         expect(Gitlab::Auth::Ldap::Authentication).not_to receive(:login)
         expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: nil, request: request))
-          .to have_attributes(auth_failure)
-      end
-
-      it 'falls back to LDAP authentication when the feature flag is disabled' do
-        pat = create(:personal_access_token, :revoked, scopes: ['read_repository'], user: user)
-        stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
-
-        expect(Gitlab::Auth::Ldap::Authentication).to receive(:login)
-        expect(gl_auth.find_for_git_client('ldap_user', pat.token, project: project, request: request))
           .to have_attributes(auth_failure)
       end
 
@@ -898,6 +891,77 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       end
     end
 
+    describe '#user_with_password_for_git' do
+      let_it_be(:user) { create(:omniauth_user, :ldap) }
+      let_it_be(:ldap_username) { user.username }
+      let_it_be(:password) { user.password }
+
+      subject(:track_event) { gl_auth.find_for_git_client(ldap_username, password, project: nil, request: request) }
+
+      context 'when #password_authentication_enabled_for_git? is false' do
+        before do
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(false)
+        end
+
+        context 'when prevent_ldap_sign_in is disabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(false) # default
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+
+        context 'when prevent_ldap_sign_in is enabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(true)
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+      end
+
+      context 'when #password_authentication_enabled_for_git? is true' do
+        before do
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
+        end
+
+        context 'when prevent_ldap_sign_in is disabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(false) # default
+          end
+
+          it 'does not track the internal event' do
+            expect { track_event }
+              .not_to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+          end
+        end
+
+        context 'when prevent_ldap_sign_in is enabled' do
+          before do
+            allow(Gitlab::Auth::Ldap::Config).to receive(:prevent_ldap_sign_in?).and_return(true)
+          end
+
+          it 'tracks the internal event & increments its metrics' do
+            expect { track_event }
+              .to trigger_internal_events('authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled')
+                .with(user: user, project: nil, namespace: nil)
+              .and increment_usage_metrics(
+                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_monthly',
+                'counts.count_total_authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled_weekly'
+              )
+          end
+        end
+      end
+    end
+
     it 'returns double nil for invalid credentials' do
       login = 'foo'
 
@@ -986,15 +1050,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           deploy_token.revoke!
 
           expect_any_instance_of(::Gitlab::Auth::Database::Authentication).not_to receive(:login)
-          expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
-            .to have_attributes(auth_failure)
-        end
-
-        it 'falls back to database authentication when the feature flag is disabled' do
-          stub_feature_flags(prevent_token_prefixed_password_fallback_sessionless: false)
-          deploy_token.revoke!
-
-          expect_any_instance_of(::Gitlab::Auth::Database::Authentication).to receive(:login)
           expect(gl_auth.find_for_git_client(username, deploy_token.token, project: project, request: request))
             .to have_attributes(auth_failure)
         end
@@ -1473,6 +1528,30 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         it "does not find non-ldap user by valid login/password" do
           expect(gl_auth.find_with_user_password(username, user.password)).to be_nil
         end
+      end
+    end
+  end
+
+  describe 'user_with_password_for_git' do
+    let(:user) { create(:user) }
+
+    context 'when password is a recognized token' do
+      it 'returns nil immediately without calling find_with_user_password' do
+        pat = create(:personal_access_token, :revoked, user: user)
+
+        expect(gl_auth).not_to receive(:find_with_user_password)
+
+        result = gl_auth.send(:user_with_password_for_git, user.username, pat.token)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when password is not a recognized token' do
+      it 'calls find_with_user_password for regular passwords' do
+        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password).and_return(user)
+
+        result = gl_auth.send(:user_with_password_for_git, user.username, user.password)
+        expect(result).to have_attributes(actor: user, type: :gitlab_or_ldap)
       end
     end
   end

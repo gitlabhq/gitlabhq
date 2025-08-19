@@ -47,15 +47,13 @@ module Resolvers
 
       argument :creator_username, GraphQL::Types::String,
         required: false,
-        description: 'Filter runners by creator username.',
-        experiment: { milestone: '16.7' }
+        description: 'Filter runners by creator username.'
 
       argument :version_prefix, GraphQL::Types::String,
         required: false,
         description: "Filter runners by version. Runners that contain runner managers with the version at " \
           "the start of the search term are returned. For example, the search term '14.' returns " \
-          "runner managers with versions '14.11.1' and '14.2.3'.",
-        experiment: { milestone: '16.6' }
+          "runner managers with versions '14.11.1' and '14.2.3'."
 
       argument :owner_full_path, GraphQL::Types::String,
         required: false,

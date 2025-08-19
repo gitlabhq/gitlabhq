@@ -24,6 +24,7 @@ class Milestone < ApplicationRecord
 
   has_many :milestone_releases
   has_many :releases, through: :milestone_releases
+  has_many :merge_requests
 
   has_internal_id :iid, scope: :project, track_if: -> { !importing? }
   has_internal_id :iid, scope: :group, track_if: -> { !importing? }

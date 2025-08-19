@@ -9,7 +9,7 @@ GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as
 well as in learning tasks across the entire Software Development Lifecycle
 (SDLC) to make them faster and more efficient.
 
-[Chat](../../user/gitlab_duo_chat/_index.md) is a part of the [GitLab Duo](../../user/ai_features.md)
+[Chat](../../user/gitlab_duo_chat/_index.md) is a part of the [GitLab Duo](../../user/gitlab_duo/_index.md)
 offering.
 
 Chat can answer different questions and perform certain tasks. It's done with
@@ -260,7 +260,7 @@ LangSmith has best-in-class tracing capabilities, and it's integrated with GitLa
 ![LangSmith UI](img/langsmith_v16_10.png)
 
 Tracing is especially useful for evaluation that runs GitLab Duo Chat against large dataset.
-LangSmith integration works with any tools, including [Prompt Library](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library).
+LangSmith integration works with any tools, including [GitLab Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) (CEF).
 
 ### Use tracing with LangSmith
 
@@ -281,7 +281,7 @@ It's not available in Production environment.
    export LANGCHAIN_API_KEY='<your-api-key>'
    export LANGCHAIN_PROJECT='<your-project-name>'
    export LANGCHAIN_ENDPOINT='https://api.smith.langchain.com'
-   export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
+   export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with CEF as the evaluation tool.
    ```
 
    Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
@@ -294,7 +294,7 @@ It's not available in Production environment.
 
 ## Evaluate your merge request in one click
 
-To evaluate your merge request with [Central Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) (a.k.a. CEF),
+To evaluate your merge request with the [CEF](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library),
 you can use [Evaluation Runner](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner) (internal only).
 Follow [run evaluation on your merge request](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#run-evaluation-on-your-merge-request) instruction.
 
@@ -591,29 +591,11 @@ return `true` in different contexts.
 | for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and the group must have `duo_features_enabled` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
 | for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and project must have `duo_features_enabled` setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
 
-## Running GitLab Duo Chat prompt experiments
-
-Before being merged, all prompt or model changes for GitLab Duo Chat should both:
-
-1. Be behind a feature flag *and*
-1. Be evaluated locally
-
-The type of local evaluation needed depends on the type of change. GitLab Duo
-Chat local evaluation using the Prompt Library is an effective way of measuring
-average correctness of responses to questions about issues and epics.
-
-Follow the
-[Prompt Library guide](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md#configuring-duo-chat-with-local-gdk)
-to evaluate GitLab Duo Chat changes locally. The prompt library documentation is
-the single source of truth and should be the most up-to-date.
-
-See the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
-
 ### (Deprecated) Issue and epic experiments
 
 {{< alert type="note" >}}
 
-This section is deprecated in favor of the [development seed file](testing_and_validation.md#seed-project-and-group-resources-for-testing-and-evaluation).
+This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
 {{< /alert >}}
 
@@ -634,7 +616,7 @@ desired.
 
 {{< alert type="note" >}}
 
-This section is deprecated in favor of the [development seed file](testing_and_validation.md#seed-project-and-group-resources-for-testing-and-evaluation).
+This section is deprecated in favor of the [development seed file](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
 
 {{< /alert >}}
 

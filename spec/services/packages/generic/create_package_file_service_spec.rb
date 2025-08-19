@@ -56,7 +56,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     shared_examples 'allows creating the file' do
       it_behaves_like 'returning a success service response'
 
-      it { expect { response }.to change { project.package_files.count }.by(1) }
+      it { expect { response }.to change { ::Packages::PackageFile.for_projects(project).count }.by(1) }
     end
 
     shared_examples 'does not allow duplicates' do
@@ -65,8 +65,8 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
       it { is_expected.to have_attributes reason: :package_file_already_exists }
 
       it 'does not add new package file' do
-        expect { response }.to not_change { project.package_files.count }
-                           .and not_change { project.packages.count }
+        expect { response }.to not_change { ::Packages::PackageFile.for_projects(project).count }
+                           .and not_change { ::Packages::Generic::Package.for_projects(project).count }
       end
     end
 
@@ -108,7 +108,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     context 'with existing package' do
       let_it_be(:duplicate_file) { create(:package_file, package: package, file_name: file_name) }
 
-      it { expect { response }.to change { project.package_files.count }.by(1) }
+      it { expect { response }.to change { ::Packages::PackageFile.for_projects(project).count }.by(1) }
 
       context 'when duplicates are not allowed' do
         before do

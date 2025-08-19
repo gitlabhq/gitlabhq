@@ -14,18 +14,6 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan ping endpoint' do
       let(:x_conan_server_capabilities_header) { 'revisions' }
     end
-
-    context 'when the conan_package_revisions_support FF is disabled' do
-      before do
-        stub_feature_flags(conan_package_revisions_support: false)
-      end
-
-      it 'contains "" in the X-Conan-Server-Capabilities header' do
-        get api(url), headers: headers
-
-        expect(response.headers['X-Conan-Server-Capabilities']).to be_empty
-      end
-    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/search' do

@@ -2,7 +2,6 @@
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { identity, uniqueId } from 'lodash';
 import { __ } from '~/locale';
-import { eventHubByKey } from '../../utils/event_hub_factory';
 
 export default {
   name: 'GlqlActions',
@@ -12,7 +11,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['queryKey'],
   props: {
     modalTitle: {
       type: String,
@@ -27,8 +25,8 @@ export default {
   },
   data() {
     return {
-      eventHub: eventHubByKey(this.queryKey),
       toggleId: uniqueId('dropdown-toggle-btn-'),
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -36,21 +34,24 @@ export default {
       return [
         {
           text: __('View source'),
-          action: () => this.eventHub.$emit('viewSource', { title: this.modalTitle }),
+          action: () => this.$emit('viewSource', { title: this.modalTitle }),
         },
         {
           text: __('Copy source'),
-          action: () => this.eventHub.$emit('copySource'),
+          action: () => this.$emit('copySource'),
         },
         this.showCopyContents && {
           text: __('Copy contents'),
-          action: () => this.eventHub.$emit('copyAsGFM'),
+          action: () => this.$emit('copyAsGFM'),
         },
         {
           text: __('Reload'),
-          action: () => this.eventHub.$emit('reload'),
+          action: () => this.$emit('reload'),
         },
       ].filter(identity);
+    },
+    moreActionsTooltip() {
+      return !this.isDropdownVisible ? __('Embedded view options') : '';
     },
   },
 };
@@ -58,18 +59,19 @@ export default {
 <template>
   <div class="gl-inline-flex gl-self-start gl-align-middle">
     <gl-disclosure-dropdown
-      v-gl-tooltip
+      v-gl-tooltip.top.viewport="moreActionsTooltip"
       class="glql-actions"
-      :title="__('GLQL view options')"
       :items="items"
       :toggle-id="toggleId"
       :no-caret="true"
       size="small"
       category="tertiary"
       icon="ellipsis_v"
-      :toggle-text="__('GLQL view options')"
+      :toggle-text="__('Embedded view options')"
       text-sr-only
       placement="bottom-end"
+      @shown="isDropdownVisible = true"
+      @hidden="isDropdownVisible = false"
     />
   </div>
 </template>

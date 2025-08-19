@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import AutocompleteHelper, {
   defaultSorter,
@@ -27,6 +28,97 @@ import {
 jest.mock('~/emoji', () => ({
   initEmojiMap: () => jest.fn(),
   getAllEmoji: () => [{ name: 'thumbsup' }],
+}));
+
+jest.mock('~/graphql_shared/issuable_client', () => ({
+  currentAssignees: jest.fn().mockReturnValue({
+    1: [
+      {
+        type: 'User',
+        username: 'errol',
+        name: "Linnie O'Connell",
+        avatar_url:
+          'https://www.gravatar.com/avatar/d3d9a468a9884eb217fad5ca5b2b9bd7?s=80\u0026d=identicon',
+        availability: null,
+      },
+      {
+        type: 'User',
+        username: 'evelynn_olson',
+        name: 'Dimple Dare',
+        avatar_url:
+          'https://www.gravatar.com/avatar/bc1e51ee3512c2b4442f51732d655107?s=80\u0026d=identicon',
+        availability: null,
+      },
+    ],
+  }),
+  linkedItems: jest.fn().mockReturnValue({
+    'gitlab-org/gitlab-test:1': [
+      {
+        iid: 31,
+        title: 'rdfhdfj',
+        id: null,
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: 'Issue',
+          iconName: 'issue-type-issue',
+        },
+      },
+      {
+        iid: 30,
+        title: 'incident1',
+        id: null,
+        workItemType: {
+          __typename: 'WorkItemType',
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: 'Issue',
+          iconName: 'issue-type-issue',
+        },
+      },
+    ],
+  }),
+  availableStatuses: jest.fn().mockReturnValue({
+    'gitlab-org/gitlab-test': {
+      'gid://gitlab/WorkItems::Type/1': [
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/1',
+          name: 'To do',
+          description: null,
+          iconName: 'status-waiting',
+          color: '#737278',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/2',
+          name: 'In progress',
+          description: null,
+          iconName: 'status-running',
+          color: '#1f75cb',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/3',
+          name: 'Done',
+          description: null,
+          iconName: 'status-success',
+          color: '#108548',
+          position: 0,
+        },
+        {
+          __typename: 'WorkItemStatus',
+          id: 'gid://gitlab/WorkItems::Statuses::Custom::Status/4',
+          name: "Won't do",
+          description: null,
+          iconName: 'status-cancelled',
+          color: '#DD2B0E',
+          position: 0,
+        },
+      ],
+    },
+  }),
 }));
 
 describe('defaultSorter', () => {
@@ -120,10 +212,11 @@ describe('AutocompleteHelper', () => {
   let mock;
   let autocompleteHelper;
   let dateNowOld;
+  let dataSourceUrls;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
-    const dataSourceUrls = {
+    dataSourceUrls = {
       members: '/members',
       issues: '/issues',
       snippets: '/snippets',
@@ -181,7 +274,7 @@ describe('AutocompleteHelper', () => {
     ${'user'}          | ${'r'}
     ${'issue'}         | ${'q'}
     ${'snippet'}       | ${'s'}
-    ${'label'}         | ${'c'}
+    ${'label'}         | ${'bc'}
     ${'epic'}          | ${'n'}
     ${'milestone'}     | ${'16'}
     ${'iteration'}     | ${'27'}
@@ -223,6 +316,80 @@ describe('AutocompleteHelper', () => {
       ).toMatchSnapshot();
     },
   );
+
+  describe('for work items', () => {
+    beforeEach(() => {
+      autocompleteHelper = new AutocompleteHelper({
+        dataSourceUrls,
+        sidebarMediator: {
+          store: { assignees: [], reviewers: [] },
+        },
+      });
+
+      autocompleteHelper.tiptapEditor = {
+        view: {
+          dom: {
+            closest: () => ({
+              dataset: {
+                workItemFullPath: 'gitlab-org/gitlab-test',
+                workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+                workItemId: 1,
+                workItemIid: 1,
+              },
+            }),
+          },
+        },
+      };
+    });
+
+    it.each`
+      command
+      ${'/assign'}
+      ${'/unassign'}
+    `('filters users using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('user', { command });
+      const results = await dataSource.search();
+
+      expect(results.map(({ username }) => username)).toMatchSnapshot();
+    });
+
+    it.each`
+      command
+      ${'/unlink'}
+    `('filters work items using apollo cache for command "$command"', async ({ command }) => {
+      const dataSource = autocompleteHelper.getDataSource('issue', { command });
+      const results = await dataSource.search();
+
+      expect(results.map(({ iid }) => iid)).toMatchSnapshot();
+    });
+
+    it.each`
+      command      | query
+      ${'/status'} | ${''}
+      ${'/status'} | ${'pro'}
+    `(
+      'filters statuses using apollo cache for command "$command "$query"',
+      async ({ command, query }) => {
+        const dataSource = autocompleteHelper.getDataSource('status', { command });
+        const results = await dataSource.search(query);
+        expect(results.map(({ name }) => name)).toMatchSnapshot();
+      },
+    );
+  });
+
+  it('filters labels using fuzzy search', async () => {
+    const filterSpy = jest.spyOn(fuzzaldrinPlus, 'filter');
+    const dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });
+    await dataSource.search('bc');
+
+    expect(filterSpy).toHaveBeenCalledWith(
+      expect.any(Array),
+      'bc',
+      expect.objectContaining({
+        key: ['title'],
+      }),
+    );
+  });
 
   it('filters items correctly for the second time, when the first command was different', async () => {
     let dataSource = autocompleteHelper.getDataSource('label', { command: '/label' });

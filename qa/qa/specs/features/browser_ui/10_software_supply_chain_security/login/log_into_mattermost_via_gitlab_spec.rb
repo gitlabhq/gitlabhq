@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :orchestrated, :mattermost, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :orchestrated, :mattermost, feature_category: :system_access do
     describe 'Mattermost login' do
       it 'user logs into Mattermost using GitLab OAuth',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347891' do

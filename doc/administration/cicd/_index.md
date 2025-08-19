@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab CI/CD instance configuration
+description: Manage GitLab CI/CD configuration.
 ---
 
 {{< details >}}
@@ -107,7 +108,7 @@ to a cron value of `0 */12 * * *` (`00:00` and `12:00` every day).
 
 When many pipeline schedules run at the same time, additional delays can occur.
 The pipeline schedule worker processes pipelines in [batches](https://gitlab.com/gitlab-org/gitlab/-/blob/3426be1b93852c5358240c5df40970c0ddfbdb2a/app/workers/pipeline_schedule_worker.rb#L13-14)
-with a small delay between each batch to distribute system load. This can cause pipeline 
+with a small delay between each batch to distribute system load. This can cause pipeline
 schedules to start several minutes after their scheduled time.
 
 ## Disaster recovery

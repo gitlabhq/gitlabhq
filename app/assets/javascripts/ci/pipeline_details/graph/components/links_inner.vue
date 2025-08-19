@@ -56,9 +56,6 @@ export default {
     hasHighlightedJob() {
       return Boolean(this.highlightedJob);
     },
-    isPipelineDataEmpty() {
-      return isEmpty(this.pipelineData);
-    },
     highlightedJobs() {
       // If you are hovering on a job, then the jobs we want to highlight are:
       // The job you are currently hovering + all of its needs.

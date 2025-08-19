@@ -199,7 +199,7 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< alert type="note" >}}
 
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL. 
+The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 {{< /alert >}}
 
@@ -325,7 +325,7 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< alert type="note" >}}
 
-The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL. 
+The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL.
 
 {{< /alert >}}
 

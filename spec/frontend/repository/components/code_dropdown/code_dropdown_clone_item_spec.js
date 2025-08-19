@@ -1,5 +1,6 @@
 import { GlButton, GlFormGroup, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
 
 describe('CodeDropdownCloneItem', () => {
@@ -14,12 +15,18 @@ describe('CodeDropdownCloneItem', () => {
   };
 
   const findCopyButton = () => wrapper.findComponent(GlButton);
+  const mockToastShow = jest.fn();
 
   const createComponent = (propsData = defaultPropsData) => {
     wrapper = shallowMount(CodeDropdownCloneItem, {
       propsData,
       stubs: {
         GlFormInputGroup,
+      },
+      mocks: {
+        $toast: {
+          show: mockToastShow,
+        },
       },
     });
   };
@@ -51,6 +58,13 @@ describe('CodeDropdownCloneItem', () => {
 
     it('sets the qa selector', () => {
       expect(findCopyButton().attributes('data-testid')).toBe(testId);
+    });
+
+    it('shows toast when dropdown item is clicked', async () => {
+      findCopyButton().vm.$emit('click');
+      await nextTick();
+
+      expect(mockToastShow).toHaveBeenCalledWith('Copied');
     });
   });
 });

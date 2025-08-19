@@ -1,32 +1,85 @@
 <script>
-import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { localTimeAgo } from '~/lib/utils/datetime_utility';
+import { s__ } from '~/locale';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
-const MAX_EVENTS = 10;
+const MAX_EVENTS = 5;
+const FILTER_OPTIONS = [
+  {
+    value: null,
+    text: s__('HomepageActivityWidget|Your activity'),
+  },
+  {
+    value: 'starred',
+    text: s__('HomepageActivityWidget|Starred projects'),
+  },
+  {
+    value: 'followed',
+    text: s__('HomepageActivityWidget|Followed users'),
+  },
+];
 
 export default {
   components: {
-    GlAlert,
     GlSkeletonLoader,
+    GlCollapsibleListbox,
     VisibilityChangeDetector,
   },
   directives: {
     SafeHtml,
+  },
+  props: {
+    activityPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       activityFeedHtml: null,
       isLoading: true,
       hasError: false,
+      filter: this.getPersistedFilter(),
     };
+  },
+  watch: {
+    filter: {
+      handler: 'onFilterChange',
+      immediate: false,
+    },
   },
   created() {
     this.reload();
   },
   methods: {
+    getPersistedFilter() {
+      try {
+        const savedFilter = sessionStorage.getItem('homepage-activity-filter');
+        const validValues = this.$options.FILTER_OPTIONS.map((option) => option.value);
+        return validValues.includes(savedFilter) ? savedFilter : null;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    onFilterChange(newFilter) {
+      try {
+        if (newFilter === null) {
+          sessionStorage.removeItem('homepage-activity-filter');
+        } else {
+          sessionStorage.setItem('homepage-activity-filter', newFilter);
+        }
+      } catch (e) {
+        return null;
+      }
+      this.reload();
+      return null;
+    },
+
     async reload() {
       this.isLoading = true;
 
@@ -39,10 +92,19 @@ export default {
          * We'll need to remove the `is_personal_homepage` logic from `UsersController` once we have
          * a proper GraphQL endpoint here.
          */
-        const { data } = await axios.get(
-          `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`,
-        );
-        this.activityFeedHtml = data?.html ?? null;
+        const url = this.filter
+          ? `/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
+          : `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
+        const { data } = await axios.get(url);
+        if (data?.html) {
+          const parser = new DOMParser();
+          const resp = parser.parseFromString(data.html, 'text/html');
+          const timestamps = resp.querySelectorAll('.js-timeago');
+          if (timestamps.length > 0) {
+            localTimeAgo(timestamps);
+          }
+          this.activityFeedHtml = resp.body.innerHTML;
+        }
       } catch (e) {
         Sentry.captureException(e);
         this.hasError = true;
@@ -51,12 +113,17 @@ export default {
       }
     },
   },
+  FILTER_OPTIONS,
 };
 </script>
 
 <template>
-  <visibility-change-detector class="gl-px-4" @visible="reload">
-    <h4>{{ __('Activity') }}</h4>
+  <visibility-change-detector @visible="reload">
+    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
+      <h2 class="gl-heading-4 gl-mb-0 gl-mt-4">{{ __('Activity') }}</h2>
+
+      <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
+    </div>
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
       <rect width="160" height="3" rx="1" x="8" y="2" />
@@ -70,11 +137,13 @@ export default {
       <rect width="160" height="3" rx="1" x="8" y="16" />
       <rect width="20" height="3" rx="1" x="180" y="16" />
     </gl-skeleton-loader>
-    <gl-alert v-else-if="hasError" variant="danger">{{
-      s__(
-        'HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again.',
-      )
-    }}</gl-alert>
+    <p v-else-if="hasError">
+      {{
+        s__(
+          'HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again.',
+        )
+      }}
+    </p>
     <p v-else-if="!activityFeedHtml" data-testid="empty-state">
       {{
         s__(
@@ -88,5 +157,12 @@ export default {
       data-testid="events-list"
       class="gl-list-none gl-p-0"
     ></ul>
+    <a :href="activityPath">{{ __('All activity') }}</a>
   </visibility-change-detector>
 </template>
+
+<style scoped>
+::v-deep .event-item {
+  padding-bottom: 0;
+}
+</style>

@@ -108,6 +108,7 @@ difficult, but several tools exist including:
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) in GitLab 17.7 for direct transfer.
 - Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
+- Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 
 {{< /history >}}
 
@@ -167,10 +168,13 @@ This feature is meant to prevent accidental reassignment to users outside your o
 
 {{< alert type="note" >}}
 
-User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
-When you import to a personal namespace, all contributions are assigned to
-a single non-functional user called `Import User` and they cannot be reassigned.
-[Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+When you use a supported method to import projects to a
+[personal namespace](../../namespace/_index.md#types-of-namespaces),
+user contribution mapping is not supported.
+When you import to a personal namespace and the `user_mapping_to_personal_namespace_owner` feature flag
+is enabled, all contributions are assigned to the personal namespace owner and they cannot be reassigned.
+When the `user_mapping_to_personal_namespace_owner` feature flag is disabled, all contributions are
+assigned to a single non-functional user called `Import User` and they cannot be reassigned.
 
 {{< /alert >}}
 
@@ -206,9 +210,11 @@ A placeholder user is created for each user on the source instance, except in th
   Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
-- You are importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
-  Contributions are assigned to a single non-functional user called `Import User`.
-  [Issue 525342](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) proposes to map all contributions to the importing user instead.
+- You're importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces)
+  and the `user_mapping_to_personal_namespace_owner` feature flag is enabled.
+  Contributions are assigned to the personal namespace owner.
+  When the `user_mapping_to_personal_namespace_owner` is disabled,
+  contributions are assigned to a single non-functional user called `Import User`.
 
 #### Placeholder user attributes
 
@@ -306,9 +312,11 @@ Instead, contributions are mapped automatically to the user.
 
 {{< /history >}}
 
-When you delete a top-level group that contains placeholder users, those placeholder users are
-automatically removed. However, placeholder users remain in the system if they are also associated
-with projects or groups outside the deleted top-level group.
+When you delete a top-level group that contains placeholder users,
+these users are automatically scheduled for removal.
+This process might take some time to complete.
+However, placeholder users remain in the system if
+they're also associated with other projects or groups.
 
 {{< alert type="note" >}}
 
@@ -341,7 +349,7 @@ To view your current placeholder user usage and limits:
 
 1. On the left sidebar, select **Search or go to** and
    find your group. This group must be at the top level.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Import** tab.
 
 You cannot determine the number of placeholder users you need in advance.
@@ -380,6 +388,46 @@ On the destination instance, users with the Owner role for a top-level group can
 On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
 contributions and memberships to active and inactive non-bot users immediately without their confirmation.
 For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+
+### Bypass confirmation when reassigning placeholder users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To bypass confirmation for [enterprise users](../../enterprise_user/_index.md)
+when you reassign placeholders:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
+1. Select **Settings** > **General**.
+1. Expand **Permissions and group features**.
+1. Under **Placeholder user confirmation**, select the
+   **Reassign placeholders to enterprise users without user confirmation** checkbox.
+1. In **When to restore user confirmation**,
+   select an end date for bypassing user confirmation.
+   The default value is one day.
+1. Select **Save changes**.
 
 #### Reassigning contributions from multiple placeholder users
 

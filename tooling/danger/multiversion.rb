@@ -11,13 +11,28 @@ module Tooling
         return unless frontend_changed? && backend_changed?
 
         markdown <<~MARKDOWN
-        ## Multiversion compatibility
+        ## ⚠️ Multiversion compatibility
 
-        This merge request updates GraphQL backend and frontend code.
+        This merge request updates **both GraphQL backend and frontend code**.
+        This is discouraged when you add new fields to a GraphQL type and directly consume them in the frontend.
 
-        To prevent an incident, ensure the updated frontend code is backwards compatible.
+        ### Why this matters
+        During rolling updates/deployments, your frontend code may deploy before the backend changes are fully rolled out.
+        This creates a dangerous scenario where:
+        - ✅ Frontend requests new GraphQL fields
+        - ❌ Backend doesn't recognize these fields yet
+        - 💥 **Result: GraphQL errors that can make the application unresponsive**
 
-        For more information, see the [multiversion compatibility documentation](https://docs.gitlab.com/development/graphql_guide/reviewing/#multiversion-compatibility).
+        ### Recommended approach
+        **Split your changes into separate merge requests:**
+        1. **First MR**: Add new GraphQL fields to the backend
+        2. **Second MR**: Update frontend to use the new fields and apply the version directive `@gl_introduced(version: "18.3.0")` to prevent the same scenario for Self-Managed customers
+
+        ### Resources
+        - [Multiversion compatibility documentation](https://docs.gitlab.com/development/graphql_guide/reviewing/#multiversion-compatibility)
+        - [GraphQL version directive documentation](https://docs.gitlab.com/development/api_graphql_styleguide/#multi-version-compatibility)
+
+        **Please review your approach before merging to prevent potential incidents.**
         MARKDOWN
       end
 

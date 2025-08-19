@@ -1,6 +1,10 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
+import { GlBanner, GlLink } from '@gitlab/ui';
+import { PROMO_URL } from '~/constants';
+import { makeMockUserCalloutDismisser } from 'helpers/mock_user_callout_dismisser';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
@@ -23,6 +27,8 @@ import {
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;
+  let userCalloutDismissSpy;
+  const newTrialPath = 'https://gitlab.com/-/trials/new?glm_content=epics&glm_source=gitlab.com';
 
   Vue.use(VueApollo);
 
@@ -30,6 +36,7 @@ describe('WorkItemAttributesWrapper component', () => {
     canUpdate: true,
     canDelete: true,
     participantsWidgetPresent: false,
+    showPlanUpgradePromotion: true,
   });
   const workItemParticipantsQueryResponse = {
     data: {
@@ -61,10 +68,13 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
   const findWorkItemCrmContacts = () => wrapper.findComponent(WorkItemCrmContacts);
+  const findCalloutBanner = () => wrapper.findComponent(UserCalloutDismisser);
+  const findUpgradeBanner = () => findCalloutBanner().findComponent(GlBanner);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
     workItemsAlpha = false,
+    shouldShowCallout = true,
     groupPath = '',
     workItemParticipantsQueryHandler = workItemParticipantsQuerySuccessHandler,
     allowedParentTypesHandler = allowedParentTypesSuccessHandler,
@@ -82,11 +92,17 @@ describe('WorkItemAttributesWrapper component', () => {
       },
       provide: {
         hasSubepicsFeature: true,
+        newTrialPath,
         glFeatures: {
           workItemsAlpha,
         },
       },
       stubs: {
+        UserCalloutDismisser: makeMockUserCalloutDismisser({
+          dismiss: userCalloutDismissSpy,
+          shouldShowCallout,
+        }),
+        GlBanner,
         WorkItemWeight: true,
         WorkItemIteration: true,
         WorkItemHealthStatus: true,
@@ -254,6 +270,63 @@ describe('WorkItemAttributesWrapper component', () => {
       await waitForPromises();
 
       expect(findWorkItemParticipants().exists()).toBe(exists);
+    });
+
+    it('passed correct participant count to participant component', async () => {
+      // Mocking the participant count to be 20
+      mockParticipantWidget.participants.count = 20;
+
+      createComponent({ workItemParticipantsQuerySuccessHandler });
+
+      await waitForPromises();
+
+      expect(findWorkItemParticipants().exists()).toBe(true);
+      expect(findWorkItemParticipants().props('participantCount')).toBe(20);
+    });
+  });
+
+  describe('upgrade banner', () => {
+    it('renders upgrade banner when showPlanUpgradePromotion is true and banner is not dismissed', () => {
+      createComponent();
+
+      const calloutBanner = findCalloutBanner();
+      expect(calloutBanner.exists()).toBe(true);
+      expect(calloutBanner.props()).toMatchObject({
+        featureName: 'ultimate_trial',
+        skipQuery: false,
+      });
+
+      const upgradeBanner = findUpgradeBanner();
+      expect(upgradeBanner.exists()).toBe(true);
+      expect(upgradeBanner.props()).toMatchObject({
+        title: 'Upgrade for advanced agile planning',
+        buttonText: 'Try it for free',
+        buttonLink: newTrialPath,
+      });
+      expect(upgradeBanner.find('p').text()).toContain(
+        'Unlock epics, advanced boards, status, weight, iterations, and more to seamlessly tie your strategy to your DevSecOps workflows with GitLab.',
+      );
+      expect(upgradeBanner.findComponent(GlLink).exists()).toBe(true);
+      expect(upgradeBanner.findComponent(GlLink).attributes('href')).toBe(
+        `${PROMO_URL}/features/?stage=plan`,
+      );
+    });
+
+    it('does not render upgrade banner when showPlanUpgradePromotion is false', () => {
+      createComponent({
+        workItem: workItemResponseFactory({ showPlanUpgradePromotion: false }).data.workItem,
+      });
+
+      expect(findCalloutBanner().exists()).toBe(false);
+    });
+
+    it('does not render upgrade banner when banner is dismissed already', () => {
+      createComponent({
+        shouldShowCallout: false,
+      });
+
+      expect(findCalloutBanner().exists()).toBe(true);
+      expect(findUpgradeBanner().exists()).toBe(false);
     });
   });
 });

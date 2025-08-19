@@ -8,4 +8,4 @@ feature_category: fleet_visibility
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188083
 milestone: '18.0'
 queued_migration_version: 20250414101015
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20250714070805

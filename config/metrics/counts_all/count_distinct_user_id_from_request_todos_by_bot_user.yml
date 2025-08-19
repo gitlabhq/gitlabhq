@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user
 description: Count of unique users who are bots and who are accessing todos through webui/api endpoint.
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - notifications
 performance_indicator_type: []

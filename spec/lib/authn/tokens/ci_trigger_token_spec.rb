@@ -6,15 +6,17 @@ RSpec.describe Authn::Tokens::CiTriggerToken, :aggregate_failures, feature_categ
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, maintainers: [user]) }
 
-  let_it_be(:ci_trigger) { create(:ci_trigger, project: project) }
+  let(:ci_trigger) { create(:ci_trigger, project: project) }
 
   subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
   context 'with valid ci trigger token' do
     let(:plaintext) { ci_trigger.token }
     let(:valid_revocable) { ci_trigger }
+    let_it_be(:default_prefix) { ::Ci::Trigger::TRIGGER_TOKEN_PREFIX }
 
     it_behaves_like 'finding the valid revocable'
+    it_behaves_like 'contains instance prefix when enabled'
 
     describe '#revoke!' do
       it 'expires the token' do

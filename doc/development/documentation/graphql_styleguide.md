@@ -16,6 +16,10 @@ use cases, with samples that readers can use directly in the GraphQL explorer, c
 This section describes the steps required to add your GraphQL examples to
 GitLab documentation.
 
+For information about adding a resource to the
+[GraphQL API resources](../../api/graphql/reference/_index.md) page,
+see the [description style guide](../api_graphql_styleguide.md#description-style-guide).
+
 ## Add a dedicated GraphQL page
 
 To create a dedicated GraphQL page, create a new `.md` file in the

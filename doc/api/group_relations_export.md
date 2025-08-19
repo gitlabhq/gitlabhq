@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group relations export API
+description: "Export group relations with the REST API."
 ---
 
 {{< details >}}
@@ -35,7 +36,9 @@ POST /groups/:id/export_relations
 | `batched` | boolean        | no       | Whether to export in batches.                    |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/export_relations"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/export_relations"
 ```
 
 ```json
@@ -58,8 +61,9 @@ GET /groups/:id/export_relations/status
 | `relation` | string         | no       | Name of the project top-level relation to view.  |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/export_relations/status"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/export_relations/status"
 ```
 
 The status can be one of the following:
@@ -114,8 +118,10 @@ GET /groups/:id/export_relations/download
 | `batch_number` | integer        | no       | Number of export batch to download.               |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
-     --remote-name "https://gitlab.example.com/api/v4/groups/1/export_relations/download?relation=labels"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --remote-header-name \
+  --remote-name "https://gitlab.example.com/api/v4/groups/1/export_relations/download?relation=labels"
 ```
 
 ```shell

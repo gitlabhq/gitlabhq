@@ -50,6 +50,14 @@ class Projects::CompareController < Projects::ApplicationController
       format.html do
         render locals: { pagination_params: params.permit(:page) }
       end
+
+      format.patch do
+        compare ? send_git_patch(source_project.repository, compare.diff_refs) : render_404
+      end
+
+      format.diff do
+        compare ? send_git_diff(source_project.repository, compare.diff_refs) : render_404
+      end
     end
   end
 
@@ -214,8 +222,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def rapid_diffs_enabled?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
-      ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :wip) &&
+    ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :beta) &&
       !rapid_diffs_force_disabled? &&
       params.permit(:format)[:format].blank?
   end

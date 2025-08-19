@@ -52,7 +52,12 @@ module Gitlab
           [KEY_MAPPING.fetch(key), current[key].to_i - value]
         end
 
-        result[:mem_total_bytes] = result[:mem_bytes] + (result[:mem_objects] * GC::INTERNAL_CONSTANTS[:RVALUE_SIZE])
+        slot_size = GC::INTERNAL_CONSTANTS[:RVALUE_SIZE]
+        # The slot-size calculation only works for fixed-slot sizes:
+        # https://github.com/ruby/ruby/pull/5517
+        # Fallback to known good default (40 bytes)
+        slot_size ||= (GC::INTERNAL_CONSTANTS[:BASE_SLOT_SIZE] || 40) + (GC::INTERNAL_CONSTANTS[:RVALUE_OVERHEAD] || 0)
+        result[:mem_total_bytes] = result[:mem_bytes] + (result[:mem_objects] * slot_size)
 
         result
       end

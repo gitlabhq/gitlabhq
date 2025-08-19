@@ -119,6 +119,47 @@ To enable the Inbound Private Link:
 
 1. After you create the endpoint, use the instance URL provided to you during onboarding to securely connect to your GitLab Dedicated instance from your VPC, without the traffic going over the public internet.
 
+#### Enable KAS and registry for Inbound Private Link
+
+When you use Inbound Private Link to connect to your GitLab Dedicated instance,
+only the main instance URL has automatic DNS resolution through the private network.
+
+To access KAS (GitLab agent for Kubernetes) and registry services through your private network,
+you must create an additional DNS configuration in your VPC.
+
+Prerequisites:
+
+- You have configured Inbound Private Link for your GitLab Dedicated instance.
+- You have permissions to create Route 53 private hosted zones in your AWS account.
+
+To enable KAS and registry through your private network:
+
+1. In your AWS console, create a private hosted zone for `gitlab-dedicated.com`
+   and associate it with the VPC that contains your private link connection.
+1. After you create the private hosted zone, add the following DNS records (replace `example` with your instance name):
+
+   1. Create an `A` record for your GitLab Dedicated instance:
+      - Configure your full instance domain (for example, `example.gitlab-dedicated.com`) to resolve to your VPC endpoint as an Alias.
+      - Select the VPC endpoint that does not contain an Availability Zone reference.
+
+        ![VPC endpoint dropdown list showing the correct endpoint without AZ reference highlighted.](../img/vpc_endpoint_dns_v18_3.png)
+
+   1. Create `CNAME` records for both KAS and the registry to resolve to your GitLab Dedicated instance domain (`example.gitlab-dedicated.com`):
+      - `kas.example.gitlab-dedicated.com`
+      - `registry.example.gitlab-dedicated.com`
+
+1. To verify connectivity, from a resource in your VPC, run these commands:
+
+   ```shell
+   nslookup kas.example.gitlab-dedicated.com
+   nslookup registry.example.gitlab-dedicated.com
+   nslookup example.gitlab-dedicated.com
+   ```
+
+   All commands should resolve to private IP addresses within your VPC.
+
+This configuration is robust to IP address changes because it uses the VPC endpoint interface rather than specific IP addresses.
+
 ### Outbound Private Link
 
 Outbound private links allow your GitLab Dedicated instance and the hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.

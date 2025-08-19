@@ -95,14 +95,6 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
         it_behaves_like 'handling error',
           error_class: ::Packages::Helm::ProcessFileService::ProtectedPackageError,
           error_message: "Helm chart 'rook-ceph' with version 'v1.5.8' is protected"
-
-        context 'when feature flag :packages_protected_packages_helm is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_helm: false)
-          end
-
-          it_behaves_like 'valid package file'
-        end
       end
 
       # -- Avoid formatting to keep one-line table syntax

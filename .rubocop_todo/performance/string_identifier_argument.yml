@@ -4,7 +4,6 @@ Performance/StringIdentifierArgument:
   Exclude:
     - 'app/controllers/concerns/import/github_oauth.rb'
     - 'app/controllers/import/github_controller.rb'
-    - 'app/graphql/types/project_type.rb'
     - 'app/models/concerns/atomic_internal_id.rb'
     - 'app/models/concerns/cache_markdown_field.rb'
     - 'app/models/concerns/cascading_namespace_setting_attribute.rb'
@@ -149,7 +148,6 @@ Performance/StringIdentifierArgument:
     - 'spec/models/import_export_upload_spec.rb'
     - 'spec/models/integration_spec.rb'
     - 'spec/models/integrations/field_spec.rb'
-    - 'spec/models/packages/package_file_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/policies/container_expiration_policy_policy_spec.rb'
     - 'spec/policies/project_policy_spec.rb'
@@ -176,7 +174,6 @@ Performance/StringIdentifierArgument:
     - 'spec/requests/api/rpm_project_packages_spec.rb'
     - 'spec/requests/api/rubygem_packages_spec.rb'
     - 'spec/services/ci/pipeline_processing/atomic_processing_service_spec.rb'
-    - 'spec/services/clusters/integrations/create_service_spec.rb'
     - 'spec/services/concerns/ci/job_token_scope/edit_scope_validations_spec.rb'
     - 'spec/services/container_expiration_policies/update_service_spec.rb'
     - 'spec/services/dependency_proxy/group_settings/update_service_spec.rb'

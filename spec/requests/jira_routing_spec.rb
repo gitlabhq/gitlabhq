@@ -13,6 +13,9 @@ RSpec.describe 'Jira referenced paths', type: :request, feature_category: :integ
   let!(:group_project) { create(:project, name: 'group_project', namespace: group) }
   let!(:sub_group_project) { create(:project, name: 'sub_group_project', namespace: sub_group) }
 
+  let(:jira_path) { '/group/group@sub_group@sub_group_project' }
+  let(:redirect_path) { '/group/sub_group/sub_group_project' }
+
   before do
     group.add_owner(user)
 
@@ -34,9 +37,6 @@ RSpec.describe 'Jira referenced paths', type: :request, feature_category: :integ
       redirects_to_canonical_path jira_path, redirect_path
     end
   end
-
-  let(:jira_path) { '/group/group@sub_group@sub_group_project' }
-  let(:redirect_path) { '/group/sub_group/sub_group_project' }
 
   it_behaves_like 'redirects to jira path'
 

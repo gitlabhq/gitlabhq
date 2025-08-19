@@ -10,5 +10,4 @@ description: Routing table that holds information for runner taggings
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170778
 milestone: '17.6'
 gitlab_schema: gitlab_ci_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523694
 table_size: small

@@ -35,6 +35,7 @@ module Resolvers
           project: [{ project: [:route, { namespace: [:route] }, :project_feature] }],
           detailed_status: [
             :metadata,
+            :job_definition,
             { pipeline: [:merge_request] },
             { project: [:route, { namespace: :route }] }
           ],

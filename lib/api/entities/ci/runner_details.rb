@@ -6,6 +6,8 @@ module API
       class RunnerDetails < Runner
         include Gitlab::Utils::StrongMemoize
 
+        # NOTE: instance runners are exposed by default to any authenticated user,
+        # remember to protect any sensitive fields
         expose :tag_list
         expose :run_untagged
         expose :locked
@@ -20,18 +22,14 @@ module API
         expose :maintenance_note
 
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|
-          if options[:current_user].can_read_all_resources?
-            runner.projects
-          else
-            options[:current_user].authorized_projects.id_in(runner.project_ids)
-          end
+          next runner.projects if options[:current_user].can_read_all_resources?
+
+          options[:current_user].authorized_projects.id_in(runner.project_ids)
         end
         expose :groups, with: Entities::BasicGroupDetails do |runner, options|
-          if options[:current_user].can_read_all_resources?
-            runner.groups
-          else
-            options[:current_user].authorized_groups.id_in(runner.namespace_ids)
-          end
+          next runner.groups if options[:current_user].can_read_all_resources?
+
+          options[:current_user].authorized_groups.id_in(runner.namespace_ids)
         end
 
         def latest_runner_manager(runner)

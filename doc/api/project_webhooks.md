@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project webhooks API
+description: "Set up and manage webhooks for a project with the REST API."
 ---
 
 {{< details >}}

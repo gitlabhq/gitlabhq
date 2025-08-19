@@ -82,12 +82,9 @@ describe('BoardContent', () => {
         isGroupBoard: true,
         disabled: false,
         fullPath: 'project-path',
-        commentTemplatePaths: [],
       },
       stubs: {
-        BoardContentSidebar: stubComponent(BoardContentSidebar, {
-          template: '<div></div>',
-        }),
+        BoardContentSidebar,
         BoardDrawerWrapper: stubComponent(BoardDrawerWrapper, {
           template: `
             <div>

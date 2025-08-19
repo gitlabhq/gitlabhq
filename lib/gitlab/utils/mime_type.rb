@@ -21,20 +21,12 @@ module Gitlab
           string.type
         end
 
-        def from_filename(filename, default: 'application/octet-stream', log_enabled: false)
+        def from_filename(filename, default: 'application/octet-stream')
           return default unless filename.is_a?(String)
 
           types = ::MIME::Types.type_for(filename)
-          content_type = types.any? ? types.first.content_type : default
 
-          if log_enabled
-            # Temporarily log the detected content types as JSON to build the allowed content type list
-            # When we remove this line, `log_enabled` needs to be removed as well
-            # https://gitlab.com/gitlab-org/gitlab/-/issues/444768
-            ::Gitlab::AppJsonLogger.info(determined_content_type: content_type)
-          end
-
-          content_type
+          types.any? ? types.first.content_type : default
         end
       end
     end

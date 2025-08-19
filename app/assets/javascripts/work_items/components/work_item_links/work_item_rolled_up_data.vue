@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlTooltip, GlPopover } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { i18n, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
 import { findHealthStatusWidget, findWeightWidget } from '../../utils';
@@ -15,9 +16,9 @@ export default {
         'ee_component/work_items/components/work_item_links/work_item_rolled_up_health_status.vue'
       ),
   },
+  mixins: [glFeatureFlagsMixin()],
   i18n: {
     progressLabel: s__('WorkItem|Progress'),
-    weightCompletedLabel: s__('WorkItem|issue weight completed'),
   },
   props: {
     fullPath: {
@@ -69,13 +70,10 @@ export default {
       return findHealthStatusWidget(this.workItem);
     },
     shouldRolledUpWeightBeVisible() {
-      return this.showRolledUpWeight && this.rolledUpWeight !== null;
+      return this.rolledUpWeight !== null;
     },
     showRolledUpProgress() {
       return this.rolledUpWeight && this.rolledUpCompletedWeight !== null;
-    },
-    showRolledUpWeight() {
-      return this.workItemWeight?.widgetDefinition?.rollUp;
     },
     rolledUpWeight() {
       return this.workItemWeight?.rolledUpWeight;
@@ -86,8 +84,18 @@ export default {
     completedWeightPercentage() {
       return Math.round((this.rolledUpCompletedWeight / this.rolledUpWeight) * 100);
     },
+    includeTaskWeights() {
+      return (
+        this.glFeatures.useCachedRolledUpWeights || this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC
+      );
+    },
     weightTooltip() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? __('Issue weight') : __('Weight');
+      return this.includeTaskWeights ? __('Weight') : __('Issue weight');
+    },
+    weightCompletedLabel() {
+      return this.includeTaskWeights
+        ? s__('WorkItem|weight completed')
+        : s__('WorkItem|issue weight completed');
     },
     rolledUpHealthStatus() {
       return this.workItemHealthStatus?.rolledUpHealthStatus;
@@ -132,7 +140,7 @@ export default {
       <gl-popover triggers="hover focus" :target="() => $refs.progressBadge">
         <template #title>{{ $options.i18n.progressLabel }}</template>
         <span class="gl-font-bold">{{ rolledUpCompletedWeight }}/{{ rolledUpWeight }}</span>
-        {{ $options.i18n.weightCompletedLabel }}
+        <span data-testid="weight-completed-label">{{ weightCompletedLabel }}</span>
       </gl-popover>
     </span>
     <!-- END Rolled up Progress -->

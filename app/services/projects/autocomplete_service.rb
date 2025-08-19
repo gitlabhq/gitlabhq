@@ -69,7 +69,7 @@ module Projects
     end
 
     def labels_as_hash(target)
-      super(target, project_id: project.id, include_ancestor_groups: true)
+      super(target, project_id: project.id, include_ancestor_groups: true, archived: false)
     end
   end
 end

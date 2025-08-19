@@ -151,7 +151,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def archived?
-    project.archived
+    project.self_or_ancestors_archived?
   end
 
   def ide_edit_path

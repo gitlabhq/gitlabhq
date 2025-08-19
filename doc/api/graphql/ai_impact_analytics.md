@@ -131,7 +131,7 @@ Prerequisites:
 
 - You must have ClickHouse configured.
 
-For example, to retrieve the number of accepted Code Suggestions and interactions with Duo Chat for all users 
+For example, to retrieve the number of accepted Code Suggestions and interactions with Duo Chat for all users
 in the `gitlab-org` group:
 
 ```graphql

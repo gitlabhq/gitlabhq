@@ -21,7 +21,10 @@ module LoadedInGroupList
     end
 
     def with_selects_for_list(archived: nil, active: nil)
-      with_route.with_namespace_details.with_counts(archived:, active:).preload(:deletion_schedule)
+      with_route
+        .with_namespace_details
+        .with_counts(archived:, active:)
+        .preload(:deletion_schedule, :namespace_settings_with_ancestors_inherited_settings)
     end
 
     private

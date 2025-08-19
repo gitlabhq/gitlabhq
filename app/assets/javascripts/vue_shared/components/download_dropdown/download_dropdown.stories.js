@@ -2,7 +2,7 @@ import DownloadDropdown from './download_dropdown.vue';
 
 export default {
   component: DownloadDropdown,
-  title: 'vue_shared/components/download_dropdown/download_dropdown',
+  title: 'vue_shared/download_dropdown/download_dropdown',
 };
 
 const Template = (args, { argTypes }) => ({

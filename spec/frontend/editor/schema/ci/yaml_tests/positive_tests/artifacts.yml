@@ -68,3 +68,9 @@ annotations-report-annotations-normal:
   artifacts:
     reports:
       annotations: upload_report.json
+
+# valid artifacts:reports:accessibility
+accessibility-report-gl-path:
+  artifacts:
+    reports:
+      accessibility: reports/gl-accessibility.json

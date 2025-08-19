@@ -32,7 +32,7 @@ module Ci
         override :validate_options
         def validate_options(value)
           return unless options && value
-          return if options.include?(value)
+          return if options.map(&:to_s).include?(value)
 
           error("`#{value}` cannot be used because it is not in the list of allowed options")
         end

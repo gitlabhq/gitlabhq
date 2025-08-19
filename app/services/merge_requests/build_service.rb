@@ -51,6 +51,7 @@ module MergeRequests
       :draft_title,
       :description,
       :first_multiline_commit,
+      :first_multiline_commit_description,
       :errors,
       to: :merge_request
 
@@ -248,7 +249,7 @@ module MergeRequests
       replace_variables_in_description
       assign_title_and_description_from_commits
       merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
-      merge_request.title ||= source_branch.titleize.humanize
+      merge_request.title ||= branch_name_to_title(source_branch)
       set_draft_title_if_needed
 
       append_closes_description
@@ -307,6 +308,18 @@ module MergeRequests
 
       title_parts << "\"#{branch_title}\"" if branch_title.present?
       title_parts.join(' ')
+    end
+
+    def branch_name_to_title(branch_name)
+      # Replicate Rails titleize.humanize behavior without using ActiveSupport::Inflector
+      # to avoid acronym-based word splitting (like EE)
+      # Note: Rails preserves slashes, only converts underscores and hyphens to spaces
+      # Rails also preserves the number of spaces (doesn't squeeze multiple spaces)
+
+      branch_name
+        .tr('_-', ' ')                    # Convert underscores and hyphens to spaces
+        .lstrip                           # Remove leading spaces only (like Rails lstrip)
+        .humanize                         # Convert to humanized format (capitalize first letter, lowercase others)
     end
 
     def assign_description_from_repository_template

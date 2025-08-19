@@ -58,6 +58,14 @@ module API
               message = "400 Bad request - #{reason}"
               render_structured_api_error!({ message: message, error: reason }, 400)
             end
+
+            def tags_finder_options
+              if Feature.enabled?(:packages_tags_finder_use_packages_class, project)
+                { packages_class: ::Packages::Npm::Package }
+              else
+                { package_type: :npm }
+              end
+            end
           end
 
           params do
@@ -134,7 +142,7 @@ module API
 
                 track_package_event(:create_tag, :npm, project: project, namespace: project.namespace)
 
-                enqueue_sync_metadata_cache_worker(project, package_name)
+                enqueue_sync_npm_metadata_cache_worker(project, package_name)
 
                 ::Packages::Npm::CreateTagService.new(package, tag).execute
 
@@ -164,14 +172,14 @@ module API
                 authorize_destroy_package!(project)
 
                 package_tag = ::Packages::TagsFinder
-                  .new(project, package_name, package_type: :npm)
+                  .new(project, package_name, tags_finder_options)
                   .find_by_name(tag)
 
                 not_found!('Package tag') unless package_tag
 
                 track_package_event(:delete_tag, :npm, project: project, namespace: project.namespace)
 
-                enqueue_sync_metadata_cache_worker(project, package_name)
+                enqueue_sync_npm_metadata_cache_worker(project, package_name)
 
                 ::Packages::RemoveTagService.new(package_tag).execute
 

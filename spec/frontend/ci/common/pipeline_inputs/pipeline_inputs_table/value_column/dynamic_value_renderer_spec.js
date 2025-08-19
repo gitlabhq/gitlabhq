@@ -175,7 +175,7 @@ describe('DynamicValueRenderer', () => {
       it.each`
         type        | value              | expectedDisplayValue | usesDropdown
         ${'STRING'} | ${'test'}          | ${'test'}            | ${false}
-        ${'NUMBER'} | ${42}              | ${42}                | ${false}
+        ${'NUMBER'} | ${0}               | ${0}                 | ${false}
         ${'ARRAY'}  | ${['a', 'b', 'c']} | ${'["a","b","c"]'}   | ${false}
       `(
         'converts $type value "$value" to display value "$expectedDisplayValue"',

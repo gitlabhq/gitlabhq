@@ -121,7 +121,7 @@ we can introduce a partial index that targets only the data of interest:
 
 ```sql
 CREATE INDEX index_namespace_settings_on_duo_features_enabled_not_null
-ON namespace_settings (duo_features_enabled) 
+ON namespace_settings (duo_features_enabled)
 WHERE duo_features_enabled IS NOT NULL;
 ```
 
@@ -301,11 +301,11 @@ Consult the Database team, reviewers, or maintainers to plan the work.
 
 ## Dropping unused indexes
 
-Unused indexes should be dropped because they increase [maintainence overhead](#maintenance-overhead), consume
+Unused indexes should be dropped because they increase [maintenance overhead](#maintenance-overhead), consume
 disk space, and can degrade query planning efficiency without providing any performance benefit.
 However, dropping an index that's still used could result in query performance degradation or timeouts,
 potentially leading to incidents. It's important to [verify the index is unused](#verifying-that-an-index-is-unused)
-on both on GitLab.com and self-managed instances prior to removal.
+on both on GitLab.com and GitLab Self-Managed instances prior to removal.
 
 - For large tables, consider [dropping the index asynchronously](#drop-indexes-asynchronously).
 - For partitioned tables, only the parent index can be dropped. PostgreSQL does not permit child indexes
@@ -347,7 +347,7 @@ dropping the index.
 
 Be aware that certain factors can give the false impression that an index is unused, such as:
 
-- There may be queries that run on self-managed but not on GitLab.com.
+- There may be queries that run on GitLab Self-Managed but not on GitLab.com.
 - The index may be used for very infrequent processes such as periodic cron jobs.
 - On tables that have little data, PostgreSQL may initially prefer a sequential scan over an index scan
   until the table is large enough.
@@ -394,7 +394,7 @@ Be aware that certain factors can give the false impression that an index is unu
 
 If the data shows that an index has zero or negligible usage, it's a strong candidate for removal. However, keep in mind that
 this is limited to usage on GitLab.com. We should still [investigate all related queries](#investigating-related-queries) to
-ensure it can be safely removed for self-managed instances.
+ensure it can be safely removed for GitLab Self-Managed instances.
 
 An index that shows low usage may still be dropped **if** we can confirm that other existing indexes would sufficiently
 support the queries using it. PostgreSQL decides which index to use based on data distribution statistics, so in certain
@@ -406,7 +406,7 @@ account for the occasional usage.
 The following are ways to find all queries that may utilize the index. It's important to understand the context in
 which the queries are or may be executed so that we can determine if the index either:
 
-- Has no queries on GitLab.com nor on self-managed that depend on it.
+- Has no queries on GitLab.com nor on GitLab Self-Managed that depend on it.
 - Can be sufficiently supported by other existing indexes.
 
 1. Investigate the origins of the index.
@@ -414,7 +414,7 @@ which the queries are or may be executed so that we can determine if the index e
    - Try to find answers to questions such as:
       - Why was the index added in the first place? What query was it meant to support?
       - Does that query still exist and get executed?
-      - Is it only applicable to self-managed instances?
+      - Is it only applicable to GitLab Self-Managed instances?
 
 1. Examine queries outputted from running the [`rspec:merge-auto-explain-logs`](https://gitlab.com/gitlab-org/gitlab/-/jobs/9805995367) CI job.
    - This job collects and analyzes queries executed through tests. The output is saved as an artifact: `auto_explain/auto_explain.ndjson.gz`
@@ -430,11 +430,11 @@ which the queries are or may be executed so that we can determine if the index e
    - While there are many factors that affect index usage, the query's filtering and ordering clauses often have the most influence.
      A general guideline is to find queries whose conditions align with the index structure. For example, PostgreSQL is more likely
      to utilize a B-Tree index for queries that filter on the index's leading column(s) and satisfy its partial predicate (if any).
-   - Caveat: We only keep the last 7 days of logs and this data does not apply to self-managed usage.
+   - Caveat: We only keep the last 7 days of logs and this data does not apply to GitLab Self-Managed usage.
 
 1. Manually search through the GitLab codebase.
    - This process may be tedious but it's the most reliable way to ensure there are no other queries we missed from the previous actions,
-     especially ones that are infrequent or only apply to self-managed instances.
+     especially ones that are infrequent or only apply to GitLab Self-Managed instances.
    - It's possible there are queries that were introduced some time after the index was initially added,
      so we can't always depend on the index origins; we must also examine the current state of the codebase.
    - To help direct your search, try to gather context about how the table is used and what features access it. Look for queries

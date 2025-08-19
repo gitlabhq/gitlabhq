@@ -319,6 +319,7 @@ class Environment < ApplicationRecord
 
   def predefined_variables
     Gitlab::Ci::Variables::Collection.new
+      .append(key: 'CI_ENVIRONMENT_ID', value: id.to_s)
       .append(key: 'CI_ENVIRONMENT_NAME', value: name)
       .append(key: 'CI_ENVIRONMENT_SLUG', value: slug)
   end
@@ -437,30 +438,12 @@ class Environment < ApplicationRecord
     end
   end
 
-  def has_metrics?
-    available? && (prometheus_adapter&.configured? || has_sample_metrics?)
-  end
-
-  def has_sample_metrics?
-    !!ENV['USE_SAMPLE_METRICS']
-  end
-
   def has_opened_alert?
     latest_opened_most_severe_alert.present?
   end
 
   def has_running_deployments?
     all_deployments.running.exists?
-  end
-
-  def metrics
-    prometheus_adapter.query(:environment, self) if has_metrics_and_can_query?
-  end
-
-  def additional_metrics(*args)
-    return unless has_metrics_and_can_query?
-
-    prometheus_adapter&.query(:additional_metrics_environment, self, *args.map(&:to_f))
   end
 
   def prometheus_adapter
@@ -620,10 +603,6 @@ class Environment < ApplicationRecord
     with_reactive_cache do |data|
       deployment_platform.rollout_status(self, data)
     end
-  end
-
-  def has_metrics_and_can_query?
-    has_metrics? && prometheus_adapter&.can_query?
   end
 
   def generate_slug

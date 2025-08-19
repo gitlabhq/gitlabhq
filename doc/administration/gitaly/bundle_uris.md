@@ -247,7 +247,6 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 {{< history >}}
 
-- `awssdk` parameter introduced in GitLab 15.10.
 - `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.4.
 
 {{< /history >}}
@@ -271,7 +270,7 @@ The following parameters are supported:
 
 `disable_https` was introduced in the Go Cloud Development Kit v0.40.0 (AWS SDK v2).
 
-`awssdk` was introduced in the Go Cloud Development Kit v0.24.0. 
+`awssdk` was introduced in the Go Cloud Development Kit v0.24.0.
 
 {{< tabs >}}
 

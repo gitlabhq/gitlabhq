@@ -8,6 +8,9 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
   describe 'associations' do
     it { is_expected.to have_one(:trigger).through(:pipeline) }
+    it { is_expected.to have_one(:job_environment).class_name('Environments::Job').inverse_of(:job) }
+    it { is_expected.to have_one(:job_definition_instance) }
+    it { is_expected.to have_one(:job_definition).through(:job_definition_instance) }
   end
 
   describe 'delegations' do
@@ -87,7 +90,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
       let(:ignore_accessors) do
         %i[type namespace lock_version target_url base_tags trace_sections
-           commit_id deployment erased_by_id project_id project_mirror
+           commit_id deployment job_environment erased_by_id project_id project_mirror
            runner_id taggings tags trigger trigger_id
            user_id auto_canceled_by_id retried failure_reason
            sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
@@ -99,7 +102,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            queuing_entry runtime_metadata trace_metadata
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
            dast_scanner_profiles_build auto_canceled_by_partition_id execution_config_id execution_config
-           build_source id_value].freeze
+           build_source id_value inputs job_definition job_definition_instance].freeze
       end
 
       before_all do
@@ -148,6 +151,27 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
           expect(new_processable.needs_attributes).to match(processable.needs_attributes)
           expect(new_processable.needs).not_to match(processable.needs)
+        end
+
+        context 'when processable has a job definition' do
+          let_it_be(:job_definition) { create(:ci_job_definition, project: pipeline.project) }
+
+          let_it_be(:job_definition_instance) do
+            create(:ci_job_definition_instance,
+              job: processable,
+              job_definition: job_definition,
+              project: pipeline.project)
+          end
+
+          it 'creates a new job definition instance for the new processable' do
+            expect(new_processable.job_definition)
+              .to be_present
+              .and eq(processable.job_definition)
+
+            expect(new_processable.job_definition_instance).to be_present
+            expect(new_processable.job_definition_instance)
+              .not_to eq(processable.job_definition_instance)
+          end
         end
 
         context 'when the processable has protected: nil' do

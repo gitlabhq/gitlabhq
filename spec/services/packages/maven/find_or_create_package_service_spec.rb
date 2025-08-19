@@ -48,7 +48,7 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     shared_examples 'returning an error' do |with_message: ''|
-      it { expect { subject }.not_to change { project.package_files.count } }
+      it { expect { subject }.not_to change { ::Packages::PackageFile.for_projects(project).count } }
 
       it_behaves_like 'returning an error service response', message: with_message do
         it { expect(subject.payload).to be_empty }

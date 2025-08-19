@@ -42,7 +42,7 @@ variables:
 image: maven:3-openjdk-8
 
 # Cache downloaded dependencies and plugins between builds.
-# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+# To share the same cache between branches, but separate them by job: add 'key: "$CI_JOB_NAME"'
 # Be aware that `mvn deploy` will install the built jar into this repository. If you notice your cache size
 # increasing, consider adding `-Dmaven.install.skip=true` to `MAVEN_OPTS` or in `.mvn/maven.config`
 cache:

@@ -159,7 +159,6 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
         it 'enables updates if user is maintainer', :aggregate_failures do
           expect(policy).to be_allowed :cancel_build
           expect(policy).to be_allowed :update_build
-          expect(policy).to be_allowed :update_commit_status
         end
       end
     end

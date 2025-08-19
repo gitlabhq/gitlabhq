@@ -48,7 +48,7 @@ Note the Redis node's IP address or hostname, port, and password (if required).
    # Required if Redis authentication is configured on the Redis node
    gitlab_rails['redis_password'] = '<redis_password>'
 
-   # Set to true if instance is using Redis SSL 
+   # Set to true if instance is using Redis SSL
    gitlab_rails['redis_ssl'] = true
    ```
 
@@ -125,7 +125,7 @@ In addition, read the prerequisites as described in
 
 Assuming that the Redis primary instance IP is `10.0.0.1`:
 
-1. [Install Redis](../../install/installation.md#8-redis).
+1. [Install Redis](../../install/self_compiled/_index.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf
@@ -151,7 +151,7 @@ Assuming that the Redis primary instance IP is `10.0.0.1`:
 
 Assuming that the Redis replica instance IP is `10.0.0.2`:
 
-1. [Install Redis](../../install/installation.md#8-redis).
+1. [Install Redis](../../install/self_compiled/_index.md#8-redis).
 1. Edit `/etc/redis/redis.conf`:
 
    ```conf

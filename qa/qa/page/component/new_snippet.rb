@@ -42,7 +42,7 @@ module QA
         end
 
         def fill_description(description)
-          fill_element 'snippet-description-field', description
+          fill_editor_element 'snippet-description-field', description
         end
 
         def set_visibility(visibility)

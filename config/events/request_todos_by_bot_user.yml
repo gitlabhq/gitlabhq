@@ -9,7 +9,7 @@ additional_properties:
     description: type of user
   property:
     description: type of user who requested todos
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - notifications
 milestone: '17.11'

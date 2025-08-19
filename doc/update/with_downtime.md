@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Multi-node upgrades with downtime
+title: Upgrade a multi-node instance with downtime
 ---
 
 {{< details >}}
@@ -11,25 +11,6 @@ title: Multi-node upgrades with downtime
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
-
-While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
-there are a number of constraints. In particular, you can upgrade to only one minor release
-at a time, for example, from 14.6 to 14.7, then to 14.8, etc.
-
-If you want to upgrade to more than one minor release at a time (for example, from 14.6 to 14.9),
-you must take your GitLab instance offline, which implies downtime.
-Before starting this process, verify the version-specific upgrading instructions relevant to your [upgrade path](upgrade_paths.md):
-
-- [GitLab 17 changes](versions/gitlab_17_changes.md)
-- [GitLab 16 changes](versions/gitlab_16_changes.md)
-- [GitLab 15 changes](versions/gitlab_15_changes.md)
-
-For a single node installation, you must only [upgrade the GitLab package](package/_index.md).
-
-The process for upgrading a number of components of a multi-node GitLab
-installation is the same as for zero-downtime upgrades.
-The differences relate to the servers running Rails (Puma/Sidekiq) and
-the order of events.
 
 At a high level, the process is:
 
@@ -100,10 +81,10 @@ following principles when upgrading those servers:
 - Do not restart services more than one server at a time.
 - Check the Consul cluster is healthy before upgrading or restarting services.
 
-## Upgrade the Gitaly nodes (Praefect / Gitaly Cluster)
+## Upgrade the Gitaly nodes (Gitaly Cluster (Praefect))
 
-If you're running Gitaly cluster, follow the [zero-downtime process](zero_downtime.md)
-for Gitaly cluster.
+If you're running Gitaly Cluster (Praefect), follow the [zero-downtime process](zero_downtime.md)
+for Gitaly Cluster (Praefect).
 
 If you are using Amazon Machine Images (AMIs) on AWS, you can either upgrade the Gitaly nodes
 through the AMI process, or upgrade the package itself:
@@ -113,9 +94,9 @@ through the AMI process, or upgrade the package itself:
   you can upgrade through the AMI process. With ENI, you can keep the private DNS names
   through AMI instance changes, something that is crucial for Gitaly to work.
 - If you're **not** using ENI, you must upgrade Gitaly using the GitLab package.
-  This is because Gitaly Cluster tracks replicas of Git repositories by the server hostname,
+  This is because Gitaly Cluster (Praefect) tracks replicas of Git repositories by the server hostname,
   and a redeployment using AMIs issues the nodes with new hostnames. Even though
-  the storage is the same, Gitaly Cluster does not work when the hostnames change.
+  the storage is the same, Gitaly Cluster (Praefect) does not work when the hostnames change.
 
 The Praefect nodes, however, can be upgraded by using an AMI redeployment process:
 
@@ -129,9 +110,9 @@ The Praefect nodes, however, can be upgraded by using an AMI redeployment proces
      migrations.
   1. Redeploy your other Praefect nodes.
 
-## Upgrade the Gitaly nodes not part of Gitaly cluster
+## Upgrade the Gitaly nodes not part of Gitaly Cluster (Praefect)
 
-For Gitaly servers which are not part of Gitaly cluster, [upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
+For Gitaly servers which are not part of Gitaly Cluster (Praefect), [upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
 
 If you have multiple Gitaly shards or have multiple load-balanced Gitaly nodes
 using NFS, it doesn't matter in which order you upgrade the Gitaly servers.

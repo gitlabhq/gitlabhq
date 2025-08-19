@@ -1,0 +1,12 @@
+---
+table_name: security_attributes
+classes:
+- Security::Attribute
+feature_categories:
+- security_asset_inventories
+description: Stores security attributes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198085
+milestone: '18.3'
+gitlab_schema: gitlab_sec
+sharding_key:
+  namespace_id: namespaces

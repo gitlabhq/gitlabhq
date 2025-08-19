@@ -3,18 +3,20 @@
 module Gitlab
   module HookData
     class MilestoneBuilder < BaseBuilder
-      SAFE_HOOK_ATTRIBUTES = %i[
-        id
-        iid
-        title
-        description
-        state
-        created_at
-        updated_at
-        due_date
-        start_date
-        project_id
-      ].freeze
+      def self.safe_hook_attributes
+        %i[
+          id
+          iid
+          title
+          description
+          state
+          created_at
+          updated_at
+          due_date
+          start_date
+          project_id
+        ].freeze
+      end
 
       alias_method :milestone, :object
 
@@ -22,8 +24,10 @@ module Gitlab
         milestone
           .attributes
           .with_indifferent_access
-          .slice(*SAFE_HOOK_ATTRIBUTES)
+          .slice(*self.class.safe_hook_attributes)
       end
     end
   end
 end
+
+Gitlab::HookData::MilestoneBuilder.prepend_mod

@@ -94,11 +94,6 @@ describe('CompareApp component', () => {
       expect(findCompareButton().exists()).toBe(true);
     });
 
-    it('submits form', () => {
-      findCompareButton().vm.$emit('click');
-      expect(wrapper.find('form').element.submit).toHaveBeenCalled();
-    });
-
     it('has compare text', () => {
       expect(findCompareButton().text()).toBe('Compare');
     });
@@ -108,10 +103,11 @@ describe('CompareApp component', () => {
     const project = {
       name: 'some-to-name',
       id: '1',
+      refs_url: '/',
     };
 
     findTargetRevisionCard().vm.$emit('selectProject', {
-      direction: 'to',
+      direction: 'from',
       project,
     });
 

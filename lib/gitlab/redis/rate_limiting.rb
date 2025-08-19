@@ -8,6 +8,13 @@ module Gitlab
         def config_fallback
           Cache
         end
+
+        # Rescue Redis errors so we do not take the site down when the rate limiting instance is down
+        def with_suppressed_errors(&block)
+          with(&block)
+        rescue ::Redis::BaseError, ::RedisClient::Error => e
+          Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+        end
       end
     end
   end

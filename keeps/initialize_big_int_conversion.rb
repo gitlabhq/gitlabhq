@@ -36,30 +36,38 @@ module Keeps
       super
     end
 
-    def each_change
+    def each_identified_change
       integer_columns_to_migrate.each do |table_name, columns|
-        change = build_change(table_name, columns)
-        change.changed_files = []
-        migration_file_1, migration_number_1 = generate_initialization_migration_file(table_name, columns)
-        migration_file_2, migration_number_2 = generate_backfill_migration_file(table_name, columns)
-
-        change.changed_files << migration_file_1
-        change.changed_files << migration_file_2
-        change.changed_files << Pathname.new('db').join('schema_migrations', migration_number_1).to_s
-        change.changed_files << Pathname.new('db').join('schema_migrations', migration_number_2).to_s
-
-        file_path = update_model(table_name, columns)
-        update_integer_columns_file(table_name)
-
-        migrate
-        change.changed_files << Pathname.new('db').join('structure.sql').to_s
-        change.changed_files << file_path
-        change.changed_files << INTEGER_COLUMNS_FILE
-
+        change = ::Gitlab::Housekeeper::Change.new
+        change.identifiers = [self.class.name.demodulize, table_name]
+        change.context = { table_name: table_name, columns: columns }
         yield(change)
-
-        reset_db
       end
+    end
+
+    def make_change!(change)
+      table_name = change.context[:table_name]
+      columns = change.context[:columns]
+      build_change_details(change, table_name, columns)
+      change.changed_files = []
+      migration_file_1, migration_number_1 = generate_initialization_migration_file(table_name, columns)
+      migration_file_2, migration_number_2 = generate_backfill_migration_file(table_name, columns)
+
+      change.changed_files << migration_file_1
+      change.changed_files << migration_file_2
+      change.changed_files << Pathname.new('db').join('schema_migrations', migration_number_1).to_s
+      change.changed_files << Pathname.new('db').join('schema_migrations', migration_number_2).to_s
+
+      file_path = update_model(table_name, columns)
+      update_integer_columns_file(table_name)
+
+      migrate
+      change.changed_files << Pathname.new('db').join('structure.sql').to_s
+      change.changed_files << file_path
+      change.changed_files << INTEGER_COLUMNS_FILE
+
+      reset_db
+      change
     end
 
     private
@@ -68,10 +76,8 @@ module Keeps
       YAML.safe_load_file(INTEGER_COLUMNS_FILE)
     end
 
-    def build_change(table_name, columns)
-      change = ::Gitlab::Housekeeper::Change.new
+    def build_change_details(change, table_name, columns)
       change.title = "Prepare conversion of #{table_name} to bigint".truncate(70, omission: '')
-      change.identifiers = [self.class.name.demodulize, table_name]
       change.changelog_type = 'added'
       change.labels = labels(table_name)
       change.reviewers = pick_reviewers(table_name, change.identifiers).uniq

@@ -28,9 +28,10 @@ RSpec.describe Projects::Packages::InfrastructureRegistryController, feature_cat
   end
 
   describe 'GET #show' do
-    let_it_be(:terraform_module) { create(:terraform_module_package, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project, user: user) }
+    let_it_be(:terraform_module) { create(:terraform_module_package, project: project, pipelines: [pipeline]) }
 
-    subject { get :show, params: params.merge(id: terraform_module.id), format: :html }
+    subject(:show_request) { get :show, params: params.merge(id: terraform_module.id), format: :html }
 
     it_behaves_like 'returning response status', :ok
 
@@ -40,6 +41,18 @@ RSpec.describe Projects::Packages::InfrastructureRegistryController, feature_cat
       end
 
       it_behaves_like 'returning response status', :not_found
+    end
+
+    it 'preloads associations', :aggregate_failures do
+      show_request
+
+      pipeline = assigns(:package).pipelines.first
+
+      expect(assigns(:package).association(:pipelines)).to be_loaded
+      expect(pipeline.association(:user)).to be_loaded
+      expect(pipeline.association(:project)).to be_loaded
+      expect(pipeline.project.association(:namespace)).to be_loaded
+      expect(pipeline.project.namespace.association(:route)).to be_loaded
     end
   end
 end

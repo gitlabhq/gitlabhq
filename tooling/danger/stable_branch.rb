@@ -39,6 +39,11 @@ module Tooling
       Backporting to older releases requires an [exception request process](https://docs.gitlab.com/policy/maintenance/#backporting-to-older-releases)
       MSG
 
+      NONDESCRIPTIVE_TITLE_MESSAGE = <<~MSG
+      The MR title needs to be descriptive (e.g. "Backport of 'title of default branch MR'").
+      This is important, since the title will be copied to the patch blog post.
+      MSG
+
       FAILED_VERSION_REQUEST_MESSAGE = <<~MSG
       There was a problem checking if this is a qualified version for backporting. Re-running this job may fix the problem.
       MSG
@@ -73,6 +78,8 @@ module Tooling
         fail BUG_MAINTENANCE_ERROR_MESSAGE unless stable_branch_fixes_only?
 
         warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
+
+        fail NONDESCRIPTIVE_TITLE_MESSAGE if has_default_title?
 
         return if has_flaky_failure_label? || allowed_backport_changes?
 
@@ -206,6 +213,13 @@ module Tooling
 
       def uses_stable_branch_template?
         template_source_path&.include?('.gitlab/merge_request_templates/Stable%20Branch.md')
+      end
+
+      def has_default_title?
+        title = helper.mr_title
+        pattern = /\AMerge branch '([^']+)' into '([^']+)'\z/
+
+        title.match?(pattern)
       end
     end
   end

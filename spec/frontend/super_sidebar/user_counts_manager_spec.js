@@ -1,14 +1,16 @@
 import waitForPromises from 'helpers/wait_for_promises';
-
+import * as storage from '~/lib/utils/local_storage';
 import * as UserApi from '~/api/user_api';
 import {
   createUserCountsManager,
   userCounts,
   destroyUserCountsManager,
   setGlobalTodoCount,
+  retrieveUserCountsFromApi,
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 
+jest.mock('~/lib/utils/local_storage');
 jest.mock('~/api');
 
 const USER_ID = 123;
@@ -292,6 +294,29 @@ describe('User Count Manager', () => {
           todos: value,
         });
       });
+    });
+  });
+
+  describe('retrieveUserCountsFromApi', () => {
+    it('caches value after successful request', async () => {
+      jest.spyOn(UserApi, 'getUserCounts').mockResolvedValue({
+        data: { ...userCountUpdate, merge_requests: 'FOO' },
+      });
+
+      await retrieveUserCountsFromApi();
+
+      expect(storage.saveStorageValue).toHaveBeenCalledWith('user_counts', expect.anything());
+    });
+
+    it('uses cached value after failed request', async () => {
+      jest.spyOn(UserApi, 'getUserCounts').mockRejectedValueOnce();
+      jest
+        .spyOn(storage, 'getStorageValue')
+        .mockReturnValue({ value: { assigned_merge_requests: 10 } });
+
+      await retrieveUserCountsFromApi();
+
+      expect(userCounts.assigned_merge_requests).toBe(10);
     });
   });
 });

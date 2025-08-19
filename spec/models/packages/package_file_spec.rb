@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
-RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::PackageFile, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project) }
@@ -19,8 +20,16 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     it { is_expected.to belong_to(:package) }
     it { is_expected.to have_one(:conan_file_metadatum) }
     it { is_expected.to have_many(:package_file_build_infos).inverse_of(:package_file) }
-    it { is_expected.to have_one(:debian_file_metadatum).inverse_of(:package_file).class_name('Packages::Debian::FileMetadatum') }
-    it { is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file).class_name('Packages::Helm::FileMetadatum') }
+
+    it 'has one debian file metadatum' do
+      is_expected.to have_one(:debian_file_metadatum).inverse_of(:package_file)
+        .class_name('Packages::Debian::FileMetadatum')
+    end
+
+    it 'has one helm file metadatum' do
+      is_expected.to have_one(:helm_file_metadatum).inverse_of(:package_file)
+        .class_name('Packages::Helm::FileMetadatum')
+    end
   end
 
   describe 'included modules' do
@@ -37,34 +46,34 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let(:status) { :default }
       let(:file_name) { 'foo' }
       let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
-      let(:params) { { file: file, file_name: file_name, status: status } }
+      let(:params) { { file:, file_name:, status: } }
+      let(:new_package_file) { build(:package_file, package:, **params) }
 
-      subject(:create_package_file) { package.package_files.create!(params) }
-
-      context 'file_name' do
+      context 'for file_name' do
         let(:file_name) { package_file.file_name }
 
         it 'can not save a duplicated file' do
-          expect { create_package_file }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
+          expect(new_package_file).to be_invalid
+            .and have_attributes(errors: match_array(['File name has already been taken']))
         end
 
         context 'with a pending destruction package duplicated file' do
           let(:status) { :pending_destruction }
 
           it 'can save it' do
-            expect { create_package_file }.to change { package.package_files.count }.from(1).to(2)
+            expect { new_package_file.save! }.to change { package.package_files.count }.from(1).to(2)
           end
         end
       end
 
-      context 'file_sha256' do
+      context 'for file_sha256' do
         where(:sha256_value, :expected_success) do
-          ('a' * 64) | true
-          nil | true
-          ('a' * 63)       | false
-          ('a' * 65)       | false
-          (('a' * 63) + '%') | false
-          '' | false
+          ('a' * 64)     | true
+          nil            | true
+          ('a' * 63)     | false
+          ('a' * 65)     | false
+          "#{'a' * 63}%" | false
+          ''             | false
         end
 
         with_them do
@@ -72,9 +81,10 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
           it 'does not allow invalid sha256 characters' do
             if expected_success
-              expect { create_package_file }.not_to raise_error
+              expect(new_package_file).to be_valid
             else
-              expect { create_package_file }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File sha256 is invalid")
+              expect(new_package_file).to be_invalid
+                .and have_attributes(errors: match_array(['File sha256 is invalid']))
             end
           end
         end
@@ -87,8 +97,9 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let_it_be(:package_reference) { package.conan_package_references.first }
       let_it_be(:package_revision) { package.conan_package_revisions.first }
 
-      let_it_be_with_reload(:existing_file) do
-        create(:conan_package_file, :conan_package, package: package, conan_recipe_revision: recipe_revision, conan_package_revision: package_revision)
+      let!(:existing_file) do
+        create(:conan_package_file, :conan_package, package: package, conan_recipe_revision: recipe_revision,
+          conan_package_revision: package_revision)
       end
 
       context 'when creating a new file' do
@@ -110,7 +121,9 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
         it 'validates uniqueness of file name with same recipe revision, package reference and package revision' do
           expect(new_file).not_to be_valid
-          expect(new_file.errors[:file_name]).to include('already exists for the given recipe revision, package reference, and package revision')
+          expect(new_file.errors[:file_name]).to include(
+            'already exists for the given recipe revision, package reference, and package revision'
+          )
         end
 
         it 'allows same file name with different recipe revision' do
@@ -136,7 +149,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
         context 'when existing file is not installable' do
           it 'allows same file name' do
-            existing_file.update!(status: :pending_destruction)
+            existing_file.pending_destruction!
             expect(new_file).to be_valid
           end
         end
@@ -196,7 +209,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  context 'updating project statistics' do
+  context 'for updating project statistics' do
     let_it_be(:package, reload: true) { create(:maven_package, package_files: [], maven_metadatum: nil) }
 
     context 'when the package file has an explicit size' do
@@ -227,7 +240,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  context 'Conan scopes' do
+  context 'for Conan scopes' do
     let_it_be(:package) { create(:conan_package, without_package_files: true) }
 
     describe '.with_conan_package_reference' do
@@ -265,7 +278,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
     end
 
-    context 'recipe revision scopes' do
+    context 'for recipe revision scopes' do
       let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
       let_it_be(:other_revision) { create(:conan_recipe_revision, package: package) }
 
@@ -315,9 +328,11 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
     end
 
-    context 'package revision scopes' do
+    context 'for package revision scopes' do
       let_it_be(:package_revision) { package.conan_package_revisions.first }
-      let_it_be(:other_package_revision) { create(:conan_package_revision, package_reference: package.conan_package_references.first) }
+      let_it_be(:other_package_revision) do
+        create(:conan_package_revision, package_reference: package.conan_package_references.first)
+      end
 
       let_it_be(:package_file_with_revision) do
         create(:conan_package_file, :conan_package,
@@ -366,7 +381,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  context 'Debian scopes' do
+  context 'for Debian scopes' do
     let_it_be(:debian_changes) { debian_package.package_files.last }
     let_it_be(:debian_deb) { create(:debian_package_file, package: debian_package) }
     let_it_be(:debian_udeb) { create(:debian_package_file, :udeb, package: debian_package) }
@@ -404,7 +419,9 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
         incoming.package_files.second.update! updated_at: 1.day.ago, status: :error
       end
 
-      it { expect(described_class.with_debian_unknown_since(1.hour.ago)).to contain_exactly(incoming.package_files.first) }
+      it 'returns package files with updated_at older than 1 hour' do
+        expect(described_class.with_debian_unknown_since(1.hour.ago)).to contain_exactly(incoming.package_files.first)
+      end
     end
   end
 
@@ -424,7 +441,9 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
 
     context 'with package files pending destruction' do
-      let_it_be(:package_file_pending_destruction) { create(:helm_package_file, :pending_destruction, package: helm_package2, channel: channel) }
+      let_it_be(:package_file_pending_destruction) do
+        create(:helm_package_file, :pending_destruction, package: helm_package2, channel: channel)
+      end
 
       it 'does not return them' do
         expect(described_class.for_helm_with_channel(project, channel)).to contain_exactly(helm_file2)
@@ -451,7 +470,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     let_it_be(:package_file4_2) { create(:package_file, :npm, package: package2) }
     let_it_be(:package_file4_3) { create(:package_file, :npm, package: package2) }
     let_it_be(:package_file4_4) { create(:package_file, :npm, package: package2) }
-    let_it_be(:package_file4_4) { create(:package_file, :npm, :pending_destruction, package: package2) }
+    let_it_be(:package_file4_5) { create(:package_file, :npm, :pending_destruction, package: package2) }
 
     let(:most_recent_package_file1) { package1.installable_package_files.recent.first }
     let(:most_recent_package_file2) { package2.installable_package_files.recent.first }
@@ -471,14 +490,18 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let(:compact_inputs) { [package_input1, package_input2, package_input3, package_input4].compact }
       let(:packages) do
         ::Packages::Package.id_in(
-          compact_inputs.map { |pkg_number| public_send("package#{pkg_number}") }
+          compact_inputs.map { |pkg_number| public_send(:"package#{pkg_number}") }
             .map(&:id)
         )
       end
 
-      let(:expected_package_files) { compact_inputs.map { |pkg_number| public_send("most_recent_package_file#{pkg_number}") } }
+      let(:expected_package_files) do
+        compact_inputs.map do |pkg_number|
+          public_send(:"most_recent_package_file#{pkg_number}")
+        end
+      end
 
-      it { is_expected.to contain_exactly(*expected_package_files) }
+      it { is_expected.to match_array(expected_package_files) }
     end
 
     describe '.order_by' do
@@ -510,7 +533,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
     end
 
-    context 'extra join and extra where' do
+    context 'for extra join and extra where' do
       let_it_be(:helm_package) { create(:helm_package, without_package_files: true) }
       let_it_be(:helm_package_file1) { create(:helm_package_file, channel: 'alpha') }
       let_it_be(:helm_package_file2) { create(:helm_package_file, channel: 'alpha', package: helm_package) }
@@ -520,14 +543,19 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let(:extra_join) { :helm_file_metadatum }
       let(:extra_where) { { packages_helm_file_metadata: { channel: 'alpha' } } }
 
-      subject(:joined_result) { described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join, extra_where: extra_where) }
+      subject(:joined_result) do
+        described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join,
+          extra_where: extra_where)
+      end
 
       it 'returns the most recent package for the selected channel' do
         expect(joined_result).to contain_exactly(helm_package_file2)
       end
 
       context 'with package files pending destruction' do
-        let_it_be(:package_file_pending_destruction) { create(:helm_package_file, :pending_destruction, package: helm_package, channel: 'alpha') }
+        let_it_be(:package_file_pending_destruction) do
+          create(:helm_package_file, :pending_destruction, package: helm_package, channel: 'alpha')
+        end
 
         it 'does not return them' do
           expect(joined_result).to contain_exactly(helm_package_file2)
@@ -541,11 +569,11 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
     subject { package_file.pipelines }
 
-    context 'package_file without pipeline' do
+    context 'for package_file without pipeline' do
       it { is_expected.to be_empty }
     end
 
-    context 'package_file with pipeline' do
+    context 'for package_file with pipeline' do
       let_it_be(:pipeline) { create(:ci_pipeline) }
       let_it_be(:pipeline2) { create(:ci_pipeline) }
 
@@ -572,7 +600,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  context 'update callbacks' do
+  context 'for update callbacks' do
     subject(:save_result) { package_file.save! }
 
     shared_examples 'executing the default callback' do
@@ -639,7 +667,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
     end
   end
 
-  context 'status scopes' do
+  context 'for status scopes' do
     let_it_be(:package) { create(:generic_package) }
     let_it_be(:default_package_file) { create(:package_file, package: package) }
     let_it_be(:pending_destruction_package_file) { create(:package_file, :pending_destruction, package: package) }
@@ -701,6 +729,46 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
 
       package_file
+    end
+  end
+
+  describe '.for_projects' do
+    let_it_be(:package) { create(:generic_package) }
+    let_it_be(:package2) { create(:generic_package) }
+    let_it_be(:package_file1) { create(:package_file, package: package) }
+    let_it_be(:package_file2) { create(:package_file, package: package2) }
+    let_it_be(:package_file3) { create(:package_file) }
+
+    let(:projects) { ::Project.id_in([package_file1.project_id, package_file2.project_id]) }
+
+    subject { described_class.for_projects(projects.select(:id)) }
+
+    it { is_expected.to contain_exactly(package_file1, package_file2) }
+
+    context 'with projects' do
+      subject { described_class.for_projects(projects) }
+
+      it { is_expected.to contain_exactly(package_file1, package_file2) }
+    end
+  end
+
+  describe '.preload_pipelines_with_user_project_namespace_route' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package) { create(:generic_package, project: project) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: package.project) }
+    let_it_be(:package_file) { create(:package_file, pipelines: [pipeline], package: package) }
+
+    subject(:execute) { described_class.preload_pipelines_with_user_project_namespace_route.id_in(package_file.id) }
+
+    it 'preloads pipelines with user, project, namespace and route' do
+      record = execute.first
+      pipeline = record.pipelines.first
+
+      expect(record.association(:pipelines)).to be_loaded
+      expect(pipeline.association(:user)).to be_loaded
+      expect(pipeline.association(:project)).to be_loaded
+      expect(pipeline.project.association(:namespace)).to be_loaded
+      expect(pipeline.project.namespace.association(:route)).to be_loaded
     end
   end
 end

@@ -211,7 +211,7 @@ module Emails
 
       @mr_presenter = @merge_request.present(current_user: @recipient) if present
 
-      @sent_notification = SentNotification.record(@merge_request, recipient_id, reply_key)
+      @sent_notification = SentNotification.record(@merge_request, recipient_id)
     end
 
     def merge_request_thread_options(sender_id, reason = nil)

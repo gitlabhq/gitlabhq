@@ -70,6 +70,7 @@ RSpec.describe Gitlab::Email::ReplyParser, feature_category: :team_planning do
             Company	Contact	Country
             Alfreds Futterkiste	Maria Anders	Germany
             Centro comercial Moctezuma	Francisco Chang	Mexico
+
             Words can be like X-rays, if you use them properly—they’ll go through anything. You read and you’re pierced.
           BODY
         )

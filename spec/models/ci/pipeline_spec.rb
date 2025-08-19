@@ -46,6 +46,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it { is_expected.to have_many(:triggered_pipelines) }
   it { is_expected.to have_many(:pipeline_artifacts) }
 
+  it { is_expected.to have_many(:job_environments).class_name('Environments::Job').inverse_of(:pipeline) }
+
   it do
     is_expected.to have_many(:failed_builds).class_name('Ci::Build')
       .with_foreign_key(:commit_id).inverse_of(:pipeline)
@@ -257,6 +259,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.succeed!
+      end
+    end
+
+    context 'from running to manual' do
+      let_it_be(:pipeline) { create(:ci_pipeline, :running) }
+
+      it 'schedules CoverageReportWorker' do
+        expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
+
+        pipeline.block!
       end
     end
 
@@ -741,6 +753,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
     it 'contains all unprotected pipelines' do
       is_expected.to contain_exactly(unprotected_pipeline, protected_unspecified_pipeline)
+    end
+  end
+
+  describe '.unlocked' do
+    subject { described_class.unlocked }
+
+    let_it_be(:unlocked_pipeline) { create(:ci_pipeline, locked: :unlocked) }
+    let_it_be(:artifacts_locked_pipeline) { create(:ci_pipeline, locked: :artifacts_locked) }
+
+    it 'contains all unlocked pipelines' do
+      is_expected.to contain_exactly(unlocked_pipeline)
     end
   end
 
@@ -1638,7 +1661,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is for a merge request' do
-      let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner) }
+      let(:pipeline) { build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner, ref: merge_request.ref_path) }
 
       let_it_be(:merge_request) do
         create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master')
@@ -1686,6 +1709,20 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           end
 
           is_expected.to be_falsey
+        end
+
+        context 'when the merge request is run against the source branch and NOT the merge request ref' do
+          let(:pipeline) { build_stubbed(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner) }
+
+          it 'returns false even if both source and target branches are protected' do
+            create(:protected_branch, name: 'feature', project: project)
+            create(:protected_branch, name: 'master', project: project)
+
+            expect(pipeline).to receive(:merge_request_ref?).and_call_original
+            expect(project).not_to receive(:protected_for?)
+
+            is_expected.to be_falsey
+          end
         end
 
         context 'when the merge request is from a forked project' do
@@ -2728,12 +2765,16 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#has_exposed_artifacts?' do
     let(:pipeline) { create(:ci_pipeline, :success) }
     let(:options) { nil }
+    let!(:job) do
+      create(:ci_build, options: options, pipeline: pipeline).tap do |job|
+        create(:ci_job_artifact, :metadata, job: job)
+      end
+    end
 
     subject { pipeline.has_exposed_artifacts? }
 
     before do
-      create(:ci_build, pipeline: pipeline)
-      create(:ci_build, options: options, pipeline: pipeline)
+      create(:ci_build, pipeline: pipeline) # Job without artifacts
     end
 
     it { is_expected.to eq(false) }
@@ -2753,6 +2794,44 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let(:pipeline) { create(:ci_pipeline, :running) }
 
         it { is_expected.to eq(false) }
+      end
+
+      context 'when job_artifacts_metadata.exposed_as is not populated' do
+        before do
+          job.job_artifacts_metadata.update!(exposed_as: nil)
+        end
+
+        it 'reads from job options' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when job metadata record is deleted' do
+        before do
+          job.metadata.delete
+        end
+
+        it 'reads from job_artifacts_metadata' do
+          is_expected.to eq(true)
+        end
+
+        context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+          before do
+            stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+          end
+
+          it { is_expected.to eq(false) }
+        end
+      end
+
+      context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+        before do
+          stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+        end
+
+        it 'reads from job options' do
+          is_expected.to eq(true)
+        end
       end
     end
   end
@@ -3173,12 +3252,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       subject(:latest_successful_for_refs) { described_class.latest_successful_for_refs(refs) }
 
       context 'when refs are specified' do
-        let(:refs) { %w[first_ref second_ref third_ref] }
-
         before do
           create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
           create(:ci_empty_pipeline, status: :success, ref: 'second_ref', sha: 'sha')
         end
+
+        let(:refs) { %w[first_ref second_ref third_ref] }
 
         let!(:latest_successful_pipeline_for_first_ref) do
           create(:ci_empty_pipeline, status: :success, ref: 'first_ref', sha: 'sha')
@@ -4551,24 +4630,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '#self_and_project_descendants_complete?' do
-    let_it_be(:pipeline) { create(:ci_pipeline, :success) }
-    let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
-    let_it_be_with_reload(:grandchild_pipeline) { create(:ci_pipeline, :success, child_of: child_pipeline) }
-
-    context 'when all pipelines in the hierarchy is complete' do
-      it { expect(pipeline.self_and_project_descendants_complete?).to be(true) }
-    end
-
-    context 'when a pipeline in the hierarchy is not complete' do
-      before do
-        grandchild_pipeline.update!(status: :running)
-      end
-
-      it { expect(pipeline.self_and_project_descendants_complete?).to be(false) }
-    end
-  end
-
   describe '#builds_in_self_and_project_descendants' do
     subject(:builds) { pipeline.builds_in_self_and_project_descendants }
 
@@ -4582,11 +4643,34 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when pipeline is parent of another pipeline' do
-      let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
-      let!(:child_build) { create(:ci_build, pipeline: child_pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, pipeline: child_pipeline) }
 
       it 'returns the list of builds' do
         expect(builds).to contain_exactly(build, child_build)
+      end
+
+      context 'when the trigger job for the child pipeline is retried' do
+        let_it_be(:new_child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let_it_be(:new_child_build) { create(:ci_build, pipeline: new_child_pipeline) }
+
+        before do
+          child_pipeline.source_bridge.update!(retried: true)
+        end
+
+        it 'does not return builds from previous child pipelines' do
+          expect(builds).to contain_exactly(build, new_child_build)
+        end
+
+        context 'when feature flag show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'returns all child pipeline builds' do
+            expect(builds).to contain_exactly(build, child_build, new_child_build)
+          end
+        end
       end
     end
 
@@ -5122,11 +5206,55 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it 'returns test report summary with collected data' do
         expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
       end
+
+      context 'and the child pipeline has test reports' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+        before do
+          create(:ci_build, :success, :report_results, name: 'rspec2', pipeline: child_pipeline)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total).to include(time: 1.26, count: 6, success: 0, failed: 0, skipped: 0, error: 6)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total).to include(time: 0.84, count: 4, success: 0, failed: 0, skipped: 0, error: 4)
+          end
+        end
+      end
     end
 
     context 'when pipeline does not have any builds with report results' do
       it 'returns empty test report summary' do
         expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
+      end
+
+      context 'and the child pipeline has test reports' do
+        let(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+
+        before do
+          create(:ci_build, :success, :report_results, name: 'rspec2', pipeline: child_pipeline)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total).to include(time: 0.42, count: 2, success: 0, failed: 0, skipped: 0, error: 2)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total).to include(time: 0, count: 0, success: 0, failed: 0, skipped: 0, error: 0)
+          end
+        end
       end
     end
   end
@@ -5165,6 +5293,33 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           expect(subject.failed_count).to be(0)
         end
       end
+
+      context 'and the child pipeline has test reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:build_java2) { create(:ci_build, :success, name: 'java', pipeline: child_pipeline) }
+
+        before do
+          create(:ci_job_artifact, :junit_with_three_failures, job: build_java2)
+        end
+
+        it 'aggregates reports from all pipelines' do
+          expect(subject.total_count).to be(10)
+          expect(subject.success_count).to be(5)
+          expect(subject.failed_count).to be(5)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total_count).to be(7)
+            expect(subject.success_count).to be(5)
+            expect(subject.failed_count).to be(2)
+          end
+        end
+      end
     end
 
     context 'when the pipeline has parallel builds with test reports' do
@@ -5198,6 +5353,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when pipeline does not have any builds with test reports' do
       it 'returns empty test reports' do
         expect(subject.total_count).to be(0)
+      end
+
+      context 'and the child pipeline has test reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, child_of: pipeline) }
+        let!(:build_java2) { create(:ci_build, :success, name: 'java', pipeline: child_pipeline) }
+
+        before do
+          create(:ci_job_artifact, :junit_with_three_failures, job: build_java2)
+        end
+
+        it 'fetches reports from child pipelines' do
+          expect(subject.total_count).to be(3)
+          expect(subject.success_count).to be(0)
+          expect(subject.failed_count).to be(3)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only shows parent summary' do
+            expect(subject.total_count).to be(0)
+          end
+        end
       end
     end
   end
@@ -6729,7 +6909,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe "association dependent" do
     it_behaves_like "cleanup by a loose foreign key", on_delete: :async_nullify do
       let!(:lfk_column) { :trigger_id }
-      let!(:parent) { create(:ci_trigger) }
+      let!(:parent) { create(:ci_trigger, project: create(:project, maintainers: [user])) }
       let!(:model) { create(:ci_pipeline, trigger: parent) }
     end
   end

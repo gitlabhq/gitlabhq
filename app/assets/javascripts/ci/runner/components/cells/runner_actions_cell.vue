@@ -50,7 +50,6 @@ export default {
 
 <template>
   <gl-button-group>
-    <slot><!-- space for other actions --></slot>
     <runner-edit-button v-if="canUpdate && editUrl" :size="size" :href="editUrl" />
     <runner-pause-button
       v-if="canUpdate"
@@ -59,6 +58,7 @@ export default {
       :size="size"
       @toggledPaused="onToggledPaused"
     />
+    <slot><!-- space for other actions --></slot>
     <runner-delete-button
       v-if="canDelete"
       :runner="runner"

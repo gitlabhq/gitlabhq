@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Systems' do
-    describe 'Gitaly using mTLS', :orchestrated, :mtls, product_group: :gitaly do
+  RSpec.describe 'Systems', feature_category: :gitaly do
+    describe 'Gitaly using mTLS', :orchestrated, :mtls do
       let(:intial_commit_message) { 'Initial commit' }
       let(:first_added_commit_message) { 'commit over git' }
       let(:second_added_commit_message) { 'commit over api' }

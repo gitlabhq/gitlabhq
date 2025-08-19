@@ -26,3 +26,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelineMessage.prepend_mod_with('Ci::PipelineMessage')

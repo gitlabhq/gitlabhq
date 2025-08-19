@@ -1,22 +1,28 @@
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import CiLint from '~/ci/ci_lint/components/ci_lint.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
-import lintCIMutation from '~/ci/pipeline_editor/graphql/mutations/client/lint_ci.mutation.graphql';
+import ciLintMutation from '~/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
-import { mockLintDataValid } from '../mock_data';
+import { mockCiLintMutationResponse } from '../../pipeline_editor/mock_data';
+
+Vue.use(VueApollo);
 
 describe('CI Lint', () => {
   let wrapper;
+  let mockCiLintData;
 
-  const endpoint = '/namespace/project/-/ci/lint';
   const content =
     "test_job:\n  stage: build\n  script: echo 'Building'\n  only:\n    - web\n    - chat\n    - pushes\n  allow_failure: true  ";
-  const mockMutate = jest.fn().mockResolvedValue(mockLintDataValid);
 
   const createComponent = () => {
+    const handlers = [[ciLintMutation, mockCiLintData]];
+    const mockApollo = createMockApollo(handlers);
+
     wrapper = shallowMount(CiLint, {
       data() {
         return {
@@ -24,15 +30,11 @@ describe('CI Lint', () => {
         };
       },
       propsData: {
-        endpoint,
         pipelineSimulationHelpPagePath: '/help/ci/lint#pipeline-simulation',
         lintHelpPagePath: '/help/ci/lint#anchor',
+        projectFullPath: '/path/to/project',
       },
-      mocks: {
-        $apollo: {
-          mutate: mockMutate,
-        },
-      },
+      apolloProvider: mockApollo,
     });
   };
 
@@ -44,37 +46,40 @@ describe('CI Lint', () => {
   const findDryRunToggle = () => wrapper.find('[data-testid="ci-lint-dryrun"]');
 
   beforeEach(() => {
-    createComponent();
-  });
-
-  afterEach(() => {
-    mockMutate.mockClear();
+    mockCiLintData = jest.fn();
   });
 
   it('displays the editor', () => {
+    createComponent();
     expect(findEditor().exists()).toBe(true);
   });
 
   it('validate action calls mutation correctly', () => {
+    createComponent();
     findValidateBtn().vm.$emit('click');
 
-    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-      mutation: lintCIMutation,
-      variables: { content, dry: false, endpoint },
+    expect(mockCiLintData).toHaveBeenCalledWith({
+      projectPath: '/path/to/project',
+      content,
+      dryRun: false,
     });
   });
 
   it('validate action calls mutation with dry run', () => {
+    createComponent();
     findDryRunToggle().vm.$emit('input', true);
     findValidateBtn().vm.$emit('click');
 
-    expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-      mutation: lintCIMutation,
-      variables: { content, dry: true, endpoint },
+    expect(mockCiLintData).toHaveBeenCalledWith({
+      projectPath: '/path/to/project',
+      content,
+      dryRun: true,
     });
   });
 
   it('validation displays results', async () => {
+    mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
+    createComponent();
     findValidateBtn().vm.$emit('click');
 
     await nextTick();
@@ -88,7 +93,8 @@ describe('CI Lint', () => {
   });
 
   it('validation displays error', async () => {
-    mockMutate.mockRejectedValue('Error!');
+    mockCiLintData.mockRejectedValueOnce(new Error('Error!'));
+    createComponent();
 
     findValidateBtn().vm.$emit('click');
 
@@ -99,11 +105,12 @@ describe('CI Lint', () => {
     await waitForPromises();
 
     expect(findCiLintResults().exists()).toBe(false);
-    expect(findAlert().text()).toBe('Error!');
+    expect(findAlert().text()).toBe('Error: Error!');
     expect(findValidateBtn().props('loading')).toBe(false);
   });
 
   it('content is cleared on clear action', async () => {
+    createComponent();
     expect(findEditor().props('value')).toBe(content);
 
     await findClearBtn().vm.$emit('click');

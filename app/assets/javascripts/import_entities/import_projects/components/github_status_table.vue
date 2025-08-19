@@ -45,10 +45,6 @@ export default {
   },
   methods: {
     ...mapActions(['setFilter']),
-    selectOrganization(org) {
-      this.selectedOrganization = org;
-      this.setFilter();
-    },
   },
 
   relationTypes: [

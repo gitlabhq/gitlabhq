@@ -5,6 +5,7 @@ module Gitlab
     class StandardContext
       GITLAB_STANDARD_SCHEMA_URL = 'iglu:com.gitlab/gitlab_standard/jsonschema/1-1-7'
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
+      GITLAB_REALM_SELF_MANAGED = 'self-managed'
 
       def initialize(
         namespace: nil, project_id: nil, user: nil,
@@ -68,7 +69,7 @@ module Gitlab
           project_id: project_id,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           realm: realm,
-          instance_id: instance_id,
+          instance_id: ::Gitlab::GlobalAnonymousId.instance_id,
           unique_instance_id: Gitlab::GlobalAnonymousId.instance_uuid,
           host_name: Gitlab.config.gitlab.host,
           instance_version: Gitlab.version_info.to_s,
@@ -108,11 +109,7 @@ module Gitlab
       end
 
       def realm
-        nil
-      end
-
-      def instance_id
-        nil
+        GITLAB_REALM_SELF_MANAGED
       end
     end
   end

@@ -22,7 +22,7 @@ export default {
     return { id: 'release-tag-name', newTagName: '', show: false, isInputDirty: false };
   },
   computed: {
-    ...mapState('editNew', ['release', 'showCreateFrom']),
+    ...mapState('editNew', ['release']),
     ...mapGetters('editNew', ['validationErrors', 'isSearching', 'isCreating']),
     title() {
       return this.isCreating ? this.$options.i18n.createTitle : this.$options.i18n.selectTitle;
@@ -35,12 +35,6 @@ export default {
     },
     buttonText() {
       return this.release?.tagName || s__('Release|Search or create tag name');
-    },
-    buttonVariant() {
-      return this.showTagNameValidationError ? 'danger' : 'default';
-    },
-    createText() {
-      return this.newTagName ? this.$options.i18n.createTag : this.$options.i18n.typeNew;
     },
   },
   mounted() {

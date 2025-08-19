@@ -23,6 +23,11 @@ export default {
       required: false,
       default: () => [],
     },
+    participantCount: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
     numberOfLessParticipants: {
       type: Number,
       required: false,
@@ -42,12 +47,12 @@ export default {
   computed: {
     participantLabel() {
       return sprintf(
-        n__('%{count} Participant', '%{count} Participants', this.participants.length),
-        { count: this.loading ? '' : this.participantCount },
+        n__('%{count} Participant', '%{count} Participants', this.participantCountCalculated),
+        { count: this.loading ? '' : this.participantCountCalculated },
       );
     },
-    participantCount() {
-      return this.participants.length;
+    participantCountCalculated() {
+      return Math.max(this.participants.length, this.participantCount || 0);
     },
   },
 };
@@ -65,7 +70,7 @@ export default {
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />
       <span v-else class="gl-px-3 gl-pt-2 gl-text-sm">
-        {{ participantCount }}
+        {{ participantCountCalculated }}
       </span>
     </div>
     <participants
@@ -74,6 +79,7 @@ export default {
       :loading="loading"
       :number-of-less-participants="numberOfLessParticipants"
       :participants="participants"
+      :participant-count="participantCount"
       :show-participant-label="showParticipantLabel"
     />
   </div>

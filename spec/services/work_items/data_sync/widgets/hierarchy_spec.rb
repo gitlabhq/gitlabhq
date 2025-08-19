@@ -41,12 +41,14 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
           expect(callback).to receive(:handle_children).and_call_original
 
           expected_child_items_titles = work_item.work_item_children.map(&:title)
+          # these are the originally linked child records on source work item that are getting closed upon move.
+          children_to_move = work_item.work_item_children
 
           callback.after_save_commit
 
           # these are the newly copied child records
           new_children = target_work_item.reload.work_item_children.where(moved_to_id: nil)
-          # these are the originally linked child records on source work item that are closed upon move.
+          # these are the originally linked child records on source work item that are closed and unlinked upon move.
           moved_children = work_item.reload.work_item_children.where.not(moved_to_id: nil)
 
           expect(new_children.size).to eq(2)
@@ -54,12 +56,13 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
           expect(new_children.map(&:state)).to match_array(%w[opened opened])
           expect(new_children.map(&:namespace_id).uniq).to match_array([target_work_item.namespace_id])
 
-          expect(moved_children.size).to eq(2)
-          expect(moved_children.map(&:title)).to match_array(expected_child_items_titles)
-          expect(moved_children.map(&:state)).to match_array(%w[closed closed])
-          expect(moved_children.map(&:namespace_id).uniq).to match_array([work_item.namespace_id])
+          expect(moved_children.size).to eq(0)
+          children_to_move.each(&:reload)
+          expect(children_to_move.map(&:title)).to match_array(expected_child_items_titles)
+          expect(children_to_move.map(&:state)).to match_array(%w[closed closed])
+          expect(children_to_move.map(&:namespace_id).uniq).to match_array([work_item.namespace_id])
           # original child items now point to the moved items.
-          expect(moved_children.map(&:moved_to_id)).to match_array(new_children.map(&:id))
+          expect(children_to_move.map(&:moved_to_id)).to match_array(new_children.map(&:id))
           # new target work item and its 2 child tasks are located within new namespace
           expect(target_work_item.namespace.work_items.count).to eq(3)
         end
@@ -129,12 +132,32 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
     describe '#post_move_cleanup' do
       let_it_be(:parent_link) { create(:parent_link, work_item: work_item, work_item_parent: parent) }
 
-      it "clears the parent for the original work_item" do
-        expect { callback.post_move_cleanup }.to change { work_item.reload.work_item_parent }.from(parent).to(nil)
+      context 'when cleanup_data_source_work_item_data feature is enabled' do
+        before do
+          stub_feature_flags(cleanup_data_source_work_item_data: true)
+        end
+
+        it "clears the parent for the original work_item" do
+          expect { callback.post_move_cleanup }.to change { work_item.reload.work_item_parent }.from(parent).to(nil)
+        end
+
+        it "deletes a work_item_parent_link record" do
+          expect { callback.post_move_cleanup }.to change { WorkItems::ParentLink.count }.by(-1)
+        end
       end
 
-      it "deletes a work_item_parent_link record" do
-        expect { callback.post_move_cleanup }.to change { WorkItems::ParentLink.count }.by(-1)
+      context 'when cleanup_data_source_work_item_data feature is disabled' do
+        before do
+          stub_feature_flags(cleanup_data_source_work_item_data: false)
+        end
+
+        it "clears the parent for the original work_item" do
+          expect { callback.post_move_cleanup }.to change { work_item.reload.work_item_parent }.from(parent).to(nil)
+        end
+
+        it "clears a work_item_parent_link record" do
+          expect { callback.post_move_cleanup }.to change { WorkItems::ParentLink.count }.by(-1)
+        end
       end
     end
   end

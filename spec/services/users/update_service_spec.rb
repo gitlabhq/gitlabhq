@@ -290,8 +290,11 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
 
         context 'when organization_users param count exceeds limit' do
           let_it_be(:organization_users_attributes) do
-            create_list(:organization_user, described_class::ORGANIZATION_USERS_LIMIT + 1, user: current_user)
-              .map { |o| o.slice(:id) }
+            create_list(
+              :organization_user,
+              described_class::ORGANIZATION_USERS_LIMIT + 1,
+              :without_common_organization, user: current_user
+            ).map { |o| o.slice(:id) }
           end
 
           it_behaves_like 'organization user update fails', format(

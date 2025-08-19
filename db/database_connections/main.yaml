@@ -4,6 +4,7 @@ gitlab_schemas:
   - gitlab_internal
   - gitlab_shared
   - gitlab_main
+  - gitlab_main_org
   - gitlab_main_cell
   - gitlab_main_cell_local
   - gitlab_pm

@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlIntersperse } from '@gitlab/ui';
 import initIssuablePopovers from '~/issuable/popover';
-import { extractGroupOrProject } from '../../utils/common';
+import { extractGroupOrProject, relativeNamespace } from '../../utils/common';
 
 const types = {
   WorkItem: 'issue',
@@ -34,6 +34,11 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       return types[this.data.__typename];
     },
+    referencePrefix() {
+      const current = extractGroupOrProject();
+
+      return relativeNamespace(current.project || current.group, this.project || this.group);
+    },
   },
   async mounted() {
     await this.$nextTick();
@@ -56,7 +61,7 @@ export default {
   >
     <gl-intersperse separator="">
       <span>{{ data.title }}</span>
-      <span> ({{ data.reference }}</span>
+      <span> ({{ referencePrefix }}{{ data.reference }}</span>
       <span v-if="data.state === 'closed'"> - {{ __('closed') }}</span>
       <span v-if="data.state === 'merged'"> - {{ __('merged') }}</span>
       <span>)</span>

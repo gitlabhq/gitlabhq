@@ -5,6 +5,10 @@ RSpec.shared_examples 'can move repository storage' do
   let(:repository) { container.repository }
 
   describe '#set_repository_read_only!' do
+    before do
+      container.set_repository_writable! if container.repository_read_only?
+    end
+
     it 'makes the repository read-only' do
       expect { container.set_repository_read_only! }
         .to change { container.repository_read_only? }
@@ -37,6 +41,10 @@ RSpec.shared_examples 'can move repository storage' do
   end
 
   describe '#set_repository_writable!' do
+    before do
+      container.set_repository_read_only! unless container.repository_read_only?
+    end
+
     it 'sets repository_read_only to false' do
       expect { container.set_repository_writable! }
         .to change { container.repository_read_only? }

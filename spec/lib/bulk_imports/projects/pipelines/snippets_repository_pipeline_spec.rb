@@ -23,8 +23,6 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
   let(:tracker) { create(:bulk_import_tracker, entity: entity) }
   let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
-  subject(:pipeline) { described_class.new(context) }
-
   let(:http_url_to_repo) { 'https://example.com/foo/bar/snippets/42.git' }
   let(:data) do
     [
@@ -44,6 +42,8 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
   end
 
   let(:extracted_data) { BulkImports::Pipeline::ExtractedData.new(data: data, page_info: page_info) }
+
+  subject(:pipeline) { described_class.new(context) }
 
   before do
     allow(pipeline).to receive(:set_source_objects_counter)

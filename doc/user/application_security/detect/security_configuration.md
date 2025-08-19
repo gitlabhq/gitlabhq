@@ -1,6 +1,6 @@
 ---
-stage: Application Security Testing
-group: Static Analysis
+stage: Security Risk Management
+group: Security Platform Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Security configuration
 description: Configuration, testing, compliance, scanning, and enablement.
@@ -66,14 +66,15 @@ and override its settings as required.
 Use the **Security configuration** page to view and configure the security testing and vulnerability
 management settings of a project.
 
-The **Security testing** tab reflects the status of each of the security scanners. To determine the
-status of each security scanner it checks for a CI/CD pipeline in the most recent commit on the
-default branch.
+The **Security testing** tab reflects the status of each of the security tools by checking the
+CI/CD pipeline in the most recent commit on the default branch.
 
-- If no CI/CD pipeline exists, the status of all security scanners is shown as **Not enabled**.
-- If a CI/CD pipeline exists, each job is inspected for the `artifacts:reports` keyword. If the
-  keyword is defined, the security scanner's status is shown as **Enabled**, otherwise it's shown as
-  **Not enabled**.
+Enabled
+: The security testing tool's artifact was found in the pipeline's output.
+
+Not enabled
+: Either no CI/CD pipeline exists or the security testing tool's artifact was not found in the
+  pipeline's output.
 
 #### View security configuration page
 

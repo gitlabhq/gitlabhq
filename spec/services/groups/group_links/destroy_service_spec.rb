@@ -68,40 +68,43 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
           stub_feature_flags(skip_group_share_unlink_auth_refresh: false)
         end
 
-        it 'updates project authorization once per group with medium priority' do
-          expect(GroupGroupLink).to receive(:delete).and_call_original
-          expect(group)
-            .to receive(:refresh_members_authorized_projects)
-            .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-            .once
-
-          expect(another_group)
-            .to receive(:refresh_members_authorized_projects)
-            .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-            .once
-
-          subject.execute(links)
-        end
-
-        context 'when feature-flag `change_priority_for_user_access_refresh_for_group_links` is disabled' do
+        context 'with project_authorizations_update_in_background_for_group_shares feature flag disabled' do
           before do
-            stub_feature_flags(change_priority_for_user_access_refresh_for_group_links: false)
+            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
           end
 
-          it 'updates project authorizations with high priority' do
+          it 'updates project authorization once per group with medium priority' do
             expect(GroupGroupLink).to receive(:delete).and_call_original
             expect(group)
               .to receive(:refresh_members_authorized_projects)
-              .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+              .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
               .once
 
             expect(another_group)
               .to receive(:refresh_members_authorized_projects)
-              .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+              .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
               .once
 
             subject.execute(links)
           end
+        end
+
+        it 'schedules worker once per group' do
+          expect(GroupGroupLink).to receive(:delete).and_call_original
+
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+            .to receive(:perform_async).with(
+              group.id,
+              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY, 'direct_members_only' => true }
+            ).once
+
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+            .to receive(:perform_async).with(
+              another_group.id,
+              { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY, 'direct_members_only' => true }
+            ).once
+
+          subject.execute(links)
         end
       end
 
@@ -114,6 +117,28 @@ RSpec.describe Groups::GroupLinks::DestroyService, '#execute', feature_category:
           expect(GroupGroupLink).to receive(:delete).and_call_original
           expect(group).not_to receive(:refresh_members_authorized_projects)
           expect(another_group).not_to receive(:refresh_members_authorized_projects)
+
+          subject.execute(links)
+        end
+
+        context 'with project_authorizations_update_in_background_for_group_shares feature flag disabled' do
+          before do
+            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
+          end
+
+          it 'does not update project authorization once per group' do
+            expect(GroupGroupLink).to receive(:delete).and_call_original
+            expect(group).not_to receive(:refresh_members_authorized_projects)
+            expect(another_group).not_to receive(:refresh_members_authorized_projects)
+
+            subject.execute(links)
+          end
+        end
+
+        it 'does not schedule worker once per group' do
+          expect(GroupGroupLink).to receive(:delete).and_call_original
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker)
+            .not_to receive(:perform_async)
 
           subject.execute(links)
         end

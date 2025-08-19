@@ -32,7 +32,7 @@ value and helps our team understand the reasons why people use GitLab, and with 
 There are several other benefits to enabling Service Ping:
 
 - Analyze the users' activities over time of your GitLab installation.
-- A [DevOps Score](../analytics/dev_ops_reports.md) to give you an overview of your entire instance's adoption of concurrent DevOps from planning to monitoring.
+- A [DevOps Score](../analytics/devops_adoption.md) to give you an overview of your entire instance's adoption of concurrent DevOps from planning to monitoring.
 - More proactive support through Customer Success Managers (CSMs) who can use the collected data.
 - Insight and advice into how to get the most value out of your investment in GitLab.
 - Reports that show how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.

@@ -1,0 +1,9 @@
+mutation WikiPageSubscribe($id: WikiPageMetaID!, $subscribed: Boolean!) {
+  wikiPageSubscribe(input: { id: $id, subscribed: $subscribed }) {
+    wikiPage {
+      id
+      subscribed
+    }
+    errors
+  }
+}

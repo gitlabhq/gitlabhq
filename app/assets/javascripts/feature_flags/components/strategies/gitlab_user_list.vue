@@ -28,8 +28,8 @@ export default {
     defaultDropdownText: s__('FeatureFlags|No user list selected'),
   },
   computed: {
-    ...mapGetters(['hasUserLists', 'isLoading', 'hasError', 'userListOptions']),
-    ...mapState(['filter', 'userLists']),
+    ...mapGetters(['hasUserLists', 'isLoading']),
+    ...mapState(['userLists']),
     userListId() {
       return this.strategy?.userList?.id ?? '';
     },

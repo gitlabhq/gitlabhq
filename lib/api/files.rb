@@ -55,7 +55,7 @@ module API
       def authorize_ai_access!
         return if can?(current_user, :duo_workflow, user_project) || can?(current_user, :access_duo_agentic_chat, user_project)
 
-        forbidden!('Insufficient permissions for Duo Workflow')
+        forbidden!('Insufficient permissions for Duo Agent Platform')
       end
 
       def commit_response(attrs)
@@ -183,7 +183,7 @@ module API
         success File
       end
       params do
-        requires :file_path, type: String, file_path: true,
+        requires :file_path, type: String, file_path: { allow_initial_path_separator: true },
           desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         optional :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }

@@ -16,7 +16,8 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
     Gitlab::Ci::Pipeline::Chain::Command.new(
       project: project,
       current_user: user,
-      save_incompleted: save_incompleted
+      save_incompleted: save_incompleted,
+      origin_ref: project.default_branch_or_main
     )
   end
 
@@ -90,7 +91,8 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
 
     context 'with creating_policy_pipeline? is true', feature_category: :security_policy_management do
       before do
-        allow(command).to receive_message_chain(:pipeline_policy_context, :creating_policy_pipeline?).and_return(true)
+        allow(command).to receive_message_chain(:pipeline_policy_context, :pipeline_execution_context,
+          :creating_policy_pipeline?).and_return(true)
       end
 
       it_behaves_like 'excluded from rate limits'

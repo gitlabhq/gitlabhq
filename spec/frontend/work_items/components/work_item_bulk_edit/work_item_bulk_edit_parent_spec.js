@@ -9,6 +9,7 @@ import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.gra
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
 import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_parent.vue';
+import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 import {
   availableObjectivesResponse,
   mockWorkItemReferenceQueryResponse,
@@ -170,13 +171,24 @@ describe('WorkItemBulkEditParent component', () => {
   });
 
   describe('listbox items', () => {
-    it('renders all work items', async () => {
+    it('renders all work items and "No parent" by default', async () => {
       createComponent();
 
       findListbox().vm.$emit('shown');
       await waitForPromises();
 
-      expect(findListbox().props('items')).toEqual(listResults);
+      expect(findListbox().props('items')).toEqual([
+        {
+          text: 'No parent',
+          textSrOnly: true,
+          options: [{ text: 'No parent', value: BULK_EDIT_NO_VALUE }],
+        },
+        {
+          text: 'All',
+          textSrOnly: true,
+          options: listResults,
+        },
+      ]);
     });
 
     describe('with search', () => {
@@ -259,6 +271,16 @@ describe('WorkItemBulkEditParent component', () => {
         await openListboxAndSelect('gid://gitlab/WorkItem/711');
 
         expect(findListbox().props('toggleText')).toBe('Objective 102');
+      });
+    });
+
+    describe('with "No parent"', () => {
+      it('renders "No parent"', async () => {
+        createComponent();
+
+        await openListboxAndSelect(BULK_EDIT_NO_VALUE);
+
+        expect(findListbox().props('toggleText')).toBe('No parent');
       });
     });
   });

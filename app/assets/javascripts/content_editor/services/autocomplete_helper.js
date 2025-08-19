@@ -1,7 +1,10 @@
 import { identity, memoize, isEmpty } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { newDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
+import { currentAssignees, linkedItems, availableStatuses } from '~/graphql_shared/issuable_client';
+import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
 import { COMMANDS } from '../constants';
 
 export function defaultSorter(searchFields) {
@@ -73,6 +76,7 @@ function sortMilestones(milestoneA, milestoneB) {
 }
 
 export function createDataSource({
+  referenceType,
   source,
   searchFields,
   filter,
@@ -102,12 +106,18 @@ export function createDataSource({
       if (filter) results = filter(results, query);
 
       if (query) {
-        results = results.filter((item) => {
-          if (!searchFields.length) return true;
-          return searchFields.some((field) =>
-            String(item[field]).toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-          );
-        });
+        // We want fuzzy search only on labels but it can
+        // be expanded to other commands if needed
+        if (referenceType === REFERENCE_TYPES.LABEL) {
+          results = fuzzaldrinPlus.filter(results, query, { key: searchFields });
+        } else {
+          results = results.filter((item) => {
+            if (!searchFields.length) return true;
+            return searchFields.some((field) =>
+              String(item[field]).toLocaleLowerCase().includes(query.toLocaleLowerCase()),
+            );
+          });
+        }
       }
 
       return sorter(results, query).slice(0, limit);
@@ -116,6 +126,8 @@ export function createDataSource({
 }
 
 export default class AutocompleteHelper {
+  tiptapEditor;
+
   constructor({ dataSourceUrls, sidebarMediator }) {
     this.updateDataSources(dataSourceUrls);
 
@@ -139,6 +151,8 @@ export default class AutocompleteHelper {
     const sources = {
       user: this.dataSourceUrls.members,
       issue: this.dataSourceUrls.issues,
+      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: this.dataSourceUrls.issuesAlternative,
+      [REFERENCE_TYPES.WORK_ITEM]: this.dataSourceUrls.workItems,
       snippet: this.dataSourceUrls.snippets,
       label: this.dataSourceUrls.labels,
       epic: this.dataSourceUrls.epics,
@@ -153,10 +167,13 @@ export default class AutocompleteHelper {
     const searchFields = {
       user: ['username', 'name'],
       issue: ['iid', 'title'],
+      [REFERENCE_TYPES.WORK_ITEM]: ['iid', 'title'],
+      [REFERENCE_TYPES.ISSUE_ALTERNATIVE]: ['iid', 'title'],
       snippet: ['id', 'title'],
       label: ['title'],
       epic: ['iid', 'title'],
       iteration: ['id', 'title'],
+      status: ['name'],
       vulnerability: ['id', 'title'],
       merge_request: ['iid', 'title'],
       milestone: ['title', 'iid'],
@@ -175,12 +192,20 @@ export default class AutocompleteHelper {
         }),
       user: (items) =>
         items.filter((item) => {
-          const assigned = this.sidebarMediator?.store?.assignees.some(
+          let assigned = this.sidebarMediator?.store?.assignees.some(
             (assignee) => assignee.username === item.username,
           );
           const assignedReviewer = this.sidebarMediator?.store?.reviewers.some(
             (reviewer) => reviewer.username === item.username,
           );
+
+          const { workItemId } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemId) {
+            const assignees = currentAssignees()[workItemId] || [];
+            assigned = assignees.some((assignee) => assignee.username === item.username);
+          }
 
           if (command === COMMANDS.ASSIGN) return !assigned;
           if (command === COMMANDS.ASSIGN_REVIEWER) return !assignedReviewer;
@@ -189,6 +214,46 @@ export default class AutocompleteHelper {
 
           return true;
         }),
+      /**
+       * We're overriding returned items instead of filtering out
+       * irrelavent items because for `/unlink #`, it should show
+       * all linked items at once without waiting for user to
+       * manually search items.
+       */
+      issue: (items) => {
+        let filteredItems = items;
+
+        if (command === COMMANDS.UNLINK) {
+          const { workItemFullPath, workItemIid } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemFullPath && workItemIid) {
+            const links = linkedItems()[`${workItemFullPath}:${workItemIid}`] || [];
+            filteredItems = links.map((link) => ({
+              id: Number(link.iid),
+              iid: Number(link.iid),
+              title: link.title,
+              reference: link.reference,
+              search: `${link.iid} ${link.title}`,
+              icon_name: link.workItemType.iconName,
+            }));
+          }
+        }
+
+        return filteredItems;
+      },
+      status: () => {
+        if (command === COMMANDS.STATUS) {
+          const { workItemFullPath, workItemTypeId } =
+            this.tiptapEditor?.view.dom.closest('.js-gfm-wrapper')?.dataset || {};
+
+          if (workItemFullPath && workItemTypeId) {
+            const statuses = availableStatuses()[workItemFullPath];
+            return statuses?.[workItemTypeId] || [];
+          }
+        }
+        return [];
+      },
       emoji: (_, query) =>
         query
           ? searchEmoji(query)
@@ -208,6 +273,7 @@ export default class AutocompleteHelper {
     };
 
     return createDataSource({
+      referenceType,
       source: sources[referenceType],
       searchFields: searchFields[referenceType],
       mapper: mappers[referenceType] || mappers.default,

@@ -4,12 +4,14 @@ allow_cross_joins:
   - gitlab_shared
   - gitlab_main
   - gitlab_main_cell
+  - gitlab_main_org
   - gitlab_main_cell_local
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
   - gitlab_main
   - gitlab_main_cell
+  - gitlab_main_org
   - gitlab_main_cell_local
 allow_cross_foreign_keys:
   - gitlab_main

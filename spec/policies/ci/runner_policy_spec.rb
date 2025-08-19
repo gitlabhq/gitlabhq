@@ -14,13 +14,44 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
     it_behaves_like 'runner policy', :read_runner
   end
 
+  describe 'ability :read_runner_sensitive_data' do
+    it_behaves_like 'runner policy not allowed for levels lower than maintainer', :read_runner_sensitive_data
+    it_behaves_like 'runner policy', :read_runner_sensitive_data, scope: %i[group_runner project_runner]
+
+    context 'with instance runner' do
+      let(:runner) { instance_runner }
+
+      context 'with owner access' do
+        let(:user) { owner }
+
+        # Non-admin users don't have access to instance runner sensitive data
+        it { expect_disallowed :read_runner_sensitive_data }
+      end
+
+      context 'with admin access' do
+        let_it_be(:user) { create(:admin) }
+
+        # Admin users don't have access to instance runner sensitive data, unless admin mode is enabled
+        it { expect_disallowed :read_runner_sensitive_data }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed :read_runner_sensitive_data }
+        end
+      end
+    end
+  end
+
   describe 'ability :update_runner' do
     it_behaves_like 'runner policy not allowed for levels lower than maintainer', :update_runner
 
     context 'with maintainer access' do
       let(:user) { maintainer }
 
-      it_behaves_like 'a policy disallowing access to instance runner/runner manager', :update_runner
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        it { expect_disallowed :update_runner }
+      end
 
       context 'with group runner' do
         let(:runner) { group_runner }
@@ -67,7 +98,11 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
     context 'with owner access' do
       let(:user) { owner }
 
-      it_behaves_like 'a policy disallowing access to instance runner/runner manager', :update_runner
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        it { expect_disallowed :update_runner }
+      end
 
       context 'with group runner' do
         let(:runner) { group_runner }

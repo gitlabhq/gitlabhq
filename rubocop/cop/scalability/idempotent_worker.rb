@@ -43,6 +43,7 @@ module RuboCop
           See #{HELP_LINK}
         MSG
 
+        # @!method idempotent?(node)
         def_node_search :idempotent?, <<~PATTERN
           (send nil? :idempotent!)
         PATTERN

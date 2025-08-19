@@ -499,11 +499,16 @@ curl --request DELETE \
 
 {{< alert type="warning" >}}
 
-The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API.
-From GitLab 17.4 to 18.0, if [the new look for epics](../user/group/epics/_index.md#epics-as-work-items) is enabled, and in GitLab 18.1 and later, use the
-Work Items API instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
-This change is a breaking change.
+The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab
+17.0 and is planned for removal in v5 of the API. This change is a breaking change.
+
+Use the Work Items API instead:
+
+- GitLab 17.4 to 18.0: Required when [the new look for epics](../user/group/epics/_index.md#epics-as-work-items)
+  is enabled.
+- GitLab 18.1 and later: Required for all installations.
+
+For more information, see the [API migration guide](graphql/epic_work_items_api_migration_guide.md).
 
 {{< /alert >}}
 

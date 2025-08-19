@@ -23,6 +23,9 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
   end
 
   let(:current_user) { developer }
+  let(:post_query) { post_graphql(query, current_user: current_user) }
+  let(:path_prefix) { %w[project issue designCollection version] }
+  let(:data) { graphql_data.dig(*path) }
 
   def query(vq = version_fields)
     graphql_query_for(:project, { fullPath: project.full_path },
@@ -30,11 +33,6 @@ RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)
         query_graphql_field(:design_collection, nil,
           query_graphql_field(:version, { sha: version.sha }, vq))))
   end
-
-  let(:post_query) { post_graphql(query, current_user: current_user) }
-  let(:path_prefix) { %w[project issue designCollection version] }
-
-  let(:data) { graphql_data.dig(*path) }
 
   before do
     enable_design_management

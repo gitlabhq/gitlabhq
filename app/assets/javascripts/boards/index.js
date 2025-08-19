@@ -83,7 +83,6 @@ function mountBoardApp(el) {
     wiHasScopedLabelsFeature,
     wiGroupPath,
     wiCanAdminLabel,
-    wiNewCommentTemplatePaths,
     hasCustomFieldsFeature,
   } = el.dataset;
 
@@ -160,7 +159,6 @@ function mountBoardApp(el) {
       hasLinkedItemsEpicsFeature: parseBoolean(el.dataset.hasLinkedItemsEpicsFeature),
       hasOkrsFeature: parseBoolean(el.dataset.hasOkrsFeature),
       hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
-      commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       statusListsAvailable: parseBoolean(el.dataset.statusListsAvailable),
       hasStatusFeature: parseBoolean(el.dataset.workItemStatusAvailable),
     },

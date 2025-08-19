@@ -52,6 +52,12 @@ module Types
       field :user, Types::UserType,
         null: true, description: 'User associated with the audit event.'
 
+      def details
+        return unless object.details
+
+        object.details.to_json
+      end
+
       def group
         object.group if object.respond_to?(:group)
       end

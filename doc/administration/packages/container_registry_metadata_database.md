@@ -60,7 +60,7 @@ metadata database version.
 
 - Metadata import for existing registries requires a period of read-only time.
 - Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
-- Registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
+- Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
 
 ## Metadata database feature support
@@ -75,36 +75,59 @@ for the status of features related to the container registry database.
 
 Prerequisites:
 
-- GitLab 17.3 or later.
-- PostgreSQL database [version 14 or later](../../install/requirements.md#postgresql). It must be accessible from the registry node.
+- GitLab 17.5 or later, GitLab 18.3 recommended.
+- PostgreSQL database [within version requirements](../../install/requirements.md#postgresql). It must be accessible from the registry node.
 
 Follow the instructions that match your situation:
 
-- [New installation](#new-installations) or enabling the container registry for the first time.
+- [New installations](#new-installations) or enabling the container registry for the first time.
 - Import existing container image metadata to the metadata database:
-  - [One-step import](#one-step-import). Only recommended for relatively small registries or no requirement to avoid downtime.
+  - [One-step import](#one-step-import). Recommended for relatively small registries or no requirement to avoid downtime.
   - [Three-step import](#three-step-import). Recommended for larger container registries.
 
 ### Before you start
 
-- All database connection values are placeholders. You must create, verify your ability to
-  connect to, and manage a new PostgreSQL database for the registry before completing any step.
-  - See the full [database configuration](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads#database).
-  - See [epic 17005](https://gitlab.com/groups/gitlab-org/-/epics/17005) for progress towards automatic registry database provisioning and management.
 - After you enable the database, you must continue to use it. The database is
   now the source of the registry metadata, disabling it after this point
   causes the registry to lose visibility on all images written to it while
   the database was active.
-- Never run [offline garbage collection](container_registry.md#container-registry-garbage-collection) at any point
-  after the import step has been completed. That command is not compatible with registries using
-  the metadata database and may delete data associated with tagged images.
-- Verify you have not automated offline garbage collection.
+- [Offline garbage collection](container_registry.md#container-registry-garbage-collection) is no longer required.
+  The garbage collection command included with GitLab will safely exit when the database is enabled, but third-party
+  commands, such as the one provided by the upstream registry, will delete data associated with tagged images.
+- Verify you have not automated offline garbage collection: **especially with a third-party command.**
 - You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
   to speed up the process.
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
   if possible.
 
 ### New installations
+
+For installations that have never written data to the container registry, no import
+is required. You must only enable the database before writing data to the registry.
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.3 and later" >}}
+
+To enable the database:
+
+1. Enable the database by editing `/etc/gitlab/gitlab.rb` and setting `enabled` to `true`:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => true,
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.5 to 18.2" >}}
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 To enable the database:
 
@@ -144,17 +167,27 @@ To enable the database:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Existing registries
 
-You can import your existing container registry metadata in one step or three steps.
+You can import your existing container registry metadata
+using either a one-step import method or three-step import method.
 A few factors affect the duration of the import:
 
+- The number of tagged images in your registry.
 - The size of your existing registry data.
-- The specifications of your PostgresSQL instance.
+- The specifications of your PostgreSQL instance.
 - The number of registry instances running.
-- Network latency between the registry, PostgresSQL and your configured Object Storage.
+- Network latency between the registry, PostgreSQL and your configured Object Storage.
+
+You **do not** need to do the following in preparation before importing:
+
+- **Allocate extra object storage space**: The import makes no significant writes to object storage.
+- **Run offline garbage collection**: While not harmful, offline garbage collection does not shorten the
+import enough to recoup the time spent running this command.
 
 {{< alert type="note" >}}
 
@@ -167,17 +200,98 @@ and layers that remain for longer than 24 hours.
 
 {{< /alert >}}
 
-Choose the one or three step method according to your registry installation.
+#### How to choose the right import method
+
+If you regularly run [offline garbage collection](container_registry.md#container-registry-garbage-collection),
+use the one-step import method. This method should take a similar amount of time and is a
+simpler operation compared to the three-step import method.
+
+If your registry is too large to regularly run offline garbage collection,
+use the three-step import method to minimize the amount of read-only time
+significantly.
 
 #### One-step import
 
 {{< alert type="warning" >}}
 
 The registry must be shut down or remain in `read-only` mode during the import.
-Only choose this method if you do not need to write to the registry during the import
-and your registry contains a relatively small amount of data.
+Otherwise, data written during the import becomes inaccessible or leads to inconsistencies.
 
 {{< /alert >}}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.3 and later" >}}
+
+1. Ensure the database is **disabled** in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false, # Must be false!
+   }
+   ```
+
+1. Ensure the registry is set to `read-only` mode.
+
+   Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']` configuration.
+   For example, for a `gcs` backend registry using a `gs://my-company-container-registry` bucket,
+   the configuration could be:
+
+   ```ruby
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => true # Must be set to true.
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. [Apply database migrations](#apply-database-migrations).
+1. Run the following command:
+
+   ```shell
+   sudo -u registry gitlab-ctl registry-database import --log-to-stdout
+   ```
+
+1. If the command completed successfully, the registry is fully imported. You
+   can enable the database, turn off read-only mode in the configuration, and
+   start the registry service:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => true, # Must be enabled now!
+   }
+
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => false
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.5 to 18.2" >}}
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -259,26 +373,23 @@ and your registry contains a relatively small amount of data.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
+{{< /tab >}}
+
+{{< /tabs >}}
+
 You can now use the metadata database for all operations!
 
 #### Three-step import
 
 Follow this guide to import your existing container registry metadata.
-This procedure is recommended for larger sets of metadata or if you are
+The following procedure is recommended for larger registries (200 GiB or more) or if you are
 trying to minimize downtime while completing the import.
-
-{{< alert type="note" >}}
-
-Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
-At the slower speed, registries with over 100TB of data could take longer than 48 hours.
-
-{{< /alert >}}
 
 ##### Pre-import repositories (step one)
 
-For larger instances, this command can take hours to days to complete, depending
-on the size of your registry. You may continue to use the registry as normal while
-step one is being completed.
+Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
+At the slower speed, registries with over 100TB of data could take longer than 48 hours.
+**You may continue to use the registry as normal while step one is being completed.**
 
 {{< alert type="warning" >}}
 
@@ -287,6 +398,34 @@ to restart the import, so it's important to let the import run to completion.
 If you must halt the operation, you have to restart this step.
 
 {{< /alert >}}
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.3 and later" >}}
+
+1. Ensure the database is **disabled** in the `database` section to your `/etc/gitlab/gitlab.rb` file:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false, # Must be false!
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. [Apply database migrations](#apply-database-migrations).
+1. Run the first step to begin the import:
+
+   ```shell
+   sudo -u registry gitlab-ctl registry-database import --step-one --log-to-stdout
+   ```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.5 to 18.2" >}}
+
+Prerequisites:
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
 1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
 
@@ -313,6 +452,10 @@ If you must halt the operation, you have to restart this step.
    sudo gitlab-ctl registry-database import --step-one
    ```
 
+{{< /tab >}}
+
+{{< /tabs >}}
+
 {{< alert type="note" >}}
 
 You should try to schedule the following step as soon as possible
@@ -324,8 +467,70 @@ causes step two to take more time.
 
 ##### Import all repository data (step two)
 
-This step requires the registry to be shut down or set in `read-only` mode.
+This step requires the registry to be shut down or set in `read-only` mode;
+however, you can expect this step to complete around 90% faster than step one.
 Allow enough time for downtime while step two is being executed.
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.3 and later" >}}
+
+1. Ensure the registry is set to `read-only` mode.
+
+   Edit your `/etc/gitlab/gitlab.rb` and add the `maintenance` section to the `registry['storage']`
+   configuration. For example, for a `gcs` backend registry using a `gs://my-company-container-registry`
+   bucket, the configuration could be:
+
+   ```ruby
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => {
+       'readonly' => {
+         'enabled' => true # Must be set to true.
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Run step two of the import:
+
+   ```shell
+   sudo -u registry gitlab-ctl registry-database import --step-two --log-to-stdout
+   ```
+
+1. If the command completed successfully, all images are now fully imported. You
+   can now enable the database, turn off read-only mode in the configuration, and
+   start the registry service:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => true, # Must be set to true!
+   }
+
+   ## Object Storage - Container Registry
+   registry['storage'] = {
+     'gcs' => {
+       'bucket' => '<my-company-container-registry>',
+       'chunksize' => 5242880
+     },
+     'maintenance' => { # This section can be removed.
+       'readonly' => {
+         'enabled' => false
+       }
+     }
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.5 to 18.2" >}}
 
 1. Ensure the registry is set to `read-only` mode.
 
@@ -389,6 +594,10 @@ Allow enough time for downtime while step two is being executed.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
+{{< /tab >}}
+
+{{< /tabs >}}
+
 You can now use the metadata database for all operations!
 
 ##### Import remaining data (step three)
@@ -396,12 +605,29 @@ You can now use the metadata database for all operations!
 Even though the registry is now fully using the database for its metadata, it
 does not yet have access to any potentially unused layer blobs, preventing these
 blobs from being removed by the online garbage collector.
+**You may continue to use the registry as normal while step three is being completed.**
 
 To complete the process, run the final step of the migration:
+
+{{< tabs >}}
+
+{{< tab title="GitLab 18.3 and later" >}}
+
+```shell
+sudo -u registry gitlab-ctl registry-database import --step-three --log-to-stdout
+```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.5 to 18.2" >}}
 
 ```shell
 sudo gitlab-ctl registry-database import --step-three
 ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After that command exists successfully, registry metadata is now fully imported to the database.
 
@@ -414,8 +640,6 @@ Check out the [monitor online garbage collection](#online-garbage-collection-mon
 to see how to monitor the progress and health of the online garbage collector.
 
 ## Database migrations
-
-You must manually execute database migrations after each GitLab upgrade. Support to automate database migrations after upgrades is proposed in [issue 8670](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8670).
 
 The container registry supports two types of migrations:
 
@@ -433,7 +657,7 @@ To apply both regular schema and post-deployment migrations before the applicati
 1. Run database migrations:
 
    ```shell
-   sudo gitlab-ctl registry-database migrate up
+   sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
 To skip post-deployment migrations:
@@ -441,19 +665,19 @@ To skip post-deployment migrations:
 1. Run regular schema migrations only:
 
    ```shell
-   sudo gitlab-ctl registry-database migrate up --skip-post-deployment
+   sudo -u registry gitlab-ctl registry-database migrate up --skip-post-deployment
    ```
 
    As an alternative to the `--skip-post-deployment` flag, you can also set the `SKIP_POST_DEPLOYMENT_MIGRATIONS` environment variable to `true`:
 
    ```shell
-   SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo gitlab-ctl registry-database migrate up
+   SKIP_POST_DEPLOYMENT_MIGRATIONS=true sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
 1. After starting the application, apply any pending post-deployment migrations:
 
    ```shell
-   sudo gitlab-ctl registry-database migrate up
+   sudo -u registry gitlab-ctl registry-database migrate up
    ```
 
 {{< alert type="note" >}}
@@ -553,12 +777,50 @@ because it only deletes untagged images.
 Implement cleanup policies to remove unneeded tags, which eventually causes images
 to be removed through garbage collection and storage space being recovered.
 
+## Using an external database
+
+By default, GitLab 18.3 and later preprovisions a logical database within the
+main GitLab database for container registry metadata. However, you may want to
+use a dedicated external database for the container registry if you want to
+[scale your registry](container_registry.md#scaling-by-component).
+
+### Steps
+
+- Create an [external database](../postgresql/external.md#container-registry-metadata-database).
+
+Afterward, follow the same steps for the default database, substituting your own
+database values. Start with the database disabled, taking care to
+enable and disable the database as instructed:
+
+```ruby
+registry['database'] = {
+  'enabled' => false,
+  'host' => '<registry_database_host_placeholder_change_me>',
+  'port' => 5432, # Default, but set to the port of your database instance if it differs.
+  'user' => '<registry_database_username_placeholder_change_me>',
+  'password' => '<registry_database_placeholder_change_me>',
+  'dbname' => '<registry_database_name_placeholder_change_me>',
+  'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
+  'sslcert' => '</path/to/cert.pem>',
+  'sslkey' => '</path/to/private.key>',
+  'sslrootcert' => '</path/to/ca.pem>'
+}
+```
+
+{{< alert type="note" >}}
+
+When using an external database, omit the `-u registry` option from the
+commands throughout this documentation.
+
+{{< /alert >}}
+
 ## Backup with metadata database
 
 {{< alert type="note" >}}
 
 If you have configured your own database for container registry metadata,
 you must manage backups manually. `gitlab-backup` does not backup the metadata database.
+For progress on automatic database backups see [issue 532507](https://gitlab.com/gitlab-org/gitlab/-/issues/532507).
 
 {{< /alert >}}
 
@@ -664,6 +926,8 @@ FATA[0000] configuring application: there are pending database migrations, use t
 
 To fix this issue, follow the steps to [apply database migrations](#apply-database-migrations).
 
+Prior to version 18.3, you must manually apply database migrations on each version upgrade.
+
 ### Error: `offline garbage collection is no longer possible`
 
 If the registry uses the metadata database and you try to run
@@ -753,15 +1017,6 @@ You must truncate the table manually on your PostgreSQL instance:
    ```ruby
    registry['database'] = {
      'enabled' => false,
-     'host' => '<registry_database_host_placeholder_change_me>',
-     'port' => 5432, # Default, but set to the port of your database instance if it differs.
-     'user' => '<registry_database_username_placeholder_change_me>',
-     'password' => '<registry_database_placeholder_change_me>',
-     'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
-     'sslcert' => '</path/to/cert.pem>',
-     'sslkey' => '</path/to/private.key>',
-     'sslrootcert' => '</path/to/ca.pem>'
    }
    ```
 
@@ -842,9 +1097,9 @@ they are associated with an image and tag.
 During a registry migration, you might get one of the following errors:
 
 - `ERROR: permission denied for schema public (SQLSTATE 42501)`
-- `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)` 
+- `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)`
 
-These types of errors are due to a change in PostgreSQL 15+, which removes the default CREATE privileges on the public schema for security reasons. 
+These types of errors are due to a change in PostgreSQL 15+, which removes the default CREATE privileges on the public schema for security reasons.
 By default, only database owners can create objects in the public schema in PostgreSQL 15+.
 
 To resolve the error, run the following command to give a registry user owner privileges of the registry database:

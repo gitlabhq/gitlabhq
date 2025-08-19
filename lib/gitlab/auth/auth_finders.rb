@@ -42,7 +42,6 @@ module Gitlab
       DEPLOY_TOKEN_HEADER = 'HTTP_DEPLOY_TOKEN'
       RUNNER_TOKEN_PARAM = :token
       RUNNER_JOB_TOKEN_PARAM = :token
-      PATH_DEPENDENT_FEED_TOKEN_REGEX = /\A#{User::FEED_TOKEN_PREFIX}(\h{64})-(\d+)\z/
 
       PARAM_TOKEN_KEYS = [
         PRIVATE_TOKEN_PARAM,
@@ -171,16 +170,7 @@ module Gitlab
       def cluster_agent_token_from_authorization_token
         return unless route_authentication_setting[:cluster_agent_token_allowed]
 
-        # We are migrating from `Gitlab-Agentk-Api-Request` to `Gitlab-Agent-Api-Request` to make it common
-        # for all types of agents. Both must be supported until KAS has been updated to use the new header,
-        # and then this first lookup can be removed.
-        # See https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/711 .
-        headers = current_request.headers
-        self.current_token = if headers.key?(Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER)
-                               headers[Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER]
-                             else
-                               headers[Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER]
-                             end
+        self.current_token = current_request.headers[Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER]
 
         return unless current_token.present?
 
@@ -235,6 +225,10 @@ module Gitlab
         PARAM_TOKEN_KEYS.intersection(current_request.params.keys).any? ||
           HEADER_TOKEN_KEYS.intersection(current_request.env.keys).any? ||
           parsed_oauth_token.present?
+      end
+
+      def self.path_dependent_feed_token_regex
+        /\A(#{User::FEED_TOKEN_PREFIX}|#{User.prefix_for_feed_token})(\h{64})-(\d+)\z/
       end
 
       private
@@ -352,13 +346,13 @@ module Gitlab
       end
 
       def find_user_from_path_feed_token(token)
-        glft = token.match(PATH_DEPENDENT_FEED_TOKEN_REGEX)
+        glft = token.match(AuthFinders.path_dependent_feed_token_regex)
 
         return unless glft
 
         # make sure that user id uses decimal notation
-        user_id = glft[2].to_i(10)
-        digest = glft[1]
+        user_id = glft[3].to_i(10)
+        digest = glft[2]
 
         user = User.find_by_id(user_id)
         return unless user

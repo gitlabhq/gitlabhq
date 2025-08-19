@@ -346,12 +346,12 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
   context 'with an active instance-level integration' do
     let_it_be(:instance_integration) do
-      create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/')
+      create(:confluence_integration, :instance, confluence_url: 'https://instance.atlassian.net/wiki')
     end
 
     it 'creates a service from the instance-level integration' do
       expect(created_group.integrations.count).to eq(1)
-      expect(created_group.integrations.first.api_url).to eq(instance_integration.api_url)
+      expect(created_group.integrations.first.confluence_url).to eq(instance_integration.confluence_url)
       expect(created_group.integrations.first.inherit_from_id).to eq(instance_integration.id)
     end
 
@@ -359,12 +359,12 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
       let(:extra_params) { { parent_id: group.id } }
       let_it_be(:group) { create(:group, organization: organization) { |g| g.add_owner(user) } }
       let_it_be(:group_integration) do
-        create(:prometheus_integration, :group, group: group, api_url: 'https://prometheus.group.com/')
+        create(:confluence_integration, :group, group: group, confluence_url: 'https://group.atlassian.net/wiki')
       end
 
       it 'creates a service from the group-level integration' do
         expect(created_group.integrations.count).to eq(1)
-        expect(created_group.integrations.first.api_url).to eq(group_integration.api_url)
+        expect(created_group.integrations.first.confluence_url).to eq(group_integration.confluence_url)
         expect(created_group.integrations.first.inherit_from_id).to eq(group_integration.id)
       end
 
@@ -372,12 +372,12 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
         let(:extra_params) { { parent_id: subgroup.id } }
         let_it_be(:subgroup) { create(:group, parent: group) { |g| g.add_owner(user) } }
         let_it_be(:subgroup_integration) do
-          create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/')
+          create(:confluence_integration, :group, group: subgroup, confluence_url: 'https://subgroup.atlassian.net/wiki')
         end
 
         it 'creates a service from the subgroup-level integration' do
           expect(created_group.integrations.count).to eq(1)
-          expect(created_group.integrations.first.api_url).to eq(subgroup_integration.api_url)
+          expect(created_group.integrations.first.confluence_url).to eq(subgroup_integration.confluence_url)
           expect(created_group.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
         end
       end

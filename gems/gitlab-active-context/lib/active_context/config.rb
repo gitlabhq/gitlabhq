@@ -2,6 +2,8 @@
 
 module ActiveContext
   class Config
+    QueueClassError = Class.new(StandardError)
+
     Cfg = Struct.new(
       :enabled,
       :logger,
@@ -9,12 +11,15 @@ module ActiveContext
       :re_enqueue_indexing_workers,
       :migrations_path,
       :connection_model,
-      :collection_model
+      :collection_model,
+      :queue_classes
     )
 
     class << self
       def configure(&block)
         @instance = new(block)
+
+        validate_queue_classes
       end
 
       def current
@@ -49,6 +54,24 @@ module ActiveContext
 
       def re_enqueue_indexing_workers?
         current.re_enqueue_indexing_workers || false
+      end
+
+      def queue_classes
+        current.queue_classes || []
+      end
+
+      private
+
+      def validate_queue_classes
+        return if @instance.config.queue_classes.nil?
+
+        raise QueueClassError, "`queue_classes` must be an array" unless @instance.config.queue_classes.is_a?(Array)
+
+        all_valid_queues = @instance.config.queue_classes.all? do |q|
+          q.include?(ActiveContext::Concerns::Queue)
+        end
+
+        raise QueueClassError, "`queue_classes` must include `ActiveContext::Concerns::Queue`" unless all_valid_queues
       end
     end
 

@@ -111,44 +111,18 @@ To change the layout width of your UI:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423104) in GitLab 17.7.
+- Default for new users [set to rich text editor](https://gitlab.com/gitlab-org/gitlab/-/issues/536611) in 18.2.
 
 {{< /history >}}
 
-You can set a default editor for editing content in GitLab.
-If you do not choose a default text editor, your last used choice is preserved.
+By default, all new users see the **Rich text editor** when editing content.
+You can change the default editor for editing content in GitLab.
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
-1. Under **Default text editor**, select the **Enable default text editor** checkbox.
+1. Under **Default text editor**, enssure the **Enable default text editor** checkbox is selected.
 1. Choose either **Rich text editor** or **Plain text editor** as your default.
-1. Select **Save changes**.
-
-### Choose your home organization
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419079) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `ui_for_organizations`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-{{< /alert >}}
-
-If you are a member of two or more [organizations](../organization/_index.md), you can choose a home organization.
-This is the organization you are in by default when you first sign in to GitLab.
-
-To choose your home organization:
-
-1. On the left sidebar, select your avatar.
-1. Select **Preferences**.
-1. Scroll to the **Behavior** section.
-1. From the **Home organization** dropdown list, select an option.
 1. Select **Save changes**.
 
 ### Choose your homepage
@@ -381,7 +355,9 @@ To customize the time format:
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-## Disable exact code search
+<!--- start_remove The following content will be removed on remove_date: '2026-02-20' -->
+
+## Disable exact code search (deprecated)
 
 {{< details >}}
 
@@ -390,6 +366,13 @@ To customize the time format:
 - Status: Beta
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/554933) in GitLab 18.3
+and is planned for removal in 18.6.
+
+{{< /alert >}}
 
 {{< history >}}
 
@@ -418,6 +401,8 @@ To disable [exact code search](../search/exact_code_search.md) in user preferenc
 1. Go to the **Exact code search** section.
 1. Clear the **Enable exact code search** checkbox.
 1. Select **Save changes**.
+
+<!--- end_remove -->
 
 ## User identities in CI job JSON web tokens
 

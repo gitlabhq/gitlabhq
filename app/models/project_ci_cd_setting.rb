@@ -51,6 +51,7 @@ class ProjectCiCdSetting < ApplicationRecord
       }
     }
 
+  attribute :display_pipeline_variables, default: false
   attribute :forward_deployment_enabled, default: true
   attribute :separated_caches, default: true
   validates :merge_trains_skip_train_allowed, inclusion: { in: [true, false] }

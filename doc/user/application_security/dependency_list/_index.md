@@ -27,7 +27,7 @@ project, including existing and new findings. This information is sometimes refe
 Software Bill of Materials, SBOM, or BOM.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
+For an overview, see [Project Dependency - Advanced Security Testing](https://www.youtube.com/watch?v=ckqkn9Tnbw4).
 
 ## Set up the dependency list
 

@@ -18,15 +18,15 @@ PATH
       faraday (~> 2)
       google-cloud-storage_transfer (~> 1.2.0)
       google-protobuf (~> 3.25, >= 3.25.3)
-      googleauth (~> 1.8.1)
-      grpc (= 1.63.0)
+      googleauth (~> 1.14)
+      grpc (~> 1.74.0)
       json (~> 2.7)
       jwt (~> 2.5)
       logger (~> 1.5)
       minitest (~> 5.11.0)
       mutex_m (~> 0.3)
       parallel (~> 1.19)
-      pg (~> 1.5.6)
+      pg (~> 1.6.1)
       rack (~> 2.2.9)
       rainbow (~> 3.0)
       rexml (~> 3.4.0)
@@ -88,6 +88,7 @@ GEM
     google-cloud-storage_transfer-v1 (0.8.0)
       gapic-common (>= 0.20.0, < 2.a)
       google-cloud-errors (~> 1.0)
+    google-logging-utils (0.1.0)
     google-protobuf (3.25.4)
     google-protobuf (3.25.4-aarch64-linux)
     google-protobuf (3.25.4-arm64-darwin)
@@ -100,29 +101,31 @@ GEM
       grpc (~> 1.41)
     googleapis-common-protos-types (1.15.0)
       google-protobuf (>= 3.18, < 5.a)
-    googleauth (1.8.1)
-      faraday (>= 0.17.3, < 3.a)
+    googleauth (1.14.0)
+      faraday (>= 1.0, < 3.a)
+      google-cloud-env (~> 2.2)
+      google-logging-utils (~> 0.1)
       jwt (>= 1.4, < 3.0)
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    grpc (1.63.0)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-aarch64-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0-aarch64-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-arm64-darwin)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0-arm64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0-x86-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86_64-darwin)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0-x86_64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86_64-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.74.0-x86_64-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
@@ -142,7 +145,11 @@ GEM
     parser (3.3.3.0)
       ast (~> 2.4.1)
       racc
-    pg (1.5.9)
+    pg (1.6.1)
+    pg (1.6.1-aarch64-linux)
+    pg (1.6.1-arm64-darwin)
+    pg (1.6.1-x86_64-darwin)
+    pg (1.6.1-x86_64-linux)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -253,6 +260,7 @@ CHECKSUMS
   google-cloud-errors (1.4.0) sha256=0b4e2e0f563db1708732ab4037421d9f26de5cbbbc04be710f2c9cf358e2de14
   google-cloud-storage_transfer (1.2.0) sha256=132901f50889e02a0d378e6117c6408cbfc4fdbd15c9d31fabec4f4189ef1658
   google-cloud-storage_transfer-v1 (0.8.0) sha256=9dbef80275db556e046bb24139ca6559affe641d1e38b2537b8caaf2f8896176
+  google-logging-utils (0.1.0) sha256=70950b1e49314273cf2e167adb47b62af7917a4691b580da7e9be67b9205fcd5
   google-protobuf (3.25.4) sha256=a1c594ca9d99c894e558f984d70731a8935ec639e75865f0181cab126a0aef0e
   google-protobuf (3.25.4-aarch64-linux) sha256=d155538358d03af4bcac908811d2c8b287573005f0549d8cf55354ad0c0928ff
   google-protobuf (3.25.4-arm64-darwin) sha256=6d39a99a7910fc6b03479c298f38be9497938f78c0f08c89d7542bc8205be8c7
@@ -261,13 +269,13 @@ CHECKSUMS
   google-protobuf (3.25.4-x86_64-linux) sha256=9e8e66fb5a00cf90f88f37b07e7da10ca9e176e28a3314fc80c4e7fdab120aeb
   googleapis-common-protos (1.6.0) sha256=d540114a75fd4b34fee936495d28ff7e331d546b7d7ac7898f3b4bb9f13a8d79
   googleapis-common-protos-types (1.15.0) sha256=57b1600c271fa3312096e55a3040d20d2c0f9a5d65d0fde1f16e5cd99bab156b
-  googleauth (1.8.1) sha256=814adadaaa1221dce72a67131e3ecbd6d23491a161ec84fb15fd353b87d8c9e7
-  grpc (1.63.0) sha256=5f4383c4ee2886e92c31b90422261b7527f26e3baa585d877e9804e715983686
-  grpc (1.63.0-aarch64-linux) sha256=dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee
-  grpc (1.63.0-arm64-darwin) sha256=91b93a354508a9d1772f095554f2e4c04358c2b32d7a670e3705b7fc4695c996
-  grpc (1.63.0-x86-linux) sha256=152140fa2c28e384d3c1ded454a66d5e22fb2ff1d2920c2ef2530b2d707de6fd
-  grpc (1.63.0-x86_64-darwin) sha256=a814414ff178e89ee3ad0cc2a826ce1ca96c68063effb81affe3e5ceff7b44cc
-  grpc (1.63.0-x86_64-linux) sha256=41a90a597f44959c8dbb94619db2b0c0939a768569a5dfad41fffa227eb1287d
+  googleauth (1.14.0) sha256=62e7de11791890c3d3dc70582dfd9ab5516530e4e4f56d96451fd62c76475149
+  grpc (1.74.0) sha256=003ab69916066354f25acc3cfe2bb330498f2afe23782328f8b203e35bc5834f
+  grpc (1.74.0-aarch64-linux-gnu) sha256=aba4d02d83c205ed5c9bf109416aab81b709d4482a76e6b1401242c0b64c858a
+  grpc (1.74.0-arm64-darwin) sha256=77af94aa606e69adea70c50a1e59f7490b1741ee6bef058fd1cd4d4346739d60
+  grpc (1.74.0-x86-linux-gnu) sha256=fb207c449e6d189ef4e9535c7b0188687b5ef9efb9ba8b7984cb13dca94582cb
+  grpc (1.74.0-x86_64-darwin) sha256=d73a3e75eb9e14c8fddfcc1b7572ae69e580f4f3e174b427504855eabdaca175
+  grpc (1.74.0-x86_64-linux-gnu) sha256=42ef4a9cb0bb57af792e2d24457baf07eea18e09002026a34decc207b5b7b1bc
   i18n (1.14.5) sha256=26dcbc05e364b57e27ab430148b3377bc413987d34cc042336271d8f42e9d1b9
   json (2.10.1) sha256=ddc88ad91a1baf3f0038c174f253af3b086d30dc74db17ca4259bbde982f94dc
   jwt (2.8.2) sha256=5a9877315e224d551785560870287267088eedfec02d5239664def148d18bc12
@@ -281,7 +289,11 @@ CHECKSUMS
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   parallel (1.26.3) sha256=d86babb7a2b814be9f4b81587bf0b6ce2da7d45969fab24d8ae4bf2bb4d4c7ef
   parser (3.3.3.0) sha256=a2e23c90918d9b7e866b18dca2b6835f227769dd2fa8e59c5841f3389cf53eeb
-  pg (1.5.9) sha256=761efbdf73b66516f0c26fcbe6515dc7500c3f0aa1a1b853feae245433c64fdc
+  pg (1.6.1) sha256=e210a75e5f702954537e73bb82f90dfbe0c6d9273c018cd0e93e779181028e6b
+  pg (1.6.1-aarch64-linux) sha256=2dc057589c4df67240bd52c68303a00a91299329bc7573b7447faee42331e214
+  pg (1.6.1-arm64-darwin) sha256=3b502915de30cf5983d62aabae927cb7c3628b0ca46cdf3a6b888af4ff7f42b3
+  pg (1.6.1-x86_64-darwin) sha256=c8930170622c39ee24b318a2265655b5f8f34628444ee00e4ae44068865309f7
+  pg (1.6.1-x86_64-linux) sha256=6ac0d5c8efafc3f22a7eca2a264300037598fabe27a88e5029bc0e6d90caeb1f
   pry (0.14.2) sha256=c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d
   public_suffix (6.0.1) sha256=61d44e1cab5cbbbe5b31068481cf16976dd0dc1b6b07bd95617ef8c5e3e00c6f
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f

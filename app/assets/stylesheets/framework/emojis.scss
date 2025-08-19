@@ -1,3 +1,5 @@
+@use "sass:math";
+
 gl-emoji {
   font-style: normal;
   display: inline-block;
@@ -32,7 +34,7 @@ gl-emoji {
 .emoji-picker-emoji {
   height: 30px;
   // Create a width that fits 9 emojis per row
-  width: 100 / 9 * 1%;
+  width: math.div(100, 9) * 1%;
   mix-blend-mode: normal !important;
 
   gl-emoji {

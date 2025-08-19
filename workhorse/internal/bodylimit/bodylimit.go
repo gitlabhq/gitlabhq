@@ -21,7 +21,12 @@ type contextKey string
 // BodyLimitKey is the context key used to store the request body size limit
 const BodyLimitKey contextKey = "bodyLimit"
 
+// BodyLimitMode is the context key used to store the mode for the request
+const BodyLimitMode contextKey = "bodyLimitMode"
+
 const (
+	// ModeUseGlobal - use global mode configuration (sentinel value)
+	ModeUseGlobal Mode = -1
 	// ModeDisabled - no body size checking
 	ModeDisabled Mode = iota
 	// ModeLogging - log when body size exceeds limit but allow request to continue
@@ -88,8 +93,15 @@ func NewRoundTripper(next http.RoundTripper, mode Mode) http.RoundTripper {
 }
 
 func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
+	// If mode redefined for the request, use it
+	mode, ok := r.Context().Value(BodyLimitMode).(Mode)
+	if !ok {
+		// Otherwise, use mode from the global configuration
+		mode = t.mode
+	}
+
 	// If disabled, just pass through
-	if t.mode == ModeDisabled {
+	if mode == ModeDisabled {
 		return t.next.RoundTrip(r)
 	}
 
@@ -105,13 +117,13 @@ func (t *roundTripper) RoundTrip(r *http.Request) (*http.Response, error) {
 	}
 
 	// Use a custom reader to count
-	bytesCounter := &countingReadCloser{reader: r.Body, count: 0, limit: bodyLimit, mode: t.mode}
+	bytesCounter := &countingReadCloser{reader: r.Body, count: 0, limit: bodyLimit, mode: mode}
 	r.Body = bytesCounter
 
 	res, err := t.next.RoundTrip(r)
 
 	// Enforced mode processing
-	if t.mode == ModeEnforced && err != nil {
+	if mode == ModeEnforced && err != nil {
 		var bodyTooLargeErr *RequestBodyTooLargeError
 		// Return 413 error code when request body is too large
 		if errors.As(err, &bodyTooLargeErr) {

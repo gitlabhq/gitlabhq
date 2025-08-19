@@ -29,7 +29,7 @@ module RuboCop
           return unless in_migration?(node)
 
           node.each_descendant do |descendant|
-            next unless descendant.type == :sym
+            next unless descendant.sym_type?
 
             last_argument = descendant.children.last
 

@@ -13,7 +13,9 @@ title: Commits API
 
 {{< /details >}}
 
-This API operates on [repository commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository). Read more about [GitLab-specific information](../user/project/repository/_index.md#commit-changes-to-a-repository) for commits.
+Use the commits API to manage
+[Git commits](https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository)
+in GitLab repositories.
 
 ## Responses
 

@@ -34,6 +34,12 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelViewComponent, type: :componen
     end
   end
 
+  it "returns virtual row count" do
+    instance = described_class.new(diff_file: diff_file)
+    render_inline(instance)
+    expect(instance.virtual_rendering_params).to eq(total_rows: page.find_all('tbody tr').count)
+  end
+
   def render_component
     render_inline(described_class.new(diff_file: diff_file))
   end

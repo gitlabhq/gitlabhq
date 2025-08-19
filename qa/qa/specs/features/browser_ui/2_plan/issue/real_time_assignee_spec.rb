@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :requires_admin, product_group: :project_management do
+  RSpec.describe 'Plan', :requires_admin, feature_category: :team_planning do
     describe 'Assignees' do
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }

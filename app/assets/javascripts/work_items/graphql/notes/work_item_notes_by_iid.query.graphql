@@ -26,6 +26,9 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
                 id
                 name
               }
+              userPermissions {
+                resolveNote
+              }
               notes {
                 nodes {
                   ...WorkItemNote

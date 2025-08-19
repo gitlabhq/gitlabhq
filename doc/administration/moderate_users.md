@@ -35,7 +35,7 @@ to display only human or [bot users](internal_users.md).
 To view users by type:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, enter a filter.
    - To display human users, enter **Type=Humans**.
    - To display bot users, enter **Type=Bots**.
@@ -62,7 +62,7 @@ A user pending approval:
 - Cannot sign in.
 - Cannot access Git repositories or the GitLab API.
 - Does not receive any notifications from GitLab.
-- Does not consume a [seat](../subscriptions/self_managed/_index.md#billable-users).
+- Does not consume a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 An administrator must [approve their sign up](#approve-or-reject-a-user-sign-up) to allow them to
 sign in.
@@ -78,7 +78,7 @@ sign in.
 To view user sign ups pending approval:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Pending approval**, and press <kbd>Enter</kbd>.
 
 ### Approve or reject a user sign up
@@ -94,7 +94,7 @@ A user sign up pending approval can be approved or rejected from the **Admin** a
 To approve or reject a user sign up:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
 1. For the user sign up you want to approve or reject, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Approve** or **Reject**.
 
@@ -102,7 +102,7 @@ Approving a user:
 
 - Activates their account.
 - Changes the user's state to active.
-- Consumes a subscription [seat](../subscriptions/self_managed/_index.md#billable-users).
+- Consumes a subscription [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 Rejecting a user:
 
@@ -116,7 +116,7 @@ If [administrator approval for role promotions](settings/sign_up_restrictions.md
 To view users pending role promotion:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select **Role Promotions**.
 
 A list of users with the highest role requested is displayed.
@@ -132,7 +132,7 @@ A blocked user:
 - Cannot sign in or access any repositories.
   - Any associated data remains in these repositories.
 - Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/self_managed/_index.md#billable-users).
+- Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ### Block a user
 
@@ -145,7 +145,7 @@ You can block a user's access to the instance.
 To block a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. For the user you want to block, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Block**.
 
 The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
@@ -163,12 +163,12 @@ To report abuse from other users, see [report abuse](../user/report_abuse.md). F
 A blocked user can be unblocked from the **Admin** area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. For the user you want to unblock, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Unblock**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/_index.md#billable-users).
+[seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 {{< alert type="note" >}}
 
@@ -180,7 +180,7 @@ The unblock option may be unavailable for LDAP users. To enable the unblock opti
 the LDAP identity first needs to be deleted:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. Select a user.
 1. Select the **Identities** tab.
@@ -197,7 +197,7 @@ A deactivated user:
   - If a deactivated user signs in, they are automatically reactivated.
 - Cannot access repositories or the API.
 - Cannot use slash commands. For more information, see [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a seat. For more information, see [billable users](../subscriptions/self_managed/_index.md#billable-users).
+- Does not occupy a seat. For more information, see [billable users](../subscriptions/manage_users_and_seats.md#billable-users).
 
 When you deactivate a user, their projects, groups, and history remain.
 
@@ -210,7 +210,7 @@ Prerequisites:
 To deactivate a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. For the user you want to deactivate, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then **Deactivate**.
 1. On the dialog, select **Deactivate**.
 
@@ -220,7 +220,7 @@ For more information, see [user deactivation emails](settings/email.md#user-deac
 To deactivate users with the GitLab API, see [deactivate user](../api/user_moderation.md#deactivate-a-user). For information about permanent user restrictions, see [block and unblock users](#block-and-unblock-users).
 
 To remove a user from a GitLab.com subscription, see
-[Remove users from your subscription](../subscriptions/gitlab_com/_index.md#remove-users-from-subscription).
+[Remove users from your subscription](../subscriptions/manage_users_and_seats.md#remove-users-from-subscription).
 
 ### Automatically deactivate dormant users
 
@@ -239,7 +239,7 @@ Administrators can enable automatic deactivation of users who either:
 To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after a period of inactivity**.
 1. Under **Days of inactivity before deactivation**, enter the number of days before deactivation. Minimum value is 90 days.
@@ -310,12 +310,12 @@ You can reactivate a deactivated user from the **Admin** area.
 To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Deactivated** and press <kbd>Enter</kbd>.
 1. For the user you want to reactivate, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Activate**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/_index.md#billable-users).
+[seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 {{< alert type="note" >}}
 
@@ -343,7 +343,7 @@ A banned user:
 - Cannot sign in or access any repositories.
   - Any associated projects, issues, merge requests, or comments are hidden.
 - Cannot use [slash commands](../user/project/integrations/gitlab_slack_application.md#slash-commands).
-- Does not occupy a [seat](../subscriptions/self_managed/_index.md#billable-users).
+- Does not occupy a [seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ### Ban a user
 
@@ -352,7 +352,7 @@ To block a user and hide their contributions, administrators can ban the user.
 To ban a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Ban member**.
 
@@ -367,20 +367,20 @@ To ban a user:
 To unban a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Banned** and press <kbd>Enter</kbd>.
 1. Next to the member you want to ban, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. From the dropdown list, select **Unban member**.
 
 The user's state is set to active and they consume a
-[seat](../subscriptions/self_managed/_index.md#billable-users).
+[seat](../subscriptions/manage_users_and_seats.md#billable-users).
 
 ## Delete a user
 
 Use the **Admin** area to delete users.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. For the user you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Delete user**.
 1. Type the username.
 1. Select **Delete user**.
@@ -394,7 +394,7 @@ You can only delete a user if there are inherited or direct owners of a group. Y
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. For the user you want to delete, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Delete user and contributions**.
 1. Type the username.
 1. Select **Delete user and contributions**.
@@ -427,7 +427,7 @@ Prerequisites:
 {{< tab title="Trust a user" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Trust user**.
 1. On the confirmation dialog, select **Trust user**.
@@ -439,7 +439,7 @@ The user is trusted.
 {{< tab title="Untrust a user" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter by **State=Trusted** and press <kbd>Enter</kbd>.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Untrust user**.

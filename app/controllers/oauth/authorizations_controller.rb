@@ -13,6 +13,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   before_action :add_gon_variables
   before_action :verify_confirmed_email!, :verify_admin_allowed!
   # rubocop: disable Rails/LexicallyScopedActionFilter -- :create is defined in Doorkeeper::AuthorizationsController
+  before_action :validate_pkce_for_dynamic_applications, only: [:new, :create]
   after_action :audit_oauth_authorization, only: [:create]
   # rubocop: enable Rails/LexicallyScopedActionFilter
 
@@ -78,9 +79,15 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Cannot be achieved with a before_action hook, due to the execution order.
     downgrade_scopes! if action_name == 'new'
 
+    # Force scope to `mcp` when resource is present, and the MCP server API
+    params[:scope] = Gitlab::Auth::MCP_SCOPE.to_s if params[:resource].present? && resource_is_mcp_server?
     params[:organization_id] = ::Current.organization.id
 
     super
+  end
+
+  def resource_is_mcp_server?
+    params[:resource].end_with?('/api/v4/mcp')
   end
 
   # limit scopes when signing in with GitLab
@@ -148,8 +155,24 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     ) && !doorkeeper_application&.trusted?
   end
 
-  def set_current_organization
-    ::Current.organization = Gitlab::Current::Organization.new(user: current_user).organization
+  def validate_pkce_for_dynamic_applications
+    return unless doorkeeper_application&.dynamic?
+
+    if params[:code_challenge].blank?
+      pre_auth.error = :pkce_required_for_dynamic_applications
+      render "doorkeeper/authorizations/error"
+      return
+    end
+
+    return unless params[:code_challenge_method].present? && params[:code_challenge_method] != 'S256'
+
+    pre_auth.error = :invalid_code_challenge_method
+    render "doorkeeper/authorizations/error"
+  end
+
+  # Used by `set_current_organization` in BaseActionController
+  def organization_params
+    {}
   end
 end
 

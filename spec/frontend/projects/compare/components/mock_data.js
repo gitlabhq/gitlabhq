@@ -3,12 +3,12 @@ const targetProjectRefsPath = 'some/refs/path';
 const paramsName = 'to';
 const paramsBranch = 'main';
 const sourceProject = {
-  name: 'some-to-name',
-  id: '2',
+  text: 'some-to-name',
+  value: '2',
 };
 const targetProject = {
-  name: 'some-to-name',
-  id: '1',
+  text: 'some-to-name',
+  value: '1',
 };
 
 export const appDefaultProps = {

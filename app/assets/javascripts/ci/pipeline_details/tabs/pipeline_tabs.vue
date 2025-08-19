@@ -4,7 +4,6 @@ import { TRACKING_CATEGORIES } from '~/ci/constants';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import { isNumeric } from '~/lib/utils/number_utils';
-import featureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import {
   failedJobsTabName,
@@ -37,13 +36,15 @@ export default {
     GlTabs,
     LocalStorageSync,
   },
-  mixins: [Tracking.mixin(), featureFlagMixin()],
+  mixins: [Tracking.mixin()],
   inject: [
     'defaultTabValue',
     'failedJobsCount',
     'totalJobCount',
     'testsCount',
     'manualVariablesCount',
+    'displayPipelineVariables',
+    'canReadVariables',
   ],
   data() {
     return {
@@ -57,7 +58,9 @@ export default {
     },
     manualVariablesEnabled() {
       return (
-        this.glFeatures.ciShowManualVariablesInPipeline && isNumeric(this.manualVariablesCount)
+        isNumeric(this.manualVariablesCount) &&
+        this.displayPipelineVariables &&
+        this.canReadVariables
       );
     },
   },

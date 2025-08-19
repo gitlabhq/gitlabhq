@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency do
+RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556094' do
   include EmailHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -38,10 +38,13 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
 
         # Expect an instructions email to be sent with a code
+        expect(ActionMailer::Base.deliveries.size).to eq(1)
         code = expect_instructions_email_and_extract_code
 
         # Signing in again prompts for the code and doesn't send a new one
         gitlab_sign_in(user)
+        expect(ActionMailer::Base.deliveries.size).to eq(0)
+
         expect(page).to have_current_path(new_user_session_path)
         expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
 
@@ -382,28 +385,6 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
       expect(user.unlock_token).to be_nil
       expect(user.failed_attempts).to eq(0)
     end
-  end
-
-  def expect_user_to_be_confirmed
-    aggregate_failures do
-      expect(user.email).to eq(new_email)
-      expect(user.unconfirmed_email).to be_nil
-    end
-  end
-
-  def expect_email_changed_notification_to_old_address_and_instructions_email_to_new_address
-    changed_email = ActionMailer::Base.deliveries[0]
-    instructions_email = ActionMailer::Base.deliveries[1]
-
-    expect(changed_email.to).to match_array([user.email])
-    expect(changed_email.subject).to eq('Email Changed')
-
-    expect(instructions_email.to).to match_array([new_email])
-    expect(instructions_email.subject).to eq(s_('IdentityVerification|Verify your identity'))
-
-    reset_delivered_emails!
-
-    instructions_email.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
   end
 
   def expect_instructions_email_and_extract_code(email: nil)

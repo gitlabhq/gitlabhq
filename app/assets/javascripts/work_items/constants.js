@@ -1,7 +1,13 @@
 import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
-export const BULK_UPDATE_UNASSIGNED = 'unassigned';
+export const BULK_EDIT_NO_VALUE = 'no-value';
+
+export const CREATION_CONTEXT_DESCRIPTION_CHECKLIST = 'description-checklist';
+export const CREATION_CONTEXT_LIST_ROUTE = 'list-route';
+export const CREATION_CONTEXT_NEW_ROUTE = 'new-route';
+export const CREATION_CONTEXT_RELATED_ITEM = 'related-item';
+export const CREATION_CONTEXT_SUPER_SIDEBAR = 'super-sidebar';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
@@ -30,6 +36,7 @@ export const WIDGET_TYPE_STATUS = 'STATUS';
 export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
+export const WIDGET_TYPE_LINKED_RESOURCES = 'LINKED_RESOURCES';
 export const WIDGET_TYPE_COLOR = 'COLOR';
 export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
 export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
@@ -206,7 +213,6 @@ export const DEFAULT_EPIC_COLORS = '#1068bf';
 export const MAX_FREQUENT_PROJECTS = 3;
 export const MAX_FREQUENT_ITEMS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
-export const CREATE_NEW_GROUP_WORK_ITEM_MODAL = 'create_new_group_work_item_modal';
 export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 
 export const WORK_ITEM_REFERENCE_CHAR = '#';
@@ -373,6 +379,7 @@ export const newWorkItemOptimisticUserPermissions = {
 };
 
 export const METADATA_KEYS = {
+  STATUS: 'status',
   ASSIGNEE: 'assignee',
   LABELS: 'labels',
   WEIGHT: 'weight',
@@ -386,6 +393,12 @@ export const METADATA_KEYS = {
 };
 
 export const WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS = [
+  {
+    key: 'status',
+    label: __('Status'),
+    icon: 'status',
+    isPresentInGroup: true,
+  },
   {
     key: 'assignee',
     label: __('Assignee'),

@@ -8,7 +8,7 @@ module WorkItems
     NotAvailableError = StandardError.new('This feature is currently behind a feature flag and it is not available.')
 
     def csv_data
-      raise NotAvailableError unless Feature.enabled?(:import_export_work_items_csv, resource_parent)
+      raise NotAvailableError unless resource_parent.work_items_project_issues_list_feature_flag_enabled?
 
       super
     end
@@ -52,7 +52,7 @@ module WorkItems
       {
         'State' => ->(work_item) { work_item.closed? ? 'Closed' : 'Open' },
         'Confidential' => ->(work_item) { work_item.confidential? ? 'Yes' : 'No' },
-        'Locked' => ->(work_item) { widget_value_for(work_item, :notes, :discussion_locked?) },
+        'Locked' => ->(work_item) { widget_value_for(work_item, :notes, :discussion_locked?) ? 'Yes' : 'No' },
         'Milestone' => ->(work_item) { widget_value_for(work_item, :milestone)&.title },
         'Labels' => ->(work_item) { widget_value_for(work_item, :labels)&.map(&:title)&.join(', ') }
       }

@@ -6,13 +6,12 @@
 # don't break the development flow of contributors.
 gdk-update:
   image: registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-gdk-installed:main
-  needs: []
   tags:
     - $GITLAB_LARGE_RUNNER_OPTIONAL
   extends:
     - .default-retry
     - .gdk:rules:gdk-update
-  allow_failure: true # See https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2788
+  dependencies: []
   variables:
     GIT_STRATEGY: none
     GEM_HOME: /home/gdk/.gitlab-ci-cache/ruby/gem

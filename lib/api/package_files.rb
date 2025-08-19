@@ -97,7 +97,9 @@ module API
         destroy_conditionally!(package_file) do |package_file|
           package_file.pending_destruction!
 
-          enqueue_sync_metadata_cache_worker(user_project, package.name) if package.npm?
+          enqueue_sync_npm_metadata_cache_worker(user_project, package.name) if package.npm?
+
+          package.sync_helm_metadata_cache if package.helm?
         end
       end
     end

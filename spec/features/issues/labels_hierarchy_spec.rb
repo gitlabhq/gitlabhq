@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
+  include ListboxHelpers
 
   # Ensure support bot user is created so creation doesn't count towards query limit
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
@@ -25,6 +26,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     grandparent.add_owner(user)
 
@@ -34,24 +36,21 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   shared_examples 'assigning labels from sidebar' do
     it 'can assign all ancestors labels' do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
-        page.within('.block.labels') do
-          click_on 'Edit'
+        within_testid('work-item-labels') do
+          click_button 'Edit'
+          select_listbox_item(label.title)
+          send_keys(:escape)
 
-          wait_for_requests
-
-          click_on label.title
-          click_on 'Close'
+          expect(page).to have_link(label.title)
         end
-
-        expect(page).to have_selector('.gl-label', text: label.title)
       end
     end
 
     it 'does not find child group labels on dropdown' do
-      page.within('.block.labels') do
-        click_on 'Edit'
+      within_testid('work-item-labels') do
+        click_button 'Edit'
 
-        expect(page).not_to have_text(child_group_label.title)
+        expect_no_listbox_item(child_group_label.title)
       end
     end
   end
@@ -171,28 +170,25 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
     end
 
     it 'is able to assign ancestor group labels' do
-      fill_in 'issue_title', with: 'new created issue'
-      fill_in 'issue_description', with: 'new issue description'
+      fill_in 'Title', with: 'new created issue'
+      fill_in 'Description', with: 'new issue description'
 
-      click_button _('Select label')
-
-      wait_for_all_requests
-
-      within_testid('sidebar-labels') do
-        click_button grandparent_group_label.title
-        click_button parent_group_label.title
-        click_button project_label_1.title
-        click_button _('Close')
-
-        wait_for_requests
+      within_testid('work-item-labels') do
+        click_button 'Edit'
+        select_listbox_item(grandparent_group_label.title)
+        select_listbox_item(parent_group_label.title)
+        select_listbox_item(project_label_1.title)
+        send_keys(:escape)
       end
 
       click_button 'Create issue'
 
-      expect(page.find('.issue-details h1.title')).to have_content('new created issue')
-      expect(page).to have_selector('span.gl-label-text', text: grandparent_group_label.title)
-      expect(page).to have_selector('span.gl-label-text', text: parent_group_label.title)
-      expect(page).to have_selector('span.gl-label-text', text: project_label_1.title)
+      expect(page).to have_css('h1', text: 'new created issue')
+      within_testid('work-item-labels') do
+        expect(page).to have_link(grandparent_group_label.title)
+        expect(page).to have_link(parent_group_label.title)
+        expect(page).to have_link(project_label_1.title)
+      end
     end
   end
 

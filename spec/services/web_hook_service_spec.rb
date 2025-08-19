@@ -831,6 +831,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       let_it_be(:threshold) { 3 }
       let_it_be(:plan_limits) { create(:plan_limits, :default_plan, web_hook_calls: threshold) }
 
+      before do
+        stub_feature_flags(no_webhook_rate_limit: false)
+      end
+
       it 'queues a worker and tracks the call' do
         expect_to_rate_limit(project_hook, threshold: threshold)
         expect_to_perform_worker(project_hook)

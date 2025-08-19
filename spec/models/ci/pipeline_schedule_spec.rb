@@ -9,6 +9,7 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
   subject(:schedule) { build(:ci_pipeline_schedule, project: project) }
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to validate_presence_of(:project) }
   it { is_expected.to belong_to(:owner) }
 
   it { is_expected.to have_many(:pipelines).dependent(:nullify) }

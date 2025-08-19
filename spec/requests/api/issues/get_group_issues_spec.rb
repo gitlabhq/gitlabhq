@@ -437,6 +437,9 @@ RSpec.describe API::Issues, feature_category: :team_planning do
           let(:group_issue2) { create :issue, project: group_project }
           let(:label_b) { create(:label, title: 'foo', project: group_project) }
           let(:label_c) { create(:label, title: 'bar', project: group_project) }
+          let(:issue) { group_issue }
+          let(:issue2) { group_issue2 }
+          let(:label) { group_label }
 
           before do
             create(:label_link, label: group_label, target: group_issue2)
@@ -446,10 +449,6 @@ RSpec.describe API::Issues, feature_category: :team_planning do
 
             get api(base_url, user), params: params
           end
-
-          let(:issue) { group_issue }
-          let(:issue2) { group_issue2 }
-          let(:label) { group_label }
 
           it_behaves_like 'labeled issues with labels and label_name params'
         end

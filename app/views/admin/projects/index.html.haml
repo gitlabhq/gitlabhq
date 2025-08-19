@@ -9,8 +9,9 @@
 
 = render ::Layouts::PageHeadingComponent.new(_('Projects'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_projects_pageload' } }) do |c|
   - c.with_actions do
-    = link_button_to new_project_path, variant: :confirm do
-      = _('New Project')
+    - if current_user.can_admin_all_resources?
+      = link_button_to new_project_path, variant: :confirm do
+        = _('New Project')
 
 - if Feature.enabled?(:admin_projects_vue, current_user)
   #js-admin-projects-app{ data: { app_data: admin_projects_app_data } }

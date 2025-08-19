@@ -67,9 +67,9 @@ flowchart LR
     A[Commit] --> B[Commit] --> C[Commit] --> D[Commit]
     end
     subgraph My branch
-    B --1. Create my branch--> E(Commit)
-    E --2. Add my commit--> F(Commit)
-    F --3. Merge my branch to default--> D
+    B --1#46; Create my branch--> E(Commit)
+    E --2#46; Add my commit--> F(Commit)
+    F --3#46; Merge my branch to default--> D
     end
 ```
 

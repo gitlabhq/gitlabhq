@@ -1,6 +1,5 @@
 ---
 Migration/PreventAddingAttrEncryptedColumns:
-  Details: grace period
   Exclude:
     - 'db/migrate/20240305201830_add_custom_headers_to_web_hook.rb'
     - 'db/migrate/20240419082037_create_ai_self_hosted_models.rb'

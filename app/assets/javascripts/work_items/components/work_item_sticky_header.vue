@@ -34,10 +34,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    workItemNotificationsSubscribed: {
-      type: Boolean,
-      required: true,
-    },
     showWorkItemCurrentUserTodos: {
       type: Boolean,
       required: false,
@@ -47,6 +43,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    isDrawer: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -67,6 +68,7 @@ export default {
     },
   },
   WORKSPACE_PROJECT,
+  TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
 };
 </script>
 
@@ -78,11 +80,12 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="isStickyHeaderShowing"
-        class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-2"
+        class="issue-sticky-header gl-border-b gl-z-3 gl-bg-default gl-py-2"
+        :class="{ 'gl-absolute gl-left-0 gl-top-10': isDrawer, 'gl-fixed': !isDrawer }"
         data-testid="work-item-sticky-header"
       >
         <div
-          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-2 gl-px-5 xl:gl-px-6"
+          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
         >
           <work-item-state-badge
             v-if="workItemState"
@@ -100,11 +103,10 @@ export default {
           <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <hidden-badge v-if="workItem.hidden" />
           <imported-badge v-if="workItem.imported" />
-          <gl-link
-            class="gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong"
-            href="#top"
-            :title="workItem.title"
-          >
+          <span v-if="isDrawer" :class="$options.TITLE_CLASS">
+            {{ workItem.title }}
+          </span>
+          <gl-link v-else :class="$options.TITLE_CLASS" href="#top" :title="workItem.title">
             {{ workItem.title }}
           </gl-link>
           <gl-button
@@ -127,7 +129,6 @@ export default {
           <work-item-notifications-widget
             v-if="newTodoAndNotificationsEnabled"
             :work-item-id="workItem.id"
-            :subscribed-to-notifications="workItemNotificationsSubscribed"
             @error="$emit('error')"
           />
           <slot name="actions"></slot>

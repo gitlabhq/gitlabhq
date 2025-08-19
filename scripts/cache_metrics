@@ -1,0 +1,108 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# CONTEXT FOR LLMs:
+#
+# This script implements CI cache analytics as part of a BigQuery POC to replace Snowflake's
+# 24-hour delay with real-time cache performance monitoring.
+#
+# DESIGN DECISIONS:
+# - Single BigQuery table approach: cache_events table contains both cache operations
+#   (hit/miss/create) AND related command durations (bundle install, yarn install, etc.)
+#   because of 1:1 relationship between cache types and commands they optimize
+# - Dual tracking: Both BigQuery (real-time POC) and GitLab internal events (standard pipeline)
+# - Self-contained script: Uses inline bundler to avoid adding google-cloud-bigquery to main Gemfile
+# - GitLab-specific patterns: Cache type inference based on actual GitLab CI cache configurations
+# - Class-based structure: All logic in Tooling::CiAnalytics module to avoid global namespace pollution
+#
+# BIGQUERY SCHEMA:
+# Table: gitlab-qa-resources.ci_analytics.cache_events
+# Key fields: job_id, cache_key, cache_type, cache_operation (pull/push),
+# cache_result (hit/miss/created), cache_operation_duration_seconds,
+# operation_command, operation_duration_seconds, operation_success
+# Partitioned by DATE(created_at), clustered by job_id, cache_type, cache_operation
+#
+# CACHE TYPES SUPPORTED:
+# ruby-gems, node-modules, go (gitaly-binaries), assets, rubocop, qa-ruby-gems, cng-helm, npm, unknown
+#
+# USAGE: Add to .gitlab-ci.yml after_script: ruby scripts/cache_analytics.rb || true
+# REQUIRES: BIGQUERY_SERVICE_ACCOUNT_KEY (File type CI variable), CI_INTERNAL_EVENTS_TOKEN (automatic)
+#
+# RELATED FILES:
+# - tooling/lib/tooling/ci_analytics/* (parsing and BigQuery logic)
+# - config/events/glci_cache_operation.yml (internal event definition)
+# - GitLab issue: https://gitlab.com/gitlab-org/quality/analytics/team/-/issues/195
+
+require_relative '../tooling/lib/tooling/ci_analytics/big_query_client'
+require_relative '../tooling/lib/tooling/ci_analytics/job_trace_downloader'
+require_relative '../tooling/lib/tooling/ci_analytics/cache_log_parser'
+require_relative '../tooling/lib/tooling/ci_analytics/cache_event_builder'
+require_relative '../tooling/lib/tooling/events/track_pipeline_events'
+
+module Tooling
+  module CiAnalytics
+    class CacheMetrics
+      def self.run
+        puts "🔍 Analyzing cache performance for job ##{ENV['CI_JOB_ID']}..."
+
+        trace_downloader = JobTraceDownloader.new(
+          api_url: ENV.fetch('CI_API_V4_URL'),
+          token: ENV.fetch('CI_INTERNAL_EVENTS_TOKEN'),
+          project_id: cache_metrics_ci_environment[:project_id]
+        )
+
+        bigquery_client = BigQueryClient.new(
+          credentials_path: ENV.fetch('GLCI_BIGQUERY_CREDENTIALS_PATH')
+        )
+
+        cache_event_builder = CacheEventBuilder.new(cache_metrics_ci_environment)
+        events_tracker = Events::TrackPipelineEvents.new
+
+        job_trace = trace_downloader.download_job_trace(cache_metrics_ci_environment[:job_id])
+        return unless job_trace
+
+        cache_events = CacheLogParser.extract_cache_events(job_trace)
+
+        if cache_events.empty?
+          puts "ℹ️  No cache events found"
+          return
+        end
+
+        cache_events.each do |cache_data|
+          bigquery_event = cache_event_builder.build_bigquery_event(cache_data)
+          bigquery_client.insert_cache_event(bigquery_event)
+
+          properties = cache_event_builder.build_internal_event_properties(cache_data)
+          events_tracker.send_event(
+            'glci_cache_operation',
+            label: properties[:label],
+            property: properties[:property],
+            value: properties[:value],
+            extra_properties: properties[:extra_properties]
+          )
+        end
+
+        puts "✅ Processed #{cache_events.length} cache events"
+      rescue StandardError => e
+        puts "❌ Cache analysis failed: #{e.message}"
+        exit 0
+      end
+
+      def self.cache_metrics_ci_environment
+        @cache_metrics_ci_environment ||= {
+          job_id: ENV['CI_JOB_ID'],
+          job_name: ENV['CI_JOB_NAME'],
+          pipeline_id: ENV['CI_PIPELINE_ID'],
+          project_id: ENV['CI_PROJECT_ID'],
+          merge_request_iid: ENV['CI_MERGE_REQUEST_IID'],
+          merge_request_target_branch: ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'],
+          pipeline_source: ENV['CI_PIPELINE_SOURCE'],
+          ref: ENV['CI_COMMIT_REF_NAME'],
+          job_url: ENV['CI_JOB_URL']
+        }
+      end
+    end
+  end
+end
+
+Tooling::CiAnalytics::CacheMetrics.run if __FILE__ == $PROGRAM_NAME

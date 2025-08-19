@@ -1,0 +1,4 @@
+---
+Migration/ChangeColumnNullOnHighTrafficTable:
+  Exclude:
+    - 'db/migrate/20250618010202_remove_not_null_constraint_from_duo_workflows_checkpoints_project_id.rb'

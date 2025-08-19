@@ -60,14 +60,14 @@ module GraphqlHelpers
     end
   end
 
-  # Run this resolver exactly as it would be called in the framework. This
-  # includes all authorization hooks, all argument processing and all result
-  # wrapping.
-  # see: GraphqlHelpers#resolve_field
+  # DEPRECATED:
+  #   This method of testing is too coupled to gem internals
+  #   making upgrades painful, and bypasses much of the validation of the framework.
   #
-  # TODO: this is too coupled to gem internals, making upgrades incredibly
-  #       painful, and bypasses much of the validation of the framework.
-  #       See https://gitlab.com/gitlab-org/gitlab/-/issues/363121
+  #   Use full integration tests instead.
+  #
+  #   See https://gitlab.com/gitlab-org/gitlab/-/issues/363121
+  #
   # rubocop: disable Metrics/ParameterLists -- This was disabled to add `field_opts`, needed for :calls_gitaly
   def resolve(
     resolver_class, # [Class[<= BaseResolver]] The resolver at test.

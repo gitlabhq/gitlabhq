@@ -127,7 +127,7 @@ class RegistrationsController < Devise::RegistrationsController
     # Member#accept_invite! operates on the member record to change the association, so the user needs reloaded
     # to update the collection.
     user.reset
-    after_sign_up_path
+    after_sign_up_path(user)
   end
 
   def after_inactive_sign_up_path_for(resource)
@@ -137,7 +137,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     # when email_confirmation_setting is set to `hard`, path to redirect is saved
     # after user confirms and comes back, he will be redirected
-    store_location_for(:redirect, after_sign_up_path)
+    store_location_for(:redirect, after_sign_up_path(resource))
 
     if identity_verification_enabled?
       session[:verification_user_id] = resource.id # This is needed to find the user on the identity verification page

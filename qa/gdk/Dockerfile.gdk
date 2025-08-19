@@ -12,7 +12,8 @@ ARG GDK_DIR
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true \
     MISE_DATA_DIR=${MISE_DATA_DIR} \
-    MISE_TRUSTED_CONFIG_PATHS=${GDK_DIR}
+    MISE_TRUSTED_CONFIG_PATHS=${GDK_DIR} \
+    GITLAB_ROOT_PASSWORD=5iveL!fe
 
 # Disable idiomatic version files like .ruby-version by default and only rely on .tool-versions
 RUN mise settings add idiomatic_version_file_enable_tools "[]"

@@ -224,6 +224,8 @@ RSpec.shared_examples 'conan authenticate endpoint' do
       expect(response).to have_gitlab_http_status(:ok)
     end
   end
+
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'conan check_credentials endpoint' do
@@ -491,6 +493,7 @@ RSpec.shared_examples 'recipe snapshot endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'empty recipe for not found package'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   context 'with existing package' do
     it 'returns a hash of files with their md5 hashes' do
@@ -518,6 +521,7 @@ RSpec.shared_examples 'package snapshot endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'empty recipe for not found package'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   context 'with existing package' do
     it 'returns a hash of md5 values for the files' do
@@ -543,6 +547,7 @@ RSpec.shared_examples 'recipe download_urls endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'recipe download_urls'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'package download_urls endpoint' do
@@ -554,6 +559,7 @@ RSpec.shared_examples 'package download_urls endpoint' do
   it_behaves_like 'rejects recipe for invalid project'
   it_behaves_like 'package download_urls'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'recipe upload_urls endpoint' do
@@ -570,6 +576,7 @@ RSpec.shared_examples 'recipe upload_urls endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns a set of upload urls for the files requested' do
     subject
@@ -635,6 +642,7 @@ RSpec.shared_examples 'package upload_urls endpoint' do
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid upload_url params'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns a set of upload urls for the files requested' do
     expected_response = {
@@ -672,6 +680,7 @@ RSpec.shared_examples 'delete package endpoint' do
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'updating personal access token last used'
 
   it 'returns unauthorized for users without valid permission' do
     subject
@@ -832,13 +841,15 @@ RSpec.shared_examples 'project not found by project id' do
   it_behaves_like 'not found request'
 end
 
-RSpec.shared_examples 'workhorse authorize endpoint' do
+RSpec.shared_examples 'workhorse authorize endpoint' do |with_checksum_deploy_header: true|
   it_behaves_like 'enforcing admin_packages job token policy'
   it_behaves_like 'conan FIPS mode'
   it_behaves_like 'rejects invalid recipe'
   it_behaves_like 'rejects invalid file_name', 'conanfile.py.git%2fgit-upload-pack'
   it_behaves_like 'workhorse authorization'
   it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'handling checksum deploy header' if with_checksum_deploy_header
+  it_behaves_like 'updating personal access token last used'
 end
 
 RSpec.shared_examples 'protected package main example' do
@@ -918,6 +929,7 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: fals
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+  it_behaves_like 'updating personal access token last used'
 
   if revision
     it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) }
@@ -961,6 +973,7 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: fal
   it_behaves_like 'handling empty values for username and channel'
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
+  it_behaves_like 'updating personal access token last used'
 
   if revision
     it 'creates a recipe and package revision' do
@@ -1050,12 +1063,12 @@ RSpec.shared_examples 'uploads a package file' do
     context 'when params from workhorse are correct' do
       it 'creates package and stores package file' do
         expect { subject }
-          .to change { project.packages.count }.by(1)
+          .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)
 
-        package_file = project.packages.last.package_files.reload.last
+        package_file = ::Packages::Conan::Package.for_projects(project).last.package_files.reload.last
         expect(package_file.file_name).to eq(params[:file].original_filename)
         expect(package_file.conan_file_metadatum.recipe_revision_value).to eq(recipe_revision)
         expect(package_file.conan_file_metadatum.package_reference_value).to eq(
@@ -1064,37 +1077,6 @@ RSpec.shared_examples 'uploads a package file' do
         expect(package_file.conan_file_metadatum.package_revision_value).to eq(
           package_file.conan_file_metadatum.package_file? ? package_revision : nil
         )
-      end
-
-      context 'with X-Checksum-Deploy header' do
-        context 'when X-Checksum-Deploy header is "true"' do
-          before do
-            headers_with_token['X-Checksum-Deploy'] = 'true'
-          end
-
-          it 'returns not found without creating package or package file' do
-            expect { subject }
-              .to not_change { project.packages.count }
-              .and not_change { Packages::PackageFile.count }
-
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(json_response['message']).to eq('404 Non checksum storage Not Found')
-          end
-        end
-
-        context 'when X-Checksum-Deploy header has other value' do
-          before do
-            headers_with_token['X-Checksum-Deploy'] = 'false'
-          end
-
-          it 'creates package and stores package file' do
-            expect { subject }
-              .to change { project.packages.count }.by(1)
-              .and change { Packages::PackageFile.count }.by(1)
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
       end
 
       context 'with existing package' do
@@ -1109,7 +1091,7 @@ RSpec.shared_examples 'uploads a package file' do
 
         it 'does not create a new package' do
           expect { subject }
-            .to not_change { project.packages.count }
+            .to not_change { ::Packages::Conan::Package.for_projects(project).count }
             .and not_change { Packages::Conan::Metadatum.count }
             .and change { Packages::PackageFile.count }.by(1)
         end
@@ -1119,7 +1101,7 @@ RSpec.shared_examples 'uploads a package file' do
             existing_package.pending_destruction!
 
             expect { subject }
-              .to change { project.packages.count }.by(1)
+              .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
               .and change { Packages::Conan::Metadatum.count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
           end
@@ -1170,12 +1152,12 @@ RSpec.shared_examples 'uploads a package file' do
 
         it 'creates package and stores package file' do
           expect { subject }
-            .to change { project.packages.count }.by(1)
+            .to change { ::Packages::Conan::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:ok)
 
-          package_file = project.packages.last.package_files.reload.last
+          package_file = ::Packages::Conan::Package.for_projects(project).last.package_files.reload.last
           expect(package_file.file_name).to eq(params[:file].original_filename)
           expect(package_file.file.read).to eq('content')
         end
@@ -1385,5 +1367,23 @@ RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe
         )
       end
     end
+  end
+end
+
+RSpec.shared_examples 'handling checksum deploy header' do
+  context 'when X-Checksum-Deploy header is "true"' do
+    before do
+      headers_with_token['X-Checksum-Deploy'] = 'true'
+    end
+
+    it_behaves_like 'returning response status', :not_found
+  end
+
+  context 'when X-Checksum-Deploy header is not "true"' do
+    before do
+      headers_with_token['X-Checksum-Deploy'] = 0
+    end
+
+    it_behaves_like 'returning response status', :ok
   end
 end

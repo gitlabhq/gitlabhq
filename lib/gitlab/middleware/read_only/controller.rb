@@ -6,8 +6,11 @@ module Gitlab
       class Controller
         DISALLOWED_METHODS = %w[POST PATCH PUT DELETE].freeze
         APPLICATION_JSON = 'application/json'
-        APPLICATION_JSON_TYPES = %W[#{APPLICATION_JSON} application/vnd.git-lfs+json].freeze
-        ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
+        APPLICATION_JSON_TYPES = [
+          APPLICATION_JSON,
+          'application/vnd.git-lfs+json'
+        ].freeze
+        READ_ONLY_INSTANCE_ERROR_MESSAGE = 'You cannot perform write operations on a read-only instance'
 
         ALLOWLISTED_GIT_READ_ONLY_ROUTES = {
           'repositories/git_http' => %w[git_upload_pack]
@@ -34,20 +37,9 @@ module Gitlab
         end
 
         def call
-          if disallowed_request? && read_only?
-            Gitlab::AppLogger.debug('GitLab ReadOnly: preventing possible non read-only operation')
+          return @app.call(@env) unless disallowed_request? && read_only?
 
-            if json_request?
-              return [403, { 'Content-Type' => APPLICATION_JSON }, [{ 'message' => ERROR_MESSAGE }.to_json]]
-            else
-              rack_flash.alert = ERROR_MESSAGE
-              rack_session['flash'] = rack_flash.to_session_value
-
-              return [301, { 'Location' => last_visited_url }, []]
-            end
-          end
-
-          @app.call(@env)
+          handle_read_only_error
         end
 
         private
@@ -67,7 +59,9 @@ module Gitlab
         end
 
         def rack_flash
-          @rack_flash ||= ActionDispatch::Flash::FlashHash.from_session_value(rack_session)
+          @rack_flash ||= ActionDispatch::Flash::FlashHash.from_session_value(
+            rack_session
+          )
         end
 
         def rack_session
@@ -79,12 +73,17 @@ module Gitlab
         end
 
         def last_visited_url
-          @env['HTTP_REFERER'] || rack_session['user_return_to'] || Gitlab::Routing.url_helpers.root_url
+          @env['HTTP_REFERER'] ||
+            rack_session['user_return_to'] ||
+            Gitlab::Routing.url_helpers.root_url
         end
 
         def route_hash
           @route_hash ||= begin
-            Rails.application.routes.recognize_path(request_url, { method: request.request_method })
+            Rails.application.routes.recognize_path(
+              request_url,
+              { method: request.request_method }
+            )
           rescue StandardError
             {}
           end
@@ -104,7 +103,9 @@ module Gitlab
 
         # Overridden in EE module
         def allowlisted_routes
-          workhorse_passthrough_route? || internal_route? || lfs_batch_route? || compare_git_revisions_route? || sidekiq_route? || session_route? || graphql_query?
+          workhorse_passthrough_route? || internal_route? || lfs_batch_route? ||
+            compare_git_revisions_route? || sidekiq_route? || session_route? ||
+            graphql_query?
         end
 
         # URL for requests passed through gitlab-workhorse to rails-web
@@ -114,7 +115,9 @@ module Gitlab
           return false unless request.post? &&
             request_path.end_with?('.git/git-upload-pack')
 
-          ALLOWLISTED_GIT_READ_ONLY_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_GIT_READ_ONLY_ROUTES[route_hash[:controller]]&.include?(
+            route_hash[:action]
+          )
         end
 
         def internal_route?
@@ -125,7 +128,9 @@ module Gitlab
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return false unless request.post? && request.path.end_with?('compare')
 
-          ALLOWLISTED_GIT_REVISION_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_GIT_REVISION_ROUTES[route_hash[:controller]]&.include?(
+            route_hash[:action]
+          )
         end
 
         # Batch upload requests are blocked in:
@@ -134,15 +139,23 @@ module Gitlab
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
           return unless request_path.end_with?('/info/lfs/objects/batch')
 
-          ALLOWLISTED_GIT_LFS_BATCH_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_GIT_LFS_BATCH_ROUTES[route_hash[:controller]]&.include?(
+            route_hash[:action]
+          )
         end
 
         def session_route?
           # Calling route_hash may be expensive. Only do it if we think there's a possible match
-          return false unless request.post? && request_path.end_with?('/users/sign_out',
-            '/admin/session', '/admin/session/destroy')
+          return false unless request.post? &&
+            request_path.end_with?(
+              '/users/sign_out',
+              '/admin/session',
+              '/admin/session/destroy'
+            )
 
-          ALLOWLISTED_SESSION_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
+          ALLOWLISTED_SESSION_ROUTES[route_hash[:controller]]&.include?(
+            route_hash[:action]
+          )
         end
 
         def sidekiq_route?
@@ -151,6 +164,36 @@ module Gitlab
 
         def graphql_query?
           request.post? && request.path.start_with?(File.join(relative_url, GRAPHQL_URL))
+        end
+
+        # overridden in EE module
+        def handle_read_only_error
+          forbidden_read_only_response
+        end
+
+        def forbidden_read_only_response
+          error_response(403, READ_ONLY_INSTANCE_ERROR_MESSAGE)
+        end
+
+        def error_response(status_code, error_message, additional_headers = {})
+          Gitlab::AppLogger.error(error_message)
+
+          if json_request?
+            headers = { 'Content-Type' => APPLICATION_JSON }.merge(additional_headers)
+            [
+              status_code,
+              headers,
+              [{ 'message' => error_message }.to_json]
+            ]
+          else
+            rack_flash.alert = error_message
+            rack_session['flash'] = rack_flash.to_session_value
+            [
+              301,
+              { 'Location' => last_visited_url },
+              []
+            ]
+          end
         end
       end
     end

@@ -81,7 +81,7 @@ To view compute usage for your group:
 
 1. On the left sidebar, select **Search or go to** and
    find your group. The group must not be a subgroup.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select the **Pipelines** tab.
 
 The projects list shows projects with compute usage or instance runners usage
@@ -94,7 +94,7 @@ You can view the compute usage for your personal namespace:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Usage Quotas**.
+1. On the left sidebar, select **Usage quotas**.
 
 The projects list shows [personal projects](../../user/project/working_with_projects.md)
 with compute usage or instance runners usage in the current month only.

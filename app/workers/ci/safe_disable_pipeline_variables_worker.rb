@@ -28,6 +28,13 @@ module Ci
       return unless result.success?
 
       log_extra_metadata_on_done(:disabled_pipeline_variables_count, result.payload[:updated_count])
+
+      Notify.pipeline_variables_migration_complete_email(
+        current_user, group, {
+          updated_count: result.payload[:updated_count],
+          skipped_count: result.payload[:skipped_count]
+        }
+      ).deliver_later
     end
   end
 end

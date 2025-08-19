@@ -10,7 +10,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules do
   let(:pipeline) { build(:ci_pipeline, project: project) }
 
   let(:command) do
-    Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project,
+      current_user: user,
+      origin_ref: project.default_branch_or_main
+    )
   end
 
   let(:step) { described_class.new(pipeline, command) }

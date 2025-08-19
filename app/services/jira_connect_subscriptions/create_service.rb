@@ -51,7 +51,7 @@ module JiraConnectSubscriptions
     # Using Integration.descendants_from_self_or_ancestors_from we update
     # all integrations of all subgroups and sub projects to be active.
     #
-    # We keep their inherit_from_id in tact, as they might have custom service_ids fields.
+    # We keep their inherit_from_id intact, as they might have custom service_ids fields.
     # We also still queue a PropagateIntegrationWorker in order to create integrations
     # (the Integration.descendants_from_self_or_ancestors_from only updates existing ones).
     def create_jira_cloud_integration!

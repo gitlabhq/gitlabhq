@@ -3,8 +3,6 @@ import {
   GlLink,
   GlIcon,
   GlAvatarsInline,
-  GlAvatarLink,
-  GlAvatar,
   GlTooltipDirective,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
@@ -13,6 +11,7 @@ import {
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import TooltipOnTruncate from '~/vue_shared/directives/tooltip_on_truncate';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import UserLinkWithTooltip from '~/vue_shared/components/user_link_with_tooltip.vue';
 import { __, s__, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
@@ -23,10 +22,9 @@ export default {
     GlLink,
     GlIcon,
     GlAvatarsInline,
-    GlAvatarLink,
-    GlAvatar,
     ItemMilestone,
     CiIcon,
+    UserLinkWithTooltip,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlBadge,
@@ -191,9 +189,7 @@ export default {
                 :badge-sr-only-text="assigneesCollapsedTooltip"
               >
                 <template #avatar="{ avatar }">
-                  <gl-avatar-link v-gl-tooltip :href="avatar.webUrl" :title="avatar.name">
-                    <gl-avatar :alt="avatar.name" :src="avatar.avatarUrl" :size="16" />
-                  </gl-avatar-link>
+                  <user-link-with-tooltip :label="s__('WorkItem|Assignee')" :avatar="avatar" />
                 </template>
               </gl-avatars-inline>
             </div>

@@ -364,6 +364,12 @@ export const insertText = (target, text) => {
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
   const hasSelection = selectionEnd !== selectionStart;
 
+  const currentActiveElement = document.activeElement;
+
+  if (document.activeElement !== target) {
+    target.focus();
+  }
+
   // The `execCommand` is officially deprecated.  However, for `insertText`,
   // there is currently no alternative. We need to use it in order to trigger
   // the browser's undo tracking when we insert text.
@@ -398,6 +404,10 @@ export const insertText = (target, text) => {
   const event = document.createEvent('Event');
   event.initEvent('autosize:update', true, false);
   target.dispatchEvent(event);
+
+  if (currentActiveElement !== target) {
+    currentActiveElement.focus();
+  }
 };
 
 /**
@@ -526,10 +536,14 @@ export const backOff = (fn, timeout = 60000) => {
   });
 };
 
-export const spriteIcon = (icon, className = '') => {
+export const spriteIcon = (icon, className = '', color = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
+  // Leading space before `style` attribute is kept on purpose
+  // to prevent causing all snapshot tests to fail when `color`
+  // is not provided.
+  const styleAttribute = color ? ` style="color: ${color};"` : '';
 
-  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${escape(icon)}" /></svg>`;
+  return `<svg ${classAttribute}${styleAttribute}><use xlink:href="${gon.sprite_icons}#${escape(icon)}" /></svg>`;
 };
 
 /**

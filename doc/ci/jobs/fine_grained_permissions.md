@@ -35,22 +35,6 @@ These permissions are applied to the CI/CD job tokens in a specified project.
 
 This feature is in [beta](../../policy/development_stages_support.md#beta).
 
-## Enable fine-grained permissions
-
-Prerequisites:
-
-- You must have the Owner role for a group.
-
-You must turn on fine-grained permissions at the group level. Then, each project in the group can
-apply fine-grained permissions for CI/CD job tokens to grant access to individual resources.
-
-To enable fine-grained permissions for all projects in a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **General pipelines**.
-1. Turn on the **Enable fine-grained permissions for CI/CD job tokens** toggle.
-
 ## Add fine-grained permissions to the job token allowlist
 
 Prerequisites:
@@ -105,6 +89,8 @@ The following endpoints are available for CI/CD job tokens.
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/:job_id/artifacts` | Download the artifacts archive from a job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/artifacts/:ref_name/download` | Download the artifacts archive from a job |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | Download a specific file from artifacts archive from a ref |
+| Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs` | Get a projects jobs |
+| Jobs: Read | `READ_JOBS` | `GET /projects/:id/pipelines/:pipeline_id/jobs` | Get pipeline jobs |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` | Delete repository tag |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags` | Delete repository tags (in bulk) |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id` | Delete repository |
@@ -226,6 +212,9 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `POST /projects/:id/packages/npm/-/npm/v1/security/audits/quick` | NPM registry quick audit endpoint |
 | Pipelines: Read and write | `ADMIN_PIPELINES` | `PUT /projects/:id/pipelines/:pipeline_id/metadata` | Updates pipeline metadata |
 | Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/packages/:package_id/pipelines` | Get the pipelines for a single project package |
+| Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/pipelines/:pipeline_id/bridges` | Get pipeline bridge jobs |
+| Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/pipelines/:pipeline_id` | Gets a specific pipeline for the project |
+| Pipelines: Read | `READ_PIPELINES` | `GET /projects/:id/pipelines` | Get all Pipelines of the project |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name/assets/links/:link_id` | Delete a release link |
 | Releases: Read and write | `ADMIN_RELEASES` | `DELETE /projects/:id/releases/:tag_name` | Delete a release |
 | Releases: Read and write | `ADMIN_RELEASES` | `POST /projects/:id/catalog/publish` | Publish a new component project release as version to the CI/CD catalog |

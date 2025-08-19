@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlSprintf, GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import {
   DETACHED_EVENT_TYPE,
   AUTO_DEVOPS_SOURCE,
@@ -14,8 +14,6 @@ export default {
   name: 'HeaderBadges',
   components: {
     GlBadge,
-    GlSprintf,
-    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -59,9 +57,6 @@ export default {
     },
     yamlErrorMessage() {
       return this.pipeline?.errorMessages.nodes[0].content || '';
-    },
-    triggeredByPath() {
-      return this.pipeline?.triggeredByPath;
     },
     badges() {
       return {
@@ -117,13 +112,7 @@ export default {
       data-testid="badges-child-pipeline"
     >
       <gl-badge variant="info">
-        <gl-sprintf :message="s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})')">
-          <template #link="{ content }">
-            <gl-link :href="triggeredByPath" target="_blank">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
+        {{ s__('Pipelines|child pipeline') }}
       </gl-badge>
     </button>
     <button

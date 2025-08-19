@@ -133,4 +133,17 @@ RSpec.describe ContributedProjectsFinder, feature_category: :groups_and_projects
       it { is_expected.to match_array(default_ordering) }
     end
   end
+
+  context 'with organization param' do
+    let!(:another_org) { create(:organization) }
+    let!(:another_project) { create(:project, organization: another_org) }
+
+    let(:params) { { organization: user.organization } }
+
+    subject { finder.execute }
+
+    it 'returns only projects user has developer or higher access to' do
+      is_expected.to contain_exactly(public_project, private_project, internal_project)
+    end
+  end
 end

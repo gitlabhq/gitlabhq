@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  let_it_be(:project) do
+  let_it_be(:user_namespace) { create(:namespace) }
+  let_it_be_with_reload(:project) do
     create(
       :project,
+      :in_group,
       import_type: 'github',
       import_url: 'https://github.com/user/repo.git'
     )
@@ -14,11 +16,15 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:settings) { Gitlab::GithubImport::Settings.new }
   let(:user_mapping_enabled) { true }
+  let(:user_mapping_to_personal_namespace_owner_enabled) { true }
 
   subject(:finder) { described_class.new(project, client) }
 
   before do
-    project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: user_mapping_enabled })
+    project.build_or_assign_import_data(data: {
+      user_contribution_mapping_enabled: user_mapping_enabled,
+      user_mapping_to_personal_namespace_owner_enabled: user_mapping_to_personal_namespace_owner_enabled
+    })
   end
 
   describe '#author_id_for' do
@@ -135,6 +141,34 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
         expect { finder.user_id_for(user) }.to change { Import::SourceUser.count }.by(1)
         expect(finder.user_id_for(user)).not_to eq(source_user.mapped_user_id)
+      end
+
+      context 'when the project is imported into a personal namespace' do
+        before do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'returns the user namespace owner id' do
+          user = { id: 6, login: 'anything' }
+
+          allow(client).to receive(:user).and_return({ name: 'Source name' })
+
+          expect { finder.user_id_for(user) }.not_to change { Import::SourceUser.count }
+          expect(finder.user_id_for(user)).to eq(user_namespace.owner_id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          let(:user_mapping_to_personal_namespace_owner_enabled) { false }
+
+          it 'returns the mapped_user_id of source user' do
+            user = { id: 6, login: 'anything' }
+
+            allow(client).to receive(:user).and_return({ name: 'Source name' })
+
+            expect { finder.user_id_for(user) }.to change { Import::SourceUser.count }.by(1)
+            expect(finder.user_id_for(user)).not_to eq(user_namespace.owner_id)
+          end
+        end
       end
     end
   end
@@ -792,6 +826,34 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
 
     it 'returns false when the associated source user does not have an accepted status' do
       expect(finder.source_user_accepted?(user)).to be(false)
+    end
+
+    context 'when the project is imported into a personal namespace' do
+      before do
+        project.update!(namespace: user_namespace)
+      end
+
+      # User contributions are assigned directly to the namespace owner, effectively behaving as accepted source users
+      it 'returns true' do
+        expect(finder.source_user_accepted?(user)).to be(true)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        let(:user_mapping_to_personal_namespace_owner_enabled) { false }
+        let!(:source_user) do
+          create(
+            :import_source_user, :awaiting_approval,
+            namespace: user_namespace,
+            source_hostname: 'https://github.com',
+            import_type: project.import_type,
+            source_user_identifier: user[:id]
+          )
+        end
+
+        it 'returns false when the associated source user does not have an accepted status' do
+          expect(finder.source_user_accepted?(user)).to be(false)
+        end
+      end
     end
 
     context 'when user contribution mapping is disabled' do

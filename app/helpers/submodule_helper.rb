@@ -55,6 +55,9 @@ module SubmoduleHelper
   protected
 
   def extract_namespace_project(url)
+    # Remove comments and trailing content first, before any URL parsing
+    url = url.split(' ').first
+
     namespace_fragment, _, project = url.rpartition('/')
     namespace = namespace_fragment.rpartition(%r{[:/]}).last
 

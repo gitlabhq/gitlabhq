@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Syntax highlighting helps you read files in your GitLab project more easily, and identify what files contain.
+description: Syntax highlighting helps you read files in your GitLab project and identify what files contain.
 title: Syntax Highlighting
 ---
 

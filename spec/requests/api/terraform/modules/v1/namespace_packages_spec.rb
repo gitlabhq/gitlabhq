@@ -77,6 +77,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
+    end
+
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
   end
@@ -153,6 +157,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
+    end
+
     it_behaves_like 'accessing a public/internal project with another project\'s job token', :found
     it_behaves_like 'allowing anyone to pull public terraform modules', :found
   end
@@ -221,6 +229,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
     end
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
@@ -295,6 +307,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
+    end
+
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
   end
@@ -352,6 +368,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
     end
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
@@ -465,6 +485,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'allowing anyone to pull public terraform modules' do
       let(:token) { nil }
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:token) { tokens[:personal_access_token] }
     end
   end
 end

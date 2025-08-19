@@ -12,6 +12,7 @@ import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
+import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import ErrorTrackingActions from '~/error_tracking/components/error_tracking_actions.vue';
 import ErrorTrackingList from '~/error_tracking/components/error_tracking_list.vue';
@@ -39,7 +40,6 @@ describe('ErrorTrackingList', () => {
 
   function mountComponent({
     errorTrackingEnabled = true,
-    userCanEnableErrorTracking = true,
     showIntegratedTrackingDisabledAlert = false,
     integratedErrorTrackingEnabled = false,
     listPath = '/error_tracking',
@@ -54,7 +54,6 @@ describe('ErrorTrackingList', () => {
           listPath,
           projectPath: 'project/test',
           enableErrorTrackingLink: '/link',
-          userCanEnableErrorTracking,
           errorTrackingEnabled,
           integratedErrorTrackingEnabled,
           showIntegratedTrackingDisabledAlert,
@@ -62,6 +61,7 @@ describe('ErrorTrackingList', () => {
         },
         stubs: {
           ...stubChildren(ErrorTrackingList),
+          GlTable: false,
           ...stubs,
         },
       }),
@@ -72,9 +72,6 @@ describe('ErrorTrackingList', () => {
     actions = {
       startPolling: jest.fn(),
       restartPolling: jest.fn().mockName('restartPolling'),
-      addRecentSearch: jest.fn(),
-      loadRecentSearches: jest.fn(),
-      setIndexPath: jest.fn(),
       clearRecentSearches: jest.fn(),
       setEndpoint: jest.fn(),
       searchByQuery: jest.fn(),
@@ -129,7 +126,6 @@ describe('ErrorTrackingList', () => {
       store.state.list.errors = errorsList;
       mountComponent({
         stubs: {
-          GlTable: false,
           GlLink: false,
         },
       });
@@ -157,7 +153,6 @@ describe('ErrorTrackingList', () => {
         mountComponent({
           listPath: url,
           stubs: {
-            GlTable: false,
             GlLink: false,
           },
         });
@@ -192,7 +187,6 @@ describe('ErrorTrackingList', () => {
         store.state.list.errors = errorsList.map((e) => ({ ...e, frequency: undefined }));
         mountComponent({
           stubs: {
-            GlTable: false,
             GlLink: false,
           },
         });
@@ -241,7 +235,6 @@ describe('ErrorTrackingList', () => {
 
       mountComponent({
         stubs: {
-          GlTable: false,
           GlDropdown: false,
           GlDropdownItem: false,
         },
@@ -307,7 +300,6 @@ describe('ErrorTrackingList', () => {
 
       mountComponent({
         stubs: {
-          GlTable: false,
           GlLink: false,
         },
       });
@@ -337,7 +329,6 @@ describe('ErrorTrackingList', () => {
 
       mountComponent({
         stubs: {
-          GlTable: false,
           GlLink: false,
         },
       });
@@ -360,7 +351,7 @@ describe('ErrorTrackingList', () => {
     });
   });
 
-  describe('when the resolve button is clicked with non numberic error id', () => {
+  describe('when the resolve button is clicked with non numeric error id', () => {
     beforeEach(() => {
       store.state.list.loading = false;
       store.state.list.errors = [
@@ -378,7 +369,6 @@ describe('ErrorTrackingList', () => {
 
       mountComponent({
         stubs: {
-          GlTable: false,
           GlLink: false,
         },
       });
@@ -401,7 +391,6 @@ describe('ErrorTrackingList', () => {
     beforeEach(() => {
       mountComponent({
         errorTrackingEnabled: false,
-        userCanEnableErrorTracking: false,
         stubs: {
           GlLink: false,
           GlEmptyState: false,
@@ -522,7 +511,6 @@ describe('ErrorTrackingList', () => {
           store.state.list.loading = false;
           mountComponent({
             stubs: {
-              GlTable: false,
               GlPagination: false,
             },
           });
@@ -575,7 +563,6 @@ describe('ErrorTrackingList', () => {
       beforeEach(() => {
         mountComponent({
           stubs: {
-            GlTable: false,
             GlLink: false,
           },
           integratedErrorTrackingEnabled: integrated,
@@ -602,9 +589,9 @@ describe('ErrorTrackingList', () => {
           errorId: 1,
           status,
         });
-        await nextTick();
+        await waitForPromises();
 
-        expect(trackEventSpy).toHaveBeenCalledWith(
+        expect(trackEventSpy).toHaveBeenLastCalledWith(
           'update_ignored_status',
           {
             variant: integrated ? 'integrated' : 'external',

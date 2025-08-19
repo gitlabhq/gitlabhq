@@ -1,4 +1,6 @@
 <script>
+import errorEmptyState from '@gitlab/svgs/dist/illustrations/status/status-alert-md.svg';
+import noGroupsEmptyState from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg';
 import {
   GlAlert,
   GlButton,
@@ -19,7 +21,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__, __, n__, sprintf } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import { getGroupPathAvailability } from '~/rest_api';
@@ -104,6 +106,10 @@ export default {
       required: false,
       default: null,
     },
+    importGroupPath: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
@@ -117,6 +123,7 @@ export default {
       importTargets: {},
       unavailableFeaturesAlertVisible: true,
       shouldMigrateMemberships: true,
+      showError: false,
     };
   },
 
@@ -126,6 +133,9 @@ export default {
       query: bulkImportSourceGroupsQuery,
       variables() {
         return { page: this.page, filter: this.filter, perPage: this.perPage };
+      },
+      error() {
+        this.showError = true;
       },
     },
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -234,28 +244,12 @@ export default {
       return this.groupsTableData.filter((g) => g.flags.isAvailableForImport && !g.flags.isInvalid);
     },
 
-    humanizedTotal() {
-      return this.paginationInfo.total >= 1000 ? __('1000+') : this.paginationInfo.total;
-    },
-
     hasGroups() {
       return this.groups.length > 0;
     },
 
     hasEmptyFilter() {
       return this.filter.length > 0 && !this.hasGroups;
-    },
-
-    paginationInfo() {
-      const { page, perPage, total } = this.bulkImportSourceGroups?.pageInfo ?? {
-        page: 1,
-        perPage: 0,
-        total: 0,
-      };
-      const start = (page - 1) * perPage + 1;
-      const end = start + this.groups.length - 1;
-
-      return { start, end, total };
     },
 
     unavailableFeatures() {
@@ -353,10 +347,6 @@ export default {
       }
 
       return {};
-    },
-
-    groupsCount(count) {
-      return n__('%d group', '%d groups', count);
     },
 
     setPage(page) {
@@ -492,7 +482,7 @@ export default {
 
     getTableRef() {
       // Acquire reference to BTable to manipulate selection
-      // issue: https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1531
+      // issue: https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2831
       // refs are not reactive, so do not use computed here
       return this.$refs.table?.$children[0];
     },
@@ -641,9 +631,6 @@ export default {
 
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
-  betaFeatureHelpPath: helpPagePath('policy/development_stages_support', {
-    anchor: 'beta-features',
-  }),
   placeholderUserLimitsHelpPath: helpPagePath('user/project/import/_index', {
     anchor: 'placeholder-user-limits',
   }),
@@ -656,11 +643,23 @@ export default {
   popoverOptions: { title: __('What is listed here?') },
   i18n,
   LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',
+  errorEmptyState,
+  noGroupsEmptyState,
 };
 </script>
 
 <template>
-  <div>
+  <gl-empty-state
+    v-if="showError"
+    :svg-path="$options.errorEmptyState"
+    :title="$options.i18n.SOMETHING_WENT_WRONG_TITLE"
+    :description="$options.i18n.SOMETHING_WENT_WRONG_DESCRIPTION"
+    :primary-button-text="$options.i18n.SOMETHING_WENT_WRONG_BUTTON"
+    :primary-button-link="importGroupPath"
+    data-testid="something-went-wrong-empty-state"
+  />
+  <div v-else>
+    <!-- <div> -->
     <page-heading :heading="s__('BulkImport|Import groups by direct transfer')">
       <template #actions>
         <gl-button
@@ -742,21 +741,15 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <div
-      class="gl-flex gl-flex-col gl-gap-3 gl-border-t-1 gl-border-t-default gl-bg-subtle gl-p-5 gl-pb-4 gl-border-t-solid"
-    >
-      <gl-search-box-by-click
-        data-testid="filter-groups"
-        :placeholder="s__('BulkImport|Filter by source group')"
-        @submit="filter = $event"
-        @clear="filter = ''"
-      />
-    </div>
 
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
       <empty-result v-if="hasEmptyFilter" type="search" />
-      <gl-empty-state v-else-if="!hasGroups" :title="$options.i18n.NO_GROUPS_FOUND">
+      <gl-empty-state
+        v-else-if="!hasGroups"
+        :title="$options.i18n.NO_GROUPS_FOUND"
+        :svg-path="$options.noGroupsEmptyState"
+      >
         <template #description>
           <gl-sprintf
             :message="__('You don\'t have the %{role} role for any groups in this instance.')"
@@ -770,6 +763,16 @@ export default {
         </template>
       </gl-empty-state>
       <template v-else>
+        <div
+          class="gl-flex gl-flex-col gl-gap-3 gl-border-t-1 gl-border-t-default gl-bg-subtle gl-p-5 gl-pb-4 gl-border-t-solid"
+        >
+          <gl-search-box-by-click
+            data-testid="filter-groups"
+            :placeholder="s__('BulkImport|Filter by source group')"
+            @submit="filter = $event"
+            @clear="filter = ''"
+          />
+        </div>
         <div
           class="import-table-bar gl-sticky gl-z-3 gl-flex-col gl-bg-subtle gl-px-5 md:gl-flex md:gl-flex-row md:gl-items-center md:gl-justify-between"
         >
@@ -877,7 +880,6 @@ export default {
           </template>
           <template #cell(actions)="{ item: group, index }">
             <import-actions-cell
-              :id="group.id"
               :is-finished="group.flags.isFinished"
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
@@ -892,15 +894,15 @@ export default {
             />
           </template>
         </gl-table>
+        <pagination-bar
+          v-show="!$apollo.loading && hasGroups"
+          :page-info="pageInfo"
+          class="gl-mt-3"
+          :storage-key="$options.LOCAL_STORAGE_KEY"
+          @set-page="setPage"
+          @set-page-size="setPageSize"
+        />
       </template>
     </template>
-    <pagination-bar
-      v-show="!$apollo.loading && hasGroups"
-      :page-info="pageInfo"
-      class="gl-mt-3"
-      :storage-key="$options.LOCAL_STORAGE_KEY"
-      @set-page="setPage"
-      @set-page-size="setPageSize"
-    />
   </div>
 </template>

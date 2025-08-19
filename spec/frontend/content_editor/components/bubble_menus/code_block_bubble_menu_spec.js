@@ -1,10 +1,4 @@
-import {
-  GlDropdown,
-  GlDropdownForm,
-  GlDropdownItem,
-  GlSearchBoxByType,
-  GlFormInput,
-} from '@gitlab/ui';
+import { GlCollapsibleListbox, GlForm, GlFormInput } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -15,8 +9,6 @@ import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight
 import Diagram from '~/content_editor/extensions/diagram';
 import codeBlockLanguageLoader from '~/content_editor/services/code_block_language_loader';
 import { createTestEditor, emitEditorEvent } from '../../test_utils';
-
-const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
 describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => {
   let wrapper;
@@ -39,7 +31,6 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
         eventHub,
       },
       stubs: {
-        GlDropdownItem: stubComponent(GlDropdownItem),
         BubbleMenu: stubComponent(BubbleMenu),
       },
     });
@@ -51,13 +42,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     return `<pre class="code highlight js-syntax-highlight"${languageAttr}>${content}</pre>`;
   };
 
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findDropdownItemsData = () =>
-    findDropdownItems().wrappers.map((x) => ({
-      text: x.text(),
-      visible: x.isVisible(),
-      checked: x.props('isChecked'),
-    }));
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   beforeEach(() => {
     buildEditor();
@@ -78,9 +63,9 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     bubbleMenu = wrapper.findComponent(BubbleMenu);
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
+    await nextTick();
 
-    expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Plain text');
-    expect(wrapper.findComponent(GlDropdown).attributes('contenteditable')).toBe(String(false));
+    expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe('Plain text');
   });
 
   it('selects appropriate language based on the code block', async () => {
@@ -89,7 +74,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
-    expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Javascript');
+    expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe('Javascript');
   });
 
   it('selects diagram sytnax for mermaid', async () => {
@@ -98,7 +83,9 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
-    expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Diagram (mermaid)');
+    expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe(
+      'Diagram (mermaid)',
+    );
   });
 
   it("selects Custom (syntax) if the language doesn't exist in the list", async () => {
@@ -107,7 +94,9 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
 
     await emitEditorEvent({ event: 'transaction', tiptapEditor });
 
-    expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Custom (nomnoml)');
+    expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe(
+      'Custom (nomnoml)',
+    );
   });
 
   describe('copy button', () => {
@@ -170,18 +159,18 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     beforeEach(async () => {
       tiptapEditor.commands.insertContent(preTag({ language: 'javascript' }));
 
-      wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'js');
+      wrapper.findComponent(GlCollapsibleListbox).vm.$emit('input', 'js');
 
       await nextTick();
     });
 
-    it('shows dropdown items', () => {
-      expect(findDropdownItemsData()).toEqual(
+    it('shows filtered dropdown items', () => {
+      const items = wrapper.findComponent(GlCollapsibleListbox).props('items');
+      expect(items).toEqual(
         expect.arrayContaining([
-          { text: 'Javascript', visible: true, checked: true },
-          { text: 'Java', visible: true, checked: false },
-          { text: 'Javascript', visible: false, checked: false },
-          { text: 'JSON', visible: true, checked: false },
+          { text: 'Javascript', value: 'javascript' },
+          { text: 'Java', value: 'java' },
+          { text: 'JSON', value: 'json' },
         ]),
       );
     });
@@ -189,9 +178,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
     describe('when dropdown item is clicked', () => {
       beforeEach(async () => {
         jest.spyOn(codeBlockLanguageLoader, 'loadLanguage').mockResolvedValue();
-
-        findDropdownItems().at(1).vm.$emit('click');
-
+        wrapper.findComponent(GlCollapsibleListbox).vm.$emit('select', 'java');
         await nextTick();
       });
 
@@ -213,7 +200,7 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
       });
 
       it('updates selected dropdown', () => {
-        expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Java');
+        expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe('Java');
       });
     });
 
@@ -222,64 +209,36 @@ describe('content_editor/components/bubble_menus/code_block_bubble_menu', () => 
         tiptapEditor.commands.insertContent(
           '<pre data-canonical-lang="javascript">var a = 2;</pre>',
         );
-
-        await wrapper.findComponent(GlDropdown).vm.show();
         await wrapper.findByTestId('create-custom-type').trigger('click');
       });
 
       it('shows custom language input form and hides dropdown items', () => {
-        expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(false);
-        expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(false);
-        expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(true);
+        expect(wrapper.findComponent(GlFormInput).exists()).toBe(true);
+        expect(wrapper.findComponent(GlForm).exists()).toBe(true);
       });
 
-      describe('on clicking back', () => {
-        it('hides the custom language input form and shows dropdown items', async () => {
-          await wrapper.findByRole('button', { name: 'Go back' }).trigger('click');
-
-          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
-          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
-        });
-      });
-
-      describe('on clicking cancel', () => {
-        it('hides the custom language input form and shows dropdown items', async () => {
-          await wrapper.findByRole('button', { name: 'Cancel' }).trigger('click');
-
-          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
-          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
-        });
-      });
-
-      describe('on dropdown hide', () => {
+      describe('on bubble menu hide', () => {
         it('hides the form', async () => {
           wrapper.findComponent(GlFormInput).setValue('foobar');
-          await wrapper.findComponent(GlDropdown).vm.$emit('hide');
+          await wrapper.findComponent(BubbleMenu).vm.$emit('hidden');
 
-          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
-          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
+          expect(findListbox().exists()).toBe(true);
+          expect(wrapper.findComponent(GlForm).exists()).toBe(false);
+          expect(findListbox().props('items').length).toBeGreaterThan(0);
         });
       });
 
       describe('on clicking apply', () => {
         beforeEach(async () => {
-          wrapper.findComponent(GlFormInput).setValue('foobar');
-          await wrapper.findComponent(GlDropdownForm).vm.$emit('submit', createFakeEvent());
-
+          await wrapper.findComponent(GlFormInput).setValue('foobar');
+          await wrapper.findComponent(GlForm).trigger('submit');
           await emitEditorEvent({ event: 'transaction', tiptapEditor });
         });
 
-        it('hides the custom language input form and shows dropdown items', () => {
-          expect(wrapper.findComponent(GlDropdownItem).exists()).toBe(true);
-          expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
-          expect(wrapper.findComponent(GlDropdownForm).exists()).toBe(false);
-        });
-
         it('updates dropdown value to the custom language type', () => {
-          expect(wrapper.findComponent(GlDropdown).props('text')).toBe('Custom (foobar)');
+          expect(wrapper.findComponent(GlCollapsibleListbox).props('toggleText')).toBe(
+            'Custom (foobar)',
+          );
         });
 
         it('updates tiptap editor to the custom language type', () => {

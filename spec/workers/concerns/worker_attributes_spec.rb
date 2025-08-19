@@ -67,6 +67,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :get_weight                             | :weight                            | 1                | [3]          | {} | 3
       :get_tags                               | :tags                              | []               | [:foo, :bar] | {} | [:foo, :bar]
       :get_deduplicate_strategy               | :deduplicate                       | :until_executing | [:none]      | {} | :none
+      :get_max_concurrency_limit_percentage   | :max_concurrency_limit_percentage  | 0.25             | 0.5          | {} | 0.5
 
       :get_deduplication_options              | :deduplicate                       | {}               | [:none, { including_scheduled: true }] | {} | { including_scheduled: true }
       :database_health_check_attrs            | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute]     | {} | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, block: nil }
@@ -347,6 +348,36 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
 
     context 'when defer_on_database_health_signal is not set' do
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '.max_concurrency_limit_percentage' do
+    subject(:max_concurrency_limit_percentage) { worker.max_concurrency_limit_percentage(percentage) }
+
+    context 'when value is invalid' do
+      shared_examples 'invalid argument' do
+        it 'raises ArgumentError' do
+          expect { max_concurrency_limit_percentage }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'with negative value' do
+        let(:percentage) { -1 }
+
+        it_behaves_like 'invalid argument'
+      end
+
+      context 'with value > 1' do
+        let(:percentage) { 1.1 }
+
+        it_behaves_like 'invalid argument'
+      end
+
+      context 'with non Numeric type' do
+        let(:percentage) { "asd" }
+
+        it_behaves_like 'invalid argument'
+      end
     end
   end
 end

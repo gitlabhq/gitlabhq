@@ -170,6 +170,20 @@ For example:
 
 Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+When referring to the specific component in technical contexts, use `agentk` in backticks.
+
+## agent for workspace
+
+Use lowercase **agent for workspace** when referring to the component that runs
+in a workspace and is used to access the workspace. Do not use title case for **Workspace**. For example:
+
+- The agent for workspace handles GitLab integration tasks in the workspace.
+- Configure the agent for workspace to connect your development environment.
+
+When referring to the specific component in technical contexts, use `agentw` in backticks.
+
+Do not confuse with [agent for Kubernetes](#agent-for-kubernetes).
+
 ## agent access token
 
 The token generated when you create an agent for Kubernetes. Use **agent access token**, not:
@@ -178,14 +192,14 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
-## Agentic Chat, GitLab Duo Agentic Chat
+## Agentic Chat, GitLab Duo Chat (Agentic)
 
-GitLab Duo Agentic Chat is an experimental, enhanced version of [GitLab Duo Chat](#chat-gitlab-duo-chat).
+GitLab Duo Chat (Agentic) is an enhanced version of [GitLab Duo Chat (Classic)](#chat-gitlab-duo-chat-classic).
 
-Use **Agentic Chat** with a capital `a` and `c` for **Agentic Chat** or **GitLab Duo Agentic Chat**.
+For capitalization, use **Agentic Chat**.
 
-On first use on a page, use **GitLab Duo Agentic Chat**.
-Thereafter, use **Agentic Chat** by itself.
+On first use, use **GitLab Duo Chat (Agentic)**.
+Thereafter, use **Chat** or **GitLab Duo Chat**.
 
 Do not use **Duo Agentic Chat**.
 
@@ -200,9 +214,9 @@ Use **AI**. Do not spell out **artificial intelligence**.
 
 ## AI agent
 
-When writing about AI, the **AI agent** is an entity that performs actions for the user.
+When writing about AI, the **agent** is an entity that performs actions for the user.
 
-After first use, you can use **agent** without **AI**.
+You can use **AI agent** if **agent** on its own is not clear.
 
 When you're interacting with an AI agent, a [**session**](#session) is running.
 The user can stop a session.
@@ -429,17 +443,14 @@ Instead of:
 
 - On the **Seat utilization** card, select **Assign seats**.
 
-## Chat, GitLab Duo Chat
+## Chat, GitLab Duo Chat (Classic)
 
-GitLab Duo Chat is an AI-native assistant that helps developers with contextual,
-conversational code explanations, troubleshooting, and guidance.
+GitLab Duo Chat (Classic) differs from [GitLab Duo Chat (Agentic)](#agentic-chat-gitlab-duo-chat-agentic).
 
-It is different from [GitLab Duo Agentic Chat](#agentic-chat-gitlab-duo-agentic-chat).
+For capitalization, use **Classic Chat** or **GitLab Duo Chat (Classic)**.
 
-Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
-
-On first use on a page, use **GitLab Duo Chat**.
-Thereafter, use **Chat** by itself.
+On first use, use **GitLab Duo Chat (Classic)**.
+Thereafter, use **Chat** or **GitLab Duo Chat**.
 
 Do not use **Duo Chat**.
 
@@ -510,8 +521,10 @@ However, you can make an exception for **right-click** and **click-through demo*
 
 ## cloud licensing
 
-Do not use the phrase **cloud licensing**. Instead, focus on the fact
-that this subscription is synchronized with GitLab.
+Avoid the phrase **cloud licensing**, except when you have to describe the process
+of synchronizing an activation code over the internet.
+
+If you can, rather focus on the fact that this subscription is synchronized with GitLab.
 
 For example:
 
@@ -884,12 +897,11 @@ Do not use **easily**. If the user doesn't find the process to be easy, we lose 
 
 Use **edit** for UI documentation and user actions.
 
-Use **update** for API documentation and programmatic changes.
-
 For example:
 
 - To edit your profile settings, select **Edit**.
-- Use this endpoint to update user permissions.
+
+For API documentation and programmatic changes, use **[update](#update)**.
 
 ## e.g.
 
@@ -1065,8 +1077,9 @@ Filtering is different from [searching](#search).
 
 ## flows
 
-GitLab provides multiple **flows** that are run by [AI agents](#ai-agent).
-Both **flow** and **agent flow** are acceptable.
+GitLab provides multiple **flows** that are run by [agents](#ai-agent).
+
+Do not use **agent flow**.
 
 You choose a flow. You start a [**session**](#session).
 
@@ -1192,6 +1205,19 @@ without **GitLab Duo**.
 Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
 
 Do not use **Duo Agent Platform** by itself.
+
+## GitLab Duo Core
+
+Use **GitLab Duo Core** for the add-on. Do not use **Duo Core** by itself.
+
+You can also use **the GitLab Duo Core add-on** but omit **add-on** when you can.
+
+In marketing materials, like release posts or blogs, use
+**Premium and Ultimate with GitLab Duo** instead of **GitLab Duo Core**.
+For example:
+
+- [Blog: Unlocking AI for every GitLab Premium and Ultimate customer](https://about.gitlab.com/blog/gitlab-premium-with-duo/)
+- [Release post: Group and project controls for Premium and Ultimate with GitLab Duo](https://about.gitlab.com/releases/2025/07/17/gitlab-18-2-released/#group-and-project-controls-for-premium-and-ultimate-with-gitlab-duo)
 
 ## GitLab Duo Enterprise
 
@@ -1446,7 +1472,7 @@ Use lowercase for **issue weights**.
 
 ## IP address
 
-Use **IP address** when refering to addresses used with Internet Protocal (IP). Do not refer to an IP address as an
+Use **IP address** when referring to addresses used with Internet Protocol (IP). Do not refer to an IP address as an
 **IP**.
 
 ## it
@@ -1542,13 +1568,17 @@ Licenses are different than subscriptions.
 - A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
 - A subscription is the subscription tier that the user purchases.
 
-Do not use the term [**cloud license**](#cloud-licensing).
+Avoid the terms [**cloud license** or **cloud licensing**](#cloud-licensing) if possible.
 
 The following terms are displayed in the UI and in emails. You can use them when necessary:
 
 - **Online license** - a license synchronized with GitLab
 - **Offline license** - a license not synchronized with GitLab
 - **Legacy license** - a license created before synchronization was possible
+
+You can also use the terms **legacy license file** and **offline license file** when
+describing the files that customers receive by email as part of the overall
+licensing and synchronization process.
 
 However, if you can, rather than the relying on the term, use the more specific description instead.
 
@@ -1891,6 +1921,22 @@ The meaning is that you can't perform other actions,
 like deleting private projects, or adding users to them.
 
 - You can only create private projects.
+
+## optional
+
+If something is optional, such as a command argument, parameter value,
+or a file, use `Optional` followed by a period. For optional topics,
+append `(optional)` to the topic title.
+
+For example:
+
+```markdown
+### This is a topic (optional)
+
+- `value`: Optional. Use it to do something.
+```
+
+Follow the same guidance for [optional task steps](_index.md#optional-steps).
 
 ## override
 
@@ -2276,7 +2322,7 @@ Searching is different from [filtering](#filter).
 When referring to the subscription billing model:
 
 - For GitLab.com, use **seats**. Customers purchase seats. Users occupy seats when they are invited
-  to a group, with some [exceptions](../../../subscriptions/gitlab_com/_index.md#how-seat-usage-is-determined).
+  to a group, with some [exceptions](../../../subscriptions/manage_users_and_seats.md#gitlabcom-billing-and-usage).
 - For GitLab Self-Managed, use **users**. Customers purchase subscriptions for a specified number of **users**.
 
 ## section
@@ -2331,8 +2377,10 @@ Use title case for **Service Desk**.
 
 ## session
 
-When an [AI agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
+When an [agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
 The session can start and stop.
+
+Do not use **AI session** or **agent session**.
 
 ## setup, set up
 
@@ -2410,7 +2458,7 @@ Do not use **slave**. Another option is **secondary**. ([Vale](../testing/vale.m
 In the context of:
 
 - Gitaly, storage is physical and must be called a **storage**.
-- Gitaly Cluster, storage can be either:
+- Gitaly Cluster (Praefect), storage can be either:
   - Virtual and must be called a **virtual storage**.
   - Physical and must be called a **physical storage**.
 
@@ -2599,9 +2647,13 @@ For more information, see the
 
 ## update
 
-Use **update** for installing a newer **patch** version of the software only. For example:
+Use **update** for installing a newer **patch** version of the software,
+or for documenting API and programmatic changes.
+
+For example:
 
 - Update GitLab from 14.9 to 14.9.1.
+- Use this endpoint to update user permissions.
 
 Do not use **update** for any other case. Instead, use **[upgrade](#upgrade)** or **[edit](#edit)**.
 
@@ -2678,6 +2730,19 @@ Pay attention to spacing by the letter **v**. In semantic versioning, no space e
 ## via
 
 Do not use Latin abbreviations. Use **with**, **through**, or **by using** instead. ([Vale](../testing/vale.md) rule: [`LatinTerms.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/LatinTerms.yml))
+
+## virtual registry
+
+Use lowercase for **virtual registry**.
+
+On first mention on a page, use **GitLab virtual registry**.
+Thereafter, use **virtual registry** by itself.
+
+Use:
+
+- The GitLab virtual registry supports A, B, and C.
+- You can configure your applications to use one virtual registry instead
+of multiple upstream registries.
 
 ## VS Code user interface
 

@@ -73,6 +73,8 @@ FactoryBot.define do
     trait :metadata do
       file_type { :metadata }
       file_format { :gzip }
+      exposed_as { job.options.dig(:artifacts, :expose_as) }
+      exposed_paths { (job.options.dig(:artifacts, :paths) if job.options.dig(:artifacts, :expose_as)) }
 
       transient do
         file { fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip') }

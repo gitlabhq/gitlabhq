@@ -10,8 +10,15 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
   describe '#secret_variables' do
     let(:environment) { '*' }
     let(:protected_ref) { false }
+    let(:only) { nil }
 
-    let_it_be(:variable) do
+    let_it_be(:variable1) do
+      create(:ci_variable,
+        value: 'secret',
+        project: project)
+    end
+
+    let_it_be(:variable2) do
       create(:ci_variable,
         value: 'secret',
         project: project)
@@ -23,20 +30,23 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
         project: project)
     end
 
-    let(:variable_item) { item(variable) }
+    let(:variable_item1) { item(variable1) }
+    let(:variable_item2) { item(variable2) }
     let(:protected_variable_item) { item(protected_variable) }
 
     subject do
       builder.secret_variables(
         environment: environment,
-        protected_ref: protected_ref)
+        protected_ref: protected_ref,
+        only: only
+      )
     end
 
     context 'when the ref is protected' do
       let(:protected_ref) { true }
 
       it 'contains all the variables' do
-        is_expected.to contain_exactly(variable_item, protected_variable_item)
+        is_expected.to contain_exactly(variable_item1, variable_item2, protected_variable_item)
       end
     end
 
@@ -44,7 +54,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
       let(:protected_ref) { false }
 
       it 'contains only the unprotected variables' do
-        is_expected.to contain_exactly(variable_item)
+        is_expected.to contain_exactly(variable_item1, variable_item2)
+      end
+    end
+
+    context 'when only is provided' do
+      let(:protected_ref) { true }
+      let(:only) { [variable1.key] }
+
+      it 'contains only the requested variables' do
+        is_expected.to contain_exactly(variable_item1)
       end
     end
 
@@ -58,26 +77,26 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
       context 'when environment scope is exactly matched' do
         let(:environment_scope) { 'review/name' }
 
-        it { is_expected.to contain_exactly(variable_item) }
+        it { is_expected.to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope is matched by wildcard' do
         let(:environment_scope) { 'review/*' }
 
-        it { is_expected.to contain_exactly(variable_item) }
+        it { is_expected.to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope does not match' do
         let(:environment_scope) { 'review/*/special' }
 
-        it { is_expected.not_to contain_exactly(variable_item) }
+        it { is_expected.not_to contain_exactly(variable_item1, variable_item2) }
       end
 
       context 'when environment scope has _' do
         let(:environment_scope) { '*_*' }
 
         it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(variable_item)
+          is_expected.not_to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -86,7 +105,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
         let(:environment_scope) { 'foo_bar/*' }
 
         it 'matches literally for _' do
-          is_expected.to contain_exactly(variable_item)
+          is_expected.to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -98,7 +117,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
         let(:environment_scope) { '*%*' }
 
         it 'does not treat it as wildcard' do
-          is_expected.not_to contain_exactly(variable_item)
+          is_expected.not_to contain_exactly(variable_item1, variable_item2)
         end
       end
 
@@ -107,7 +126,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
         let(:environment_scope) { 'foo%bar/*' }
 
         it 'matches literally for _' do
-          is_expected.to contain_exactly(variable_item)
+          is_expected.to contain_exactly(variable_item1, variable_item2)
         end
       end
     end
@@ -117,7 +136,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
 
       let_it_be(:partially_matched_variable) do
         create(:ci_variable,
-          key: variable.key,
+          key: variable1.key,
           value: 'partial',
           environment_scope: 'review/*',
           project: project)
@@ -125,7 +144,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
 
       let_it_be(:perfectly_matched_variable) do
         create(:ci_variable,
-          key: variable.key,
+          key: variable1.key,
           value: 'prefect',
           environment_scope: 'review/name',
           project: project)
@@ -134,7 +153,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder::Project do
       it 'puts variables matching environment scope more in the end' do
         variables_collection = Gitlab::Ci::Variables::Collection.new(
           [
-            variable,
+            variable1,
+            variable2,
             partially_matched_variable,
             perfectly_matched_variable
           ]).to_runner_variables

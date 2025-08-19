@@ -12,15 +12,23 @@ class Label < ApplicationRecord
 
   DESCRIPTION_LENGTH_MAX = 512.kilobytes
 
+  belongs_to :group
+  belongs_to :project
+  belongs_to :organization, class_name: 'Organizations::Organization'
+
   has_many :lists, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :priorities, class_name: 'LabelPriority'
   has_many :label_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
+  before_validation :ensure_single_parent_for_given_type
   before_destroy :prevent_locked_label_destroy, prepend: true
 
+  after_save :unprioritize_all!, if: -> { saved_change_to_attribute?(:archived) && archived }
+
   validate :ensure_lock_on_merge_allowed
+  validate :exactly_one_parent
   validates :title, uniqueness: { scope: [:group_id, :project_id] }
 
   # we validate the description against DESCRIPTION_LENGTH_MAX only for labels being created and on updates if
@@ -30,6 +38,7 @@ class Label < ApplicationRecord
   default_scope { order(title: :asc) } # rubocop:disable Cop/DefaultScope
 
   scope :templates, -> { where(template: true, type: [Label.name, nil]) }
+  scope :for_organization, ->(organization) { where(organization: organization) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :with_lock_on_merge, -> { where(lock_on_merge: true) }
@@ -39,6 +48,7 @@ class Label < ApplicationRecord
   scope :order_name_desc, -> { reorder(title: :desc) }
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
   scope :with_preloaded_container, -> { preload(parent_container: :route) }
+  scope :archived, ->(archived) { where(archived: archived) }
 
   scope :top_labels_by_target, ->(target_relation) {
     label_id_column = arel_table[:id]
@@ -196,6 +206,8 @@ class Label < ApplicationRecord
   end
 
   def prioritize!(project, value)
+    return if archived
+
     label_priority = priorities.find_or_initialize_by(project_id: project.id)
     label_priority.priority = value
     label_priority.save!
@@ -203,6 +215,12 @@ class Label < ApplicationRecord
 
   def unprioritize!(project)
     priorities.where(project: project).delete_all
+  end
+
+  def unprioritize_all!
+    return if id.blank?
+
+    LabelPriority.where(label_id: id).delete_all
   end
 
   def priority(project)
@@ -273,6 +291,13 @@ class Label < ApplicationRecord
 
   private
 
+  def exactly_one_parent
+    parent_types = [:group, :project, :organization]
+    return if parent_types.count { |assoc| association(assoc).load_target } == 1
+
+    errors.add(:parent, format(_("exactly one of %{parent_types} is required"), parent_types: parent_types.join(', ')))
+  end
+
   def validate_description_length?
     return false unless description_changed?
 
@@ -311,6 +336,15 @@ class Label < ApplicationRecord
 
     errors.add(:lock_on_merge, _('can not be set for template labels'))
   end
+
+  def ensure_single_parent_for_given_type
+    case type
+    when 'GroupLabel'
+      self[:project_id] = nil if project_id.present?
+    when 'ProjectLabel'
+      self[:group_id] = nil if group_id.present?
+    end
+  end
 end
 
-Label.prepend_mod_with('Label')
+Label.prepend_mod

@@ -29,14 +29,17 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
     )
   end
 
+  let(:fake_keep_instance) { instance_double(::Gitlab::Housekeeper::Keep) }
+
   before do
-    fake_keep_instance = instance_double(::Gitlab::Housekeeper::Keep)
     allow(fake_keep).to receive(:new).and_return(fake_keep_instance)
 
-    allow(fake_keep_instance).to receive(:each_change)
+    allow(fake_keep_instance).to receive(:each_identified_change)
       .and_yield(change1)
       .and_yield(change2)
       .and_yield(change3)
+
+    allow(fake_keep_instance).to receive(:make_change!)
   end
 
   describe '#run' do
@@ -77,6 +80,9 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
       allow(gitlab_client).to receive(:closed_merge_request_exists?)
         .and_return(false)
+
+      allow(gitlab_client).to receive(:create_or_update_merge_request)
+        .and_return({ 'web_url' => 'https://example.com' })
 
       allow(::Gitlab::Housekeeper::Shell).to receive(:execute)
     end
@@ -159,24 +165,22 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
     context 'when given filter_identifiers' do
       it 'skips a change that does not match the filter_identifiers' do
-        # Branches get created
-        expect(git).to receive(:create_branch).with(change1)
-          .and_return('the-identifier-for-the-first-change')
-        allow(git).to receive(:in_branch).with('the-identifier-for-the-first-change')
-          .and_yield
-        expect(git).to receive(:create_commit).with(change1)
-
+        # Only change2 should pass the filter and get branches/commits created
         expect(git).to receive(:create_branch).with(change2)
           .and_return('the-identifier-for-the-second-change')
         allow(git).to receive(:in_branch).with('the-identifier-for-the-second-change')
           .and_yield
         expect(git).to receive(:create_commit).with(change2)
 
+        # change1 and change3 are filtered out, so they won't get branches/commits
+        expect(git).to receive(:create_branch).with(change1)
+          .and_return('the-identifier-for-the-first-change')
         expect(git).to receive(:create_branch).with(change3)
           .and_return('the-identifier-for-the-third-change')
-        allow(git).to receive(:in_branch).with('the-identifier-for-the-third-change')
-          .and_yield
-        expect(git).to receive(:create_commit).with(change3)
+
+        # No commits expected for filtered changes
+        expect(git).not_to receive(:create_commit).with(change1)
+        expect(git).not_to receive(:create_commit).with(change3)
 
         expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
@@ -208,6 +212,41 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             described_class.new(max_mrs: 1, keeps: [fake_keep], dry_run: true).run
           end.to output(/Dry run complete. Housekeeper would have created 1 MR on an actual run./).to_stdout
         end
+      end
+    end
+
+    context 'when change has context from each_identified_change' do
+      let(:change_with_context) do
+        change1.tap do |change|
+          change.context = { custom_data: 'test_value', file_count: 3 }
+        end
+      end
+
+      before do
+        allow(fake_keep_instance).to receive(:each_identified_change).and_yield(change_with_context)
+      end
+
+      it 'passes context to make_change! method' do
+        expect(fake_keep_instance).to receive(:make_change!) do |change|
+          expect(change.context[:custom_data]).to eq('test_value')
+          expect(change.context[:file_count]).to eq(3)
+        end
+
+        described_class.new(max_mrs: 1, keeps: [fake_keep]).run
+      end
+    end
+
+    context 'when make_change! updates change files after processing' do
+      it 'uses updated file list for commits and diffs' do
+        allow(fake_keep_instance).to receive(:make_change!) do |change|
+          change.changed_files = ['updated_file1.rb', 'updated_file2.rb']
+        end
+
+        expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', '--no-pager', 'diff', '--color=always', 'master',
+            'the-identifier-for-the-first-change', '--', 'updated_file1.rb', 'updated_file2.rb')
+
+        described_class.new(max_mrs: 1, keeps: [fake_keep]).run
       end
     end
   end
@@ -271,7 +310,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
 
         fake_keep_instance = instance_double(::Gitlab::Housekeeper::Keep)
         allow(fake_keep_with_closed_mr).to receive(:new).and_return(fake_keep_instance)
-        allow(fake_keep_instance).to receive(:each_change).and_yield(closed_mr_change)
+        allow(fake_keep_instance).to receive(:each_identified_change).and_yield(closed_mr_change)
 
         allow(::Gitlab::Housekeeper::Git).to receive(:new).and_return(closed_mr_git)
         allow(::Gitlab::Housekeeper::GitlabClient).to receive(:new).and_return(closed_mr_gitlab_client)
@@ -302,7 +341,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         allow(logger).to receive(:puts)
 
         expect(logger).to receive(:puts)
-          .with('Skipping change as we have closed an MR for this branch closed-mr-branch')
+          .with('Skipping change: ["closed-mr-branch"] as we have closed an MR for this branch closed-mr-branch')
 
         described_class.new(max_mrs: 1, keeps: [fake_keep_with_closed_mr]).run
       end

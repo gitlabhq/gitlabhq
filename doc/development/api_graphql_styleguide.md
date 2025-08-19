@@ -2523,17 +2523,37 @@ from the abstract scalar class
 
 ## Testing
 
-For testing mutations and resolvers, consider the unit of
-test a full GraphQL request, not a call to a resolver. This allows us to
-avoid tight coupling to the framework because such coupling makes
-upgrades to dependencies much more difficult.
+Only [integration tests](#writing-integration-tests) can verify fully that a query or mutation executes and resolves properly.
 
-You should:
+Use [unit tests](#writing-unit-tests) only to statically verify certain aspects of the schema, for example that types have certain fields or mutations have certain required arguments.
+Do not unit test resolvers beyond statically verifying fields or arguments.
 
-- Prefer request specs (either using the full API endpoint or going through
-  `GitlabSchema.execute`) to unit specs for resolvers and mutations.
-- Prefer `GraphqlHelpers#execute_query` and `GraphqlHelpers#run_with_clean_state` to
-  `GraphqlHelpers#resolve` and `GraphqlHelpers#resolve_field`.
+For all other tests, use [integration tests](#writing-integration-tests).
+
+### Writing integration tests
+
+Integration tests check the full stack for a GraphQL query or mutation and are stored in
+`spec/requests/api/graphql`.
+
+We use integration tests in order to fully test [all execution phases](https://graphql-ruby.org/queries/phases_of_execution.html).
+Only a full request integration test verifies the following:
+
+- The mutation is actually queryable in the schema (was mounted in `MutationType`).
+- The data returned by a resolver or mutation correctly matches the
+  [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
+  the fields and resolves without errors.
+- The arguments coerce correctly on input, and the fields serialize correctly
+  on output.
+- Any [argument preprocessing](https://graphql-ruby.org/fields/arguments.html#preprocessing).
+- An argument or scalar's validations apply correctly.
+- An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
+- Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
+- Objects resolve successfully, and there are no N+1 issues.
+
+When adding a query, you can use the `a working graphql query that returns data` and
+`a working graphql query that returns no data` shared examples to test if the query renders valid results.
+
+Use the `post_graphql` helper to make a GraphQL integration.
 
 For example:
 
@@ -2547,49 +2567,6 @@ GitlabSchema.execute(gql_query, context: { current_user: current_user })
 # Deprecated: avoid
 resolve(described_class, obj: project, ctx: { current_user: current_user })
 ```
-
-### Writing unit tests (deprecated)
-
-{{< alert type="warning" >}}
-
-Avoid writing unit tests if the same thing can be tested with
-a full GraphQL request.
-
-{{< /alert >}}
-
-Before creating unit tests, review the following examples:
-
-- [`spec/graphql/resolvers/users_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/resolvers/users_resolver_spec.rb)
-- [`spec/graphql/mutations/issues/create_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/graphql/mutations/issues/create_spec.rb)
-
-### Writing integration tests
-
-Integration tests check the full stack for a GraphQL query or mutation and are stored in
-`spec/requests/api/graphql`.
-
-For speed, consider calling `GitlabSchema.execute` directly, or making use
-of smaller test schemas that only contain the types under test.
-
-However, full request integration tests that check if data is returned verify the following
-additional items:
-
-- The mutation is actually queryable in the schema (was mounted in `MutationType`).
-- The data returned by a resolver or mutation correctly matches the
-  [return types](https://graphql-ruby.org/fields/introduction.html#field-return-type) of
-  the fields and resolves without errors.
-- The arguments coerce correctly on input, and the fields serialize correctly
-  on output.
-
-Integration tests can also verify the following items, because they invoke the
-full stack:
-
-- An argument or scalar's validations apply correctly.
-- Logic in a resolver or mutation's [`#ready?` method](#correct-use-of-resolverready) applies correctly.
-- An [argument's `default_value`](https://graphql-ruby.org/fields/arguments.html) applies correctly.
-- Objects resolve successfully, and there are no N+1 issues.
-
-When adding a query, you can use the `a working graphql query that returns data` and
-`a working graphql query that returns no data` shared examples to test if the query renders valid results.
 
 You can construct a query including all available fields using the `GraphqlHelpers#all_graphql_fields_for`
 helper. This makes it more straightforward to add a test rendering all possible fields for a query.
@@ -2629,7 +2606,7 @@ it 'returns a successful response' do
 end
 ```
 
-### Testing tips and tricks
+#### Testing tips and tricks
 
 - Become familiar with the methods in the `GraphqlHelpers` support module.
   Many of these methods make writing GraphQL tests easier.
@@ -2734,38 +2711,17 @@ end
   `spec/requests/api/graphql/ci/pipeline_spec.rb` regardless of the query being
   used to fetch the pipeline data.
 
-- When testing resolvers using `GraphqlHelpers#resolve`, arguments for the resolver can be handled two ways.
+### Writing unit tests
 
-  1. 95% of the resolver specs use arguments that are Ruby objects, as opposed to when using the GraphQL API
-     only strings and integers are used. This works fine in most cases.
-  1. If your resolver takes arguments that use a `prepare` proc, such as a resolver that accepts time frame
-     arguments (`TimeFrameArguments`), you must pass the `arg_style: :internal_prepared` parameter into
-     the `resolve` method. This tells the code to convert the arguments into strings and integers and pass
-     them through regular argument handling, ensuring that the `prepare` proc is called correctly.
-     For example in [`iterations_resolver_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/iterations_resolver_spec.rb):
+Use unit tests only to statically verify the schema, for example to assert the following:
 
-     ```ruby
-     def resolve_group_iterations(args = {}, obj = group, context = { current_user: current_user })
-       resolve(described_class, obj: obj, args: args, ctx: context, arg_style: :internal_prepared)
-     end
-     ```
+- Types, mutations, or resolvers have particular named fields
+- Types, mutations, or resolvers have a particular named `authorize` permission (but test authorization through [integration tests](#writing-integration-tests))
+- Mutations or resolvers have particular named arguments, and whether those arguments are required or not
 
-     One additional caveat is that if you are passing enums as a resolver argument, you must use the
-     external representation of the enum, rather than the internal. For example:
-
-     ```ruby
-     # good
-     resolve_group_iterations({ search: search, in: ['CADENCE_TITLE'] })
-
-     # bad
-     resolve_group_iterations({ search: search, in: [:cadence_title] })
-     ```
-
-  The use of `:internal_prepared` was added as a bridge for the
-  [GraphQL gem](https://graphql-ruby.org) upgrade. Testing resolvers directly will
-  [eventually be removed](https://gitlab.com/gitlab-org/gitlab/-/issues/363121),
-  and writing unit tests for resolvers/mutations is
-  [already deprecated](#writing-unit-tests-deprecated)
+Besides static schema tests, do not unit test resolvers for how they resolve or apply authorization.
+Instead, use [integration tests](#writing-integration-tests) to test the
+[full phases of execution](https://graphql-ruby.org/queries/phases_of_execution.html).
 
 ## Notes about Query flow and GraphQL infrastructure
 

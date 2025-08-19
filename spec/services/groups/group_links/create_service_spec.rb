@@ -78,24 +78,24 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute', feature_category: 
       end
 
       context 'project authorizations refresh' do
-        it 'is executed only for the direct members of the group with medium priority' do
-          expect(shared_with_group)
-            .to receive(:refresh_members_authorized_projects)
-            .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-            .once
+        it 'schedules worker only for the direct members of the group with medium priority' do
+          expect(AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker).to receive(:perform_async)
+            .with(shared_with_group.id, { 'priority' => UserProjectAccessChangedService::MEDIUM_PRIORITY,
+'direct_members_only' => true })
+            .and_call_original
 
           subject.execute
         end
 
-        context 'when feature-flag `change_priority_for_user_access_refresh_for_group_links` is disabled' do
+        context 'when project_authorizations_update_in_background_for_group_shares feature flag is disabled' do
           before do
-            stub_feature_flags(change_priority_for_user_access_refresh_for_group_links: false)
+            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
           end
 
-          it 'is executed only for the direct members of the group with high priority' do
+          it 'is executed only for the direct members of the group' do
             expect(shared_with_group)
               .to receive(:refresh_members_authorized_projects)
-              .with(direct_members_only: true, priority: UserProjectAccessChangedService::HIGH_PRIORITY)
+              .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
               .once
 
             subject.execute

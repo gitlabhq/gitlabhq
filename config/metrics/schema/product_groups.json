@@ -28,6 +28,7 @@
     "duo_workflow",
     "dynamic_analysis",
     "editor_extensions",
+    "engagement",
     "engineering_analytics",
     "engineering_productivity",
     "environments",
@@ -46,7 +47,6 @@
     "optimize",
     "organizations",
     "package_registry",
-    "personal_productivity",
     "pipeline_authoring",
     "pipeline_execution",
     "pipeline_security",
@@ -73,6 +73,7 @@
     "tenant_scale",
     "utilization",
     "ux_paper_cuts",
-    "vulnerability_research"
+    "vulnerability_research",
+    "workflow_catalog"
   ]
 }

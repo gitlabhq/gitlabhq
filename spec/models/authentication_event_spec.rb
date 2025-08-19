@@ -41,7 +41,7 @@ RSpec.describe AuthenticationEvent do
     end
 
     it 'returns an array of distinct providers' do
-      expect(described_class.providers).to match_array %w[ldapmain google_oauth2 standard two-factor two-factor-via-u2f-device two-factor-via-webauthn-device]
+      expect(described_class.providers).to match_array %w[ldapmain google_oauth2 standard two-factor two-factor-via-webauthn-device]
     end
   end
 

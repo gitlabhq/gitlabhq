@@ -42,10 +42,10 @@ module Gitlab
       end
 
       def self.init_from_expanded_lines(diff_lines, bottom, closest_line_number)
-        return if diff_lines.empty?
+        return [] if diff_lines.empty?
 
         match_lines, non_match_lines = diff_lines.partition { |line| line.type == 'match' }
-        return if non_match_lines.empty?
+        return [] if non_match_lines.empty?
 
         # this is different from init_from_diff_lines which uses old_pos to determine lines in between
         # frontend always sends closest_line_number as new_pos since that is what is used by UnfoldPresenter#diff_lines

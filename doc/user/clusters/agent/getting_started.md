@@ -114,7 +114,7 @@ You can do this by bootstrapping the agent with the GitLab CLI (`glab`).
 1. In the repository where you bootstrapped Flux, run the `glab cluster agent bootstrap` command:
 
    ```shell
-   glab cluster agent bootstrap --manifest-path clusters/testing testing 
+   glab cluster agent bootstrap --manifest-path clusters/testing testing
    ```
 
 By default, the command:

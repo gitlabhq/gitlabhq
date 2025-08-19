@@ -89,7 +89,6 @@ describe('Pipeline schedules form', () => {
     wrapper = shallowMountExtended(PipelineSchedulesForm, {
       propsData: {
         timezoneData: timezoneDataFixture,
-        refParam: 'master',
         editing,
         canSetPipelineVariables,
       },

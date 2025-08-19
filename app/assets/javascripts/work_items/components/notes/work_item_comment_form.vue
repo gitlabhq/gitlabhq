@@ -2,9 +2,10 @@
 import { GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { STATE_OPEN, i18n } from '~/work_items/constants';
+import { i18n, STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -63,6 +64,10 @@ export default {
       required: true,
     },
     autosaveKey: {
+      type: String,
+      required: true,
+    },
+    autosaveKeyInternalNote: {
       type: String,
       required: true,
     },
@@ -169,7 +174,7 @@ export default {
     return {
       commentText: getDraft(this.autosaveKey) || this.initialValue || '',
       updateInProgress: false,
-      isNoteInternal: false,
+      isNoteInternal: parseBoolean(getDraft(this.autosaveKeyInternalNote)) || false,
       toggleResolveChecked: this.isDiscussionResolved,
       emailParticipants: [],
       workItem: {},
@@ -198,6 +203,9 @@ export default {
     workItemTypeKey() {
       return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
     },
+    workItemTypeId() {
+      return this.workItem?.workItemType?.id;
+    },
     showResolveDiscussionToggle() {
       return !this.isNewDiscussion && this.isDiscussionResolvable && this.hasReplies;
     },
@@ -221,6 +229,13 @@ export default {
         return ['full-screen'];
       }
       return [];
+    },
+    showStateButton() {
+      return (
+        this.isNewDiscussion &&
+        this.canUpdate &&
+        !(this.workItemState === STATE_CLOSED && this.isDiscussionLocked)
+      );
     },
   },
   apollo: {
@@ -254,7 +269,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
       skip() {
         return !this.workItemIid;
@@ -286,6 +301,10 @@ export default {
           this.$emit('stopEditing');
         }
       }
+    },
+    setInternalNoteCheckbox(value) {
+      this.isNoteInternal = value;
+      updateDraft(this.autosaveKeyInternalNote, this.isNoteInternal);
     },
     async cancelEditing() {
       // Don't cancel if autosuggest open in plain text editor
@@ -332,6 +351,7 @@ export default {
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
       }
+
       this.$emit('submitForm', {
         commentText: this.commentText,
         isNoteInternal: this.isNoteInternal,
@@ -364,6 +384,7 @@ export default {
             :data-work-item-full-path="fullPath"
             :data-work-item-id="workItemId"
             :data-work-item-iid="workItemIid"
+            :data-work-item-type-id="workItemTypeId"
             use-bottom-toolbar
             supports-quick-actions
             :autofocus="autofocus"
@@ -402,6 +423,7 @@ export default {
             v-model="isNoteInternal"
             class="gl-mb-2"
             data-testid="internal-note-checkbox"
+            @input="setInternalNoteCheckbox($event)"
           >
             {{ $options.i18n.internal }}
             <help-icon
@@ -420,7 +442,7 @@ export default {
               >{{ commentButtonTextComputed }}
             </gl-button>
             <work-item-state-toggle
-              v-if="isNewDiscussion && canUpdate"
+              v-if="showStateButton"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-state="workItemState"

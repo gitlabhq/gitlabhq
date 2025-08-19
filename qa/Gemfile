@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa', '~> 15', '>= 15.5.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 2.15.3', require: false
+gem 'gitlab_quality-test_tooling', '~> 2.19.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.1.5.1' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.27.0'
@@ -11,12 +11,12 @@ gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.3.0'
 gem 'rspec', '~> 3.13', '>= 3.13.1'
-gem 'selenium-webdriver', '= 4.34.0'
+gem 'selenium-webdriver', '= 4.35.0'
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec_junit_formatter', '~> 0.6.0'
 gem 'faker', '~> 3.5', '>= 3.5.2'
 gem 'knapsack', '~> 4.0'
-gem 'parallel_tests', '~> 5.3'
+gem 'parallel_tests', '~> 5.4'
 gem 'rotp', '~> 6.3.0'
 gem 'parallel', '~> 1.27'
 gem 'rainbow', '~> 3.1.1'
@@ -31,7 +31,7 @@ gem 'fog-google', '~> 1.25', require: false
 gem "warning", "~> 1.5"
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.18', '>= 1.18.8'
+gem 'nokogiri', '~> 1.18', '>= 1.18.9'
 
 gem 'deprecation_toolkit', '~> 2.2.3', require: false
 

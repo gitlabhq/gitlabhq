@@ -36,6 +36,7 @@ module Gitlab
       import
       jwt
       login
+      o
       oauth
       profile
       projects

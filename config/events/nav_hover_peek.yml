@@ -1,7 +1,7 @@
 ---
 description: tracks when a user hovers over or partially opens the sidebar to preview its contents without fully expanding it.
 action: nav_hover_peek
-product_group: personal_productivity
+product_group: engagement
 milestone: '16.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131028
 tiers:

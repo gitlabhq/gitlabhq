@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Manage', product_group: :import do
+  RSpec.describe 'Manage', feature_category: :importers do
     describe 'GitHub import' do
       include_context 'with github import'
 

@@ -28,13 +28,29 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
           issue.reload
 
           expect(issue).to be_closed
+          expect(issue.closed_by).to eq(developer)
+        end
+
+        context 'when auto_close_issues_stop_using_commit_author FF is disabled' do
+          before do
+            stub_feature_flags(auto_close_issues_stop_using_commit_author: false)
+          end
+
+          it 'uses author as the current user to close issues' do
+            perform_job
+
+            issue.reload
+
+            expect(issue).to be_closed
+            expect(issue.closed_by).to eq(author)
+          end
         end
 
         it "closes external issues" do
           external_issue = ExternalIssue.new("foo", project)
           closer = instance_double(Issues::CloseService, execute: true)
 
-          expect(Issues::CloseService).to receive(:new).with(container: project, current_user: author)
+          expect(Issues::CloseService).to receive(:new).with(container: project, current_user: developer)
                                                        .and_return(closer)
           expect(closer).to receive(:execute).with(external_issue, commit: commit)
 

@@ -15,7 +15,7 @@ title: SRE Considerations for Gitaly on AWS
 
 ## Gitaly SRE considerations
 
-Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is in-depth technical reading on the topic:
+Gitaly is an embedded service for Git Repository Storage. Gitaly and Gitaly Cluster (Praefect) have been engineered by GitLab to overcome fundamental challenges with horizontal scaling of the open source Git binaries that must be used on the service side of GitLab. Here is in-depth technical reading on the topic:
 
 ### Why Gitaly was built
 
@@ -28,7 +28,7 @@ If you would like to understand the underlying rationale on why GitLab had to in
 
 ### Gitaly and Praefect elections
 
-As part of Gitaly cluster consistency, Praefect nodes must occasionally vote on what data copy is the most accurate. This requires an uneven number of Praefect nodes to avoid stalemates. This means that for HA, Gitaly and Praefect require a minimum of three nodes.
+As part of Gitaly Cluster (Praefect) consistency, Praefect nodes must occasionally vote on what data copy is the most accurate. This requires an uneven number of Praefect nodes to avoid stalemates. This means that for HA, Gitaly and Praefect require a minimum of three nodes.
 
 ### Gitaly performance monitoring
 
@@ -84,7 +84,7 @@ All recommendations are for production configurations, including performance tes
 - Gitaly nodes should be selected with network bottleneck avoidance as a primary consideration.
 - Gitaly nodes should be monitored for network saturation.
 - Not all networking issues can be solved through optimizing the node level networking:
-  - Gitaly cluster node replication depends on all networking between nodes.
+  - Gitaly Cluster (Praefect) node replication depends on all networking between nodes.
   - Gitaly networking performance to pull and push endpoints depends on all networking in between.
 
 ### AWS Gitaly backup
@@ -93,7 +93,7 @@ Due to the nature of how Praefect tracks the replication metadata of Gitaly disk
 
 ### AWS Gitaly recovery
 
-Gitaly Cluster does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
+Gitaly Cluster (Praefect) does not support snapshot backups as these can cause issues where the Praefect database becomes out of syn with the disk storage. Due to the nature of how Praefect rebuilds the replication metadata of Gitaly disk information during a restore, the best recovery method is [the official backup and restore Rake tasks](../../../administration/backup_restore/_index.md).
 
 ### Gitaly long term management
 

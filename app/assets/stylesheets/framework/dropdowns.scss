@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .dropdown {
   position: relative;
 
@@ -307,7 +309,7 @@
 
   .divider {
     height: 1px;
-    margin: #{$grid-size / 2} 0;
+    margin: #{$grid-size * 0.5} 0;
     padding: 0;
     @apply gl-border-t gl-border-t-dropdown;
   }
@@ -572,7 +574,7 @@
   outline: 0;
 
   &:hover {
-    color: darken($dropdown-title-btn-color, 15%);
+    color: color.adjust($dropdown-title-btn-color, $lightness: -15%);
   }
 }
 
@@ -862,7 +864,7 @@
 }
 
 // This class won't be needed once we can add a prop for this in the GitLab UI component
-// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966 [CLOSED]
 .gl-dropdown {
   .gl-dropdown-menu-wide {
     width: $gl-dropdown-width-wide;
@@ -870,7 +872,7 @@
 }
 
 // This class won't be needed once we can add a prop for this in the GitLab UI component
-// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966
+// https://gitlab.com/gitlab-org/gitlab-ui/-/issues/966 [CLOSED]
 .gl-dropdown.gl-dropdown-menu-full-width {
   .dropdown-menu {
     width: 100%;

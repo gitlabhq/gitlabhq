@@ -1,6 +1,8 @@
 <script>
 import { GlIcon, GlIntersperse, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { eventHubByKey } from '../../utils/event_hub_factory';
+import FieldPresenter from './field.vue';
+
+const DEFAULT_PAGE_SIZE = 5;
 
 export default {
   name: 'ListPresenter',
@@ -10,18 +12,18 @@ export default {
     GlLink,
     GlSprintf,
     GlSkeletonLoader,
+    FieldPresenter,
   },
-  inject: ['presenter', 'queryKey'],
   props: {
     data: {
-      required: true,
+      required: false,
       type: Object,
-      validator: ({ nodes }) => Array.isArray(nodes),
+      default: () => ({ nodes: [] }),
     },
-    config: {
-      required: true,
-      type: Object,
-      validator: ({ fields }) => Array.isArray(fields) && fields.length > 0,
+    fields: {
+      required: false,
+      type: Array,
+      default: () => [],
     },
     listType: {
       required: false,
@@ -29,40 +31,22 @@ export default {
       default: 'ul',
       validator: (value) => ['ul', 'ol'].includes(value),
     },
-    showPreview: {
+    loading: {
       required: false,
-      type: Boolean,
+      type: [Boolean, Number],
       default: false,
     },
-  },
-  data() {
-    return {
-      eventHub: eventHubByKey(this.queryKey),
-      isLoadingMore: false,
-      pageSize: 5,
-    };
   },
   computed: {
     items() {
       return this.data.nodes || [];
     },
-    fields() {
-      return this.config.fields?.filter((item) => item.key !== 'title');
+    fieldsExceptTitle() {
+      return this.fields?.filter((item) => item.key !== 'title');
     },
-  },
-  mounted() {
-    this.eventHub.$on('loadMore', (pageSize) => {
-      this.pageSize = pageSize;
-      this.isLoadingMore = true;
-    });
-
-    this.eventHub.$on('loadMoreComplete', () => {
-      this.isLoadingMore = false;
-    });
-
-    this.eventHub.$on('loadMoreError', () => {
-      this.isLoadingMore = false;
-    });
+    pageSize() {
+      return typeof this.loading === 'number' ? this.loading : DEFAULT_PAGE_SIZE;
+    },
   },
 };
 </script>
@@ -70,10 +54,10 @@ export default {
   <component :is="listType" class="content-list !gl-mb-0" data-testid="list">
     <li
       v-for="(item, itemIndex) in items"
-      :key="itemIndex"
+      :key="item.id || itemIndex"
       class="!gl-m-0 gl-list-inside !gl-px-5 !gl-py-3 gl-transition-background hover:gl-bg-strong dark:hover:gl-bg-neutral-700"
       :class="{
-        'gl-border-b !gl-border-b-section': itemIndex !== items.length - 1 || isLoadingMore,
+        'gl-border-b !gl-border-b-section': itemIndex !== items.length - 1 || loading,
       }"
       :data-testid="`list-item-${itemIndex}`"
     >
@@ -81,18 +65,18 @@ export default {
         class="gl-str-truncated gl-inline-block gl-max-w-[calc(100%-40px)] gl-pl-2 gl-pt-1 gl-align-top"
       >
         <h3 class="!gl-heading-5 !gl-mb-1 gl-truncate">
-          <component :is="presenter.forField(item, 'title')" />
+          <field-presenter :item="item" field-key="title" />
         </h3>
         <div>
           <gl-intersperse separator=" · ">
-            <span v-for="field in fields" :key="field.key">
-              <component :is="presenter.forField(item, field.key)" />
+            <span v-for="field in fieldsExceptTitle" :key="field.key">
+              <field-presenter :item="item" :field-key="field.key" />
             </span>
           </gl-intersperse>
         </div>
       </div>
     </li>
-    <template v-if="showPreview || isLoadingMore">
+    <template v-if="loading">
       <li
         v-for="i in pageSize"
         :key="i"

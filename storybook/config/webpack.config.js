@@ -137,12 +137,6 @@ const transpileDependencyConfig = {
   loader: 'babel-loader',
   options: {
     presets: [['@babel/preset-env', { targets: { esmodules: true } }]],
-    plugins: [
-      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
-      '@babel/plugin-proposal-optional-chaining',
-      // See: https://gitlab.com/gitlab-org/gitlab/-/issues/336216
-      '@babel/plugin-proposal-nullish-coalescing-operator',
-    ],
   },
 };
 

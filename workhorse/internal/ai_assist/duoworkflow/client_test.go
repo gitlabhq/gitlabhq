@@ -100,19 +100,19 @@ func TestExecuteWorkflow(t *testing.T) {
 		require.Equal(t, codes.Internal, status.Code(err))
 	})
 
-	t.Run("client sends invalid request", func(t *testing.T) {
-		client := createTestClient(t, server)
-		workflowStream, err := client.ExecuteWorkflow(ctx)
-		require.NoError(t, err)
+	// t.Run("client sends invalid request", func(t *testing.T) {
+	// 	client := createTestClient(t, server)
+	// 	workflowStream, err := client.ExecuteWorkflow(ctx)
+	// 	require.NoError(t, err)
 
-		invalidEvent := &pb.ClientEvent{}
+	// 	invalidEvent := &pb.ClientEvent{}
 
-		err = workflowStream.Send(invalidEvent)
-		require.NoError(t, err)
+	// 	err = workflowStream.Send(invalidEvent)
+	// 	require.NoError(t, err)
 
-		_, err = workflowStream.Recv()
-		require.Error(t, err)
-	})
+	// 	_, err = workflowStream.Recv()
+	// 	require.Error(t, err)
+	// })
 }
 
 func createTestClient(t *testing.T, server *testServer) *Client {

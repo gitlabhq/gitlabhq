@@ -82,7 +82,7 @@ describe('BroadcastMessagesBase', () => {
     expect(
       findTable()
         .props('messages')
-        .find((m) => m.id.id === id.id),
+        .find((m) => m.id === id),
     ).not.toBeUndefined();
     expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -102,7 +102,7 @@ describe('BroadcastMessagesBase', () => {
     expect(
       findTable()
         .props('messages')
-        .find((m) => m.id.id === id.id),
+        .find((m) => m.id === id),
     ).toBeUndefined();
     expect(findPagination().props('totalItems')).toBe(MOCK_MESSAGES.length - 1);
   });

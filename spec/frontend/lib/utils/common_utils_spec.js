@@ -718,6 +718,14 @@ describe('common_utils', () => {
         '<svg class="first-icon-class second-icon-class"><use xlink:href="icons.svg#test" /></svg>',
       );
     });
+
+    it('should set color in style attribute when passed', () => {
+      expect(
+        commonUtils.spriteIcon('test', 'first-icon-class second-icon-class', '#BADA55'),
+      ).toEqual(
+        '<svg class="first-icon-class second-icon-class" style="color: #BADA55;"><use xlink:href="icons.svg#test" /></svg>',
+      );
+    });
   });
 
   describe('convertObjectProps*', () => {

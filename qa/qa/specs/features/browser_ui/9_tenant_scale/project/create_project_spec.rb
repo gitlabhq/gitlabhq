@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale', :smoke, product_group: :organizations, feature_flag: {
+  RSpec.describe 'Tenant Scale', :smoke, feature_category: :organization, feature_flag: {
     name: 'new_project_creation_form'
   } do
     describe 'Project' do

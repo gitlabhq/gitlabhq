@@ -1,14 +1,12 @@
-import { GlButton, GlFormCheckbox, GlKeysetPagination } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlButton, GlFormCheckbox, GlKeysetPagination, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import component from '~/packages_and_registries/shared/components/registry_list.vue';
+import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 
 describe('Registry List', () => {
   let wrapper;
 
   const items = [{ id: 'a' }, { id: 'b' }];
   const defaultPropsData = {
-    title: 'test_title',
     items,
   };
 
@@ -20,15 +18,19 @@ describe('Registry List', () => {
   </div>`;
 
   const mountComponent = ({ propsData = defaultPropsData } = {}) => {
-    wrapper = shallowMountExtended(component, {
+    wrapper = shallowMountExtended(RegistryList, {
       propsData,
       scopedSlots: {
         default: rowScopedSlot,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
 
   const findSelectAll = () => wrapper.findComponent(GlFormCheckbox);
+  const findSelectedCount = () => wrapper.findByTestId('selected-count');
   const findDeleteSelected = () => wrapper.findComponent(GlButton);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findScopedSlots = () => wrapper.findAllByTestId('scoped-slot');
@@ -37,12 +39,6 @@ describe('Registry List', () => {
   const findScopedSlotIsSelectedValue = (index) => findScopedSlots().at(index).find('p');
 
   describe('header', () => {
-    it('renders the title passed in the prop', () => {
-      mountComponent();
-
-      expect(wrapper.text()).toContain(defaultPropsData.title);
-    });
-
     describe('select all checkbox', () => {
       beforeEach(() => {
         mountComponent();
@@ -50,7 +46,7 @@ describe('Registry List', () => {
 
       it('exists', () => {
         expect(findSelectAll().exists()).toBe(true);
-        expect(findSelectAll().attributes('aria-label')).toBe('Select all');
+        expect(findSelectAll().text()).toBe('Select all');
         expect(findSelectAll().attributes('disabled')).toBeUndefined();
         expect(findSelectAll().attributes('indeterminate')).toBeUndefined();
       });
@@ -68,10 +64,20 @@ describe('Registry List', () => {
       });
 
       it('when all are selected, sets the right checkbox label', async () => {
-        findSelectAll().vm.$emit('change', true);
-        await nextTick();
+        await findSelectAll().vm.$emit('change', true);
 
-        expect(findSelectAll().attributes('aria-label')).toBe('Unselect all');
+        expect(findSelectAll().text()).toBe('Clear all');
+        expect(findSelectedCount().text()).toBe('2 selected');
+      });
+
+      it('when some items are marked as not selectable', async () => {
+        mountComponent({
+          propsData: { ...defaultPropsData, unSelectableItemIds: ['b'] },
+        });
+
+        await findSelectAll().vm.$emit('change', true);
+
+        expect(findSelectedCount().text()).toBe('1 selected');
       });
 
       it('select and unselect all', async () => {
@@ -81,8 +87,7 @@ describe('Registry List', () => {
         });
 
         // simulate selection
-        findSelectAll().vm.$emit('change', true);
-        await nextTick();
+        await findSelectAll().vm.$emit('change', true);
 
         // all rows selected
         items.forEach((item, index) => {
@@ -90,8 +95,7 @@ describe('Registry List', () => {
         });
 
         // simulate de-selection
-        findSelectAll().vm.$emit('change', false);
-        await nextTick();
+        await findSelectAll().vm.$emit('change', false);
 
         // no row is not selected
         items.forEach((item, index) => {
@@ -101,10 +105,26 @@ describe('Registry List', () => {
     });
 
     describe('delete button', () => {
-      it('has the correct text', () => {
+      it('is hidden when no row is selected', () => {
         mountComponent();
 
-        expect(findDeleteSelected().text()).toBe(component.i18n.deleteSelected);
+        expect(findDeleteSelected().exists()).toBe(false);
+      });
+
+      it('is shown when `Select all` is selected', async () => {
+        mountComponent();
+
+        await findSelectAll().vm.$emit('change', true);
+
+        expect(findDeleteSelected().text()).toBe('Delete selected');
+      });
+
+      it('is shown when row is selected', async () => {
+        mountComponent();
+
+        await findScopedSlotSelectButton(0).trigger('click');
+
+        expect(findDeleteSelected().exists()).toBe(true);
       });
 
       describe('when hiddenDelete is true', () => {
@@ -122,22 +142,6 @@ describe('Registry List', () => {
           // it's the first slot
           expect(findScopedSlotFirstValue(0).text()).toBe('false');
         });
-      });
-
-      it('is disabled when isLoading is true', () => {
-        mountComponent({ propsData: { ...defaultPropsData, isLoading: true } });
-
-        expect(findDeleteSelected().props('disabled')).toBe(true);
-      });
-
-      it('is disabled when no row is selected', async () => {
-        mountComponent();
-
-        expect(findDeleteSelected().props('disabled')).toBe(true);
-
-        await findScopedSlotSelectButton(0).trigger('click');
-
-        expect(findDeleteSelected().props('disabled')).toBe(false);
       });
 
       it('on click emits the delete event with the selected rows', async () => {

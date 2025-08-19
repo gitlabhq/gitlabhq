@@ -100,6 +100,22 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
     end
 
+    context 'when display_pipeline_variables is updated' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          display_pipeline_variables: true
+        }
+      end
+
+      it 'updates the setting' do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.reload.ci_cd_settings.display_pipeline_variables).to be(true)
+      end
+    end
+
     context 'when job_token_scope_enabled: true' do
       let(:variables) do
         {

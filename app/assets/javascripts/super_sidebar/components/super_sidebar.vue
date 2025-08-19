@@ -1,12 +1,12 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
-import ExtraInfo from 'jh_else_ce/super_sidebar/components/extra_info.vue';
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   sidebarState,
   JS_TOGGLE_EXPAND_CLASS,
@@ -29,7 +29,6 @@ export default {
     GlButton,
     UserBar,
     HelpCenter,
-    ExtraInfo,
     SidebarMenu,
     SidebarPeekBehavior,
     SidebarHoverPeekBehavior,
@@ -37,7 +36,7 @@ export default {
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
@@ -171,7 +170,7 @@ export default {
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.isAdmin) {
+      if (this.isAdmin && !this.glFeatures.globalTopbar) {
         return this.$refs.adminAreaLink.$el;
       }
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -223,12 +222,17 @@ export default {
       <h2 id="super-sidebar-heading" class="gl-sr-only">
         {{ $options.i18n.primaryNavigation }}
       </h2>
-      <user-bar ref="userBar" :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
+      <user-bar
+        v-if="!glFeatures.globalTopbar"
+        ref="userBar"
+        :has-collapse-button="!showOverlay"
+        :sidebar-data="sidebarData"
+      />
       <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <div
           v-if="sidebarData.current_context_header"
           id="super-sidebar-context-header"
-          class="super-sidebar-context-header gl-m-0 gl-px-4 gl-py-3 gl-font-bold gl-leading-reset"
+          class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
           {{ sidebarData.current_context_header }}
         </div>
@@ -253,7 +257,7 @@ export default {
             <help-center ref="helpCenter" :sidebar-data="sidebarData" />
 
             <gl-button
-              v-if="isAdmin"
+              v-if="isAdmin && !glFeatures.globalTopbar"
               ref="adminAreaLink"
               class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
               data-testid="sidebar-admin-link"
@@ -264,7 +268,6 @@ export default {
               {{ $options.i18n.adminArea }}
             </gl-button>
           </div>
-          <extra-info />
         </div>
       </div>
     </nav>

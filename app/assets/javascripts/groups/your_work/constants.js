@@ -9,6 +9,7 @@ import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_proj
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGroups } from './utils';
 import groupsQuery from './graphql/queries/groups.query.graphql';
+import activeGroupsQuery from './graphql/queries/active_groups.query.graphql';
 
 const baseTab = {
   formatter: formatGroups,
@@ -32,6 +33,7 @@ export const MEMBER_TAB = {
   text: __('Member'),
   value: 'member',
   countsQueryPath: 'member',
+  query: activeGroupsQuery,
 };
 
 export const INACTIVE_TAB = {
@@ -66,7 +68,8 @@ export const SORT_OPTIONS = [SORT_OPTION_NAME, SORT_OPTION_CREATED, SORT_OPTION_
 
 export const GROUP_DASHBOARD_TABS = [MEMBER_TAB, INACTIVE_TAB];
 
-export const BASE_ROUTE = '/dashboard/groups';
+const organizationPath = gon?.current_organization?.full_path || '';
+export const BASE_ROUTE = `${organizationPath}/dashboard/groups`;
 
 export const GROUPS_DASHBOARD_ROUTE_NAME = 'groups-dashboard';
 

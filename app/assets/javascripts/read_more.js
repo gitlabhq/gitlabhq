@@ -40,7 +40,7 @@ export default function initReadMore(triggerSelector = '.js-read-more-trigger') 
       // and scroll to element
       if (window.location.hash) {
         const targetId = window.location.href.split('#')[1];
-        const hashTargetEl = readMoreContent.querySelector(`#user-content-${targetId}`);
+        const hashTargetEl = readMoreContent.querySelector(`#user-content-${CSS.escape(targetId)}`);
 
         if (hashTargetEl) {
           targetEl.classList.add('is-expanded');

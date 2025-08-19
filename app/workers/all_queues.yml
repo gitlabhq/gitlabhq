@@ -143,6 +143,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :chaos
+- :name: chaos:chaos_db_sleep
+  :worker_name: Chaos::DbSleepWorker
+  :feature_category: :not_owned
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 2
+  :idempotent: false
+  :tags: []
+  :queue_namespace: :chaos
 - :name: chaos:chaos_db_spin
   :worker_name: Chaos::DbSpinWorker
   :feature_category: :not_owned
@@ -636,6 +646,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:deploy_tokens_expiring
+  :worker_name: DeployTokens::ExpiringWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:environments_auto_delete_cron
   :worker_name: Environments::AutoDeleteCronWorker
   :feature_category: :continuous_delivery
@@ -769,6 +789,16 @@
 - :name: cronjob:loose_foreign_keys_cleanup
   :worker_name: LooseForeignKeys::CleanupWorker
   :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:loose_foreign_keys_merge_request_diff_commit_cleanup
+  :worker_name: LooseForeignKeys::MergeRequestDiffCommitCleanupWorker
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2191,6 +2221,17 @@
   :tags:
   - :cronjob_child
   :queue_namespace: :package_cleanup
+- :name: package_cleanup:packages_helm_cleanup_stale_metadata_cache
+  :worker_name: Packages::Helm::CleanupStaleMetadataCacheWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags:
+  - :cronjob_child
+  :queue_namespace: :package_cleanup
 - :name: package_cleanup:packages_mark_package_files_for_destruction
   :worker_name: Packages::MarkPackageFilesForDestructionWorker
   :feature_category: :package_registry
@@ -2255,6 +2296,16 @@
   :queue_namespace: :package_repositories
 - :name: package_repositories:packages_go_sync_packages
   :worker_name: Packages::Go::SyncPackagesWorker
+  :feature_category: :package_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :package_repositories
+- :name: package_repositories:packages_helm_create_metadata_cache
+  :worker_name: Packages::Helm::CreateMetadataCacheWorker
   :feature_category: :package_registry
   :has_external_dependencies: false
   :urgency: :low
@@ -3507,9 +3558,9 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: ci_slsa_publish_statement
-  :worker_name: Ci::Slsa::PublishStatementWorker
-  :feature_category: :continuous_integration
+- :name: ci_slsa_publish_provenance
+  :worker_name: Ci::Slsa::PublishProvenanceWorker
+  :feature_category: :artifact_security
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3588,9 +3639,29 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: database_collation_checker
+  :worker_name: Database::CollationCheckerWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: database_lock_tables
   :worker_name: Database::LockTablesWorker
   :feature_category: :cell
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: database_schema_checker
+  :worker_name: Database::SchemaCheckerWorker
+  :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

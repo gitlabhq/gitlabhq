@@ -1,0 +1,51 @@
+<script>
+import { GlBreadcrumb } from '@gitlab/ui';
+import { joinPaths, buildURLwithRefType, escapeFileUrl } from '~/lib/utils/url_utility';
+
+export default {
+  name: 'CommitListBreadcrumb',
+  components: {
+    GlBreadcrumb,
+  },
+  inject: ['projectFullPath', 'projectPath', 'escapedRef', 'refType', 'path'],
+  computed: {
+    breadcrumbItems() {
+      const items = [];
+
+      const projectRootUrl = buildURLwithRefType({
+        path: joinPaths(this.projectFullPath, '/-/commits', this.escapedRef),
+        refType: this.refType,
+      });
+
+      items.push({
+        text: this.projectPath,
+        to: projectRootUrl,
+      });
+
+      if (this.path) {
+        const parts = this.path.split('/').filter(Boolean);
+
+        parts.forEach((part, index) => {
+          const escapedParts = parts.slice(0, index + 1).map((p) => escapeFileUrl(p));
+          const pathUpToHere = escapedParts.join('/');
+          const segmentUrl = buildURLwithRefType({
+            path: joinPaths(this.projectFullPath, '-/commits', this.escapedRef, pathUpToHere),
+            refType: this.refType,
+          });
+
+          items.push({
+            text: part,
+            to: segmentUrl,
+          });
+        });
+      }
+
+      return items;
+    },
+  },
+};
+</script>
+
+<template>
+  <gl-breadcrumb :items="breadcrumbItems" :aria-label="__('Commits breadcrumb')" size="md" />
+</template>

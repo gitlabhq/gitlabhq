@@ -75,12 +75,7 @@ export default {
 
     <hr />
 
-    <gcp-regions-list
-      class="gl-mx-4"
-      :empty-illustration-url="emptyIllustrationUrl"
-      :create-url="configureGcpRegionsUrl"
-      :list="gcpRegions"
-    />
+    <gcp-regions-list class="gl-mx-4" :create-url="configureGcpRegionsUrl" :list="gcpRegions" />
 
     <hr v-if="revokeOauthUrl" />
 

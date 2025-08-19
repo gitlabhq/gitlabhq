@@ -56,6 +56,7 @@ module Gitlab
           namespace_exists: { threshold: 20, interval: 1.minute },
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           notification_emails: { threshold: 1000, interval: 1.day },
+          oauth_dynamic_registration: { threshold: 5, interval: 1.hour },
           permanent_email_failure: { threshold: 5, interval: 1.day },
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },
@@ -276,6 +277,8 @@ module Gitlab
 
                   strategy.increment(cache_key, expiry)
                 end
+
+        return false if value.nil?
 
         report_metrics(key, value, threshold_value, peek)
 

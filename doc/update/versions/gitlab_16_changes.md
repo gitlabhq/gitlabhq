@@ -2,7 +2,8 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab 16 changes
+title: GitLab 16 upgrade notes
+description: Upgrade notes for GitLab 16 versions.
 ---
 
 {{< details >}}
@@ -18,7 +19,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for 7.0](https://docs.gitlab.com/charts/releases/7_0.html).
+For additional information for Helm chart installations, see
+[the Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0.html).
 
 ## Issues to be aware of when upgrading from 15.11
 
@@ -285,10 +287,8 @@ planned for release in 16.9.1.
 
 ## 16.8.0
 
-- In GitLab 16.8.0 and 16.8.1, the Sidekiq gem was upgraded, and the newer version requires Redis 6.2 or later. If you are using Redis 6.0, upgrade
-  directly to 16.8.2, which [restores compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
-- NOTE: You should upgrade to Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
-
+- GitLab 16.8.0 and 16.8.1 temporarily required Redis 6.2. GitLab 16.8.2 restored
+  [compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
@@ -538,7 +538,7 @@ Specific information applies to Linux package installations:
 
 ## 16.5.0
 
-- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - A regression may sometimes cause an [HTTP 500 error when navigating a group](https://gitlab.com/gitlab-org/gitlab/-/issues/431659). Upgrading to GitLab 16.6 or later resolves the issue.
 - A regression may cause [Unselected Advanced Search facets to not load](https://gitlab.com/gitlab-org/gitlab/-/issues/428246). Upgrading to 16.6 or later resolves the issue.
 - The `unique_batched_background_migrations_queued_migration_version` index was
@@ -762,7 +762,7 @@ Specific information applies to installations using Geo:
 
 - Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-    **Affected releases**:
+  **Affected releases**:
 
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
@@ -880,7 +880,7 @@ Specific information applies to installations using Geo:
 
 - A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
   the `EnsureAgainBackfillForCiPipelineVariablesPipelineIdIsFinished` post-deploy migration.
-  GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 16.2.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `bigint` `pipeline_id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123132). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.3.
@@ -1078,7 +1078,7 @@ Specific information applies to Linux package installations:
 
 ### Self-compiled installations
 
-- Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.41.0 and later is required by Gitaly. You should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 
 ### Geo installations
 
@@ -1113,14 +1113,14 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
 
 - A `BackfillPreparedAtMergeRequests` background migration is finalized with
   the `FinalizeBackFillPreparedAtMergeRequests` post-deploy migration.
-  GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 15.10.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `prepared_at` values on the `merge_requests` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111865). This
   migration may take multiple days to complete on larger GitLab instances. Make sure the migration
   has completed successfully before upgrading to 16.1.0.
-- GitLab 16.1.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) `MarkDuplicateNpmPackagesForDestruction` to mark duplicate NPM packages for destruction. Make sure the migration has completed successfully before upgrading to 16.3.0 or later.
+- GitLab 16.1.0 includes a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) `MarkDuplicateNpmPackagesForDestruction` to mark duplicate NPM packages for destruction. Make sure the migration has completed successfully before upgrading to 16.3.0 or later.
 - A `BackfillCiPipelineVariablesForBigintConversion` background migration is finalized with
   the `EnsureBackfillBigintIdIsCompleted` post-deploy migration.
-  GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+  GitLab 16.0.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
   [backfill `bigint` `id` values on the `ci_pipeline_variables` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118878). This
   migration may take a long time to complete on larger GitLab instances (4 hours to process 50 million rows reported in one case).
   To avoid a prolonged upgrade downtime, make sure the migration has completed successfully before upgrading to 16.1.
@@ -1311,15 +1311,15 @@ Migrate by moving your existing configuration under the new structure. `git_data
 
 {{< alert type="warning" >}}
 
-If you are running Gitaly cluster, [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
+If you are running Gitaly Cluster (Praefect), [migrate Praefect to the new configuration structure **first**](#praefect-configuration-structure-change).
 Once this change is tested, proceed with your Gitaly nodes.
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
-will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
+will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 
 {{< /alert >}}
 
-1. If you're running Gitaly Cluster, ensure repository verification is disabled on all Praefect nodes.
+1. If you're running Gitaly Cluster (Praefect), ensure repository verification is disabled on all Praefect nodes.
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
 1. To apply the new structure to your configuration:
    1. Replace the `...` with the value from the old key.
@@ -1331,7 +1331,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
-1. Recommended, if you're running Gitaly Cluster. Reinstate Praefect [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
+1. Recommended, if you're running Gitaly Cluster (Praefect). Reinstate Praefect [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
    by removing `verification_interval: 0`.
 
 The new structure is documented in the following script with the old keys described in a comment above the new keys.
@@ -1506,7 +1506,7 @@ Migrate by moving your existing configuration under the new structure. The new s
 Migrate Praefect to the new configuration structure **first**.
 Once this change is tested, [proceed with your Gitaly nodes](#gitaly-configuration-structure-change).
 If Gitaly is misconfigured as part of the configuration structure change, [repository verification](../../administration/gitaly/praefect/configure.md#repository-verification)
-will [delete metadata required for Gitaly cluster to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
+will [delete metadata required for Gitaly Cluster (Praefect) to work](https://gitlab.com/gitlab-org/gitaly/-/issues/5529).
 To protect against configuration mistakes, temporarily disable repository verification in Praefect.
 
 {{< /alert >}}
@@ -1713,7 +1713,7 @@ The threshold is **30,000 users**, which includes:
 - Developers and other users in any state, including active, blocked, and pending approval.
 - Bot accounts for project and group access tokens.
 
-GitLab 16.0 introduced a [batched background migration](../background_migrations.md#batched-background-migrations) to
+GitLab 16.0 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations) to
 [migrate `user_type` values from `NULL` to `0`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115849). This
 migration might take multiple days to complete on larger GitLab instances. Make sure the migration
 has completed successfully before upgrading to 16.1.0 or later.

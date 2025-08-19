@@ -87,7 +87,7 @@ Dependency Scanning does not support runtime installation of compilers and inter
 {{< /alert >}}
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an overview, see [Dependency Scanning](https://www.youtube.com/watch?v=TBnfbGk4c4o)
+  For an overview, see [Dependency Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -309,7 +309,7 @@ merge cyclonedx sboms:
 
 After you are confident in the Dependency Scanning results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scannign settings across groups.
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scanning settings across groups.
 - If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../offline_deployments/_index.md).
 
 ## Supported languages and package managers
@@ -1390,15 +1390,15 @@ Follow these steps to modify the `settings.xml` file:
 1. If a `<pluginRepositories>` section already exists, add only the following `<pluginRepository>` element inside it.
 Otherwise, add the entire `<pluginRepositories>` section:
 
-      ```xml
-        <pluginRepositories>
-          <pluginRepository>
-              <id>local2</id>
-              <name>local repository</name>
-              <url>file:///root/.m2/repository/</url>
-          </pluginRepository>
-        </pluginRepositories>
-      ```
+   ```xml
+     <pluginRepositories>
+       <pluginRepository>
+           <id>local2</id>
+           <name>local repository</name>
+           <url>file:///root/.m2/repository/</url>
+       </pluginRepository>
+     </pluginRepositories>
+   ```
 
 1. Run your Maven build or dependency scanning process again.
 
@@ -1407,10 +1407,14 @@ Otherwise, add the entire `<pluginRepositories>` section:
 Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/indexes.html)
 environment variable due to a possible exploit documented by [CVE-2018-20225](https://nvd.nist.gov/vuln/detail/CVE-2018-20225):
 
-> An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had
+{{< alert type="warning" >}}
+
+An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had
 intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
 requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
 version number).
+
+{{< /alert >}}
 
 ### Version number parsing
 

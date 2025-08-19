@@ -251,6 +251,7 @@ export default {
     <div v-if="showFilteredSearch" :class="$options.filterSearchBoxStyles">
       <jobs-filtered-search
         :query-string="validatedQueryString"
+        admin
         @filterJobsBySearch="filterJobsBySearch"
       />
     </div>

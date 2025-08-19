@@ -33,14 +33,18 @@ module Import
     #
     # @param project [Project]
     # @param identifier [String, Integer]
+    # @param placholder_user [User] Sets a specific placeholder when given. Otherwise, use factory default.
     # @return [Import::SourceUser]
-    def generate_source_user(project, identifier)
+    def generate_source_user(project, identifier, placeholder_user: nil)
+      create_properties = placeholder_user.present? ? { placeholder_user: placeholder_user } : {}
+
       create(
         :import_source_user,
         source_user_identifier: identifier,
         source_hostname: project.safe_import_url,
         import_type: project.import_type,
-        namespace: project.root_ancestor
+        namespace: project.root_ancestor,
+        **create_properties
       )
     end
   end

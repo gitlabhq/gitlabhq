@@ -281,7 +281,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 
 ### Error response received while categorizing question
 
-  - Description: logged when response returned is not succesful
+  - Description: logged when response returned is not successful
   - Class: `Gitlab::Llm::AiGateway::Completions::CategorizeQuestions`
   - Ai_event_name: error
   - Level: error

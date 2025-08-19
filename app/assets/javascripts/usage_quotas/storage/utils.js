@@ -28,6 +28,7 @@ export const getStorageTabMetadata = ({
     title: __('Storage'),
     hash: '#storage-quota-tab',
     testid: 'storage-tab',
+    featureCategory: 'consumables_cost_management',
     component: {
       name: 'NamespaceStorageTab',
       provide: parseProvideData(el),

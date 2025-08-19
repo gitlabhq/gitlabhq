@@ -10,6 +10,11 @@ class Import::BaseController < ApplicationController
       redirect_back: true
     )
   }, only: [:create]
+
+  before_action do
+    push_frontend_feature_flag(:user_mapping_to_personal_namespace_owner, current_user)
+  end
+
   feature_category :importers
   urgency :low
 

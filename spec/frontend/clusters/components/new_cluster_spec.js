@@ -1,6 +1,6 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NewCluster from '~/clusters/components/new_cluster.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
@@ -8,11 +8,11 @@ describe('NewCluster', () => {
   let wrapper;
 
   const createWrapper = async () => {
-    wrapper = shallowMount(NewCluster, { stubs: { GlLink, GlSprintf } });
+    wrapper = shallowMountExtended(NewCluster, { stubs: { GlLink, GlSprintf } });
     await nextTick();
   };
 
-  const findDescription = () => wrapper.findComponent(GlSprintf);
+  const findDescription = () => wrapper.findByTestId('description');
 
   const findLink = () => wrapper.findComponent(GlLink);
 

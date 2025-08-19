@@ -15,6 +15,7 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import Translate from '~/vue_shared/translate';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import SubmitReviewButton from '~/batch_comments/components/submit_review_button.vue';
+import { pinia } from '~/pinia/instance';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
@@ -48,7 +49,7 @@ function getSidebarOptions(sidebarOptEl = document.querySelector('.js-sidebar-op
   return JSON.parse(sidebarOptEl.innerHTML);
 }
 
-function mountSubmitReviewButton(pinia) {
+function mountSubmitReviewButton() {
   const el = document.querySelector('#js-submit-review-button');
 
   // eslint-disable-next-line no-new
@@ -140,7 +141,7 @@ function mountSidebarAssigneesWidget() {
   });
 }
 
-function mountSidebarReviewers(mediator, pinia) {
+function mountSidebarReviewers(mediator) {
   const el = document.querySelector('.js-sidebar-reviewers-root');
 
   if (!el) {
@@ -397,10 +398,10 @@ function mountSidebarReferenceWidget() {
   });
 }
 
-function mountIssuableLockForm(store, pinia) {
+function mountIssuableLockForm() {
   const el = document.querySelector('.js-sidebar-lock-root');
 
-  if (!el || !store) {
+  if (!el) {
     return null;
   }
 
@@ -410,7 +411,6 @@ function mountIssuableLockForm(store, pinia) {
     el,
     name: 'SidebarLockRoot',
     pinia,
-    store,
     provide: {
       fullPath,
     },
@@ -737,16 +737,16 @@ export function mountAssigneesDropdown() {
   });
 }
 
-export function mountSidebar(mediator, store, pinia) {
+export function mountSidebar(mediator) {
   mountSidebarTodoWidget();
   mountSidebarAssigneesWidget();
-  mountSidebarReviewers(mediator, pinia);
+  mountSidebarReviewers(mediator);
   mountSidebarCrmContacts();
   mountSidebarLabelsWidget();
   mountSidebarMilestoneWidget();
   mountSidebarDueDateWidget();
   mountSidebarReferenceWidget();
-  mountIssuableLockForm(store, pinia);
+  mountIssuableLockForm();
   mountSidebarParticipantsWidget();
   mountSidebarSubscriptionsWidget();
   mountCopyEmailToClipboard();
@@ -754,7 +754,7 @@ export function mountSidebar(mediator, store, pinia) {
   mountSidebarSeverityWidget();
   mountSidebarEscalationStatus();
   mountMoveIssueButton();
-  mountSubmitReviewButton(pinia);
+  mountSubmitReviewButton();
 }
 
 export { getSidebarOptions };

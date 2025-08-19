@@ -25,13 +25,7 @@ class PostReceiveService
     # request synchronously, we can't rely on that, so invalidate the cache here
     repository&.expire_branches_cache if mr_options&.fetch(:create, false)
 
-    if project && repository && Feature.enabled?(:rename_post_receive_worker, project, type: :gitlab_com_derisk)
-      Repositories::PostReceiveWorker.perform_async(params[:gl_repository], params[:identifier],
-        params[:changes], push_options.as_json)
-    else
-      PostReceive.perform_async(params[:gl_repository], params[:identifier],
-        params[:changes], push_options.as_json)
-    end
+    schedule_post_receive_worker
 
     if mr_options.present?
       message = process_mr_push_options(mr_options, params[:changes])
@@ -41,15 +35,7 @@ class PostReceiveService
     response.add_alert_message(broadcast_message)
     response.add_merge_request_urls(merge_request_urls)
 
-    # Neither User nor Repository are guaranteed to be returned; an orphaned write deploy
-    # key could be used
-    if user && repository
-      redirect_message = Gitlab::Checks::ContainerMoved.fetch_message(user, repository)
-      project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user, repository)
-
-      response.add_basic_message(redirect_message)
-      response.add_basic_message(project_created_message)
-    end
+    add_user_repository_messages(response)
 
     response
   end
@@ -91,6 +77,37 @@ class PostReceiveService
   end
 
   private
+
+  def schedule_post_receive_worker
+    worker = if project && repository && Feature.enabled?(:rename_post_receive_worker, project,
+      type: :gitlab_com_derisk)
+               Repositories::PostReceiveWorker
+             else
+               PostReceive
+             end
+
+    worker_params = { 'gitaly_context' => params[:gitaly_context] }
+
+    if Feature.enabled?(:allow_push_repository_for_job_token, project)
+      worker.perform_async(params[:gl_repository], params[:identifier],
+        params[:changes], push_options.as_json, worker_params)
+    else
+      worker.perform_async(params[:gl_repository], params[:identifier],
+        params[:changes], push_options.as_json)
+    end
+  end
+
+  def add_user_repository_messages(response)
+    # Neither User nor Repository are guaranteed to be returned; an orphaned write deploy
+    # key could be used
+    return unless user && repository
+
+    redirect_message = Gitlab::Checks::ContainerMoved.fetch_message(user, repository)
+    project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user, repository)
+
+    response.add_basic_message(redirect_message)
+    response.add_basic_message(project_created_message)
+  end
 
   def broadcast_message
     banner = nil

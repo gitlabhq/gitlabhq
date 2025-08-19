@@ -41,6 +41,12 @@ module WorkerAttributes
 
   DEFAULT_DEFER_DELAY = 5.seconds
 
+  DEFAULT_CONCURRENCY_LIMIT_PERCENTAGE_BY_URGENCY = {
+    high: 0.35,
+    low: 0.25,
+    throttled: 0.15
+  }.freeze
+
   class_methods do
     def feature_category(value, *extras)
       set_class_attribute(:feature_category, value)
@@ -204,6 +210,21 @@ module WorkerAttributes
       )
     end
 
+    # If concurrency_limit attribute is not defined, this sets the maximum percentage of fleet
+    # that this worker can use.
+    # For example, 0.3 means the worker class is allowed to use 30% of the fleet's threads concurrently.
+    def max_concurrency_limit_percentage(value)
+      unless value.is_a?(Numeric) && value.between?(0, 1)
+        raise ArgumentError, "max_concurrency_limit_percentage must be a number between 0 and 1, got: #{value.inspect}"
+      end
+
+      set_class_attribute(:max_concurrency_limit_percentage, value)
+    end
+
+    def get_max_concurrency_limit_percentage
+      get_class_attribute(:max_concurrency_limit_percentage) || DEFAULT_CONCURRENCY_LIMIT_PERCENTAGE_BY_URGENCY.fetch(get_urgency)
+    end
+
     def get_weight
       get_class_attribute(:weight) ||
         NAMESPACE_WEIGHTS[queue_namespace] ||
@@ -253,7 +274,7 @@ module WorkerAttributes
       )
     end
 
-    def defer_on_database_health_signal?
+    def defer_on_database_health_signal?(job_args: [])
       database_health_check_attrs.present?
     end
 

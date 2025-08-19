@@ -7,7 +7,7 @@ https://about.gitlab.com/handbook/engineering/workflow/#a-guide-to-creating-effe
 
 ## Summary
 <!--
-Clearly state the scope of the problem, and how it affects GitLab.com
+Clearly state the scope of the problem, and how it affects GitLab SaaS Platforms
 -->
 
 

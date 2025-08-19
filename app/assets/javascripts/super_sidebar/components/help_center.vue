@@ -166,13 +166,11 @@ export default {
   },
   methods: {
     shouldShowWhatsNewNotification() {
-      if (
-        !this.sidebarData.display_whats_new ||
-        localStorage.getItem(STORAGE_KEY) === this.sidebarData.whats_new_version_digest
-      ) {
+      if (!localStorage || !this.sidebarData.display_whats_new) {
         return false;
       }
-      return true;
+
+      return localStorage.getItem(STORAGE_KEY) !== this.sidebarData.whats_new_version_digest;
     },
 
     async showWhatsNew() {
@@ -216,22 +214,22 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-mr-2 gl-flex gl-flex-col gl-gap-2 gl-pl-2">
     <gl-button
       v-if="showWhatsNewNotification"
-      class="gl-w-full !gl-justify-start"
+      class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-pr-3"
       category="tertiary"
       icon="compass"
       data-testid="sidebar-whatsnew-button"
       data-track-action="click_button"
       data-track-label="whats_new"
       data-track-property="nav_whats_new"
-      button-text-classes="gl-w-full gl-flex gl-items-center gl-justify-between"
+      button-text-classes="gl-w-full gl-flex gl-items-center gl-justify-between gl-font-semibold !gl-text-default"
       @click="showWhatsNew"
     >
       {{ $options.i18n.whatsnew }}
 
-      <gl-badge aria-hidden="true" data-testid="notification-count">
+      <gl-badge variant="neutral" aria-hidden="true" data-testid="notification-count">
         <span class="gl-m-1 gl-min-w-3">
           {{ sidebarData.whats_new_most_recent_release_items_count }}
         </span>
@@ -239,6 +237,7 @@ export default {
     </gl-button>
 
     <gl-disclosure-dropdown
+      class="super-sidebar-help-center-dropdown"
       :dropdown-offset="$options.dropdownOffset"
       @shown="trackDropdownToggle(true)"
       @hidden="trackDropdownToggle(false)"
@@ -247,7 +246,8 @@ export default {
         <gl-button
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle"
+          class="super-sidebar-help-center-toggle !gl-justify-start gl-gap-3 !gl-py-2 gl-font-semibold"
+          button-text-classes="!gl-text-default"
           data-testid="sidebar-help-button"
         >
           {{ $options.i18n.help }}

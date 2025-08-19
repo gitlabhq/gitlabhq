@@ -26,6 +26,14 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect(new_token.organization).to eq(token.organization)
         expect(new_token.description).to eq(token.description)
       end
+
+      it 'notifies the user' do
+        expect_next_instance_of(NotificationService) do |notification_service|
+          expect(notification_service).to receive(:access_token_rotated).with(token.user, token.name)
+        end
+
+        response
+      end
     end
 
     it_behaves_like "rotates token successfully"

@@ -6,49 +6,26 @@ require_relative '../../../../../tooling/lib/tooling/mappings/view_to_js_mapping
 RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :view_base_folder, :js_base_folder
-  attr_accessor :changed_files_file, :predictive_tests_file
 
-  let(:changed_files_pathname)    { changed_files_file.path }
-  let(:predictive_tests_pathname) { predictive_tests_file.path }
-  let(:changed_files_content)     { "changed_file1 changed_file2" }
-  let(:predictive_tests_content)  { "previously_matching_spec.rb" }
+  let(:changed_files) { %w[changed_file1 changed_file2] }
 
   let(:instance) do
     described_class.new(
-      changed_files_pathname,
-      predictive_tests_pathname,
+      changed_files,
       view_base_folder: view_base_folder,
       js_base_folder: js_base_folder
     )
   end
 
   around do |example|
-    self.changed_files_file = Tempfile.new('changed_files_file')
-    self.predictive_tests_file = Tempfile.new('matching_tests')
-
     Dir.mktmpdir do |tmp_js_base_folder|
       Dir.mktmpdir do |tmp_views_base_folder|
         self.js_base_folder   = tmp_js_base_folder
         self.view_base_folder = tmp_views_base_folder
 
-        # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
-        #     Tempfile.html#class-Tempfile-label-Explicit+close
-        begin
-          example.run
-        ensure
-          changed_files_file.close
-          predictive_tests_file.close
-          changed_files_file.unlink
-          predictive_tests_file.unlink
-        end
+        example.run
       end
     end
-  end
-
-  before do
-    # We write into the temp files initially, to later check how the code modified those files
-    File.write(changed_files_pathname, changed_files_content)
-    File.write(predictive_tests_pathname, predictive_tests_content)
   end
 
   describe '#execute' do
@@ -56,17 +33,13 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
 
     subject { instance.execute }
 
-    before do
-      File.write(changed_files_pathname, changed_files.join(' '))
-    end
-
     context 'when no view files have been changed' do
       before do
         allow(instance).to receive(:filter_files).and_return([])
       end
 
-      it 'does not change the output file' do
-        expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+      it 'returns empty array' do
+        expect(subject).to be_empty
       end
     end
 
@@ -83,8 +56,8 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
           FILE
         end
 
-        it 'does not change the output file' do
-          expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+        it 'returns empty array' do
+          expect(subject).to be_empty
         end
       end
 
@@ -100,8 +73,8 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
         end
 
         context 'when no matching JS files are found' do
-          it 'does not change the output file' do
-            expect { subject }.not_to change { File.read(predictive_tests_pathname) }
+          it 'returns empty array' do
+            expect(subject).to be_empty
           end
         end
 
@@ -121,9 +94,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
           end
 
           it 'adds the matching JS files to the output' do
-            expect { subject }.to change { File.read(predictive_tests_pathname) }
-              .from(predictive_tests_content)
-              .to("#{predictive_tests_content} #{js_base_folder}/index.js")
+            expect(subject).to match_array(["#{js_base_folder}/index.js"])
           end
         end
       end
@@ -167,9 +138,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
       end
 
       it 'scans those partials for the HTML attribute value' do
-        expect { subject }.to change { File.read(predictive_tests_pathname) }
-        .from(predictive_tests_content)
-        .to("#{predictive_tests_content} #{js_base_folder}/index.js")
+        expect(subject).to match_array(["#{js_base_folder}/index.js"])
       end
     end
   end
@@ -180,7 +149,6 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
     before do
       File.write("#{js_base_folder}/index.js", "index.js")
       File.write("#{view_base_folder}/index.html", "index.html")
-      File.write(changed_files_pathname, changed_files.join(' '))
     end
 
     context 'when no files were changed' do

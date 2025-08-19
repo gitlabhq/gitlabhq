@@ -9,10 +9,9 @@ RSpec.describe Banzai::ReferenceParser::DesignParser, feature_category: :design_
   let_it_be(:issue) { create(:issue) }
   let_it_be(:design) { create(:design, :with_versions, issue: issue) }
   let_it_be(:user) { create(:user, developer_of: issue.project) }
+  let(:link) { design_link(design) }
 
   subject(:instance) { described_class.new(Banzai::RenderContext.new(issue.project, user)) }
-
-  let(:link) { design_link(design) }
 
   before do
     enable_design_management

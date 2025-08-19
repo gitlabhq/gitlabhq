@@ -45,7 +45,7 @@ describe('Executor', () => {
   });
 
   it('executes a query with variables', async () => {
-    const mockEpicQuery = `query { group(fullPath: "gitlab-org") { epics(iid: "123") { id } } }`;
+    const mockEpicQuery = `query GLQL { group(fullPath: "gitlab-org") { epics(iid: "123") { id } } }`;
     const mockIssueQuery = `query GLQL($epicId: String) { project(fullPath: "gitlab-org/gitlab") { issues(epicId: $epicId) { nodes { id title} } } }`;
 
     const mockEpicResponse = { group: { epics: [{ id: 'gid://gitlab/Epic/123' }] } };
@@ -54,13 +54,9 @@ describe('Executor', () => {
     mockQueryResponse(mockEpicResponse, mockIssueResponse);
     executor = await new Executor().init();
 
-    const data = await executor.execute(mockIssueQuery, [
-      {
-        key: 'epicId',
-        data: mockEpicQuery,
-        data_type: 'String',
-      },
-    ]);
+    const data = await executor.execute(mockIssueQuery, {
+      epicId: { value: mockEpicQuery, type: 'String' },
+    });
 
     expect(data).toEqual(mockIssueResponse);
     expect(queryFn).toHaveBeenCalledTimes(2);

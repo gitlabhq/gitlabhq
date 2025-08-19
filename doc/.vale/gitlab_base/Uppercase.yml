@@ -118,6 +118,7 @@ exceptions:
   - IBM
   - ICO
   - IDE
+  - IDEA
   - IID
   - IIS
   - IMAP
@@ -133,6 +134,7 @@ exceptions:
   - JSONB
   - JVM
   - JWT
+  - KAS
   - KICS
   - LAN
   - LDAP

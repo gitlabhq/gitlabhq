@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, feature_category: :vulnerability_management do
   let(:security_scans) { table(:security_scans, database: :sec) }
-  let(:ci_builds) { partitioned_table(:p_ci_builds, database: :ci) }
+  let(:ci_builds) { ci_partitioned_table(:p_ci_builds) }
   let(:organizations) { table(:organizations) }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

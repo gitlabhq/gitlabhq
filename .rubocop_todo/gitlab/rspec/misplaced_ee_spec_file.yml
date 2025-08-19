@@ -1,6 +1,5 @@
 ---
 Gitlab/RSpec/MisplacedEeSpecFile:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/applications_controller_spec.rb'
@@ -177,7 +176,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/models/milestone_spec.rb'
     - 'ee/spec/models/namespace_setting_spec.rb'
     - 'ee/spec/models/note_spec.rb'
-    - 'ee/spec/models/packages/package_file_spec.rb'
     - 'ee/spec/models/plan_spec.rb'
     - 'ee/spec/models/project_ci_cd_setting_spec.rb'
     - 'ee/spec/models/project_feature_spec.rb'
@@ -224,7 +222,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/presenters/label_presenter_spec.rb'
     - 'ee/spec/presenters/member_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
-    - 'ee/spec/presenters/project_clusterable_presenter_spec.rb'
     - 'ee/spec/presenters/project_member_presenter_spec.rb'
     - 'ee/spec/serializers/environment_entity_spec.rb'
     - 'ee/spec/serializers/issue_serializer_spec.rb'
@@ -274,7 +271,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/groups/ssh_certificates/create_service_spec.rb'
     - 'ee/spec/services/groups/ssh_certificates/destroy_service_spec.rb'
-    - 'ee/spec/services/groups/transfer_service_spec.rb'
     - 'ee/spec/services/groups/update_service_spec.rb'
     - 'ee/spec/services/ide/schemas_config_service_spec.rb'
     - 'ee/spec/services/issues/build_service_spec.rb'

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :topic, class: 'Projects::Topic' do
     name { generate(:name) }
     title { generate(:title) }
-    organization { association(:organization) }
+    organization { association(:common_organization) }
 
     trait :with_avatar do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }

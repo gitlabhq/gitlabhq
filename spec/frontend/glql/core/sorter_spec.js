@@ -1,4 +1,4 @@
-import Sorter, { sorterFor } from '~/glql/core/sorter';
+import { sorterFor, sortBy } from '~/glql/core/sorter';
 
 describe('sorterFor', () => {
   it('sorts by string property', () => {
@@ -83,6 +83,24 @@ describe('sorterFor', () => {
     ]);
   });
 
+  it('sorts status by category', () => {
+    const items = [
+      { status: { category: 'triage' } },
+      { status: { category: 'done' } },
+      { status: { category: 'to_do' } },
+      { status: { category: 'triage' } },
+      { status: { category: 'in_progress' } },
+    ];
+
+    expect(items.sort(sorterFor('status'))).toEqual([
+      { status: { category: 'triage' } },
+      { status: { category: 'triage' } },
+      { status: { category: 'to_do' } },
+      { status: { category: 'in_progress' } },
+      { status: { category: 'done' } },
+    ]);
+  });
+
   it('handles null values: they are always pushed to the bottom regardless of the order', () => {
     const items = [{ value: 'B' }, { value: null }, { value: 'A' }, { value: null }];
     expect(items.sort(sorterFor('value'))).toEqual([
@@ -100,43 +118,56 @@ describe('sorterFor', () => {
     ]);
   });
 
-  it('sorts by custom type (__typename = Epic)', () => {
+  it.each`
+    __typename                | field         | sortField
+    ${'Epic'}                 | ${'epic'}     | ${'title'}
+    ${'Label'}                | ${'label'}    | ${'title'}
+    ${'Project'}              | ${'project'}  | ${'nameWithNamespace'}
+    ${'UserCore'}             | ${'author'}   | ${'username'}
+    ${'MergeRequestAuthor'}   | ${'author'}   | ${'username'}
+    ${'MergeRequestReviewer'} | ${'reviewer'} | ${'username'}
+    ${'MergeRequestAssignee'} | ${'assignee'} | ${'username'}
+  `('sorts by $sortField for $__typename', ({ __typename, field, sortField }) => {
     const items = [
-      { epic: { __typename: 'Epic', title: 'Epic C' } },
-      { epic: { __typename: 'Epic', title: 'Epic A' } },
-      { epic: { __typename: 'Epic', title: 'Epic B' } },
+      { [field]: { __typename, [sortField]: 'foo' } },
+      { [field]: { __typename, [sortField]: 'bar' } },
+      { [field]: { __typename, [sortField]: 'baz' } },
     ];
 
-    expect(items.sort(sorterFor('epic'))).toEqual([
-      { epic: { __typename: 'Epic', title: 'Epic A' } },
-      { epic: { __typename: 'Epic', title: 'Epic B' } },
-      { epic: { __typename: 'Epic', title: 'Epic C' } },
+    expect(items.sort(sorterFor(field))).toEqual([
+      { [field]: { __typename, [sortField]: 'bar' } },
+      { [field]: { __typename, [sortField]: 'baz' } },
+      { [field]: { __typename, [sortField]: 'foo' } },
     ]);
 
-    expect(items.sort(sorterFor('epic', false))).toEqual([
-      { epic: { __typename: 'Epic', title: 'Epic C' } },
-      { epic: { __typename: 'Epic', title: 'Epic B' } },
-      { epic: { __typename: 'Epic', title: 'Epic A' } },
+    expect(items.sort(sorterFor(field, false))).toEqual([
+      { [field]: { __typename, [sortField]: 'foo' } },
+      { [field]: { __typename, [sortField]: 'baz' } },
+      { [field]: { __typename, [sortField]: 'bar' } },
     ]);
   });
 
-  it('sorts by custom type (__typename = UserCore)', () => {
+  it.each`
+    fieldKey
+    ${'milestone'}
+    ${'iteration'}
+  `("sorts by $fieldKey's due date", ({ fieldKey }) => {
     const items = [
-      { author: { __typename: 'UserCore', username: 'jane' } },
-      { author: { __typename: 'UserCore', username: 'jill' } },
-      { author: { __typename: 'UserCore', username: 'adam' } },
+      { [fieldKey]: { dueDate: '2023-06-01' } },
+      { [fieldKey]: { dueDate: '2023-05-15' } },
+      { [fieldKey]: { dueDate: '2023-06-15' } },
     ];
 
-    expect(items.sort(sorterFor('author'))).toEqual([
-      { author: { __typename: 'UserCore', username: 'adam' } },
-      { author: { __typename: 'UserCore', username: 'jane' } },
-      { author: { __typename: 'UserCore', username: 'jill' } },
+    expect(items.sort(sorterFor(fieldKey))).toEqual([
+      { [fieldKey]: { dueDate: '2023-05-15' } },
+      { [fieldKey]: { dueDate: '2023-06-01' } },
+      { [fieldKey]: { dueDate: '2023-06-15' } },
     ]);
 
-    expect(items.sort(sorterFor('author', false))).toEqual([
-      { author: { __typename: 'UserCore', username: 'jill' } },
-      { author: { __typename: 'UserCore', username: 'jane' } },
-      { author: { __typename: 'UserCore', username: 'adam' } },
+    expect(items.sort(sorterFor(fieldKey, false))).toEqual([
+      { [fieldKey]: { dueDate: '2023-06-15' } },
+      { [fieldKey]: { dueDate: '2023-06-01' } },
+      { [fieldKey]: { dueDate: '2023-05-15' } },
     ]);
   });
 
@@ -181,9 +212,9 @@ describe('sorterFor', () => {
   });
 });
 
-describe('Sorter', () => {
+describe('sortBy', () => {
   let items;
-  let sorter;
+  let sortOptions;
 
   beforeEach(() => {
     items = [
@@ -191,31 +222,29 @@ describe('Sorter', () => {
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Bob', age: 35 },
     ];
-    sorter = new Sorter(items);
-  });
-
-  it('initializes with items', () => {
-    expect(sorter.options).toEqual({ fieldName: null, ascending: true });
+    sortOptions = { fieldName: null, ascending: true };
   });
 
   it('sorts by field in ascending order', () => {
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.name)).toEqual(['Alice', 'Bob', 'Charlie']);
-    expect(sorter.options).toEqual({ fieldName: 'name', ascending: true });
+    const { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    expect(sortedItems.map((item) => item.name)).toEqual(['Alice', 'Bob', 'Charlie']);
+    expect(options).toEqual({ fieldName: 'name', ascending: true });
   });
 
   it('sorts by field in descending order when called twice', () => {
-    sorter.sortBy('name');
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.name)).toEqual(['Charlie', 'Bob', 'Alice']);
-    expect(sorter.options).toEqual({ fieldName: 'name', ascending: false });
+    let { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    ({ options, items: sortedItems } = sortBy(sortedItems, 'name', options));
+
+    expect(sortedItems.map((item) => item.name)).toEqual(['Charlie', 'Bob', 'Alice']);
+    expect(options).toEqual({ fieldName: 'name', ascending: false });
   });
 
   it('sorts by different field resets ascending order', () => {
-    sorter.sortBy('name');
-    const sorted = sorter.sortBy('age');
-    expect(sorted.map((item) => item.age)).toEqual([25, 30, 35]);
-    expect(sorter.options).toEqual({ fieldName: 'age', ascending: true });
+    let { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    ({ options, items: sortedItems } = sortBy(sortedItems, 'age', options));
+
+    expect(sortedItems.map((item) => item.age)).toEqual([25, 30, 35]);
+    expect(options).toEqual({ fieldName: 'age', ascending: true });
   });
 
   it('maintains original order for equal values', () => {
@@ -224,8 +253,8 @@ describe('Sorter', () => {
       { id: 1, name: 'Alice', age: 25 },
       { id: 2, name: 'Alice', age: 35 },
     ];
-    sorter = new Sorter(items);
-    const sorted = sorter.sortBy('name');
-    expect(sorted.map((item) => item.id)).toEqual([3, 1, 2]);
+    const { options, items: sortedItems } = sortBy(items, 'name', sortOptions);
+    expect(sortedItems.map((item) => item.id)).toEqual([3, 1, 2]);
+    expect(options).toEqual({ fieldName: 'name', ascending: true });
   });
 });

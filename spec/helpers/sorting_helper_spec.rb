@@ -65,13 +65,42 @@ RSpec.describe SortingHelper, feature_category: :shared do
   end
 
   describe '#admin_users_sort_options' do
-    it 'returns correct link attributes in array' do
-      options = admin_users_sort_options(filter: 'filter', search_query: 'search')
+    it 'returns hrefs with expected querystring values' do
+      options = admin_users_sort_options(filter: 'admins', admin_role_id: '123', search_query: 'search', invalid: 'parameter')
 
-      expect(options[0][:href]).to include('filter')
-      expect(options[0][:href]).to include('search')
       options.each do |option|
-        expect(option[:href]).to include(option[:value])
+        href = option[:href]
+
+        expect(href).to include('filter=admins')
+        expect(href).to include('admin_role_id=123')
+        expect(href).to include('search_query=search')
+        expect(href).to include("sort=#{option[:value]}")
+        expect(href).not_to include('invalid')
+      end
+    end
+
+    context 'when querystring params only has filter' do
+      it 'returns hrefs with filter and sort' do
+        options = admin_users_sort_options(filter: 'admins')
+
+        options.each do |option|
+          href = option[:href]
+
+          expect(href).to include('filter=admins')
+          expect(href).to include("sort=#{option[:value]}")
+          expect(href).not_to include('admin_role_id')
+          expect(href).not_to include('search_query')
+        end
+      end
+    end
+
+    context 'when querystring params is empty' do
+      it 'returns hrefs with only sort querystring' do
+        options = admin_users_sort_options({})
+
+        options.each do |option|
+          expect(option[:href]).to end_with("?sort=#{option[:value]}")
+        end
       end
     end
   end

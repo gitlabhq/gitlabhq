@@ -8,4 +8,4 @@ title: Design tokens
 GitLab uses design tokens to maintain a single source of truth that, through automation, can be formatted for different uses.
 
 - See [Pajamas](https://design.gitlab.com/product-foundations/design-tokens) for an overview on design tokens.
-- See [GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/design_tokens.md) for details about creating and implementing design tokens.
+- See [GitLab UI](https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/blob/main/packages/gitlab-ui/doc/contributing/design_tokens.md) for details about creating and implementing design tokens.

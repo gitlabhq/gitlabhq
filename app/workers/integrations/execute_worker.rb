@@ -19,6 +19,8 @@ module Integrations
       integration = Integration.find_by_id(hook_id)
       return unless integration
 
+      log_extra_metadata_on_done(:integration_class, integration.class.name)
+
       begin
         integration.execute(data)
       rescue StandardError => e

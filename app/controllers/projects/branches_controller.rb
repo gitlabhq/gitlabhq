@@ -30,7 +30,7 @@ class Projects::BranchesController < Projects::ApplicationController
         fetch_merge_requests_for_branches
 
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
-        @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
+        @merged_branch_names = repository.merged_branch_names(@branches.map(&:name), include_identical: true)
         @branch_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, repository, current_user, @branches).execute
 
         # https://gitlab.com/gitlab-org/gitlab/-/issues/22851

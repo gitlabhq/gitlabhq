@@ -10,7 +10,13 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
   urgency :low, [:index]
 
   def index
-    groups = GroupsFinder.new(current_user, all_available: false, active: safe_params[:active]).execute
+    groups = GroupsFinder.new(
+      current_user,
+      all_available: false,
+      organization: Current.organization,
+      active: safe_params[:active]
+    ).execute
+
     render_group_tree(groups)
   end
 end

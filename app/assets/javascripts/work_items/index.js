@@ -44,7 +44,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     hasSubepicsFeature,
     hasIssuableHealthStatusFeature,
     hasCustomFieldsFeature,
-    newCommentTemplatePaths,
+    newTrialPath,
     reportAbusePath,
     defaultBranch,
     initialSort,
@@ -59,6 +59,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     groupIssuesPath,
     labelsFetchPath,
     hasLinkedItemsEpicsFeature,
+    duoRemoteFlowsEnabled,
     canCreateProjects,
     newProjectPath,
     projectNamespaceFullPath,
@@ -66,6 +67,10 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     timeTrackingLimitToHours,
     hasStatusFeature,
     workItemPlanningViewEnabled,
+    canReadCrmOrganization,
+    canReadCrmContact,
+    releasesPath,
+    projectImportJiraPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -102,6 +107,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     provide: {
       canAdminLabel: parseBoolean(canAdminLabel),
       canBulkUpdate: parseBoolean(canBulkUpdate),
+      duoRemoteFlowsEnabled: parseBoolean(duoRemoteFlowsEnabled),
       fullPath,
       isGroup,
       isProject: !isGroup,
@@ -118,6 +124,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
+      newTrialPath,
       reportAbusePath,
       groupPath,
       groupId,
@@ -141,6 +148,10 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
       hasStatusFeature: parseBoolean(hasStatusFeature),
       workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
+      canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
+      canReadCrmContact: parseBoolean(canReadCrmContact),
+      releasesPath,
+      projectImportJiraPath,
     },
     mounted() {
       performanceMarkAndMeasure({
@@ -155,7 +166,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     render(createElement) {
       return createElement(App, {
         props: {
-          newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
           rootPageFullPath: fullPath,
           withTabs,
         },

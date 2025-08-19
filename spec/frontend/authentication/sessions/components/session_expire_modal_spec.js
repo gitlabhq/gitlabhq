@@ -1,8 +1,9 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import SessionExpireModal from '~/authentication/sessions/components/session_expire_modal.vue';
-import { INTERVAL_SESSION_MODAL } from '~/authentication/sessions/constants';
+import { BROADCAST_CHANNEL, INTERVAL_SESSION_MODAL } from '~/authentication/sessions/constants';
 import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 
 jest.useFakeTimers();
@@ -30,7 +31,7 @@ describe('SessionExpireModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
 
   it('initially, it does not show the modal', () => {
-    createComponent();
+    createComponent({ sessionTimeout: Date.now() + 1 });
 
     expect(findModal().props()).toMatchObject({
       visible: false,
@@ -47,7 +48,7 @@ describe('SessionExpireModal', () => {
     });
   });
 
-  describe('when there is a expiring session', () => {
+  describe('when there is an expiring session', () => {
     it('shows the modal triggered by time elapsed', async () => {
       jest.spyOn(global, 'setInterval');
       jest.spyOn(global, 'clearInterval');
@@ -85,6 +86,29 @@ describe('SessionExpireModal', () => {
         'visibilitychange',
         expect.any(Function),
       );
+    });
+
+    describe('when a broadcast message is emitted', () => {
+      let broadcastChannel;
+
+      beforeEach(() => {
+        broadcastChannel = new BroadcastChannel(BROADCAST_CHANNEL);
+      });
+      afterEach(() => {
+        broadcastChannel.close();
+      });
+
+      it('hides the modal triggered by a broadcast message event', async () => {
+        createComponent();
+        jest.advanceTimersByTime(INTERVAL_SESSION_MODAL);
+        await nextTick();
+        expect(findModal().props('visible')).toBe(true);
+
+        broadcastChannel.postMessage(Date.now() + 1000);
+        await waitForPromises();
+
+        expect(findModal().props('visible')).toBe(false);
+      });
     });
 
     it('shows the correct modal content', async () => {

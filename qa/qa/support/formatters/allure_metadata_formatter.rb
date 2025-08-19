@@ -62,7 +62,8 @@ module QA
           }.map { |key, value| "#{key}=#{value}" }.join('&')
 
           exception_message = example.exception.message || ""
-          exception_message_lines = strip_ansi_codes(example_notification.message_lines) || []
+          message_lines = strip_ansi_codes(example_notification.message_lines) || []
+          exception_message_lines = message_lines.first(20)
           search_terms = {
             test_file_path: example.file_path.gsub('./qa/specs/features/', '').to_s,
             exception_message: exception_message_lines.empty? ? exception_message : exception_message_lines.join("\n")
@@ -98,10 +99,13 @@ module QA
         def set_behavior_categories(example)
           file_path = example.file_path.gsub('./qa/specs/features', '')
           devops_stage = file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
+
+          feature_category = example.metadata[:feature_category]
           product_group = example.metadata[:product_group]
 
           example.epic(devops_stage) if devops_stage
-          example.feature(product_group) if product_group
+          example.feature(feature_category) if feature_category
+          example.feature(product_group) if product_group && feature_category.nil?
         end
 
         # Print log message

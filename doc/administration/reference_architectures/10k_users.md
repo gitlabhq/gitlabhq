@@ -24,10 +24,10 @@ specifically the [Before you start](_index.md#before-you-start) and [Deciding wh
 
 {{< /alert >}}
 
-> - **Target load**: API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
-> - **High Availability**: Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
-> - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
+- **Target load**: API: 200 RPS, Web: 20 RPS, Git (Pull): 20 RPS, Git (Push): 4 RPS
+- **High Availability**: Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
+- **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
 
 | Service                                  | Nodes | Configuration           | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |------------------------------------------|-------|-------------------------|------------------|----------------|-----------|
@@ -57,8 +57,8 @@ specifically the [Before you start](_index.md#before-you-start) and [Deciding wh
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
    The sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
@@ -207,7 +207,7 @@ To set up GitLab and its components to accommodate up to 200 RPS or 10,000 users
 1. [Configure PgBouncer](#configure-pgbouncer) for database connection pooling and management.
 1. [Configure Redis](#configure-redis), which stores session data, temporary
 cache information, and background job queues.
-1. [Configure Gitaly Cluster](#configure-gitaly-cluster),
+1. [Configure Gitaly Cluster (Praefect)](#configure-gitaly-cluster-praefect),
    provides access to the Git repositories.
 1. [Configure Sidekiq](#configure-sidekiq) for background job processing.
 1. [Configure the main GitLab Rails application](#configure-gitlab-rails)
@@ -381,7 +381,7 @@ for details on managing SSL certificates and configuring NGINX.
 
 In a multi-node GitLab configuration, you'll need an internal load balancer to route
 traffic for select internal components if configured
-such as connections to [PgBouncer](#configure-pgbouncer) and [Praefect](#configure-praefect) (Gitaly Cluster).
+such as connections to [PgBouncer](#configure-pgbouncer) and [Gitaly Cluster (Praefect)](#configure-praefect).
 
 The specifics on which load balancer to use, or its exact configuration
 is beyond the scope of GitLab documentation but refer to [Load Balancers](_index.md) for more information around
@@ -1198,9 +1198,9 @@ are supported and can be added if needed.
   </a>
 </div>
 
-## Configure Gitaly Cluster
+## Configure Gitaly Cluster (Praefect)
 
-[Gitaly Cluster](../gitaly/praefect/_index.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
+[Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
@@ -1212,31 +1212,31 @@ If you believe this applies to you, contact us for additional guidance as requir
 
 {{< /alert >}}
 
-Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster).
+Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect).
 
 For guidance on:
 
 - Implementing sharded Gitaly instead, follow the [separate Gitaly documentation](../gitaly/configure_gitaly.md)
   instead of this section. Use the same Gitaly specs.
-- Migrating existing repositories that aren't managed by Gitaly Cluster, see
-  [migrate to Gitaly Cluster](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster).
+- Migrating existing repositories that aren't managed by Gitaly Cluster (Praefect), see
+  [migrate to Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect).
 
 The recommended cluster setup includes the following components:
 
 - 3 Gitaly nodes: Replicated storage of Git repositories.
-- 3 Praefect nodes: Router and transaction manager for Gitaly Cluster.
+- 3 Praefect nodes: Router and transaction manager for Gitaly Cluster (Praefect).
 - 1 Praefect PostgreSQL node: Database server for Praefect. A third-party solution
   is required for Praefect database connections to be made highly available.
 - 1 load balancer: A load balancer is required for Praefect. The
   [internal load balancer](#configure-the-internal-load-balancer) is used.
 
 This section details how to configure the recommended standard setup in order.
-For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect/_index.md).
+For more advanced setups refer to the [standalone Gitaly Cluster (Praefect) documentation](../gitaly/praefect/_index.md).
 
 ### Configure Praefect PostgreSQL
 
-Praefect, the routing and transaction manager for Gitaly Cluster, requires its own database server to store data on Gitaly Cluster status.
+Praefect, the routing and transaction manager for Gitaly Cluster (Praefect), requires its own database server to store cluster status data.
 
 If you want to have a highly available setup, Praefect requires a third-party PostgreSQL database.
 A built-in solution is being [worked on](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
@@ -1386,7 +1386,7 @@ This is how this would work with a Linux package PostgreSQL setup:
 
 ### Configure Praefect
 
-Praefect is the router and transaction manager for Gitaly Cluster and all connections to Gitaly go through
+Praefect is the router and transaction manager for Gitaly Cluster (Praefect) and all connections to Gitaly go through
 it. This section details how to configure it.
 
 {{< alert type="note" >}}
@@ -1395,18 +1395,19 @@ Consul must be deployed in an odd number of 3 nodes or more. This is to ensure t
 
 {{< /alert >}}
 
-Praefect requires several secret tokens to secure communications across the Cluster:
+Praefect requires several secret tokens to secure communications across the cluster:
 
-- `<praefect_external_token>`: Used for repositories hosted on your Gitaly cluster and can only be accessed by Gitaly clients that carry this token.
-- `<praefect_internal_token>`: Used for replication traffic inside your Gitaly cluster. This is distinct from `praefect_external_token` because Gitaly clients must not be able to access internal nodes of the Praefect cluster directly; that could lead to data loss.
+- `<praefect_external_token>`: Used for repositories hosted on Gitaly Cluster (Praefect) and can only be accessed by Gitaly clients that carry this token.
+- `<praefect_internal_token>`: Used for replication traffic inside Gitaly Cluster (Praefect). This is distinct from `praefect_external_token`
+  because Gitaly clients must not be able to access internal nodes of Gitaly Cluster (Praefect) directly; that could lead to data loss.
 - `<praefect_postgresql_password>`: The Praefect PostgreSQL password defined in the previous section is also required as part of this setup.
 
-Gitaly Cluster nodes are configured in Praefect via a `virtual storage`. Each storage contains
+Gitaly Cluster (Praefect) nodes are configured in Praefect with a `virtual storage`. Each storage contains
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
 and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
-to use Gitaly Cluster, you might have to use a different name.
-Refer to the [Praefect documentation](../gitaly/praefect/configure.md#praefect) for more information.
+to use Gitaly Cluster (Praefect), you might have to use a different name.
+Refer to the [Gitaly Cluster (Praefect) documentation](../gitaly/praefect/configure.md#praefect) for more information.
 
 The following IPs will be used as an example:
 
@@ -1563,7 +1564,7 @@ Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) fo
 Gitaly servers must not be exposed to the public internet because network traffic
 on Gitaly is unencrypted by default. The use of a firewall is highly recommended
 to restrict access to the Gitaly server. Another option is to
-[use TLS](#gitaly-cluster-tls-support).
+[use TLS](#gitaly-cluster-praefect-tls-support).
 
 For configuring Gitaly you should note the following:
 
@@ -1592,17 +1593,8 @@ On each node:
    -->
 
    ```ruby
-   # Avoid running unnecessary services on the Gitaly server
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   # https://docs.gitlab.com/omnibus/roles/#gitaly-roles
+   roles(["gitaly_role"])
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -1611,9 +1603,6 @@ On each node:
    # fail. This can be your 'front door' GitLab URL or an internal load
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
-
-   # Gitaly
-   gitaly['enable'] = true
 
    # Configure the Consul agent
    consul['enable'] = true
@@ -1704,7 +1693,7 @@ On each node:
 
 1. Save the file, and then [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-### Gitaly Cluster TLS support
+### Gitaly Cluster (Praefect) TLS support
 
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
@@ -2085,7 +2074,7 @@ On each node perform the following:
    }
    ```
 
-1. If you're using [Gitaly with TLS support](#gitaly-cluster-tls-support), make sure the
+1. If you're using [Gitaly with TLS support](#gitaly-cluster-praefect-tls-support), make sure the
    `gitlab_rails['repositories_storages']` entry is configured with `tls` instead of `tcp`:
 
    ```ruby
@@ -2312,7 +2301,7 @@ section assumes this.
 
 {{< alert type="warning" >}}
 
-**Gitaly Cluster is not supported to be run in Kubernetes**.
+**Gitaly Cluster (Praefect) is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 
 {{< /alert >}}
@@ -2365,8 +2354,8 @@ services where applicable):
 4. Recommended to be run with a reputable third-party load balancer or service (LB PaaS) which can provide HA capabilities.
    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
-6. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
+6. Gitaly Cluster (Praefect) provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#before-deploying-gitaly-cluster-praefect). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can significantly impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->

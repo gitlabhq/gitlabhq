@@ -29,6 +29,8 @@ describe('The Pipeline Tabs', () => {
     totalJobCount: 10,
     testsCount: 123,
     manualVariablesCount: 0,
+    displayPipelineVariables: false,
+    canReadVariables: false,
   };
 
   const createComponent = (provide = {}, stubs = {}) => {
@@ -61,9 +63,15 @@ describe('The Pipeline Tabs', () => {
       expect(tabComponent().exists()).toBe(true);
     });
 
-    describe('Manual Variables tab', () => {
-      it('does not render the tab while feature flag is turned off', () => {
+    describe('Manual Pipeline Variables tab', () => {
+      it('does not render the tab when displayPipelineVariables is `false`', () => {
         createComponent();
+
+        expect(findManualVariablesTab().exists()).toBe(false);
+      });
+
+      it('does not render the tab when displayPipelineVariables is `true` despite permissions', () => {
+        createComponent({ canReadVariables: true });
 
         expect(findManualVariablesTab().exists()).toBe(false);
       });
@@ -74,14 +82,16 @@ describe('The Pipeline Tabs', () => {
         expect(findManualVariablesTab().exists()).toBe(false);
       });
 
-      it('renders manual variables tab when feature flag is enabled', () => {
-        createComponent({
-          glFeatures: {
-            ciShowManualVariablesInPipeline: true,
-          },
-        });
+      it('renders manual variables tab when displayPipelineVariables is `true`', () => {
+        createComponent({ displayPipelineVariables: true, canReadVariables: true });
 
         expect(findManualVariablesTab().exists()).toBe(true);
+      });
+
+      it('does not renders manual variables tab when unauthorized', () => {
+        createComponent({ displayPipelineVariables: true });
+
+        expect(findManualVariablesTab().exists()).toBe(false);
       });
     });
 
@@ -109,16 +119,15 @@ describe('The Pipeline Tabs', () => {
       expect(badgeComponent().text()).toBe(badgeText);
     });
 
-    describe('Manual variables tab badge', () => {
+    describe('Manual pipeline variables tab badge', () => {
       const findLocalStorageComponent = () => wrapper.findComponent(LocalStorageSync);
       const findManualVariableNewBadge = () => wrapper.findByTestId('manual-variables-new-badge');
 
       beforeEach(() => {
         createComponent(
           {
-            glFeatures: {
-              ciShowManualVariablesInPipeline: true,
-            },
+            canReadVariables: true,
+            displayPipelineVariables: true,
           },
           {
             LocalStorageSync,
@@ -126,13 +135,13 @@ describe('The Pipeline Tabs', () => {
         );
       });
 
-      it('renders manual variables tab counter badge', () => {
+      it('renders manual pipeline variables tab counter badge', () => {
         const badgeComponent = findManualVariablesBadge();
         expect(badgeComponent.exists()).toBe(true);
         expect(badgeComponent.text()).toBe('0');
       });
 
-      it('renders manual variables tab new badge', async () => {
+      it('renders manual pipeline variables tab new badge', async () => {
         const localStorageComponent = findLocalStorageComponent();
         const badgeComponent = findManualVariableNewBadge();
 
@@ -177,9 +186,8 @@ describe('The Pipeline Tabs', () => {
 
     it('tracks manual variables tab click', () => {
       createComponent({
-        glFeatures: {
-          ciShowManualVariablesInPipeline: true,
-        },
+        displayPipelineVariables: true,
+        canReadVariables: true,
       });
 
       findManualVariablesTab().vm.$emit('click');

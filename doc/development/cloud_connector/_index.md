@@ -138,14 +138,6 @@ To decide if the service is available or visible to the end user, we need to:
     ::License.current&.online_cloud_license?
   ```
 
-- On GitLab.com and GitLab Self-Managed, check if the service has free access.
-  - The feature is considered free, if the [cut-off date](configuration.md) is not set, or it is set in the future.
-
-  ```ruby
-    # Returns whether the service is free to access (no addon purchases is required)
-    CloudConnector::AvailableServices.find_by_name(:new_feature).free_access?
-  ```
-
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
 
@@ -191,9 +183,8 @@ include API::Helpers::CloudConnector
 return unauthorized! unless current_user.can?(:access_new_feature)
 
 # For Gitlab.com it will self-issue a token with scopes based on provided resource:
-# - For provided user, it will self-issue a token with scopes based on user assigment permissions
+# - For provided user, it will self-issue a token with scopes based on user assignment permissions
 # - For provided namespace, it will self-issue a token with scopes based on add-on purchased permissions
-# - If service has free_access?, it will self-issue a token with all available scopes
 #
 # For SM, it will return :CloudConnector::ServiceAccessToken instance token, ignoring provided user, namespace and extra claims
 token = ::CloudConnector::AvailableServices.find_by_name(:new_feature).access_token(current_user)

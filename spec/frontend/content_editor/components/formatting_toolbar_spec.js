@@ -142,4 +142,43 @@ describe('content_editor/components/formatting_toolbar', () => {
 
     expect(wrapper.findByTestId('code-suggestion').exists()).toBe(false);
   });
+
+  describe('skip to input button', () => {
+    beforeEach(() => {
+      buildWrapper();
+    });
+
+    it('renders skip button', () => {
+      expect(wrapper.findByTestId('skip-to-input').exists()).toBe(true);
+    });
+
+    it('focuses textarea when skip button is clicked', () => {
+      // Mock the tiptapEditor chain
+      const mockRun = jest.fn();
+      const mockFocus = jest.fn().mockReturnValue({ run: mockRun });
+      const mockChain = jest.fn().mockReturnValue({ focus: mockFocus });
+
+      buildWrapper({
+        provide: {
+          tiptapEditor: { chain: mockChain },
+          contentEditor,
+        },
+      });
+
+      // Call the skipToInput method directly
+      wrapper.vm.skipToInput();
+
+      expect(mockChain).toHaveBeenCalled();
+      expect(mockFocus).toHaveBeenCalled();
+      expect(mockRun).toHaveBeenCalled();
+    });
+
+    it('has correct accessibility attributes', () => {
+      const skipButton = wrapper.findByTestId('skip-to-input');
+
+      expect(skipButton.text()).toBe('Skip to input');
+      expect(skipButton.attributes('data-testid')).toBe('skip-to-input');
+      expect(skipButton.classes()).toContain('gl-sr-only');
+    });
+  });
 });

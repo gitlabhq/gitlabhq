@@ -18,8 +18,9 @@ Configure Gitaly in one of two ways:
 
 {{< tab title="Linux package (Omnibus)" >}}
 
-1. Edit `/etc/gitlab/gitlab.rb` and add or change the
-   [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
+1. Edit `/etc/gitlab/gitlab.rb` and add or change the Gitaly settings. Refer to the
+   [example Gitaly configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example). The
+   settings in the example file must be converted into Ruby.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 {{< /tab >}}
@@ -33,7 +34,8 @@ Configure Gitaly in one of two ways:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
+1. Edit `/home/git/gitaly/config.toml` and add or change the Gitaly settings. Refer to the
+   [example Gitaly configuration file](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 {{< /tab >}}
@@ -59,7 +61,7 @@ configured as described previously. Single-server installations are best served 
 this default configuration used by:
 
 - [Linux package installations](https://docs.gitlab.com/omnibus/).
-- [Self-compiled installations](../../install/installation.md).
+- [Self-compiled installations](../../install/self_compiled/_index.md).
 
 However, Gitaly can be deployed to its own server, which can benefit GitLab installations that span
 multiple machines.
@@ -142,7 +144,7 @@ Install Gitaly on each Gitaly server using either:
 
 - A Linux package installation. [Download and install](https://about.gitlab.com/install/) the Linux package you want
   but do not provide the `EXTERNAL_URL=` value.
-- A self-compiled installation. Follow the steps at [Install Gitaly](../../install/installation.md#install-gitaly).
+- A self-compiled installation. Follow the steps at [Install Gitaly](../../install/self_compiled/_index.md#install-gitaly).
 
 ### Configure Gitaly servers
 
@@ -182,26 +184,42 @@ Gitaly and GitLab use two shared secrets for authentication:
 
 1. Configure the _GitLab Shell token_ in one of two ways:
 
-   - Method 1 (recommended):
-
-     Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
-     (and any other Gitaly clients).
+   - Method 1 (recommended): copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to the same path on the Gitaly
+     servers and any other Gitaly clients.
 
    - Method 2:
 
-     On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`:
+     1. On all nodes running GitLab Rails, edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret:
 
-     ```ruby
-     gitlab_shell['secret_token'] = 'shellsecret'
-     ```
+        - GitLab 17.5 and later:
 
-     On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`:
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
 
-     ```ruby
-     gitaly['gitlab_secret'] = 'shellsecret'
-     ```
+        - GitLab 17.4 and earlier:
 
-     After those changes, reconfigure GitLab:
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+     1. On all nodes running Gitaly, edit `/etc/gitlab/gitlab.rb`.
+     1. Replace `GITLAB_SHELL_SECRET_TOKEN` with the real secret:
+
+        - GitLab 17.5 and later:
+
+          ```ruby
+          gitaly['gitlab_secret'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+        - GitLab 17.4 and earlier:
+
+          ```ruby
+          gitlab_shell['secret_token'] = 'GITLAB_SHELL_SECRET_TOKEN'
+          ```
+
+     1. After those changes, reconfigure GitLab:
 
      ```shell
      sudo gitlab-ctl reconfigure
@@ -341,8 +359,10 @@ Configure Gitaly server.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml
+   ```
 
 {{< /tab >}}
 
@@ -391,8 +411,10 @@ Configure Gitaly server.
 
 1. Save the files and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 1. Confirm that Gitaly can perform callbacks to the GitLab internal API:
-   - For GitLab 15.3 and later, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml`.
-   - For GitLab 15.2 and earlier, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks check /var/opt/gitlab/gitaly/config.toml`.
+
+   ```shell
+   sudo -u git -- /opt/gitlab/embedded/bin/gitaly check /var/opt/gitlab/gitaly/config.toml
+   ```
 
 {{< /tab >}}
 
@@ -886,8 +908,7 @@ automatically keep parts of the pack-objects cache files in RAM,
 making it faster.
 
 Because the pack-objects cache can lead to a significant increase in
-disk write IO, it is off by default. In GitLab 15.11 and later,
-the write workload is approximately 50% lower, but the cache is still disabled by default.
+disk write IO, it is off by default.
 
 ### Configure the cache
 
@@ -981,12 +1002,6 @@ fetch over a slow connection because Unix filesystems do not truly delete a file
 the deleted file have closed it.
 
 #### Minimum key occurrences `min_occurrences`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2222) in GitLab 15.11.
-
-{{< /history >}}
 
 The `min_occurrences` setting controls how often an identical request
 must occur before we create a new cache entry. The default value is `1`,
@@ -1100,7 +1115,6 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19185) in GitLab 15.4.
 - Displaying **Verified** badge for signed GitLab UI commits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124218) in GitLab 16.3 [with a flag](../feature_flags/_index.md) named `gitaly_gpg_signing`. Disabled by default.
 - Verifying the signatures using multiple keys specified in `rotated_signing_keys` option [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6163) in GitLab 16.3.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6876) on GitLab Self-Managed and GitLab Dedicated in GitLab 17.0.
@@ -1210,12 +1224,6 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 {{< /tabs >}}
 
 ## Generate configuration using an external command
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4828) in GitLab 15.11.
-
-{{< /history >}}
 
 You can generate parts of the Gitaly configuration using an external command. You might do this:
 

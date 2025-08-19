@@ -3,6 +3,7 @@ stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: External status checks
+description: External status checks integrate with third-party tools to display pass or fail statuses in merge requests and can block merges if checks fail.
 ---
 
 {{< details >}}

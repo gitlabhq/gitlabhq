@@ -3,6 +3,7 @@ stage: Monitor
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Log system
+description: Access comprehensive logging and monitoring capabilities.
 ---
 
 {{< details >}}
@@ -26,7 +27,7 @@ The log system:
 
 System log files are typically plain text in a standard log file format.
 
-The log system is similar to [audit events](../audit_event_reports.md).
+The log system is similar to [audit events](../compliance/audit_event_reports.md).
 For more information, see also:
 
 - [Customizing logging on Linux package installations](https://docs.gitlab.com/omnibus/settings/logs.html)
@@ -1168,7 +1169,7 @@ can be used.
 {{< /history >}}
 
 The `llm.log` file logs information related to
-[AI features](../../user/ai_features.md). Logging includes information about AI events.
+[AI features](../../user/gitlab_duo/_index.md). Logging includes information about AI events.
 
 ### LLM input and output logging
 
@@ -1186,7 +1187,8 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-LLM prompt input and response output can be logged by enabling the `expanded_ai_logging` feature flag.
+To log the LLM prompt input and response output, enable the `expanded_ai_logging` feature flag. This flag is intended for use on GitLab.com only, and not on GitLab Self-Managed instances.
+
 This flag is disabled by default and can only be enabled:
 
 - For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
@@ -1244,6 +1246,34 @@ This log is located:
 - In the `/var/log/gitlab/gitlab-rails/secret_push_protection.log` file on Linux package installations.
 - In the `/home/git/gitlab/log/secret_push_protection.log` file on self-compiled installations.
 - On the Webservice pods under the `subcomponent="secret_push_protection"` key on Helm chart installations.
+
+## `active_context.log`
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/554925) in GitLab 18.3.
+
+{{< /history >}}
+
+The `active_context.log` file logs information related to embedding pipelines through the
+[`ActiveContext` layer](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/).
+
+GitLab supports `ActiveContext` code embeddings.
+This pipeline handles embedding generation for project code files.
+For more information, see [architecture design](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/codebase_as_chat_context/code_embeddings/).
+
+This log is located:
+
+- In the `/var/log/gitlab/gitlab-rails/active_context.log` file on Linux package installations.
+- In the `/home/git/gitlab/log/active_context.log` file on self-compiled installations.
+- On the Sidekiq pods under the `subcomponent="activecontext"` key on Helm chart installations.
 
 ## Registry logs
 
@@ -1337,7 +1367,7 @@ It contains JSON-formatted logs of product usage events tracked through Snowplow
 }
 ```
 
-To inspect these logs, you can use the [Rake task](../../raketasks/_index.md) `product_usage_data:format` which formats the JSON output and decodes base64-encoded context data for better readability:
+To inspect these logs, you can use the [Rake task](../raketasks/_index.md) `product_usage_data:format` which formats the JSON output and decodes base64-encoded context data for better readability:
 
 ```shell
 gitlab-rake "product_usage_data:format[log/product_usage_data.log]"

@@ -100,7 +100,7 @@ You can customize your coding experience in VS Code by enabling or disabling Cod
 You can do this by editing your `settings.json` file directly, or from the VS Code user interface:
 
 1. In VS Code, open the extension settings for **GitLab Workflow**:
-   1. On the top bar, go to **Code > Settings > Extensions**.
+   1. On the top bar, go to **Code** > **Settings** > **Extensions**.
    1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
    1. Select **Extension Settings**.
 1. In your **User** settings, find the section titled **AI Assisted Code Suggestions: Enabled Supported Languages**.
@@ -134,7 +134,7 @@ To do this:
    [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
    You need the **Identifier** for your languages in a later step.
 1. In VS Code, open the extension settings for **GitLab Workflow**:
-   1. On the top bar, go to **Code > Settings > Extensions**.
+   1. On the top bar, go to **Code** > **Settings** > **Extensions**.
    1. Search for **GitLab Workflow** in the list, and select **Manage** ({{< icon name="settings" >}}).
    1. Select **Extension Settings**.
    1. In your **User** settings, find
@@ -160,8 +160,8 @@ To do this:
    [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
    You need the identifier for your languages in a later step.
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
-1. Under **Code Suggestions Enabled Languages > Additional languages**, add the identifier for each language
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
+1. Under **Code Suggestions Enabled Languages** > **Additional languages**, add the identifier for each language
    you want to support. Identifiers should be in lowercase, like `html`. Separate multiple identifiers with commas,
    like `html,powershell,latex`, and don't add leading periods to each identifier.
 1. Select **OK**.

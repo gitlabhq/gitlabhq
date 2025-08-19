@@ -139,6 +139,23 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).to have_text('@abc123')
     end
 
+    it 'does not leave leftover parts when selecting a suggestion in the middle of a word' do
+      type_in_content_editor '@abc123'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      send_keys [:arrow_left, :arrow_left, :arrow_left]
+      send_keys :enter
+
+      expect(page).not_to have_css(suggestions_dropdown)
+      expect(page).to have_text('@abc123')
+
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value).not_to include('@abc123 123')
+      expect(page.find('textarea').value).to include('@abc123')
+    end
+
     it 'allows selecting element with tab key' do
       type_in_content_editor '@abc'
 

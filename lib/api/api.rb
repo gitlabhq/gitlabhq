@@ -377,6 +377,7 @@ module API
       mount ::API::GroupMilestones
       mount ::API::Issues
       mount ::API::Labels
+      mount ::API::Mcp::Base # MCP uses JSON-RPC for base protocol, omit from OpenAPI V2 documentation for REST API
       mount ::API::Notes
       mount ::API::NotificationSettings
       mount ::API::ProjectEvents

@@ -25,7 +25,7 @@
 
     > code {
       font-weight: inherit;
-      @apply gl-break-all gl-whitespace-break-spaces;
+      @apply gl-break-words gl-whitespace-break-spaces;
     }
   }
 
@@ -122,11 +122,11 @@
 
   // Fixed headings are default for markdown
   h1 {
-    @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;
+    @apply gl-heading-1-fixed gl-mt-7;
   }
 
   h2:not(:where(.crud-header) h2) {
-    @apply gl-heading-2-fixed gl-mt-6 gl-pb-2 gl-border-b;
+    @apply gl-heading-2-fixed gl-mt-6;
   }
 
   h3 {
@@ -206,6 +206,11 @@
           inset 0 0 0 0 var(--gl-shadow-color-default),
           inset 16px 0 14px -14px var(--gl-shadow-color-default);
     }
+  }
+
+  // Fix border bleed.
+  .gl-table-shadow:not(:has(+ .glql-load-more)) {
+    clip-path: inset(0 round 0 0 1px 1px);
   }
 
   .gl-table-shadow {
@@ -784,6 +789,12 @@
 
   .text-justify {
     text-align: justify !important;
+  }
+
+  /* AsciiDoc(tor) table of contents */
+
+  .toc > div {
+    @apply gl-font-bold;
   }
 
   @include email-code-block;

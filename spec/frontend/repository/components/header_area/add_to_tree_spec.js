@@ -138,6 +138,7 @@ describe('Add to tree dropdown and modal components', () => {
         path: '',
         replacePath: null,
         targetBranch: '',
+        uploadPath: null,
       });
     });
   });

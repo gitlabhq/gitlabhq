@@ -16,7 +16,7 @@ This page contains possible solutions for problems you might encounter when usin
 
 - [SAML SSO for GitLab.com groups](_index.md).
 - The GitLab Self-Managed instance-level [SAML OmniAuth Provider](../../../integration/saml.md).
-- [Switchboard](../../../administration/dedicated/configure_instance/saml.md#add-a-saml-provider-with-switchboard) to configure SAML for GitLab Dedicated instances.
+- [Switchboard](../../../administration/dedicated/configure_instance/authentication/saml.md#add-a-saml-provider-with-switchboard) to configure SAML for GitLab Dedicated instances.
 
 ## SAML debugging tools
 
@@ -439,7 +439,7 @@ As outlined in the [user access section](_index.md#link-saml-to-your-existing-gi
 If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
 
 - That the top-level group has restricted membership by email domain.
-- That, in [audit events](../../../administration/audit_event_reports.md) for the top-level group:
+- That, in [audit events](../../../administration/compliance/audit_event_reports.md) for the top-level group:
   - You can see **Signed in with GROUP_SAML authentication** action for that user.
   - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
     - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](_index.md#unlink-accounts) from their personal account.
@@ -455,7 +455,7 @@ If all users are receiving a `404` after signing in to the identity provider (Id
 
 - Verify the clocks on the IdP server and GitLab are synced to the same time.
 
-If a subset of users recieve a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
+If a subset of users receive a `404` error after they sign in to the IdP, first verify what audit events are returned if the user is added to the group and then immediately removed. Alternatively, if the user can successfully sign in, but they do not show as [a member of the top-level group](../_index.md#search-a-group):
 
 - Ensure the user has been [added to the SAML identity provider](_index.md#user-access-and-management), and [SCIM](scim_setup.md) if configured.
 - Ensure the user's SCIM identity's `active` attribute is `true` using the [SCIM API](../../../api/scim.md).

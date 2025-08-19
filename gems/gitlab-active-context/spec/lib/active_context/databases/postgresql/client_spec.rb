@@ -98,7 +98,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     end
 
     it 'logs the error and raises it' do
-      expect(ActiveContext::Logger).to receive(:exception).with(error, message: 'Database error occurred')
+      expect(ActiveContext::Logger).to receive(:exception).with(error,
+        class: 'ActiveContext::Databases::Postgresql::Client', message: 'Database error occurred')
 
       # The error should be re-raised
       expect { client.send(:handle_error, error) }.to raise_error(StandardError, 'Test error')
@@ -491,7 +492,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
     end
 
     it 'logs the error and re-raises it' do
-      expect(ActiveContext::Logger).to receive(:exception).with(error, message: 'Database error occurred')
+      expect(ActiveContext::Logger).to receive(:exception).with(error,
+        class: 'ActiveContext::Databases::Postgresql::Client', message: 'Database error occurred')
 
       expect do
         client.send(:handle_error, error)
@@ -647,7 +649,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
         it 'logs the exception and returns operation references' do
           expect(ActiveContext::Logger).to receive(:exception)
-            .with(error, message: "Error with upsert operation for #{collection_name}")
+            .with(error, class: 'ActiveContext::Databases::Postgresql::Client',
+              message: "Error with upsert operation for #{collection_name}")
 
           result = client.send(:perform_bulk_operation, operation_type, model, collection_name, operations)
           expect(result).to eq(['ref1'])
@@ -681,7 +684,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Client do
 
         it 'logs the exception and returns operation references' do
           expect(ActiveContext::Logger).to receive(:exception)
-            .with(error, message: "Error with delete operation for #{collection_name}")
+            .with(error, class: 'ActiveContext::Databases::Postgresql::Client',
+              message: "Error with delete operation for #{collection_name}")
 
           result = client.send(:perform_bulk_operation, operation_type, model, collection_name, operations)
           expect(result).to eq(['ref1'])

@@ -13,8 +13,8 @@ RSpec.describe 'Dashboard > Milestones', :js, feature_category: :team_planning d
     end
   end
 
-  describe 'as logged-in user' do
-    let(:user) { create(:user) }
+  describe 'as logged-in user', :with_current_organization do
+    let(:user) { create(:user, organization: current_organization) }
     let(:group) { create(:group) }
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }

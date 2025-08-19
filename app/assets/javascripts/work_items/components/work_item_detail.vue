@@ -8,6 +8,7 @@ import {
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
@@ -24,10 +25,10 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_NOTIFICATIONS,
   WIDGET_TYPE_CURRENT_USER_TODOS,
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_AWARD_EMOJI,
@@ -42,6 +43,7 @@ import {
   STATE_OPEN,
   WIDGET_TYPE_ERROR_TRACKING,
   WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_LINKED_RESOURCES,
   WIDGET_TYPE_MILESTONE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
@@ -128,6 +130,7 @@ export default {
     WorkItemNotes,
     WorkItemRelationships,
     WorkItemErrorTracking: () => import('~/work_items/components/work_item_error_tracking.vue'),
+    WorkItemLinkedResources: () => import('~/work_items/components/work_item_linked_resources.vue'),
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
@@ -139,9 +142,24 @@ export default {
     WorkItemVulnerabilities: () =>
       import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
     WorkItemMetadataProvider,
+    DuoWorkflowAction,
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
-  inject: ['groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
+  inject: {
+    groupPath: {
+      from: 'groupPath',
+    },
+    hasSubepicsFeature: {
+      from: 'hasSubepicsFeature',
+    },
+    hasLinkedItemsEpicsFeature: {
+      from: 'hasLinkedItemsEpicsFeature',
+    },
+    duoRemoteFlowsEnabled: {
+      from: 'duoRemoteFlowsEnabled',
+      default: false,
+    },
+  },
   props: {
     isModal: {
       type: Boolean,
@@ -172,11 +190,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     isBoard: {
       type: Boolean,
@@ -211,7 +224,7 @@ export default {
       showSidebar: true,
       truncationEnabled: true,
       lastRealtimeUpdatedAt: new Date(),
-      isRefetching: false,
+      refetchError: null,
     };
   },
   apollo: {
@@ -240,11 +253,13 @@ export default {
         if (this.workItemId) {
           return data.workItem ?? {};
         }
-        return data.workspace.workItem ?? {};
+        return data.workspace?.workItem ?? {};
       },
       error() {
-        if (this.isRefetching) {
-          this.isRefetching = false;
+        if (this.workItem?.id === this.workItemId || this.workItem?.iid === this.workItemIid) {
+          this.refetchError = s__(
+            'WorkItem|Your data might be out of date. Refresh to see the latest information.',
+          );
           return;
         }
         this.setEmptyState();
@@ -254,11 +269,15 @@ export default {
         if (!res.data) {
           return;
         }
-        this.activeChildItem = null;
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
         }
+        if (!res.error) {
+          this.error = null;
+          this.refetchError = null;
+        }
+
         if (!(this.isModal || this.isDrawer) && this.workItem.namespace) {
           const path = this.workItem.namespace.fullPath
             ? ` · ${this.workItem.namespace.fullPath}`
@@ -277,20 +296,6 @@ export default {
         skip() {
           return !this.workItem?.id;
         },
-      },
-    },
-    allowedChildTypes: {
-      query: getAllowedWorkItemChildTypes,
-      variables() {
-        return {
-          id: this.workItem.id,
-        };
-      },
-      skip() {
-        return !this.workItem?.id;
-      },
-      update(data) {
-        return findHierarchyWidgetDefinition(data.workItem)?.allowedChildTypes?.nodes || [];
       },
     },
     workspacePermissions: {
@@ -398,9 +403,6 @@ export default {
     canReorderDesign() {
       return this.hasDesignWidget && this.workspacePermissions.moveDesign;
     },
-    workItemNotificationsSubscribed() {
-      return Boolean(this.findWidget(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
-    },
     workItemCurrentUserTodos() {
       return this.findWidget(WIDGET_TYPE_CURRENT_USER_TODOS);
     },
@@ -418,6 +420,9 @@ export default {
     },
     workItemErrorTracking() {
       return this.findWidget(WIDGET_TYPE_ERROR_TRACKING) ?? {};
+    },
+    workItemLinkedResources() {
+      return this.findWidget(WIDGET_TYPE_LINKED_RESOURCES)?.linkedResources.nodes ?? [];
     },
     workItemHierarchy() {
       return this.findWidget(WIDGET_TYPE_HIERARCHY);
@@ -446,7 +451,7 @@ export default {
         : __('Resolved 1 discussion.');
     },
     showIntersectionObserver() {
-      return !this.isModal && !this.editMode && !this.isDrawer;
+      return !this.isModal && !this.editMode;
     },
     workItemLinkedItems() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
@@ -543,7 +548,6 @@ export default {
         fullPath: this.workItemFullPath,
         workItemId: this.workItem.id,
         hideSubscribe: this.newTodoAndNotificationsEnabled,
-        subscribedToNotifications: this.workItemNotificationsSubscribed,
         workItemType: this.workItemType,
         workItemIid: this.iid,
         projectId: this.workItemProjectId,
@@ -586,11 +590,29 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
-    commentTemplatePaths() {
-      // Fallback to the newCommentTemplatePaths prop if field from work item is null/undefined or empty
-      return this.workItem?.commentTemplatesPaths?.length
-        ? this.workItem.commentTemplatesPaths
-        : this.newCommentTemplatePaths;
+    isDuoWorkflowEnabled() {
+      return this.duoRemoteFlowsEnabled && this.glFeatures.duoWorkflowInCi;
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.workItemProjectId);
+    },
+    agentPrivileges() {
+      return [1, 2, 3, 4, 5];
+    },
+    agentInvokePath() {
+      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
+    },
+  },
+  watch: {
+    'workItem.id': {
+      immediate: true,
+      async handler(newId) {
+        // Update allowedChildTypes using manual query instead of a smart query to prevent cache inconsistency (issue: #521771)
+        const { workItem } = await this.fetchAllowedChildTypes(newId);
+        this.allowedChildTypes = workItem
+          ? findHierarchyWidgetDefinition(workItem)?.allowedChildTypes?.nodes
+          : [];
+      },
     },
   },
   beforeDestroy() {
@@ -601,6 +623,20 @@ export default {
     document.addEventListener('actioncable:reconnected', this.refetchIfStale);
   },
   methods: {
+    async fetchAllowedChildTypes(workItemId) {
+      if (!workItemId) return { workItem: null };
+
+      try {
+        const { data } = await this.$apollo.query({
+          query: getAllowedWorkItemChildTypes,
+          variables: { id: workItemId },
+        });
+
+        return data;
+      } catch (error) {
+        return { workItem: null };
+      }
+    },
     handleWorkItemCreated() {
       this.$apollo.queries.workItem.refetch();
     },
@@ -608,7 +644,7 @@ export default {
       this.editMode = true;
     },
     findWidget(type) {
-      return this.widgets?.find((widget) => widget.type === type);
+      return this.workItem?.widgets?.find((widget) => widget.type === type);
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -874,7 +910,6 @@ export default {
       const now = new Date();
       const staleThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
       if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
-        this.isRefetching = true;
         this.$apollo.queries.workItem.refetch();
         this.lastRealtimeUpdatedAt = now;
       }
@@ -905,9 +940,9 @@ export default {
         :parent-work-item-confidentiality="parentWorkItemConfidentiality"
         :full-path="workItemFullPath"
         :is-modal="isModal"
+        :is-drawer="isDrawer"
         :work-item="workItem"
         :is-sticky-header-showing="isStickyHeaderShowing"
-        :work-item-notifications-subscribed="workItemNotificationsSubscribed"
         @hideStickyHeader="hideStickyHeader"
         @showStickyHeader="showStickyHeader"
         @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -954,6 +989,25 @@ export default {
         <section v-if="updateError" class="flash-container flash-container-page sticky">
           <gl-alert class="gl-mb-3" variant="danger" @dismiss="updateError = undefined">
             {{ updateError }}
+          </gl-alert>
+        </section>
+        <section
+          v-if="refetchError"
+          :class="isDrawer ? 'gl-sticky gl-top-0' : 'flash-container flash-container-page sticky'"
+          :style="{ zIndex: 100 }"
+          data-testid="work-item-refetch-alert"
+        >
+          <gl-alert class="gl-mb-3" variant="warning" @dismiss="refetchError = null">
+            <span>{{ refetchError }}</span>
+            <gl-button
+              class="gl-ml-2"
+              category="primary"
+              variant="confirm"
+              size="small"
+              @click="$apollo.queries.workItem.refetch()"
+            >
+              {{ __('Refresh') }}
+            </gl-button>
           </gl-alert>
         </section>
         <section :class="workItemBodyClass">
@@ -1018,7 +1072,6 @@ export default {
                 <work-item-notifications-widget
                   v-if="newTodoAndNotificationsEnabled"
                   :work-item-id="workItem.id"
-                  :subscribed-to-notifications="workItemNotificationsSubscribed"
                   @error="updateError = $event"
                 />
                 <work-item-actions
@@ -1105,7 +1158,6 @@ export default {
                   :without-heading-anchors="isDrawer"
                   :hide-fullscreen-markdown-button="isDrawer"
                   :truncation-enabled="truncationEnabled"
-                  :uploads-path="uploadsPath"
                   @updateWorkItem="updateWorkItem"
                   @updateDraft="updateDraft('description', $event)"
                   @cancelEditing="cancelEditing"
@@ -1144,6 +1196,20 @@ export default {
                       :is-confidential-work-item="workItem.confidential"
                       :project-id="workItemProjectId"
                     />
+                    <div>
+                      <duo-workflow-action
+                        v-if="isDuoWorkflowEnabled"
+                        :project-id="projectIdAsNumber"
+                        :project-path="workItemFullPath"
+                        :title="__('Generate MR with Duo')"
+                        :hover-message="__('Generate merge request with Duo')"
+                        :goal="workItem.webUrl"
+                        workflow-definition="issue_to_merge_request"
+                        :agent-privileges="agentPrivileges"
+                        :duo-workflow-invoke-path="agentInvokePath"
+                        size="medium"
+                      />
+                    </div>
                   </div>
                 </div>
               </section>
@@ -1158,7 +1224,7 @@ export default {
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
-                  :class="{ 'gl-top-11': isDrawer }"
+                  :class="{ 'gl-top-9': isDrawer }"
                   :full-path="workItemFullPath"
                   :work-item="workItem"
                   :group-path="groupPath"
@@ -1172,6 +1238,11 @@ export default {
                 v-if="workItemErrorTracking.identifier"
                 :full-path="workItemFullPath"
                 :iid="iid"
+              />
+
+              <work-item-linked-resources
+                v-if="workItemLinkedResources.length"
+                :linked-resources="workItemLinkedResources"
               />
 
               <design-widget
@@ -1272,7 +1343,7 @@ export default {
                 :can-create-note="canCreateNote"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="workItem.confidential"
-                :new-comment-template-paths="commentTemplatePaths"
+                :new-comment-template-paths="workItem.commentTemplatesPaths"
                 class="gl-pt-5"
                 :use-h2="!isModalOrDrawer"
                 :small-header-style="isModal"
@@ -1295,7 +1366,6 @@ export default {
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"
-        :new-comment-template-paths="commentTemplatePaths"
         click-outside-exclude-selector=".issuable-list"
         @close="activeChildItem = null"
         @workItemDeleted="deleteChildItem"

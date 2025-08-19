@@ -163,7 +163,7 @@ export const packageData = (extend) => ({
   composerUrl: 'http://gdk.test:3000/api/v4/group/22/-/packages/composer/packages.json',
   conanUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/conan',
   pypiUrl:
-    'http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
+    'http://gitlab-ci-token:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple',
   publicPackage: false,
   pypiSetupUrl: 'http://gdk.test:3000/api/v4/projects/1/packages/pypi',
   protectionRuleExists: false,

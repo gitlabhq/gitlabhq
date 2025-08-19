@@ -20,6 +20,8 @@ module Packages
 
     private
 
+    attr_reader :params
+
     def packages
       raise NotImplementedError
     end

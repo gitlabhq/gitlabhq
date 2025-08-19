@@ -49,7 +49,9 @@ GET /projects/:id/iterations?updated_after=2013-10-02T09%3A24%3A18Z
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/iterations"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/iterations"
 ```
 
 Example response:

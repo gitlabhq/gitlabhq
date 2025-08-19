@@ -1,91 +1,13 @@
 ---
-stage: AI-powered
-group: Duo Workflow
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Development of GitLab Duo Agent Platform
+redirect_to: '../duo_agent_platform/_index.md'
+remove_date: '2025-11-12'
 ---
 
-{{< history >}}
+<!-- markdownlint-disable -->
 
-- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2. 
+This document was moved to [another location](../duo_agent_platform/_index.md).
 
-{{< /history >}}
-
-How to set up the local development environment to run [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md).
-
-## Prerequisites
-
-- [GitLab Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
-- [Vertex access](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#use-the-existing-project): You need access to the `ai-enablement-dev-69497ba7` project in GCP because GDK by default uses Anthropic hosted on Vertex. Access to this project should be available to all engineers at GitLab.
-  - If you do not have Vertex access for any reason, you should unset `DUO_WORKFLOW__VERTEX_PROJECT_ID` in the Duo Workflow Service and set `ANTHROPIC_API_KEY` to a regular Anthropic API key
-- Various settings and feature flags, which are enabled for you by the [GDK setup script](#development-setup-for-backend-components)
-
-## Set up local development for Workflow
-
-Workflow consists of four separate services:
-
-1. [GitLab instance](https://gitlab.com/gitlab-org/gitlab/)
-1. GitLab Duo Workflow Service, which is part of the [GitLab AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/duo_workflow_service.md?ref_type=heads)
-1. [GitLab Duo Workflow Executor](https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-executor/)
-1. [GitLab Duo Workflow Webview](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md)
-
-### Development Setup for Backend Components
-
-You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
-to run local versions of GitLab, Duo Workflow Service, and Executor.
-
-This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
-
-### Development Setup for Frontend Components
-
-There is no need to set up the backend components of the Agent Platform to test changes for the Agent Platform UI in the IDE.
-
-A local build of the UI is required if you are making Duo Workflow UI changes that you need to view locally. A local build is also required if you want to use a version of the UI that has not been released yet.
-
-Refer to the [GitLab Duo Workflow README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Agent Platform UI in the IDE.
-
-## Development settings
-
-Each of these settings can be turned on in your user settings in VS Code.
-
-### Change view type
-
-Enable the Duo Workflow as a sidepanel instead of fullview. This is going to be the default for public beta.
-
-`"gitlab.featureFlags.duoWorkflowPanel": true,`
-
-### Executor type
-
-Allow to define which Duo Workflow executor is selected. Accepts:
-
-- `shell` - Current default, runs the go binary directly on the user's machine
-- `docker` - Runs the go binary inside a Docker container (deprecated)
-- `node` - Runs a nodeJs/TypeScript executor directly inside the languge server. Expected to become the default.
-
-`"gitlab.duo.workflow.executor": "node",`
-
-### Workflow graph
-
-Experimental settings that allow Duo Workflow graph to be swapped. Includes:
-
-- `software_development` - default
-- `chat` - used by agentic chat
-- `search_and_replace` - Used to scan large number of files and replace results with specific instructions
-
-`"gitlab.duo.workflow.graph": "software_development",`
-
-### Tool approval
-
-Allow users to get access to tools that require approval such as running terminal commands.
-
-`"gitlab.duo.workflow.toolApproval": true`
-
-## Evaluate Workflow
-
-### Running evals
-
-To evaluate your local setup, please refer to [Duo Workflow Tests](https://gitlab.com/gitlab-org/duo-workflow/testing/duo-workflow-tests) repo.
-
-### Comparing results
-
-Once you finish a evaluation and have a experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [Duo Workflow Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.
+<!-- This redirect file can be deleted after 2025-11-12. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

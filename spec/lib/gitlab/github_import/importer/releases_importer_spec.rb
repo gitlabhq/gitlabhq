@@ -3,21 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_category: :importers do
-  let_it_be(:project) { create(:project, :with_import_url) }
-  let_it_be(:placeholder_user) { create(:user) }
-  let(:client) { double(:client) }
-  let(:importer) { described_class.new(project, client) }
-  let(:github_release_name) { 'Initial Release' }
-  let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
-  let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
-  let(:body) { 'This is my release' }
-  let(:author) do
+  include Import::UserMappingHelper
+
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
+  let_it_be(:placeholder_user) { create(:user, :placeholder) }
+  let_it_be(:author) do
     {
       login: 'User A',
       id: 1
     }
   end
 
+  let(:client) { double(:client) }
+  let(:github_release_name) { 'Initial Release' }
+  let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
+  let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
+  let(:body) { 'This is my release' }
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_GITHUB, project.import_state.id) }
   let(:github_release) do
     {
       id: 123456,
@@ -30,70 +38,59 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
     }
   end
 
-  context 'when user mapping is enabled' do
-    let_it_be(:release) { create(:release, project: project) }
+  subject(:importer) { described_class.new(project, client) }
 
-    let_it_be(:source_user) do
-      create(
-        :import_source_user,
-        placeholder_user_id: placeholder_user.id,
-        source_user_identifier: 1,
-        source_username: 'User A',
-        source_hostname: project.safe_import_url,
-        namespace_id: project.root_ancestor.id
-      )
-    end
-
-    before do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
-    end
+  context 'when user mapping is enabled', :clean_gitlab_redis_shared_state do
+    let_it_be(:source_user) { generate_source_user(project, 1, placeholder_user: placeholder_user) }
 
     describe '#execute' do
-      it 'imports the releases in bulk' do # FAILING
-        allow(importer).to receive_messages(bulk_insert: [release.id], github_users: [author])
-        release_hash = {
-          tag_name: '1.0',
-          description: 'This is my release',
-          created_at: created_at,
-          updated_at: created_at,
-          released_at: released_at,
-          author: author
-        }
-
-        expect(importer).to receive(:build_releases).and_return([[release_hash], []])
-        expect(importer).to receive(:bulk_insert).with([release_hash])
-
-        expect(importer)
-          .to receive(:push_with_record)
-          .with(
-            an_instance_of(Release),
-            :author_id,
-            1,
-            an_instance_of(Gitlab::Import::SourceUserMapper)
-          )
-
-        importer.execute
+      before do
+        allow(importer).to receive(:each_release).and_return([github_release])
       end
 
-      it 'imports draft releases' do
-        release_double = {
-          name: 'Test',
-          body: 'This is description',
-          tag_name: '1.0',
-          description: 'This is my release',
-          created_at: created_at,
-          updated_at: created_at,
-          published_at: nil,
-          author: author
-        }
-
-        expect(importer).to receive(:each_release).and_return([release_double])
+      it 'imports the releases in bulk' do
+        expect(importer).to receive(:bulk_insert).and_call_original
 
         expect { importer.execute }.to change { Release.count }.by(1)
+
+        expect(project.releases.last).to have_attributes(
+          name: github_release_name,
+          tag: '1.0',
+          author_id: source_user.mapped_user_id,
+          description: body,
+          created_at: created_at,
+          updated_at: created_at,
+          released_at: released_at
+        )
+      end
+
+      it 'pushes placeholder references' do
+        importer.execute
+
+        expect(cached_references).to contain_exactly(
+          ['Release', project.releases.last.id, 'author_id', source_user.id]
+        )
+      end
+
+      context 'when the release is a draft', :freeze_time do
+        let(:released_at) { nil }
+
+        it 'imports the release' do
+          expect { importer.execute }.to change { Release.count }.by(1)
+
+          expect(project.releases.last).to have_attributes(
+            name: github_release_name,
+            tag: '1.0',
+            author_id: source_user.mapped_user_id,
+            description: body,
+            created_at: created_at,
+            updated_at: created_at,
+            released_at: Time.current
+          )
+        end
       end
 
       it 'is idempotent' do
-        allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
         expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
@@ -107,6 +104,50 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
           importer.execute
 
           expect(Release.last.description).to eq("You can ask `@knejad` by emailing xyz@gitlab.com")
+        end
+      end
+
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'does not push any references' do
+          importer.execute
+
+          expect(cached_references).to be_empty
+        end
+
+        it 'imports the release mapped to the personal namespace owner' do
+          importer.execute
+
+          expect(project.releases.last.author_id).to eq(user_namespace.owner_id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          let_it_be(:source_user) { generate_source_user(project, 1) }
+
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'pushes placeholder references' do
+            importer.execute
+
+            expect(cached_references).to contain_exactly(
+              ['Release', project.releases.last.id, 'author_id', source_user.id]
+            )
+          end
+
+          it 'imports the release mapped to the placeholder user' do
+            importer.execute
+
+            expect(project.releases.last.author_id).to eq(source_user.mapped_user_id)
+          end
         end
       end
     end
@@ -270,59 +311,63 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
   end
 
   context 'when user mapping is disabled' do
-    before do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
-    end
+    let_it_be(:user) { create(:user, username: author[:login]) }
 
-    def stub_email_for_github_username(user_name = 'User A', user_email = 'user@example.com')
+    before do
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
+
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |instance|
         allow(instance).to receive(:email_for_github_username)
-          .with(user_name).and_return(user_email)
+          .with(user.username).and_return(user.email)
       end
     end
 
     describe '#execute' do
       before do
-        stub_email_for_github_username
+        allow(importer).to receive(:each_release).and_return([github_release])
       end
 
       it 'imports the releases in bulk' do
-        release_hash = {
-          tag_name: '1.0',
-          description: 'This is my release',
+        expect(importer).to receive(:bulk_insert).and_call_original
+
+        expect { importer.execute }.to change { Release.count }.by(1)
+
+        expect(project.releases.last).to have_attributes(
+          name: github_release_name,
+          tag: '1.0',
+          author_id: user.id,
+          description: body,
           created_at: created_at,
           updated_at: created_at,
           released_at: released_at
-        }
-
-        expect(importer).to receive(:build_releases).and_return([[release_hash], []])
-        expect(importer).to receive(:bulk_insert).with([release_hash])
-
-        expect(importer)
-          .not_to receive(:push_with_record)
-
-        importer.execute
+        )
       end
 
-      it 'imports draft releases' do
-        release_double = {
-          name: 'Test',
-          body: 'This is description',
-          tag_name: '1.0',
-          description: 'This is my release',
-          created_at: created_at,
-          updated_at: created_at,
-          published_at: nil,
-          author: author
-        }
+      it 'does not push placeholder references' do
+        importer.execute
 
-        expect(importer).to receive(:each_release).and_return([release_double])
+        expect(cached_references).to be_empty
+      end
 
-        expect { importer.execute }.to change { Release.count }.by(1)
+      context 'when the release is a draft', :freeze_time do
+        let(:released_at) { nil }
+
+        it 'imports the release' do
+          expect { importer.execute }.to change { Release.count }.by(1)
+
+          expect(project.releases.last).to have_attributes(
+            name: github_release_name,
+            tag: '1.0',
+            author_id: user.id,
+            description: body,
+            created_at: created_at,
+            updated_at: created_at,
+            released_at: Time.current
+          )
+        end
       end
 
       it 'is idempotent' do
-        allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
         expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
@@ -341,10 +386,6 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
     end
 
     describe '#build_releases' do
-      before do
-        stub_email_for_github_username
-      end
-
       it 'returns an Array containing release rows' do
         expect(importer).to receive(:each_release).and_return([github_release])
 
@@ -417,10 +458,6 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       let(:release_hash) { importer.build_attributes(github_release) }
 
       context 'the returned Hash' do
-        before do
-          stub_email_for_github_username
-        end
-
         it 'returns the attributes of the release as a Hash' do
           expect(release_hash).to be_an_instance_of(Hash)
         end
@@ -464,15 +501,12 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
 
       context 'author_id attribute' do
         it 'returns the Gitlab user_id when Github release author is found' do
-          # Stub user email which matches a Gitlab user.
-          stub_email_for_github_username('User A', project.users.first.email)
-
           # Disable cache read as the redis cache key can be set by other specs.
           # https://gitlab.com/gitlab-org/gitlab/-/blob/88bffda004e0aca9c4b9f2de86bdbcc0b49f2bc7/lib/gitlab/github_import/user_finder.rb#L75
           # Above line can return different user when read from cache.
           allow(Gitlab::Cache::Import::Caching).to receive(:read).and_return(nil)
 
-          expect(release_hash[:author_id]).to eq(project.users.first.id)
+          expect(release_hash[:author_id]).to eq(user.id)
         end
 
         it 'returns ghost user when author is empty in Github release' do
@@ -486,7 +520,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
 
           before do
             # Stub user email which does not match a Gitlab user.
-            stub_email_for_github_username('octocat', 'octocat@example.com')
+            allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |instance|
+              allow(instance).to receive(:email_for_github_username)
+                .with('octocat').and_return('octocat@example.com')
+            end
           end
 
           it 'returns project creator as author' do

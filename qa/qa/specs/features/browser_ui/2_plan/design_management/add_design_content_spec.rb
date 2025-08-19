@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :product_planning do
+  RSpec.describe 'Plan', feature_category: :portfolio_management do
     describe 'Design Management' do
       let(:design_filename) { 'banana_sample.gif' }
       let(:design) { Runtime::Path.fixture('designs', design_filename) }

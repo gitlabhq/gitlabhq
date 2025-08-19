@@ -16,7 +16,7 @@ import (
 	"testing"
 
 	"github.com/dlclark/regexp2"
-	"github.com/golang-jwt/jwt/v5"
+	jwt "github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"

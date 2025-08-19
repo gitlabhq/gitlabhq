@@ -2,7 +2,7 @@ import TimeAgoTooltip from './time_ago_tooltip.vue';
 
 export default {
   component: TimeAgoTooltip,
-  title: 'vue_shared/components/time_ago_tooltip',
+  title: 'vue_shared/time_ago_tooltip',
 };
 
 const Template = (args, { argTypes }) => ({

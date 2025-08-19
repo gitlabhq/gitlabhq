@@ -83,7 +83,7 @@ describe('PipelinesDashboardClickhouseFilters', () => {
         'On-Demand DAST Validation',
         'Scheduled Scan Execution Policy',
         'Container Registry Push',
-        'Duo Workflow',
+        'Duo Agent Platform',
         'Scheduled Pipeline Execution Policy',
         'Unknown',
       ]);

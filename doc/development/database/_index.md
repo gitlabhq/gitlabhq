@@ -67,7 +67,7 @@ title: Database development guidelines
 
 - [Adding database indexes](adding_database_indexes.md)
 - [Adding Foreign key constraints without downtime](foreign_keys.md#avoiding-downtime-and-migration-failures)
-- [Compatiblity with Cells](../cells/_index.md)
+- [Compatibility with Cells](../cells/_index.md)
 - [Check for background migrations before upgrading](../../update/background_migrations.md)
 - [Client-side connection-pool](client_side_connection_pool.md)
 - [Constraints naming conventions](constraint_naming_convention.md)

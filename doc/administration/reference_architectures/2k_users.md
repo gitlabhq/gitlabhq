@@ -17,11 +17,11 @@ This page describes the GitLab reference architecture designed to target a peak 
 For a full list of reference architectures, see
 [Available reference architectures](_index.md#available-reference-architectures).
 
-> - **Target Load**: API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
-> - **High Availability**: No. For a highly-available environment, you can
->   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Cloud Native Hybrid**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-> - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
+- **Target Load**: API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
+- **High Availability**: No. For a highly-available environment, you can
+  follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
+- **Cloud Native Hybrid**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
+- **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
 | Service                            | Nodes | Configuration          | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|
@@ -499,17 +499,8 @@ but do **not** provide the `EXTERNAL_URL` value.
    -->
 
    ```ruby
-   # Avoid running unnecessary services on the Gitaly server
-   postgresql['enable'] = false
-   redis['enable'] = false
-   nginx['enable'] = false
-   puma['enable'] = false
-   sidekiq['enable'] = false
-   gitlab_workhorse['enable'] = false
-   prometheus['enable'] = false
-   alertmanager['enable'] = false
-   gitlab_exporter['enable'] = false
-   gitlab_kas['enable'] = false
+   # https://docs.gitlab.com/omnibus/roles/#gitaly-roles
+   roles(["gitaly_role"])
 
    # Prevent database migrations from running on upgrade automatically
    gitlab_rails['auto_migrate'] = false
@@ -518,9 +509,6 @@ but do **not** provide the `EXTERNAL_URL` value.
    # fail. This can be your 'front door' GitLab URL or an internal load
    # balancer.
    gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
-
-   # Gitaly
-   gitaly['enable'] = true
 
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
@@ -1157,7 +1145,7 @@ you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#clou
 
 {{< alert type="warning" >}}
 
-**Gitaly Cluster is not supported to be run in Kubernetes**.
+**Gitaly Cluster (Praefect) is not supported to be run in Kubernetes**.
 Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
 
 {{< /alert >}}

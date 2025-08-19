@@ -1,8 +1,15 @@
 <script>
-import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
+import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_MERGE_REQUESTS,
+  TRACKING_PROPERTY_REVIEW_REQUESTED,
+  TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+} from '../tracking_constants';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 export default {
@@ -11,10 +18,16 @@ export default {
     GlIcon,
     GlLink,
     GlBadge,
+    GlSprintf,
     VisibilityChangeDetector,
   },
-  mixins: [timeagoMixin],
-  inject: ['duoCodeReviewBotUsername'],
+  mixins: [timeagoMixin, InternalEvents.mixin()],
+  inject: [
+    'duoCodeReviewBotUsername',
+    'mergeRequestsReviewRequestedTitle',
+    'mergeRequestsYourMergeRequestsTitle',
+  ],
+
   props: {
     reviewRequestedPath: {
       type: String,
@@ -28,6 +41,7 @@ export default {
   data() {
     return {
       metadata: {},
+      hasError: false,
     };
   },
   apollo: {
@@ -42,7 +56,7 @@ export default {
         return currentUser;
       },
       error(error) {
-        this.$emit('fetch-metadata-error');
+        this.hasError = true;
         Sentry.captureException(error);
       },
     },
@@ -63,7 +77,20 @@ export default {
   },
   methods: {
     reload() {
+      this.hasError = false;
       this.$apollo.queries.metadata.refetch();
+    },
+    handleReviewRequestedClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_MERGE_REQUESTS,
+        property: TRACKING_PROPERTY_REVIEW_REQUESTED,
+      });
+    },
+    handleAssignedClick() {
+      this.trackEvent(EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE, {
+        label: TRACKING_LABEL_MERGE_REQUESTS,
+        property: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
+      });
     },
   },
 };
@@ -71,17 +98,31 @@ export default {
 
 <template>
   <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
-    <h4 class="gl-flex gl-items-center gl-gap-2">
+    <h2 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
       <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
-    </h4>
-    <ul class="gl-list-none gl-p-0">
+    </h2>
+    <p v-if="hasError" data-testid="error-message">
+      <gl-sprintf
+        :message="
+          s__(
+            'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the %{linkStart}dashboard%{linkEnd}.',
+          )
+        "
+      >
+        <template #link="{ content }">
+          <gl-link :href="assignedToYouPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <ul v-else class="gl-list-none gl-p-0" data-testid="links-list">
       <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="reviewRequestedPath"
+          @click="handleReviewRequestedClick"
         >
-          {{ __('Review requested') }}
+          {{ mergeRequestsReviewRequestedTitle }}
           <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
           <span
             v-if="reviewRequestedLastUpdatedAt"
@@ -96,8 +137,9 @@ export default {
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="assignedToYouPath"
+          @click="handleAssignedClick"
         >
-          {{ __('Assigned to you') }}
+          {{ mergeRequestsYourMergeRequestsTitle }}
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
           <span
             v-if="assignedLastUpdatedAt"

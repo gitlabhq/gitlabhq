@@ -9,7 +9,6 @@ title: GLQL functions
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -20,15 +19,9 @@ title: GLQL functions
 - Promoted to [beta](../../policy/development_stages_support.md#beta) status in GitLab 17.10.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/476990) from experiment to beta in GitLab 17.10.
 - Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/554870) in GitLab 18.3. Feature flag `glql_integration` removed.
+
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Use functions with [GitLab Query Language (GLQL)](_index.md) to create dynamic queries.
 
@@ -93,9 +86,9 @@ by filtering by a current user or a date.
   type = MergeRequest and merged = today()
   ```
 
-## Functions in GLQL views
+## Functions in embedded views
 
-To derive a new column from an existing field of a [GLQL view](_index.md#glql-views), include
+To derive a new column from an existing field of an [embedded view](_index.md#embedded-views), include
 functions in the `fields` parameter.
 
 ### Extract labels into a new column
@@ -140,7 +133,7 @@ in the regular `labels` column, if you choose to display that column as well.
   labels("*end")
   ```
 
-To include the `labels` function in a GLQL view:
+To include the `labels` function in an embedded view:
 
 ````markdown
 ```glql

@@ -68,6 +68,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 | [GitLab Pages](../../subscriptions/gitlab_dedicated/_index.md#gitlab-pages) | GitLab hosts your static websites on a dedicated domain. You can publish sites from your repositories. | Available by <br>default |
 | [Advanced search](../../integration/advanced_search/elasticsearch.md) | GitLab maintains the search infrastructure. You can search across your code, issues, and merge requests. | Available by <br>default |
 | [Hosted runners (beta)](hosted_runners.md) | You purchase a subscription and configure your hosted runners. GitLab manages the auto-scaling CI/CD infrastructure. | Switchboard |
+| [ClickHouse](../../integration/clickhouse.md) | GitLab maintains the ClickHouse infrastructure and integration. You can access all advanced analytical features such as [AI impact analytics](../../user/analytics/ai_impact_analytics.md) and [CI analytics](../../ci/runners/runner_fleet_dashboard.md#enable-more-ci-analytics-features-with-clickhouse). | Available by <br>default for [eligible customers](../../subscriptions/gitlab_dedicated/_index.md#clickhouse) |
 
 ## Manage daily operations
 
@@ -76,7 +77,7 @@ To learn more, see [GitLab Dedicated Architecture](architecture.md).
 | [Application logs](monitor.md) | GitLab delivers logs to your AWS S3 bucket. You can request access to monitor instance activity through these logs. | Support ticket |
 | [Email service](configure_instance/users_notifications.md#smtp-email-service) | GitLab provides AWS SES by default to send emails from your GitLab Dedicated instance. You can also configure your own SMTP email service. | Support ticket for <br/>custom service  |
 | [Switchboard access and <br>notifications](configure_instance/users_notifications.md) | You manage Switchboard permissions and notification settings. GitLab maintains the Switchboard infrastructure. | Switchboard |
-| [Switchboard SSO](configure_instance/users_notifications.md#configure-single-sign-on-for-switchboard) | You configure your organization's identity provider and supply GitLab with the necessary details. GitLab configures single-sign-on (SSO) for Switchboard. | Support ticket |
+| [Switchboard SSO](configure_instance/authentication/_index.md#configure-switchboard-sso) | You configure your organization's identity provider and supply GitLab with the necessary details. GitLab configures single-sign-on (SSO) for Switchboard. | Support ticket |
 
 ## Get started
 

@@ -404,6 +404,7 @@ export default {
               :directory-download-links="downloadLinks"
               :project-id="projectId"
               :project-path="projectPath"
+              :git-ref="currentRef"
               :show-web-ide-button="showWebIdeButton"
               :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
               :is-gitpod-enabled-for-user="isGitpodEnabledForUser"

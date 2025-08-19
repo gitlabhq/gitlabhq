@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { getUserCounts } from '~/api/user_api';
+import { getStorageValue, saveStorageValue } from '~/lib/utils/local_storage';
 
 export const userCounts = Vue.observable({
   last_update: 0,
@@ -33,16 +34,30 @@ function broadcastUserCounts(data) {
   broadcastChannel?.postMessage({ ...data });
 }
 
-async function retrieveUserCountsFromApi() {
+export function useCachedUserCounts() {
+  const cachedUserCounts = getStorageValue('user_counts').value;
+
+  if (!cachedUserCounts) return;
+
+  updateCounts({ ...cachedUserCounts, last_update: Date.now() });
+  broadcastUserCounts(cachedUserCounts);
+}
+
+export async function retrieveUserCountsFromApi() {
   try {
     const lastUpdate = Date.now();
     const { data } = await getUserCounts();
     const payload = { ...data, last_update: lastUpdate };
+    saveStorageValue('user_counts', payload);
     updateCounts(payload);
     broadcastUserCounts(userCounts);
   } catch (e) {
-    // eslint-disable-next-line no-console, @gitlab/require-i18n-strings
-    console.error('Error retrieving user counts', e);
+    useCachedUserCounts();
+
+    if (e) {
+      // eslint-disable-next-line no-console, @gitlab/require-i18n-strings
+      console.error('Error retrieving user counts', e);
+    }
   }
 }
 

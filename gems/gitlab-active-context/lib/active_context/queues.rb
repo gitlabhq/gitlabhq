@@ -3,11 +3,29 @@
 module ActiveContext
   class Queues
     def self.queues
+      register_all_queues!
+
       Set.new(@queues ||= [])
     end
 
     def self.raw_queues
+      register_all_queues!
+
       @raw_queues ||= []
+    end
+
+    def self.configured_queue_classes
+      ActiveContext::Config.queue_classes
+    end
+
+    def self.register_all_queues!
+      return if @queues_registered
+
+      configured_queue_classes.each do |q|
+        register!(q)
+      end
+
+      @queues_registered = true
     end
 
     def self.register!(queue_class)
@@ -29,7 +47,7 @@ module ActiveContext
 
     def self.all_queued_items
       {}.tap do |hash|
-        @raw_queues&.each do |raw_queue|
+        raw_queues&.each do |raw_queue|
           queue_key = "#{raw_queue.redis_key}:zset"
           references = ActiveContext::Redis.with_redis do |redis|
             redis.zrangebyscore(queue_key, '-inf', '+inf')

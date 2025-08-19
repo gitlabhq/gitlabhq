@@ -1,60 +1,5 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a policy allowing accessing instance runner/runner manager depending on runner sharing' do
-    |ability|
-  context 'with instance runner' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:shared_runners_enabled_on_group, :shared_runners_enabled_on_project, :expect_to_be_allowed) do
-      false  | false  | false
-      false  | true   | true
-      true   | false  | true
-      true   | true   | true
-    end
-
-    with_them do
-      let(:runner) { instance_runner }
-
-      before do
-        group.update!(shared_runners_enabled: shared_runners_enabled_on_group)
-        owner_project.update!(shared_runners_enabled: shared_runners_enabled_on_project)
-      end
-
-      specify do
-        if expect_to_be_allowed
-          expect_allowed ability
-        else
-          expect_disallowed ability
-        end
-      end
-    end
-  end
-end
-
-RSpec.shared_examples 'a policy disallowing access to instance runner/runner manager' do |ability|
-  context 'with instance runner' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:shared_runners_enabled_on_group, :shared_runners_enabled_on_project) do
-      false  | false
-      false  | true
-      true   | false
-      true   | true
-    end
-
-    with_them do
-      let(:runner) { instance_runner }
-
-      before do
-        group.update!(shared_runners_enabled: shared_runners_enabled_on_group)
-        owner_project.update!(shared_runners_enabled: shared_runners_enabled_on_project)
-      end
-
-      specify { expect_disallowed ability }
-    end
-  end
-end
-
 RSpec.shared_examples 'a policy allowing accessing group runner/runner manager depending on runner sharing' do
     |ability, user_role|
   let(:group_runners_enabled_on_project) { true }
@@ -156,7 +101,11 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
   context 'with instance runner' do
     let(:runner) { instance_runner }
 
-    it { expect_disallowed ability }
+    if ability.in?([:read_runner, :read_runner_manager])
+      it { expect_allowed ability }
+    else
+      it { expect_disallowed ability }
+    end
 
     context 'with shared runners disabled for groups and projects' do
       before do
@@ -164,7 +113,11 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
         owner_project.update!(shared_runners_enabled: false)
       end
 
-      it { expect_disallowed ability }
+      if ability.in?([:read_runner, :read_runner_manager])
+        it { expect_allowed ability }
+      else
+        it { expect_disallowed ability }
+      end
     end
   end
 
@@ -201,22 +154,18 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
 end
 
 RSpec.shared_context 'with runner policy environment' do
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-
-  let_it_be_with_reload(:group) do
-    create(:group, name: 'top-level', path: 'top-level',
-      guests: guest, reporters: reporter, developers: developer, maintainers: maintainer, owners: owner)
-  end
-
+  let_it_be_with_reload(:group) { create(:group, name: 'top-level', path: 'top-level', owners: owner) }
   let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
   let_it_be_with_reload(:owner_project) { create(:project, group: subgroup) }
   let_it_be_with_reload(:other_project) { create(:project) }
   let_it_be_with_reload(:group_without_project) { create(:group, name: 'top-level2', path: 'top-level2') }
 
-  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
+
+  let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager, creator: developer) }
   let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }
   let_it_be(:subgroup_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [subgroup]) }
   let_it_be(:project_runner) do
@@ -254,7 +203,7 @@ RSpec.shared_examples 'runner policy not allowed for levels lower than maintaine
   end
 end
 
-RSpec.shared_examples 'runner policy' do |ability|
+RSpec.shared_examples 'runner policy' do |ability, scope: %i[instance_runner group_runner project_runner]|
   context 'without access' do
     let_it_be(:user) { create(:user) }
 
@@ -282,41 +231,63 @@ RSpec.shared_examples 'runner policy' do |ability|
   context 'with maintainer access' do
     let(:user) { maintainer }
 
-    it_behaves_like 'a policy allowing accessing instance runner/runner manager depending on runner sharing', ability
+    if scope.include?(:instance_runner)
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
 
-    it_behaves_like 'a policy allowing accessing group runner/runner manager depending on runner sharing',
-      ability, :maintainer
+        it { expect_allowed ability }
+      end
+    end
 
-    context 'with project runner' do
-      let(:runner) { project_runner }
+    if scope.include?(:group_runner)
+      it_behaves_like 'a policy allowing accessing group runner/runner manager depending on runner sharing',
+        ability, :maintainer
+    end
 
-      it { expect_allowed ability }
+    if scope.include?(:project_runner)
+      context 'with project runner' do
+        let(:runner) { project_runner }
 
-      context 'when user is maintainer in an unrelated group' do
-        let_it_be(:maintainers_group_maintainer) { create(:user) }
-        let_it_be_with_reload(:maintainers_group) do
-          create(:group, name: 'maintainers', path: 'maintainers', maintainers: maintainers_group_maintainer)
+        it { expect_allowed ability }
+
+        context 'when user is developer in an associated project' do
+          let_it_be(:user) { create(:user, developer_of: other_project) }
+
+          it { expect_disallowed ability }
         end
 
-        let(:user) { maintainers_group_maintainer }
+        context 'when user is maintainer in an associated project' do
+          let_it_be(:user) { create(:user, maintainer_of: other_project) }
 
-        it { expect_disallowed ability }
+          it { expect_allowed ability }
+        end
 
-        context 'when maintainers group is invited as maintainer to project' do
-          before do
-            create(:project_group_link, :maintainer, group: maintainers_group, project: project_invited_to)
+        context 'when user is maintainer in an unrelated group' do
+          let_it_be(:maintainers_group_maintainer) { create(:user) }
+          let_it_be_with_reload(:maintainers_group) do
+            create(:group, name: 'maintainers', path: 'maintainers', maintainers: maintainers_group_maintainer)
           end
 
-          context 'and target project is owner project' do
-            let(:project_invited_to) { owner_project }
+          let(:user) { maintainers_group_maintainer }
 
-            it { expect_allowed ability }
-          end
+          it { expect_disallowed ability }
 
-          context 'and target project is other project' do
-            let(:project_invited_to) { other_project }
+          context 'when maintainers group is invited as maintainer to project' do
+            before do
+              create(:project_group_link, :maintainer, group: maintainers_group, project: project_invited_to)
+            end
 
-            it { expect_allowed ability }
+            context 'and target project is owner project' do
+              let(:project_invited_to) { owner_project }
+
+              it { expect_allowed ability }
+            end
+
+            context 'and target project is other project' do
+              let(:project_invited_to) { other_project }
+
+              it { expect_allowed ability }
+            end
           end
         end
       end
@@ -326,26 +297,80 @@ RSpec.shared_examples 'runner policy' do |ability|
   context 'with owner access' do
     let(:user) { owner }
 
-    it_behaves_like 'a policy allowing accessing instance runner/runner manager depending on runner sharing', ability
-
-    context 'with group runner' do
-      let(:runner) { group_runner }
-
-      it { expect_allowed ability }
-
-      context 'with sharing of group runners disabled' do
-        before do
-          owner_project.update!(group_runners_enabled: false)
-        end
+    if scope.include?(:instance_runner)
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
 
         it { expect_allowed ability }
       end
     end
 
-    context 'with project runner' do
-      let(:runner) { project_runner }
+    if scope.include?(:group_runner)
+      context 'with group runner' do
+        let(:runner) { group_runner }
 
-      it { expect_allowed ability }
+        it { expect_allowed ability }
+
+        context 'with sharing of group runners disabled' do
+          before do
+            owner_project.update!(group_runners_enabled: false)
+          end
+
+          it { expect_allowed ability }
+        end
+      end
+    end
+
+    if scope.include?(:project_runner)
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it { expect_allowed ability }
+      end
+    end
+  end
+
+  context 'with admin user' do
+    let_it_be(:user) { create(:admin) }
+
+    if scope.include?(:instance_runner)
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        if ability.in?([:read_runner, :read_runner_manager])
+          it { expect_allowed ability }
+        else
+          it { expect_disallowed ability }
+        end
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed ability }
+        end
+      end
+    end
+
+    if scope.include?(:group_runner)
+      context 'with group runner' do
+        let(:runner) { group_runner }
+
+        it { expect_disallowed ability }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed ability }
+        end
+      end
+    end
+
+    if scope.include?(:project_runner)
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it { expect_disallowed ability }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it { expect_allowed ability }
+        end
+      end
     end
   end
 end

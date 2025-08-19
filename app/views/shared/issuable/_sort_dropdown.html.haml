@@ -1,5 +1,5 @@
 - viewing_issues = controller.controller_name == 'issues' || controller.action_name == 'issues'
-- viewing_merge_requests = controller.controller_name == 'merge_requests' || controller.action_name == 'merge_requests'
+- viewing_merge_requests = controller.controller_name == 'merge_requests' || controller.action_name == 'merge_requests' || controller.action_name == 'search_merge_requests'
 - items = issuable_sort_options(viewing_issues, viewing_merge_requests)
 - selected = issuable_sort_option_overrides[@sort] || @sort
 

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'openssl'
 require 'digest'
 
 module Gitlab
   module X509
-    class Commit < Gitlab::SignedCommit
+    class Commit < Gitlab::Repositories::BaseSignedCommit
       private
 
       def signature_class

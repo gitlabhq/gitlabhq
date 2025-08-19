@@ -42,7 +42,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
-    push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
 
@@ -192,14 +191,14 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    return destroy_immediately if @project.marked_for_deletion_at? && params[:permanently_delete].present?
+    return destroy_immediately if @project.self_deletion_scheduled? && params[:permanently_delete].present?
 
-    result = ::Projects::MarkForDeletionService.new(@project, current_user, {}).execute
+    result = ::Projects::MarkForDeletionService.new(@project, current_user).execute
 
-    if result[:status] == :success
+    if result.success?
       redirect_to project_path(@project), status: :found
     else
-      flash.now[:alert] = result[:message]
+      flash.now[:alert] = result.message
 
       render_edit
     end
@@ -210,14 +209,14 @@ class ProjectsController < Projects::ApplicationController
 
     result = ::Projects::RestoreService.new(@project, current_user, {}).execute
 
-    if result[:status] == :success
+    if result.success?
       flash[:notice] = format(
         _("Project '%{project_name}' has been successfully restored."), project_name: @project.full_name
       )
 
       redirect_to(edit_project_path(@project))
     else
-      flash.now[:alert] = result[:message]
+      flash.now[:alert] = result.message
 
       render_edit
     end
@@ -231,7 +230,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def archive
-    ::Projects::UpdateService.new(@project, current_user, archived: true).execute
+    ::Projects::ArchiveService.new(project: @project, current_user: current_user).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -239,7 +238,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def unarchive
-    ::Projects::UpdateService.new(@project, current_user, archived: false).execute
+    ::Projects::UnarchiveService.new(project: @project, current_user: current_user).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }

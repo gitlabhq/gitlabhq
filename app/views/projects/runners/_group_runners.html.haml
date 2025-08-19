@@ -23,7 +23,7 @@
     - elsif @group_runners.empty?
       .gl-text-subtle
         = _('This group does not have any group runners yet.')
-        - if can?(current_user, :register_group_runners, @project.group) || can?(current_user, :create_runner, @project.group)
+        - if can?(current_user, :register_group_runners, @project.group) || can?(current_user, :create_runners, @project.group)
           - group_link_start = "<a href='#{group_runners_path(@project.group)}'>".html_safe
           - group_link_end = '</a>'.html_safe
           = s_("Runners|To register them, go to the %{linkStart}group's Runners page%{linkEnd}.").html_safe % { linkStart: group_link_start, linkEnd: group_link_end }

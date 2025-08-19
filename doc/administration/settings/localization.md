@@ -22,7 +22,7 @@ You can change the [Default first day of the week](../../user/profile/preference
 for the entire GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Scroll to the **Localization** section, and select your desired first day of the week.
 
 ## Change the default language
@@ -31,5 +31,5 @@ You can change the [Default language](../../user/profile/preferences.md)
 for the entire GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Scroll to the **Localization** section, and select your desired default language.

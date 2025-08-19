@@ -79,10 +79,6 @@ Teams implement evaluation strategies covering multiple aspects of the quality o
 - [Dataset creation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/guidelines/create_dataset.md) and [management](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/dataset_management.md)
 - [Evaluation](ai_evaluation_guidelines.md)
 
-#### Resources
-
-- [Testing and validation](testing_and_validation.md)
-
 ### Launch & Monitor
 
 This phase focuses on safely introducing AI features to production through controlled rollouts and comprehensive monitoring.

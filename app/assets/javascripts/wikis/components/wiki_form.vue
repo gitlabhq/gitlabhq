@@ -161,6 +161,7 @@ export default {
       isContentEditorActive: false,
       switchEditingControlDisabled: false,
       isFormDirty: getIsFormDirty(this.pageInfo),
+      isTitleValid: null,
       formFieldProps: {
         placeholder: this.$options.i18n.content.placeholder,
         'aria-label': this.$options.i18n.content.label,
@@ -290,6 +291,12 @@ export default {
       this.isFormDirty = false;
 
       e.preventDefault();
+
+      this.validateTitle();
+
+      if (!this.isTitleValid) {
+        return;
+      }
 
       this.trackFormSubmit();
       this.trackWikiFormat();
@@ -472,6 +479,9 @@ export default {
         this.positionCursorAfterParentPath();
       }
     },
+    validateTitle() {
+      this.isTitleValid = Boolean(this.pageTitle.trim().length > 0);
+    },
   },
 };
 </script>
@@ -503,6 +513,7 @@ export default {
           :label="$options.i18n.title.label"
           label-for="wiki_title"
           :class="{ 'gl-hidden': isCustomSidebar }"
+          :invalid-feedback="__('A title is required')"
         >
           <gl-form-input
             id="wiki_title"
@@ -514,9 +525,11 @@ export default {
             :required="true"
             :autofocus="!pageInfo.persisted"
             :placeholder="titlePlaceholder"
+            :state="isTitleValid"
             @input="handleTitleInput"
             @keydown="handleTitleKeydown"
             @focus="handleTitleFocus"
+            @blur="validateTitle"
           />
         </gl-form-group>
       </div>

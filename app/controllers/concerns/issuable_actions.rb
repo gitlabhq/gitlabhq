@@ -91,7 +91,7 @@ module IssuableActions
   end
 
   def destroy
-    Issuable::DestroyService.new(container: issuable.project, current_user: current_user).execute(issuable)
+    destroy_service.execute(issuable)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
@@ -278,6 +278,10 @@ module IssuableActions
 
   def update_service
     raise NotImplementedError
+  end
+
+  def destroy_service
+    Issuable::DestroyService.new(container: issuable.project, current_user: current_user)
   end
 
   def parent

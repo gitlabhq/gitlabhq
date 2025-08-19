@@ -108,7 +108,7 @@ The following block generates a test named `Plan wiki content creation in a proj
 
 ``` ruby
 # `RSpec.describe` is the DevOps Stage being covered
-RSpec.describe 'Plan', product_group: :knowledge do
+RSpec.describe 'Plan', feature_category: :wiki do
   # `describe` is the feature being tested
   describe 'wiki content creation' do
     # `context` provides the condition being covered

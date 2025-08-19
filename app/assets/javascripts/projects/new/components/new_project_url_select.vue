@@ -151,12 +151,20 @@ export default {
       const namespace = this.allItems.find((item) => item.id === namespaceId);
 
       if (namespace) {
-        eventHub.$emit('update-visibility', {
+        const eventData = {
           name: namespace.name,
           visibility: namespace.visibility,
           showPath: namespace.webUrl,
-          editPath: joinPaths(namespace.webUrl, '-', 'edit'),
-        });
+        };
+
+        // Only add editPath for group namespaces, not user namespaces
+        // User namespace can be identified by checking if it matches the current user's namespace
+        const isUserNamespace = namespace.id === this.userNamespace.id;
+        if (!isUserNamespace) {
+          eventData.editPath = joinPaths(namespace.webUrl, '-', 'edit');
+        }
+
+        eventHub.$emit('update-visibility', eventData);
       }
       this.setNamespace(namespace);
     },

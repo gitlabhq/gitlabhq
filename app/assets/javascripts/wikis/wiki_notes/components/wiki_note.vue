@@ -2,7 +2,7 @@
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import { produce } from 'immer';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
-import DeleteNoteMutation from '~/wikis/graphql/notes/delete_wiki_page_note.mutation.graphql';
+import DeleteNoteMutation from '~/wikis/wiki_notes/graphql/delete_wiki_page_note.mutation.graphql';
 import { clearDraft, getDraft } from '~/lib/utils/autosave';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
@@ -10,7 +10,7 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { createAlert } from '~/alert';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
-import wikiNoteToggleAwardEmojiMutation from '~/wikis/graphql/notes/wiki_note_toggle_award_emoji.mutation.graphql';
+import wikiNoteToggleAwardEmojiMutation from '~/wikis/wiki_notes/graphql/wiki_note_toggle_award_emoji.mutation.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getIdFromGid, getAutosaveKey } from '../utils';
@@ -114,8 +114,9 @@ export default {
         },
         noteParent: {
           'gl-rounded-lg gl-border gl-border-section': !this.replyNote,
-          'gl-ml-7': this.replyNote,
+          'gl-pl-8 gl-pr-5 -gl-mx-5': this.replyNote,
           'gl-bg-section gl-ml-8': !this.replyNote,
+          'internal-note-bg': this.note.internal,
         },
       };
     },

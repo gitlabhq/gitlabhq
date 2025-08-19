@@ -7,13 +7,13 @@ RSpec.shared_examples 'resolves user solo-owned organizations' do
 
   context 'when user owns organizations' do
     let_it_be(:solo_owned_organizations) do
-      create_list(:organization_owner, 2, user: organization_owner).map(&:organization)
+      create_list(:organization_owner, 2, :without_common_organization, user: organization_owner).map(&:organization)
     end
 
     let_it_be(:multi_owned_organization) do
       create(:organization, organization_users: [
-        create(:organization_owner, user: organization_owner),
-        create(:organization_owner, user: create(:user))
+        create(:organization_owner, :without_common_organization, user: organization_owner),
+        create(:organization_owner, :without_common_organization, user: create(:user))
       ])
     end
 
@@ -29,8 +29,8 @@ RSpec.shared_examples 'resolves user solo-owned organizations' do
   context 'when organization has other members' do
     let_it_be(:organization) do
       create(:organization, organization_users: [
-        create(:organization_owner, user: organization_owner),
-        create(:organization_user, user: create(:user))
+        create(:organization_owner, :without_common_organization, user: organization_owner),
+        create(:organization_user, :without_common_organization, user: create(:user))
       ])
     end
 

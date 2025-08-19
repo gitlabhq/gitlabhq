@@ -108,6 +108,17 @@ RSpec.describe 'projects/tags/index.html.haml' do
     end
   end
 
+  context 'clipboard button' do
+    it 'renders a clipboard button for each tag' do
+      render
+
+      tags.each do |tag|
+        expect(rendered).to have_css("button[data-clipboard-text='#{tag.name}']")
+        expect(rendered).to have_css("button[title='Copy tag name']")
+      end
+    end
+  end
+
   def tags
     project.repository.tags
   end

@@ -31,7 +31,8 @@ Additional compute minutes:
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner role for the group or be a billing account manager.
+- The billing account must be linked to the subscription for the group's namespace.
 
 You can purchase additional compute minutes for your group.
 You cannot transfer purchased compute minutes from one group to another,
@@ -39,7 +40,7 @@ so be sure to select the correct group.
 
 1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
+1. Select **Settings > Usage quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
 1. Enter the desired quantity of compute minute packs.
@@ -58,7 +59,7 @@ To purchase additional compute minutes for your personal namespace:
 1. Sign in to GitLab.com.
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Usage Quotas**.
+1. On the left sidebar, select **Usage quotas**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
 1. In the **Subscription details** section, select the name of the user from the dropdown list.
 1. Enter the desired quantity of compute minute packs.

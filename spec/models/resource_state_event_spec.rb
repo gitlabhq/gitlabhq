@@ -147,7 +147,7 @@ RSpec.describe ResourceStateEvent, feature_category: :team_planning, type: :mode
 
           state_event.valid?
 
-          expect(state_event.namespace_id).to eq(merge_request.source_project.project_namespace_id)
+          expect(state_event.namespace_id).to eq(merge_request.project.project_namespace_id)
         end
       end
     end

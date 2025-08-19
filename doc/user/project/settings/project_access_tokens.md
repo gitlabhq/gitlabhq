@@ -112,16 +112,14 @@ all projects that have visibility level set to [Internal](../../public_access.md
 {{< history >}}
 
 - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens limited to 30 days and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
 
 In GitLab 17.9 and later, you can view both active and inactive project
 access tokens on the access tokens page.
 
-The inactive project access tokens table displays revoked and expired tokens for 30 days after they became inactive.
-
-Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
+The inactive project access tokens table displays revoked and expired tokens until they are [automatically deleted](#inactive-token-retention).
 
 To revoke or rotate a project access token:
 
@@ -226,7 +224,7 @@ GitLab runs a check every day at 1:00 AM UTC to identify project access tokens t
   - The [group setting](../../group/manage.md#expiry-emails-for-group-and-project-access-tokens) in any of the parent groups of the project.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
-Your expired access tokens are listed in the [inactive project access tokens table](#revoke-or-rotate-a-project-access-token) for 30 days after the tokens expire.
+Your expired access tokens are listed in the [inactive project access tokens table](#revoke-or-rotate-a-project-access-token) until they are [automatically deleted](#inactive-token-retention).
 
 ## Bot users for projects
 
@@ -237,7 +235,7 @@ Your expired access tokens are listed in the [inactive project access tokens tab
 
 {{< /history >}}
 
-Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
+Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 
@@ -259,10 +257,26 @@ Bot users for projects:
 
 When the project access token is [revoked](#revoke-or-rotate-a-project-access-token):
 
-- The bot user is retained for 30 days.
+- The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
 - After 30 days the bot user is deleted. All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
 
 See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
+
+## Inactive token retention
+
+By default, GitLab deletes group and project access tokens and their [token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) 30 days after the last active token from the token family becomes inactive. This removes all tokens in the token family and the associated bot user and migrates the bot user contributions to a system-wide "Ghost User".
+
+To modify the retention period for inactive tokens:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings** > **General**.
+1. Expand **Account and limit**.
+1. In the **Inactive project and group access token retention period** text box, modify the retention period.
+   - If a number is defined, all group and project access tokens are deleted after they are inactive for the specified number of days.
+   - If the field is blank, inactive tokens are never deleted.
+1. Select **Save changes**.
+
+You can also use the [application settings API](../../../api/settings.md) to modify the `inactive_resource_access_tokens_delete_after_days` attribute.
 
 ## Token availability
 

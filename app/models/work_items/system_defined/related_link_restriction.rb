@@ -1,0 +1,132 @@
+# frozen_string_literal: true
+
+module WorkItems
+  module SystemDefined
+    class RelatedLinkRestriction
+      include ActiveRecord::FixedItemsModel::Model
+
+      attribute :source_type_id, :integer
+      attribute :target_type_id, :integer
+      attribute :link_type
+
+      EPIC_ID = ::WorkItems::Type::BASE_TYPES[:epic][:id]
+      ISSUE_ID = ::WorkItems::Type::BASE_TYPES[:issue][:id]
+      TASK_ID = ::WorkItems::Type::BASE_TYPES[:task][:id]
+      OBJECTIVE_ID = ::WorkItems::Type::BASE_TYPES[:objective][:id]
+      KEY_RESULT_ID = ::WorkItems::Type::BASE_TYPES[:key_result][:id]
+      INCIDENT_ID = ::WorkItems::Type::BASE_TYPES[:incident][:id]
+
+      ITEMS = [
+        { id: 1, source_type_id: EPIC_ID, target_type_id: EPIC_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 2, source_type_id: EPIC_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 3, source_type_id: EPIC_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 4, source_type_id: EPIC_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 5, source_type_id: EPIC_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 6, source_type_id: EPIC_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 7, source_type_id: ISSUE_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 8, source_type_id: ISSUE_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 9, source_type_id: ISSUE_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 10, source_type_id: ISSUE_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 11, source_type_id: ISSUE_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 12, source_type_id: TASK_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 13, source_type_id: TASK_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 14, source_type_id: TASK_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 15, source_type_id: TASK_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 16, source_type_id: OBJECTIVE_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 17, source_type_id: OBJECTIVE_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 18, source_type_id: OBJECTIVE_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 19, source_type_id: KEY_RESULT_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 20, source_type_id: KEY_RESULT_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 21, source_type_id: INCIDENT_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 22, source_type_id: INCIDENT_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 23, source_type_id: INCIDENT_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 24, source_type_id: INCIDENT_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 25, source_type_id: INCIDENT_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        { id: 26, source_type_id: INCIDENT_ID, target_type_id: EPIC_ID,
+          link_type: Enums::IssuableLink::TYPE_RELATES_TO },
+        # Source can block target and target can be blocked by source
+        { id: 27, source_type_id: EPIC_ID, target_type_id: EPIC_ID, link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 28, source_type_id: EPIC_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 29, source_type_id: EPIC_ID, target_type_id: TASK_ID, link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 30, source_type_id: EPIC_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 31, source_type_id: EPIC_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 32, source_type_id: EPIC_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 33, source_type_id: ISSUE_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 34, source_type_id: ISSUE_ID, target_type_id: EPIC_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 35, source_type_id: ISSUE_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 36, source_type_id: ISSUE_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 37, source_type_id: ISSUE_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 38, source_type_id: ISSUE_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 39, source_type_id: TASK_ID, target_type_id: TASK_ID, link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 40, source_type_id: TASK_ID, target_type_id: EPIC_ID, link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 41, source_type_id: TASK_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 42, source_type_id: TASK_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 43, source_type_id: TASK_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 44, source_type_id: TASK_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 45, source_type_id: OBJECTIVE_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 46, source_type_id: OBJECTIVE_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 47, source_type_id: OBJECTIVE_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 48, source_type_id: KEY_RESULT_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 49, source_type_id: KEY_RESULT_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 50, source_type_id: KEY_RESULT_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 51, source_type_id: INCIDENT_ID, target_type_id: INCIDENT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 52, source_type_id: INCIDENT_ID, target_type_id: EPIC_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 53, source_type_id: INCIDENT_ID, target_type_id: ISSUE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 54, source_type_id: INCIDENT_ID, target_type_id: TASK_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 55, source_type_id: INCIDENT_ID, target_type_id: OBJECTIVE_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS },
+        { id: 56, source_type_id: INCIDENT_ID, target_type_id: KEY_RESULT_ID,
+          link_type: Enums::IssuableLink::TYPE_BLOCKS }
+      ].freeze
+    end
+  end
+end

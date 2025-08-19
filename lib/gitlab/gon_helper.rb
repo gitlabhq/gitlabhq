@@ -34,7 +34,7 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
-      gon.promo_url              = ApplicationHelper.promo_url
+      gon.promo_url              = Gitlab::Routing.url_helpers.promo_url
       gon.forum_url              = Gitlab::Saas.community_forum_url
       gon.docs_url               = Gitlab::Saas.doc_url
       gon.revision               = Gitlab.revision
@@ -62,7 +62,7 @@ module Gitlab
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
-        gon.current_organization = current_organization.slice(:id, :name, :web_url, :avatar_url)
+        gon.current_organization = current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
       end
 
       add_gon_user_specific
@@ -98,6 +98,11 @@ module Gitlab
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
+      push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
+      push_frontend_feature_flag(:whats_new_featured_carousel)
+      push_frontend_feature_flag(:extensible_reference_filters, current_user)
+      push_frontend_feature_flag(:global_topbar, current_user)
+      push_frontend_feature_flag(:paneled_view, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

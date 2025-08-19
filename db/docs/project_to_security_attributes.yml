@@ -1,0 +1,12 @@
+---
+table_name: project_to_security_attributes
+classes:
+- Security::ProjectToSecurityAttribute
+feature_categories:
+- security_asset_inventories
+description: Stores connections between security attributes and projects
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198519
+milestone: '18.3'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects

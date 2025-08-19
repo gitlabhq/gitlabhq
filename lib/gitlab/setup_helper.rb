@@ -60,6 +60,8 @@ module Gitlab
 
           # 'make install' puts the binaries in #{dir}/bin but the init script expects them in dir
           FileUtils.mv(Dir["#{dir}/bin/*"], dir)
+          # remove empty bin directory
+          FileUtils.rm_rf("#{dir}/bin")
         end
 
         def make

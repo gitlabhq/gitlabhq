@@ -86,9 +86,6 @@ export default {
 
       return this.initialSort;
     },
-    search() {
-      return this.queryAsObject?.[FILTERED_SEARCH_TERM_KEY] || '';
-    },
     sortOptions() {
       if (this.pathsToExcludeSortOn.includes(window.location.pathname)) {
         return [];

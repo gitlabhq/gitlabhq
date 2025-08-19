@@ -28,7 +28,6 @@ module WorkItems
             duplicated_to_id: work_item.duplicated_to_id,
             moved_to_id: work_item.moved_to_id,
             promoted_to_epic_id: work_item.promoted_to_epic_id,
-            external_key: work_item.external_key,
             upvotes_count: work_item.upvotes_count,
             blocking_issues_count: work_item.blocking_issues_count,
             work_item_type: target_work_item_type,
@@ -60,7 +59,7 @@ module WorkItems
         private
 
         def skip_system_notes?
-          (operation == :clone && !!params[:clone_with_notes]) || operation == :move
+          (operation == :clone && !!params[:clone_with_notes]) || operation == :move || operation == :promote
         end
 
         def relative_position

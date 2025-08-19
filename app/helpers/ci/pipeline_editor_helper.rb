@@ -8,6 +8,10 @@ module Ci
       can_collaborate_with_project?(project)
     end
 
+    def current_branch
+      params[:branch_name]
+    end
+
     def js_pipeline_editor_data(project)
       initial_branch = params[:branch_name]
       latest_commit = project.repository.commit(initial_branch) || project.commit

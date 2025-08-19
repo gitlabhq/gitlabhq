@@ -20,5 +20,9 @@ export default {
 };
 </script>
 <template>
-  <work-item-type-icon :work-item-type="workItemType" :show-text="true" />
+  <work-item-type-icon
+    :work-item-type="workItemType"
+    :show-text="true"
+    class="gl-whitespace-nowrap"
+  />
 </template>

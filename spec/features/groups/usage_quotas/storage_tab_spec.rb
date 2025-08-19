@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Usage Quotas > Storage tab', :js, feature_category: :consumables_cost_management do
+RSpec.describe 'Groups > Usage quotas > Storage tab', :js, feature_category: :consumables_cost_management do
   include UsageQuotasHelpers
 
   let_it_be_with_reload(:user) { create(:user) }
@@ -21,7 +21,7 @@ RSpec.describe 'Groups > Usage Quotas > Storage tab', :js, feature_category: :co
     sign_in(user)
   end
 
-  it_behaves_like 'namespace Usage Quotas > Storage tab' do
+  it_behaves_like 'namespace Usage quotas > Storage tab' do
     let_it_be(:namespace_storage_size_used_text) { '12.0 MiB' }
     let_it_be(:storage_tab_url) { group_usage_quotas_path(group, anchor: 'storage-quota-tab') }
   end

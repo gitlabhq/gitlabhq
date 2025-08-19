@@ -1,15 +1,10 @@
 import { defineStore } from 'pinia';
 import { ASC, MR_FILTER_OPTIONS } from '~/notes/constants';
-import mrNotes from '~/mr_notes/stores';
 import * as actions from './actions';
 import mutations from './mutations';
 import * as getters from './getters';
 
 export const useNotes = defineStore('legacyNotes', {
-  syncWith: {
-    store: mrNotes,
-    name: 'notes',
-  },
   state() {
     return {
       discussions: [],

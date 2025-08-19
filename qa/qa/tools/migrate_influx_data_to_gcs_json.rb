@@ -137,7 +137,7 @@ module QA
       def tags(values)
         tags = values.slice('name', 'file_path', 'status', 'smoke',
           'quarantined', 'job_name', 'merge_request', 'run_type', 'stage',
-          'product_group', 'testcase', 'exception_class')
+          'product_group', 'feature_category', 'testcase', 'exception_class')
 
         # custom_test_metrics
         tags['import_repo'] = values['import_repo']

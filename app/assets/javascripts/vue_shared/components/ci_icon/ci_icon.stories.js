@@ -2,7 +2,7 @@ import CiIcon from './ci_icon.vue';
 
 export default {
   component: CiIcon,
-  title: 'vue_shared/ci_icon',
+  title: 'vue_shared/ci_icon/ci_icon',
 };
 
 const Template = (args, { argTypes }) => ({

@@ -15,25 +15,21 @@ module Resolvers
 
       argument :source, Types::Ci::PipelineSourcesEnum,
         required: false,
-        description: 'Source of the pipeline.',
-        experiment: { milestone: '17.5' }
+        description: 'Source of the pipeline.'
 
       argument :ref, GraphQL::Types::String,
         required: false,
-        description: 'Branch that triggered the pipeline.',
-        experiment: { milestone: '17.5' }
+        description: 'Branch that triggered the pipeline.'
 
       argument :from_time, Types::TimeType,
         required: false,
         description:
-          'Start of the requested time (in UTC). Defaults to the pipelines started in the past week.',
-        experiment: { milestone: '17.5' }
+          'Start of the requested time (in UTC). Defaults to the pipelines started in the past week.'
 
       argument :to_time, Types::TimeType,
         required: false,
         description:
-          'End of the requested time (in UTC). Defaults to the pipelines started before the current date.',
-        experiment: { milestone: '17.5' }
+          'End of the requested time (in UTC). Defaults to the pipelines started before the current date.'
 
       def resolve(lookahead:, source: nil, ref: nil, from_time: nil, to_time: nil)
         period = lookahead.selection(:time_series)&.arguments&.fetch(:period)

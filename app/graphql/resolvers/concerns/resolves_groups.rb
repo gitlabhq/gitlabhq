@@ -6,6 +6,7 @@ module ResolvesGroups
   include LooksAhead
 
   PRELOADS = {
+    archived: [:namespace_settings_with_ancestors_inherited_settings],
     container_repositories_count: [:container_repositories],
     description: [:namespace_details],
     description_html: [:namespace_details],

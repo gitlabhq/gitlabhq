@@ -251,7 +251,7 @@ to the next iteration.
 
 Iterations are changed by the special GitLab Automation Bot user, which you can see in the issue
 [system notes](../../project/system_notes.md).
-This user isn't a [billable user](../../../subscriptions/self_managed/_index.md#billable-users),
+This user isn't a [billable user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users),
 so it does not count toward the license limit count.
 
 On GitLab.com, this is the `automation-bot1` user.

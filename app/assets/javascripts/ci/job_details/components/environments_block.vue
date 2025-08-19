@@ -179,7 +179,7 @@ export default {
 <template>
   <div class="gl-my-4" data-testid="jobs-environment-container">
     <div
-      class="gl-border gl-flex gl-gap-3 gl-rounded-base gl-bg-subtle gl-p-4"
+      class="gl-border gl-flex gl-items-start gl-gap-3 gl-rounded-base gl-bg-subtle gl-p-4"
       data-testid="jobs-environment-info"
     >
       <ci-icon :status="iconStatus" />

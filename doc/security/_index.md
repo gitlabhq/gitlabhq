@@ -82,7 +82,7 @@ GitLab Self-Managed customers and administrators are responsible for the securit
 - [Review Runner job logs information](../administration/cicd/job_logs.md).
 - [How to use correlation ID to trace logs](../administration/logs/tracing_correlation_id.md).
 - [Logging configuration and access](https://docs.gitlab.com/omnibus/settings/logs.html).
-- [How to configure audit event streaming](../administration/audit_event_streaming/_index.md).
+- [How to configure audit event streaming](../administration/compliance/audit_event_streaming.md).
 
 ## Response
 

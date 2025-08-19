@@ -36,11 +36,6 @@ export default {
       required: false,
       default: '',
     },
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: 'bottom',
-    },
   },
   computed: {
     title() {

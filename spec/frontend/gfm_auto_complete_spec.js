@@ -1,6 +1,7 @@
 /* eslint no-param-reassign: "off" */
 import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GfmAutoComplete, {
@@ -25,12 +26,17 @@ import {
   mockIssues,
   mockAssignees,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
+import { InternalEvents } from '~/tracking';
 
 const mockSpriteIcons = '/icons.svg';
 
 jest.mock('~/graphql_shared/issuable_client', () => ({
   linkedItems: jest.fn(),
   currentAssignees: jest.fn(),
+}));
+
+jest.mock('fuzzaldrin-plus', () => ({
+  filter: jest.fn((items) => items),
 }));
 
 describe('escape', () => {
@@ -196,6 +202,7 @@ describe('GfmAutoComplete', () => {
       mock = new MockAdapter(axios);
       jest.spyOn(axios, 'get');
       jest.spyOn(AjaxCache, 'retrieve');
+      jest.spyOn(InternalEvents, 'trackEvent');
     });
 
     afterEach(() => {
@@ -240,6 +247,15 @@ describe('GfmAutoComplete', () => {
             params: { search: 'query2' },
             signal: expect.any(AbortSignal),
           });
+        });
+
+        it('tracks autocomplete event for wikis', () => {
+          fetchData.call(context, {}, '[[', 'query');
+
+          expect(InternalEvents.trackEvent).toHaveBeenCalledTimes(1);
+          expect(InternalEvents.trackEvent).toHaveBeenCalledWith(
+            'trigger_autocomplete_for_wiki_links',
+          );
         });
 
         it.each([HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR])(
@@ -883,6 +899,11 @@ describe('GfmAutoComplete', () => {
     const expectLabels = ({ input, output }) => {
       triggerDropdown($textarea, input);
 
+      if (input === '~bg') {
+        expect(fuzzaldrinPlus.filter).toHaveBeenCalledWith(expect.any(Array), 'bg', {
+          key: 'title',
+        });
+      }
       expect(getDropdownItems()).toEqual(output.map((label) => label.title));
     };
 
@@ -894,6 +915,7 @@ describe('GfmAutoComplete', () => {
       it.each`
         input           | output
         ${'~'}          | ${unassignedLabels}
+        ${'~bg'}        | ${unassignedLabels}
         ${'/label ~'}   | ${unassignedLabels}
         ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${unassignedLabels}
@@ -909,6 +931,7 @@ describe('GfmAutoComplete', () => {
       it.each`
         input           | output
         ${'~'}          | ${allLabels}
+        ${'~bg'}        | ${allLabels}
         ${'/label ~'}   | ${unassignedLabels}
         ${'/labels ~'}  | ${unassignedLabels}
         ${'/relabel ~'} | ${allLabels}
@@ -1219,6 +1242,79 @@ describe('GfmAutoComplete', () => {
       autocomplete.updateDataSources(newDataSources);
 
       expect(autocomplete.dataSources).toEqual(newDataSources);
+    });
+  });
+
+  describe('Extensible reference filters', () => {
+    const dataSources = {
+      issuesAlternative: `${TEST_HOST}/autocomplete_sources/issues`,
+      workItems: `${TEST_HOST}/autocomplete_sources/issues`,
+    };
+
+    let autocomplete;
+    let $textarea;
+
+    const issueDropdownElementId = 'at-view-issuesalternative';
+    const workItemDropdownElementId = 'at-view-workitems';
+    const getIssueDropdownItems = () => getAutocompleteDropdownItems(issueDropdownElementId);
+    const getWorkItemDropdownItems = () => getAutocompleteDropdownItems(workItemDropdownElementId);
+    const issueMatcher = (issue) => `${issue.reference} ${issue.title}`;
+
+    const setup = () => {
+      setHTMLFixture('<textarea></textarea>');
+      autocomplete = new GfmAutoComplete(dataSources);
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { issuesAlternative: true, workItems: true });
+      autocomplete.cachedData['[issue:'] = {
+        '': [...mockIssues],
+      };
+      autocomplete.cachedData['[work_item:'] = {
+        '': [...mockIssues],
+      };
+    };
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    describe('when extensible_reference_filters feature flag enabled', () => {
+      beforeEach(() => {
+        gon.features = { extensibleReferenceFilters: true };
+        setup();
+      });
+
+      it('[issue: shows issues', () => {
+        triggerDropdown($textarea, '[issue:');
+        const issues = getIssueDropdownItems();
+        expect(issues).toHaveLength(mockIssues.length);
+        expect(issues).toEqual(mockIssues.map(issueMatcher));
+      });
+
+      it('[work_item: shows work items', () => {
+        triggerDropdown($textarea, '[work_item:');
+        const workItems = getWorkItemDropdownItems();
+        expect(workItems).toHaveLength(mockIssues.length);
+        expect(workItems).toEqual(mockIssues.map(issueMatcher));
+      });
+    });
+
+    describe('when extensible_reference_filters feature flag disabled', () => {
+      beforeEach(() => {
+        gon.features = { extensibleReferenceFilters: false };
+        setup();
+      });
+
+      it('[issue: does not show issues', () => {
+        triggerDropdown($textarea, '[issue:');
+        const dropdownElement = document.getElementById(issueDropdownElementId);
+        expect(dropdownElement).toBe(null);
+      });
+
+      it('[work_item: does not show work items', () => {
+        const dropdownElement = document.getElementById(workItemDropdownElementId);
+        expect(dropdownElement).toBe(null);
+      });
     });
   });
 

@@ -9,7 +9,7 @@ import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vu
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
 import JobLog from '~/ci/job_details/components/log/log.vue';
-import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
+import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import Sidebar from '~/ci/job_details/components/sidebar/sidebar.vue';
 import StuckBlock from '~/ci/job_details/components/stuck_block.vue';
 import UnmetPrerequisitesBlock from '~/ci/job_details/components/unmet_prerequisites_block.vue';
@@ -352,7 +352,10 @@ describe('Job App', () => {
   });
 
   describe('job log', () => {
-    beforeEach(() => setupAndMount());
+    beforeEach(async () => {
+      await setupAndMount();
+      jest.spyOn(store, 'dispatch');
+    });
 
     it('should render job log header', () => {
       expect(findJobLogTopBar().exists()).toBe(true);
@@ -362,6 +365,12 @@ describe('Job App', () => {
       expect(findJobLog().exists()).toBe(true);
 
       expect(findJobLog().props()).toEqual({ searchResults: [] });
+    });
+
+    it('should toggle scroll buttons when line is toggled', () => {
+      findJobLog().vm.$emit('toggleCollapsibleLine');
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 

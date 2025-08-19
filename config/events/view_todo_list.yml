@@ -4,7 +4,7 @@ internal_events: true
 action: view_todo_list
 identifiers:
 - user
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - notifications
 milestone: '17.10'

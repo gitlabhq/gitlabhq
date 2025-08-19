@@ -15,10 +15,12 @@ module RuboCop
           See https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html#example-usage-of-activerecord-classes.
         MSG
 
+        # @!method inherits_from_active_record_base?(node)
         def_node_search :inherits_from_active_record_base?, <<~PATTERN
           (class _ (const (const _ :ActiveRecord) :Base) _)
         PATTERN
 
+        # @!method inherits_from_application_record?(node)
         def_node_search :inherits_from_application_record?, <<~PATTERN
           (class _ (const _ :ApplicationRecord) _)
         PATTERN

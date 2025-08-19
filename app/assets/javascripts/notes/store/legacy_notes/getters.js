@@ -166,17 +166,18 @@ export function noteableType() {
 
 const reverseNotes = (array) => array.slice(0).reverse();
 
-const isLastNote = (note, state) =>
+const isCurrentUserLastNote = (note, state) =>
   !note.system && state.userData && note.author && note.author.id === state.userData.id;
 
 export function getCurrentUserLastNote() {
   return flattenDeep(reverseNotes(this.discussions).map((note) => reverseNotes(note.notes))).find(
-    (el) => isLastNote(el, this),
+    (el) => isCurrentUserLastNote(el, this),
   );
 }
 
-export function getDiscussionLastNote() {
-  return (discussion) => reverseNotes(discussion.notes).find((el) => isLastNote(el, this));
+export function getDiscussionCurrentUserLastNote() {
+  return (discussion) =>
+    reverseNotes(discussion.notes).find((el) => isCurrentUserLastNote(el, this));
 }
 
 export function showJumpToNextDiscussion() {

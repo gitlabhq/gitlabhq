@@ -3,6 +3,7 @@ stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Git server hooks
+description: Configure Git server hooks.
 ---
 
 {{< details >}}
@@ -81,8 +82,8 @@ To set server hooks for a repository:
 
    - A path to a valid Gitaly configuration for the node is required to connect to the node and provided to the `--config` flag.
    - Custom hooks tarball must be passed via `stdin`. For example, `cat custom_hooks.tar | sudo -u git -- /opt/gitlab/embedded/bin/gitaly hooks set --storage <storage> --repository <relative path> --config <config path>`.
-1. If you are using Gitaly Cluster, you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
-   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
+1. If you are using Gitaly Cluster (Praefect), you must run `hooks set` subcommand on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster (Praefect)](#server-hooks-on-a-gitaly-cluster-praefect).
 
 If you implemented the server hook code correctly, it should execute when the Git hook is next triggered.
 
@@ -114,8 +115,8 @@ To create server hooks for a repository:
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 1. Ensure the hook file does not match the backup file
    pattern (`*~`).
-1. If you are using Gitaly Cluster, you must repeat this process on all Gitaly nodes. For more information, see
-   [Server hooks on a Gitaly Cluster](#server-hooks-on-a-gitaly-cluster).
+1. If you are using Gitaly Cluster (Praefect), you must repeat this process on all Gitaly nodes. For more information, see
+   [Server hooks on a Gitaly Cluster (Praefect)](#server-hooks-on-a-gitaly-cluster-praefect).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
 
@@ -123,21 +124,17 @@ If the server hook code is properly implemented, it should execute when the Git 
 
 {{< /tabs >}}
 
-### Server hooks on a Gitaly Cluster
+### Server hooks on a Gitaly Cluster (Praefect)
 
-If you use [Gitaly Cluster](gitaly/_index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
+If you use [Gitaly Cluster (Praefect)](gitaly/praefect/_index.md), an individual repository may be replicated to multiple Gitaly storages in Praefect.
 Consequentially, the hook scripts must be copied to every Gitaly node that has a replica of the repository.
 To accomplish this, follow the same steps for setting custom repository hooks for the applicable version and repeat for each storage.
 
-The location to copy the scripts to depends on where repositories are stored:
-
-- In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_paths.md#hashed-storage)
-  reported by the GitLab application.
-- In GitLab 15.3 and later, new repositories are created using
-  [Praefect-generated replica paths](gitaly/praefect/_index.md#praefect-generated-replica-paths),
-  which are not the hashed storage path. The replica path can be identified by
-  [querying the Praefect repository metadata](gitaly/praefect/troubleshooting.md#view-repository-metadata)
-  using `-relative-path` to specify the expected GitLab hashed storage path.
+The location to copy the scripts to depends on where repositories are stored. New repositories are created using
+[Praefect-generated replica paths](gitaly/praefect/_index.md#praefect-generated-replica-paths),
+which are not the hashed storage path. The replica path can be identified by
+[querying the Praefect repository metadata](gitaly/praefect/troubleshooting.md#view-repository-metadata)
+using `-relative-path` to specify the expected GitLab hashed storage path.
 
 ## Create global server hooks for all repositories
 

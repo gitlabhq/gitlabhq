@@ -155,16 +155,15 @@ RSpec.describe Banzai::ReferenceRedactor, feature_category: :markdown do
       expect(result['title']).to eq(issue.title)
     end
 
-    it 'removes info from a cross project reference' do
+    it 'redacts cross project reference' do
       issue = create(:issue, project: other_project)
       link = create_link(issue)
       doc = Nokogiri::HTML.fragment(link)
 
       redactor.redact([doc])
-      result = doc.css('a').last
 
-      expect(result['class']).not_to include('has-tooltip')
-      expect(result['title']).to be_empty
+      expect(doc.css('a')).to be_empty
+      expect(doc.to_html).to eq(issue.to_reference)
     end
   end
 

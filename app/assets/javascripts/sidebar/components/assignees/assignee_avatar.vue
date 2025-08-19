@@ -1,7 +1,6 @@
 <script>
 import { GlAvatar, GlIcon } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
-import { __, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -24,9 +23,6 @@ export default {
     },
   },
   computed: {
-    assigneeAlt() {
-      return sprintf(__("%{userName}'s avatar"), { userName: this.user.name });
-    },
     avatarUrl() {
       return (
         this.user.avatarUrl || this.user.avatar || this.user.avatar_url || gon.default_avatar_url
@@ -49,9 +45,14 @@ export default {
       :label="user.name"
       :src="avatarUrl"
       :size="imgSize"
-      :alt="assigneeAlt"
+      aria-hidden="true"
       data-testid="avatar-image"
     />
-    <gl-icon v-if="hasMergeIcon" name="warning-solid" aria-hidden="true" class="merge-icon" />
+    <gl-icon
+      v-if="hasMergeIcon"
+      :aria-label="__('Cannot merge')"
+      name="warning-solid"
+      class="merge-icon"
+    />
   </span>
 </template>

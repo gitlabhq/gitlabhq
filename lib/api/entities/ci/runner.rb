@@ -6,6 +6,8 @@ module API
       class Runner < Grape::Entity
         include ::API::Ci::Helpers::RunnerJobExecutionStatusHelper
 
+        # NOTE: instance runners are exposed by default to any authenticated user,
+        # remember to protect any sensitive fields
         expose :id, documentation: { type: 'integer', example: 8 }
         expose :description, documentation: { type: 'string', example: 'test-1-20150125' }
         # TODO: remove in v5 https://gitlab.com/gitlab-org/gitlab/-/issues/415159

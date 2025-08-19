@@ -5,33 +5,17 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:imported_from) { Import::HasImportSource::IMPORT_SOURCES[:github] }
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :repository, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
   let_it_be(:user_representation_1) { Gitlab::GithubImport::Representation::User.new(id: 4, login: 'alice') }
   let_it_be(:user_representation_2) { Gitlab::GithubImport::Representation::User.new(id: 5, login: 'bob') }
-  let_it_be_with_reload(:project) do
-    create(:project, :repository, :with_import_url, :import_user_mapping_enabled, import_type: Import::SOURCE_GITHUB)
-  end
-
-  let_it_be(:source_user_1) do
-    create(
-      :import_source_user,
-      source_user_identifier: user_representation_1.id,
-      source_hostname: project.safe_import_url,
-      import_type: Import::SOURCE_GITHUB,
-      namespace: project.root_ancestor
-    )
-  end
-
-  let_it_be(:source_user_2) do
-    create(
-      :import_source_user,
-      source_user_identifier: user_representation_2.id,
-      source_hostname: project.safe_import_url,
-      import_type: Import::SOURCE_GITHUB,
-      namespace: project.root_ancestor
-    )
-  end
-
+  let_it_be(:source_user_1) { generate_source_user(project, user_representation_1.id) }
+  let_it_be(:source_user_2) { generate_source_user(project, user_representation_2.id) }
   let_it_be(:user) { create(:user) }
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
@@ -68,6 +52,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
   end
 
   let(:pull_request) { Gitlab::GithubImport::Representation::PullRequest.new(pull_request_attributes) }
+  let(:user_references) { placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id) }
 
   let(:importer) { described_class.new(pull_request, project, client) }
 
@@ -124,8 +109,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
     it 'pushes placeholder references to the store' do
       importer.execute
-
-      user_references = placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id)
       created_merge_request = MergeRequest.last
       created_mr_assignee = created_merge_request.merge_request_assignees.first # we only import one PR assignee
 
@@ -133,6 +116,59 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         ['MergeRequest', created_merge_request.id, 'author_id', source_user_1.id],
         ['MergeRequestAssignee', created_mr_assignee.id, 'user_id', source_user_2.id]
       ])
+    end
+
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+
+      before_all do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'does not push any references' do
+        importer.execute
+
+        expect(user_references).to be_empty
+      end
+
+      it 'imports the pull request mapped to the personal namespace owner' do
+        expect { importer.execute }.to change { MergeRequest.count }.from(0).to(1)
+
+        created_merge_request = MergeRequest.last
+        expect(created_merge_request.author_id).to eq(user_namespace.owner_id)
+        expect(created_merge_request.assignee_ids).to contain_exactly(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        let_it_be(:source_user_1) { generate_source_user(project, user_representation_1.id) }
+        let_it_be(:source_user_2) { generate_source_user(project, user_representation_2.id) }
+
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references' do
+          importer.execute
+
+          created_merge_request = MergeRequest.last
+          created_mr_assignee = created_merge_request.merge_request_assignees.first
+
+          expect(user_references).to match_array([
+            ['MergeRequest', created_merge_request.id, 'author_id', source_user_1.id],
+            ['MergeRequestAssignee', created_mr_assignee.id, 'user_id', source_user_2.id]
+          ])
+        end
+
+        it 'imports the pull request mapped to the placeholder users' do
+          expect { importer.execute }.to change { MergeRequest.count }.from(0).to(1)
+
+          created_merge_request = MergeRequest.last
+          expect(created_merge_request.author_id).to eq(source_user_1.mapped_user_id)
+          expect(created_merge_request.assignee_ids).to contain_exactly(source_user_2.mapped_user_id)
+        end
+      end
     end
 
     context 'when the description is processed for formatting' do
@@ -230,7 +266,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
       end
 
       context 'when merge request is open' do
-        let(:project) { create(:project, :repository, :with_import_url, :import_user_mapping_enabled) }
+        let(:project) { create(:project, :repository, :in_group, :github_import, :import_user_mapping_enabled) }
         let(:state) { :opened }
 
         before do
@@ -331,8 +367,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         it 'does not push any placeholder references' do
           importer.execute
 
-          user_references = placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id)
-
           expect(user_references).to be_empty
         end
       end
@@ -363,8 +397,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
 
         it 'does not push any placeholder references' do
           importer.execute
-
-          user_references = placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id)
 
           expect(user_references).to be_empty
         end

@@ -165,6 +165,8 @@ RSpec.describe Labels::PromoteService, feature_category: :team_planning do
           service.execute(project_label_1_1)
 
           Label.reflect_on_all_associations.each do |association|
+            next if association.belongs_to?
+
             expect(project_label_1_1.send(association.name).reset).not_to be_any
           end
         end

@@ -269,7 +269,7 @@ export default {
       <template #cell(node_size)="{ item }">
         <span v-if="item.nodes">{{ item.nodes.length }}</span>
 
-        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"
@@ -290,7 +290,7 @@ export default {
           </gl-sprintf>
         </span>
 
-        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"
@@ -311,7 +311,7 @@ export default {
           </gl-sprintf>
         </span>
 
-        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" :class="contentAlignClasses" />
+        <gl-skeleton-loader v-else-if="loadingNodes" :lines="1" />
 
         <node-error-help-text
           v-else-if="item.kubernetes_errors"

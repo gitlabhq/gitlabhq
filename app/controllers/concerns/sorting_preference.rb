@@ -93,7 +93,11 @@ module SortingPreference
     return can_sort_by_issue_weight?(action_name == 'issues') if sort_order.include?('weight')
 
     if sort_order.include?('merged_at')
-      return can_sort_by_merged_date?(controller_name == 'merge_requests' || action_name == 'merge_requests')
+      return can_sort_by_merged_date?(
+        controller_name == 'merge_requests' ||
+        action_name == 'merge_requests' ||
+        action_name == 'search_merge_requests'
+      )
     end
 
     true

@@ -49,7 +49,6 @@ export default {
       failureType: null,
       failureReasons: [],
       hasBranchLoaded: false,
-      initialCiFileContent: '',
       isFetchingCommitSha: false,
       isLintUnavailable: false,
       isNewCiConfigFile: false,
@@ -58,14 +57,15 @@ export default {
       showFailure: false,
       showResetConfirmationModal: false,
       showStartScreen: false,
-      starterTemplate: '',
       starterTemplateName: STARTER_TEMPLATE_NAME,
     };
   },
   apollo: {
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     initialCiFileContent: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
       query: getBlobContent,
+      manual: true,
       // If it's a brand new file, we don't want to fetch the content.
       // Then when the user commits the first time, the query would run
       // to get the initial file content, but we already have it in `lastCommittedContent`
@@ -80,9 +80,6 @@ export default {
           path: this.ciConfigPath,
           ref: this.currentBranch,
         };
-      },
-      update(data) {
-        return data?.project?.repository?.blobs?.nodes[0]?.rawBlob;
       },
       result({ data }) {
         const nodes = data?.project?.repository?.blobs?.nodes;
@@ -173,8 +170,10 @@ export default {
         return data.workBranches?.current?.name;
       },
     },
+    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     starterTemplate: {
       query: getTemplate,
+      manual: true,
       variables() {
         return {
           projectPath: this.projectFullPath,
@@ -183,9 +182,6 @@ export default {
       },
       skip({ isNewCiConfigFile }) {
         return !isNewCiConfigFile;
-      },
-      update(data) {
-        return data.project?.ciTemplate?.content || '';
       },
       result({ data }) {
         this.updateCiConfig(data?.project?.ciTemplate?.content || '');

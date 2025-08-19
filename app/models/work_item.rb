@@ -21,6 +21,7 @@ class WorkItem < Issue
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
   has_one :weights_source, class_name: 'WorkItems::WeightsSource'
+  has_one :work_item_transition, class_name: 'WorkItems::Transition', inverse_of: :work_item
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -59,6 +60,27 @@ class WorkItem < Issue
   scope :with_work_item_parent_ids, ->(parent_ids) {
     joins("INNER JOIN work_item_parent_links ON work_item_parent_links.work_item_id = issues.id")
       .where(work_item_parent_links: { work_item_parent_id: parent_ids })
+  }
+
+  scope :no_parent, -> {
+    where_not_exists(WorkItems::ParentLink.where(
+      WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+    ))
+  }
+
+  scope :any_parent, -> {
+    where_exists(::WorkItems::ParentLink.where(
+      ::WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+    ))
+  }
+
+  scope :not_in_parent_ids, ->(parent_ids) {
+    where_not_exists(
+      WorkItems::ParentLink.where(
+        WorkItems::ParentLink.arel_table[:work_item_id].eq(Issue.arel_table[:id])
+                             .and(WorkItems::ParentLink.arel_table[:work_item_parent_id].in(parent_ids))
+      )
+    )
   }
 
   class << self

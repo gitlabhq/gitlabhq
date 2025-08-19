@@ -25,7 +25,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
   let_it_be(:oauth_application_secret) { create(:oauth_application).plaintext_secret }
   let_it_be(:cluster_agent_token) { create(:cluster_agent_token, token_encrypted: nil).token }
   let_it_be(:runner_authentication_token) { create(:ci_runner, registration_type: :authenticated_user).token }
-  let_it_be(:ci_trigger_token) { create(:ci_trigger).token }
+  let_it_be(:ci_trigger_token) { create(:ci_trigger, project: create(:project, maintainers: [user])).token }
   let_it_be(:feature_flags_client_token) { create(:operations_feature_flags_client).token }
   let_it_be(:gitlab_session) { '_gitlab_session=session_id' }
   let_it_be(:incoming_email_token) { user.incoming_email_token }

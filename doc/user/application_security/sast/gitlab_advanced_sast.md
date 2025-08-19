@@ -2,6 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: GitLab Advanced SAST uses cross-file, cross-function taint analysis to detect complex vulnerabilities with high accuracy.
 title: GitLab Advanced SAST
 ---
 
@@ -137,7 +138,6 @@ GitLab Advanced SAST can be configured using the following CI/CD variables.
 | CI/CD variable                 | Default | Description                                                                   |
 |--------------------------------|---------|-------------------------------------------------------------------------------|
 | `GITLAB_ADVANCED_SAST_ENABLED` | `false` | Set to `true` to enable GitLab Advanced SAST scanning, or `false` to disable. |
-| `FF_GLAS_ENABLE_PHP_SUPPORT`   | `true`  | Set to `true` to analyze PHP files, or false to disable.                      |
 
 ### Requirements
 

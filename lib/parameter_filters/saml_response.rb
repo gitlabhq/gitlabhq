@@ -24,7 +24,8 @@ module ParameterFilters
         session_index: response.sessionindex,
         assertion_encrypted: response.assertion_encrypted?,
         response_id: response.response_id,
-        assertion_id: response.assertion_id
+        assertion_id: response.assertion_id,
+        session_expires_at: response.session_expires_at
       }
       Gitlab::AuthLogger.info(payload_type: 'saml_response', saml_response: saml_response_details)
     rescue OneLogin::RubySaml::ValidationError, REXML::ParseException => e

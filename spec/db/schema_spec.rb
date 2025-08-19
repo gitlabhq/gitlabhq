@@ -85,18 +85,18 @@ RSpec.describe 'Database schema',
       ci_resources: %w[project_id],
       p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id trigger_id],
       p_ci_runner_machine_builds: %w[project_id],
-      ci_runner_taggings: %w[runner_id organization_id sharding_key_id], # The organization_id/sharding_key_id values are meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
-      ci_runner_taggings_instance_type: %w[tag_id organization_id sharding_key_id], # organization_id/sharding_key_id are always NULL in this partition, tag_id is handled on ci_runner_taggings
-      ci_runner_taggings_group_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings. These records are indirectly deleted by the FK to group_type_ci_runners
-      ci_runner_taggings_project_type: %w[tag_id organization_id], # tag_id is handled on ci_runner_taggings. These records are indirectly deleted by the FK to project_type_ci_runners
-      ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-      instance_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
-      group_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
-      project_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
-      ci_runner_machines: %w[runner_id organization_id sharding_key_id], # The runner_id and sharding_key_id fields are only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
-      instance_type_ci_runner_machines: %w[organization_id sharding_key_id], # This field is always NULL in this partition.
-      group_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
-      project_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
+      ci_runner_taggings: %w[runner_id organization_id sharding_key_id], # The organization_id value is meant to populate the partitioned table, no other usage. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. The runner_id FK exists at the partition level
+      ci_runner_taggings_instance_type: %w[tag_id organization_id sharding_key_id], # organization_id is always NULL in this partition, tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650
+      ci_runner_taggings_group_type: %w[tag_id organization_id sharding_key_id], # tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. These records are indirectly deleted by the FK to group_type_ci_runners
+      ci_runner_taggings_project_type: %w[tag_id organization_id sharding_key_id], # tag_id is handled on ci_runner_taggings. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650. These records are indirectly deleted by the FK to project_type_ci_runners
+      ci_runners: %w[sharding_key_id], # The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      instance_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      group_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      project_type_ci_runners: %w[creator_id organization_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      ci_runner_machines: %w[runner_id organization_id sharding_key_id], # The organization_id field is only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      instance_type_ci_runner_machines: %w[organization_id sharding_key_id], # This field is always NULL in this partition. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      group_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
+      project_type_ci_runner_machines: %w[organization_id sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners. The sharding_key_id will be dropped in https://gitlab.com/gitlab-org/gitlab/-/issues/547650.
       ci_runner_projects: %w[runner_id],
       ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
       ci_sources_projects: %w[partition_id],
@@ -163,6 +163,7 @@ RSpec.describe 'Database schema',
       p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id project_namespace_id],
       p_ci_job_annotations: %w[partition_id job_id project_id],
       p_ci_job_artifacts: %w[partition_id project_id job_id],
+      p_ci_job_definitions: %w[partition_id],
       p_ci_pipeline_variables: %w[partition_id pipeline_id project_id],
       p_ci_pipelines_config: %w[partition_id project_id],
       p_ci_builds_execution_configs: %w[partition_id],
@@ -175,10 +176,11 @@ RSpec.describe 'Database schema',
       push_event_payloads: %w[project_id],
       redirect_routes: %w[source_id],
       repository_languages: %w[programming_language_id],
+      resource_label_events: %w[namespace_id], # FK to be added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197676
       routes: %w[source_id],
       security_findings: %w[project_id],
       sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added to partitioned table
-      sent_notifications_7abbf02cb6: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
+      p_sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
       snippets: %w[author_id],
       spam_logs: %w[user_id target_id],
@@ -251,6 +253,7 @@ RSpec.describe 'Database schema',
       group_scim_identities: %w[temp_source_id], # temporary column that is not a foreign key
       group_scim_auth_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       secret_detection_token_statuses: %w[project_id],
+      security_finding_token_statuses: %w[security_finding_id project_id],
       system_access_group_microsoft_graph_access_tokens: %w[temp_source_id], # temporary column that is not a foreign key
       system_access_group_microsoft_applications: %w[temp_source_id], # temporary column that is not a foreign key
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
@@ -258,7 +261,9 @@ RSpec.describe 'Database schema',
       # system_defined_status_id reference to fixed items model which is stored in code
       work_item_current_statuses: %w[system_defined_status_id],
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
-      p_knowledge_graph_replicas: %w[namespace_id]
+      p_knowledge_graph_replicas: %w[namespace_id],
+      # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
+      work_item_related_link_restrictions: %w[source_type_id target_type_id]
     }.with_indifferent_access.freeze
   end
 
@@ -271,9 +276,9 @@ RSpec.describe 'Database schema',
       events: 16,
       group_type_ci_runners: 18,
       instance_type_ci_runners: 18,
-      issues: 35,
+      issues: 32,
       members: 21,
-      merge_requests: 33,
+      merge_requests: 30,
       namespaces: 26,
       notes: 16,
       p_ci_builds: 26,

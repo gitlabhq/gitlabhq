@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Personal Productivity
+stage: Growth
+group: Engagement
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Notification emails
 ---
@@ -44,13 +44,13 @@ You might receive notifications for one of the following reasons:
 - You've configured notifications for the [project](#change-level-of-project-notifications) or [group](#group-notifications).
 - You're subscribed to group or project pipeline notifications through the pipeline emails [integration](../project/integrations/_index.md).
 
-> GitLab does not send a notification when:
->
-> - The account is a project bot.
-> - The account is a service account with default email address.
-> - The account is blocked (banned) or deactivated.
-> - [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
-> - An administrator has blocked notifications.
+GitLab does not send a notification when:
+
+- The account is a project bot.
+- The account is a service account with default email address.
+- The account is blocked (banned) or deactivated.
+- [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
+- An administrator has blocked notifications.
 
 ## Global notification settings
 
@@ -204,6 +204,8 @@ Users are notified of the following events:
 | Personal access tokens have been created | User            | Security email, always sent.                                                                                                            |
 | Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
 | Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
+| Project deploy tokens expiring soon      | Project owners and maintainers | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512197) in GitLab 18.3.           |
+| Personal access token has been rotated   | User            | Security email, always sent. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199360) in GitLab 18.3.                                                                                                           |
 | Group access tokens expiring soon        | Direct Group Owners | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367705) in GitLab 16.4.                 |
 | Project access tokens expiring soon      | Direct Project Owners and Maintainers | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367706) in GitLab 16.4.                 |
 | Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
@@ -374,7 +376,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 - Last sign-in IP: The current sign-in IP address is checked against the last sign-in
   IP address.
 - Current active sessions: If the user has an existing active session from the
-  same IP address. See [Active Sessions](active_sessions.md).
+  same IP address. See [Active sessions](active_sessions.md).
 - Cookie: After successful sign in, an encrypted cookie is stored in the browser.
   This cookie is set to expire 14 days after the last successful sign in.
 
@@ -502,7 +504,9 @@ The value is one of the following, in order of priority:
 The reason for the notification is also included in the footer of the notification email.
 For example, an email with the reason `assigned` has this sentence in the footer:
 
-> You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
+```plaintext
+You are receiving this email because you have been assigned an item on <configured GitLab hostname>.
+```
 
 #### On-call alerts notifications
 

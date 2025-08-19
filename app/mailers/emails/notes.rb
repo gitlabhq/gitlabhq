@@ -97,9 +97,7 @@ module Emails
       @group ||= @note.noteable.resource_parent if @note.noteable.try(:resource_parent).is_a?(Group)
       @recipient = User.find(recipient_id)
 
-      if (@project || @group) && @note.persisted?
-        @sent_notification = SentNotification.record_note(@note, recipient_id, reply_key)
-      end
+      @sent_notification = SentNotification.record_note(@note, recipient_id) if (@project || @group) && @note.persisted?
     end
   end
 end

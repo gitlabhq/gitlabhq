@@ -89,6 +89,18 @@ RSpec.describe "Groups", "routing", feature_category: :groups_and_projects do
     end
   end
 
+  context 'with path ending with .html' do
+    include_examples 'groups routing' do
+      let(:group_path) { 'group.html' }
+    end
+  end
+
+  context 'with path ending with .json' do
+    include_examples 'groups routing' do
+      let(:group_path) { 'group.json' }
+    end
+  end
+
   context 'group path starting with help' do
     include_examples 'groups routing' do
       let(:group_path) { 'help.abc123' }

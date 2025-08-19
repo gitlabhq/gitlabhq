@@ -123,6 +123,13 @@ class NotificationService
     mailer.access_token_revoked_email(user, token_name, source).deliver_later
   end
 
+  # Notify the user when one of their personal access tokens is rotated
+  def access_token_rotated(user, token_name)
+    return unless user.can?(:receive_notifications)
+
+    mailer.access_token_rotated_email(user, token_name).deliver_later
+  end
+
   # Notify the owner of the deploy token, when it is about to expire
   def deploy_token_about_to_expire(user, token_name, project, params = {})
     return unless user.can?(:receive_notifications)

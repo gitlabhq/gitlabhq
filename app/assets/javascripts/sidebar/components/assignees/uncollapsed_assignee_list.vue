@@ -32,9 +32,6 @@ export default {
     };
   },
   computed: {
-    firstUser() {
-      return this.users[0];
-    },
     hiddenAssigneesLabel() {
       const { numberOfHiddenAssignees } = this;
       return sprintf(__('+ %{numberOfHiddenAssignees} more'), { numberOfHiddenAssignees });
@@ -50,12 +47,6 @@ export default {
         ? Math.min(this.users.length, DEFAULT_RENDER_COUNT)
         : this.users.length;
       return this.showLess ? this.users.slice(0, uncollapsedLength) : this.users;
-    },
-    username() {
-      return `@${this.firstUser.username}`;
-    },
-    isMergeRequest() {
-      return this.issuableType === TYPE_MERGE_REQUEST;
     },
   },
   methods: {

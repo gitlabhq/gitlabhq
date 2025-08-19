@@ -358,6 +358,11 @@ module Types
       description: 'Cluster agents associated with projects in the group and its subgroups.',
       resolver: ::Resolvers::Clusters::AgentsResolver
 
+    field :archived, GraphQL::Types::Boolean,
+      description: 'Indicates the archived status of the group.',
+      experiment: { milestone: '18.3' },
+      method: :self_or_ancestors_archived?
+
     field :marked_for_deletion, GraphQL::Types::Boolean,
       null: false,
       description: 'Indicates if group or any ancestor is scheduled to be deleted.',

@@ -32,7 +32,7 @@
 - if can?(current_user, :admin_protected_environments, @project)
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-- if can?(current_user, :admin_runner, @project)
+- if can?(current_user, :admin_runners, @project)
   - expand_runners = expanded || params[:expand_runners]
   = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
     id: 'js-runners-settings',
@@ -94,8 +94,10 @@
   = render ::Layouts::SettingsBlockComponent.new(_('Job token permissions'),
     id: 'js-token-access',
     expanded: expanded) do |c|
+    - zones_link_url = help_page_path('ci/jobs/ci_job_token.md', anchor: 'gitlab-cicd-job-token-security')
+    - zones_link = link_to('', zones_link_url, target: '_blank', rel: 'noopener noreferrer')
     - c.with_description do
-      = _("Control which projects can use CI/CD job tokens to authenticate with this project.")
+      = safe_format(_("Control which groups and projects can use CI/CD job tokens to authenticate with this project. Learn more about %{link_start}job token security%{link_end}."), tag_pair(zones_link, :link_start, :link_end))
     - c.with_body do
       = render 'ci/token_access/index'
 

@@ -80,7 +80,6 @@ describe('MrWidgetPipelineContainer', () => {
       const expectedProps = mockStore.deployments.map((dep) =>
         expect.objectContaining({
           deployment: dep,
-          showMetrics: false,
         }),
       );
 
@@ -157,7 +156,6 @@ describe('MrWidgetPipelineContainer', () => {
       const expectedProps = mockStore.postMergeDeployments.map((dep) =>
         expect.objectContaining({
           deployment: dep,
-          showMetrics: true,
         }),
       );
 

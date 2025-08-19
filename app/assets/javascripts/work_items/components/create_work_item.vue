@@ -26,6 +26,7 @@ import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
+import WorkItemMetadataProvider from '~/work_items/components/work_item_metadata_provider.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   getDisplayReference,
@@ -34,11 +35,7 @@ import {
   updateDraftWorkItemType,
   newWorkItemFullPath,
 } from '~/work_items/utils';
-import {
-  TYPENAME_MERGE_REQUEST,
-  TYPENAME_VULNERABILITY,
-  TYPENAME_GROUP,
-} from '~/graphql_shared/constants';
+import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_ERROR_CREATING,
   i18n,
@@ -68,6 +65,7 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WIDGET_TYPE_STATUS,
 } from '../constants';
+import { TITLE_LENGTH_MAX } from '../../issues/constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -115,6 +113,7 @@ export default {
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
     WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
     PageHeading,
+    WorkItemMetadataProvider,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -155,6 +154,10 @@ export default {
       required: false,
       default: false,
     },
+    creationContext: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: false,
@@ -193,11 +196,6 @@ export default {
       type: String,
       required: false,
       default: null,
-    },
-    stickyFormSubmit: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     relatedItem: {
       type: Object,
@@ -296,6 +294,7 @@ export default {
         for await (const workItemType of this.workItemTypes) {
           await setNewWorkItemCache({
             fullPath: this.selectedProjectFullPath,
+            context: this.creationContext,
             widgetDefinitions: workItemType?.widgetDefinitions,
             workItemType: workItemType.name,
             workItemTypeId: workItemType.id,
@@ -312,6 +311,7 @@ export default {
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
             fullPath: this.selectedProjectFullPath,
+            context: this.creationContext,
             relatedItemId: this.relatedItemId,
             workItemType: {
               id: selectedWorkItemType.id,
@@ -345,10 +345,21 @@ export default {
     newWorkItemPath() {
       return newWorkItemFullPath(this.selectedProjectFullPath, this.selectedWorkItemTypeName);
     },
+    canSetNewWorkItemMetadata() {
+      return this.namespace?.userPermissions.setNewWorkItemMetadata;
+    },
+    noMetadataSetPermissionMessage() {
+      return sprintf(s__('WorkItem|Only %{namespaceType} members can add metadata.'), {
+        namespaceType: this.isGroup ? __('group') : __('project'),
+      });
+    },
     isLoading() {
       return (
         this.initialLoadingWorkItemTypes || (this.initialLoadingWorkItem && !this.skipWorkItemQuery)
       );
+    },
+    isWorkItemTypesLoading() {
+      return this.$apollo.queries.namespace.loading;
     },
     skipWorkItemQuery() {
       return !this.selectedProjectFullPath || !this.selectedWorkItemTypeName;
@@ -599,16 +610,6 @@ export default {
     showWorkItemStatus() {
       return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
     },
-    isGroupWorkItem() {
-      return this.namespace?.id.includes(TYPENAME_GROUP);
-    },
-    uploadsPath() {
-      const rootPath = this.namespace?.webUrl;
-      if (!rootPath) {
-        return window.uploads_path;
-      }
-      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
-    },
     inputNamespacePath() {
       if (this.workItemPlanningViewEnabled) {
         return this.selectedNamespacePath;
@@ -620,6 +621,11 @@ export default {
         return true;
       }
       return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
+    },
+    formButtonsClasses() {
+      return this.isModal
+        ? '-gl-mx-5 gl-px-5 gl-bg-overlap gl-py-3'
+        : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
     },
   },
   watch: {
@@ -651,6 +657,15 @@ export default {
     this.setNumberOfDiscussionsResolved();
     addShortcutsExtension(ShortcutsWorkItems);
     new ZenMode(); // eslint-disable-line no-new
+
+    // Set focus on title field
+    this.$nextTick(async () => {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
+
+      this.$refs.title?.focusInput?.();
+    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.handleKeydown);
@@ -684,7 +699,9 @@ export default {
       return widgetDefinitions.indexOf(widgetType) !== -1;
     },
     validate() {
-      this.isTitleValid = Boolean(String(this.workItemTitle).trim());
+      this.isTitleValid =
+        Boolean(String(this.workItemTitle).trim()) &&
+        String(this.workItemTitle).trim().length <= TITLE_LENGTH_MAX;
     },
     setNumberOfDiscussionsResolved() {
       if (this.discussionToResolve || this.mergeRequestToResolveDiscussionsOf) {
@@ -692,16 +709,18 @@ export default {
           this.discussionToResolve && this.mergeRequestToResolveDiscussionsOf ? '1' : 'all';
       }
     },
-    clearAutosaveDraft({ fullPath, workItemType }) {
+    clearAutosaveDraft() {
       const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
-        fullPath,
-        workItemType,
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
+        workItemType: this.selectedWorkItemTypeName,
         relatedItemId: this.relatedItemId,
       });
       clearDraft(fullDraftAutosaveKey);
 
       const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
-        fullPath,
+        fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         relatedItemId: this.relatedItemId,
       });
       clearDraft(widgetsAutosaveKey);
@@ -709,6 +728,7 @@ export default {
     handleChangeType() {
       setNewWorkItemCache({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         widgetDefinitions: this.selectedWorkItemType?.widgetDefinitions || [],
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
@@ -718,6 +738,7 @@ export default {
 
       updateDraftWorkItemType({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         relatedItemId: this.relatedItemId,
         workItemType: {
           id: this.selectedWorkItemTypeId,
@@ -731,24 +752,10 @@ export default {
     async updateDraftData(type, value) {
       if (type === 'title') {
         this.localTitle = value;
+        this.validate();
       }
 
-      try {
-        this.$apollo.mutate({
-          mutation: updateNewWorkItemMutation,
-          variables: {
-            input: {
-              fullPath: this.selectedProjectFullPath,
-              workItemType: this.selectedWorkItemTypeName,
-              relatedItemId: this.relatedItemId,
-              [type]: value,
-            },
-          },
-        });
-      } catch {
-        this.error = this.createErrorText;
-        Sentry.captureException(this.error);
-      }
+      await this.handleUpdateWidgetDraft({ [type]: value });
     },
     async createWorkItem() {
       this.validate();
@@ -930,10 +937,7 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        this.clearAutosaveDraft({
-          fullPath: this.selectedProjectFullPath,
-          workItemType: this.selectedWorkItemTypeName,
-        });
+        this.clearAutosaveDraft();
       } catch {
         this.error = this.createErrorText;
         this.loading = false;
@@ -945,8 +949,11 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              ...input,
+              fullPath: this.selectedProjectFullPath,
+              context: this.creationContext,
+              workItemType: this.selectedWorkItemTypeName,
               relatedItemId: this.relatedItemId,
+              ...input,
             },
           },
         });
@@ -968,15 +975,13 @@ export default {
       }
     },
     handleDiscardDraft() {
-      this.clearAutosaveDraft({
-        fullPath: this.selectedProjectFullPath,
-        workItemType: this.selectedWorkItemTypeName,
-      });
+      this.clearAutosaveDraft();
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache({
         fullPath: this.selectedProjectFullPath,
+        context: this.creationContext,
         widgetDefinitions: selectedWorkItemWidgets,
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
@@ -994,333 +999,353 @@ export default {
 </script>
 
 <template>
-  <form @submit.prevent="createWorkItem">
-    <work-item-loading v-if="isLoading" class="gl-mt-5" />
-    <template v-else>
-      <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
-        {{ error }}
-      </gl-alert>
-      <page-heading v-if="!hideFormTitle" :heading="titleText" />
+  <work-item-metadata-provider :full-path="fullPath">
+    <form @submit.prevent="createWorkItem">
+      <work-item-loading v-if="isLoading" class="gl-mt-5" />
+      <template v-else>
+        <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
+          {{ error }}
+        </gl-alert>
+        <page-heading v-if="!hideFormTitle" :heading="titleText" />
 
-      <div class="gl-flex gl-items-center gl-gap-4">
-        <template v-if="workItemPlanningViewEnabled">
-          <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
-            <work-item-namespace-listbox
-              v-model="selectedNamespacePath"
-              :full-path="fullPath"
-              :is-group="isGroup"
-            />
-          </gl-form-group>
-        </template>
+        <div class="gl-flex gl-items-center gl-gap-4">
+          <template v-if="workItemPlanningViewEnabled">
+            <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
+              <work-item-namespace-listbox
+                v-model="selectedNamespacePath"
+                :full-path="fullPath"
+                :is-group="isGroup"
+              />
+            </gl-form-group>
+          </template>
 
-        <template v-else>
+          <template v-else>
+            <gl-form-group
+              v-if="showProjectSelector"
+              class="gl-max-w-26 gl-flex-grow"
+              :label="__('Project')"
+              label-for="create-work-item-project"
+            >
+              <work-item-projects-listbox
+                v-model="selectedProjectFullPath"
+                :full-path="fullPath"
+                :is-group="isGroup"
+                :current-project-name="namespaceFullName"
+                :project-namespace-full-path="projectNamespaceFullPath"
+                toggle-id="create-work-item-project"
+              />
+            </gl-form-group>
+          </template>
+
           <gl-form-group
-            v-if="showProjectSelector"
+            v-if="showItemTypeSelect"
             class="gl-max-w-26 gl-flex-grow"
-            :label="__('Project')"
-            label-for="create-work-item-project"
+            label-class="!gl-pb-0"
           >
-            <work-item-projects-listbox
-              v-model="selectedProjectFullPath"
-              :full-path="fullPath"
-              :is-group="isGroup"
-              :current-project-name="namespaceFullName"
-              :project-namespace-full-path="projectNamespaceFullPath"
-              toggle-id="create-work-item-project"
+            <slot name="label">
+              <div class="gl-mb-3 gl-flex gl-items-center gl-gap-2">
+                <label class="gl-m-0 gl-block gl-leading-normal" for="work-item-type">
+                  {{ __('Type') }}
+                </label>
+                <gl-loading-icon v-if="isWorkItemTypesLoading" />
+              </div>
+            </slot>
+            <gl-form-select
+              id="work-item-type"
+              v-model="selectedWorkItemTypeId"
+              :disabled="isWorkItemTypesLoading"
+              data-testid="work-item-types-select"
+              :options="formOptions"
+              @change="handleChangeType"
             />
           </gl-form-group>
-        </template>
-
-        <gl-loading-icon v-if="$apollo.queries.namespace.loading" size="lg" />
-        <gl-form-group
-          v-else-if="showItemTypeSelect"
-          class="gl-max-w-26 gl-flex-grow"
-          :label="__('Type')"
-          label-for="work-item-type"
-        >
-          <gl-form-select
-            id="work-item-type"
-            v-model="selectedWorkItemTypeId"
-            data-testid="work-item-types-select"
-            :options="formOptions"
-            @change="handleChangeType"
-          />
-        </gl-form-group>
-      </div>
-      <template v-if="selectedWorkItemTypeId">
-        <work-item-title
-          ref="title"
-          data-testid="title-input"
-          is-editing
-          :is-valid="isTitleValid"
-          :title="workItemTitle"
-          @updateDraft="updateDraftData('title', $event)"
-        />
-        <title-suggestions
-          :project-path="selectedProjectFullPath"
-          :search="workItemTitle"
-          :help-text="$options.i18n.similarWorkItemHelpText"
-          :title="$options.i18n.suggestionTitle"
-        />
-        <div data-testid="work-item-overview" class="work-item-overview">
-          <section>
-            <work-item-description
-              edit-mode
-              is-create-flow
-              :autofocus="false"
-              :description="description"
-              :full-path="selectedProjectFullPath"
-              :show-buttons-below-field="false"
-              :hide-fullscreen-markdown-button="isModal"
-              :new-work-item-type="selectedWorkItemTypeName"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :uploads-path="uploadsPath"
-              @error="updateError = $event"
-              @cancelCreate="handleCancelClick"
-              @updateDraft="updateDraftData('description', $event)"
-            />
-            <div
-              v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink"
-              class="gl-mb-4"
-              data-testid="work-item-resolve-discussion"
-            >
-              <gl-icon class="gl-mr-2" name="information-o" />
-              {{ createWorkItemWarning }}
-              <gl-link :href="resolvingMRDiscussionLink">{{
-                resolvingMRDiscussionLinkText
-              }}</gl-link>
-            </div>
-            <gl-form-checkbox
-              id="work-item-confidential"
-              v-model="isConfidential"
-              data-testid="confidential-checkbox"
-              @change="updateDraftData('confidential', $event)"
-            >
-              {{ makeConfidentialText }}
-            </gl-form-checkbox>
-            <gl-form-checkbox
-              v-if="relatedItem"
-              id="work-item-relates-to"
-              v-model="isRelatedToItem"
-              class="gl-mt-3"
-              data-testid="relates-to-checkbox"
-            >
-              <gl-sprintf
-                :message="
-                  s__('WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}')
-                "
-              >
-                <template #workItemType>
-                  {{ relatedItemType }}
-                </template>
-                <template #workItemReference>
-                  <gl-link :href="relatedItem.webUrl">{{ relatedItemReference }}</gl-link>
-                </template>
-              </gl-sprintf>
-            </gl-form-checkbox>
-          </section>
-          <aside
-            v-if="hasWidgets"
-            data-testid="work-item-overview-right-sidebar"
-            class="work-item-overview-right-sidebar gl-px-3"
-            :class="{ 'is-modal': true }"
-          >
-            <work-item-status
-              v-if="showWorkItemStatus"
-              class="work-item-attributes-item"
-              :can-update="canUpdate"
-              :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-assignees
-              v-if="workItemAssignees"
-              class="js-assignee work-item-attributes-item"
-              :can-update="canUpdate"
-              :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
-              :work-item-id="workItemId"
-              :assignees="workItemAssignees.assignees.nodes"
-              :participants="workItemParticipantNodes"
-              :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-              :work-item-type="selectedWorkItemTypeName"
-              :can-invite-members="workItemAssignees.canInviteMembers"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-labels
-              v-if="workItemLabels"
-              class="js-labels work-item-attributes-item"
-              :can-update="canUpdate"
-              :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-parent
-              v-if="showParentAttribute"
-              class="work-item-attributes-item"
-              :can-update="canUpdate"
-              :work-item-id="workItemId"
-              :work-item-type="selectedWorkItemTypeName"
-              :group-path="groupPath"
-              :full-path="selectedProjectFullPath"
-              :parent="workItemParent"
-              :is-group="isGroup"
-              :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-              @parentMilestone="onParentMilestone"
-            />
-            <work-item-weight
-              v-if="workItemWeight"
-              class="work-item-attributes-item"
-              :can-update="canUpdate"
-              :full-path="selectedProjectFullPath"
-              :widget="workItemWeight"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-milestone
-              v-if="workItemMilestone"
-              class="js-milestone work-item-attributes-item"
-              :is-group="isGroup"
-              :full-path="selectedProjectFullPath"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
-              :work-item-type="selectedWorkItemTypeName"
-              :can-update="canUpdate"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-              @parentMilestone="onParentMilestone"
-            />
-            <work-item-iteration
-              v-if="workItemIteration"
-              class="work-item-attributes-item"
-              :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
-              :iteration="workItemIteration.iteration"
-              :can-update="canUpdate"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-dates
-              v-if="workItemStartAndDueDate"
-              class="work-item-attributes-item"
-              :can-update="canUpdate"
-              :full-path="selectedProjectFullPath"
-              :start-date="workItemStartAndDueDate.startDate"
-              :due-date="workItemStartAndDueDate.dueDate"
-              :is-fixed="workItemStartAndDueDate.isFixed"
-              :should-roll-up="shouldDatesRollup"
-              :work-item-type="selectedWorkItemTypeName"
-              :work-item="workItem"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-health-status
-              v-if="workItemHealthStatus"
-              class="work-item-attributes-item"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              :full-path="selectedProjectFullPath"
-              :is-work-item-closed="false"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-color
-              v-if="workItemColor"
-              class="work-item-attributes-item"
-              :work-item="workItem"
-              :full-path="selectedProjectFullPath"
-              :can-update="canUpdate"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-custom-fields
-              v-if="workItemCustomFields"
-              :work-item-id="workItemId"
-              :work-item-type="selectedWorkItemTypeName"
-              :custom-fields="workItemCustomFields"
-              :full-path="selectedProjectFullPath"
-              :can-update="canUpdate"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-            <work-item-crm-contacts
-              v-if="workItemCrmContacts"
-              class="work-item-attributes-item"
-              :full-path="selectedProjectFullPath"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="selectedWorkItemTypeName"
-              @updateWidgetDraft="handleUpdateWidgetDraft"
-              @error="$emit('error', $event)"
-            />
-          </aside>
-          <div v-if="!stickyFormSubmit" class="gl-col-start-1 gl-py-3" data-testid="form-buttons">
-            <div class="gl-mb-2 gl-flex gl-gap-3">
-              <gl-button
-                variant="confirm"
-                :loading="loading"
-                data-testid="create-button"
-                @click="createWorkItem"
-              >
-                {{ createWorkItemText }}
-              </gl-button>
-              <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-                {{ __('Cancel') }}
-              </gl-button>
-            </div>
-            <gl-sprintf
-              v-if="contributionGuidePath"
-              :message="$options.i18n.contributionGuidelinesText"
-            >
-              <template #link="{ content }">
-                <gl-link class="gl-font-bold" :href="contributionGuidePath">
-                  {{ content }}
-                </gl-link>
-              </template>
-            </gl-sprintf>
-          </div>
         </div>
-        <!-- stick to bottom and put the Confirm button on the right -->
-        <!-- bg-overlap to match modal bg -->
+        <div data-testid="work-item-overview" class="work-item-overview gl-mb-3">
+          <template v-if="selectedWorkItemTypeId">
+            <work-item-title
+              ref="title"
+              data-testid="title-input"
+              is-editing
+              :is-valid="isTitleValid"
+              :title="workItemTitle"
+              @updateDraft="updateDraftData('title', $event)"
+            />
+            <title-suggestions
+              :project-path="selectedProjectFullPath"
+              :search="workItemTitle"
+              :help-text="$options.i18n.similarWorkItemHelpText"
+              :title="$options.i18n.suggestionTitle"
+            />
+
+            <section>
+              <work-item-description
+                class="create-work-item-description"
+                edit-mode
+                is-create-flow
+                :autofocus="false"
+                :description="description"
+                :full-path="selectedProjectFullPath"
+                :show-buttons-below-field="false"
+                :hide-fullscreen-markdown-button="isModal"
+                :new-work-item-type="selectedWorkItemTypeName"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
+                @error="updateError = $event"
+                @cancelCreate="handleCancelClick"
+                @updateDraft="updateDraftData('description', $event)"
+              />
+              <div
+                v-if="numberOfDiscussionsResolved && resolvingMRDiscussionLink"
+                class="gl-mb-4"
+                data-testid="work-item-resolve-discussion"
+              >
+                <gl-icon class="gl-mr-2" name="information-o" />
+                {{ createWorkItemWarning }}
+                <gl-link :href="resolvingMRDiscussionLink">{{
+                  resolvingMRDiscussionLinkText
+                }}</gl-link>
+              </div>
+              <gl-form-checkbox
+                id="work-item-confidential"
+                v-model="isConfidential"
+                data-testid="confidential-checkbox"
+                @change="updateDraftData('confidential', $event)"
+              >
+                {{ makeConfidentialText }}
+              </gl-form-checkbox>
+              <gl-form-checkbox
+                v-if="relatedItem"
+                id="work-item-relates-to"
+                v-model="isRelatedToItem"
+                class="gl-mt-3"
+                data-testid="relates-to-checkbox"
+              >
+                <gl-sprintf
+                  :message="
+                    s__(
+                      'WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}',
+                    )
+                  "
+                >
+                  <template #workItemType>
+                    {{ relatedItemType }}
+                  </template>
+                  <template #workItemReference>
+                    <gl-link :href="relatedItem.webUrl">{{ relatedItemReference }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </gl-form-checkbox>
+            </section>
+            <aside
+              v-if="hasWidgets"
+              data-testid="work-item-overview-right-sidebar"
+              class="work-item-overview-right-sidebar gl-px-3"
+              :class="{ 'is-modal': true }"
+            >
+              <template v-if="canSetNewWorkItemMetadata">
+                <work-item-status
+                  v-if="showWorkItemStatus"
+                  class="work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :full-path="selectedProjectFullPath"
+                  :is-group="isGroup"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-assignees
+                  v-if="workItemAssignees"
+                  class="js-assignee work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :full-path="selectedProjectFullPath"
+                  :is-group="isGroup"
+                  :work-item-id="workItemId"
+                  :assignees="workItemAssignees.assignees.nodes"
+                  :participants="workItemParticipantNodes"
+                  :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :can-invite-members="workItemAssignees.canInviteMembers"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-labels
+                  v-if="workItemLabels"
+                  class="js-labels work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :full-path="selectedProjectFullPath"
+                  :is-group="isGroup"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-parent
+                  v-if="showParentAttribute"
+                  class="work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :work-item-id="workItemId"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :group-path="groupPath"
+                  :full-path="selectedProjectFullPath"
+                  :parent="workItemParent"
+                  :is-group="isGroup"
+                  :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                  @parentMilestone="onParentMilestone"
+                />
+                <work-item-weight
+                  v-if="workItemWeight"
+                  class="work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :widget="workItemWeight"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-milestone
+                  v-if="workItemMilestone"
+                  class="js-milestone work-item-attributes-item"
+                  :is-group="isGroup"
+                  :full-path="selectedProjectFullPath"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :can-update="canUpdate"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                  @parentMilestone="onParentMilestone"
+                />
+                <work-item-iteration
+                  v-if="workItemIteration"
+                  class="work-item-attributes-item"
+                  :full-path="selectedProjectFullPath"
+                  :is-group="isGroup"
+                  :iteration="workItemIteration.iteration"
+                  :can-update="canUpdate"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-dates
+                  v-if="workItemStartAndDueDate"
+                  class="work-item-attributes-item"
+                  :can-update="canUpdate"
+                  :start-date="workItemStartAndDueDate.startDate"
+                  :due-date="workItemStartAndDueDate.dueDate"
+                  :is-fixed="workItemStartAndDueDate.isFixed"
+                  :should-roll-up="shouldDatesRollup"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :work-item="workItem"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-health-status
+                  v-if="workItemHealthStatus"
+                  class="work-item-attributes-item"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :full-path="selectedProjectFullPath"
+                  :is-work-item-closed="false"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-color
+                  v-if="workItemColor"
+                  class="work-item-attributes-item"
+                  :work-item="workItem"
+                  :can-update="canUpdate"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-custom-fields
+                  v-if="workItemCustomFields"
+                  :work-item-id="workItemId"
+                  :work-item-type="selectedWorkItemTypeName"
+                  :custom-fields="workItemCustomFields"
+                  :can-update="canUpdate"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+                <work-item-crm-contacts
+                  v-if="workItemCrmContacts"
+                  class="work-item-attributes-item"
+                  :full-path="selectedProjectFullPath"
+                  :work-item-id="workItemId"
+                  :work-item-iid="workItemIid"
+                  :work-item-type="selectedWorkItemTypeName"
+                  @updateWidgetDraft="handleUpdateWidgetDraft"
+                  @error="$emit('error', $event)"
+                />
+              </template>
+              <template v-else>
+                <strong>
+                  <gl-icon name="information-o" />
+                  {{ s__('WorkItem|Limited access') }}
+                </strong>
+                <div>{{ noMetadataSetPermissionMessage }}</div>
+              </template>
+            </aside>
+          </template>
+        </div>
         <div
-          v-if="stickyFormSubmit"
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-items-end gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 sm:gl-flex-row sm:gl-items-center"
+          :class="formButtonsClasses"
           data-testid="form-buttons"
         >
-          <div class="gl-flex gl-gap-3">
-            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+          <!-- We're duplicating information here in a differnet order, rather than reordering with CSS, to maintain correct tab ordering for accessibility -->
+          <!-- In modal, contribution guidelines come first; in standalone page, buttons come first -->
+          <div v-if="isModal">
+            <div v-if="contributionGuidePath" class="gl-text-sm">
+              <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
+                <template #link="{ content }">
+                  <gl-link class="gl-font-bold" :href="contributionGuidePath">
+                    {{ content }}
+                  </gl-link>
+                </template>
+              </gl-sprintf>
+            </div>
+          </div>
+
+          <!-- In modal, "Cancel" is first; in standalone page, "Create" is first -->
+          <div class="gl-flex gl-justify-end gl-gap-3">
+            <gl-button
+              v-if="isModal"
+              type="button"
+              data-testid="cancel-button"
+              @click="handleCancelClick"
+            >
               {{ __('Cancel') }}
             </gl-button>
             <gl-button
               variant="confirm"
+              :disabled="!isTitleValid"
               :loading="loading"
               data-testid="create-button"
               @click="createWorkItem"
             >
               {{ createWorkItemText }}
             </gl-button>
+            <gl-button
+              v-if="!isModal"
+              type="button"
+              data-testid="cancel-button"
+              @click="handleCancelClick"
+            >
+              {{ __('Cancel') }}
+            </gl-button>
           </div>
-          <div v-if="contributionGuidePath">
+
+          <div v-if="contributionGuidePath && !isModal" class="gl-text-sm">
             <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
               <template #link="{ content }">
                 <gl-link class="gl-font-bold" :href="contributionGuidePath">
@@ -1331,6 +1356,6 @@ export default {
           </div>
         </div>
       </template>
-    </template>
-  </form>
+    </form>
+  </work-item-metadata-provider>
 </template>

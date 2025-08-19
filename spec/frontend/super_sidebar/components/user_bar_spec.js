@@ -1,19 +1,17 @@
 import { GlBadge } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
-import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import OrganizationSwitcher from '~/super_sidebar/components/organization_switcher.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import waitForPromises from 'helpers/wait_for_promises';
-import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { stubComponent } from 'helpers/stub_component';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
@@ -33,10 +31,7 @@ describe('UserBar component', () => {
 
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
-  const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
-  const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
-  const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
-  const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
+  const findUserCounts = () => wrapper.findComponent(UserCounts);
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
   const findCollapseButton = () => wrapper.findByTestId('super-sidebar-collapse-button');
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
@@ -72,9 +67,6 @@ describe('UserBar component', () => {
         isImpersonating: false,
         ...provideOverrides,
       },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
       store,
       stubs: {
         OrganizationSwitcher: OrganizationSwitcherStub,
@@ -107,63 +99,14 @@ describe('UserBar component', () => {
       });
     });
 
-    it('passes the "Merge request" menu groups to the merge_request_menu component', () => {
-      expect(findMergeRequestMenu().props('items')).toBe(mockSidebarData.merge_request_menu);
-    });
-
-    it('renders issues counter', () => {
-      const isuesCounter = findIssuesCounter();
-      expect(isuesCounter.props('count')).toBe(userCounts.assigned_issues);
-      expect(isuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
-      expect(isuesCounter.props('label')).toBe('Assigned issues');
-      expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
-      expect(isuesCounter.attributes('data-track-label')).toBe('issues_link');
-      expect(isuesCounter.attributes('data-track-property')).toBe('nav_core_menu');
-      expect(isuesCounter.attributes('class')).toContain('dashboard-shortcuts-issues');
-    });
-
-    it('renders merge requests counter', () => {
-      const mrsCounter = findMRsCounter();
-      expect(mrsCounter.props('count')).toBe(
-        userCounts.assigned_merge_requests + userCounts.review_requested_merge_requests,
-      );
-      expect(mrsCounter.props('label')).toBe('Merge requests');
-      expect(mrsCounter.attributes('data-track-action')).toBe('click_dropdown');
-      expect(mrsCounter.attributes('data-track-label')).toBe('merge_requests_menu');
-      expect(mrsCounter.attributes('data-track-property')).toBe('nav_core_menu');
-    });
-
-    describe('Todos counter', () => {
-      it('renders it', () => {
-        const todosCounter = findTodosCounter();
-        expect(todosCounter.props('href')).toBe(mockSidebarData.todos_dashboard_path);
-        expect(todosCounter.props('label')).toBe('To-Do List');
-        expect(todosCounter.attributes('data-track-action')).toBe('click_link');
-        expect(todosCounter.attributes('data-track-label')).toBe('todos_link');
-        expect(todosCounter.attributes('data-track-property')).toBe('nav_core_menu');
-        expect(todosCounter.attributes('class')).toContain('shortcuts-todos');
-      });
-
-      it('should update todo counter when event with count is emitted', async () => {
-        createWrapper();
-        const count = 100;
-        document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { count } }));
-        await nextTick();
-        expect(findTodosCounter().props('count')).toBe(count);
-      });
-
-      it('should update todo counter when event with diff is emitted', async () => {
-        createWrapper();
-        expect(findTodosCounter().props('count')).toBe(3);
-        document.dispatchEvent(new CustomEvent('todo:toggle', { detail: { delta: -2 } }));
-        await nextTick();
-        expect(findTodosCounter().props('count')).toBe(1);
-      });
-    });
-
     it('renders branding logo', () => {
       expect(findBrandLogo().exists()).toBe(true);
       expect(findBrandLogo().props('logoUrl')).toBe(mockSidebarData.logo_url);
+    });
+
+    it('renders user counts component', () => {
+      expect(findUserCounts().exists()).toBe(true);
+      expect(findUserCounts().props('sidebarData')).toBe(mockSidebarData);
     });
 
     it('does not render the "Stop impersonating" button', () => {
@@ -199,12 +142,6 @@ describe('UserBar component', () => {
     });
   });
 
-  it('does not render merge request menu when merge_request_menu is null', () => {
-    createWrapper({ sidebarData: { ...mockSidebarData, merge_request_menu: null } });
-
-    expect(findMergeRequestMenu().exists()).toBe(false);
-  });
-
   describe('Search', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -215,11 +152,6 @@ describe('UserBar component', () => {
 
     it('should render search button', () => {
       expect(findSearchButton().exists()).toBe(true);
-    });
-
-    it('search button should have tooltip', () => {
-      const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
-      expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
     });
 
     it('search button should have tracking', async () => {
@@ -235,22 +167,6 @@ describe('UserBar component', () => {
 
     it('should render search modal', () => {
       expect(findSearchModal().exists()).toBe(true);
-    });
-
-    describe('Search tooltip', () => {
-      it('should hide search tooltip when modal is shown', async () => {
-        findSearchModal().vm.$emit('shown');
-        await nextTick();
-        const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
-        expect(tooltip.value).toBe('');
-      });
-
-      it('should add search tooltip when modal is hidden', async () => {
-        findSearchModal().vm.$emit('hidden');
-        await nextTick();
-        const tooltip = getBinding(findSearchButton().element, 'gl-tooltip');
-        expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
-      });
     });
   });
 
@@ -300,10 +216,8 @@ describe('UserBar component', () => {
       expect(findUserMenu().exists()).toBe(false);
     });
 
-    it('does not render counters', () => {
-      expect(findIssuesCounter().exists()).toBe(false);
-      expect(findMRsCounter().exists()).toBe(false);
-      expect(findTodosCounter().exists()).toBe(false);
+    it('does not render user counts', () => {
+      expect(findUserCounts().exists()).toBe(false);
     });
   });
 

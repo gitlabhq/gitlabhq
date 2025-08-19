@@ -13,7 +13,7 @@ class MergeRequestSerializer < BaseSerializer
   def identified_entity(opts)
     case opts[:serializer]
     when 'sidebar'
-      MergeRequestSidebarBasicEntity
+      IssuableSidebarBasicEntity
     when 'sidebar_extras'
       MergeRequestSidebarExtrasEntity
     when 'basic'

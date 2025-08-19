@@ -57,7 +57,6 @@ export default {
   },
   data() {
     return {
-      commit: {},
       isSaving: false,
     };
   },

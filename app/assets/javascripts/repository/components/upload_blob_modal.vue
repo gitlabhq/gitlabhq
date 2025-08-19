@@ -10,6 +10,7 @@ import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
+import { InternalEvents } from '~/tracking';
 
 export default {
   components: {
@@ -25,6 +26,7 @@ export default {
       'Directories cannot be uploaded. Please upload a single file instead.',
     ),
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     modalId: {
       type: String,
@@ -64,6 +66,11 @@ export default {
       required: false,
       default: false,
     },
+    uploadPath: {
+      type: String,
+      default: null,
+      required: false,
+    },
   },
   data() {
     return {
@@ -95,6 +102,7 @@ export default {
       fileUurlReader.onload = (e) => {
         this.filePreviewURL = e.target?.result;
         this.hasDirectoryUploadError = false;
+        this.trackEvent('file_upload_placement_successful_in_upload_blob_modal');
       };
 
       fileUurlReader.onerror = (e) => {
@@ -133,6 +141,7 @@ export default {
         },
       })
         .then((response) => {
+          this.trackEvent('file_upload_successful_in_upload_blob_modal');
           visitUrl(response.data.filePath);
         })
         .catch((e) => {
@@ -152,14 +161,9 @@ export default {
       return this.submitRequest('put', this.replacePath, formData);
     },
     uploadFile(formData) {
-      const {
-        $route: {
-          params: { path },
-        },
-      } = this;
-      const uploadPath = joinPaths(this.path, path);
+      const calculatedPath = this.uploadPath || joinPaths(this.path, this.$route.params.path);
 
-      return this.submitRequest('post', uploadPath, formData);
+      return this.submitRequest('post', calculatedPath, formData);
     },
     handleModalClose() {
       this.hasDirectoryUploadError = false;

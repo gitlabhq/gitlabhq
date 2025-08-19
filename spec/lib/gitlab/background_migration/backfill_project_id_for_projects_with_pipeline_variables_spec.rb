@@ -8,8 +8,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdForProjectsWithPipe
   let(:namespaces_table) { table(:namespaces) }
   let(:organizations_table) { table(:organizations) }
   let(:project_with_pipeline_variables) { table(:projects_with_pipeline_variables, database: :main) }
-  let(:pipelines_table) { partitioned_table(:p_ci_pipelines, database: :ci) }
-  let(:variables_table) { partitioned_table(:p_ci_pipeline_variables, database: :ci) }
+  let(:pipelines_table) { ci_partitioned_table(:p_ci_pipelines) }
+  let(:variables_table) { ci_partitioned_table(:p_ci_pipeline_variables) }
 
   let!(:organization) { organizations_table.create!(id: 1, name: 'organization', path: 'organization') }
   let!(:namespace1) { namespaces_table.create!(id: 1, name: 'Namespace 1', path: 'namespace-1', organization_id: 1) }

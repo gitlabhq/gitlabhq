@@ -12,9 +12,6 @@ title: Troubleshooting Gitaly
 
 {{< /details >}}
 
-Refer to the information below when troubleshooting Gitaly. For information on troubleshooting Gitaly Cluster (Praefect),
-see [Troubleshooting Gitaly Cluster](praefect/troubleshooting.md).
-
 The following sections provide possible solutions to Gitaly errors.
 
 See also [Gitaly timeout](../settings/gitaly_timeouts.md) settings,
@@ -36,7 +33,7 @@ to determine the available and used space on a Gitaly storage:
 
 ```ruby
 Gitlab::GitalyClient::ServerService.new("default").storage_disk_statistics
-# For Gitaly Cluster
+# For Gitaly Cluster (Praefect)
 Gitlab::GitalyClient::ServerService.new("<storage name>").disk_statistics
 ```
 
@@ -133,7 +130,7 @@ environment variable. To set this in a Linux package installation:
 Sometimes you need to find out which Gitaly RPC created a particular Git process.
 
 One method for doing this is by using `DEBUG` logging. However, this needs to be enabled
-ahead of time and the logs produced are quite verbose.
+ahead of time and the logs produced are verbose.
 
 A lightweight method for doing this correlation is by inspecting the environment
 of the Git process (using its `PID`) and looking at the `CORRELATION_ID` variable:
@@ -264,7 +261,7 @@ When attempting `git push`, you can see:
 This combination of errors occurs when the GitLab server has been upgraded to GitLab 15.5 or later but Gitaly has not yet been upgraded.
 
 From GitLab 15.5, GitLab [authenticates with GitLab Shell using a JWT token instead of a shared secret](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86148).
-You should follow the [recommendations on upgrading external Gitaly](../../update/_index.md#external-gitaly) and upgrade Gitaly before the GitLab
+You should follow the [recommendations on upgrading external Gitaly](../../update/upgrade.md#external-gitaly) and upgrade Gitaly before the GitLab
 server.
 
 ## Repository pushes fail with a `deny updating a hidden ref` error

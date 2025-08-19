@@ -153,6 +153,72 @@ site:
 1. On your secondary site, restore the registry following the [Restore GitLab](../../backup_restore/_index.md#restore-gitlab)
    documentation.
 
+### Recover data for advanced search
+
+Advanced search is powered by Elasticsearch or OpenSearch.
+The data for advanced search is not automatically replicated to secondary sites.
+
+To recover data for advanced search on the newly promoted primary site:
+
+{{< tabs >}}
+
+{{< tab title="GitLab 17.2 and later" >}}
+
+1. Disable search with Elasticsearch:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch
+   ```
+
+1. [Reindex the entire instance](../../../integration/advanced_search/elasticsearch.md#index-the-instance).
+1. [Check indexing status](../../../integration/advanced_search/elasticsearch.md#check-indexing-status).
+1. [Monitor the status of background jobs](../../../integration/advanced_search/elasticsearch.md#monitor-the-status-of-background-jobs).
+1. Enable search with Elasticsearch:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch
+   ```
+
+{{< /tab >}}
+
+{{< tab title="GitLab 17.1 and earlier" >}}
+
+1. Disable search with Elasticsearch:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:disable_search_with_elasticsearch
+   ```
+
+1. Pause indexing and wait five minutes for ongoing tasks to complete:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:pause_indexing
+   ```
+
+1. Reindex the instance from scratch:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:index
+   ```
+
+1. Resume indexing:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:resume_indexing
+   ```
+
+1. [Check indexing status](../../../integration/advanced_search/elasticsearch.md#check-indexing-status).
+1. [Monitor the status of background jobs](../../../integration/advanced_search/elasticsearch.md#monitor-the-status-of-background-jobs).
+1. Enable search with Elasticsearch:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:enable_search_with_elasticsearch
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Preflight checks
 
 Run this command to list out all preflight checks and automatically check if replication and verification are complete before scheduling a planned failover to ensure the process goes smoothly:
@@ -228,7 +294,7 @@ ensure these processes are close to 100% as possible during active use.
 On the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't yet replicated (shown in gray), consider giving the site more
@@ -278,7 +344,7 @@ be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/_index.md) on the **primary** site.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background jobs**.
+1. Select **Monitoring** > **Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
 1. Select `Enable` for the following cronjobs:

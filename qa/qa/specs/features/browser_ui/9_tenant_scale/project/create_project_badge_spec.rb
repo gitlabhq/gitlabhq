@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
-    describe 'Project badge', product_group: :organizations do
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
+    describe 'Project badge' do
       let(:badge_name) { "project-badge-#{SecureRandom.hex(8)}" }
       let(:expected_badge_link_url) { "#{Runtime::Scenario.gitlab_address}/#{project.path_with_namespace}" }
       let(:expected_badge_image_url) do

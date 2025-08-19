@@ -56,6 +56,8 @@ class UsersFinder
     users = by_non_internal(users)
     users = by_without_project_bots(users)
     users = by_member_source_ids(users)
+    users = by_public_email(users)
+    users = by_user_types(users)
 
     order(users)
   end
@@ -80,6 +82,12 @@ class UsersFinder
     return users unless params[:username]
 
     users.by_username(params[:username])
+  end
+
+  def by_public_email(users)
+    return users unless params[:public_email]
+
+    users.with_public_email(params[:public_email])
   end
 
   def by_id(users)
@@ -202,6 +210,12 @@ class UsersFinder
     member_query = member_queries.reduce(:or).non_request
 
     users.id_in(member_query.select(:user_id))
+  end
+
+  def by_user_types(users)
+    return users if params[:user_types].nil?
+
+    users.with_user_types(params[:user_types])
   end
 
   def order(users)

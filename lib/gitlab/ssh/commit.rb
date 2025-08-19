@@ -2,7 +2,7 @@
 
 module Gitlab
   module Ssh
-    class Commit < Gitlab::SignedCommit
+    class Commit < Gitlab::Repositories::BaseSignedCommit
       private
 
       def signature_class

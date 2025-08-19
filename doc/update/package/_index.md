@@ -2,7 +2,8 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Upgrading Linux package instances
+title: Upgrade Linux package instances
+description: Upgrade a Linux package-based instance.
 ---
 
 {{< details >}}
@@ -12,8 +13,7 @@ title: Upgrading Linux package instances
 
 {{< /details >}}
 
-Upgrading Linux package instances to a later version of GitLab requires several steps, many specific to Linux package
-installations.
+Upgrade a Linux package installation to a later version of GitLab.
 
 ## Upgrade the operating system (optional)
 
@@ -24,19 +24,10 @@ If your package manager reports that no further updates are available, but you k
 [Linux package install guide](https://about.gitlab.com/install/#content) to add the GitLab package repository. Future GitLab upgrades are fetched
 according to your upgraded operating system.
 
-### Corrupted PostgresSQL indexes after upgrading the OS
+### Corrupted PostgreSQL indexes after upgrading the OS
 
 As part of upgrading the operating system, if your `glibc` version changes, then you must follow
 [Upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md) to avoid corrupted indexes.
-
-## Downtime
-
-- For single node installations, GitLab is not available to users while an
-  upgrade is in progress. The user's web browser shows a **Deploy in progress** message or a `502` error.
-- For multi-node installations, see how to perform
-  [zero-downtime upgrades](../zero_downtime.md).
-- Upgrades to multi-node installations can also be performed
-  [with downtime](../with_downtime.md).
 
 ## Earlier GitLab versions
 
@@ -63,7 +54,7 @@ Nevertheless, you should maintain a full up-to-date
 
 To upgrade a Linux package instance:
 
-1. [Complete the initial steps](../_index.md#upgrade-gitlab) in the main GitLab upgrade documentation.
+1. [Complete the initial steps](../upgrade.md#upgrade-gitlab) in the main GitLab upgrade documentation.
 1. If you are upgrading from a non-package installation to a GitLab package installation, follow the steps in
    [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
 1. Continue the upgrade by following the next sections.

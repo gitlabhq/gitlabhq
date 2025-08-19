@@ -21,7 +21,7 @@ pure Vue and Apollo, or how to rely less on VueX.
 
 [Pick your preferred state manager solution](state_management.md) before proceeding with the migration.
 
-- If you plan to use Pinia (in pilot phase), [follow this guide](pinia.md#migrating-from-vuex).
+- If you plan to use Pinia [follow this guide](pinia.md#migrating-from-vuex).
 - If you plan to use Apollo Client for all state management, then [follow the guide below](#migrate-to-vue-managed-state-and-apollo-client).
 
 ### Migrate to Vue-managed state and Apollo Client

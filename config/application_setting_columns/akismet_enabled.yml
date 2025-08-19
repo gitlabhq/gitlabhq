@@ -5,7 +5,7 @@ clusterwide: false
 column: akismet_enabled
 db_type: boolean
 default: 'false'
-description: "(**If enabled, requires:** `akismet_api_key`) Enable or disable Akismet
+description: "(**If enabled, requires**: `akismet_api_key`) Enable or disable Akismet
   spam protection."
 encrypted: false
 gitlab_com_different_than_default: false

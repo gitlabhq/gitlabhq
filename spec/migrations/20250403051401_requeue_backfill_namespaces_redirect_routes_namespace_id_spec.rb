@@ -13,15 +13,7 @@ RSpec.describe RequeueBackfillNamespacesRedirectRoutesNamespaceId, migration: :g
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_cell,
-          table_name: :redirect_routes,
-          column_name: :id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE,
-          max_batch_size: described_class::MAX_BATCH_SIZE
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end

@@ -86,7 +86,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
       end
 
       it 'shows the details breadcrumb' do
-        expect(find_by_testid('breadcrumb-links')).to have_link 'Container registry'
+        expect(find_by_testid('breadcrumb-links')).to have_link container_repository.id
       end
 
       it 'shows the image title' do

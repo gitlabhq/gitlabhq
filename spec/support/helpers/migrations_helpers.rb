@@ -77,7 +77,7 @@ ERROR
     end
   end
 
-  def partitioned_table(name, database: nil, by: :created_at, strategy: :monthly)
+  def partitioned_table(name, database: nil, by: :created_at, **partitioning_options)
     klass = Class.new(active_record_base(database: database)) do
       include PartitionedTable
 
@@ -85,7 +85,9 @@ ERROR
       self.inheritance_column = :_type_disabled
       self.primary_key = :id
 
-      partitioned_by by, strategy: strategy
+      attr_readonly by if partitioning_options[:strategy] == :sliding_list
+
+      partitioned_by by, **partitioning_options.reverse_merge(strategy: :monthly)
 
       def self.name
         table_name.singularize.camelcase
@@ -93,6 +95,17 @@ ERROR
     end
 
     klass.tap { Gitlab::Database::Partitioning.sync_partitions([klass]) }
+  end
+
+  def ci_partitioned_table(name)
+    partitioned_table(
+      name,
+      database: :ci,
+      by: :partition_id,
+      strategy: :ci_sliding_list,
+      next_partition_if: false,
+      detach_partition_if: false
+    )
   end
 
   def migrations_paths

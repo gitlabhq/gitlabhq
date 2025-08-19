@@ -8,32 +8,31 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
 
-  let_it_be(:user1) { create(:user, name: 'John Doe') }
-  let_it_be(:user2) { create(:user, name: 'Mary Jane') }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :internal, namespace: group) }
 
-  let(:project_owner) { create(:user, name: "ProjectOwner", username: "project_owner") }
-  let(:project_maintainer) { create(:user, name: "ProjectMaintainer", username: "project_maintainer") }
-  let(:group_owner) { user1 }
-  let(:project_developer) { user2 }
+  let_it_be(:user1) { create(:user, name: 'John Doe', owner_of: group) }
+  let_it_be(:user2) { create(:user, name: 'Mary Jane') }
+
+  let_it_be(:project_owner) { create(:user, owner_of: project) }
+  let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
+  let_it_be(:project_developer) { create(:user, developer_of: project) }
+  let_it_be(:group_owner) { user1 }
+
+  let(:current_user) { group_owner }
 
   before do
-    project.add_maintainer(project_maintainer)
-    project.add_owner(project_owner)
-    group.add_owner(group_owner)
-
     stub_feature_flags(show_role_details_in_drawer: false)
-    sign_in(group_owner)
+    sign_in(current_user)
   end
 
   it 'show members from project and group', :aggregate_failures do
-    project.add_developer(project_developer)
-
     visit_members_page
 
     expect(first_row).to have_content(group_owner.name)
-    expect(second_row).to have_content(project_developer.name)
+    expect(second_row).to have_content(project_owner.name)
+    expect(third_row).to have_content(project_maintainer.name)
+    expect(all_rows[3]).to have_content(project_developer.name)
   end
 
   it 'show user once if member of both group and project', :aggregate_failures do
@@ -42,22 +41,17 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     visit_members_page
 
     expect(first_row).to have_content(group_owner.name)
-    expect(second_row).to have_content(project_maintainer.name)
-    expect(third_row).to have_content(project_owner.name)
-    expect(all_rows[3]).to be_blank
+    expect(second_row).to have_content(project_owner.name)
+    expect(third_row).to have_content(project_maintainer.name)
+    expect(all_rows[3]).to have_content(project_developer.name)
+    expect(all_rows[4]).to be_blank
   end
 
   context 'update user access level' do
-    before do
-      sign_in(current_user)
-    end
-
-    context 'as maintainer' do
+    context 'when current user is a maintainer' do
       let(:current_user) { project_maintainer }
 
-      it 'can update a non-Owner member' do
-        project.add_developer(project_developer)
-
+      it 'can update a non-owner member' do
         visit_members_page
 
         page.within find_member_row(project_developer) do
@@ -70,7 +64,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
         end
       end
 
-      it 'cannot update an Owner member' do
+      it 'cannot update an owner member' do
         visit_members_page
 
         page.within find_member_row(project_owner) do
@@ -79,7 +73,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       end
     end
 
-    context 'as owner' do
+    context 'when current user is an owner' do
       let(:current_user) { group_owner }
 
       it 'can update a project Owner member' do
@@ -94,54 +88,51 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     end
   end
 
-  context 'uses ProjectMember valid_access_level_roles for the invite members modal options', :aggregate_failures,
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436958' do
-    before do
-      sign_in(current_user)
-
-      visit_members_page
-
-      click_on 'Invite members'
-
-      wait_for_requests
-    end
-
-    context 'when owner' do
+  context 'when inviting a member' do
+    context 'when current user is an owner' do
       let(:current_user) { project_owner }
 
-      it 'shows Owner in the dropdown' do
-        within_modal do
-          toggle_listbox
-          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer Owner])
+      it 'shows roles in the dropdown including `owner`' do
+        visit_members_page
+
+        click_on 'Invite members'
+
+        page.within invite_modal_selector do
+          page.within role_dropdown_selector do
+            wait_for_requests
+            toggle_listbox
+            expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer Owner])
+          end
         end
       end
     end
 
-    context 'when maintainer' do
+    context 'when current user is a maintainer' do
       let(:current_user) { project_maintainer }
 
-      it 'does not show the Owner option' do
-        within_modal do
-          toggle_listbox
-          expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer])
+      it 'shows roles in the dropdown without `owner`' do
+        visit_members_page
+
+        click_on 'Invite members'
+
+        page.within invite_modal_selector do
+          page.within role_dropdown_selector do
+            wait_for_requests
+            toggle_listbox
+            expect_listbox_items(%w[Guest Planner Reporter Developer Maintainer])
+          end
         end
       end
     end
   end
 
   describe 'remove user from project' do
-    before do
-      project.add_developer(project_developer)
-
-      sign_in(current_user)
-
-      visit_members_page
-    end
-
-    context 'when maintainer' do
+    context 'when current user is a maintainer' do
       let(:current_user) { project_maintainer }
 
       it 'can only remove non-Owner members' do
+        visit_members_page
+
         page.within find_member_row(project_owner) do
           expect(page).not_to have_selector user_action_dropdown
         end
@@ -161,10 +152,12 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
       end
     end
 
-    context 'when owner' do
+    context 'when current user is an owner' do
       let(:current_user) { group_owner }
 
       it 'can remove any direct member' do
+        visit_members_page
+
         show_actions_for_username(project_owner)
         click_button _('Remove member')
 
@@ -236,9 +229,9 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
   end
 
   context 'project bots' do
-    let(:project_bot) { create(:user, :project_bot, name: 'project_bot') }
+    let_it_be(:project_bot) { create(:user, :project_bot, name: 'project_bot') }
 
-    before do
+    before_all do
       project.add_maintainer(project_bot)
     end
 
@@ -254,44 +247,46 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
   end
 
   describe 'when user has 2FA enabled' do
-    let_it_be(:admin) { create(:admin) }
-    let_it_be(:user_with_2fa) { create(:user, :two_factor_via_otp) }
+    let_it_be(:user_with_2fa) { create(:user, :two_factor_via_otp, guest_of: project) }
 
-    before do
-      project.add_guest(user_with_2fa)
+    context 'when current user is a maintainer' do
+      let(:current_user) { project_maintainer }
+
+      it 'shows 2FA badge' do
+        visit_members_page
+
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
+      end
     end
 
-    it 'shows 2FA badge to user with "Maintainer" access level' do
-      sign_in(project_maintainer)
+    context 'when current user is an admin' do
+      let(:current_user) { create(:admin) }
 
-      visit_members_page
+      it 'shows 2FA badge to admins', :enable_admin_mode do
+        visit_members_page
 
-      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
+      end
     end
 
-    it 'shows 2FA badge to admins' do
-      sign_in(admin)
-      enable_admin_mode!(admin)
+    context 'when current user is a developer' do
+      let(:current_user) { project_developer }
 
-      visit_members_page
+      it 'does not show 2FA badge' do
+        visit_members_page
 
-      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+        expect(find_member_row(user_with_2fa)).not_to have_content('2FA')
+      end
     end
 
-    it 'does not show 2FA badge to users with access level below "Maintainer"' do
-      group.add_developer(group_owner)
+    context 'when current user is the user itself' do
+      let(:current_user) { user_with_2fa }
 
-      visit_members_page
+      it 'shows 2FA badge to themselves' do
+        visit_members_page
 
-      expect(find_member_row(user_with_2fa)).not_to have_content('2FA')
-    end
-
-    it 'shows 2FA badge to themselves' do
-      sign_in(user_with_2fa)
-
-      visit_members_page
-
-      expect(find_member_row(user_with_2fa)).to have_content('2FA')
+        expect(find_member_row(user_with_2fa)).to have_content('2FA')
+      end
     end
   end
 

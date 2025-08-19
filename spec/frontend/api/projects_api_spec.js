@@ -9,12 +9,13 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 describe('~/api/projects_api.js', () => {
   let mock;
 
+  const mockApiVersion = 'v7';
   const projectId = 1;
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    window.gon = { api_version: 'v7' };
+    window.gon = { api_version: mockApiVersion };
   });
 
   afterEach(() => {
@@ -26,7 +27,7 @@ describe('~/api/projects_api.js', () => {
       jest.spyOn(axios, 'get');
     });
 
-    const expectedUrl = '/api/v7/projects.json';
+    const expectedUrl = `/api/${mockApiVersion}/projects.json`;
     const expectedProjects = [{ name: 'project 1' }];
     const options = {};
 
@@ -71,7 +72,7 @@ describe('~/api/projects_api.js', () => {
   describe('createProject', () => {
     it('posts to the correct URL and returns the data', () => {
       const body = { name: 'test project' };
-      const expectedUrl = '/api/v7/projects.json';
+      const expectedUrl = `/api/${mockApiVersion}/projects.json`;
       const expectedRes = { id: 999, name: 'test project' };
 
       mock.onPost(expectedUrl, body).replyOnce(HTTP_STATUS_OK, { data: expectedRes });
@@ -85,7 +86,7 @@ describe('~/api/projects_api.js', () => {
   describe('updateProject', () => {
     it('posts to the correct URL and returns the data', async () => {
       const data = { name: 'Foo bar', description: 'Mock description' };
-      const expectedUrl = `/api/v7/projects/${projectId}`;
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}`;
 
       mock.onPut(expectedUrl, data).replyOnce(HTTP_STATUS_OK, project);
 
@@ -102,7 +103,7 @@ describe('~/api/projects_api.js', () => {
 
     describe('without params', () => {
       it('deletes to the correct URL', () => {
-        const expectedUrl = `/api/v7/projects/${projectId}`;
+        const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}`;
 
         mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
@@ -114,7 +115,7 @@ describe('~/api/projects_api.js', () => {
 
     describe('with params', () => {
       it('deletes to the correct URL with params', () => {
-        const expectedUrl = `/api/v7/projects/${projectId}`;
+        const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}`;
 
         mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
@@ -131,11 +132,43 @@ describe('~/api/projects_api.js', () => {
     });
 
     it('calls POST to the correct URL', () => {
-      const expectedUrl = `/api/v7/projects/${projectId}/restore`;
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/restore`;
 
       mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK);
 
       return projectsApi.restoreProject(projectId).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
+
+  describe('archiveProject', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+    });
+
+    it('calls POST to the correct URL', () => {
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/archive`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return projectsApi.archiveProject(projectId).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
+
+  describe('unarchiveProject', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+    });
+
+    it('calls POST to the correct URL', () => {
+      const expectedUrl = `/api/${mockApiVersion}/projects/${projectId}/unarchive`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return projectsApi.unarchiveProject(projectId).then(() => {
         expect(axios.post).toHaveBeenCalledWith(expectedUrl);
       });
     });
@@ -148,7 +181,7 @@ describe('~/api/projects_api.js', () => {
 
     it('posts to the correct URL and returns the response message', () => {
       const targetId = 2;
-      const expectedUrl = '/api/v7/projects/1/import_project_members/2';
+      const expectedUrl = `/api/${mockApiVersion}/projects/1/import_project_members/2`;
       const expectedMessage = 'Successfully imported';
 
       mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, expectedMessage);
@@ -167,7 +200,7 @@ describe('~/api/projects_api.js', () => {
 
     it('retrieves transfer locations from the correct URL and returns them in the response data', async () => {
       const params = { page: 1 };
-      const expectedUrl = '/api/v7/projects/1/transfer_locations';
+      const expectedUrl = `/api/${mockApiVersion}/projects/1/transfer_locations`;
 
       mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, { data: getTransferLocationsResponse });
 
@@ -183,7 +216,7 @@ describe('~/api/projects_api.js', () => {
 
   describe('getProjectMembers', () => {
     it('requests members of a project', async () => {
-      const expectedUrl = `/api/v7/projects/1/members`;
+      const expectedUrl = `/api/${mockApiVersion}/projects/1/members`;
 
       const response = [{ id: 0, username: 'root' }];
 
@@ -195,7 +228,7 @@ describe('~/api/projects_api.js', () => {
     });
 
     it('requests inherited members of a project when requested', async () => {
-      const expectedUrl = `/api/v7/projects/1/members/all`;
+      const expectedUrl = `/api/${mockApiVersion}/projects/1/members/all`;
 
       const response = [{ id: 0, username: 'root' }];
 
@@ -209,7 +242,7 @@ describe('~/api/projects_api.js', () => {
 
   describe('getProjectShareLocations', () => {
     it('requests share locations for a project', async () => {
-      const expectedUrl = `/api/v7/projects/1/share_locations`;
+      const expectedUrl = `/api/${mockApiVersion}/projects/1/share_locations`;
       const params = { search: 'foo' };
       const axiosOptions = { mockOption: 'bar' };
 
@@ -242,7 +275,7 @@ describe('~/api/projects_api.js', () => {
     const mockBlobData = new Blob(['test']);
 
     beforeEach(() => {
-      window.gon = { relative_url_root: '', api_version: 'v7' };
+      window.gon = { relative_url_root: '', api_version: mockApiVersion };
       jest.spyOn(axios, 'post');
     });
 
@@ -260,7 +293,7 @@ describe('~/api/projects_api.js', () => {
       });
 
       expect(axios.post).toHaveBeenCalledWith(
-        `/api/v7/projects/${mockProjectId}/uploads`,
+        `/api/${mockApiVersion}/projects/${mockProjectId}/uploads`,
         expect.any(FormData),
         expect.objectContaining({
           headers: { 'Content-Type': 'multipart/form-data' },

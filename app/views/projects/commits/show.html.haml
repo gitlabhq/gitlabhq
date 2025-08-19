@@ -4,13 +4,14 @@
 - add_page_specific_style 'page_bundles/projects'
 - page_title _("Commits"), @ref
 
-%h1.gl-sr-only= page_title
+- unless Feature.enabled?(:project_commits_refactor, @project)
+  %h1.gl-sr-only= page_title
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
 - if Feature.enabled?(:project_commits_refactor, @project)
-  #js-commit-list{ data: { "project-path" => @project.path } }
+  #js-commit-list{ data: commit_list_app_data }
 
 - else
   .js-project-commits-show{ 'data-commits-limit' => @limit }

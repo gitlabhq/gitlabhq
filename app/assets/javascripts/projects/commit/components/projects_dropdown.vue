@@ -14,13 +14,6 @@ export default {
   components: {
     GlCollapsibleListbox,
   },
-  props: {
-    value: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   i18n: {
     noResultsMessage: I18N_NO_RESULTS_MESSAGE,
     projectHeaderTitle: I18N_PROJECT_HEADER,

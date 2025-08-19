@@ -1,13 +1,19 @@
-#import "./notes/wiki_page_note.fragment.graphql"
+#import "../wiki_notes/graphql/wiki_page_note.fragment.graphql"
 
-query wikiPageQuery($slug: String, $projectId: ProjectID, $namespaceId: NamespaceID) {
+query wikiPageQuery(
+  $slug: String
+  $projectId: ProjectID
+  $namespaceId: NamespaceID
+  $skipDiscussions: Boolean = false
+) {
   wikiPage(slug: $slug, projectId: $projectId, namespaceId: $namespaceId) {
     id
     title
+    subscribed
     userPermissions {
       markNoteAsInternal
     }
-    discussions {
+    discussions @skip(if: $skipDiscussions) {
       nodes {
         id
         replyId
@@ -17,6 +23,9 @@ query wikiPageQuery($slug: String, $projectId: ProjectID, $namespaceId: Namespac
         resolvedBy {
           id
           name
+        }
+        userPermissions {
+          resolveNote
         }
         notes {
           nodes {

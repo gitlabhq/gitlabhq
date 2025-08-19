@@ -1,0 +1,10 @@
+---
+name: validity_check_es_filter
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557870
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200777
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560433
+milestone: '18.3'
+group: group::security insights
+type: gitlab_com_derisk
+default_enabled: false

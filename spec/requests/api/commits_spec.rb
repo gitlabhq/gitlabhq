@@ -663,29 +663,89 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
       end
 
-      context 'when using access token authentication' do
+      context 'when using oauth access token authentication' do
+        context 'when using Web IDE OAuth token', :snowplow, :clean_gitlab_redis_sessions do
+          let(:web_ide_oauth_app) { create(:oauth_application, name: 'GitLab Web IDE', trusted: true, confidential: false, scopes: "api") }
+          let(:oauth_token) { create(:oauth_access_token, user: user, application: web_ide_oauth_app) }
+
+          before do
+            allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+            stub_application_setting(web_ide_oauth_application: web_ide_oauth_app)
+          end
+
+          subject { post api(url, user, oauth_access_token: oauth_token), params: valid_c_params }
+
+          it_behaves_like 'internal event tracking' do
+            let(:event) { 'create_commit_from_web_ide' }
+            let(:namespace) { project.namespace.reload }
+          end
+
+          it_behaves_like 'internal event tracking' do
+            let(:event) { 'g_edit_by_web_ide' }
+            let(:namespace) { project.namespace.reload }
+          end
+        end
+
+        context 'when using non-Web IDE OAuth token' do
+          let(:other_oauth_app) { create(:oauth_application, name: "Other App", scopes: "api") }
+          let(:oauth_token) { create(:oauth_access_token, user: user, application: other_oauth_app) }
+          let(:web_ide_oauth_app) { create(:oauth_application, name: 'GitLab Web IDE', trusted: true, confidential: false, scopes: "api") }
+
+          before do
+            allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+            stub_application_setting(web_ide_oauth_application: web_ide_oauth_app)
+          end
+
+          subject { post api(url, user, oauth_access_token: oauth_token), params: valid_c_params }
+
+          it 'does not increment the usage counters' do
+            expect(::Gitlab::InternalEvents).not_to receive(:track_event)
+          end
+        end
+
+        context 'when Web IDE OAuth application is not configured' do
+          let(:oauth_token) { create(:oauth_access_token, user: user) }
+
+          before do
+            stub_application_setting({ web_ide_oauth_application: nil })
+          end
+
+          subject { post api(url, user, oauth_access_token: oauth_token), params: valid_c_params }
+
+          it 'does not increment the usage counters' do
+            expect(::Gitlab::InternalEvents).not_to receive(:track_event)
+          end
+        end
+      end
+
+      context 'when using personal access token', :snowplow, :clean_gitlab_redis_sessions do
+        let(:personal_access_token) { create(:personal_access_token, scopes: ['api'], user: user) }
+        let(:web_ide_oauth_app) { create(:oauth_application, name: 'GitLab Web IDE', trusted: true, confidential: false, scopes: "api") }
+
+        before do
+          allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+          stub_application_setting(web_ide_oauth_application: web_ide_oauth_app)
+
+          post api(url, user, personal_access_token: personal_access_token), params: valid_c_params
+        end
+
         it 'does not increment the usage counters' do
           expect(::Gitlab::InternalEvents).not_to receive(:track_event)
+        end
 
-          post api(url, user), params: valid_c_params
+        it 'sends successful response code' do
+          expect(response).to have_gitlab_http_status(:created)
         end
       end
 
       context 'when using warden', :snowplow, :clean_gitlab_redis_sessions do
         before do
           stub_session(session_data: { 'warden.user.user.key' => [[user.id], user.authenticatable_salt] })
+          post api(url, user), params: valid_c_params
         end
 
-        subject { post api(url), params: valid_c_params }
-
-        it_behaves_like 'internal event tracking' do
-          let(:event) { 'create_commit_from_web_ide' }
-          let(:namespace) { project.namespace.reload }
-        end
-
-        it_behaves_like 'internal event tracking' do
-          let(:event) { 'g_edit_by_web_ide' }
-          let(:namespace) { project.namespace.reload }
+        it 'does not increment the usage counters' do
+          expect(::Gitlab::InternalEvents).not_to receive(:track_event)
         end
       end
 

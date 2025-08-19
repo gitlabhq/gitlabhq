@@ -28,6 +28,12 @@ RSpec.describe API::Conan::V1::InstancePackages, feature_category: :package_regi
 
       subject { get api(url), params: params }
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:params) { { q: package.conan_recipe } }
+
+      subject { get api(url), params:, headers: }
+    end
   end
 
   describe 'GET /api/v4/packages/conan/v1/users/authenticate' do

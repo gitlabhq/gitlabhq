@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Compliance pipelines (deprecated)
+description: Compliance pipelines (deprecated in 17.3, planned to be removed in 19.0) enables centralized CI/CD control for labeled projects. Replaced by pipeline execution policies.
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
@@ -70,7 +71,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
-For more information, see [Security policy project](../application_security/policies/security_policy_projects.md).
+For more information, see [Security policy project](../application_security/policies/enforcement/security_policy_projects.md).
 
 If you receive a `Pipeline execution policy error: Job names must be unique` error during the migration, see the
 [relevant troubleshooting information](#error-job-names-must-be-unique).

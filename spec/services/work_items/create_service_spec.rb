@@ -64,6 +64,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
         it 'returns validation errors' do
           expect(service_result.errors).to contain_exactly("Title can't be blank")
+          expect(service_result[:work_item].persisted?).to be_falsey
         end
       end
 

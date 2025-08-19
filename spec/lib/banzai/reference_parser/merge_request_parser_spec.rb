@@ -9,10 +9,9 @@ RSpec.describe Banzai::ReferenceParser::MergeRequestParser, feature_category: :c
   let(:project) { create(:project, :public, group: group) }
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, source_project: project) }
+  let(:link) { empty_html_link }
 
   subject(:parser) { described_class.new(Banzai::RenderContext.new(merge_request.target_project, user)) }
-
-  let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do
     context 'when the link has a data-issue attribute' do

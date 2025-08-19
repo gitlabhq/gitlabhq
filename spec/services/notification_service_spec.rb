@@ -906,6 +906,27 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         end
       end
     end
+
+    describe '#access_token_rotated' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:pat) { create(:personal_access_token, user: user) }
+
+      subject(:notification_service) { notification.access_token_rotated(user, pat.name) }
+
+      it 'sends email to the token owner' do
+        expect { notification_service }.to have_enqueued_email(user, pat.name, mail: "access_token_rotated_email")
+      end
+
+      context 'when user is not allowed to receive notifications' do
+        before do
+          user.block!
+        end
+
+        it 'does not send email to the token owner' do
+          expect { notification_service }.not_to have_enqueued_email(user, pat.name, mail: "access_token_rotated_email")
+        end
+      end
+    end
   end
 
   describe 'SSH Keys' do
@@ -1610,9 +1631,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     context 'personal snippet note', :deliver_mails_inline do
-      let(:snippet) { create(:personal_snippet, :public, author: @u_snippet_author) }
-      let(:note)    { create(:note_on_personal_snippet, noteable: snippet, note: '@mentioned note', author: @u_note_author) }
-
       before do
         @u_watcher               = create_global_setting_for(create(:user), :watch)
         @u_participant           = create_global_setting_for(create(:user), :participating)
@@ -1625,6 +1643,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
         reset_delivered_emails!
       end
+
+      let(:snippet) { create(:personal_snippet, :public, author: @u_snippet_author) }
+      let(:note)    { create(:note_on_personal_snippet, noteable: snippet, note: '@mentioned note', author: @u_note_author) }
 
       let!(:notes) do
         [
@@ -3119,6 +3140,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       describe 'triggers push_to_merge_request_email with corresponding email' do
         let_it_be(:merge_request) { create(:merge_request, author: author, source_project: project) }
+        let(:existing_commits) { mock_commits(50) }
+        let(:expected_existing_commits) { [commit_to_hash(existing_commits.first), commit_to_hash(existing_commits.last)] }
 
         def mock_commits(length)
           Array.new(length) { |i| double(:commit, short_id: SecureRandom.hex(4), title: "This is commit #{i}") }
@@ -3127,9 +3150,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         def commit_to_hash(commit)
           { short_id: commit.short_id, title: commit.title }
         end
-
-        let(:existing_commits) { mock_commits(50) }
-        let(:expected_existing_commits) { [commit_to_hash(existing_commits.first), commit_to_hash(existing_commits.last)] }
 
         before do
           allow(::Notify).to receive(:push_to_merge_request_email).and_call_original
@@ -4015,7 +4035,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
 
     it 'filters out guests when new note is created' do
-      expect(SentNotification).to receive(:record).with(merge_request, any_args).once
+      expect(SentNotification).to receive(:record).with(merge_request, any_args).once.and_call_original
 
       notification.new_note(note)
 

@@ -19,24 +19,30 @@ _Describe in detail what merge request is being backported and why_
 
 This checklist encourages us to confirm any changes have been analyzed to reduce risks in quality, performance, reliability, security, and maintainability.
 
-* [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
-* [ ] The MR that fixed the bug on the default branch has been deployed to GitLab.com (not applicable for documentation or spec changes).
-* [ ] The MR title is descriptive (e.g. "Backport of 'title of default branch MR'"). This is important, since the title will be copied to the patch blog post.
-* [ ] This MR has a [severity label] assigned (if applicable).
-* [ ] Set the milestone of the merge request to match the target backport branch version.
-* [ ] This MR has been approved by a maintainer (only one approval is required).
-* [ ] Ensure the `e2e:test-on-omnibus-ee` job has either succeeded or been approved by a Software Engineer in Test.
+- [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
+- [ ] The MR that fixed the bug on the default branch has been deployed to GitLab.com (not applicable for documentation or spec changes).
+- [ ] The MR title is descriptive (e.g. "Backport of 'title of default branch MR'"). This is important, since the title will be copied to the patch blog post.
+- [ ] Required labels have been applied to this merge request
+  - [ ] [severity label] and [bug subtype] labels (if applicable)
+  - [ ] If this MR fixes a bug that affects customers, the ~"customer" label has been applied.
+- [ ] Set the milestone of the merge request to match the target backport branch version.
+- [ ] This MR has been approved by a maintainer (only one approval is required).
+- [ ] Ensure the `e2e:test-on-omnibus-ee` job has either succeeded or been approved by a Software Engineer in Test.
 
-#### Note to the merge request author and maintainer
+### Note to the merge request author and maintainer
 
 If you have questions about the patch release process, please:
-
-* Refer to the [patch release runbook for engineers and maintainers] for guidance.
-* Ask questions on the [`#releases`] Slack channel (internal only).
+ 
+- Refer to the [patch release runbook for engineers and maintainers] for guidance.
+- Ask questions on the [`#releases`] Slack channel (internal only).
+- Once the backport has been merged, the commit changes will be automatically deployed to a release environment that 
+can be used for manual validation. See [after merging runbook] for details.
 
 [severity label]: https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#severity
 [patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md
 [`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
+[bug subtype]: https://handbook.gitlab.com/handbook/product/groups/product-analysis/engineering/metrics/#work-type-classification
+[after merging runbook]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md?ref_type=heads#after-merging-the-merge-request
 
 /label ~backport
 /assign me

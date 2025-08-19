@@ -8,7 +8,7 @@ title: AI impact analytics
 {{< details >}}
 
 - Tier: Ultimate
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: AI impact analytics
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
+- Changed to support Amazon Q in GitLab 18.2.1.
 
 {{< /history >}}
 
@@ -103,6 +104,7 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -110,7 +112,6 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing.
 
 {{< /alert >}}
 

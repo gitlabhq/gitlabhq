@@ -77,10 +77,14 @@ For more information, see the [list of settings that can be accessed through API
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
+- Support for enforcing 2FA for regular users who have custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556110) in GitLab 18.3.
 
 {{< /history >}}
 
-Administrators can enforce 2FA for administrator users in a GitLab Self-Managed instance.
+Administrators can enforce 2FA for both:
+
+- Administrator users.
+- Regular users who have been assigned a [custom admin role](../user/custom_roles/_index.md).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. On the left sidebar, select **Settings > General**.

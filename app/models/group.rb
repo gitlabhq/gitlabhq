@@ -158,7 +158,10 @@ class Group < Namespace
       .where(group_deletion_schedules: { marked_for_deletion_on: date })
   end
 
+  scope :with_integrations, -> { joins(:integrations) }
+
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
+  has_one :jira_integration, class_name: 'Integrations::Jira'
 
   # debian_distributions and associated component_files must be destroyed by ruby code in order to properly remove carrierwave uploads
   has_many :debian_distributions, class_name: 'Packages::Debian::GroupDistribution', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -169,15 +172,38 @@ class Group < Namespace
 
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
-  delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, :seat_control, to: :namespace_settings
-  delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
-  delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
-  delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
-  delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
-  delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=, to: :namespace_settings, allow_nil: true
+  delegate(
+    :default_branch_name,
+    :jobs_to_be_done,
+    :new_user_signups_cap,
+    :prevent_sharing_groups_outside_hierarchy,
+    :require_dpop_for_manage_api_endpoints,
+    :require_dpop_for_manage_api_endpoints?,
+    :require_dpop_for_manage_api_endpoints=,
+    :seat_control,
+    :setup_for_company,
+    to: :namespace_settings
+  )
 
-  delegate :require_dpop_for_manage_api_endpoints, :require_dpop_for_manage_api_endpoints=, to: :namespace_settings
-  delegate :require_dpop_for_manage_api_endpoints?, to: :namespace_settings
+  delegate(
+    :force_pages_access_control,
+    :force_pages_access_control=,
+    :model_prompt_cache_enabled,
+    :model_prompt_cache_enabled=,
+    :project_runner_token_expiration_interval_human_readable,
+    :project_runner_token_expiration_interval_human_readable=,
+    :project_runner_token_expiration_interval,
+    :project_runner_token_expiration_interval=,
+    :runner_token_expiration_interval_human_readable,
+    :runner_token_expiration_interval_human_readable=,
+    :runner_token_expiration_interval,
+    :runner_token_expiration_interval=,
+    :subgroup_runner_token_expiration_interval_human_readable,
+    :subgroup_runner_token_expiration_interval_human_readable=,
+    :subgroup_runner_token_expiration_interval,
+    :subgroup_runner_token_expiration_interval=,
+    to: :namespace_settings, allow_nil: true
+  )
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :group_feature, update_only: true
@@ -1103,6 +1129,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
+  def work_items_project_issues_list_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_project_issues_list, type: :beta)
+  end
+
   def work_item_status_feature_available?
     feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :beta) &&
       licensed_feature_available?(:work_item_status)
@@ -1112,20 +1142,22 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:markdown_placeholders, type: :gitlab_com_derisk)
   end
 
-  def glql_integration_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
-  end
-
-  def work_items_bulk_edit_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_bulk_edit, type: :wip)
+    feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click, type: :ops)
   end
 
   # overriden in EE
   def supports_group_work_items?
+    false
+  end
+
+  # overriden in EE
+  def has_active_hooks?(hooks_scope = :push_hooks)
+    false
+  end
+
+  # overriden in EE
+  def enterprise_user_settings_available?(user = nil)
     false
   end
 

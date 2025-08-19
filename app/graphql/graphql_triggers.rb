@@ -2,8 +2,6 @@
 
 module GraphqlTriggers
   def self.ci_job_status_updated(job)
-    return unless Feature.enabled?(:ci_job_status_realtime, job.project)
-
     GitlabSchema.subscriptions.trigger(:ci_job_status_updated, { job_id: job.to_gid }, job)
   end
 

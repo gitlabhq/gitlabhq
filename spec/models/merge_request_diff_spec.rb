@@ -129,6 +129,26 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         ])
       end
     end
+
+    context 'when the gitaly data is preloaded' do
+      let(:merge_request) { create(:merge_request) }
+
+      subject(:diff) do
+        mr_diff = merge_request.merge_request_diffs.build
+        mr_diff.preload_gitaly_data
+        mr_diff.save!
+        mr_diff
+      end
+
+      it { expect(subject).to be_valid }
+      it { expect(subject).to be_persisted }
+      it { expect(subject.commits.count).to eq(29) }
+      it { expect(subject.diffs.count).to eq(20) }
+      it { expect(subject.head_commit_sha).to eq('b83d6e391c22777fca1ed3012fce84f633d7fed0') }
+      it { expect(subject.base_commit_sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+      it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
+      it { expect(subject.reload.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
+    end
   end
 
   describe '.by_head_commit_sha' do
@@ -1470,6 +1490,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect { |b| diff.opening_external_diff(&b) }.to yield_with_args(File)
       end
 
+      it 'sets external_diff_store to local' do
+        expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
+      end
+
       it 'is re-entrant' do
         outer_file_a =
           diff.opening_external_diff do |outer_file|
@@ -1482,6 +1506,36 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
         diff.opening_external_diff do |outer_file_b|
           expect(outer_file_a).not_to eq(outer_file_b)
+        end
+      end
+
+      context 'object storage' do
+        before do
+          stub_external_diffs_object_storage(ExternalDiffUploader)
+        end
+
+        context 'when diff storage is local' do
+          before do
+            diff_with_commits.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+          end
+
+          it 'updates value to remote' do
+            diff.opening_external_diff do
+              expect(diff.external_diff_store).to eq(ObjectStorage::Store::REMOTE)
+            end
+          end
+
+          context 'when feature flag update_external_diff_storage is disabled' do
+            before do
+              stub_feature_flags(update_external_diff_storage: false)
+            end
+
+            it 'does not update value to remote' do
+              diff.opening_external_diff do
+                expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
+              end
+            end
+          end
         end
       end
     end

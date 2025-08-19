@@ -1,0 +1,10 @@
+---
+name: authenticated_with_two_factor
+description: User successfully signed in with two-factor authentication
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/555101
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216
+milestone: '18.3'
+feature_category: system_access
+saved_to_database: true
+streamed: true
+scope: [User]

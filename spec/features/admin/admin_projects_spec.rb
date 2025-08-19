@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
+RSpec.describe "Admin::Projects", :with_current_organization, feature_category: :groups_and_projects do
   include Features::MembersHelpers
   include Features::InviteMembersModalHelpers
   include Spec::Support::Helpers::ModalHelpers
   include ListboxHelpers
   include MobileHelpers
 
-  let_it_be_with_reload(:user) { create :user }
+  let_it_be_with_reload(:user) { create(:user, organization: current_organization) }
   let_it_be_with_reload(:project) { create(:project, :with_namespace_settings) }
   let_it_be_with_reload(:admin) { create(:admin, timezone: 'Asia/Shanghai') }
   let(:current_user) { admin }

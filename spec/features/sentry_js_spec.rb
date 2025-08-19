@@ -18,7 +18,7 @@ RSpec.describe 'Sentry', feature_category: :observability do
     visit new_user_session_path
 
     expect(has_requested_sentry).to eq(true)
-    expect(evaluate_script('window._Sentry.SDK_VERSION')).to match(%r{^9\.})
+    expect(evaluate_script('window._Sentry.SDK_VERSION')).to match(%r{^10\.})
   end
 
   def has_requested_sentry

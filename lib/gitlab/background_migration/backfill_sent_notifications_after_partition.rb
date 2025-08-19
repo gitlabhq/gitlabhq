@@ -123,7 +123,7 @@ module Gitlab
             SELECT * FROM relation WHERE noteable_type = '#{noteable_type}' LIMIT #{sub_batch_size}
           )
           -- Insert batch, including the sharding key value
-          INSERT INTO sent_notifications_7abbf02cb6 (
+          INSERT INTO p_sent_notifications (
             id, project_id, noteable_type, noteable_id,
             recipient_id, commit_id, reply_key,
             in_reply_to_discussion_id, issue_email_participant_id,

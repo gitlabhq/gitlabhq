@@ -27,28 +27,10 @@ describe('renderGFM', () => {
         '<div class="gl-relative markdown-code-block"><pre data-canonical-lang="glql"><code>labels = any</code></pre></div>';
     });
 
-    describe('when glqlIntegration is enabled', () => {
-      beforeEach(() => {
-        gon.features = { glqlIntegration: true };
-      });
+    it('calls renderGlql', () => {
+      renderGFM(element);
 
-      it('calls renderGlql', () => {
-        renderGFM(element);
-
-        expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild]);
-      });
-    });
-
-    describe('when glqlIntegration is disabled', () => {
-      beforeEach(() => {
-        gon.features = { glqlIntegration: false };
-      });
-
-      it('does not call renderGlql', () => {
-        renderGFM(element);
-
-        expect(renderGlql).not.toHaveBeenCalled();
-      });
+      expect(renderGlql).toHaveBeenCalledWith([element.firstElementChild]);
     });
   });
 

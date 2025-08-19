@@ -69,7 +69,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
         )
       end
 
-      it 'compares branches', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547867' do
+      it 'compares branches' do
         visit project_compare_index_path(project)
 
         select_using_dropdown('from', 'master')
@@ -95,7 +95,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
 
     context 'with legacy diffs' do
       before do
-        stub_feature_flags(rapid_diffs: false, rapid_diffs_on_compare_show: false)
+        stub_feature_flags(rapid_diffs_on_compare_show: false)
       end
 
       it 'renders additions info when click unfold diff' do
@@ -182,7 +182,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
   end
 
   describe "compare view of tags" do
-    it "compares tags", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547846' do
+    it "compares tags" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
       select_using_dropdown "from", "v1.0.0"
@@ -210,6 +210,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
     dropdown.fill_in("Filter by Git revision", with: selection)
 
     wait_for_requests
+    sleep 0.3 # Allow Vue component to render search results
 
     if commit
       # wait for searching for commits to finish

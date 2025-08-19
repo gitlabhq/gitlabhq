@@ -197,7 +197,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     options = webauthn_options
     session[:challenge] = options.challenge
 
-    gon.push(webauthn: { options: options, app_id: u2f_app_id })
+    gon.push(webauthn: { options: options })
   end
 
   def webauthn_registrations

@@ -23,7 +23,9 @@ GitLab administrators can configure automatic GitLab Duo add-on seat assignment 
 ## Seat management workflow
 
 1. **Configuration**: Administrators specify LDAP groups in the `duo_add_on_groups` [configuration settings](#configure-duo-add-on-seat-management).
-1. **User sign-in**: When a user signs in through LDAP, GitLab checks their group memberships. GitLab supports only one LDAP identity per user.
+1. **Seat synchronization**: GitLab checks LDAP group memberships in two ways:
+   - **On user sign-in**: When a user signs in through LDAP, GitLab immediately checks their group memberships.
+   - **Scheduled sync**: GitLab automatically syncs all LDAP users daily at 02:00 AM to ensure seat assignments are up to date even without user sign-ins.
 1. **Seat assignment**:
    - If the user belongs to any group listed in `duo_add_on_groups`, they are assigned an add-on seat (if not already assigned).
    - If the user doesn't belong to any listed group, their add-on seat is removed (if previously assigned).
@@ -52,6 +54,8 @@ sequenceDiagram
         Background Job->>GitLab: Remove Duo Add-on seat (if assigned)
     end
     Background Job-->>Background Job: Complete
+
+    Note over GitLab, Background Job: Additionally, LdapAllAddOnSeatSyncWorker runs daily at 2 AM to sync all LDAP users
 ```
 
 ## Configure Duo add-on seat management

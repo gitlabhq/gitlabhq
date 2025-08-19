@@ -129,6 +129,10 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
 
       it_behaves_like 'generates metadata response "on-the-fly"'
     end
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { get(url, headers: build_token_auth_header(personal_access_token.token)) }
+    end
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/npm/-/package/*package_name/dist-tags' do
@@ -142,13 +146,20 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let(:tag_name) { 'test' }
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
       let(:env) { { 'api.request.body': package.version } }
       let(:headers) { build_token_auth_header(personal_access_token.token) }
 
       subject { put(url, env: env, headers: headers) }
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let(:tag_name) { 'test' }
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+
+      subject { put(url, headers: build_token_auth_header(personal_access_token.token)) }
     end
   end
 
@@ -157,9 +168,18 @@ RSpec.describe API::NpmGroupPackages, feature_category: :package_registry do
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
 
-    it_behaves_like 'enqueue a worker to sync a metadata cache' do
+    it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
       let_it_be(:package_tag) { create(:packages_tag, package: package) }
 
+      let(:tag_name) { package_tag.name }
+      let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
+      let(:headers) { build_token_auth_header(personal_access_token.token) }
+
+      subject { delete(url, headers: headers) }
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      let_it_be(:package_tag) { create(:packages_tag, package: package) }
       let(:tag_name) { package_tag.name }
       let(:url) { api("/groups/#{group.id}/-/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
       let(:headers) { build_token_auth_header(personal_access_token.token) }

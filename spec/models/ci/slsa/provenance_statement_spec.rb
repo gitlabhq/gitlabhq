@@ -4,7 +4,7 @@ require 'spec_helper'
 
 SLSA_PROVENANCE_V1_SCHEMA = 'app/validators/json_schemas/slsa/in_toto_v1/provenance_v1.json'
 
-RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :continuous_integration do
+RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :artifact_security do
   let(:parsed) { Gitlab::Json.parse(subject.to_json) }
 
   describe 'when ProvenanceStatement is correctly instantiated' do
@@ -106,8 +106,7 @@ RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :c
         let(:build_definition) { parsed['predicate']['buildDefinition'] }
 
         it 'has the correct predicate build definition' do
-          # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
-          expect(build_definition['buildType']).to eq('https://gitlab.com/gitlab-org/gitlab/-/issues/546150')
+          expect(build_definition['buildType']).to eq('https://docs.gitlab.com/ci/pipeline_security/slsa/provenance_v1')
           expect(build_definition['internalParameters']['name']).to start_with("My runner")
           expect(build_definition['resolvedDependencies'].length).to eq(1)
         end

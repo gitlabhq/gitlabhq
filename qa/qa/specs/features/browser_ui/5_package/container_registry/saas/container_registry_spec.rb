@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package' do
-    describe 'SaaS Container Registry', only: { pipeline: %i[staging staging-canary preprod] },
-      product_group: :container_registry do
+  RSpec.describe 'Package', feature_category: :container_registry do
+    describe 'SaaS Container Registry', only: { pipeline: %i[staging staging-canary preprod] } do
       let(:project) { create(:project, name: 'project-with-registry', template_name: 'express') }
       let(:gitlab_ci_yaml) do
         <<~YAML

@@ -15,6 +15,7 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
   let(:rails_sample_name) { 'rails_sample.jpg' }
   let(:rails_sample) { sample_image(rails_sample_name) }
   let(:dk_png) { sample_image('dk.png') }
+  let(:response) { run_service }
 
   def sample_image(filename)
     fixture_file_upload("spec/fixtures/#{filename}")
@@ -58,8 +59,6 @@ RSpec.describe DesignManagement::SaveDesignsService, feature_category: :design_m
       f.tempfile.write(SecureRandom.random_bytes)
     end
   end
-
-  let(:response) { run_service }
 
   shared_examples 'a service error' do
     it 'returns an error', :aggregate_failures do

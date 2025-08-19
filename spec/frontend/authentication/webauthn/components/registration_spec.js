@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import { GlAlert, GlButton, GlForm, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import Registration from '~/authentication/webauthn/components/registration.vue';
 import {
@@ -22,6 +23,7 @@ import * as WebAuthnUtils from '~/authentication/webauthn/util';
 import WebAuthnError from '~/authentication/webauthn/error';
 
 const csrfToken = 'mock-csrf-token';
+jest.useFakeTimers();
 jest.mock('~/lib/utils/csrf', () => ({ token: csrfToken }));
 jest.mock('~/authentication/webauthn/util');
 jest.mock('~/authentication/webauthn/error');
@@ -35,10 +37,17 @@ describe('Registration', () => {
   const createComponent = (provide = {}) => {
     wrapper = shallowMountExtended(Registration, {
       provide: { initialError, passwordRequired, targetPath, ...provide },
+      stubs: {
+        GlAlert: stubComponent(GlAlert, {
+          template: '<div><slot></slot><slot name="actions"></slot></div>',
+        }),
+      },
     });
   };
 
-  const findButton = () => wrapper.findComponent(GlButton);
+  const findPrimaryButton = () => wrapper.findComponent(GlButton);
+  const findCancelButton = () => wrapper.findComponent('.js-toggle-button');
+  const findForm = () => wrapper.findComponent(GlForm);
 
   describe(`when ${STATE_UNSUPPORTED} state`, () => {
     it('shows an error if using unsecure scheme (HTTP)', () => {
@@ -49,7 +58,8 @@ describe('Registration', () => {
 
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.props('variant')).toBe('danger');
-      expect(alert.text()).toBe(I18N_ERROR_HTTP);
+      expect(alert.text()).toContain(I18N_ERROR_HTTP);
+      expect(findCancelButton().exists()).toBe(true);
     });
 
     it('shows an error if using unsupported browser', () => {
@@ -59,7 +69,8 @@ describe('Registration', () => {
 
       const alert = wrapper.findComponent(GlAlert);
       expect(alert.props('variant')).toBe('danger');
-      expect(alert.text()).toBe(I18N_ERROR_UNSUPPORTED_BROWSER);
+      expect(alert.text()).toContain(I18N_ERROR_UNSUPPORTED_BROWSER);
+      expect(findCancelButton().exists()).toBe(true);
     });
   });
 
@@ -67,7 +78,7 @@ describe('Registration', () => {
     const mockCreate = jest.fn();
 
     const clickSetupDeviceButton = () => {
-      findButton().vm.$emit('click');
+      findPrimaryButton().vm.$emit('click');
       return nextTick();
     };
 
@@ -91,7 +102,8 @@ describe('Registration', () => {
       it('shows button', () => {
         createComponent();
 
-        expect(findButton().text()).toBe(I18N_BUTTON_SETUP);
+        expect(findPrimaryButton().text()).toBe(I18N_BUTTON_SETUP);
+        expect(findCancelButton().text()).toBe('Cancel');
       });
     });
 
@@ -103,6 +115,7 @@ describe('Registration', () => {
 
         expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
         expect(wrapper.text()).toContain(I18N_STATUS_WAITING);
+        expect(findCancelButton().exists()).toBe(true);
       });
     });
 
@@ -123,7 +136,22 @@ describe('Registration', () => {
 
           await setupDevice();
 
-          expect(wrapper.findComponent(GlForm).attributes('action')).toBe(targetPath);
+          expect(findForm().attributes('action')).toBe(targetPath);
+        });
+
+        it('cancels the registration', async () => {
+          createComponent();
+
+          await setupDevice();
+          expect(findForm().exists()).toBe(true);
+
+          findCancelButton().vm.$emit('click');
+          jest.advanceTimersByTime(1);
+          await waitForPromises();
+
+          expect(findForm().exists()).toBe(false);
+          expect(findPrimaryButton().text()).toBe(I18N_BUTTON_SETUP);
+          expect(findCancelButton().exists()).toBe(true);
         });
 
         describe('when password is required', () => {
@@ -148,7 +176,8 @@ describe('Registration', () => {
               csrfToken,
             );
 
-            expect(findButton().text()).toBe(I18N_BUTTON_REGISTER);
+            expect(findPrimaryButton().text()).toBe(I18N_BUTTON_REGISTER);
+            expect(findCancelButton().exists()).toBe(true);
           });
 
           it('enables the register device button when device name and password are filled', async () => {
@@ -156,14 +185,14 @@ describe('Registration', () => {
 
             await setupDevice();
 
-            expect(findButton().props('disabled')).toBe(true);
+            expect(findPrimaryButton().props('disabled')).toBe(true);
 
             // Visible inputs
             findCurrentPasswordInput().vm.$emit('input', 'my current password');
             findDeviceNameInput().vm.$emit('input', 'my device name');
             await nextTick();
 
-            expect(findButton().props('disabled')).toBe(false);
+            expect(findPrimaryButton().props('disabled')).toBe(false);
           });
         });
 
@@ -189,7 +218,7 @@ describe('Registration', () => {
               csrfToken,
             );
 
-            expect(findButton().text()).toBe(I18N_BUTTON_REGISTER);
+            expect(findPrimaryButton().text()).toBe(I18N_BUTTON_REGISTER);
           });
 
           it('enables the register device button when device name is filled', async () => {
@@ -197,12 +226,12 @@ describe('Registration', () => {
 
             await setupDevice();
 
-            expect(findButton().props('disabled')).toBe(true);
+            expect(findPrimaryButton().props('disabled')).toBe(true);
 
             findDeviceNameInput().vm.$emit('input', 'my device name');
             await nextTick();
 
-            expect(findButton().props('disabled')).toBe(false);
+            expect(findPrimaryButton().props('disabled')).toBe(false);
           });
         });
       });
@@ -214,11 +243,10 @@ describe('Registration', () => {
         createComponent({ initialError: myError });
 
         const alert = wrapper.findComponent(GlAlert);
-        expect(alert.props()).toMatchObject({
-          variant: 'danger',
-          secondaryButtonText: I18N_BUTTON_TRY_AGAIN,
-        });
         expect(alert.text()).toContain(myError);
+        const tryAgainButton = findPrimaryButton();
+        expect(tryAgainButton.text()).toBe(I18N_BUTTON_TRY_AGAIN);
+        expect(tryAgainButton.props('variant')).toBe('confirm');
       });
 
       it('shows an error message and a retry button', async () => {
@@ -229,10 +257,9 @@ describe('Registration', () => {
         await setupDevice();
 
         expect(WebAuthnError).toHaveBeenCalledWith(error, WEBAUTHN_REGISTER);
-        expect(wrapper.findComponent(GlAlert).props()).toMatchObject({
-          variant: 'danger',
-          secondaryButtonText: I18N_BUTTON_TRY_AGAIN,
-        });
+        const tryAgainButton = findPrimaryButton();
+        expect(tryAgainButton.text()).toBe(I18N_BUTTON_TRY_AGAIN);
+        expect(tryAgainButton.props('variant')).toBe('confirm');
       });
 
       it('recovers after an error (error to success state)', async () => {
@@ -243,7 +270,7 @@ describe('Registration', () => {
 
         expect(wrapper.findComponent(GlAlert).props('variant')).toBe('danger');
 
-        wrapper.findComponent(GlAlert).vm.$emit('secondaryAction');
+        clickSetupDeviceButton();
         await waitForPromises();
 
         expect(wrapper.findComponent(GlAlert).props('variant')).toBe('info');

@@ -52,9 +52,11 @@ export default {
   },
 
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- show() is part of the component's public API
     show() {
       this.$refs.dropdown.open();
     },
+    // eslint-disable-next-line vue/no-unused-properties -- hide() is part of the component's public API
     hide() {
       this.$refs.dropdown.close();
     },

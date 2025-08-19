@@ -35,11 +35,11 @@ module Gitlab
           .current_server_info
       end
 
-      def get_connected_agents_by_agent_ids(agent_ids:)
-        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest.new(agent_ids: agent_ids)
+      def get_connected_agentks_by_agent_ids(agent_ids:)
+        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentksByAgentIDsRequest.new(agent_ids: agent_ids)
 
         stub_for(:agent_tracker)
-         .get_connected_agents_by_agent_i_ds(request, metadata: metadata)
+         .get_connected_agentks_by_agent_i_ds(request, metadata: metadata)
          .agents
          .to_a
       end
@@ -51,7 +51,10 @@ module Gitlab
         )
 
         stub_for(:configuration_project)
-          .list_agent_config_files(request, metadata: metadata)
+          .list_agent_config_files(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(project),
+            group: ::Feature::Kas.group_actor(project)
+          ))
           .config_files
           .to_a
       end
@@ -67,7 +70,10 @@ module Gitlab
         )
 
         stub_for(:notifications)
-          .git_push_event(request, metadata: metadata)
+          .git_push_event(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(project),
+            group: ::Feature::Kas.group_actor(project)
+          ))
       end
 
       def send_autoflow_event(project:, type:, id:, data:)
@@ -99,7 +105,10 @@ module Gitlab
         )
 
         stub_for(:autoflow)
-          .cloud_event(request, metadata: metadata)
+          .cloud_event(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(project),
+            group: ::Feature::Kas.group_actor(project)
+          ))
       end
 
       def get_environment_template(agent:, template_name:)
@@ -114,7 +123,10 @@ module Gitlab
         )
 
         stub_for(:managed_resources)
-          .get_environment_template(request, metadata: metadata)
+          .get_environment_template(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(project),
+            group: ::Feature::Kas.group_actor(project)
+          ))
           .template
       end
 
@@ -132,7 +144,10 @@ module Gitlab
             data: template.data),
           info: templating_info(environment:, build:))
         stub_for(:managed_resources)
-          .render_environment_template(request, metadata: metadata)
+          .render_environment_template(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(environment.project),
+            group: ::Feature::Kas.group_actor(environment.project)
+          ))
           .template
       end
 
@@ -143,7 +158,10 @@ module Gitlab
             data: template.data),
           info: templating_info(environment:, build:))
         stub_for(:managed_resources)
-          .ensure_environment(request, metadata: metadata)
+          .ensure_environment(request, metadata: metadata(
+            project: ::Feature::Kas.project_actor(environment.project),
+            group: ::Feature::Kas.group_actor(environment.project)
+          ))
       end
 
       def delete_environment(managed_resource:)
@@ -154,7 +172,10 @@ module Gitlab
           objects: managed_resource.tracked_objects
         )
 
-        stub_for(:managed_resources).delete_environment(request, metadata: metadata)
+        stub_for(:managed_resources).delete_environment(request, metadata: metadata(
+          project: ::Feature::Kas.project_actor(managed_resource.project),
+          group: ::Feature::Kas.group_actor(managed_resource.project)
+        ))
       end
 
       private
@@ -190,8 +211,11 @@ module Gitlab
         end
       end
 
-      def metadata
-        { 'authorization' => "bearer #{token}" }
+      def metadata(**feature_flag_actors)
+        {
+          'authorization' => "bearer #{token}",
+          **::Feature::Kas.server_feature_flags_for_grpc_request(**feature_flag_actors)
+        }
       end
 
       def token

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Repository tags', :requires_admin, product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Repository tags', :requires_admin do
       let(:project) { create(:project, :with_readme, name: 'project-for-tags') }
       let(:developer_user) { create(:user) }
       let(:maintainer_user) { create(:user) }

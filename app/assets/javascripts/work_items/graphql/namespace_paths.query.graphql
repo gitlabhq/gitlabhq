@@ -1,0 +1,9 @@
+query namespacePaths($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    markdownPaths {
+      markdownPreviewPath
+      uploadsPath
+    }
+  }
+}

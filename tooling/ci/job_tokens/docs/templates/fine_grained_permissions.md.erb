@@ -35,22 +35,6 @@ These permissions are applied to the CI/CD job tokens in a specified project.
 
 This feature is in [beta](../../policy/development_stages_support.md#beta).
 
-## Enable fine-grained permissions
-
-Prerequisites:
-
-- You must have the Owner role for a group.
-
-You must turn on fine-grained permissions at the group level. Then, each project in the group can
-apply fine-grained permissions for CI/CD job tokens to grant access to individual resources.
-
-To enable fine-grained permissions for all projects in a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **General pipelines**.
-1. Turn on the **Enable fine-grained permissions for CI/CD job tokens** toggle.
-
 ## Add fine-grained permissions to the job token allowlist
 
 Prerequisites:

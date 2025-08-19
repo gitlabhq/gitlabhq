@@ -4,7 +4,7 @@ import ExtendedDashboardPanel from './extended_dashboard_panel.vue';
 
 export default {
   component: ExtendedDashboardPanel,
-  title: 'vue_shared/components/customizable_dashboard/extended_dashboard_panel',
+  title: 'vue_shared/customizable_dashboard/extended_dashboard_panel',
 };
 
 const Template = (args, { argTypes }) => ({

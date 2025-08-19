@@ -4,134 +4,52 @@ group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Deprecating GitLab features
 ---
-
-This page includes information about how and when to remove or make breaking changes
-to GitLab features.
-
 For details about the terms used on this page, see [the terminology](../../update/terminology.md).
 
-## Minimize the impact of breaking changes
+## Breaking Change Policy
 
-Minimizing the impact to our customers ahead of a breaking change will ensure that disruptions will be as small as possible. Product and Engineering teams should work closely together to understand 1) who would be most impacted and how and 2) what tooling may help our users to migrate.
+Any change counts as a breaking change if customers need to take action to ensure their GitLab workflows aren't disrupted.
 
-## Planning
+A breaking change could come from sources such as:
 
-If a deprecation or breaking change is unavoidable, then take the following steps:
+- An intentional product change
+- A configuration update
+- A third-party deprecation
+- Or many other sources
 
-1. Review the [deprecation guidelines in our documentation](#minimize-the-impact-of-breaking-changes)
-1. Review the [breaking changes best practices](https://docs.google.com/document/d/1ByVZEhGJfjb6XTwiDeaSDRVwUiF6dsEQI01TW4BJA0k/edit?tab=t.0#heading=h.vxhro51h5zxn) (internal link)
-1. Review the [release post process for announcing breaking changes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes)
-1. **(Required)** Create a [deprecation issue ticket](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) and begin following the steps documented there
+For many of our users, GitLab is a tier zero system. It is critical in creating, releasing, operating, and scaling users' businesses. The consequence of a breaking change can be serious.
 
-The [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) includes checklist that ensure each breaking change has sufficiently planned for:
+Product and Engineering Managers are responsible and accountable for customer impacts due to the changes they make to the platform. The burden is on GitLab, not the customer, to own change management.
 
-- Customer impact **(DRI: Engineering or Product, depending on change)**
-  - Measure product usage of the feature impacted by the breaking change
-  - Assess how many customers will be impacted and how, by the breaking change
-- Rollout plan **(DRI: Engineering)**
-  - Is there a % roll out on GitLab.com?
-  - During that major milestone, when should the roll out begin?
-  - And similar questions related to roll out preparedness
-- Migration plan **(DRI: Engineering)**
-  - Are we instrumenting usage? If so, how are we using that data to inform what users will be impacted?
-  - How do we quickly and safely migrate them, preferably before the rollout?
-  - Can we create tooling for users to manually migrate their own data or workflows?
-  - Can we allow users to manually enable the breaking change so that they can control when it takes effect?
-  - Have we automated the migration process **as much as possible** for users who do not take any manual steps to migrate.
-  - Have we (optionally) created UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers to plan for their migration path?
-  - And similar questions related to migration options available to customers
-- Communication plan **(DRI: Product)**
-  - Are customers aware of the upcoming changes?
-  - Do they know when the changes will go into effect?
-  - Do they know what actions to take and when?
-  - Are internal stakeholders supporting affected customers aware of the upcoming changes?
-  - Have we gone beyond a public announcement to ensure that customers have received and acted upon the information?
-  - Have we engaged with customer-supporting teams (CS, Support, AEs, etc) to ensure that they have received and acted upon the information?
-  - And similar questions related to clear and proactive communication
+**We aim to eliminate all breaking changes from GitLab.** If you have exhausted the alternatives and believe you have a strong case for why a breaking change should be allowed, you can follow the process below to seek an exception.
 
-## When can a feature be deprecated?
+## How do I get approval to move forward with a breaking change?
 
-Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
+**By default, no breaking change is allowed unless the breaking change implementation plan has been granted explicit approval by following the process below.**
 
-Deprecations should be announced [no later than the third milestone preceding intended removal](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+1. Open an issue using the [Breaking Change Exception template](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception) and fill in all of the required sections.
+1. **If your breaking change meets any of the below criteria**, please call it out in the request. It doesn't guarantee the request will be approved but it helps make a good argument. Most breaking changes that are approved will fall into at least one of these categories:
+   1. The impact of the breaking change has been **fully mitigated via an automated migration** that requires no action from the customer.
+   1. The breaking change will have **negligible customer impact** as measured by actual product usage tracking across GitLab Self-Managed, GitLab.com, and GitLab Dedicated. For instance if it impacts less than 1% of the GitLab customer base.
+   1. The breaking change is being implemented due to a **significant security risk- Severity 1 or 2.**
+1. Once the issue is ready for review, follow the instructions in the template for who to tag to get the approval process started.
+1. Wait until you get approval before publicly sharing the news or confirming your proposed timeline. The time from initial submission to approval or denial will vary, so **submit a minimum of six months in advance** of the proposed removal time frame.
 
-Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
-Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
-[Update the deprecations doc](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
+## What details are part of the request template?
 
-![Deprecation, End of Support, Removal process](img/deprecation_removal_process_v15_1.png)
+- Executive Summary
+- Impact Assessment
+- Rollout & Communication Plan
+  - Internal Communication
+  - Customer Communication
 
-## API deprecations and breaking changes
+[Request template](https://gitlab.com/gitlab-com/Product/-/issues/new?description_template=Breaking-Change-Exception)
 
-Our APIs have special rules regarding deprecations and breaking changes.
+## After you have an approved breaking change, what's next?
 
-### REST API v4
-
-REST API v4 [cannot have breaking changes made to it](../api_styleguide.md#breaking-changes)
-unless the API feature was previously
-[marked as experimental or beta](../api_styleguide.md#experimental-beta-and-generally-available-features).
-
-See [What to do instead of a breaking change?](../api_styleguide.md#what-to-do-instead-of-a-breaking-change)
-
-### GraphQL API
-
-The GraphQL API has a requirement for a [longer deprecation cycle](../../api/graphql/_index.md#deprecation-and-removal-process)
-than the [standard cycle](#when-can-a-feature-be-removedchanged) before a breaking change can be made.
-
-See the [GraphQL deprecation process](../api_graphql_styleguide.md#deprecating-schema-items).
-
-## Webhook breaking changes
-
-We cannot make breaking changes to webhook payloads.
-
-For a list of what constitutes a breaking webhook payload change and what to do instead, see the
-[Webhook breaking changes guide](../../development/webhooks.md#breaking-changes).
-
-## How are Community Contributions to a deprecated feature handled?
-
-Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
-
-However, at GitLab, we [give agency](https://handbook.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
-
-## When can a feature be removed/changed?
-
-Features or configuration can only be removed/changed in a major release.
-
-They must be [deprecated in advance](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
-
-REST API v4 cannot have breaking changes made to it, and GraphQL has a longer deprecation cycle than regular GitLab features before a breaking change can be made.
-See [API deprecations and breaking changes](#api-deprecations-and-breaking-changes).
-
-For configuration removals, see the [Omnibus deprecation policy](../../administration/package_information/deprecation_policy.md).
-
-For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).
-
-## Requesting a breaking change in a minor release
-
-GitLab Self-Managed packages are semantically versioned and follow our [maintenance policy](../../policy/maintenance.md). This process applies to features and APIs that are generally available, not beta or experimental.
-
-This maintenance policy is in place to allow our customers to prepare for disruptive changes by establishing a clear and predictable pattern that is widely used in the software industry. For many of our customers, GitLab is a business-critical application and surprising changes can cause damages and erode trust.
-
-Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://handbook.gitlab.com/handbook/company/yearlies/) and is strongly discouraged.
-
-Breaking changes are deployed to GitLab.com after they are merged into the codebase and do not respect the minor release cadence. Special care must be taken to inform the [Customer Support](https://handbook.gitlab.com/handbook/support/) and [Customer Success](https://handbook.gitlab.com/handbook/customer-success/) teams so that we can offer fast resolution to any customers that may be impacted by unexpected breaking changes.
-
-Breaking our own policies, in particular shipping breaking changes in minor releases, is only reserved for situations in which GitLab establishes that delaying a breaking change would overall have a significantly more negative impact to customers than shipping it in a minor release. The most important lens for evaluating if an exception is granted is customer results.
-
-Introducing a breaking change in a minor release requires a PM and EM to follow the process below to request an exception:
-
-1. Open a new issue in the [product issue tracker using the Breaking Change Exception template](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception)
-1. Title should follow the format `Breaking change exception: Description`
-1. Provide an impact assessment for the breaking change
-   1. How many customers are impacted?
-   1. Can we get the same outcome without a breaking-change? (that is, no removal)
-   1. Can the breaking-change wait till the next major release, or the next scheduled upgrade stop, for example [Database scenarios](../database/required_stops.md))?
-   1. What is the alternative for customers to do the same job the change will break?
-   1. How difficult is it for customers to migrate to the alternative? Is there a migration plan?
-1. Provide a communication plan and establish a clear timeline, including the targeted minor release.
-1. Notify Support and Customer Success so they can share information with relevant customers.
-1. Obtain approval from the VP of Development, VP of Product Management, and VP of Customer Support for this area
-1. Obtain approval from the CPO and CTO
+1. Create a public [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Deprecations.md) that will serve as a source of truth for customers in regards to the change.
+1. Ensure the change is added to the deprecations docs page by following the guidance below.
+1. Follow the Rollout & Communications plan that was approved in your request.
 
 ## Update the deprecations and removals documentation
 
@@ -200,3 +118,41 @@ edited, or removed:
 ## Update the related documentation
 
 When features are deprecated and removed, [update the related documentation](../documentation/styleguide/deprecations_and_removals.md).
+
+## API deprecations and breaking changes
+
+Our APIs have special rules regarding deprecations and breaking changes.
+
+### REST API v4
+
+REST API v4 [cannot have breaking changes made to it](../api_styleguide.md#breaking-changes)
+unless the API feature was previously
+[marked as experimental or beta](../api_styleguide.md#experimental-beta-and-generally-available-features).
+
+See [What to do instead of a breaking change?](../api_styleguide.md#what-to-do-instead-of-a-breaking-change)
+
+### GraphQL API
+
+The GraphQL API has a requirement for a [longer deprecation cycle](../../api/graphql/_index.md#deprecation-and-removal-process)
+than the standard cycle before a breaking change can be made.
+
+See the [GraphQL deprecation process](../api_graphql_styleguide.md#deprecating-schema-items).
+
+## Webhook breaking changes
+
+We cannot make breaking changes to webhook payloads.
+
+For a list of what constitutes a breaking webhook payload change and what to do instead, see the
+[Webhook breaking changes guide](../../development/webhooks.md#breaking-changes).
+
+## How are Community Contributions to a deprecated feature handled?
+
+Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
+
+However, at GitLab, we [give agency](https://handbook.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
+
+## Other guidelines
+
+For configuration removals, see the [Omnibus deprecation policy](../../administration/package_information/deprecation_policy.md).
+
+For versioning and upgrade details, see our [Release and Maintenance policy](../../policy/maintenance.md).

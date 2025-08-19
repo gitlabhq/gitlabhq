@@ -88,8 +88,7 @@ module Banzai
       issuables.each do |node, issuable|
         next if issuable.project == context.project_for_node(node)
 
-        node['class'] = node['class'].gsub('has-tooltip', '')
-        node['title'] = nil
+        node.replace(redacted_node_content(node))
       end
     end
 

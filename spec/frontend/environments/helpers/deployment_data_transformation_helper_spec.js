@@ -48,6 +48,7 @@ describe('deployment_data_transformation_helper', () => {
       refName: 'main',
       id: 'gid://gitlab/Ci::Build/860',
       webPath: '/gitlab-org/pipelinestest/-/jobs/860',
+      retryPath: '/gitlab-org/pipelinestest/-/jobs/860/retry',
       deploymentPipeline: {
         jobs: {
           nodes: [
@@ -88,7 +89,8 @@ describe('deployment_data_transformation_helper', () => {
       name: 'deploy-prod',
       refName: 'main',
       id: 'gid://gitlab/Ci::Bridge/860',
-      webPath: null,
+      webPath: '/gitlab-org/pipelinestest/-/jobs/860',
+      retryPath: null,
       deploymentPipeline: {
         id: 'gid://gitlab/Ci::Pipeline/101',
         path: '/gitlab-org/pipelinestest/-/pipelines/101',
@@ -126,6 +128,7 @@ describe('deployment_data_transformation_helper', () => {
       refName: 'main',
       id: 'gid://gitlab/Ci::Bridge/860',
       webPath: null,
+      retryPath: '/gitlab-org/pipelinestest/-/jobs/860/retry',
       deploymentPipeline: {
         id: 'gid://gitlab/Ci::Pipeline/101',
         path: '/gitlab-org/pipelinestest/-/pipelines/101',

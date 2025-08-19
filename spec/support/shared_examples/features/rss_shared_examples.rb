@@ -56,12 +56,12 @@ RSpec.shared_examples "updates atom feed link" do |type|
 
     expect(params).to include(expected)
     feed_token_param = params['feed_token']
-    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders.path_dependent_feed_token_regex])
     expect(feed_token_param.first).to end_with(user.id.to_s)
 
     expect(auto_discovery_params).to include(expected)
     feed_token_param = auto_discovery_params['feed_token']
-    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders::PATH_DEPENDENT_FEED_TOKEN_REGEX])
+    expect(feed_token_param).to match([Gitlab::Auth::AuthFinders.path_dependent_feed_token_regex])
     expect(feed_token_param.first).to end_with(user.id.to_s)
   end
 end

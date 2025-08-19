@@ -14,6 +14,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { sprintf } from '~/locale';
 
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
@@ -381,6 +382,24 @@ describe('CommitChangesModal', () => {
           commit_message: 'some valid commit message',
           create_merge_request: '1',
           original_branch: 'main',
+        });
+      });
+
+      describe('with tracking', () => {
+        const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+        it('tracks on success', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          await findModal().vm.$emit('primary', { preventDefault: jest.fn() });
+
+          await nextTick();
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_commit_changes_in_commit_changes_modal',
+            {},
+            undefined,
+          );
         });
       });
     });

@@ -30,7 +30,7 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
       )
     end
 
-    subject(:result) do
+    let(:service) do
       described_class.new(
         current_user: user,
         merge_request: merge_request,
@@ -38,7 +38,11 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
         source_sha: source_sha,
         first_parent_ref: first_parent_ref,
         merge_params: merge_params
-      ).execute
+      )
+    end
+
+    subject(:result) do
+      service.execute
     end
 
     context 'when there is a user-caused gitaly error' do
@@ -86,6 +90,14 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
           message: 'Base parent commit 2',
           branch_name: first_parent_ref
         )
+      end
+
+      shared_examples 'does not generate ref merge request commits' do
+        it 'does not create generated ref merge request commits' do
+          result
+
+          expect(MergeRequests::GeneratedRefCommit.exists?).to be false
+        end
       end
 
       shared_examples_for 'writing with a merge commit' do
@@ -328,6 +340,10 @@ RSpec.describe MergeRequests::CreateRefService, feature_category: :merge_trains 
             end
           end
         end
+      end
+
+      context 'when we are not on ee' do
+        include_examples 'does not generate ref merge request commits'
       end
     end
   end

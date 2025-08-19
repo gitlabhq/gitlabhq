@@ -1,0 +1,10 @@
+---
+name: work_items_project_issues_list
+description: Whether to use work items list for project issues index
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198544
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198544
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556695
+milestone: '18.3'
+group: group::product planning
+type: beta
+default_enabled: false

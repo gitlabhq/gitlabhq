@@ -1,0 +1,8 @@
+---
+name: restrict_namespace_api_billing_fields
+introduced_by_url: https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5153
+rollout_issue_url:
+milestone: '18.3'
+type: gitlab_com_derisk
+group: group::billing and subscription management
+default_enabled: false

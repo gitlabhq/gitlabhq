@@ -221,22 +221,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_new_app_data)).to eq(
         {
-          'organizations_path' => '/-/organizations',
+          'organizations_path' => '/o',
           'root_url' => 'http://test.host/',
           'preview_markdown_path' => '/-/organizations/preview_markdown'
-        }
-      )
-    end
-  end
-
-  describe '#home_organization_setting_app_data' do
-    it 'returns expected json' do
-      current_user = build_stubbed(:user)
-      allow(helper).to receive(:current_user).and_return(current_user)
-
-      expect(Gitlab::Json.parse(helper.home_organization_setting_app_data)).to eq(
-        {
-          'initial_selection' => current_user.user_preference.home_organization_id
         }
       )
     end
@@ -255,7 +242,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'avatar' => 'avatar.jpg',
             'visibility_level' => organization.visibility_level
           },
-          'organizations_path' => '/-/organizations',
+          'organizations_path' => '/o',
           'root_url' => 'http://test.host/',
           'preview_markdown_path' => '/-/organizations/preview_markdown'
         }

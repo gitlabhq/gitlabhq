@@ -2,6 +2,7 @@
 
 .gl-flex.gl-gap-5.gl-flex-col
   = render 'groups/settings/export', group: @group
+  = render 'groups/settings/archive', group: @group
 
   = render Pajamas::CardComponent.new(header_options: { class: 'gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-default' }, body_options: { class: 'gl-px-5 gl-py-4' }) do |c|
     - c.with_header do
@@ -18,7 +19,7 @@
           .input-group.gl-field-error-anchor
             .group-root-path.input-group-prepend.has-tooltip{ title: group_path(@group), :'data-placement' => 'bottom' }
               .input-group-text
-                %span>= root_url
+                %span>= unscoped_root_url
                 - if @group.parent
                   %strong= @group.parent.full_path + '/'
             = f.hidden_field :parent_id

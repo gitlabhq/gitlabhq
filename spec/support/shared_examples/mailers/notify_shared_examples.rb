@@ -213,7 +213,7 @@ RSpec.shared_examples 'it should show Gmail Actions View Wiki link' do
   it { is_expected.to have_body_text('View Wiki') }
 end
 
-RSpec.shared_examples 'an unsubscribeable thread' do
+RSpec.shared_examples 'an unsubscribeable thread' do |group_level = false|
   it_behaves_like 'an unsubscribeable thread with incoming address without %{key}'
 
   it 'has a List-Unsubscribe header in the correct format, List-Unsubscribe-Post header, and a body link' do
@@ -226,6 +226,20 @@ RSpec.shared_examples 'an unsubscribeable thread' do
       is_expected.not_to have_header('List-Unsubscribe', /force=true/)
       is_expected.to have_header('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
       is_expected.to have_body_text('unsubscribe')
+    end
+  end
+
+  describe 'reply_key' do
+    unless group_level
+      it { is_expected.to have_header('X-GitLab-Reply-Key', SentNotification::PARTITIONED_REPLY_KEY_REGEX) }
+
+      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
+        before do
+          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
+        end
+
+        it { is_expected.to have_header('X-GitLab-Reply-Key', SentNotification::LEGACY_REPLY_KEY_REGEX) }
+      end
     end
   end
 end

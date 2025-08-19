@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
+import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { mockCommit } from './mock_data';
 
@@ -8,14 +8,11 @@ describe('CommitListItemActionButtons', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(CommitListItemActionButtons, {
+    wrapper = shallowMountExtended(CommitListItemActionButtons, {
       propsData: {
         commit: mockCommit,
         isCollapsed: true,
         ...props,
-      },
-      stubs: {
-        GlButton,
       },
     });
   };
@@ -24,14 +21,14 @@ describe('CommitListItemActionButtons', () => {
     createComponent();
   });
 
-  const findShortIdButton = () => wrapper.findAllComponents(GlButton).at(0);
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
-  const findBrowseFilesButton = () => wrapper.findAllComponents(GlButton).at(1);
-  const findExpandCollapseButton = () => wrapper.findAllComponents(GlButton).at(2);
+  const findBrowseFilesButton = () => wrapper.findByTestId('browse-files-button');
+  const findExpandCollapseButton = () => wrapper.findComponent(ExpandCollapseButton);
 
-  describe('commit short ID button', () => {
+  describe('commit short ID', () => {
     it('displays the commit short ID', () => {
-      expect(findShortIdButton().text()).toBe(mockCommit.shortId);
+      const commitShortId = wrapper.findByText(mockCommit.shortId);
+      expect(commitShortId.exists()).toBe(true);
     });
   });
 
@@ -52,35 +49,19 @@ describe('CommitListItemActionButtons', () => {
     });
   });
 
-  describe('expand/collapse functionality', () => {
-    describe('when isCollapsed is true', () => {
-      beforeEach(() => {
-        createComponent({ isCollapsed: true });
-      });
-
-      it('shows expand button', () => {
-        expect(findExpandCollapseButton().attributes('aria-label')).toBe('Expand');
-      });
-
-      it('emits click event when expand button is clicked', async () => {
-        await findExpandCollapseButton().vm.$emit('click');
-        expect(wrapper.emitted()).toEqual({ click: [[]] });
+  describe('expand/collapse button', () => {
+    it('renders with correct prop', () => {
+      expect(findExpandCollapseButton().props()).toEqual({
+        anchorId: '',
+        isCollapsed: true,
+        size: 'small',
       });
     });
 
-    describe('when isCollapsed is false', () => {
-      beforeEach(() => {
-        createComponent({ isCollapsed: false });
-      });
-
-      it('shows collapse button', () => {
-        expect(findExpandCollapseButton().attributes('aria-label')).toBe('Collapse');
-      });
-
-      it('emits click event when collapse button is clicked', async () => {
-        await findExpandCollapseButton().vm.$emit('click');
-        expect(wrapper.emitted()).toEqual({ click: [[]] });
-      });
+    it('emits click event when clicked', async () => {
+      const expandCollapseButton = findExpandCollapseButton();
+      await expandCollapseButton.vm.$emit('click');
+      expect(wrapper.emitted()).toEqual({ click: [[]] });
     });
   });
 });

@@ -57,7 +57,7 @@ const sourcesItems = [
     text: s__('PipelineSource|Scheduled Scan Execution Policy'),
   },
   { value: SOURCE_CONTAINER_REGISTRY_PUSH, text: s__('PipelineSource|Container Registry Push') },
-  { value: SOURCE_DUO_WORKFLOW, text: s__('PipelineSource|Duo Workflow') },
+  { value: SOURCE_DUO_WORKFLOW, text: s__('PipelineSource|Duo Agent Platform') },
   {
     value: SOURCE_PIPELINE_EXECUTION_POLICY_SCHEDULE,
     text: s__('PipelineSource|Scheduled Pipeline Execution Policy'),

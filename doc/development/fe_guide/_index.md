@@ -30,7 +30,7 @@ For [client-side state management](state_management.md) in Vue, depending on the
 we use:
 
 - [Apollo](https://www.apollographql.com/) (default choice for applications relying on [GraphQL](graphql.md))
-- [Pinia](pinia.md) (in [pilot phase](https://gitlab.com/gitlab-org/gitlab/-/issues/479279))
+- [Pinia](pinia.md)
 - Stateful components.
 
 [Vuex is deprecated](vuex.md) and you should [migrate away from it](migrating_from_vuex.md) whenever possible.
@@ -41,7 +41,7 @@ For copy strings and translations, we have frontend utilities available. See the
 
 Working with our frontend assets requires Node (v12.22.1 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
-[installation guide](../../install/installation.md#5-node).
+[installation guide](../../install/self_compiled/_index.md#5-node).
 
 ### High-level overview
 

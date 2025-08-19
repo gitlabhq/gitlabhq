@@ -1,4 +1,4 @@
-import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
+import { engineeringNotation } from '@gitlab/ui/dist/utils/number_utils';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
 import { formatNumber } from '~/locale';
@@ -12,7 +12,7 @@ export const formatPipelineCount = (count) => {
   }
 };
 
-export const formatPipelineCountPercentage = (a, b) => {
+export const calculatePipelineCountPercentage = (a, b) => {
   try {
     // Dividing BigInt values loses the fractional part, multiply the numerator by a factor
     // and then divide the result to keep digits of precision.
@@ -21,12 +21,17 @@ export const formatPipelineCountPercentage = (a, b) => {
     const bn = BigInt(b);
     const ratio = Number((BigInt(factor) * an) / bn) / factor;
     if (Number.isFinite(ratio)) {
-      return getFormatter(SUPPORTED_FORMATS.percentHundred)(ratio * 100, 0);
+      return ratio * 100;
     }
   } catch {
     // return below
   }
-  return '-';
+  return undefined;
+};
+
+export const formatPipelineCountPercentage = (a, b) => {
+  const percent = calculatePipelineCountPercentage(a, b);
+  return percent !== undefined ? getFormatter(SUPPORTED_FORMATS.percentHundred)(percent, 0) : '-';
 };
 
 export const formatPipelineDuration = (seconds) => {

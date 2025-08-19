@@ -17,7 +17,7 @@ response = http.request(request)
 stages_doc = YAML.safe_load(response.read_body)
 feature_categories = stages_doc["stages"].values
   .flat_map { |stage| stage["groups"].values }
-  .flat_map { |group| group["categories"] + group.fetch("maintained_categories", []) }
+  .flat_map { |group| group.fetch("categories", []) + group.fetch("maintained_categories", []) }
   .uniq
   .sort
 

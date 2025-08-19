@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Pipelines::TestsController do
+RSpec.describe Projects::Pipelines::TestsController, feature_category: :continuous_integration do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
@@ -21,6 +21,30 @@ RSpec.describe Projects::Pipelines::TestsController do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.dig('total', 'count')).to eq(2)
       end
+
+      context 'when the child pipeline has build report results' do
+        let!(:child_pipeline) { create(:ci_pipeline, :with_report_results, child_of: pipeline) }
+
+        it 'renders child test report summary data' do
+          get_tests_summary_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.dig('total', 'count')).to eq(4)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'only returns parent results' do
+            get_tests_summary_json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.dig('total', 'count')).to eq(2)
+          end
+        end
+      end
     end
 
     context 'when pipeline does not have build report results' do
@@ -29,6 +53,30 @@ RSpec.describe Projects::Pipelines::TestsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.dig('total', 'count')).to eq(0)
+      end
+
+      context 'when the child pipeline has build report results' do
+        let!(:child_pipeline) { create(:ci_pipeline, :with_report_results, child_of: pipeline) }
+
+        it 'renders child test report summary data' do
+          get_tests_summary_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.dig('total', 'count')).to eq(2)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'returns parent results' do
+            get_tests_summary_json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.dig('total', 'count')).to eq(0)
+          end
+        end
       end
     end
   end
@@ -97,7 +145,7 @@ RSpec.describe Projects::Pipelines::TestsController do
     end
 
     context 'when pipeline has no builds that matches the given build_ids' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project) }
       let(:suite_name) { 'test' }
 
       it 'renders 404' do
@@ -105,6 +153,45 @@ RSpec.describe Projects::Pipelines::TestsController do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(response.body).to be_empty
+      end
+
+      context 'when child pipeline has child builds that match build_id' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:child_pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, child_of: pipeline) }
+        let(:build_ids) { child_pipeline.latest_builds.pluck(:id) }
+
+        it 'renders test suite', :aggregate_failures do
+          get_tests_show_json(build_ids)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['name']).to eq('test')
+          expect(json_response['total_count']).to eq(3)
+          expect(json_response['test_cases'].size).to eq(3)
+        end
+
+        context 'when FF show_child_reports_in_mr_page is disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'returns parent results' do
+            get_tests_show_json(build_ids)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['errors']).to eq('Test report artifacts not found')
+          end
+
+          context 'when pipeline has reports but no builds that match the id' do
+            let(:pipeline) { create(:ci_pipeline, :with_test_reports_with_three_failures, project: project) }
+
+            it 'returns 404' do
+              get_tests_show_json([])
+
+              expect(response).to have_gitlab_http_status(:not_found)
+              expect(response.body).to be_empty
+            end
+          end
+        end
       end
     end
   end

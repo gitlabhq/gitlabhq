@@ -6,3 +6,4 @@ milestone: '13.2'
 type: development
 group: group::source code
 default_enabled: false
+intended_to_rollout_by: "2025-11-01"

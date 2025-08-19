@@ -102,7 +102,7 @@ module QA
           end
 
           def click_commit_button
-            click_element('div[aria-label="Commit and push to \'main\'"]')
+            click_element('div[aria-label^="Commit and push to"]')
           end
 
           def has_notification_box?

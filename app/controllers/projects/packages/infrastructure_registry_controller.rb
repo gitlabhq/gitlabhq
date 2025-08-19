@@ -9,7 +9,10 @@ module Projects
       urgency :low
 
       def show
-        @package = project.packages.find(params.permit(:id)[:id])
+        @package = ::Packages::TerraformModule::Package
+                     .preload_pipelines_with_user_project_namespace_route
+                     .for_projects(project)
+                     .find(params.permit(:id)[:id])
       end
     end
   end

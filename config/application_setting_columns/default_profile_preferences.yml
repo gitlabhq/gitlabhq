@@ -5,7 +5,7 @@ clusterwide: true
 column: default_profile_preferences
 db_type: jsonb
 default: "'{}'::jsonb"
-description: includes default values for profile preferences
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

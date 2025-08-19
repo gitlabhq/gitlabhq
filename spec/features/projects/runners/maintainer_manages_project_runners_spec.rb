@@ -3,232 +3,76 @@
 require 'spec_helper'
 
 RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_visibility do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+  include Features::RunnersHelpers
 
-  before_all do
-    project.add_maintainer(user)
-  end
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, maintainers: user) }
 
   before do
-    stub_feature_flags(vue_project_runners_settings: false)
     sign_in(user)
   end
 
-  context 'when a project_type runner is activated on the project' do
-    let_it_be(:project_runner_manager) do
-      create(:ci_runner_machine, runner: project_runner, platform: 'darwin')
+  context "with a project runner", :js do
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    before do
+      visit project_runners_path(project)
     end
 
-    it 'user sees the project runner', :js do
-      visit project_runners_path(project)
+    it_behaves_like 'shows runner summary and navigates to details' do
+      let(:runner) { project_runner }
+      let(:runner_page_path) { project_runner_path(project, project_runner) }
+    end
 
-      within_testid 'assigned_project_runners' do
-        expect(page).to have_content(project_runner.display_name)
+    it_behaves_like 'pauses, resumes and deletes a runner' do
+      let(:runner) { project_runner }
+    end
+
+    it 'shows an instance badge' do
+      within_runner_row(project_runner.id) do
+        expect(page).to have_selector '.badge', text: 'Project'
+      end
+    end
+  end
+
+  context 'with a project runner from another project', :js do
+    let_it_be(:project_2) { create(:project) }
+    let_it_be(:project_2_runner) { create(:ci_runner, :project, projects: [project_2]) }
+
+    before_all do
+      project_2.add_maintainer(user)
+    end
+
+    before do
+      visit project_runners_path(project)
+    end
+
+    it 'assigns the runner' do
+      click_on 'Other available project runners'
+
+      within_runner_row(project_2_runner.id) do
+        click_on 'Assign to project'
       end
 
-      click_on project_runner.short_sha
+      expect(page.find('.gl-toast')).to have_text(/Runner .+ was assigned to this project/)
 
       wait_for_requests
 
-      expect(page).to have_content(project_runner.description)
-    end
+      expect(page).not_to have_content(project_2_runner.short_sha)
 
-    it 'user can pause and resume the project runner' do
-      visit project_runners_path(project)
+      # Find runner in the "Assigned project runners" tab
+      click_on 'Assigned project runners'
 
-      within_testid 'assigned_project_runners' do
-        expect(page).to have_link('Pause')
-      end
-
-      click_on 'Pause'
-
-      within_testid 'assigned_project_runners' do
-        expect(page).to have_link('Resume')
-      end
-
-      click_on 'Resume'
-
-      within_testid 'assigned_project_runners' do
-        expect(page).to have_link('Pause')
-      end
-    end
-
-    it 'user removes an activated project runner if this is last project for that runners' do
-      visit project_runners_path(project)
-
-      within_testid 'assigned_project_runners' do
-        click_on 'Delete runner'
-      end
-
-      expect(page).not_to have_content(project_runner.display_name)
-    end
-
-    it 'user edits runner to set it as protected', :js do
-      visit project_runners_path(project)
-
-      within_testid 'assigned_project_runners' do
-        first('[data-testid="edit-runner-link"]').click
-      end
-
-      expect(page.find_field('protected')).not_to be_checked
-
-      check 'protected'
-      click_button 'Save changes'
-
-      expect(page).to have_content 'Protected'
-    end
-
-    context 'when a runner has a tag', :js do
-      before do
-        project_runner.update!(tag_list: ['tag'])
-      end
-
-      it 'user edits runner to not run untagged jobs' do
-        visit project_runners_path(project)
-
-        within_testid 'assigned_project_runners' do
-          first('[data-testid="edit-runner-link"]').click
-        end
-
-        expect(page.find_field('run-untagged')).to be_checked
-
-        uncheck 'run-untagged'
-        click_button 'Save changes'
-
-        expect(page).not_to have_content 'Runs untagged jobs'
-      end
-    end
-
-    context 'when a instance runner is activated on the project' do
-      let!(:shared_runner) { create(:ci_runner, :instance) }
-
-      it 'user sees CI/CD setting page' do
-        visit project_runners_path(project)
-
-        within_testid 'available-shared-runners' do
-          expect(page).to have_content(shared_runner.display_name)
-        end
-      end
-
-      context 'when multiple instance runners are configured' do
-        let_it_be(:shared_runner_2) { create(:ci_runner, :instance) }
-
-        it 'shows the runner count' do
-          visit project_runners_path(project)
-
-          within_testid 'available-shared-runners' do
-            within_testid 'crud-title' do
-              expect(page).to have_content _('Instance runners')
-            end
-            within_testid 'crud-count' do
-              expect(page).to have_content 2
-            end
-          end
-        end
-
-        it 'adds pagination to the instance runner list' do
-          stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
-
-          visit project_runners_path(project)
-
-          within_testid 'available-shared-runners' do
-            expect(find('.gl-pagination')).not_to be_nil
-          end
-        end
-      end
-    end
-
-    context 'when multiple project runners are configured' do
-      let!(:project_runner_2) { create(:ci_runner, :project, projects: [project]) }
-
-      it 'adds pagination to the runner list' do
-        stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
-
-        visit project_runners_path(project)
-
-        expect(find('.gl-pagination')).not_to be_nil
-      end
-    end
-  end
-
-  context 'when a project runner exists in another project' do
-    let_it_be(:another_project) { create(:project, maintainers: user, organization: project.organization) }
-    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
-
-    it 'user enables and disables a project runner' do
-      visit project_runners_path(project)
-
-      within_testid 'available_project_runners' do
-        click_on 'Enable for this project'
-      end
-
-      expect(find_by_testid('assigned_project_runners')).to have_content(project_runner.display_name)
-
-      within_testid 'assigned_project_runners' do
-        click_on 'Disable for this project'
-      end
-
-      expect(find_by_testid('available_project_runners')).to have_content(project_runner.display_name)
-    end
-  end
-
-  context 'with instance runner text' do
-    context 'when application settings have shared_runners_text' do
-      let(:shared_runners_text) { 'custom **instance** runners description' }
-      let(:shared_runners_html) { 'custom instance runners description' }
-
-      before do
-        stub_application_setting(shared_runners_text: shared_runners_text)
-      end
-
-      it 'user sees instance runners description' do
-        visit project_runners_path(project)
-
-        within_testid('available-shared-runners') do
-          expect(page).not_to have_content('The same instance runner executes code from multiple projects')
-          expect(page).to have_content(shared_runners_html)
-        end
-      end
-    end
-
-    context 'when application settings have an unsafe link in shared_runners_text' do
-      let(:shared_runners_text) { '<a href="javascript:alert(\'xss\')">link</a>' }
-
-      before do
-        stub_application_setting(shared_runners_text: shared_runners_text)
-      end
-
-      it 'user sees no link' do
-        visit project_runners_path(project)
-
-        within_testid('shared-runners-description') do
-          expect(page).to have_content('link')
-          expect(page).not_to have_link('link')
-        end
-      end
-    end
-
-    context 'when application settings have an unsafe image in shared_runners_text' do
-      let(:shared_runners_text) { '<img src="404.png" onerror="alert(\'xss\')"/>' }
-
-      before do
-        stub_application_setting(shared_runners_text: shared_runners_text)
-      end
-
-      it 'user sees image safely' do
-        visit project_runners_path(project)
-
-        within_testid('shared-runners-description') do
-          expect(page).to have_css('img')
-          expect(page).not_to have_css('img[onerror]')
-        end
+      within_runner_row(project_2_runner.id) do
+        expect(page).to have_content(project_2_runner.short_sha)
+        expect(page).to have_button('Unassign from project')
       end
     end
   end
 
   context 'when updating a runner' do
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
     before do
       visit edit_project_runner_path(project, project_runner)
     end
@@ -236,6 +80,226 @@ RSpec.describe 'Maintainer manages project runners', feature_category: :fleet_vi
     it_behaves_like 'submits edit runner form' do
       let(:runner) { project_runner }
       let(:runner_page_path) { project_runner_path(project, project_runner) }
+    end
+  end
+
+  context 'when vue_project_runners_settings is disabled' do
+    let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+    before do
+      stub_feature_flags(vue_project_runners_settings: false)
+    end
+
+    context 'when a project_type runner is activated on the project' do
+      let_it_be(:project_runner_manager) do
+        create(:ci_runner_machine, runner: project_runner, platform: 'darwin')
+      end
+
+      it 'user sees the project runner', :js do
+        visit project_runners_path(project)
+
+        within_testid 'assigned_project_runners' do
+          expect(page).to have_content(project_runner.display_name)
+        end
+
+        click_on project_runner.short_sha
+
+        wait_for_requests
+
+        expect(page).to have_content(project_runner.description)
+      end
+
+      it 'user can pause and resume the project runner' do
+        visit project_runners_path(project)
+
+        within_testid 'assigned_project_runners' do
+          expect(page).to have_link('Pause')
+        end
+
+        click_on 'Pause'
+
+        within_testid 'assigned_project_runners' do
+          expect(page).to have_link('Resume')
+        end
+
+        click_on 'Resume'
+
+        within_testid 'assigned_project_runners' do
+          expect(page).to have_link('Pause')
+        end
+      end
+
+      it 'user removes an activated project runner if this is last project for that runners' do
+        visit project_runners_path(project)
+
+        within_testid 'assigned_project_runners' do
+          click_on 'Delete runner'
+        end
+
+        expect(page).not_to have_content(project_runner.display_name)
+      end
+
+      it 'user edits runner to set it as protected', :js do
+        visit project_runners_path(project)
+
+        within_testid 'assigned_project_runners' do
+          first('[data-testid="edit-runner-link"]').click
+        end
+
+        expect(page.find_field('protected')).not_to be_checked
+
+        check 'protected'
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Protected'
+      end
+
+      context 'when a runner has a tag', :js do
+        before do
+          project_runner.update!(tag_list: ['tag'])
+        end
+
+        it 'user edits runner to not run untagged jobs' do
+          visit project_runners_path(project)
+
+          within_testid 'assigned_project_runners' do
+            first('[data-testid="edit-runner-link"]').click
+          end
+
+          expect(page.find_field('run-untagged')).to be_checked
+
+          uncheck 'run-untagged'
+          click_button 'Save changes'
+
+          expect(page).not_to have_content 'Runs untagged jobs'
+        end
+      end
+
+      context 'when a instance runner is activated on the project' do
+        let!(:shared_runner) { create(:ci_runner, :instance) }
+
+        it 'user sees CI/CD setting page' do
+          visit project_runners_path(project)
+
+          within_testid 'available-shared-runners' do
+            expect(page).to have_content(shared_runner.display_name)
+          end
+        end
+
+        context 'when multiple instance runners are configured' do
+          let_it_be(:shared_runner_2) { create(:ci_runner, :instance) }
+
+          it 'shows the runner count' do
+            visit project_runners_path(project)
+
+            within_testid 'available-shared-runners' do
+              within_testid 'crud-title' do
+                expect(page).to have_content _('Instance runners')
+              end
+              within_testid 'crud-count' do
+                expect(page).to have_content 2
+              end
+            end
+          end
+
+          it 'adds pagination to the instance runner list' do
+            stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+
+            visit project_runners_path(project)
+
+            within_testid 'available-shared-runners' do
+              expect(find('.gl-pagination')).not_to be_nil
+            end
+          end
+        end
+      end
+
+      context 'when multiple project runners are configured' do
+        let!(:project_runner_2) { create(:ci_runner, :project, projects: [project]) }
+
+        it 'adds pagination to the runner list' do
+          stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+
+          visit project_runners_path(project)
+
+          expect(find('.gl-pagination')).not_to be_nil
+        end
+      end
+    end
+
+    context 'when a project runner exists in another project' do
+      let_it_be(:another_project) { create(:project, maintainers: user, organization: project.organization) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
+
+      it 'user enables and disables a project runner' do
+        visit project_runners_path(project)
+
+        within_testid 'available_project_runners' do
+          click_on 'Enable for this project'
+        end
+
+        expect(find_by_testid('assigned_project_runners')).to have_content(project_runner.display_name)
+
+        within_testid 'assigned_project_runners' do
+          click_on 'Disable for this project'
+        end
+
+        expect(find_by_testid('available_project_runners')).to have_content(project_runner.display_name)
+      end
+    end
+
+    context 'with instance runner text' do
+      context 'when application settings have shared_runners_text' do
+        let(:shared_runners_text) { 'custom **instance** runners description' }
+        let(:shared_runners_html) { 'custom instance runners description' }
+
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees instance runners description' do
+          visit project_runners_path(project)
+
+          within_testid('available-shared-runners') do
+            expect(page).not_to have_content('The same instance runner executes code from multiple projects')
+            expect(page).to have_content(shared_runners_html)
+          end
+        end
+      end
+
+      context 'when application settings have an unsafe link in shared_runners_text' do
+        let(:shared_runners_text) { '<a href="javascript:alert(\'xss\')">link</a>' }
+
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees no link' do
+          visit project_runners_path(project)
+
+          within_testid('shared-runners-description') do
+            expect(page).to have_content('link')
+            expect(page).not_to have_link('link')
+          end
+        end
+      end
+
+      context 'when application settings have an unsafe image in shared_runners_text' do
+        let(:shared_runners_text) { '<img src="404.png" onerror="alert(\'xss\')"/>' }
+
+        before do
+          stub_application_setting(shared_runners_text: shared_runners_text)
+        end
+
+        it 'user sees image safely' do
+          visit project_runners_path(project)
+
+          within_testid('shared-runners-description') do
+            expect(page).to have_css('img')
+            expect(page).not_to have_css('img[onerror]')
+          end
+        end
+      end
     end
   end
 end

@@ -44,7 +44,6 @@ RSpec.shared_examples 'a timebox' do |timebox_type|
 
   describe "Associations" do
     it { is_expected.to have_many(:issues) }
-    it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:labels).through(:issues) }
   end
 

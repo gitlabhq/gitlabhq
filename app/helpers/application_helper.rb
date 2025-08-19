@@ -225,16 +225,6 @@ module ApplicationHelper
   end
 
   # This needs to be used outside of Rails
-  def self.promo_host
-    'about.gitlab.com'
-  end
-
-  # Convenient method for Rails helper
-  def promo_host
-    ApplicationHelper.promo_host
-  end
-
-  # This needs to be used outside of Rails
   def self.community_forum
     'https://forum.gitlab.com'
   end
@@ -244,16 +234,8 @@ module ApplicationHelper
     ApplicationHelper.community_forum
   end
 
-  def self.promo_url
-    "https://#{promo_host}"
-  end
-
-  def promo_url
-    ApplicationHelper.promo_url
-  end
-
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/get-help/"
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url(path: '/get-help/')
   end
 
   def instance_review_permitted?
@@ -325,7 +307,7 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names << 'with-header' if @with_header || !current_user
+    class_names << 'with-header' if @with_header || !current_user || Feature.enabled?(:global_topbar, current_user)
     class_names << system_message_class
 
     class_names
@@ -480,19 +462,25 @@ module ApplicationHelper
   def autocomplete_data_sources(object, noteable_type)
     return {} unless object && noteable_type
 
+    extensible_reference_filters_enabled = Feature.enabled?(:extensible_reference_filters, Feature.current_request)
+
     if object.is_a?(Group)
       {
         members: members_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_group_autocomplete_sources_path(object),
+        issuesAlternative: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
+        workItems: extensible_reference_filters_enabled ? issues_group_autocomplete_sources_path(object) : nil,
         mergeRequests: merge_requests_group_autocomplete_sources_path(object),
         labels: labels_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_group_autocomplete_sources_path(object),
         commands: commands_group_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
-      }
+      }.compact
     else
       {
         members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         issues: issues_project_autocomplete_sources_path(object),
+        issuesAlternative: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
+        workItems: extensible_reference_filters_enabled ? issues_project_autocomplete_sources_path(object) : nil,
         mergeRequests: merge_requests_project_autocomplete_sources_path(object),
         labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         milestones: milestones_project_autocomplete_sources_path(object),
@@ -500,7 +488,7 @@ module ApplicationHelper
         snippets: snippets_project_autocomplete_sources_path(object),
         contacts: contacts_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
         wikis: object.feature_available?(:wiki, current_user) ? wikis_project_autocomplete_sources_path(object) : nil
-      }
+      }.compact
     end
   end
 

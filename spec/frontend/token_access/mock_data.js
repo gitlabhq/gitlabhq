@@ -164,48 +164,6 @@ export const inboundJobTokenScopeDisabledResponse = {
   },
 };
 
-export const inboundGroupsAndProjectsWithScopeResponse = (hasAutopopulatedEntries = true) => ({
-  data: {
-    project: {
-      __typename: 'Project',
-      id: 1,
-      ciJobTokenScope: {
-        __typename: 'CiJobTokenScopeType',
-        inboundAllowlist: {
-          __typename: 'CiJobTokenAccessibleProjectConnection',
-          nodes: [
-            {
-              __typename: 'CiJobTokenAccessibleProject',
-              fullPath: 'root/ci-project',
-              id: 'gid://gitlab/Project/23',
-              name: 'ci-project',
-              avatarUrl: '',
-              webUrl: 'http://localhost/root/ci-project',
-            },
-          ],
-        },
-        groupsAllowlist: {
-          __typename: 'CiJobTokenAccessibleGroupConnection',
-          nodes: [
-            {
-              __typename: 'CiJobTokenAccessibleGroup',
-              fullPath: 'root/ci-group',
-              id: 'gid://gitlab/Group/45',
-              name: 'ci-group',
-              avatarUrl: '',
-              webUrl: 'http://localhost/root/ci-group',
-            },
-          ],
-        },
-        groupAllowlistAutopopulatedIds: hasAutopopulatedEntries ? ['gid://gitlab/Group/45'] : [],
-        inboundAllowlistAutopopulatedIds: hasAutopopulatedEntries
-          ? ['gid://gitlab/Project/23']
-          : [],
-      },
-    },
-  },
-});
-
 export const getSaveNamespaceHandler = (error) =>
   jest.fn().mockResolvedValue({
     data: { saveNamespace: { errors: error ? [error] : [] } },
@@ -271,7 +229,7 @@ export const mockAuthLogsCountResponse = (count) => ({
   },
 });
 
-export const mockCiJobTokenScopeAllowlistResponse = {
+export const mockCiJobTokenScopeAllowlistResponse = (hasAutopopulatedEntries = true) => ({
   data: {
     project: {
       id: 'gid://gitlab/Project/26',
@@ -285,7 +243,7 @@ export const mockCiJobTokenScopeAllowlistResponse = {
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: true,
+              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Group/4',
                 name: 'zed',
@@ -303,7 +261,7 @@ export const mockCiJobTokenScopeAllowlistResponse = {
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: true,
+              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Project/23',
                 name: 'your-repo',
@@ -317,7 +275,7 @@ export const mockCiJobTokenScopeAllowlistResponse = {
             {
               defaultPermissions: true,
               jobTokenPolicies: [],
-              autopopulated: true,
+              autopopulated: hasAutopopulatedEntries,
               target: {
                 id: 'gid://gitlab/Project/14',
                 name: 'abc123',
@@ -333,7 +291,7 @@ export const mockCiJobTokenScopeAllowlistResponse = {
       },
     },
   },
-};
+});
 
 export const mockAuthLogsResponse = (hasNextPage = false) => ({
   data: {
@@ -386,3 +344,134 @@ export const mockRemoveAutopopulatedEntriesResponse = ({ errorMessage } = {}) =>
     },
   },
 });
+
+export const POLICIES_BY_RESOURCE = [
+  {
+    resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_DEPLOYMENTS',
+        text: 'Read',
+        resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+      },
+      {
+        value: 'ADMIN_DEPLOYMENTS',
+        text: 'Read and write',
+        resource: { value: 'DEPLOYMENTS', text: 'Deployments' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_ENVIRONMENTS',
+        text: 'Read',
+        resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+      },
+      {
+        value: 'ADMIN_ENVIRONMENTS',
+        text: 'Read and write',
+        resource: { value: 'ENVIRONMENTS', text: 'Environments' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'JOBS', text: 'Jobs' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_JOBS',
+        text: 'Read',
+        resource: { value: 'JOBS', text: 'Jobs' },
+      },
+      {
+        value: 'ADMIN_JOBS',
+        text: 'Read and write',
+        resource: { value: 'JOBS', text: 'Jobs' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'PACKAGES', text: 'Packages' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_PACKAGES',
+        text: 'Read',
+        resource: { value: 'PACKAGES', text: 'Packages' },
+      },
+      {
+        value: 'ADMIN_PACKAGES',
+        text: 'Read and write',
+        resource: { value: 'PACKAGES', text: 'Packages' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'PIPELINES', text: 'Pipelines' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_PIPELINES',
+        text: 'Read',
+        resource: { value: 'PIPELINES', text: 'Pipelines' },
+      },
+      {
+        value: 'ADMIN_PIPELINES',
+        text: 'Read and write',
+        resource: { value: 'PIPELINES', text: 'Pipelines' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'RELEASES', text: 'Releases' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_RELEASES',
+        text: 'Read',
+        resource: { value: 'RELEASES', text: 'Releases' },
+      },
+      {
+        value: 'ADMIN_RELEASES',
+        text: 'Read and write',
+        resource: { value: 'RELEASES', text: 'Releases' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'SECURE_FILES', text: 'Secure files' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_SECURE_FILES',
+        text: 'Read',
+        resource: { value: 'SECURE_FILES', text: 'Secure files' },
+      },
+      {
+        value: 'ADMIN_SECURE_FILES',
+        text: 'Read and write',
+        resource: { value: 'SECURE_FILES', text: 'Secure files' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_TERRAFORM_STATE',
+        text: 'Read',
+        resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+      },
+      {
+        value: 'ADMIN_TERRAFORM_STATE',
+        text: 'Read and write',
+        resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+      },
+    ],
+  },
+];

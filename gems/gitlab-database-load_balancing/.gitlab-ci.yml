@@ -2,3 +2,13 @@ include:
   - local: gems/gem-pg.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-database-load_balancing"
+
+variables:
+  BUNDLE_GEMFILE: 'Gemfile'
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "rails-next" || $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-with-rails-next/'
+      variables:
+        BUNDLE_GEMFILE: 'Gemfile.next'
+    - when: always

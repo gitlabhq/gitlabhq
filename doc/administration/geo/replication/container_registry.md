@@ -90,6 +90,9 @@ To be able to replicate new container images, the container registry must send n
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
+   # Configure the registry to listen on the public/internal interface
+   # Replace with the appropriate interface (for example, '0.0.0.0' for all interfaces)
+   registry['registry_http_addr'] = '0.0.0.0:5000'
    registry['notifications'] = [
      {
        'name' => 'geo_event',
@@ -177,7 +180,7 @@ For each application and Sidekiq node on the **secondary** site:
 To verify container registry replication is working, on the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Nodes**.
+1. Select **Geo** > **Nodes**.
    The initial replication, or "backfill", is probably still in progress.
 
 You can monitor the synchronization process on each Geo site from the **primary** site's **Geo Nodes** dashboard in your browser.
@@ -235,7 +238,7 @@ To resolve this issue:
 To help with troubleshooting, you can manually trigger the container registry replication process:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. In **Replication Details** for a **Secondary Site**, select **Container Repositories**.
 1. Select **Resync** for one row, or **Resync all**.
 

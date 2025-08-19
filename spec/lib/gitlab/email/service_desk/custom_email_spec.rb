@@ -5,10 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :service_desk do
   let_it_be(:project) { create(:project) }
 
-  let(:reply_key) { 'b7721fc7e8419911a8bea145236a0519' }
+  let(:sent_notification) { create(:sent_notification, project: project) }
+  let(:reply_key) { sent_notification.partitioned_reply_key }
   let(:custom_email) { 'support@example.com' }
   let(:custom_email_with_verification_subaddress) { 'support+verify@example.com' }
-  let(:email_with_reply_key) { 'support+b7721fc7e8419911a8bea145236a0519@example.com' }
+  let(:email_with_reply_key) { "support+#{reply_key}@example.com" }
   let(:project_mail_key) { ::ServiceDesk::Emails.new(project).default_subaddress_part }
 
   before do
@@ -64,7 +65,13 @@ RSpec.describe Gitlab::Email::ServiceDesk::CustomEmail, feature_category: :servi
           setting.update!(custom_email: 'support@example.com', custom_email_enabled: true)
         end
 
-        it { is_expected.to eq reply_key }
+        it { is_expected.to eq(reply_key) }
+
+        context 'when a legacy reply_key is used' do
+          let(:reply_key) { sent_notification.reply_key }
+
+          it { is_expected.to eq(reply_key) }
+        end
       end
     end
 

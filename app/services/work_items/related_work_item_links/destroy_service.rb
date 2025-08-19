@@ -93,5 +93,3 @@ module WorkItems
     end
   end
 end
-
-WorkItems::RelatedWorkItemLinks::DestroyService.prepend_mod_with('WorkItems::RelatedWorkItemLinks::DestroyService')

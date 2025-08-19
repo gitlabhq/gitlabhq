@@ -153,9 +153,7 @@ describe('Metric image details modal', () => {
     });
 
     it('should display a modal description', () => {
-      const description = wrapper.findComponent(
-        '[data-testid="metric-image-details-modal-description"]',
-      );
+      const description = wrapper.find('[data-testid="metric-image-details-modal-description"]');
 
       expect(description.text()).toBe(
         "Add text or a link to display with your image. If you don't add either, the file name displays instead.",

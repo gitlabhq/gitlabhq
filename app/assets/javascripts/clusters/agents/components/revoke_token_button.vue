@@ -71,7 +71,7 @@ export default {
     },
     modalId() {
       return sprintf(REVOKE_TOKEN_MODAL_ID, {
-        tokenName: this.token.name,
+        tokenId: this.token.id,
       });
     },
     primaryModalProps() {

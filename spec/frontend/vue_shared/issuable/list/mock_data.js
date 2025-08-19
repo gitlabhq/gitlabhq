@@ -69,6 +69,37 @@ export const mockIssuable = {
   },
 };
 
+export const mockDraftIssuable = {
+  id: '1',
+  iid: '30',
+  title: 'Dismiss Cipher with no integrity',
+  titleHtml: 'Dismiss Cipher with no integrity',
+  description: 'fortitudinis _fomentis_ dolor mitigari solet.',
+  descriptionHtml: 'fortitudinis <i>fomentis</i> dolor mitigari solet.',
+  state: 'opened',
+  draft: true,
+  createdAt: '2020-06-29T13:52:56Z',
+  updatedAt: '2020-09-10T11:41:13Z',
+  webUrl: 'http://0.0.0.0:3000/gitlab-org/gitlab-shell/-/issues/30',
+  blocked: false,
+  confidential: false,
+  author: mockAuthor,
+  labels: {
+    nodes: mockLabels,
+  },
+  assignees: [mockAuthor],
+  userDiscussionsCount: 2,
+  taskCompletionStatus: {
+    count: 2,
+    completedCount: 1,
+  },
+  type: 'merge_request',
+  __typename: 'MergeRequest',
+  namespace: {
+    fullPath: 'gitlab-org/gitlab-shell',
+  },
+};
+
 export const mockIssuableItems = (n) =>
   [...Array(n).keys()].map((i) => ({
     id: i,

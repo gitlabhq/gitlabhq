@@ -24,16 +24,6 @@ export default {
       required: false,
       default: false,
     },
-    handleMouseOver: {
-      type: Function,
-      required: false,
-      default: () => {},
-    },
-    handleMouseLeave: {
-      type: Function,
-      required: false,
-      default: () => {},
-    },
   },
   computed: {
     id() {

@@ -198,7 +198,7 @@ following these rules:
 - Slash (`/`) is replaced with double underscores (`__`) and the primary alias
   is created.
 - Slash (`/`) is replaced with a single dash (`-`) and the secondary alias is
-  created (requires GitLab Runner v1.1.0 or later).
+  created.
 
 To override the default behavior, you can
 [specify one or more service aliases](#available-settings-for-services).
@@ -452,20 +452,20 @@ In addition to the `build` and `helper` containers, six more containers are crea
 - `svc-0` should refer to the container with the `alpine:3.21` image (`alpine` and `alpine-edge`
   aliases being already used for the previous containers).
 
-> - The `i` in the `svc-i` pattern does not indicate the service's position in the provided list.
->   Instead, it represents the service's position when no available alias is found.
->
-> - When an invalid alias is provided (doesn't meet Kubernetes constraint), the job fails with the
->   following error (example with the alias `alpine_edge`). This failure occurs because aliases are
->   also used to create local DNS entries on the job Pod.
->
->   ```plaintext
->   ERROR: Job failed (system failure): prepare environment: setting up build pod: provided host alias
->   alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
->   case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
->   'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
->   Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
->   ```
+  - The `i` in the `svc-i` pattern does not indicate the service's position in the provided list.
+    Instead, it represents the service's position when no available alias is found.
+
+  - When an invalid alias is provided (doesn't meet Kubernetes constraint), the job fails with the
+    following error (example with the alias `alpine_edge`). This failure occurs because aliases are
+    also used to create local DNS entries on the job Pod.
+
+    ```plaintext
+    ERROR: Job failed (system failure): prepare environment: setting up build pod: provided host alias
+    alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
+    case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
+    'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
+    Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
+    ```
 
 ## Using `services` with `docker run` (Docker-in-Docker) side-by-side
 
@@ -495,7 +495,7 @@ access-service:
 For this solution to work, you must:
 
 - Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
-- [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
+- [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-docker-socket-binding).
   If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
 
 ## How Docker integration works

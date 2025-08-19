@@ -469,19 +469,24 @@ table.code {
         }
       }
 
-      &:not(.js-unfold-bottom) a::before {
-        content: attr(data-linenumber);
-        height: 24px;
-        min-width: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: end;
-        position: absolute;
-        top: 50%;
-        right: 0;
-        padding-inline: 10px;
-        transform: translateY(-50%);
+      &:not(.js-unfold-bottom) a {
+        position: relative;
+
+        &::before {
+          // do not position this element absolutely, otherwise empty lines will collapse
+          content: attr(data-linenumber);
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: -5px;
+          right: -10px;
+        }
       }
+
     }
 
     &.line_content {

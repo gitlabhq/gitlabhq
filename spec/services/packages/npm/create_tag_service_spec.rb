@@ -20,6 +20,14 @@ RSpec.describe Packages::Npm::CreateTagService, feature_category: :package_regis
 
     context 'with no existing tag name' do
       it_behaves_like 'it creates the tag'
+
+      context 'with packages_tags_finder_use_packages_class feature flag disabled' do
+        before do
+          stub_feature_flags(packages_tags_finder_use_packages_class: false)
+        end
+
+        it_behaves_like 'it creates the tag'
+      end
     end
 
     context 'with exisiting tag name' do
@@ -27,12 +35,6 @@ RSpec.describe Packages::Npm::CreateTagService, feature_category: :package_regis
 
       context 'on package with different name' do
         let!(:package2) { create(:npm_package, project: package.project) }
-
-        it_behaves_like 'it creates the tag'
-      end
-
-      context 'on different package type' do
-        let!(:package2) { create(:conan_package, project: package.project, name: 'conan_package_name', version: package.version) }
 
         it_behaves_like 'it creates the tag'
       end

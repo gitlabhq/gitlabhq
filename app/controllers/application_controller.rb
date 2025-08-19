@@ -439,13 +439,6 @@ class ApplicationController < BaseActionController
     Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
-  # U2F (universal 2nd factor) devices need a unique identifier for the application
-  # to perform authentication.
-  # https://developers.yubico.com/U2F/App_ID.html
-  def u2f_app_id
-    request.base_url
-  end
-
   def set_current_context(&block)
     # even though feature_category is pre-populated by
     # Gitlab::Middleware::ActionControllerStaticContext
@@ -548,15 +541,11 @@ class ApplicationController < BaseActionController
     auth_user if strong_memoized?(:auth_user)
   end
 
-  def set_current_organization
-    return if ::Current.organization_assigned
-
-    ::Current.organization = Gitlab::Current::Organization.new(
-      params: params.permit(
-        :controller, :namespace_id, :group_id, :id, :organization_path
-      ),
-      user: current_user
-    ).organization
+  # Used by `set_current_organization` in BaseActionController
+  def organization_params
+    params.permit(
+      :controller, :namespace_id, :group_id, :id, :organization_path
+    )
   end
 end
 

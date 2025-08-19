@@ -3,6 +3,7 @@ stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Terraform state administration
+description: Administer Terraform state storage.
 ---
 
 {{< details >}}
@@ -279,7 +280,7 @@ The following database table helps trace the S3 path back to specific projects:
 The state files are stored in a specific directory structure, where:
 
 - The first three segments of the path are derived from the SHA-2 hash value of the project ID.
-- Each state has a UUID stored on the `terraform_states` database table that forms part of the path.  
+- Each state has a UUID stored on the `terraform_states` database table that forms part of the path.
 
 For example, for a project where the:
 

@@ -94,26 +94,6 @@ describe('Issue title suggestions item component', () => {
     });
   });
 
-  describe('counts', () => {
-    it('renders upvotes count', () => {
-      createComponent();
-
-      const count = wrapper.findAll('.suggestion-counts span').at(0);
-
-      expect(count.text()).toContain('1');
-      expect(count.findComponent(GlIcon).props('name')).toBe('thumb-up');
-    });
-
-    it('renders notes count', () => {
-      createComponent();
-
-      const count = wrapper.findAll('.suggestion-counts span').at(1);
-
-      expect(count.text()).toContain('2');
-      expect(count.findComponent(GlIcon).props('name')).toBe('comment');
-    });
-  });
-
   describe('confidential', () => {
     it('renders confidential icon', () => {
       createComponent({

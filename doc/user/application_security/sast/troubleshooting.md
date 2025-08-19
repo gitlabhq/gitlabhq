@@ -87,6 +87,21 @@ sast is used for configuration only, and its script should not be executed
 
 For information on this, see the [GitLab Secure troubleshooting section](../troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
+## Error: `An error occurred while creating the merge request`
+
+When attempting to enable SAST on a project by using the UI, the operation can fail with the warning:
+
+```plaintext
+An error occurred while creating the merge request.
+```
+
+This issue can occur because something prevents the branch being created for the merge request.
+When configuring SAST by using the UI, a branch with a numeric suffix is created, for example `set-sast-config-1`.
+Features such as a [push rule that validates branch names](../../project/repository/push_rules.md#validate-branch-names)
+may block the creation of the branch because of the naming format.
+
+To resolve this issue, edit the push rule so that it allows the branch naming format required by SAST.
+
 ## SAST jobs run unexpectedly
 
 The [SAST CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)

@@ -116,7 +116,7 @@ module Integrations
         end
 
         def retrieve_recipients
-          recipients.to_s.split(/[,\r\n ]+/).reject(&:empty?)
+          recipients.to_s.delete('<>').split(/[,\r\n ]+/).reject(&:empty?).grep(Devise.email_regexp)
         end
 
         private

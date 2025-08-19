@@ -76,3 +76,5 @@ export const DEFAULT_PAGINATION = {
   before: null,
   after: null,
 };
+
+export const BUILD_KIND = 'BUILD';

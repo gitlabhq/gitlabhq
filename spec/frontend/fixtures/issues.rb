@@ -120,8 +120,10 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :team_planning 
     query = get_graphql_query_as_string(issue_popover_query_path, ee: Gitlab.ee?)
 
     issue = create(
+      :work_item,
       :issue,
       project: project,
+      assignees: [user],
       confidential: true,
       created_at: Time.parse('2020-07-01T04:08:01Z'),
       due_date: Date.new(2020, 7, 5),

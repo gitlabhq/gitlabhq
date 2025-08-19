@@ -1,4 +1,4 @@
-import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
+import { engineeringNotation } from '@gitlab/ui/dist/utils/number_utils';
 import { s__ } from '~/locale';
 
 import {
@@ -24,6 +24,7 @@ export const SUPPORTED_FORMATS = {
   // Duration
   days: 'days',
   seconds: 'seconds',
+  minutes: 'minutes',
   milliseconds: 'milliseconds',
 
   // Digital (Metric)
@@ -68,6 +69,9 @@ export const getFormatter = (format = SUPPORTED_FORMATS.engineering) => {
   // Durations
   if (format === SUPPORTED_FORMATS.days) {
     return suffixFormatter(s__('Units|d'));
+  }
+  if (format === SUPPORTED_FORMATS.minutes) {
+    return suffixFormatter(s__('Units|m'));
   }
   if (format === SUPPORTED_FORMATS.seconds) {
     return suffixFormatter(s__('Units|s'));
@@ -176,6 +180,19 @@ export const percentHundred = getFormatter(SUPPORTED_FORMATS.percentHundred);
  * @param {String} options.unitSeparator - Separator between value and unit
  */
 export const days = getFormatter(SUPPORTED_FORMATS.days);
+
+/**
+ * Formats a number of minutes
+ *
+ * @function
+ * @param {Number} value - Number to format, `1` is rendered as `1m`
+ * @param {Object} options - Formatting options
+ * @param {Number} options.fractionDigits - number of precision decimals
+ * @param {Number} options.maxLength - Max length of formatted number
+ * if length is exceeded, exponential format is used.
+ * @param {String} options.unitSeparator - Separator between value and unit
+ */
+export const minutes = getFormatter(SUPPORTED_FORMATS.minutes);
 
 /**
  * Formats a number of seconds

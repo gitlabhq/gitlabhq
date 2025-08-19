@@ -23,10 +23,7 @@ describe('Packages Protection Rule Form', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
-    glFeatures: {
-      packagesProtectedPackagesDelete: true,
-      packagesProtectedPackagesHelm: true,
-    },
+    glFeatures: { packagesProtectedPackagesDelete: true },
   };
 
   const findPackageNamePatternInput = () =>
@@ -103,30 +100,6 @@ describe('Packages Protection Rule Form', () => {
           'NUGET',
           'PYPI',
         ]);
-      });
-
-      describe('when feature flag packagesProtectedPackagesHelm is disabled', () => {
-        it('contains available options without option "HELM"', () => {
-          mountComponent({
-            provide: {
-              ...defaultProvidedValues,
-              glFeatures: {
-                ...defaultProvidedValues.glFeatures,
-                packagesProtectedPackagesHelm: false,
-              },
-            },
-          });
-
-          expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual([
-            'CONAN',
-            'GENERIC',
-            'MAVEN',
-            'NPM',
-            'NUGET',
-            'PYPI',
-          ]);
-        });
       });
     });
 

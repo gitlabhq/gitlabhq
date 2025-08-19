@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Diff::ViewerHunk, feature_category: :code_review_workflow
 
   describe '#init_from_expanded_lines' do
     it 'returns empty array for empty lines' do
-      expect(described_class.init_from_expanded_lines([], false, 0)).to be_nil
+      expect(described_class.init_from_expanded_lines([], false, 0)).to eq([])
     end
 
     it 'returns an array with a single hunk' do

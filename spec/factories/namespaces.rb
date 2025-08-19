@@ -13,13 +13,9 @@ FactoryBot.define do
 
     after(:build) do |namespace, evaluator|
       namespace.organization ||= evaluator.parent&.organization ||
-        # The ordering of Organizations by created_at does not match ordering by the id column.
-        # This is because Organization::DEFAULT_ORGANIZATION_ID is 1, but in the specs the default
-        # organization may get created after another organization.
-        Organizations::Organization.where(visibility_level: Gitlab::VisibilityLevel::PUBLIC).order(:created_at).first ||
         # We create an organization next even though we are building here. We need to ensure
         # that an organization exists so other entities can belong to the same organization
-        create(:organization)
+        create(:common_organization)
     end
 
     after(:create) do |namespace, evaluator|

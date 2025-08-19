@@ -74,10 +74,6 @@ start-review-app-pipeline:
   resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: review
   needs:
-    - job: rails-production-server-boot-puma-example
-      optional: true
-    - job: rails-production-server-boot-puma-cng
-      optional: true
     - job: compile-production-assets
       artifacts: false
   # We do not want to have ALL global variables passed as trigger variables,

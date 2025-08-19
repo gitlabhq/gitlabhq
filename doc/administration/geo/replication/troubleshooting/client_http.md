@@ -22,7 +22,7 @@ requests redirected from the secondary to the primary site do not properly send 
 Authorization header. This may result in either an infinite `Authorization <-> Redirect`
 loop, or Authorization error messages.
 
-### Error: Net::ReadTimeout when pushing through SSH on a Geo secondary
+### Error: `Net::ReadTimeout` when pushing through SSH on a Geo secondary
 
 When you push large repositories through SSH on a Geo secondary site, you may encounter a timeout.
 This is because Rails proxies the push to the primary and has a 60 second default timeout,

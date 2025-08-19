@@ -17,7 +17,7 @@ module Gitlab
       private
 
       def with_redis(&block)
-        ::Gitlab::Redis::RateLimiting.with(&block) # rubocop: disable CodeReuse/ActiveRecord
+        ::Gitlab::Redis::RateLimiting.with_suppressed_errors(&block)
       end
     end
   end

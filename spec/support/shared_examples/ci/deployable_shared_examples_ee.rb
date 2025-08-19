@@ -29,6 +29,6 @@ RSpec.shared_examples 'a deployable job in EE' do
   end
 
   def factory_type
-    described_class.name.underscore.tr('/', '_')
+    ::Gitlab::Utils.param_key(described_class)
   end
 end

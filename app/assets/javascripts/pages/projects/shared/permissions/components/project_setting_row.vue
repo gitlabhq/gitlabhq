@@ -64,6 +64,7 @@ export default {
         ><a :href="helpPath" target="_blank">{{ __('Learn more') }}</a
         >.</span
       >
+      <slot v-else name="help-link"></slot>
     </div>
     <slot></slot>
   </gl-form-group>

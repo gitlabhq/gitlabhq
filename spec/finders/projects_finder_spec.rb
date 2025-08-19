@@ -176,7 +176,12 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
           end
 
           context 'when updated_after equals updated_before', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
-            let(:params) { { updated_after: internal_project.updated_at, updated_before: internal_project.updated_at } }
+            let_it_be(:updated_at) { internal_project.updated_at }
+            let(:params) { { updated_after: updated_at, updated_before: updated_at } }
+
+            before do
+              internal_project.update_columns(updated_at: updated_at)
+            end
 
             it 'allows an exact match' do
               expect(subject).to contain_exactly(internal_project)
@@ -321,7 +326,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
           end
 
           it 'does not perform search' do
-            is_expected.to eq([public_project_2, public_project])
+            is_expected.to match_array([public_project, public_project_2])
           end
         end
 
@@ -397,7 +402,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
 
       describe 'filter by archived' do
         let_it_be(:archived_project) { create(:project, :public, :archived, name: 'E', path: 'E') }
-        let_it_be(:archived_group_project) { create(:project, :public, group: create(:group, :archived)) }
+        let_it_be(:archived_group_project) { create(:project, :public, group: create(:group, :archived), name: 'C', path: 'C') }
 
         context 'non_archived=true' do
           let(:params) { { non_archived: true } }
@@ -414,7 +419,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         describe 'filter by archived only' do
           let(:params) { { archived: 'only' } }
 
-          it { is_expected.to eq([archived_project, archived_group_project]) }
+          it { is_expected.to match_array([archived_project, archived_group_project]) }
         end
 
         describe 'filter by archived for backward compatibility' do
@@ -658,7 +663,7 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
     end
 
-    describe 'without CTE flag enabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
+    describe 'with CTE flag disabled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/408387' do
       let(:use_cte) { false }
 
       it_behaves_like 'ProjectFinder#execute examples'

@@ -55,9 +55,16 @@ module Projects
         # Until we compare the inconsistency rates of the new specialized worker and
         # the old approach, we still run AuthorizedProjectsWorker
         # but with some delay and lower urgency as a safety net.
-        group_link.group.refresh_members_authorized_projects(
-          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        if Feature.enabled?(
+          :project_authorizations_update_in_background_for_group_shares,
+          group_link.group.root_ancestor
         )
+          AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(group_link.group.id)
+        else
+          group_link.group.refresh_members_authorized_projects(
+            priority: UserProjectAccessChangedService::LOW_PRIORITY
+          )
+        end
       end
 
       def requires_authorization_refresh?(params)

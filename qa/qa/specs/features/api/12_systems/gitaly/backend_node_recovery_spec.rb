@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Systems', product_group: :gitaly do
+  RSpec.describe 'Systems', feature_category: :gitaly do
     describe 'Gitaly backend node recovery', :orchestrated, :gitaly_cluster, :skip_live_env do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do

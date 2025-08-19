@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Download merge request patch and diff', :requires_admin, product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
+    describe 'Download merge request patch and diff', :requires_admin do
       let(:merge_request) do
         create(:merge_request, title: 'This is a merge request', description: '... for downloading patches and diffs')
       end

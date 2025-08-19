@@ -66,6 +66,8 @@ export const createContentEditor = ({
   const trackedExtensions = allExtensions.map(trackInputRulesAndShortcuts);
   const tiptapEditor = createTiptapEditor({ extensions: trackedExtensions, ...tiptapOptions });
 
+  autocompleteHelper.tiptapEditor = tiptapEditor;
+
   return new ContentEditor({
     tiptapEditor,
     serializer,

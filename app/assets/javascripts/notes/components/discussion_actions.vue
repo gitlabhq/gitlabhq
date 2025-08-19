@@ -28,6 +28,7 @@ export default {
       required: false,
       default: '',
     },
+    // eslint-disable-next-line vue/no-unused-properties -- shouldShowJumpToNextDiscussion is part of the component's public API.
     shouldShowJumpToNextDiscussion: {
       type: Boolean,
       required: true,

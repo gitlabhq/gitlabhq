@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'namespace Usage Quotas > Storage tab' do
+RSpec.shared_examples 'namespace Usage quotas > Storage tab' do
   context 'when directly accessed via a url' do
     before do
       visit storage_tab_url

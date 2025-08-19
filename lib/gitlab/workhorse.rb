@@ -20,7 +20,9 @@ module Gitlab
     include JwtAuthenticatable
 
     class << self
-      def git_http_ok(repository, repo_type, user, action, show_all_refs: false, need_audit: false)
+      def git_http_ok(
+        repository, repo_type, user, action, show_all_refs: false, need_audit: false,
+        authentication_context: {})
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         attrs = {
@@ -42,6 +44,10 @@ module Gitlab
             )
           }
         }
+
+        if authentication_context[:authentication_method] == :ci_job_token
+          attrs[:GlBuildID] = authentication_context[:authentication_method_id].to_s
+        end
 
         if repo_type == Gitlab::GlRepository::PROJECT
           project = repository.container

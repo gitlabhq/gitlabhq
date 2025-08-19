@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn how to build, track, and deliver the code for your project.
+description: Build, track, and deliver the code for your project.
 title: Get started managing code
 ---
 

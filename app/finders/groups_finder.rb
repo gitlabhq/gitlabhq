@@ -61,7 +61,7 @@ class GroupsFinder < UnionFinder
   def all_groups
     return [owned_groups] if params[:owned]
     return [groups_with_min_access_level] if min_access_level?
-    return [Group.all] if current_user&.can_read_all_resources? && all_available?
+    return [Group.all] if can_read_all_groups? && all_available?
 
     groups = [
       authorized_groups,
@@ -190,6 +190,15 @@ class GroupsFinder < UnionFinder
 
   def include_public_groups?
     current_user.nil? || all_available?
+  end
+
+  def can_read_all_groups?
+    return false unless current_user
+
+    # Auditors can :read_all_resources while admins can :read_all_resources and
+    # read_admin_groups. In EE, a regular user can read_admin_groups through
+    # custom admin roles.
+    current_user.can_read_all_resources? || current_user.can?(:read_admin_groups)
   end
 
   def all_available?

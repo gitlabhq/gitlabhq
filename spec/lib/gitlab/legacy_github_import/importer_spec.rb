@@ -3,15 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  include Import::GiteaHelper
-
   subject(:importer) { described_class.new(project) }
 
   let_it_be(:api_root) { 'https://try.gitea.io/api/v1' }
   let_it_be(:repo_root) { 'https://try.gitea.io' }
-  let_it_be(:project) do
+  let_it_be_with_reload(:project) do
     create(
-      :project, :repository, :wiki_disabled, :import_user_mapping_enabled,
+      :project, :repository, :wiki_disabled, :in_group,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
       import_url: "#{repo_root}/foo/group/project.git",
       import_type: ::Import::SOURCE_GITEA
     )
@@ -184,7 +183,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
 
     context 'with stages' do
       before do
-        allow(project).to receive(:import_data).and_return(double.as_null_object)
         allow(project).to receive_message_chain(:wiki, :repository_exists?).and_return(true)
         allow(importer).to receive(:fetch_resources).and_return(nil)
       end
@@ -219,8 +217,7 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
           stages_that_push_placeholder_references.length
         ).times.with(
           project.import_type,
-          project.import_state.id,
-          'current_user_id' => project.creator_id
+          project.import_state.id
         )
 
         importer.execute
@@ -254,9 +251,64 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
         })
       end
 
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'does not enqueue the worker to load placeholder references' do
+          expect(Import::LoadPlaceholderReferencesWorker).not_to receive(:perform_async)
+
+          importer.execute
+        end
+
+        it 'does not sleep' do
+          allow(store).to receive(:empty?).and_return(false)
+
+          expect(Kernel).not_to receive(:sleep)
+
+          importer.execute
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'loads placeholder references after each relevant stage' do
+            stages_that_push_placeholder_references = [
+              :import_pull_requests, :import_issues, :import_comments
+            ]
+
+            expect(::Import::LoadPlaceholderReferencesWorker).to receive(:perform_async).exactly(
+              stages_that_push_placeholder_references.length
+            ).times.with(
+              project.import_type,
+              project.import_state.id
+            )
+
+            importer.execute
+          end
+
+          it 'waits for the placeholder references to be loaded from the store without error' do
+            allow(store).to receive(:empty?).and_return(false, false, false, false, true)
+
+            expect(Kernel).to receive(:sleep).with(0.01).exactly(4).times
+
+            importer.execute
+
+            expect(Gitlab::Json.parse(project.import_state.last_error)).to be_nil
+          end
+        end
+      end
+
       context 'when user contribution mapping is disabled' do
         before do
-          stub_user_mapping_chain(project, false)
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         end
 
         it 'does not enqueue the worker to load placeholder references' do
@@ -277,8 +329,6 @@ RSpec.describe Gitlab::LegacyGithubImport::Importer, :clean_gitlab_redis_shared_
 
     context 'when an error occurs' do
       before do
-        allow(project).to receive(:import_data).and_return(double.as_null_object)
-
         allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
 
         allow_any_instance_of(Octokit::Client).to receive(:rate_limit!).and_raise(Octokit::NotFound)

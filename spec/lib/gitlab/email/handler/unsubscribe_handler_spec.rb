@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
   let(:user) { create(:user) }
   let(:noteable) { create(:issue, project: project) }
 
-  let!(:sent_notification) { SentNotification.record(noteable, user.id, mail_key) }
+  let!(:sent_notification) { SentNotification.record(noteable, user.id, { reply_key: mail_key }) }
 
   context "when email key" do
     let(:mail) { Mail::Message.new(email_raw) }
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
 
   context 'when notification concerns a commit' do
     let(:commit) { create(:commit, project: project) }
-    let!(:sent_notification) { SentNotification.record(commit, user.id, mail_key) }
+    let!(:sent_notification) { SentNotification.record(commit, user.id, { reply_key: mail_key }) }
 
     it 'handler does not raise an error' do
       expect { receiver.execute }.not_to raise_error

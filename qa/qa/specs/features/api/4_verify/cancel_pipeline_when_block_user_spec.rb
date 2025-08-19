@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :requires_admin, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :requires_admin, feature_category: :continuous_integration do
     describe 'When user is blocked' do
       let(:user) { create(:user).tap(&:create_personal_access_token!) }
       let(:admin_user) { Runtime::User::Store.admin_user }
 
       let(:project) { create(:project, name: 'project-for-canceled-schedule') }
-      let(:ref) { 'master' }
+      let(:ref) { 'brand-new-branch' }
 
       before do
         project.add_member(user, Resource::Members::AccessLevel::MAINTAINER)

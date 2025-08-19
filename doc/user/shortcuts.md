@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Personal Productivity
+stage: Growth
+group: Engagement
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab keyboard shortcuts
 description: Global shortcuts, navigation, and quick access.
@@ -48,6 +48,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/_index.md). |
+| <kbd>d</kbd>                       | Open GitLab Duo Chat |
 
 Additionally, the following shortcuts are available when editing text in text
 fields (for example, comments, replies, issue descriptions, and merge request
@@ -131,6 +132,8 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
 | <kbd>f</kbd>                      |                                   | Toggle file browser. |
 | <kbd>v</kbd>                      |                                   | Mark file as viewed or unviewed. |
+| <kbd>;</kbd>                      |                                   | Expand all files. |
+| <kbd>Shift</kbd> + <kbd>;</kbd>   |                                   | Collapse all files. |
 
 ### Project files
 

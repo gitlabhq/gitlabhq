@@ -7,6 +7,10 @@ module Mutations
         graphql_name 'CreateNote'
         description "Creates a Note.\n#{QUICK_ACTION_ONLY_WARNING}"
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         argument :discussion_id,
           ::Types::GlobalIDType[::Discussion],
           required: false,

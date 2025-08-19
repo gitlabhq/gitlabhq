@@ -37,8 +37,6 @@ const deploymentMockData = {
   name: 'review/diplo',
   url: '/root/review-apps/environments/15',
   stop_url: '/root/review-apps/environments/15/stop',
-  metrics_url: '/root/review-apps/environments/15/deployments/1/metrics',
-  metrics_monitoring_url: '/root/review-apps/environments/15/metrics',
   external_url: 'http://gitlab.com.',
   external_url_formatted: 'gitlab',
   deployed_at: '2017-03-22T22:44:42.258Z',

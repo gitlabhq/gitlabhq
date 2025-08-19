@@ -1,3 +1,5 @@
+- @main_wrapper_class =  "gl-@container/main" if @allow_main_container_query
+
 .layout-page{ class: page_with_sidebar_class }
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
@@ -11,49 +13,55 @@
   = render_if_exists "layouts/tanuki_bot_chat" if context
   = render_if_exists "layouts/session_expire_modal"
 
-  .content-wrapper{ class: "#{@content_wrapper_class}" }
-    -# Broadcast messages
-    .broadcast-wrapper
-      = dispensable_render_if_exists "shared/token_expiration_banner"
-      = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+  - if Feature.enabled?(:paneled_view, current_user)
+    .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-gap-3' }
+      .content-wrapper.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
+        -# Broadcast messages
+        .broadcast-wrapper
+          = dispensable_render_if_exists "shared/token_expiration_banner"
+          = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
-    -# Alerts
-    .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
-      = dispensable_render 'shared/outdated_browser'
-      = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
-      = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold_block_seat_overages"
-      -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
-      = dispensable_render_if_exists "layouts/header/account_notification"
-      = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
-      = dispensable_render "shared/projects/inactive_project_deletion_alert"
-      = dispensable_render "shared/projects/archived_alert"
-      = dispensable_render "layouts/header/read_only_banner"
-      = dispensable_render "layouts/header/registration_enabled_callout"
-      = dispensable_render "layouts/header/openssl_callout"
-      = dispensable_render "layouts/nav/classification_level_banner"
-      = yield :flash_message
-      = dispensable_render "shared/gitlab_version/security_patch_upgrade_alert"
-      = dispensable_render "shared/service_ping_consent"
-      = yield :group_invite_members_banner
-      = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
-      = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
-      = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
-      = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
-      = dispensable_render_if_exists "shared/silent_mode_banner"
-      = dispensable_render_if_exists "shared/pipl_compliance_alert"
-      = dispensable_render_if_exists "shared/compromised_password_detection_alert"
-      = yield :page_level_alert
+        = render 'layouts/alerts', alert_class: alert_class, context: context
 
-    -# Top bar
-    - unless @hide_top_bar
-      = render "layouts/nav/top_bar"
+        -# Top bar
+        - unless @hide_top_bar
+          = render "layouts/nav/top_bar", paneled_view: true
 
-    %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-      %main.content{ id: "content-body", **page_itemtype }
-        = render "layouts/flash" unless @hide_flash
-        = yield :after_flash_content
-        = yield :before_content
-        = yield
-    = yield :after_content
-    -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
-    = render_if_exists "shared/footer/global_footer"
+        %div{ class: "#{container_class unless @no_container} #{@content_class}" }
+          %main.content{ id: "content-body", class: "gl-@container/main", **page_itemtype }
+            = render "layouts/flash" unless @hide_flash
+            = yield :after_flash_content
+            = yield :before_content
+            = yield
+        = yield :after_content
+        -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+        = render_if_exists "shared/footer/global_footer"
+
+
+      #contextual-panel-portal.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-rounded-lg.gl-bg-default.empty:gl-hidden{ class: 'gl-@container' }
+
+      .paneled-view
+        #duo-chat-panel
+
+  - else
+    .content-wrapper{ class: "#{@content_wrapper_class}" }
+      -# Broadcast messages
+      .broadcast-wrapper
+        = dispensable_render_if_exists "shared/token_expiration_banner"
+        = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+
+      = render 'layouts/alerts', alert_class: alert_class, context: context
+
+      -# Top bar
+      - unless @hide_top_bar
+        = render "layouts/nav/top_bar", paneled_view: false
+
+      %div{ class: "#{container_class unless @no_container} #{@content_class}" }
+        %main.content{ id: "content-body", **page_itemtype, class: @main_wrapper_class }
+          = render "layouts/flash" unless @hide_flash
+          = yield :after_flash_content
+          = yield :before_content
+          = yield
+      = yield :after_content
+      -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+      = render_if_exists "shared/footer/global_footer"

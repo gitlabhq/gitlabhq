@@ -12,22 +12,24 @@ module Namespaces
 
       override :self_and_descendant_ids
       def self_and_descendant_ids(skope: self.class)
-        # Cache only works for descendants
-        # of the same type as the caller.
-        return super unless skope == self.class
-        return super unless attempt_to_use_cached_data?
+        column_name = if skope == Namespace
+                        :self_and_descendant_ids
+                      elsif skope == self.class
+                        # Group_ids is a bit misleading because skope can be ProjectNamespace too.
+                        :self_and_descendant_group_ids
+                      end
+
+        return super unless column_name
 
         scope_with_cached_ids(
           super,
           skope,
-          Namespaces::Descendants.arel_table[:self_and_descendant_group_ids]
+          Namespaces::Descendants.arel_table[column_name]
         )
       end
 
       override :all_project_ids
       def all_project_ids
-        return super unless attempt_to_use_cached_data?
-
         scope_with_cached_ids(
           all_projects.select(:id),
           Project,
@@ -37,8 +39,6 @@ module Namespaces
 
       override :all_unarchived_project_ids
       def all_unarchived_project_ids
-        return super unless attempt_to_use_cached_data?
-
         scope_with_cached_ids(
           all_projects.self_and_ancestors_non_archived.select(:id),
           Project,
@@ -74,10 +74,6 @@ module Namespaces
           .from(from)
           .unscope(where: :type)
           .select(:id)
-      end
-
-      def attempt_to_use_cached_data?
-        Feature.enabled?(:group_hierarchy_optimization, self, type: :beta)
       end
 
       override :sync_traversal_ids

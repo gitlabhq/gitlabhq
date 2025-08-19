@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_container_registry_upstreams
+classes:
+  - VirtualRegistries::Container::RegistryUpstream
+feature_categories:
+  - virtual_registry
+description: Link a Container Registry with an Upstream.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195984
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

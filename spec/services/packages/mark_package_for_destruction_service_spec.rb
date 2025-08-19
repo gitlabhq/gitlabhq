@@ -19,6 +19,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
           expect(package).to receive(:mark_package_files_for_destruction).and_call_original
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
+          expect(package).not_to receive(:sync_helm_metadata_cache)
           expect { service.execute }.to change { package.status }.from('default').to('pending_destruction')
         end
 
@@ -47,6 +48,7 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
           expect(package).not_to receive(:sync_maven_metadata)
           expect(package).not_to receive(:sync_npm_metadata_cache)
+          expect(package).not_to receive(:sync_helm_metadata_cache)
           expect(response).to be_a(ServiceResponse)
           expect(response).to be_error
           expect(response.message).to eq("Failed to mark the package as pending destruction")
@@ -59,6 +61,15 @@ RSpec.describe Packages::MarkPackageForDestructionService, :aggregate_failures, 
 
         it 'returns a success ServiceResponse' do
           expect(package).to receive(:sync_npm_metadata_cache).and_call_original
+          expect(service.execute).to be_success
+        end
+      end
+
+      context 'with helm package' do
+        let_it_be_with_reload(:package) { create(:helm_package) }
+
+        it 'calls sync_helm_metadata_cache', :aggregate_failures do
+          expect(package).to receive(:sync_helm_metadata_cache).and_call_original
           expect(service.execute).to be_success
         end
       end

@@ -28,6 +28,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   shared_examples 'change type action is not displayed' do
@@ -56,7 +57,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     it 'shows breadcrumb links', :aggregate_failures do
       within_testid('breadcrumb-links') do
         expect(page).to have_link(project.name, href: project_path(project))
-        expect(page).to have_link('Issues', href: list_path)
+        expect(page).to have_link('Issues', href: project_work_items_path(project))
         expect(find('nav:last-of-type li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end

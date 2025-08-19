@@ -1,0 +1,25 @@
+.alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
+  = dispensable_render 'shared/outdated_browser'
+  = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
+  = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold_block_seat_overages"
+  -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab/-/issues/13)
+  = dispensable_render_if_exists "layouts/header/account_notification"
+  = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
+  = dispensable_render "shared/projects/inactive_project_deletion_alert"
+  = dispensable_render "shared/projects/archived_alert"
+  = dispensable_render "layouts/header/read_only_banner"
+  = dispensable_render "layouts/header/registration_enabled_callout"
+  = dispensable_render "layouts/header/openssl_callout"
+  = dispensable_render "layouts/nav/classification_level_banner"
+  = yield :flash_message
+  = dispensable_render "shared/gitlab_version/security_patch_upgrade_alert"
+  = dispensable_render "shared/service_ping_consent"
+  = yield :group_invite_members_banner
+  = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
+  = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
+  = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
+  = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
+  = dispensable_render_if_exists "shared/silent_mode_banner"
+  = dispensable_render_if_exists "shared/pipl_compliance_alert"
+  = dispensable_render_if_exists "shared/compromised_password_detection_alert"
+  = yield :page_level_alert

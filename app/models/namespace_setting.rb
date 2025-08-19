@@ -6,14 +6,17 @@ class NamespaceSetting < ApplicationRecord
   include ChronicDurationAttribute
   include EachBatch
   include SafelyChangeColumnDefault
+  include NullifyIfBlank
 
   columns_changing_default :require_dpop_for_manage_api_endpoints
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
+  ignore_column :enable_auto_assign_gitlab_duo_pro_seats, remove_with: '18.5', remove_after: '2025-09-12'
   enum :pipeline_variables_default_role, ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
+  ignore_column :job_token_policies_enabled, remove_with: '18.5', remove_after: '2025-09-13'
 
   cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
@@ -55,11 +58,11 @@ class NamespaceSetting < ApplicationRecord
   validate :validate_enterprise_bypass_expires_at, if: ->(record) {
     record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
   }
+
   sanitizes! :default_branch_name
+  nullify_if_blank :default_branch_name
 
   before_validation :set_pipeline_variables_default_role, on: :create
-
-  before_validation :normalize_default_branch_name
 
   after_update :invalidate_namespace_descendants_cache, if: -> { saved_change_to_archived? }
 
@@ -84,7 +87,6 @@ class NamespaceSetting < ApplicationRecord
     math_rendering_limits_enabled
     lock_math_rendering_limits_enabled
     jwt_ci_cd_job_token_enabled
-    job_token_policies_enabled
   ].freeze
 
   # matches the size set in the database constraint
@@ -160,7 +162,7 @@ class NamespaceSetting < ApplicationRecord
 
   def validate_enterprise_bypass_expires_at
     if enterprise_bypass_expires_at.blank?
-      errors.add(:enterprise_bypass_expires_at, 'An expiry date is required when bypass is enabled.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date is required when bypass is enabled.'))
       return
     end
 
@@ -168,9 +170,9 @@ class NamespaceSetting < ApplicationRecord
     max_date = Date.current.advance(years: 1, days: -1).end_of_day
 
     if enterprise_bypass_expires_at < min_date
-      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be a future date.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must be a future date.'))
     elsif enterprise_bypass_expires_at > max_date
-      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be within one year from today.')
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must not be more than a year in the future.'))
     end
   end
 
@@ -186,10 +188,6 @@ class NamespaceSetting < ApplicationRecord
 
   def all_ancestors_allow_diff_preview_in_email?
     !self.class.where(namespace_id: namespace.self_and_ancestors, show_diff_preview_in_email: false).exists?
-  end
-
-  def normalize_default_branch_name
-    self.default_branch_name = default_branch_name.presence
   end
 
   def subgroup?

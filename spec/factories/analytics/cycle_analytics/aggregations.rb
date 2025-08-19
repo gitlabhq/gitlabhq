@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :cycle_analytics_aggregation, class: 'Analytics::CycleAnalytics::Aggregation' do
-    namespace { association(:group, :with_organization) }
+    namespace { association(:group) }
 
     enabled { true }
 

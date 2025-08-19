@@ -166,6 +166,36 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       end
     end
 
+    context 'when regex parameter is passed' do
+      context 'with branch exists' do
+        it 'returns correct branches' do
+          get api(route, user), params: { per_page: 100, regex: branch_name }
+
+          searched_branch_names = json_response.map { |branch| branch['name'] }
+          project_branch_names = project.repository.branch_names.grep(/#{branch_name}/)
+
+          expect(searched_branch_names).to match_array(project_branch_names)
+        end
+      end
+
+      context 'when branch does not exist' do
+        it 'returns an empty array' do
+          get api(route, user), params: { per_page: 100, regex: 'unknown_branch' }
+
+          expect(json_response).to eq []
+        end
+      end
+
+      context 'when regex is invalid' do
+        it 'returns 400 error' do
+          get api(route, user), params: { per_page: 100, regex: "(invalid" }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Regex is invalid')
+        end
+      end
+    end
+
     context 'when search parameter is passed' do
       context 'and branch exists' do
         it 'returns correct branches' do

@@ -71,13 +71,15 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
       }
     end
 
-    let(:variables) do
-      Gitlab::Ci::Variables::Collection.new([
-        { key: 'TEST_FRAMEWORK', value: 'pytest', masked: false }
-      ])
+    let(:context) do
+      Gitlab::Ci::Config::Yaml::Context.new(
+        variables: Gitlab::Ci::Variables::Collection.new([
+          { key: 'TEST_FRAMEWORK', value: 'pytest', masked: false }
+        ])
+      )
     end
 
-    subject(:result) { described_class.new(yaml, inputs: inputs, variables: variables).load }
+    subject(:result) { described_class.new(yaml, inputs: inputs, context: context).load }
 
     it 'loads and interpolates CI config YAML' do
       expect(result).to be_valid

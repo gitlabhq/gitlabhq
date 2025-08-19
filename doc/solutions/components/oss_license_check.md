@@ -380,7 +380,7 @@ data = fetch_license_data()
 if data:
     # Look through each rating section
     target_tiers = ['Gold', 'Silver', 'Bronze']
-    
+
     for rating in data['ratings']:
         if rating['name'] in target_tiers:
             # Print each license name in this tier
@@ -401,7 +401,7 @@ This ensures your policy always reflects the most current Blue Oak Council licen
 
 ### Policy not applying
 
-Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/security_policy_projects.md#link-to-a-security-policy-project) for more.
+Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/enforcement/security_policy_projects.md#link-to-a-security-policy-project) for more.
 
 ### Dependency scan not running
 

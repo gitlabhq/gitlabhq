@@ -93,6 +93,26 @@ RSpec.shared_examples 'namespace traversal' do
         expect(group.ancestors(skope: Namespace)).to eq([])
         expect(project_namespace.ancestors(skope: Namespace)).to contain_exactly(group, nested_group)
       end
+
+      context 'with asc hierarchy_order' do
+        it 'returns the correct ancestors' do
+          expect(very_deep_nested_group.ancestors(hierarchy_order: :asc, skope: Namespace)).to eq [deep_nested_group, nested_group, group]
+          expect(deep_nested_group.ancestors(hierarchy_order: :asc, skope: Namespace)).to eq [nested_group, group]
+          expect(nested_group.ancestors(hierarchy_order: :asc, skope: Namespace)).to eq [group]
+          expect(group.ancestors(hierarchy_order: :asc, skope: Namespace)).to eq([])
+          expect(project_namespace.ancestors(hierarchy_order: :asc, skope: Namespace)).to eq([nested_group, group])
+        end
+      end
+
+      context 'with desc hierarchy_order' do
+        it 'returns the correct ancestors' do
+          expect(very_deep_nested_group.ancestors(hierarchy_order: :desc, skope: Namespace)).to eq [group, nested_group, deep_nested_group]
+          expect(deep_nested_group.ancestors(hierarchy_order: :desc, skope: Namespace)).to eq [group, nested_group]
+          expect(nested_group.ancestors(hierarchy_order: :desc, skope: Namespace)).to eq [group]
+          expect(group.ancestors(hierarchy_order: :desc, skope: Namespace)).to eq([])
+          expect(project_namespace.ancestors(hierarchy_order: :desc, skope: Namespace)).to eq([group, nested_group])
+        end
+      end
     end
 
     describe '#recursive_ancestors' do

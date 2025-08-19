@@ -17,10 +17,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
   before_action :authorize_admin_group_member!, except: admin_not_required_endpoints
   before_action :authorize_read_group_member!, only: :index
 
-  before_action only: [:index] do
-    push_frontend_feature_flag(:importer_user_mapping, current_user)
-  end
-
   skip_before_action :check_two_factor_requirement, only: :leave
   skip_cross_project_access_check :index, :update, :destroy, :request_access,
     :approve_access_request, :leave, :resend_invite, :override
@@ -120,11 +116,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def placeholder_users
-    if Feature.enabled?(:importer_user_mapping, current_user)
-      Import::SourceUsersFinder.new(@group, current_user).execute
-    else
-      Import::SourceUser.none
-    end
+    Import::SourceUsersFinder.new(@group, current_user).execute
   end
   strong_memoize_attr :placeholder_users
 end

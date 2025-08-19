@@ -3,17 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis_shared_state, feature_category: :importers do
-  include Import::GiteaHelper
+  include Import::UserMappingHelper
 
-  let_it_be(:project) do
-    create(:project, :with_import_url, :import_user_mapping_enabled, import_type: ::Import::SOURCE_GITEA)
-  end
-
-  let_it_be(:source_user_mapper) do
-    Gitlab::Import::SourceUserMapper.new(
-      namespace: project.root_ancestor,
-      import_type: project.import_type,
-      source_hostname: 'https://gitea.com'
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group, :with_import_url,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      import_type: ::Import::SOURCE_GITEA
     )
   end
 
@@ -25,6 +21,14 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       namespace: project.root_ancestor,
       source_hostname: 'https://gitea.com',
       import_type: ::Import::SOURCE_GITEA
+    )
+  end
+
+  let(:source_user_mapper) do
+    Gitlab::Import::SourceUserMapper.new(
+      namespace: project.root_ancestor,
+      import_type: project.import_type,
+      source_hostname: 'https://gitea.com'
     )
   end
 
@@ -185,11 +189,38 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
       end
     end
 
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let(:raw) { base }
+
+      before_all do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'maps the author to the personal namespace owner' do
+        expect(comment.attributes.fetch(:author_id)).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'maps the author to the import user' do
+          expect(comment.attributes.fetch(:author_id)).to eq(
+            user_namespace.namespace_import_user.user_id
+          )
+        end
+      end
+    end
+
     context 'when user contribution mapping is disabled' do
       let(:raw) { base.merge(user: octocat) }
 
       before do
-        stub_user_mapping_chain(project, false)
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       context 'when author is a GitLab user' do
@@ -245,7 +276,7 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
   describe '#create!', :aggregate_failures do
     let(:issuable) { create(:issue, project: project) }
     let(:raw) { base }
-    let(:store) { project.placeholder_reference_store }
+    let(:cached_references) { placeholder_user_references(Import::SOURCE_GITEA, project.import_state.id) }
 
     before do
       comment.gitlab_issuable = issuable
@@ -257,11 +288,10 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
     it 'pushes placeholder references for comments made by existing users in Gitea' do
       comment.create!
-      cached_references = store.get(100).map { |ref| Import::SourceUserPlaceholderReference.from_serialized(ref) }
 
-      expect(cached_references.map(&:model)).to eq(['Note'])
-      expect(cached_references.map(&:source_user_id)).to eq([import_source_user.id])
-      expect(cached_references.map(&:user_reference_column)).to match_array(['author_id'])
+      expect(cached_references).to match_array([
+        ['Note', an_instance_of(Integer), 'author_id', import_source_user.id]
+      ])
     end
 
     context 'when the comment was made by a deleted user in Gitea' do
@@ -269,18 +299,52 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, :clean_gitlab_redis
 
       it 'does not push any placeholder references' do
         comment.create!
-        expect(store).to be_empty
+        expect(cached_references).to be_empty
+      end
+    end
+
+    context 'when importing into a personal namespace' do
+      before_all do
+        project.update!(namespace: create(:namespace))
+      end
+
+      it 'does not push any placeholder references' do
+        comment.create!
+        expect(cached_references).to be_empty
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references for the pull request and assignees' do
+          comment.create!
+
+          import_source_user = Import::SourceUser.find_source_user(
+            source_user_identifier: octocat[:id],
+            namespace: project.root_ancestor,
+            source_hostname: 'https://gitea.com',
+            import_type: ::Import::SOURCE_GITEA
+          )
+
+          expect(cached_references).to match_array([
+            ['Note', an_instance_of(Integer), 'author_id', import_source_user.id]
+          ])
+        end
       end
     end
 
     context 'when user contribution mapping is disabled' do
       before do
-        stub_user_mapping_chain(project, false)
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       it 'does not push any placeholder references' do
         comment.create!
-        expect(store).to be_empty
+        expect(cached_references).to be_empty
       end
     end
   end

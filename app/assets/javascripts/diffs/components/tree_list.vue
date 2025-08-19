@@ -8,14 +8,12 @@ import {
 } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
 import micromatch from 'micromatch';
-import { getModifierKey } from '~/constants';
 import { s__, sprintf } from '~/locale';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import { isElementClipped } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { MR_FOCUS_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
 import DiffFileRow from './diff_file_row.vue';
-
-const MODIFIER_KEY = getModifierKey();
 
 export default {
   directives: {
@@ -223,8 +221,8 @@ export default {
       return this.loadedFiles && !this.loadedFiles[fileHash];
     },
   },
-  searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)'), {
-    MODIFIER_KEY,
+  searchPlaceholder: sprintf(s__('MergeRequest|Search (e.g. *.vue) (%{SHORTCUT})'), {
+    SHORTCUT: MR_FOCUS_FILE_BROWSER.defaultKeys[0].toUpperCase(),
   }),
 };
 </script>
@@ -314,7 +312,7 @@ export default {
           <div class="tree-list-gutter"></div>
         </template>
       </recycle-scroller>
-      <p v-else class="prepend-top-20 append-bottom-20 text-center">
+      <p v-else class="gl-my-3">
         {{ s__('MergeRequest|No files found') }}
       </p>
     </nav>

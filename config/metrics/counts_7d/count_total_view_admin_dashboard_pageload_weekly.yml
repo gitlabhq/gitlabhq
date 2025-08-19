@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_view_admin_dashboard_pageload_weekly
 description: Weekly total views of admin dashboard page
-product_group: personal_productivity
+product_group: engagement
 performance_indicator_type: []
 value_type: number
 status: active

@@ -7,12 +7,13 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:noteable) { create(:issue, project: project) }
+    let_it_be(:other_organization) { create(:organization) }
     let_it_be(:org_user_detail) do
-      create(:organization_user_detail, organization: project.organization, username: 'spec_bot')
+      create(:organization_user_detail, username: 'spec_bot')
     end
 
     let_it_be(:other_org_user_detail) do
-      create(:organization_user_detail, username: 'spec_bot')
+      create(:organization_user_detail, organization: other_organization, username: 'spec_bot')
     end
 
     let(:params) { {} }
@@ -80,7 +81,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
         create(
           :organization_user_detail,
           user: developer,
-          organization: project.organization,
           username: 'test_alias',
           display_name: 'Test McAlias'
         )
@@ -94,7 +94,6 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
         create(
           :organization_user_detail,
           user: developer2,
-          organization: project.organization,
           username: 'test_alias2',
           display_name: 'Test McAlias2'
         )
@@ -252,6 +251,27 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
               expect(group_items).to be_empty
             end
           end
+        end
+      end
+
+      context 'when groups are in other organizations' do
+        let(:group_1) { create(:group) }
+        let(:group_2) { create(:group, organization: other_organization) }
+
+        before do
+          group_1.add_owner(user)
+          group_1.add_owner(create(:user))
+
+          group_2.add_owner(user)
+        end
+
+        it 'only includes groups in the projects organization' do
+          expect(group_items).to contain_exactly(
+            a_hash_including(name: group_1.full_name, count: 2)
+          )
+          expect(group_items).not_to include(
+            a_hash_including(name: group_2.full_name)
+          )
         end
       end
     end

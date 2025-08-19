@@ -39,6 +39,7 @@ Supported attributes:
 | Attribute              | Type     | Required | Description |
 |:-----------------------|:---------|:---------|:------------|
 | `username`             | string   | no       | Get a single user with a specific username. |
+| `public_email`         | string   | no       | Get a single user with a specific public email. |
 | `search`               | string   | no       | Search for users by name, username, or public email. |
 | `active`               | boolean  | no       | Filters only active users. Default is `false`. |
 | `external`             | boolean  | no       | Filters only external users. Default is `false`. |
@@ -635,6 +636,7 @@ Example response:
   "external": false,
   "private_profile": false,
   "commit_email": "admin@example.com",
+  "preferred_language": "en",
 }
 ```
 
@@ -1405,7 +1407,7 @@ Supported attributes:
 | `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs. |
 | `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project. |
 | `run_untagged`     | boolean      | no       | Specifies if the runner should handle untagged jobs. |
-| `tag_list`         | string array | no       | A list of runner tags. |
+| `tag_list`         | string | no       | A comma-separated list of runner tags. |
 | `access_level`     | string       | no       | The access level of the runner; `not_protected` or `ref_protected`. |
 | `maximum_timeout`  | integer      | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs. |
 | `maintenance_note` | string       | no       | Free-form maintenance notes for the runner (1024 characters). |

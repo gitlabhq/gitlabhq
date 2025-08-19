@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate.html';
+import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate_old.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebAuthnAuthenticate from '~/authentication/webauthn/authenticate';

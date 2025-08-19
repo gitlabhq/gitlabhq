@@ -19,8 +19,11 @@ title: Rich text editor
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407507) for epics in GitLab 16.1 with the same flag.
 - Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
 - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
+- Rich text editor [set to default editor for new users](https://gitlab.com/gitlab-org/gitlab/-/issues/536611) in 18.2.
 
 {{< /history >}}
+
+The Rich text editor is the default text editor for new users in GitLab.
 
 Rich text editor is available in:
 

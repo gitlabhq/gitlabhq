@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Ci
   module SecureFilesHelper
     def show_secure_files_setting(project, user)

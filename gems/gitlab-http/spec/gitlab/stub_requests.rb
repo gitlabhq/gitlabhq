@@ -25,7 +25,7 @@ module Gitlab
 
       # See Gitlab::HTTP_V2::UrlBlocker
       allow(Addrinfo).to receive(:getaddrinfo)
-                          .with(url.hostname, url.port, nil, :STREAM)
+                          .with(url.hostname, url.port, anything, :STREAM, any_args)
                           .and_return([addr])
     end
 
@@ -38,7 +38,7 @@ module Gitlab
       # See Gitlab::HTTP_V2::UrlBlocker
       allow(Addrinfo).to receive(:getaddrinfo).and_call_original
       allow(Addrinfo).to receive(:getaddrinfo)
-        .with(url.hostname, anything, nil, :STREAM)
+        .with(url.hostname, anything, anything, :STREAM, any_args)
         .and_return([addr])
     end
 

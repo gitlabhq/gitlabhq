@@ -43,6 +43,7 @@ module Ci
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
     validates :inputs, nested_attributes_duplicates: { child_attributes: %i[name] }
+    validates :project, presence: true
 
     validates :inputs, length: {
       maximum: Ci::Pipeline::INPUTS_LIMIT,

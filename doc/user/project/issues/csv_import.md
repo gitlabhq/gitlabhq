@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Importing issues from CSV
+description: "Import issues to a project by uploading a CSV file."
 ---
 
 {{< details >}}
@@ -18,7 +19,7 @@ title: Importing issues from CSV
 
 {{< /history >}}
 
-You can import issues to a project by uploading a CSV file with the following columns:
+You can import issues to a project by uploading a CSV (comma-separated values) file with the following columns:
 
 | Name          | Required?              | Description                                      |
 |:--------------|:-----------------------|:-------------------------------------------------|
@@ -59,7 +60,13 @@ to you if any errors are detected or after the import is complete.
 
 ## CSV file format
 
-To import issues, GitLab requires CSV files have a specific format:
+To import issues, GitLab requires CSV files have a specific format.
+
+{{< alert type="note" >}}
+
+For information about CSV parsing requirements that can affect how imported files display when viewed in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsing-considerations).
+
+{{< /alert >}}
 
 | Element                | Format |
 |------------------------|--------|

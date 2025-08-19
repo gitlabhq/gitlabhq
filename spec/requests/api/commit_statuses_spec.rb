@@ -29,12 +29,11 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
       end
 
       context "reporter user" do
-        let(:statuses_id) { json_response.map { |status| status['id'] } }
-
         def create_status(pipeline, opts = {})
           create(:commit_status, { pipeline: pipeline, ref: pipeline.ref }.merge(opts))
         end
 
+        let(:statuses_id) { json_response.map { |status| status['id'] } }
         let_it_be(:status1) { create_status(master, status: 'running', retried: true) }
         let_it_be(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
         let_it_be(:status3) { create_status(develop, status: 'running', allow_failure: true) }
@@ -418,6 +417,28 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
 
               expect(commit_status.description).to eq('coverage test')
               expect(commit_status.coverage).to eq(10.0)
+            end
+          end
+
+          context 'when an error is raised' do
+            before do
+              allow(ServiceResponse).to receive(:success).and_call_original
+              allow(ServiceResponse)
+                .to receive(:success)
+                .with(hash_including(payload: hash_including(:job)))
+                .and_raise(StandardError, 'test error')
+            end
+
+            it 'does not update the commit status' do
+              expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+
+              send_request
+
+              # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/556757
+              # should return a 500 but first we need to handle
+              # any errors that are expected. i.e. invalid state transitions ect.
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['message']).to eq('test error')
             end
           end
         end

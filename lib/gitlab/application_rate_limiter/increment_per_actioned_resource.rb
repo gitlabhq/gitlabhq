@@ -9,11 +9,14 @@ module Gitlab
 
       def increment(cache_key, expiry)
         with_redis do |redis|
-          redis.pipelined do |pipeline|
+          added, new_value = redis.pipelined do |pipeline|
             pipeline.sadd?(cache_key, resource_key)
-            pipeline.expire(cache_key, expiry)
             pipeline.scard(cache_key)
-          end.last
+          end
+
+          redis.expire(cache_key, expiry) if added && new_value == 1
+
+          new_value
         end
       end
 

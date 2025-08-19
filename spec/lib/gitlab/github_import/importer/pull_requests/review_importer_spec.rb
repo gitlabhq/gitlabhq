@@ -7,22 +7,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) do
-    create(:project, :with_import_url, :import_user_mapping_enabled, import_type: Import::SOURCE_GITHUB)
-  end
-
-  let_it_be(:source_user) do
     create(
-      :import_source_user,
-      source_user_identifier: 999,
-      source_hostname: project.safe_import_url,
-      import_type: Import::SOURCE_GITHUB,
-      namespace: project.root_ancestor
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
     )
   end
 
   let_it_be_with_reload(:merge_request) { create(:merge_request, source_project: project) }
-  let(:submitted_at) { Time.new(2017, 1, 1, 12).utc }
+  let_it_be(:source_user) { generate_source_user(project, 999) }
 
+  let(:submitted_at) { Time.new(2017, 1, 1, 12).utc }
   let(:client_double) do
     instance_double(
       'Gitlab::GithubImport::Client',
@@ -89,51 +83,87 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
   end
 
   context 'when user mapping is enabled' do
-    let_it_be(:author) { source_user.mapped_user }
+    shared_examples 'imports without pushing placeholder references' do
+      it 'does not push placeholder references' do
+        subject.execute
 
-    context 'when the review has no note text' do
-      context 'when the review is "APPROVED"' do
-        let(:review) { create_review(type: 'APPROVED', note: '') }
+        expect(user_references).to be_empty
+      end
+    end
 
-        it_behaves_like 'imports an approval for the Merge Request'
-        it_behaves_like 'imports a reviewer for the Merge Request'
+    shared_examples 'importing a review' do |push_placeholder_references:|
+      context 'when the review has no note text' do
+        context 'when the review is "APPROVED"' do
+          let(:review) { create_review(type: 'APPROVED', note: '') }
 
-        it 'creates a note for the review' do
-          expect { subject.execute }.to change { Note.count }.by(1)
+          it_behaves_like 'imports an approval for the Merge Request'
+          it_behaves_like 'imports a reviewer for the Merge Request'
 
-          last_note = merge_request.notes.last
-          expect(last_note.note).to eq('approved this merge request')
-          expect(last_note.author).to eq(author)
-          expect(last_note.created_at).to eq(submitted_at)
-          expect(last_note.system_note_metadata.action).to eq('approved')
-        end
+          it 'creates a note for the review' do
+            expect { subject.execute }.to change { Note.count }.by(1)
 
-        it 'pushes placeholder references for reviewer and system note' do
-          subject.execute
-
-          created_approval = merge_request.approvals.last
-          created_reviewer = merge_request.merge_request_reviewers.last
-          system_note = merge_request.notes.last
-
-          expect(user_references).to match_array([
-            ['Approval', created_approval.id, 'user_id', source_user.id],
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
-            ['Note', system_note.id, 'author_id', source_user.id]
-          ])
-        end
-
-        context 'when the user already approved the merge request' do
-          before do
-            create(:approval, merge_request: merge_request, user: author)
+            last_note = merge_request.notes.last
+            expect(last_note.note).to eq('approved this merge request')
+            expect(last_note.author).to eq(author)
+            expect(last_note.created_at).to eq(submitted_at)
+            expect(last_note.system_note_metadata.action).to eq('approved')
           end
 
-          it 'does not import second approve and note' do
-            expect { subject.execute }
-              .to not_change { Note.count }
-              .and not_change { Approval.count }
+          it 'pushes placeholder references for reviewer and system note', if: push_placeholder_references do
+            subject.execute
+
+            created_approval = merge_request.approvals.last
+            created_reviewer = merge_request.merge_request_reviewers.last
+            system_note = merge_request.notes.last
+
+            expect(user_references).to match_array([
+              ['Approval', created_approval.id, 'user_id', source_user.id],
+              ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
+              ['Note', system_note.id, 'author_id', source_user.id]
+            ])
           end
 
-          it 'only pushes placeholder references for reviewer' do
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
+
+          context 'when the user already approved the merge request' do
+            before do
+              create(:approval, merge_request: merge_request, user: author)
+            end
+
+            it 'does not import second approve and note' do
+              expect { subject.execute }
+                .to not_change { Note.count }
+                .and not_change { Approval.count }
+            end
+
+            it 'only pushes placeholder references for reviewer', if: push_placeholder_references do
+              subject.execute
+
+              created_reviewer = merge_request.merge_request_reviewers.last
+
+              expect(user_references).to match_array([
+                ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id]
+              ])
+            end
+
+            context 'and the author is a real user', unless: push_placeholder_references do
+              include_examples 'imports without pushing placeholder references'
+            end
+          end
+        end
+
+        context 'when the review is "COMMENTED"' do
+          let(:review) { create_review(type: 'COMMENTED', note: '') }
+
+          it_behaves_like 'imports a reviewer for the Merge Request'
+
+          it 'does not create note for the review' do
+            expect { subject.execute }.not_to change { Note.count }
+          end
+
+          it 'only pushes placeholder references for reviewer', if: push_placeholder_references do
             subject.execute
 
             created_reviewer = merge_request.merge_request_reviewers.last
@@ -142,143 +172,174 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
               ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id]
             ])
           end
+
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
+        end
+
+        context 'when the review is "CHANGES_REQUESTED"' do
+          let(:review) { create_review(type: 'CHANGES_REQUESTED', note: '') }
+
+          it_behaves_like 'imports a reviewer for the Merge Request'
+
+          it 'does not create a note for the review' do
+            expect { subject.execute }.not_to change { Note.count }
+          end
+
+          it 'only pushes placeholder references for reviewer', if: push_placeholder_references do
+            subject.execute
+
+            created_reviewer = merge_request.merge_request_reviewers.last
+
+            expect(user_references).to match_array([
+              ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id]
+            ])
+          end
+
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
         end
       end
 
-      context 'when the review is "COMMENTED"' do
-        let(:review) { create_review(type: 'COMMENTED', note: '') }
+      context 'when the review has a note text' do
+        context 'when the review is "APPROVED"' do
+          let(:review) { create_review(type: 'APPROVED') }
 
-        it_behaves_like 'imports a reviewer for the Merge Request'
+          it_behaves_like 'imports an approval for the Merge Request'
+          it_behaves_like 'imports a reviewer for the Merge Request'
 
-        it 'does not create note for the review' do
-          expect { subject.execute }.not_to change { Note.count }
+          it 'creates a note for the review' do
+            expect { subject.execute }.to change { Note.count }.by(2)
+
+            note = merge_request.notes.where(system: false).last
+            expect(note.note).to eq("**Review:** Approved\n\nnote")
+            expect(note.author).to eq(author)
+            expect(note.created_at).to eq(submitted_at)
+
+            system_note = merge_request.notes.where(system: true).last
+            expect(system_note.note).to eq('approved this merge request')
+            expect(system_note.author).to eq(author)
+            expect(system_note.created_at).to eq(submitted_at)
+            expect(system_note.system_note_metadata.action).to eq('approved')
+          end
+
+          it 'pushes placeholder references for reviewer, system note, and reviewer note',
+            if: push_placeholder_references do
+            subject.execute
+
+            created_approval = merge_request.approvals.last
+            created_reviewer = merge_request.merge_request_reviewers.last
+            system_note = merge_request.notes.where(system: true).last
+            note = merge_request.notes.where(system: false).last
+
+            expect(user_references).to match_array([
+              ['Approval', created_approval.id, 'user_id', source_user.id],
+              ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
+              ['Note', system_note.id, 'author_id', source_user.id],
+              ['Note', note.id, 'author_id', source_user.id]
+            ])
+          end
+
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
         end
 
-        it 'only pushes placeholder references for reviewer' do
-          subject.execute
+        context 'when the review is "COMMENTED"' do
+          let(:review) { create_review(type: 'COMMENTED') }
 
-          created_reviewer = merge_request.merge_request_reviewers.last
+          it 'creates a note for the review' do
+            expect { subject.execute }
+              .to change { Note.count }.by(1)
+              .and not_change(Approval, :count)
 
-          expect(user_references).to match_array([
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id]
-          ])
+            last_note = merge_request.notes.last
+
+            expect(last_note.note).to eq("**Review:** Commented\n\nnote")
+            expect(last_note.author).to eq(author)
+            expect(last_note.created_at).to eq(submitted_at)
+          end
+
+          it 'pushes placeholder references for reviewer and reviewer note', if: push_placeholder_references do
+            subject.execute
+
+            created_reviewer = merge_request.merge_request_reviewers.last
+            note = merge_request.notes.last
+
+            expect(user_references).to match_array([
+              ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
+              ['Note', note.id, 'author_id', source_user.id]
+            ])
+          end
+
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
         end
-      end
 
-      context 'when the review is "CHANGES_REQUESTED"' do
-        let(:review) { create_review(type: 'CHANGES_REQUESTED', note: '') }
+        context 'when the review is "CHANGES_REQUESTED"' do
+          let(:review) { create_review(type: 'CHANGES_REQUESTED') }
 
-        it_behaves_like 'imports a reviewer for the Merge Request'
+          it 'creates a note for the review' do
+            expect { subject.execute }
+              .to change { Note.count }.by(1)
+              .and not_change(Approval, :count)
 
-        it 'does not create a note for the review' do
-          expect { subject.execute }.not_to change { Note.count }
-        end
+            last_note = merge_request.notes.last
 
-        it 'only pushes placeholder references for reviewer' do
-          subject.execute
+            expect(last_note.note).to eq("**Review:** Changes requested\n\nnote")
+            expect(last_note.author).to eq(author)
+            expect(last_note.created_at).to eq(submitted_at)
+          end
 
-          created_reviewer = merge_request.merge_request_reviewers.last
+          it 'pushes placeholder references for reviewer and reviewer note', if: push_placeholder_references do
+            subject.execute
 
-          expect(user_references).to match_array([
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id]
-          ])
+            created_reviewer = merge_request.merge_request_reviewers.last
+            note = merge_request.notes.last
+
+            expect(user_references).to match_array([
+              ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
+              ['Note', note.id, 'author_id', source_user.id]
+            ])
+          end
+
+          context 'and the author is a real user', unless: push_placeholder_references do
+            include_examples 'imports without pushing placeholder references'
+          end
         end
       end
     end
 
-    context 'when the review has a note text' do
-      context 'when the review is "APPROVED"' do
-        let(:review) { create_review(type: 'APPROVED') }
+    context 'and importing into a group' do
+      let_it_be(:author) { source_user.mapped_user }
 
-        it_behaves_like 'imports an approval for the Merge Request'
-        it_behaves_like 'imports a reviewer for the Merge Request'
+      it_behaves_like 'importing a review', push_placeholder_references: true
+    end
 
-        it 'creates a note for the review' do
-          expect { subject.execute }.to change { Note.count }.by(2)
+    context 'and importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let_it_be(:author) { user_namespace.owner } # always map to personal namespace owner in this context
 
-          note = merge_request.notes.where(system: false).last
-          expect(note.note).to eq("**Review:** Approved\n\nnote")
-          expect(note.author).to eq(author)
-          expect(note.created_at).to eq(submitted_at)
-
-          system_note = merge_request.notes.where(system: true).last
-          expect(system_note.note).to eq('approved this merge request')
-          expect(system_note.author).to eq(author)
-          expect(system_note.created_at).to eq(submitted_at)
-          expect(system_note.system_note_metadata.action).to eq('approved')
-        end
-
-        it 'pushes placeholder references for reviewer, system note, and reviewer note' do
-          subject.execute
-
-          created_approval = merge_request.approvals.last
-          created_reviewer = merge_request.merge_request_reviewers.last
-          system_note = merge_request.notes.where(system: true).last
-          note = merge_request.notes.where(system: false).last
-
-          expect(user_references).to match_array([
-            ['Approval', created_approval.id, 'user_id', source_user.id],
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
-            ['Note', system_note.id, 'author_id', source_user.id],
-            ['Note', note.id, 'author_id', source_user.id]
-          ])
-        end
+      before_all do
+        project.update!(namespace: user_namespace)
       end
 
-      context 'when the review is "COMMENTED"' do
-        let(:review) { create_review(type: 'COMMENTED') }
+      it_behaves_like 'importing a review', push_placeholder_references: false
 
-        it 'creates a note for the review' do
-          expect { subject.execute }
-            .to change { Note.count }.by(1)
-            .and not_change(Approval, :count)
+      context 'and user_mapping_to_personal_namespace_owner is disabled' do
+        let_it_be(:source_user) { generate_source_user(project, 999) }
+        let_it_be(:author) { source_user.mapped_user }
 
-          last_note = merge_request.notes.last
-
-          expect(last_note.note).to eq("**Review:** Commented\n\nnote")
-          expect(last_note.author).to eq(author)
-          expect(last_note.created_at).to eq(submitted_at)
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
         end
 
-        it 'pushes placeholder references for reviewer and reviewer note' do
-          subject.execute
-
-          created_reviewer = merge_request.merge_request_reviewers.last
-          note = merge_request.notes.last
-
-          expect(user_references).to match_array([
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
-            ['Note', note.id, 'author_id', source_user.id]
-          ])
-        end
-      end
-
-      context 'when the review is "CHANGES_REQUESTED"' do
-        let(:review) { create_review(type: 'CHANGES_REQUESTED') }
-
-        it 'creates a note for the review' do
-          expect { subject.execute }
-            .to change { Note.count }.by(1)
-            .and not_change(Approval, :count)
-
-          last_note = merge_request.notes.last
-
-          expect(last_note.note).to eq("**Review:** Changes requested\n\nnote")
-          expect(last_note.author).to eq(author)
-          expect(last_note.created_at).to eq(submitted_at)
-        end
-
-        it 'pushes placeholder references for reviewer and reviewer note' do
-          subject.execute
-
-          created_reviewer = merge_request.merge_request_reviewers.last
-          note = merge_request.notes.last
-
-          expect(user_references).to match_array([
-            ['MergeRequestReviewer', created_reviewer.id, 'user_id', source_user.id],
-            ['Note', note.id, 'author_id', source_user.id]
-          ])
-        end
+        it_behaves_like 'importing a review', push_placeholder_references: true
       end
     end
   end

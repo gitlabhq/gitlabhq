@@ -148,8 +148,8 @@ RSpec.describe Explore::ProjectsController, :with_current_organization, feature_
       context 'when topic exists' do
         let_it_be(:topic) { create(:topic, name: 'topic1', organization: current_organization) }
 
-        let(:older_project) { create(:project, :public, updated_at: 1.day.ago, namespace: namespace, topic_list: 'topic1') }
-        let(:newer_project) { create(:project, :public, updated_at: 2.days.ago, namespace: namespace, topic_list: 'topic1') }
+        let_it_be(:older_project) { create(:project, :public, updated_at: 1.day.ago, namespace: namespace, topic_list: 'topic1') }
+        let_it_be(:newer_project) { create(:project, :public, updated_at: 2.days.ago, namespace: namespace, topic_list: 'topic1') }
 
         it 'renders the template' do
           get :topic, format: :atom, params: { topic_name: 'topic1' }

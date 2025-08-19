@@ -199,7 +199,7 @@ module Banzai
         end
 
         def refs_cache
-          Gitlab::SafeRequestStore["banzai_#{parent_type}_refs".to_sym] ||= {}
+          Gitlab::SafeRequestStore[:"banzai_#{parent_type}_refs"] ||= {}
         end
 
         def prepare_doc_for_scan

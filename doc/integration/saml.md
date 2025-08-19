@@ -285,7 +285,7 @@ For more information on:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
+1. Make sure GitLab is [configured with HTTPS](../install/self_compiled/_index.md#using-https).
 1. Configure the [common settings](omniauth.md#configure-common-settings)
    to add `saml` as a single sign-on provider. This enables Just-In-Time
    account provisioning for users who do not have an existing GitLab account.
@@ -777,7 +777,7 @@ These attributes are case-sensitive.
 
 | Field           | Supported default keys                                                                                                                                                         |
 |-----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Email (required)| `email`, `mail`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`                  |
+| Email (required)| `email`, `mail`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/email`                  |
 | Full Name       | `name`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/name`                                           |
 | First Name      | `first_name`, `firstname`, `firstName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname` |
 | Last Name       | `last_name`, `lastname`, `lastName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`   |
@@ -3088,8 +3088,14 @@ This makes the key file one long string with no line feeds.
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-               certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
-               private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+               certificate:|
+               -----BEGIN CERTIFICATE-----
+               <redacted>
+               -----END CERTIFICATE-----,
+               private_key:|
+               -----BEGIN PRIVATE KEY-----
+               <redacted>
+               -----END PRIVATE KEY-----
        }
      }
    ]
@@ -3119,8 +3125,14 @@ This makes the key file one long string with no line feeds.
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-     certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----'
-     private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+     certificate:|
+     -----BEGIN CERTIFICATE-----
+     <redacted>
+     ----END CERTIFICATE-----,
+     private_key:|
+     -----BEGIN PRIVATE KEY-----
+     <redacted>
+     -----END PRIVATE KEY-----
    ```
 
 1. Create the Kubernetes Secret:
@@ -3174,8 +3186,14 @@ This makes the key file one long string with no line feeds.
                         idp_sso_target_url: 'https://login.example.com/idp',
                         issuer: 'https://gitlab.example.com',
                         name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
-                        certificate: '-----BEGIN CERTIFICATE-----\n<redacted>\n-----END CERTIFICATE-----',
-                        private_key: '-----BEGIN PRIVATE KEY-----\n<redacted>\n-----END PRIVATE KEY-----'
+                        certificate:|
+                        -----BEGIN CERTIFICATE-----
+                        <redacted>
+                        -----END CERTIFICATE-----,
+                        private_key:|
+                        -----BEGIN PRIVATE KEY-----
+                        <redacted>
+                        -----END PRIVATE KEY-----
                 }
               }
            ]
@@ -3557,7 +3575,7 @@ To configure group SAML SSO:
 
 {{< tab title="Self-compiled (source)" >}}
 
-1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
+1. Make sure GitLab is [configured with HTTPS](../install/self_compiled/_index.md#using-https).
 1. Edit `/home/git/gitlab/config/gitlab.yml` to enable OmniAuth and the `group_saml` provider:
 
    ```yaml

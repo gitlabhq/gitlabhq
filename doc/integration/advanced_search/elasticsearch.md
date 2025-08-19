@@ -319,12 +319,19 @@ When you upgrade Elasticsearch, you do not have to change the GitLab configurati
 
 During an Elasticsearch upgrade, you must:
 
-- Pause indexing so changes can still be tracked.
-- Disable advanced search so searches do not fail with an `HTTP 500` error.
+- [Pause indexing](#pause-indexing) so changes can still be tracked.
+- [Disable search with advanced search](#disable-search-with-advanced-search) so searches do not fail with an `HTTP 500` error.
 
-When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#resume-indexing) and enable advanced search.
+When the Elasticsearch cluster is fully upgraded and active:
 
-When you upgrade to GitLab 15.0 and later, you must use Elasticsearch 7.x and later.
+1. Validate cluster connectivity, index, and search operations:
+
+   ```shell
+   sudo gitlab-rake gitlab:elastic:index_and_search_validation
+   ```
+
+1. [Resume indexing](#resume-indexing).
+1. [Enable search with advanced search](#enable-search-with-advanced-search).
 
 ## Elasticsearch repository indexer
 
@@ -529,6 +536,19 @@ To monitor the status of background jobs:
 1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer` and `elastic_wiki_indexer` queues to drop to `0`.
    These queues contain jobs to index code and wiki data for projects and groups.
 
+### Enable search with advanced search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To enable search with advanced search in GitLab:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Select the **Search with Elasticsearch enabled** checkbox.
+1. Select **Save changes**.
+
 ### Advanced search configuration
 
 The following Elasticsearch settings are available:
@@ -685,6 +705,33 @@ To disable advanced search in GitLab:
    bundle exec rake gitlab:elastic:delete_index RAILS_ENV=production
    ```
 
+### Disable search with advanced search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To disable search with advanced search in GitLab:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Clear the **Search with Elasticsearch enabled** checkbox.
+1. Select **Save changes**.
+
+## Pause indexing
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To pause indexing:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Advanced Search**.
+1. Select the **Pause Elasticsearch indexing** checkbox.
+1. Select **Save changes**.
+
 ## Resume indexing
 
 Prerequisites:
@@ -697,6 +744,7 @@ To resume indexing:
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
+1. Select **Save changes**.
 
 ## Zero-downtime reindexing
 
@@ -948,6 +996,7 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | In GitLab 17.0 and earlier, enables Elasticsearch indexing and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job enables Elasticsearch indexing and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, Elasticsearch indexing is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
+| [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Validates cluster connectivity, index, and search operations for all indices. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664) in GitLab 18.3. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created.                                                                                                      |
 | [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`. |
 | [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                         | Indexes all epics from the groups where Elasticsearch is enabled. |
@@ -1035,43 +1084,20 @@ For basic guidance on choosing a cluster configuration, see also [Elastic Cloud 
 
 #### Number of Elasticsearch shards
 
-For single-node clusters, set the number of Elasticsearch shards per index to the number of
-CPU cores on the Elasticsearch data nodes. Keep the average shard size between a few GB and 30 GB.
-
-For multi-node clusters, set the number of Elasticsearch shards per index to at least `5`.
-
-To update the shard size for an index, change the setting and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
-
-##### Indices with database data
-
 {{< history >}}
 
 - `gitlab:elastic:estimate_shard_sizes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146108) in GitLab 16.11.
+- `gitlab:elastic:estimate_shard_sizes` [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/348452) in GitLab 18.3 to include sizing for indices that contain repository data.
 
 {{< /history >}}
 
-For indices that contain database data:
+For single-node clusters, set the number of Elasticsearch shards per index
+to the number of CPU cores on the Elasticsearch data nodes.
 
-- `gitlab-production-projects`
-- `gitlab-production-issues`
-- `gitlab-production-epics`
-- `gitlab-production-merge_requests`
-- `gitlab-production-notes`
-- `gitlab-production-users`
-
-Run the Rake task `gitlab:elastic:estimate_shard_sizes` to determine the number of shards.
-The task returns approximate document counts and recommendations for shard and replica sizes.
-
-##### Indices with repository data
-
-For indices that contain repository data:
-
-- `gitlab-production`
-- `gitlab-production-wikis`
-- `gitlab-production-commits`
-
-Run the Rake task `gitlab:elastic:estimate_cluster_size` to determine the number of shards.
-The task returns approximate index sizes for code (`gitlab-production`) and wiki (`gitlab-production-wikis`).
+For multi-node clusters, run the Rake task `gitlab:elastic:estimate_shard_sizes`
+to determine the number of shards for each index.
+The task returns recommendations for shard and replica sizes and
+approximate document counts for indices that contain database data.
 
 Keep the average shard size between a few GB and 30 GB.
 If the average shard size grows to more than 30 GB, increase the shard size
@@ -1080,12 +1106,28 @@ To ensure the cluster is healthy, the number of shards per node
 must not exceed 20 times the configured heap size.
 For example, a node with a 30 GB heap must have a maximum of 600 shards.
 
+To update the number of shards for an index, change the setting
+and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
+
 #### Number of Elasticsearch replicas
 
 For single-node clusters, set the number of Elasticsearch replicas per index to `0`.
 
 For multi-node clusters, set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
 The number must not be `0` because losing one node corrupts the index.
+
+If [shard allocation awareness](https://www.elastic.co/docs/deploy-manage/distributed-architecture/shard-allocation-relocation-recovery/shard-allocation-awareness) is enabled,
+the total number of copies per shard must be evenly divisible
+by the number of awareness attributes (typically nodes or zones).
+The even distribution of shard copies across all awareness attributes
+ensures optimal fault tolerance and load distribution.
+
+```plaintext
+(1 + `number_of_replicas`) / `number_of_awareness_attributes` = whole number
+```
+
+To update the number of replicas for an index, change the setting
+and trigger [zero-downtime reindexing](#zero-downtime-reindexing).
 
 ### Index large instances efficiently
 

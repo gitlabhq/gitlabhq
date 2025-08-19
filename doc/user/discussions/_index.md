@@ -282,7 +282,7 @@ To compare the changes, select **Compare with previous version**.
 You can assign an issue to a user who made a comment.
 
 1. In the comment, select the **More Actions** ({{< icon name="ellipsis_v" >}}) menu.
-1. Select **Assign to comment author**:
+1. Select **Assign to comment author**.
 1. To unassign the commenter, select the button again.
 
 ## Create a thread by replying to a standard comment
@@ -365,6 +365,7 @@ such as:
 - LLM for GitLab Self-Managed, GitLab Dedicated: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - LLM for GitLab.com: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 

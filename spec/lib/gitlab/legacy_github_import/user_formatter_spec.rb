@@ -3,20 +3,24 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :importers do
-  include Import::GiteaHelper
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled,
+      import_type: 'gitea'
+    )
+  end
 
-  let_it_be(:project) { create(:project, :import_user_mapping_enabled, :in_group, import_type: 'gitea') }
+  # GitLab's system ghost user - used as mapping for Gitea ghost user
+  let_it_be(:gitlab_ghost_user) { Users::Internal.ghost }
 
-  let_it_be(:source_user_mapper) do
+  let(:source_user_mapper) do
     Gitlab::Import::SourceUserMapper.new(
       namespace: project.root_ancestor,
       import_type: project.import_type,
       source_hostname: 'https://gitea.com'
     )
   end
-
-  # GitLab's system ghost user - used as mapping for Gitea ghost user
-  let_it_be(:gitlab_ghost_user) { Users::Internal.ghost }
 
   let(:client) { instance_double(Gitlab::LegacyGithubImport::Client) }
   let(:gitea_user) { { id: 123456, login: 'octocat', full_name: 'Git Tea', email: 'user@email.com' } }
@@ -74,10 +78,35 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
         end
       end
 
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'returns the personal namespace owner id without creating a source user' do
+          expect { user_formatter.gitlab_id }.not_to change { Import::SourceUser.count }
+          expect(user_formatter.gitlab_id).to eq(user_namespace.owner_id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'returns the import user id' do
+            expect(user_formatter.gitlab_id).to eq(user_namespace.namespace_import_user.user_id)
+          end
+        end
+      end
+
       context 'when user contribution mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(gitea_user)
-          stub_user_mapping_chain(project, false)
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         end
 
         it 'returns GitLab user id when user confirmed primary email matches Gitea email' do
@@ -120,10 +149,35 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
         expect { user_formatter.gitlab_id }.not_to change { User.where(user_type: :placeholder).count }.from(0)
       end
 
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        it 'returns the gitlab ghost user id without creating a source user' do
+          expect { user_formatter.gitlab_id }.not_to change { Import::SourceUser.count }
+          expect(user_formatter.gitlab_id).to eq(gitlab_ghost_user.id)
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          it 'returns the gitlab ghost user id' do
+            expect(user_formatter.gitlab_id).to eq(gitlab_ghost_user.id)
+          end
+        end
+      end
+
       context 'and improved user mapping is disabled' do
         before do
           allow(client).to receive(:user).and_return(ghost_user)
-          stub_user_mapping_chain(project, false)
+          project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         end
 
         it 'returns nil' do
@@ -195,10 +249,36 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       end
     end
 
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+
+      before_all do
+        project.update!(namespace: user_namespace)
+      end
+
+      it 'returns nil' do
+        expect(user_formatter.source_user).to be_nil
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before_all do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'returns a source user' do
+          allow(client).to receive(:user).and_return(gitea_user)
+
+          expect(user_formatter.source_user).to be_an_instance_of(Import::SourceUser)
+        end
+      end
+    end
+
     context 'when user contribution mapping is disabled' do
       before do
         allow(client).to receive(:user).and_return(gitea_user)
-        stub_user_mapping_chain(project, false)
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       end
 
       it 'returns nil' do

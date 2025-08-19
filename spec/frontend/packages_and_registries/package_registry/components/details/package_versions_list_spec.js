@@ -182,7 +182,6 @@ describe('PackageVersionsList', () => {
       expect(uiElements.findRegistryList().props()).toMatchObject({
         items: packageVersions(),
         pagination: {},
-        isLoading: false,
         hiddenDelete: true,
       });
     });
@@ -325,9 +324,7 @@ describe('PackageVersionsList', () => {
       expect(uiElements.findRegistryList().props()).toMatchObject({
         items: packageVersions(),
         pagination: {},
-        isLoading: false,
         hiddenDelete: false,
-        title: '2 versions',
       });
     });
 

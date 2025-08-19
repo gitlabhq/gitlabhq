@@ -27,6 +27,10 @@ module Gitlab
 
               # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job.yaml_variables)
+
+              variables.concat(
+                user_defined_variables(options: job.options, environment: environment, job_variables: job.manual_variables)
+              )
               next
             end
 
@@ -54,6 +58,12 @@ module Gitlab
 
               # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job.yaml_variables)
+              variables.concat(
+                user_defined_variables(
+                  options: job.options, environment: environment, job_variables: job.manual_variables,
+                  expose_project_variables: expose_project_variables, expose_group_variables: expose_group_variables
+                )
+              )
               next
             end
 
@@ -84,6 +94,9 @@ module Gitlab
 
               # yaml_variables is how we inject dynamic configuration into a workload
               variables.concat(job_attr[:yaml_variables])
+
+              # NOTE: We never include user_defined_variables in pipeline_seed as the workload object has not been
+              # persisted yet
               next
             end
 
@@ -158,28 +171,32 @@ module Gitlab
           end
         end
 
-        def secret_instance_variables
+        def secret_instance_variables(only: nil)
           strong_memoize(:secret_instance_variables) do
             instance_variables_builder
-              .secret_variables(protected_ref: protected_ref?)
+              .secret_variables(protected_ref: protected_ref?, only: only)
           end
         end
 
-        def secret_group_variables(environment:, include_protected_vars: protected_ref?)
+        def secret_group_variables(environment:, include_protected_vars: protected_ref?, only: nil)
           strong_memoize_with(:secret_group_variables, environment, include_protected_vars) do
             group_variables_builder
               .secret_variables(
                 environment: environment,
-                protected_ref: include_protected_vars)
+                protected_ref: include_protected_vars,
+                only: only
+              )
           end
         end
 
-        def secret_project_variables(environment:, include_protected_vars: protected_ref?)
+        def secret_project_variables(environment:, include_protected_vars: protected_ref?, only: nil)
           strong_memoize_with(:secret_project_variables, environment, include_protected_vars) do
             project_variables_builder
               .secret_variables(
                 environment: environment,
-                protected_ref: include_protected_vars)
+                protected_ref: include_protected_vars,
+                only: only
+              )
           end
         end
 
@@ -279,10 +296,17 @@ module Gitlab
         end
 
         def user_defined_variables(options:, environment:, job_variables: nil, expose_group_variables: protected_ref?, expose_project_variables: protected_ref?) # rubocop:disable Lint/UnusedMethodArgument -- options will be used in EE
+          only = if pipeline.only_workload_variables?
+                   pipeline.workload&.included_ci_variable_names || []
+                 end
+
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables))
-            variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables))
+            variables.concat(secret_instance_variables(only: only))
+            variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables, only: only))
+            variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables, only: only))
+
+            next if pipeline.only_workload_variables?
+
             variables.concat(pipeline.variables)
             variables.concat(pipeline_schedule_variables)
             variables.concat(job_variables)
@@ -301,7 +325,7 @@ module Gitlab
 
         def protected_ref?
           strong_memoize(:protected_ref) do
-            project.protected_for?(pipeline.jobs_git_ref)
+            pipeline.protected_ref?
           end
         end
 

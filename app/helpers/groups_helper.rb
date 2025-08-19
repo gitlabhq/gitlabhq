@@ -170,6 +170,23 @@ module GroupsHelper
     }
   end
 
+  def group_archive_settings_app_data(group)
+    {
+      resource_type: 'group',
+      resource_id: group.id,
+      resource_path: group_path(group)
+    }
+  end
+
+  def group_unarchive_settings_app_data(group)
+    {
+      resource_type: 'group',
+      resource_id: group.id,
+      resource_path: group_path(group),
+      ancestors_archived: group.ancestors_archived?.to_s
+    }
+  end
+
   def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""
@@ -190,9 +207,7 @@ module GroupsHelper
 
   def access_level_roles_user_can_assign(group, roles)
     max_access_level = group.max_member_access_for_user(current_user)
-    roles.select do |_name, access_level|
-      access_level <= max_access_level
-    end
+    Authz::Role.roles_user_can_assign(max_access_level, roles)
   end
 
   def groups_projects_more_actions_dropdown_data(source)

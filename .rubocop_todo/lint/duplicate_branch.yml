@@ -5,7 +5,6 @@ Lint/DuplicateBranch:
     - 'app/helpers/icons_helper.rb'
     - 'app/helpers/labels_helper.rb'
     - 'app/models/application_setting_implementation.rb'
-    - 'app/models/packages/package.rb'
     - 'app/models/release.rb'
     - 'app/services/admin/set_feature_flag_service.rb'
     - 'app/services/ci/job_token_scope/add_project_service.rb'

@@ -30,7 +30,8 @@ module ClickHouseHelpers
   def insert_ci_builds_to_click_house(builds)
     result = clickhouse_fixture(:ci_finished_builds, builds.map do |build|
       build.slice(
-        %i[id project_id pipeline_id status finished_at created_at started_at queued_at runner_id]).symbolize_keys
+        %i[id project_id pipeline_id status finished_at created_at started_at queued_at runner_id name
+          stage_id]).symbolize_keys
           .merge(
             runner_run_untagged: build.runner&.run_untagged,
             runner_type: Ci::Runner.runner_types[build.runner&.runner_type],

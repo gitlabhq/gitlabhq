@@ -41,25 +41,22 @@ class ProjectMember < Member
 
     # For those who get to see a modal with a role dropdown, here are the options presented
     def permissible_access_level_roles(current_user, project)
-      # This method is a stopgap in preparation for https://gitlab.com/gitlab-org/gitlab/-/issues/364087
-      if Ability.allowed?(current_user, :manage_owners, project)
-        Gitlab::Access.options_with_owner
-      else
-        ProjectMember.access_level_roles
-      end
-    end
+      return {} if current_user.nil?
 
-    def permissible_access_level_roles_for_project_access_token(current_user, project)
       if Ability.allowed?(current_user, :manage_owners, project)
         Gitlab::Access.options_with_owner
       else
         max_access_level = project.team.max_member_access(current_user.id)
         return {} unless max_access_level.present?
 
-        ProjectMember.access_level_roles.filter do |_, value|
-          value <= max_access_level
-        end
+        Authz::Role.roles_user_can_assign(max_access_level)
       end
+    end
+
+    # TODO: Remove this method and call permissible_access_level_roles directly
+    # See: https://gitlab.com/gitlab-org/gitlab/-/issues/550264
+    def permissible_access_level_roles_for_project_access_token(current_user, project)
+      permissible_access_level_roles(current_user, project)
     end
 
     def access_level_roles

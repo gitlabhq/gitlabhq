@@ -155,7 +155,7 @@ module Emails
         issue_email_participant = @issue.issue_email_participants.find_by_email(@issue.external_author)
       end
 
-      @sent_notification = SentNotification.record(@issue, @support_bot.id, reply_key, {
+      @sent_notification = SentNotification.record(@issue, @support_bot.id, {
         issue_email_participant: issue_email_participant
       })
     end

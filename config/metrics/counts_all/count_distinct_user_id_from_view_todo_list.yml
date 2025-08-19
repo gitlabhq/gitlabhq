@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_view_todo_list
 description: Count of unique users that viewed the To-Do List
-product_group: personal_productivity
+product_group: engagement
 product_categories:
 - notifications
 performance_indicator_type: []

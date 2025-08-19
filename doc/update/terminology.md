@@ -37,13 +37,15 @@ Most features should be deprecated and then removed.
 
 ## Breaking change
 
-A "breaking change" is any change that requires users to make a corresponding change to their code, settings, or workflow. "Users" might be humans, API clients, or even code classes that "use" another class. Examples of breaking changes include:
+Any change counts as a breaking change if customers need to take action to ensure their GitLab workflows aren't disrupted.
 
-- Removing a user-facing feature without a replacement/workaround.
-- Changing the definition of an existing API (by doing things like re-naming query parameters or changing routes).
-- Removing a public method from a code class.
+A breaking change could come from sources such as:
 
-A breaking change can be considered major if it affects many users, or represents a significant change in behavior.
+- An intentional product change
+- A configuration update
+- A third-party deprecation
+
+By default, no breaking change is allowed unless the breaking change implementation plan has been approved by leadership.
 
 ## Third-party dependencies
 

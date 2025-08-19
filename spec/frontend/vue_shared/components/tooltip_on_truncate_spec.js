@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import waitForPromises from 'helpers/wait_for_promises';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -234,8 +235,7 @@ describe('TooltipOnTruncate component', () => {
           title: SHORT_TITLE,
         });
 
-        await nextTick();
-        await nextTick(); // wait 2 times to get an updated slot
+        await waitForPromises();
 
         expect(getTooltipValue()).toMatchObject({
           title: SHORT_TITLE,
@@ -266,8 +266,7 @@ describe('TooltipOnTruncate component', () => {
           title: SHORT_TITLE,
         });
 
-        await nextTick();
-        await nextTick(); // wait 2 times to get an updated slot
+        await waitForPromises();
 
         expect(getTooltipValue()).toMatchObject({
           title: SHORT_TITLE,

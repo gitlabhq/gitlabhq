@@ -12,6 +12,12 @@ title: Namespaces API
 
 {{< /details >}}
 
+{{< history >}}
+
+- Visibility of billing-related fields changed in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `restrict_namespace_api_billing_fields`. Disabled by default.
+
+{{< /history >}}
+
 Use this API to interact with namespaces, a special resource category used to organize users and groups. For more information, see [namespaces](../user/namespace/_index.md).
 
 This API uses [Pagination](rest/_index.md#pagination) to filter results.

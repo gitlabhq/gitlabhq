@@ -144,6 +144,10 @@ module API
           access_token.user || raise(UnauthorizedError)
         end
 
+        def set_agent_on_context(agent:)
+          ::Gitlab::ApplicationContext.push(kubernetes_agent: agent)
+        end
+
         def access_token
           return unless params[:access_key].present?
 

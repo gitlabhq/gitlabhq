@@ -75,7 +75,7 @@ To track user interactions in the browser, Do-Not-Track (DNT) needs to be disabl
 Tableau is a data visualization platform and allows building dashboards and GUI based discovery of events and metrics.
 This method of discovery is most suited for users who are familiar with business intelligence tooling, basic verifications
 and for creating persisted, shareable dashboards and visualizations.
-Access to Tableau requires an [access request](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access).
+Access to Tableau requires an [access request](https://handbook.gitlab.com/handbook/security/corporate/end-user-services/access-requests).
 
 #### Checking events
 
@@ -135,7 +135,7 @@ For a list of other metrics tables refer to the [Data Models Cheat Sheet](https:
 ### Product Analytics
 
 Internal Analytics is dogfooding the GitLab [Product Analytics](https://www.youtube.com/watch?v=i8Mze9lRZiY?) functionality, which allows you to visualize events as well.
-The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#create-a-dashboard-by-configuration-deprecated) explains how to build custom visualizations and dashboards.
+The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#create-a-dashboard-by-configuration) explains how to build custom visualizations and dashboards.
 The custom dashboards accessible [within the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/analytics/dashboards) are defined in a [separate repository](https://gitlab.com/gitlab-org/analytics-section/gitlab-com-dashboards).
 It is possible to build dashboards based on events instrumented via the Internal events system. Only events emitted by the .com installation will be counted in those visualizations.
 

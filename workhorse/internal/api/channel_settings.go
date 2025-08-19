@@ -19,7 +19,7 @@ type ChannelSettings struct {
 	Subprotocols []string
 
 	// The websocket URL to connect to.
-	Url string //nolint:revive,stylecheck // when JSON decoding, the value is provided via 'url'
+	Url string //nolint:revive // when JSON decoding, the value is provided via 'url'
 
 	// Any headers (e.g., Authorization) to send with the websocket request
 	Header http.Header

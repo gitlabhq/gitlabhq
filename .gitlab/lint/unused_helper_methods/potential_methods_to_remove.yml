@@ -13,14 +13,10 @@ user_group_saml_omniauth_metadata_path:
   file: ee/app/helpers/ee/gitlab_routing_helper.rb
 saas_user_caps_i18n_string:
   file: ee/app/helpers/ee/groups/settings_helper.rb
-project_compliance_framework_app_data:
-  file: ee/app/helpers/ee/projects_helper.rb
 discover_page_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
 discover_duo_pro_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
-buy_addon_data:
-  file: ee/app/helpers/subscriptions_helper.rb
 can_view_namespace_catalog?:
   file: app/helpers/ci/catalog/resources_helper.rb
 js_ci_catalog_data:
@@ -73,11 +69,11 @@ sidebar_tracking_attributes_by_object:
   file: app/helpers/sidebars_helper.rb
 scope_avatar_classes:
   file: app/helpers/sidebars_helper.rb
-sort_value_stars_asc:
-  file: app/helpers/sorting_titles_values_helper.rb
 group_or_project_milestone_path:
   file: app/helpers/timeboxes_helper.rb
-can_admin_project_milestones?:
-  file: app/helpers/timeboxes_helper.rb
-all_visibility_levels_restricted?:
-  file: app/helpers/visibility_level_helper.rb
+commit_branches_links:
+  file: app/helpers/commits_helper.rb
+commit_tags_links:
+  file: app/helpers/commits_helper.rb
+sort_title_stars:
+  file: app/helpers/sorting_titles_values_helper.rb

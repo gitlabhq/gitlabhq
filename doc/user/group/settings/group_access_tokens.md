@@ -7,7 +7,7 @@ title: Group access tokens
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -20,29 +20,30 @@ With group access tokens, you can use a single token to:
 You can use a group access token to authenticate:
 
 - With the [GitLab API](../../../api/rest/authentication.md#personalprojectgroup-access-tokens).
-- Authenticate with Git over HTTPS.
-  Use:
+- Authenticate with Git over HTTPS. Use:
 
   - Any non-blank value as a username.
   - The group access token as the password.
-
-> On GitLab.com, you can use group access tokens if you have the Premium or Ultimate license tier. Group access tokens are not available with a [trial license](https://about.gitlab.com/free-trial/).
->
-> On GitLab Dedicated and GitLab Self-Managed instances, you can use group access tokens with any license tier. If you have the Free tier:
->
-> - Review your security and compliance policies around [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
-> - Consider [restricting the creation of group access tokens](#restrict-the-creation-of-group-access-tokens) to lower potential abuse.
 
 Group access tokens are similar to [project access tokens](../../project/settings/project_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), except they are
 associated with a group rather than a project or user.
 
-In GitLab Self-Managed instances, group access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
-
 You cannot use group access tokens to create other group, project, or personal access tokens.
 
 Group access tokens inherit the [default prefix setting](../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix)
 configured for personal access tokens.
+
+## Availability
+
+- On GitLab.com, you can use group access tokens if you have the Premium or Ultimate license tier,
+  but not with a [trial license](https://about.gitlab.com/free-trial/).
+- On GitLab Dedicated and GitLab Self-Managed instances:
+  - You can use group access tokens with any license tier. If you have the Free tier:
+    - Review your security and compliance policies around [user self-enrollment](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups).
+    - Consider [restricting the creation of group access tokens](#restrict-the-creation-of-group-access-tokens) to lower potential abuse.
+  - Group access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens)
+    as personal access tokens if the limit is set.
 
 ## Create a group access token
 
@@ -144,16 +145,14 @@ If you are an administrator, you can create group access tokens in the Rails con
 {{< history >}}
 
 - Ability to view expired and revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
-- Ability to view expired and revoked tokens limited to 30 days and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
+- Ability to view expired and revoked tokens until they are automatically deleted and [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/471683) in GitLab 17.9. Feature flag `retain_resource_access_token_user_after_revoke` removed.
 
 {{< /history >}}
 
 In GitLab 17.9 and later, you can view both active and inactive group
 access tokens on the access tokens page.
 
-The inactive group access tokens table displays revoked and expired tokens for 30 days after they became inactive.
-
-Tokens that belong to [an active token family](../../../api/personal_access_tokens.md#automatic-reuse-detection) are displayed for 30 days after the latest active token from the family is expired or revoked.
+The inactive group access tokens table displays revoked and expired tokens until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 To revoke or rotate a group access token:
 
@@ -257,11 +256,11 @@ GitLab runs a check every day at 1:00 AM UTC to identify group access tokens tha
   - The [group setting](../manage.md#expiry-emails-for-group-and-project-access-tokens) for the group or any parent group.
   - On GitLab Self-Managed, the [instance setting](../../../administration/settings/email.md#group-and-project-access-token-expiry-emails-to-inherited-members).
 
-Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) for 30 days after the tokens expire.
+Your expired access tokens are listed in the [inactive group access tokens table](#revoke-or-rotate-a-group-access-token) until they are [automatically deleted](../../project/settings/project_access_tokens.md#inactive-token-retention).
 
 ## Bot users for groups
 
-Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/self_managed/_index.md#billable-users).
+Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users).
 Each time you create a group access token, a bot user is created and added to the group.
 These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added

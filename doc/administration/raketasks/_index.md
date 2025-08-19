@@ -20,7 +20,7 @@ All Rake tasks must be run on a Rails node unless the documentation for a task s
 You can perform GitLab Rake tasks by using:
 
 - `gitlab-rake <raketask>` for [Linux package](https://docs.gitlab.com/omnibus/) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
-- `bundle exec rake <raketask>` for [self-compiled](../../install/installation.md) installations.
+- `bundle exec rake <raketask>` for [self-compiled](../../install/self_compiled/_index.md) installations.
 
 ## Available Rake tasks
 

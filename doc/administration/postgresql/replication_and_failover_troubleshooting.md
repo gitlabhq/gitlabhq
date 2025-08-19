@@ -467,7 +467,7 @@ when the leader was upgraded:
 
 Repeat this procedure on the other replica if required.
 
-## PostgreSQL replicas stuck in loop while being created 
+## PostgreSQL replicas stuck in loop while being created
 
 If PostgreSQL replicas appear to migrate but then restart in a loop, check the
 `/opt/gitlab-data/postgresql/` folder permissions on your replicas and primary server.

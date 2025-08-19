@@ -3710,7 +3710,7 @@ job:
 
 **追加の詳細情報**
 
-- `description`は、`release-cli`を実行するShellによって評価されます。説明の定義にはCI/CD変数を使用できますが、一部のShellでは変数を参照するために[使用する構文が異なります](../variables/_index.md#use-cicd-variables-in-job-scripts)。同じように、一部のShellでは特殊文字をエスケープすることが必要になる場合があります。たとえば、バッククォート（`` ` ``）をバックスラッシュ（<code>\</code>）でエスケープことが必要になる場合があります。
+- `description`は、`release-cli`を実行するShellによって評価されます。説明の定義にはCI/CD変数を使用できますが、一部のShellでは変数を参照するために[使用する構文が異なります](../variables/_index.md#use-cicd-variables-in-job-scripts)。同じように、一部のShellでは特殊文字をエスケープすることが必要になる場合があります。たとえば、バッククォート（`` ` ``）をバックスラッシュ（` \ `）でエスケープことが必要になる場合があります。
 
 #### `release:ref`
 

@@ -286,9 +286,10 @@ end
 
 Removes specified fields from an index.
 
-Requires the `index_name` method and `DOCUMENT_TYPE` constant. If there is one field to remove, add the `field_to_remove` method, otherwise add `fields_to_remove` with an array of fields.
+Checks in batches if any documents that match `DOCUMENT_TYPE` have the fields specified in Elasticsearch. If documents exist, uses a Painless script to perform `update_by_query`.
 
-Checks in batches if any documents that match `document_type` have the fields specified in Elasticsearch. If documents exist, uses a Painless script to perform `update_by_query`.
+- For single fields, define `field_to_remove` method and `DOCUMENT_TYPE` constant
+- For multiple fields, define `fields_to_remove` method and `DOCUMENT_TYPE` constant
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -297,15 +298,9 @@ class MigrationName < Elastic::Migration
   batched!
   throttle_delay 1.minute
 
+  DOCUMENT_TYPE = User
+
   private
-
-  def index_name
-    User.__elasticsearch__.index_name
-  end
-
-  def document_type
-    'user'
-  end
 
   def fields_to_remove
     %w[two_factor_enabled has_projects]
@@ -629,12 +624,6 @@ end
 
 If a migration fails or is halted on GitLab.com, we prefer to revert the change that introduced the migration. This
 prevents self-managed customers from receiving a broken migration and reduces the need for backports.
-
-### When to merge
-
-We prefer not to merge migrations within 1 week of the release. This allows time for a revert if a migration fails or
-doesn't work as expected. Migrations still in development or review during the final week of the release should be pushed
-to the next milestone.
 
 ### Multi-version compatibility
 

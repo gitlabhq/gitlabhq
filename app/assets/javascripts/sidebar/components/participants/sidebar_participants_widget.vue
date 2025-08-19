@@ -26,7 +26,7 @@ export default {
   },
   data() {
     return {
-      participants: [],
+      participants: {},
     };
   },
   apollo: {
@@ -41,7 +41,8 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.issuable?.participants.nodes || [];
+        const issuableData = data.workspace?.issuable;
+        return issuableData?.participants || {};
       },
       skip() {
         return !this.iid;
@@ -58,6 +59,12 @@ export default {
     isLoading() {
       return this.$apollo.queries.participants.loading;
     },
+    participantNodes() {
+      return this.participants.nodes || [];
+    },
+    participantCount() {
+      return this.participants.count || 0;
+    },
   },
 };
 </script>
@@ -65,8 +72,9 @@ export default {
 <template>
   <sidebar-participants
     :loading="isLoading"
-    :participants="participants"
+    :participants="participantNodes"
     :number-of-less-participants="8"
+    :participant-count="participantCount"
     :lazy="false"
     class="block participants"
     @toggleSidebar="$emit('toggleSidebar')"

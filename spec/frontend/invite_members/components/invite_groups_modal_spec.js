@@ -147,7 +147,6 @@ describe('InviteGroupsModal', () => {
       createComponent({ freeUserCapEnabled: true });
 
       expect(findInviteGroupAlert().props()).toMatchObject({
-        name: propsData.name,
         notificationText: GROUP_MODAL_TO_GROUP_ALERT_BODY,
         notificationLink: GROUP_MODAL_TO_GROUP_ALERT_LINK,
       });
@@ -157,7 +156,6 @@ describe('InviteGroupsModal', () => {
       createComponent({ freeUserCapEnabled: true, isProject: true });
 
       expect(findInviteGroupAlert().props()).toMatchObject({
-        name: propsData.name,
         notificationText: GROUP_MODAL_TO_PROJECT_ALERT_BODY,
         notificationLink: GROUP_MODAL_TO_PROJECT_ALERT_LINK,
       });

@@ -371,7 +371,8 @@ RSpec.describe 'Merge request > User sees pipelines triggered by merge request',
             detached_merge_request_pipeline.reload.drop!
           end
 
-          context 'when the parent project enables pipeline must succeed' do
+          context 'when the parent project enables pipeline must succeed', :request_store,
+            quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523985' do
             it 'shows Set to auto-merge button' do
               visit project_merge_request_path(project, merge_request)
 

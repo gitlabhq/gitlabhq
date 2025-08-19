@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'Git push over HTTP', :smoke, :skip_fips_env, product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'Git push over HTTP', :smoke, :skip_fips_env do
       let(:test_user) { Runtime::User::Store.test_user }
 
       it 'user using a personal access token pushes code to the repository',

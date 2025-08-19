@@ -1,7 +1,6 @@
 ---
 RSpec/RepeatedExampleGroupDescription:
   Exclude:
-    - 'ee/spec/graphql/resolvers/vulnerabilities_grade_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/vulnerability_severities_count_resolver_spec.rb'
     - 'ee/spec/lib/gitlab/auth/ldap/person_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/approval_project_rules_with_user_metric_spec.rb'

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
     # admin required to check if feature flag is enabled
-    describe 'Batch comments in merge request', :smoke, product_group: :code_review do
+    describe 'Batch comments in merge request', :smoke do
       let(:project) { create(:project, name: 'project-with-merge-request') }
       let(:merge_request) do
         create(:merge_request, title: 'This is a merge request', description: 'Great feature', project: project)

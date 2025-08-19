@@ -7,17 +7,15 @@
     width: 500px;
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
+  /* stylelint-disable gitlab/no-gl-class */
   .gl-infinite-scroll-legend {
     display: none;
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tabs {
     overflow-y: auto;
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-tabs-nav {
     flex-wrap: nowrap;
     overflow-x: scroll;
@@ -33,15 +31,25 @@
     }
   }
 
-  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-spinner-container {
     width: 100%;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
   }
+
+  .gl-drawer-close-button {
+    margin-top: $gl-spacing-scale-3
+  }
+  /* stylelint-enable gitlab/no-gl-class */
 }
 
 .whats-new-modal-backdrop {
   z-index: 699;
+}
+
+.whats-new-article-drawer {
+  @media (min-width: $breakpoint-md) {
+    width: 500px;
+  }
 }

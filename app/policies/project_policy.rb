@@ -3,7 +3,21 @@
 class ProjectPolicy < BasePolicy
   include ArchivedAbilities
 
-  desc "Project has public builds enabled"
+  UPDATE_JOB_PERMISSIONS = [
+    :update_build, # TODO: remove usages of this permission
+    :play_job
+    # :retry_job,
+    # :unschedule_job,
+    # :manage_job_artifacts
+  ].freeze
+
+  CLEANUP_JOB_PERMISSIONS = [
+    :cancel_build,
+    :erase_build
+  ].freeze
+
+  # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
+  desc "Project-based pipeline visibility enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
 
   # For guest access we use #team_member? so we can use
@@ -600,9 +614,7 @@ class ProjectPolicy < BasePolicy
     enable :update_merge_request
     enable :reopen_merge_request
     enable :create_commit_status
-    enable :update_commit_status
     enable :create_build
-    enable :update_build
     enable :cancel_build
     enable :read_resource_group
     enable :update_resource_group
@@ -640,6 +652,8 @@ class ProjectPolicy < BasePolicy
     enable :update_escalation_status
     enable :read_secure_files
     enable :update_sentry_issue
+
+    UPDATE_JOB_PERMISSIONS.each { |perm| enable(perm) }
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -663,7 +677,6 @@ class ProjectPolicy < BasePolicy
     enable :admin_wiki
     enable :admin_project
     enable :admin_integrations
-    enable :admin_commit_status
     enable :admin_build
     enable :admin_container_image
     enable :admin_pipeline
@@ -693,9 +706,9 @@ class ProjectPolicy < BasePolicy
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
     enable :register_project_runners
-    enable :create_runner
-    enable :admin_project_runners
-    enable :read_project_runners
+    enable :create_runners
+    enable :admin_runners
+    enable :read_runners
     enable :read_runners_registration_token
     enable :update_runners_registration_token
     enable :admin_project_google_cloud
@@ -708,7 +721,6 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
-    enable :admin_runner
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
     enable :manage_protected_tags
@@ -727,7 +739,6 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
-  rule { can?(:admin_runner) }.enable :read_runner
 
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard
@@ -845,12 +856,13 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
+    UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+    CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+
     prevent :read_build
     prevent :create_build
-    prevent :update_build
     prevent :admin_build
     prevent :destroy_build
-    prevent :cancel_build
 
     prevent :read_pipeline_schedule
     prevent :create_pipeline_schedule
@@ -889,8 +901,6 @@ class ProjectPolicy < BasePolicy
 
     prevent :read_commit_status
     prevent :create_commit_status
-    prevent :update_commit_status
-    prevent :admin_commit_status
     prevent :destroy_commit_status
   end
 
@@ -901,7 +911,6 @@ class ProjectPolicy < BasePolicy
     prevent :download_code
     prevent :build_download_code
     prevent :fork_project
-    prevent :read_commit_status
     prevent :read_pipeline
     prevent :read_pipeline_schedule
 
@@ -969,7 +978,9 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { public_or_internal & job_token_builds }.policy do
-    enable :read_commit_status # this is additionally needed to download artifacts
+    # this is additionally needed to download artifacts
+    enable :read_commit_status
+    enable :read_build
   end
 
   rule { public_or_internal & job_token_releases }.policy do
@@ -996,6 +1007,7 @@ class ProjectPolicy < BasePolicy
     enable :read_environment
     enable :read_deployment
     enable :read_commit_status
+    enable :read_build
     enable :read_container_image
     enable :read_code
     enable :download_code
@@ -1011,18 +1023,19 @@ class ProjectPolicy < BasePolicy
     enable :read_issue
   end
 
-  rule { can?(:public_access) & public_builds }.policy do
+  rule { public_builds & can?(:public_access) }.policy do
     enable :read_ci_cd_analytics
     enable :read_pipeline_schedule
   end
 
-  rule { public_builds }.policy do
-    enable :read_build
-  end
-
   rule { public_builds & can?(:guest_access) }.policy do
+    enable :read_build
     enable :read_pipeline
     enable :read_pipeline_schedule
+  end
+
+  rule { ~public_builds & ~can?(:reporter_access) }.policy do
+    prevent :read_build
   end
 
   # These rules are included to allow maintainers of projects to push to certain
@@ -1181,7 +1194,7 @@ class ProjectPolicy < BasePolicy
 
   rule { ~admin & ~organization_owner & ~project_runner_registration_allowed }.policy do
     prevent :register_project_runners
-    prevent :create_runner
+    prevent :create_runners
   end
 
   rule { ~runner_registration_token_enabled }.policy do

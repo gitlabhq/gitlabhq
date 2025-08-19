@@ -2,7 +2,7 @@
 
 module Ci
   class DropPipelineService
-    PRELOADED_RELATIONS = [:project, :pipeline, :metadata, :deployment, :taggings].freeze
+    PRELOADED_RELATIONS = [:project, :pipeline, :metadata, :job_definition, :deployment, :taggings].freeze
 
     # execute service asynchronously for each cancelable pipeline
     def execute_async_for_all(pipelines, failure_reason, context_user)

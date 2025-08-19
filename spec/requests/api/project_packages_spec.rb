@@ -710,7 +710,7 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:no_content)
         end
 
-        it_behaves_like 'enqueue a worker to sync a metadata cache' do
+        it_behaves_like 'enqueue a worker to sync a npm metadata cache' do
           let(:package_name) { package1.name }
 
           subject { delete api(package_url, user) }
@@ -837,12 +837,30 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
           delete api(package_url, user)
         end
 
-        it_behaves_like 'does not enqueue a worker to sync a metadata cache' do
+        it_behaves_like 'does not enqueue a worker to sync a npm metadata cache' do
           before do
             project.add_maintainer(user)
           end
 
           subject { delete api(package_url, user) }
+        end
+
+        it_behaves_like 'does not enqueue a worker to sync a helm metadata cache' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          subject(:execute) { delete api(package_url, user) }
+        end
+      end
+
+      context 'with a helm package' do
+        let_it_be(:package1) { create(:helm_package, project: project) }
+        let_it_be(:channel) { 'stable' }
+        let_it_be(:package_file) { create(:helm_package_file, package: package1, channel: channel) }
+
+        it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
+          subject(:execute) { delete api(package_url, user) }
         end
       end
     end

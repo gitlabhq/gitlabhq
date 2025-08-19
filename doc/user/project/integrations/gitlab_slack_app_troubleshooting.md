@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting GitLab for Slack app
+description: "Troubleshooting guide for the GitLab for Slack app. Covers common issues like missing projects and notification problems."
 ---
 
 {{< details >}}

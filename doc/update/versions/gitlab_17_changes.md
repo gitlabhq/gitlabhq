@@ -2,7 +2,8 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab 17 changes
+title: GitLab 17 upgrade notes
+description: Upgrade notes for GitLab 17 versions.
 ---
 
 {{< details >}}
@@ -18,7 +19,8 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
+For additional information for Helm chart installations, see
+[the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0.html).
 
 ## Issues to be aware of when upgrading from 16.11
 
@@ -455,7 +457,7 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
 ## 17.7.0
 
-- Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - FIPS Linux packages now use the system Libgcrypt, except FIPS Linux packages for AmazonLinux 2. Previous versions of the FIPS Linux packages used the
   same Libgcrypt used by the regular Linux packages, which was a bug. For more information, see
   the GitLab development documentation about FIPS.
@@ -537,7 +539,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
     database migrations as your existing environments. This isn't necessary if you're restoring from backup into the
     new environment as the database restore removes the existing database schema definition and uses the definition
     that's stored as part of the backup.
-- Git 2.46.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.46.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - S3 object storage uploads in Workhorse are now handled by default using the [AWS SDK v2 for Go](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164597). If you experience issues
   with S3 object storage uploads, you can downgrade to v1 of by disabling the `workhorse_use_aws_sdk_v2` [feature flag](../../administration/feature_flags/_index.md#enable-or-disable-the-feature).
 - When you upgrade to GitLab 17.4, an OAuth application is generated for the Web IDE.
@@ -561,7 +563,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
 ## 17.3.0
 
-- Git 2.45.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Git 2.45.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 
 ### Geo installations 17.3.0
 
@@ -644,7 +646,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 - The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
   For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
 - Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
-  you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+  you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - Upgrading to GitLab 17.1.0 or 17.1.1 or having unfinished background migrations from GitLab 17.0 can result
   in a failure when running the migrations.
   This is due to a bug.
@@ -658,7 +660,7 @@ A data change might take many hours to complete on larger GitLab instances, at a
 processed per hour. If your instance is affected:
 
 1. Upgrade to 17.1.
-1. [Make sure all batched migrations have completed successfully](../background_migrations.md#batched-background-migrations).
+1. [Make sure all batched migrations have completed successfully](../background_migrations.md#check-for-pending-database-background-migrations).
 1. Upgrade to 17.2 or 17.3.
 
 To check if you are affected:
@@ -675,7 +677,7 @@ To check if you are affected:
    instance meets the threshold for this required stop. Instances reporting `0 rows` can skip
    the 17.1 upgrade stop.
 
-GitLab 17.1 introduced a [batched background migration](../background_migrations.md#batched-background-migrations)
+GitLab 17.1 introduced a [batched background migration](../background_migrations.md#check-for-pending-database-background-migrations)
 that ensures every record in the `ci_pipeline_messages` table has the [correct partitioning key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153391).
 Partitioning CI tables is expected to provide performance improvements for instances with large amounts of CI data.
 
@@ -791,58 +793,58 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
 
    On GitLab >= 18.0.0, >= 17.11.2, >= 17.10.6, or >= 17.9.8, run:
 
-      ```shell
-      gitlab-rake gitlab:doctor:encryption_keys
-      ```
+   ```shell
+   gitlab-rake gitlab:doctor:encryption_keys
+   ```
 
    For other versions, you can proceed directly to select a reference node ("Case 1" in the following list), as we assume you don't have encrypted data yet.
 
    Based on the command output, determine which process to follow:
 
    - Case 1: If all `Encryption keys usage for <model>` reports show `NONE`:
-       - Select any Sidekiq or GitLab application node as the reference node.
-       - Copy `/etc/gitlab/gitlab-secrets.json` from this node to all other nodes.
+     - Select any Sidekiq or GitLab application node as the reference node.
+     - Copy `/etc/gitlab/gitlab-secrets.json` from this node to all other nodes.
    - Case 2: If all reported keys use the same key ID:
      - Select the node where the key exists as the reference node.
      - Copy `/etc/gitlab/gitlab-secrets.json` from this node to all other nodes.
 
        For example, if node 1 provides the following output:
 
-        ```shell
-        Gathering existing encryption keys:
-        - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
-        - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
+       ```shell
+       Gathering existing encryption keys:
+       - active_record_encryption_primary_key: ID => `bb32`; truncated secret => `bEt...eBU`
+       - active_record_encryption_deterministic_key: ID => `445f`; truncated secret => `MJo...yg5`
 
-        [... snipped for brevity ...]
+       [... snipped for brevity ...]
 
-        Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-        Encryption keys usage for Ai::ActiveContext::Connection: NONE
-        Encryption keys usage for CloudConnector::Keys: NONE
-        Encryption keys usage for DependencyProxy::GroupSetting:
-        - `bb32` => 8
-        Encryption keys usage for Ci::PipelineScheduleInput:
-        - `bb32` => 1
-        ```
+       Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+       Encryption keys usage for Ai::ActiveContext::Connection: NONE
+       Encryption keys usage for CloudConnector::Keys: NONE
+       Encryption keys usage for DependencyProxy::GroupSetting:
+       - `bb32` => 8
+       Encryption keys usage for Ci::PipelineScheduleInput:
+       - `bb32` => 1
+       ```
 
-        And node 2 provides the following output (the `(UNKNOWN KEY!)` is fine as long as a single key ID is used. For example, `bb32` here):
+       And node 2 provides the following output (the `(UNKNOWN KEY!)` is fine as long as a single key ID is used. For example, `bb32` here):
 
-        ```shell
-        Gathering existing encryption keys:
-        - active_record_encryption_primary_key: ID => `83kf`; truncated secret => `pKq...ikC`
-        - active_record_encryption_deterministic_key: ID => `b722`; truncated secret => `Lma...iJ7`
+       ```shell
+       Gathering existing encryption keys:
+       - active_record_encryption_primary_key: ID => `83kf`; truncated secret => `pKq...ikC`
+       - active_record_encryption_deterministic_key: ID => `b722`; truncated secret => `Lma...iJ7`
 
-        [... snipped for brevity ...]
+       [... snipped for brevity ...]
 
-        Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
-        Encryption keys usage for Ai::ActiveContext::Connection: NONE
-        Encryption keys usage for CloudConnector::Keys: NONE
-        Encryption keys usage for DependencyProxy::GroupSetting:
-        - `bb32` (UNKNOWN KEY!) => 8
-        Encryption keys usage for Ci::PipelineScheduleInput:
-        - `bb32` (UNKNOWN KEY!) => 1
-        ```
+       Encryption keys usage for VirtualRegistries::Packages::Maven::Upstream: NONE
+       Encryption keys usage for Ai::ActiveContext::Connection: NONE
+       Encryption keys usage for CloudConnector::Keys: NONE
+       Encryption keys usage for DependencyProxy::GroupSetting:
+       - `bb32` (UNKNOWN KEY!) => 8
+       Encryption keys usage for Ci::PipelineScheduleInput:
+       - `bb32` (UNKNOWN KEY!) => 1
+       ```
 
-        In this example, select node 1 as the reference node because it contains the `bb32` key that's used by both nodes.
+       In this example, select node 1 as the reference node because it contains the `bb32` key that's used by both nodes.
    - Case 3: If different key IDs are used for the same data across nodes (for example, if node 1 shows `-bb32 => 1` and node 2 shows `-83kf => 1`):
      - This requires re-encrypting all data with a single encryption key.
      - Alternatively, if you're willing to lose some data, you can delete records so all remaining records use the same key ID.

@@ -4,10 +4,9 @@ module Gitlab
   module GithubImport
     module Importer
       class IssueImporter
-        include Gitlab::GithubImport::PushPlaceholderReferences
+        include ::Import::PlaceholderReferences::Pusher
 
-        attr_reader :project, :issue, :client, :user_finder, :milestone_finder,
-          :issuable_finder, :mapper
+        attr_reader :project, :issue, :client, :user_finder, :milestone_finder, :issuable_finder
 
         # Imports an issue if it's a regular issue and not a pull request.
         def self.import_if_issue(issue, project, client)
@@ -24,7 +23,6 @@ module Gitlab
           @user_finder = GithubImport::UserFinder.new(project, client)
           @milestone_finder = MilestoneFinder.new(project)
           @issuable_finder = GithubImport::IssuableFinder.new(project, issue)
-          @mapper = Gitlab::GithubImport::ContributionsMapper.new(project)
         end
 
         def execute
@@ -76,21 +74,17 @@ module Gitlab
         end
 
         def push_issue_placeholder_references(new_issue)
-          return unless mapper.user_mapping_enabled?
-
-          user_mapper = mapper.user_mapper
-
-          push_with_record(new_issue, :author_id, issue.author&.id, user_mapper)
+          push_reference(project, new_issue, :author_id, issue.author&.id)
 
           new_issue.issue_assignees.each do |issue_assignee|
             github_user_id = issue_assignee_map[issue_assignee.user_id]
 
-            push_with_composite_key(
+            push_reference_with_composite_key(
+              project,
               issue_assignee,
               :user_id,
               { 'user_id' => issue_assignee.user_id, 'issue_id' => issue_assignee.issue_id },
-              github_user_id,
-              user_mapper
+              github_user_id
             )
           end
         end

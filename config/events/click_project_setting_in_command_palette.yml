@@ -9,7 +9,7 @@ identifiers:
 additional_properties:
   label:
     description: text of the result that was selected
-product_group: personal_productivity
+product_group: engagement
 milestone: '17.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163735
 tiers:

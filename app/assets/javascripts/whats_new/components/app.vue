@@ -1,26 +1,26 @@
 <script>
-import { GlDrawer, GlInfiniteScroll, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlDrawer, GlResizeObserverDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import Tracking from '~/tracking';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getDrawerBodyHeight } from '../utils/get_drawer_body_height';
-import Feature from './feature.vue';
-import SkeletonLoader from './skeleton_loader.vue';
+import FeaturedCarousel from './featured_carousel.vue';
+import OtherUpdates from './other_updates.vue';
 
 const trackingMixin = Tracking.mixin();
 
 export default {
   components: {
     GlDrawer,
-    GlInfiniteScroll,
-    SkeletonLoader,
-    Feature,
+    FeaturedCarousel,
+    OtherUpdates,
   },
   directives: {
     GlResizeObserver: GlResizeObserverDirective,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   props: {
     versionDigest: {
       type: String,
@@ -37,6 +37,9 @@ export default {
     ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching']),
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
+    },
+    whatsNewFeaturedCarouselEnabled() {
+      return this.glFeatures.whatsNewFeaturedCarousel;
     },
   },
   mounted() {
@@ -98,25 +101,21 @@ export default {
       @close="close"
     >
       <template #title>
-        <h2 id="whats-new-drawer-heading" class="page-title gl-heading-2-fixed gl-my-2">
-          {{ __("What's new") }}
-        </h2>
+        <h3 id="whats-new-drawer-heading" class="gl-heading-3-fixed gl-my-3 gl-ml-3">
+          {{ __("What's new at GitLab") }}
+        </h3>
       </template>
-      <template v-if="features.length || !fetching">
-        <gl-infinite-scroll
-          :fetched-items="features.length"
-          :max-list-height="drawerBodyHeight"
-          class="gl-p-0"
+
+      <div>
+        <featured-carousel v-if="whatsNewFeaturedCarouselEnabled" />
+
+        <other-updates
+          :features="features"
+          :fetching="fetching"
+          :drawer-body-height="drawerBodyHeight"
+          class="gl-pt-3"
           @bottomReached="bottomReached"
-        >
-          <template #items>
-            <feature v-for="feature in features" :key="feature.name" :feature="feature" />
-          </template>
-        </gl-infinite-scroll>
-      </template>
-      <div v-else class="gl-mt-5">
-        <skeleton-loader />
-        <skeleton-loader />
+        />
       </div>
     </gl-drawer>
     <div v-if="open" class="whats-new-modal-backdrop modal-backdrop" @click="close"></div>

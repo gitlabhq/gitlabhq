@@ -42,10 +42,10 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       let(:project) { create(:project) }
       let(:forked_project) { fork_project(project) }
       let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
-      subject { format_mr_branch_names(merge_request) }
-
       let(:source_title) { "#{forked_project.full_path}:#{merge_request.source_branch}" }
       let(:target_title) { "#{project.full_path}:#{merge_request.target_branch}" }
+
+      subject { format_mr_branch_names(merge_request) }
 
       it { is_expected.to eq([source_title, target_title]) }
     end

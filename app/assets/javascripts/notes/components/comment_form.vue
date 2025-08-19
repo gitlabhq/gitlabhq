@@ -2,7 +2,9 @@
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapActions, mapState } from 'pinia';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
+import { updateDraft, clearDraft, getDraft } from '~/lib/utils/autosave';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import {
@@ -152,9 +154,6 @@ export default {
     markdownPreviewPath() {
       return this.getNoteableData.preview_note_path;
     },
-    author() {
-      return this.getUserData;
-    },
     canToggleIssueState() {
       return (
         this.getNoteableData.current_user.can_update &&
@@ -174,9 +173,6 @@ export default {
     isIssue() {
       return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.ISSUE_NOTEABLE_TYPE;
     },
-    isEpic() {
-      return constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.EPIC_NOTEABLE_TYPE;
-    },
     isMergeRequest() {
       return (
         constants.NOTEABLE_TYPE_MAPPING[this.noteableType] === constants.MERGE_REQUEST_NOTEABLE_TYPE
@@ -192,6 +188,13 @@ export default {
       if (this.isLoggedIn) {
         const noteableType = capitalizeFirstCharacter(convertToCamelCase(this.noteableType));
         return `${this.$options.i18n.note}/${noteableType}/${this.getNoteableData.id}`;
+      }
+
+      return null;
+    },
+    autosaveKeyInternalNote() {
+      if (this.isLoggedIn) {
+        return `${this.autosaveKey}/internalNote`;
       }
 
       return null;
@@ -215,6 +218,10 @@ export default {
     $(document).on('issuable:change', (e, isClosed) => {
       this.toggleIssueLocalState(isClosed ? STATUS_CLOSED : STATUS_REOPENED);
     });
+
+    if (this.autosaveKeyInternalNote) {
+      this.noteIsInternal = parseBoolean(getDraft(this.autosaveKeyInternalNote));
+    }
   },
   methods: {
     ...mapActions(useNotes, [
@@ -292,6 +299,8 @@ export default {
             if (withIssueAction) {
               this.toggleIssueState();
             }
+
+            clearDraft(this.autosaveKeyInternalNote);
           })
           .catch(({ response }) => {
             this.handleSaveError(response);
@@ -352,17 +361,18 @@ export default {
         }
       }
     },
-    hasEmailParticipants() {
-      return this.getNoteableData.issue_email_participants?.length;
-    },
     dismissError(index) {
       this.errors.splice(index, 1);
     },
     onInput(value) {
       this.note = value;
     },
+    // eslint-disable-next-line vue/no-unused-properties -- append() is part of the component's public API.
     append(value) {
       this.$refs.markdownEditor.append(value);
+    },
+    setInternalNoteCheckbox() {
+      updateDraft(this.autosaveKeyInternalNote, this.noteIsInternal);
     },
   },
 };
@@ -431,6 +441,7 @@ export default {
                 v-model="noteIsInternal"
                 class="gl-basis-full"
                 data-testid="internal-note-checkbox"
+                @input="setInternalNoteCheckbox"
               >
                 {{ $options.i18n.internal }}
                 <help-icon

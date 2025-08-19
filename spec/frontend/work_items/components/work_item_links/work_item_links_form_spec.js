@@ -187,7 +187,7 @@ describe('WorkItemLinksForm', () => {
 
         expect(findFormGroup().props('state')).toBe(false);
         expect(findFormGroup().props('invalidFeedback')).toBe(
-          'Something went wrong when trying to create a child. Please try again.',
+          'Something went wrong when trying to create a child item. Please try again.',
         );
         expect(findInput().props('state')).toBe(false);
         expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);

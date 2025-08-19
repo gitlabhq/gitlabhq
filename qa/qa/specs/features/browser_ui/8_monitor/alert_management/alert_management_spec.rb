@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', :smoke, product_group: :platform_insights, feature_flag: {
+  RSpec.describe 'Monitor', :smoke, feature_category: :incident_management, feature_flag: {
     name: :hide_incident_management_features
   } do
     describe 'Alert Management' do

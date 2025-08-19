@@ -14,6 +14,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   createdAt: group.created_at,
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
+  archived: group.archived,
   markedForDeletion: group.marked_for_deletion,
   isSelfDeletionInProgress: group.is_self_deletion_in_progress,
   isSelfDeletionScheduled: group.is_self_deletion_scheduled,
@@ -21,6 +22,10 @@ export const formatGroupForGraphQLResolver = (group) => ({
     canLeave: group.can_leave,
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
+    // Only used in admin area to ensure only instance admins (users with custom
+    // admin roles can also access admin area) see admin-only per-group action
+    // buttons.
+    adminAllResources: false,
   },
   webUrl: group.web_url,
   groupMembersCount: group.group_members_count ?? null,
@@ -36,4 +41,5 @@ export const formatGroupForGraphQLResolver = (group) => ({
   projectsCount: group.project_count ?? null,
   children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
   childrenCount: group.subgroup_count ?? 0,
+  hasChildren: group.has_subgroups,
 });

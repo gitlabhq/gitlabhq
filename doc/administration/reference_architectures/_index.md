@@ -357,6 +357,35 @@ However, this does not guarantee compatibility with every potential permutation.
 
 See [Recommended cloud providers and services](#recommended-cloud-providers-and-services) for more information.
 
+### Networking (High Availability)
+
+Below are the network requirements for running GitLab in a High Availability fashion.
+
+#### Network latency
+
+Network latency should be as low as possible to allow for synchronous replication across the GitLab application, such as database replication. Generally this should be lower than 5 ms.
+
+#### Availability zones (Cloud Providers)
+
+Deploying across availability zones is supported and generally recommended for additional resilience. You should use an odd number of zones to align with GitLab application requirements, as some components use an odd number of nodes for quorum voting.
+
+#### Data centers (Self Hosted)
+
+Deploying across multiple self-hosted data centers is possible but requires careful consideration. This requires synchronous capable latency between centers, robust redundant network links to prevent split-brain scenarios, all centers located in the same geographic region, and deployment across an odd number of centers for proper quorum voting (like [availability zones](#availability-zones-cloud-providers)).
+
+{{< alert type="note" >}}
+
+It may not be possible for GitLab Support to assist with infrastructure-related issues stemming from multi-data center deployments.
+Choosing to deploy across centers is generally at your own risk.
+
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
+It is not supported to deploy a single [GitLab environment across different regions](#deploying-one-environment-over-multiple-regions). Data centers should be in the same region.
+
+{{< /alert >}}
+
 ### Large Monorepos
 
 The architectures were tested with repositories of varying sizes that follow best practices.
@@ -592,9 +621,9 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 #### Stateful components in Kubernetes
 
-[Running stateful components in Kubernetes, such as Gitaly Cluster, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
+[Running stateful components in Kubernetes, such as Gitaly Cluster (Praefect), is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
 
-Gitaly Cluster is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
+Gitaly Cluster (Praefect) is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
 can cause sporadic out of memory (OOM) termination of Gitaly pods. The OOM termination leads to significant disruptions and potential data loss. Hence, Gitaly is not tested
 or supported in Kubernetes. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
 
@@ -610,15 +639,11 @@ This applies to stateful components such as Postgres and Redis. You can use othe
 [Cloud Native Hybrid setups](#cloud-native-hybrid) are generally preferred over autoscaling groups. Kubernetes better handles components that can only run on one node,
 such as database migrations and [Mailroom](../incoming_email.md).
 
-#### Deploying one environment over multiple data centers
+#### Deploying one environment over multiple regions
 
-GitLab doesn't support deploying a single environment across multiple data centers.
-These setups can result in significant issues, such as network latency or split-brain
-scenarios if a data center fails.
+GitLab does not support deploying a single environment across multiple regions. These setups can result in significant issues, such as excessive network latency or split-brain scenarios if connectivity between regions fails.
 
-Several GitLab components require an odd number of nodes to function correctly,
-such as Consul, Redis Sentinel, and Praefect. Splitting these components across
-multiple data centers can negatively impact their functionality.
+Several GitLab components perform synchronous replication or require an odd number of nodes to function correctly, such as Consul, Redis Sentinel, and Praefect. Distributing these components across multiple regions with high latency can severely impact their functionality and the overall system performance.
 
 This limitation applies to all potential GitLab environment setups, including Cloud Native Hybrid alternatives.
 
@@ -703,7 +728,7 @@ The following components can impact others when they have been significantly sca
 - Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis.
   - Redis is primarily single-threaded. In some cases, you might have to split Redis into separate instances (for example, cache and persistent) if the increased throughput causes CPU exhaustion in a combined cluster.
   - PgBouncer is also single threaded but a scale out might result in a new pool being added that in turn might increase the total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
-- Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
+- Gitaly Cluster (Praefect)/PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 
 #### Scaling from a non-HA to an HA architecture
 
@@ -714,13 +739,12 @@ For more information, see the following documentation:
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster)
+- [Gitaly to Gitaly Cluster (Praefect)](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster-praefect)
 
 ### Upgrades
 
-Upgrading a reference architecture environment is same as any other GitLab environment.
-The main [Upgrade GitLab](../../update/_index.md) section has detailed steps on how to approach this.
-[Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
+Upgrading a reference architecture environment is the same as any other GitLab environment. For more information, see
+[upgrade GitLab](../../update/_index.md). [Zero-downtime upgrades](#zero-downtime-upgrades) are also available.
 
 {{< alert type="note" >}}
 
@@ -746,6 +770,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 
 **2025**:
 
+- [2025-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199549): Updated Gitaly configurations to use [Gitaly roles](https://docs.gitlab.com/omnibus/roles/#gitaly-roles).
 - [2025-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181145): Added further clarity around supported machine types and that the listed examples are not intended as prescriptive defaults.
 
 **2024**:

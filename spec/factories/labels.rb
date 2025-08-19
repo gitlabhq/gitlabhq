@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  trait :archived do
+    archived { true }
+  end
+
   trait :base_label do
     title { generate(:label_title) }
     color { "#990000" }
@@ -36,5 +40,8 @@ FactoryBot.define do
     group
   end
 
-  factory :admin_label, traits: [:base_label], class: 'Label'
+  factory :admin_label, traits: [:base_label], class: 'Label' do
+    template { true }
+    organization
+  end
 end

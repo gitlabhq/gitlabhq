@@ -2,38 +2,110 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > User archives a project', feature_category: :groups_and_projects do
-  let(:user) { create(:user) }
+RSpec.describe 'Projects > Settings > User archives a project', :js, feature_category: :groups_and_projects do
+  let_it_be(:user) { create(:user) }
+
+  let_it_be_with_reload(:group) { create(:group, owners: [user]) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
 
   before do
-    project.add_maintainer(user)
-
     sign_in(user)
-
-    visit edit_project_path(project)
   end
 
-  context 'when a project is archived' do
-    let(:project) { create(:project, :archived, namespace: user.namespace) }
+  context 'when group is archived' do
+    before do
+      group.archive
 
-    it 'unarchives a project' do
-      expect(page).to have_content('Unarchive project')
+      visit edit_project_path(project)
+    end
 
-      click_link('Unarchive')
+    it 'cannot archive/unarchive project', :aggregate_failures do
+      expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive'))
+      expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive'))
+    end
 
-      expect(page).not_to have_content('This is an archived project.')
+    context 'when `archive_group` flag is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+
+        visit edit_project_path(project)
+      end
+
+      # This becomes a no-op as our policy prevents archiving projects that belongs to an archived group.
+      # The current version is not built to handle this scenario.
+      it 'cannot archive project' do
+        expect(page).to have_content('Archive project')
+
+        click_link('Archive')
+        click_button('Archive project')
+
+        expect(project.reload.archived?).to be(false)
+      end
     end
   end
 
-  context 'when a project is unarchived' do
-    let(:project) { create(:project, :repository, namespace: user.namespace) }
+  context 'when group is not archived' do
+    context 'when project is not archived' do
+      before do
+        visit edit_project_path(project)
+      end
 
-    it 'archives a project' do
-      expect(page).to have_content('Archive project')
+      it 'can archive project', :aggregate_failures do
+        click_button s_('GroupProjectArchiveSettings|Archive')
 
-      click_link('Archive')
+        expect(page).to have_current_path(project_path(project))
+        expect(page).to have_content('This is an archived project.')
+      end
 
-      expect(page).to have_content('This is an archived project.')
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+
+          visit edit_project_path(project)
+        end
+
+        it 'can archive project' do
+          expect(page).to have_content('Archive project')
+
+          click_link('Archive')
+          click_button('Archive project')
+
+          expect(page).to have_content('This is an archived project.')
+        end
+      end
+    end
+
+    context 'when project is archived' do
+      before do
+        project.update!(archived: true)
+
+        visit edit_project_path(project)
+      end
+
+      it 'can unarchive project', :aggregate_failures do
+        expect(page).to have_content('Unarchive project')
+
+        click_button s_('GroupProjectUnarchiveSettings|Unarchive')
+
+        expect(page).to have_current_path(project_path(project))
+        expect(page).not_to have_content('This is an archived project.')
+      end
+
+      context 'when `archive_group` flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+
+          visit edit_project_path(project)
+        end
+
+        it 'can unarchive project' do
+          expect(page).to have_content('Unarchive project')
+
+          click_link('Unarchive')
+
+          expect(page).not_to have_content('This is an archived project.')
+        end
+      end
     end
   end
 end

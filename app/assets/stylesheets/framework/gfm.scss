@@ -2,6 +2,8 @@
  * Styles that apply to all GFM related forms.
  */
 
+@use "sass:math";
+
 .gfm-commit,
 .gfm-commit_range {
   @apply gl-font-monospace;
@@ -30,8 +32,8 @@
   border-radius: 3px;
 
   $chip-size: 0.9em;
-  $bg-size: $chip-size / 0.9;
-  $bg-pos: $bg-size / 2;
+  $bg-size: math.div($chip-size, 0.9);
+  $bg-pos: $bg-size * 0.5;
 
   width: $chip-size;
   height: $chip-size;

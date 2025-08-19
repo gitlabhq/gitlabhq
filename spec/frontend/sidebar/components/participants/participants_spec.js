@@ -72,5 +72,29 @@ describe('Participants component', () => {
 
       expect(findMoreParticipantsButton().text()).toBe('- show less');
     });
+
+    describe('participant label', () => {
+      it.each`
+        numberOfLessParticipants | participantCount | expectedParticipantsText | expectedButtonText
+        ${undefined}             | ${222}           | ${'222 Participants'}    | ${'+ 214 more'}
+        ${2}                     | ${222}           | ${'222 Participants'}    | ${'+ 220 more'}
+        ${2}                     | ${0}             | ${'3 Participants'}      | ${'+ 1 more'}
+        ${2}                     | ${null}          | ${'3 Participants'}      | ${'+ 1 more'}
+        ${2}                     | ${undefined}     | ${'3 Participants'}      | ${'+ 1 more'}
+      `(
+        'displays correct label when numberOfLessParticipants=$numberOfLessParticipants and participantCount=$participantCount',
+        ({
+          numberOfLessParticipants,
+          participantCount,
+          expectedParticipantsText,
+          expectedButtonText,
+        }) => {
+          wrapper = mountComponent({ participants, numberOfLessParticipants, participantCount });
+
+          expect(wrapper.text()).toContain(expectedParticipantsText);
+          expect(findMoreParticipantsButton().text()).toBe(expectedButtonText);
+        },
+      );
+    });
   });
 });

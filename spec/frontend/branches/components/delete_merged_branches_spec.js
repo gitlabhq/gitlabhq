@@ -36,8 +36,7 @@ const createComponent = (mountFn = shallowMountExtended, stubs = {}) => {
   });
 };
 
-const findDeleteButton = () =>
-  wrapper.findComponent('[data-testid="delete-merged-branches-button"]');
+const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
 const findModal = () => wrapper.findComponent(GlModal);
 const findConfirmationButton = () =>
   wrapper.findByTestId('delete-merged-branches-confirmation-button');
@@ -51,14 +50,27 @@ describe('Delete merged branches component', () => {
   });
 
   describe('Delete merged branches button', () => {
-    it('has correct text', () => {
+    it('has correct text', async () => {
       createComponent(mount, stubsData);
-      expect(findDeleteButton().text()).toBe('Delete merged branches');
+      await nextTick();
+
+      expect(findDropdown().props('items')).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            text: 'Delete merged branches',
+            extraAttrs: {
+              'data-testid': 'delete-merged-branches-button',
+            },
+          }),
+        ]),
+      );
     });
 
     it('opens modal when clicked', () => {
       createComponent(mount, stubsData);
-      findDeleteButton().trigger('click');
+      const deleteItem = findDropdown().props('items')[0];
+
+      deleteItem.action();
 
       expect(modalShowSpy).toHaveBeenCalled();
     });

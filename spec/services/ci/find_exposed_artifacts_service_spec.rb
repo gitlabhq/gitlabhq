@@ -22,13 +22,7 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
     metadata_file_stream&.close
   end
 
-  def create_job_with_artifacts(options)
-    create(:ci_build, pipeline: pipeline, options: options).tap do |job|
-      create(:ci_job_artifact, :metadata, job: job)
-    end
-  end
-
-  describe '#for_pipeline' do
+  shared_examples '#for_pipeline' do
     shared_examples 'finds a single match' do
       it 'returns the artifact with exact location' do
         expect(subject).to eq([{
@@ -57,7 +51,7 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       end
     end
 
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     subject { described_class.new(project, user).for_pipeline(pipeline) }
 
@@ -119,17 +113,6 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       end
 
       it_behaves_like 'finds multiple matches'
-    end
-
-    context 'with jobs having paths with glob expression' do
-      let!(:job) do
-        create_job_with_artifacts(artifacts: {
-          expose_as: 'Exposed artifact',
-          paths: ['other_artifacts_0.1.2/doc_sample.txt', 'tests_encoding/*.*']
-        })
-      end
-
-      it_behaves_like 'finds a single match' # because those with * are ignored
     end
 
     context 'limiting results' do
@@ -215,6 +198,51 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
               job_path: project_job_path(foreign_project, job_browse)
             }
           ])
+      end
+    end
+  end
+
+  it_behaves_like '#for_pipeline' do
+    def create_job_with_artifacts(options)
+      create(:ci_build, pipeline: pipeline, options: options).tap do |job|
+        create(:ci_job_artifact, :metadata, job: job)
+      end
+    end
+  end
+
+  context 'when job_artifacts_metadata.exposed_as is not populated' do
+    it_behaves_like '#for_pipeline' do
+      def create_job_with_artifacts(options)
+        create(:ci_build, pipeline: pipeline, options: options).tap do |job|
+          create(:ci_job_artifact, :metadata, job: job).tap do |job_artifacts_metadata|
+            job_artifacts_metadata.update!(exposed_as: nil)
+          end
+        end
+      end
+    end
+  end
+
+  context 'when job metadata record is deleted' do
+    it_behaves_like '#for_pipeline' do
+      def create_job_with_artifacts(options)
+        create(:ci_build, pipeline: pipeline, options: options).tap do |job|
+          create(:ci_job_artifact, :metadata, job: job)
+          job.metadata.delete
+        end
+      end
+    end
+  end
+
+  context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
+    before do
+      stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
+    end
+
+    it_behaves_like '#for_pipeline' do
+      def create_job_with_artifacts(options)
+        create(:ci_build, pipeline: pipeline, options: options).tap do |job|
+          create(:ci_job_artifact, :metadata, job: job)
+        end
       end
     end
   end

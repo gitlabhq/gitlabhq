@@ -3,13 +3,14 @@
 module Gitlab
   module Auth
     class Result
-      attr_reader :actor, :project, :type, :authentication_abilities
+      attr_reader :actor, :project, :type, :authentication_abilities, :authentication_context
 
-      def initialize(actor, project, type, authentication_abilities)
+      def initialize(actor, project, type, authentication_abilities, authentication_context = {})
         @actor = actor
         @project = project
         @type = type
         @authentication_abilities = authentication_abilities
+        @authentication_context = authentication_context
       end
 
       EMPTY = self.new(nil, nil, nil, nil).freeze

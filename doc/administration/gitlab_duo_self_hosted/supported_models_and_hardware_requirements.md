@@ -25,14 +25,15 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< /history >}}
 
-GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral,
-Claude, and GPT
-through your preferred serving platform. Choose from these models to match your specific performance
-needs and use cases.
+GitLab Duo Self-Hosted supports integration with industry-leading models from Mistral, Meta, Anthropic, and OpenAI through your preferred serving platform.
+
+You can choose from these [supported models](#supported-models) to match your specific performance needs and use cases.
+
+In GitLab 18.3 and later, you can also bring your own compatible model, giving you the flexibility to experiment with additional language models beyond the officially supported options.
 
 ## Supported models
 
-Support for the following GitLab-supported large language models (LLMs) is generally available. If the model you want to use is not in this documentation, provide feedback in the [model request issue (issue 526751)](https://gitlab.com/gitlab-org/gitlab/-/issues/526751).
+Support for the following GitLab-supported large language models (LLMs) is generally available.
 
 - Fully compatible: The model can likely handle the feature without any loss of quality.
 - Largely compatible: The model supports the feature, but there might be compromises or limitations.
@@ -40,15 +41,16 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 <!-- vale gitlab_base.Spelling = NO -->
 
-| Model Family | Model | Supported Platforms | Code completion | Code generation | GitLab Duo Chat |
+| Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat |
 |-------------|-------|---------------------|-----------------|-----------------|-----------------|
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | Not applicable |
-| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
-| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
-| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
+| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Claude 3 |  [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Claude 3 |  [Claude 3.7 Sonnet](https://www.anthropic.com/news/claude-3-7-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+| Claude 4 | [Claude 4 Sonnet](https://www.anthropic.com/news/claude-4)                                                                          | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | GPT | [GPT-4 Turbo](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
 | GPT | [GPT-4o](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | GPT | [GPT-4o-mini](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure#gpt-4o-and-gpt-4-turbo) | [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
@@ -58,12 +60,46 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 | Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 | Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 
+**Footnotes**:
+
+1. This model is scheduled for deprecation in GitLab 18.5. Mistral Small 24B Instruct 2506 is the recommended alternative.
+
+### Bring your own compatible model 
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18556) in GitLab 18.3 as a [beta](../../policy/development_stages_support.md#beta).
+
+{{< /history >}}
+
+You can bring your own compatible models to use with GitLab Duo features. 
+
+The general model family provides support for compatible models and platforms that adhere to the OpenAI API specification. Use this model family to try language models that are not explicitly supported by GitLab.
+
+This feature is in beta and is therefore subject to change as we gather feedback and improve the integration:
+
+- GitLab does not provide technical support for issues specific to your chosen model or platform.
+- Not all GitLab Duo features are guaranteed to work optimally with every compatible model.
+- Response quality, speed, and performance overall might vary significantly based on your model choice.
+
+| Model Family | Model Requirements | Supported Platforms | Code completion | Code generation | GitLab Duo Chat |
+|-------------|-------|---------------------|-----------------|-----------------|-----------------|
+| General | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) | Any platform that provides OpenAI-compatible API endpoints | {{< icon name="check-circle-dashed" >}} Beta | {{< icon name="check-circle-dashed" >}} Beta | {{< icon name="check-circle-dashed" >}} Beta |
+
 ### Experimental and beta models
 
 The following models are configurable for the functionalities marked below, but are currently in beta or experimental status, under evaluation, and are excluded from the "Customer Integrated Models" definition in the [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/):
 
 | Model family   | Model | Supported platforms | Status | Code completion | Code generation | GitLab Duo Chat |
 |--------------- |-------|---------------------|--------|-----------------|-----------------|-----------------|
+| OpenAI GPT      | [GPT OSS 20b](https://huggingface.co/openai/gpt-oss-20b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/openai/), [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes |
+| OpenAI GPT      | [GPT OSS 120b](https://huggingface.co/openai/gpt-oss-120b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/), [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/overview) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes | {{< icon name="dotted-circle" >}} Yes |
 | CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
@@ -73,6 +109,36 @@ The following models are configurable for the functionalities marked below, but 
 | Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | Experimental | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
 <!-- vale gitlab_base.Spelling = YES -->
+
+## GitLab AI vendor models
+
+{{< details >}}
+
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17192) in GitLab 18.3, with a [feature flag](../feature_flags/_index.md) named `ai_self_hosted_vendored_features`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GitLab AI vendor models integrate with GitLab-hosted AI gateway infrastructure to provide access to AI models curated and made available by GitLab. Instead of using your own self-hosted models, you can choose to use GitLab AI vendor models for specific GitLab Duo features.
+
+To choose which features use GitLab AI vendor models, see [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model).
+
+When enabled for a specific feature:
+
+- All calls to those features configured with a GitLab AI vendor model use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
+- No detailed logs are generated in the GitLab-hosted AI gateway, even when [AI logs are enabled](logging.md#enable-logging). This prevents unintended leaks of sensitive information.
 
 ## Hardware requirements
 

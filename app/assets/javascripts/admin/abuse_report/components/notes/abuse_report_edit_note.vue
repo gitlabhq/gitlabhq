@@ -16,15 +16,6 @@ export default {
     AbuseReportCommentForm,
   },
   props: {
-    abuseReportId: {
-      type: String,
-      required: true,
-    },
-    discussionId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     note: {
       type: Object,
       required: true,
@@ -96,7 +87,6 @@ export default {
   <div>
     <div class="flash-container"></div>
     <abuse-report-comment-form
-      :abuse-report-id="abuseReportId"
       :initial-value="note.body"
       :is-submitting="isSubmitting"
       :autosave-key="autosaveKey"

@@ -72,7 +72,13 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
           ]
         }
       },
-      gitlab: { "gitlab-exporter": { enabled: false } },
+      gitlab: {
+        "gitlab-exporter": { enabled: false },
+        "gitlab-shell": {
+          sshDaemon: 'gitlab-sshd',
+          config: { proxyProtocol: true }
+        }
+      },
       redis: { metrics: { enabled: false } },
       prometheus: { install: false },
       "gitlab-runner": { install: false },

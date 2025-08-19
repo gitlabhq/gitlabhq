@@ -49,9 +49,10 @@ module Sidebars
         end
 
         def error_tracking_menu_item
-          unless can?(context.current_user, :read_sentry_issue, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :error_tracking)
-          end
+          should_hide_menu = Feature.enabled?(:hide_error_tracking_features, context.project) ||
+            !can?(context.current_user, :read_sentry_issue, context.project)
+
+          return ::Sidebars::NilMenuItem.new(item_id: :error_tracking) if should_hide_menu
 
           ::Sidebars::MenuItem.new(
             title: _('Error Tracking'),

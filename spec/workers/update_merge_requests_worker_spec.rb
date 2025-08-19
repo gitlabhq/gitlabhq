@@ -18,7 +18,7 @@ RSpec.describe UpdateMergeRequestsWorker, feature_category: :code_review_workflo
       expect_next_instance_of(MergeRequests::RefreshService,
         project: project,
         current_user: user,
-        params: { push_options: nil }) do |service|
+        params: { push_options: nil, gitaly_context: nil }) do |service|
         expect(service)
           .to receive(:execute)
           .with(oldrev, newrev, ref)
@@ -28,7 +28,7 @@ RSpec.describe UpdateMergeRequestsWorker, feature_category: :code_review_workflo
     end
 
     context 'when push options are passed as Hash' do
-      let(:extra_params) { { 'push_options' => { 'ci' => { 'skip' => true } } } }
+      let(:extra_params) { { 'push_options' => { 'ci' => { 'skip' => true } }, 'gitaly_context' => nil } }
 
       subject { worker.perform(project.id, user.id, oldrev, newrev, ref, extra_params) }
 
@@ -36,7 +36,7 @@ RSpec.describe UpdateMergeRequestsWorker, feature_category: :code_review_workflo
         expect_next_instance_of(MergeRequests::RefreshService,
           project: project,
           current_user: user,
-          params: { push_options: { ci: { skip: true } } }) do |service|
+          params: { push_options: { ci: { skip: true } }, gitaly_context: nil }) do |service|
           expect(service)
             .to receive(:execute)
             .with(oldrev, newrev, ref)

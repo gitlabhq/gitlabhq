@@ -267,7 +267,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	gitaly.InitializeSidechannelRegistry(accessLogger)
 
-	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn))
+	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb))
 
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, syscall.SIGINT, syscall.SIGTERM)

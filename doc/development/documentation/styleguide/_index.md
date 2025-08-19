@@ -273,6 +273,9 @@ Use sentence case for topic titles. For example:
 When referring to specific user interface text, like a button label, page, tab,
 or menu item, use the same capitalization that's displayed in the user interface.
 
+The only exception is text that's all uppercase (for example, `RECENT FLOWS`).
+In this case, use sentence case.
+
 If you think the user interface text contains style mistakes,
 create an issue or an MR to propose a change to the user interface text.
 
@@ -592,7 +595,7 @@ This is a code block that uses Markdown to demonstrate **bold** and `backticks`.
 When you use code blocks:
 
 - Add a blank line above and below code blocks.
-- Use one of the [supported syntax names](https://github.com/alecthomas/chroma?tab=readme-ov-file#supported-languages).
+- Use one of the [supported syntax names](https://gohugo.io/content-management/syntax-highlighting/#languages).
   Use `plaintext` if no better option is available.
 - Use quadruple backticks (````` ```` `````) when the code block contains another (nested) code block
   which has triple backticks already. The example above uses quadruple backticks internally
@@ -1321,6 +1324,10 @@ can't be conveyed in text.
 
 When you take screenshots:
 
+- Ensure the content in the screenshot adheres to the
+  [GitLab SAFE framework](https://handbook.gitlab.com/handbook/legal/safe-framework/). To check,
+  follow the
+  [SAFE flowchart](https://handbook.gitlab.com/handbook/legal/safe-framework/#safe-flowchart).
 - **Ensure it provides value.** Don't use `lorem ipsum` text.
   Try to replicate how the feature would be used in a real-world scenario, and
   [use realistic text](#fake-user-information).
@@ -1346,7 +1353,7 @@ To emphasize an area in a screenshot, use an arrow.
 - Use the arrow style shown in the following image.
 - If you have multiple arrows, make them parallel when possible.
 
-![Red arrow callouts highlighting issue and merge request icons in the GitLab user interface.](img/callouts_v14_6.png)
+![Red arrow callouts highlighting ci/cd component tabs for all users and your groups.](img/callouts_v18_3.png)
 
 #### Image requirements
 
@@ -1889,37 +1896,16 @@ For more information, see [Promising features in future versions](#promising-fea
 
 ## Blockquotes
 
-For highlighting a text inside a blockquote, use this format:
+Avoid using [blockquotes](../../../user/markdown.md#blockquotes) in the product documentation.
+They can make text difficult to scan. Instead of a blockquote, consider using:
 
-```markdown
-> This is a blockquote.
-```
+- A [code block](#code-blocks).
+- An [alert box](#alert-boxes).
+- No special styling at all.
 
-It renders on the GitLab documentation site as:
-
-> This is a blockquote.
-
-If the text spans multiple lines, split them.
-
-For multiple paragraphs, use the symbol `>` before every line:
-
-```markdown
-> This is the first paragraph.
->
-> This is the second paragraph.
->
-> - This is a list item
-> - Second item in the list
-```
-
-It renders on the GitLab documentation site as:
-
-> This is the first paragraph.
->
-> This is the second paragraph.
->
-> - This is a list item
-> - Second item in the list
+The [GitLab Flavored Markdown (GLFM)](../../../user/markdown.md) page is a rare case that
+uses blockquotes to differentiate between plain text and rendered examples. However, in most cases,
+you should avoid them.
 
 ## Tabs
 

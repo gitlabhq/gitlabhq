@@ -10,7 +10,7 @@ RSpec.describe 'Profile > Usage Quota', :js, feature_category: :consumables_cost
     sign_in(user)
   end
 
-  it_behaves_like 'Usage Quotas is accessible' do
+  it_behaves_like 'Usage quotas is accessible' do
     let(:usage_quotas_path) { profile_usage_quotas_path }
 
     before do

@@ -14,19 +14,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-  end
-
-  context 'when user displays the issue' do
-    before do
-      visit project_issue_path(project, issue)
-      wait_for_requests
-    end
-
-    it 'shows the issue' do
-      page.within('.issuable-details') do
-        expect(find('h1')).to have_content(issue.title)
-      end
-    end
+    stub_feature_flags(work_item_view_for_issues: true)
   end
 
   context 'when issue description has emojis' do
@@ -38,7 +26,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
 
     it 'renders gl-emoji tag' do
-      page.within('.description') do
+      within_testid('work-item-description') do
         expect(page).to have_selector('gl-emoji', count: 1)
       end
     end
@@ -76,8 +64,8 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
       visit project_issue_path(project, issue)
     end
 
-    it 'encodes the description to prevent xss issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/207951' do
-      page.within('.issuable-details .detail-page-description') do
+    it 'encodes the description to prevent xss issues' do
+      within_testid('work-item-description') do
         image = find('img.js-lazy-loaded')
 
         expect(page).to have_selector('img', count: 1)
@@ -95,12 +83,10 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
       sign_in(user_to_be_deleted)
       visit project_issue_path(project, issue)
-      wait_for_requests
 
       click_button 'Edit title and description'
-      fill_in 'issuable-title', with: 'issue title'
+      fill_in 'Title', with: 'issue title'
       click_button 'Save changes'
-      wait_for_requests
 
       visit_blank_page # Prevent CSRF errors from AJAX requests when we are switching users
       Users::DestroyService.new(user_to_be_deleted).execute(user_to_be_deleted)
@@ -110,8 +96,8 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
     end
 
     it 'shows the issue' do
-      page.within('.issuable-details') do
-        expect(find('h1')).to have_content(issue.reload.title)
+      within_testid('detail-wrapper') do
+        expect(page).to have_css('h1', text: issue.reload.title)
       end
     end
   end
@@ -125,6 +111,8 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
 
     describe 'when an issue `issue_type` is edited' do
       before do
+        # Unstub when https://gitlab.com/gitlab-org/gitlab/-/issues/543718 is completed
+        stub_feature_flags(work_item_view_for_issues: false)
         sign_in(user)
         visit project_issue_path(project, issue)
         wait_for_requests

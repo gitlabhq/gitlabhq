@@ -254,7 +254,7 @@ you need the following information:
   [Microsoft Quickstart Register an Application](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app) documentation
   to obtain the tenant ID, client ID, and client secret for your app.
 
-When you register a Microsoft Azure application, you must grant API permissions to allow GitLab to 
+When you register a Microsoft Azure application, you must grant API permissions to allow GitLab to
 retrieve required details. You must provide at least the `openid`, `profile`, and `email` permissions.
 For more information, see the [Microsoft documentation for configuring app permissions for a web API](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis#add-permissions-to-access-microsoft-graph).
 
@@ -1486,7 +1486,7 @@ To enable step-up authentication for Admin Mode:
                  },
                  # The `included` field also defines key-value pairs that must be included with the ID token.
                  # Multiple accepted values can be defined in an array. If an array is not used, the value must match exactly.
-                 # In this example, the 'amr' (Authentication Method References) claim 
+                 # In this example, the 'amr' (Authentication Method References) claim
                  # must have a value of either 'mfa' or 'fpt' to pass the step-up authentication challenge.
                  # This is useful for scenarios where the user must provide additional authentication factors.
                  included: {

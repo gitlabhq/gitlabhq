@@ -163,6 +163,15 @@ RSpec.describe BlobPresenter do
 
   describe '#archived?' do
     it { expect(presenter.archived?).to eq(project.archived) }
+
+    context 'with archived group' do
+      let_it_be(:group) { create(:group).tap { |group| group.update!(archived: true) } }
+      let_it_be(:project) { create(:project, :repository, group: group) }
+
+      it 'returns true' do
+        expect(presenter.archived?).to be_truthy
+      end
+    end
   end
 
   describe '#pipeline_editor_path' do

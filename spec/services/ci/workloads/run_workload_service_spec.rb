@@ -31,7 +31,8 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
           source: source,
           workload_definition: workload_definition,
           create_branch: create_branch,
-          source_branch: source_branch
+          source_branch: source_branch,
+          ci_variables_included: %w[A_PROJECT_VARIABLE A_GROUP_VARIABLE A_INSTANCE_VARIABLE]
         ).execute
     end
 
@@ -39,7 +40,10 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
       before do
         create(:ci_variable, key: 'A_PROJECT_VARIABLE', project: project)
         create(:ci_group_variable, key: 'A_GROUP_VARIABLE', group: group)
+        create(:ci_variable, key: 'A_PROJECT_VARIABLE_NOT_INCLUDED', project: project)
+        create(:ci_group_variable, key: 'A_GROUP_VARIABLE_NOT_INCLUDED', group: group)
         create(:ci_instance_variable, key: 'A_INSTANCE_VARIABLE')
+        create(:ci_instance_variable, key: 'A_INSTANCE_VARIABLE_NOT_INCLUDED')
       end
 
       it 'starts a pipeline to execute workload' do
@@ -56,15 +60,23 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
         expect(workload.pipeline).to be_present
       end
 
-      it 'does not include project/group/instance variables' do
+      it 'only includes explicitly included project/group/instance variables' do
         result = execute
         expect(result).to be_success
 
         pipeline = result.payload.pipeline
         build = pipeline.builds.first
-        expect(build.variables.map(&:key)).not_to include('A_PROJECT_VARIABLE')
-        expect(build.variables.map(&:key)).not_to include('A_GROUP_VARIABLE')
-        expect(build.variables.map(&:key)).not_to include('A_INSTANCE_VARIABLE')
+
+        # Refind it because it remembers CI variables initialized when it was created.
+        # Workload variables are only added when we recalculate the variables
+        build = Ci::Build.find(build.id)
+
+        expect(build.variables.map(&:key)).to include('A_PROJECT_VARIABLE')
+        expect(build.variables.map(&:key)).to include('A_GROUP_VARIABLE')
+        expect(build.variables.map(&:key)).to include('A_INSTANCE_VARIABLE')
+        expect(build.variables.map(&:key)).not_to include('A_PROJECT_VARIABLE_NOT_INCLUDED')
+        expect(build.variables.map(&:key)).not_to include('A_GROUP_VARIABLE_NOT_INCLUDED')
+        expect(build.variables.map(&:key)).not_to include('A_INSTANCE_VARIABLE_NOT_INCLUDED')
       end
 
       it 'adds the CI_WORKLOAD_REF variable' do

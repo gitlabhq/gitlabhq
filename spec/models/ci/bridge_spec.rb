@@ -9,16 +9,16 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
   let_it_be(:public_project) { create(:project, :public) }
 
-  before_all do
-    create(:ci_pipeline_variable, pipeline: pipeline, key: 'PVAR1', value: 'PVAL1')
-  end
-
   let(:bridge) do
     create(:ci_bridge, :variables, status: :created, options: options, pipeline: pipeline)
   end
 
   let(:options) do
     { trigger: { project: 'my/project', branch: 'master' } }
+  end
+
+  before_all do
+    create(:ci_pipeline_variable, pipeline: pipeline, key: 'PVAR1', value: 'PVAL1')
   end
 
   it 'has one sourced pipeline' do

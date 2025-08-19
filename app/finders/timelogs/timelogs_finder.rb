@@ -15,6 +15,7 @@ module Timelogs
       timelogs = by_user(timelogs)
       timelogs = by_group(timelogs)
       timelogs = by_project(timelogs)
+      timelogs = by_summary(timelogs)
       apply_sorting(timelogs)
     end
 
@@ -51,6 +52,12 @@ module Timelogs
       return timelogs unless params[:project_id]
 
       timelogs.in_project(params[:project_id])
+    end
+
+    def by_summary(timelogs)
+      return timelogs unless params[:summary]
+
+      timelogs.with_summary(params[:summary])
     end
 
     def apply_sorting(timelogs)

@@ -25,13 +25,13 @@ module RuboCop
 
       def on_xstr(node)
         subshell?(node) do |match|
-          add_offense(node, message: MSG) if forbidden_command?(match)
+          add_offense(node) if forbidden_command?(match)
         end
       end
 
       def on_send(node)
         system?(node) do |match|
-          add_offense(node, message: MSG) if forbidden_command?(match)
+          add_offense(node) if forbidden_command?(match)
         end
       end
 

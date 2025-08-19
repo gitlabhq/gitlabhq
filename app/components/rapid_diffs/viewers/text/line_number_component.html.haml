@@ -2,4 +2,4 @@
   %td.rd-line-number{ class: border_class, data: { change: change_type, position: @position } }
     = link_to '', "##{@line_id}", { class: 'rd-line-link', data: { line_number: line_number }, aria: { label: label } }
 - else
-  %td.rd-line-number{ class: border_class, data: { change: change_type, position: @position } }
+  %td.rd-line-number.rd-line-number-empty{ class: border_class, data: { change: change_type, position: @position } }

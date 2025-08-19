@@ -1,4 +1,4 @@
-%h4.prepend-top-20
+%h4.gl-mt-5
   = html_escape(_("Contributions for %{calendar_date}")) % { calendar_date: tag.strong(@calendar_date.to_fs(:medium)) }
 
 - if @events.any?

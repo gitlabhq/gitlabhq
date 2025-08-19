@@ -1,0 +1,12 @@
+---
+name: ci_use_job_artifacts_table_for_exposed_artifacts
+description: >
+  As part of the effort to migrate data out of p_ci_builds_metadata, we will store
+  and read intrinsic data for exposed artifacts from p_ci_job_artifacts.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549079
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199169
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557295
+milestone: '18.3'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

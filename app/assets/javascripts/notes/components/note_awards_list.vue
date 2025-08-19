@@ -18,10 +18,6 @@ export default {
       type: String,
       required: true,
     },
-    noteAuthorId: {
-      type: Number,
-      required: true,
-    },
     noteId: {
       type: String,
       required: true,
@@ -38,9 +34,6 @@ export default {
   },
   computed: {
     ...mapState(useNotes, ['getUserData']),
-    isAuthoredByMe() {
-      return this.noteAuthorId === this.getUserData.id;
-    },
   },
   methods: {
     ...mapActions(useNotes, ['toggleAwardRequest']),

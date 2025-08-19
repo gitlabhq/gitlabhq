@@ -76,7 +76,12 @@ module Gitlab
       tokens = lexer.lex(text, continue: continue)
       Gitlab::RenderTimeout.timeout { @formatter.format(tokens, **context, tag:, fix_attributes:).html_safe }
     rescue Timeout::Error => e
-      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+      ErrorTracking.log_exception(
+        e,
+        message: 'Syntax highlighting timeout.',
+        lexer_tag: tag,
+        text_length: text.length
+      )
       highlight_plain(text)
     rescue StandardError
       highlight_plain(text)

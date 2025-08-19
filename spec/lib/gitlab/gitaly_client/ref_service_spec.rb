@@ -520,6 +520,54 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
 
       client.list_refs(peel_tags: true)
     end
+
+    context 'with sorting option' do
+      it 'sends a correct list_refs message' do
+        expected_sort_by = Gitaly::ListRefsRequest::SortBy.new(
+          key: :REFNAME,
+          direction: :DESCENDING
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:list_refs)
+          .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
+          .and_return([])
+
+        client.list_refs(sort_by: 'name_desc')
+      end
+
+      context 'when sorting option is invalid' do
+        it 'uses default sort by name' do
+          expected_sort_by = Gitaly::ListRefsRequest::SortBy.new(
+            key: :REFNAME,
+            direction: :ASCENDING
+          )
+
+          expect_any_instance_of(Gitaly::RefService::Stub)
+            .to receive(:list_refs)
+                  .with(gitaly_request_with_params(sort_by: expected_sort_by), kind_of(Hash))
+                  .and_return([])
+
+          client.list_refs(sort_by: 'invalid')
+        end
+      end
+    end
+
+    context 'with pagination option' do
+      it 'sends a correct list_refs message' do
+        expected_pagination = Gitaly::PaginationParameter.new(
+          limit: 5,
+          page_token: 'refs/tags/v1.0.0'
+        )
+
+        expect_any_instance_of(Gitaly::RefService::Stub)
+          .to receive(:list_refs)
+          .with(gitaly_request_with_params(pagination_params: expected_pagination), kind_of(Hash))
+          .and_return([])
+
+        client.list_refs(pagination_params: { limit: 5, page_token: 'refs/tags/v1.0.0' })
+      end
+    end
   end
 
   describe '#find_refs_by_oid' do

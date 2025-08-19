@@ -1,0 +1,18 @@
+#import "ee/sidebar/queries/iteration.fragment.graphql"
+
+query iteration($id: IterationID!, $fullPath: String) {
+  iteration(id: $id) {
+    ...IterationFragment
+    state
+    report(fullPath: $fullPath) {
+      stats {
+        total {
+          count
+        }
+        complete {
+          count
+        }
+      }
+    }
+  }
+}

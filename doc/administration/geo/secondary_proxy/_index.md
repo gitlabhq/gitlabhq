@@ -175,7 +175,8 @@ GitLab does not support multiple external URLs, see [issue 21319](https://gitlab
 
 ### Configure a secondary Geo site to a different external URL than the primary site
 
-If your secondary site uses the same external URL as the primary site:
+If your secondary site uses the same external URL as the primary site,
+but you want to change it to use a different URL:
 
 1. On the secondary site, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and set the `external_url` to the desired URL for the secondary site:
@@ -252,7 +253,6 @@ Disabling the proxying feature flag has the following general effects.
 - The secondary site does not proxy HTTP requests to the primary site. Instead, it attempts to serve them itself, or fail.
 - Git requests generally succeed. Git pushes are redirected or proxied to the primary site.
 - Other than Git requests, any HTTP request which may write data fails. Read requests generally succeed.
-- The secondary site UI shows a banner: ![Secondary Site UI Banner for Read-Only](img/secondary_proxy_read_only_v17_8.png)
 
 | Feature / component                                 | Succeed                                 | Notes |
 |:----------------------------------------------------|:----------------------------------------|-------|
@@ -281,7 +281,7 @@ When proxying is disabled, users who access only the secondary site cannot prope
 
 - **No record of acceptance**: If an employee only logs into the secondary site, their acceptance of terms and conditions is not recorded in the primary database because write operations (including terms acceptance) are not proxied when secondary proxying is disabled, even though they may be presented with the terms message.
 - **Legal compliance concerns**: Organizations may lack proper legal coverage if employees use GitLab services through a secondary-only access pattern, since there's no verifiable record of their agreement to the terms and conditions.
- 
+
 As a workaround, you must access the primary site at least once to properly accept terms and conditions. After accepted on the primary, this information is replicated to secondary sites through normal Geo synchronization.
 
 {{< alert type="note" >}}

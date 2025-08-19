@@ -36,6 +36,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
       let(:user) { create(:user) }
 
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         post_graphql(query, current_user: current_user)
       end
 
@@ -46,6 +47,7 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
 
     context 'with project permissions' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.add_developer(current_user)
         post_graphql(query, current_user: current_user)
       end
@@ -151,6 +153,14 @@ RSpec.describe 'getting Alert Management Alerts', feature_category: :incident_ma
           expect(alerts.size).to eq(1)
           expect(first_alert['iid']).to eq(alert.iid.to_s)
         end
+      end
+    end
+
+    context 'when hide_incident_management_features flag is enabled' do
+      it 'does not return alert data' do
+        post_graphql(query, current_user: current_user)
+
+        expect(alerts).to be_nil
       end
     end
   end

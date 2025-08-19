@@ -231,7 +231,7 @@ module Projects
     def update_namespace_and_visibility(to_namespace)
       # Apply new namespace id and visibility level
       project.namespace = to_namespace
-      project.visibility_level = to_namespace.visibility_level unless project.visibility_level_allowed_by_group?
+      project.visibility_level = to_namespace.visibility_level unless project.visibility_level_allowed_by_namespace?
     end
 
     def update_repository_configuration

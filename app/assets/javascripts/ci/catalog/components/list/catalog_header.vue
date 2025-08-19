@@ -20,6 +20,7 @@ export default {
     pageDescription: {
       default: defaultDescription,
     },
+    legalDisclaimer: { default: '' },
   },
   data() {
     return {
@@ -62,11 +63,14 @@ export default {
       </p>
     </gl-banner>
     <h1 class="page-title gl-text-size-h-display">{{ pageTitle }}</h1>
-    <p>
+    <p class="gl-mb-3">
       <span data-testid="page-description">{{ pageDescription }}</span>
       <gl-link :href="$options.learnMorePath" target="_blank">{{
         $options.i18n.learnMore
       }}</gl-link>
+    </p>
+    <p v-if="legalDisclaimer" data-testid="legal-disclaimer" class="gl-text-sm gl-text-subtle">
+      {{ legalDisclaimer }}
     </p>
   </div>
 </template>

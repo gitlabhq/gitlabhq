@@ -86,8 +86,8 @@ module SidebarsHelper
       },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
-        assigned_merge_requests: user.assigned_open_merge_requests_count,
-        review_requested_merge_requests: user.review_requested_open_merge_requests_count,
+        assigned_merge_requests: user.assigned_open_merge_requests_count(cached_only: true),
+        review_requested_merge_requests: user.review_requested_open_merge_requests_count(cached_only: true),
         todos: user.todos_pending_count,
         last_update: time_in_milliseconds
       },
@@ -202,20 +202,7 @@ module SidebarsHelper
     # We only return the panel if any menu item is rendered, otherwise fallback
     return panel if panel&.render?
 
-    # Fallback menu "Your work" for logged-in users, "Explore" for logged-out
-    if user
-      context = your_work_sidebar_context(user, **context_adds)
-      Sidebars::YourWork::Panel.new(context)
-    else
-      Sidebars::Explore::Panel.new(
-        Sidebars::Context.new(
-          current_user: nil,
-          container: nil,
-          current_organization: Current.organization,
-          **context_adds
-        )
-      )
-    end
+    fallback_sidebar_panel(nav, context_adds, user)
   end
 
   def command_palette_data(project: nil, current_ref: nil)
@@ -233,6 +220,25 @@ module SidebarsHelper
   end
 
   private
+
+  def fallback_sidebar_panel(nav, context_adds, user = nil)
+    # Fallback when panels fail to render:
+    # - UserProfile panel failures (no accessible content) -> Explore navigation for private/blocked users
+    # - Other panel failures -> Your Work (logged-in) or Explore (anonymous)
+    if nav != 'user_profile' && user
+      context = your_work_sidebar_context(user, **context_adds)
+      return Sidebars::YourWork::Panel.new(context)
+    end
+
+    Sidebars::Explore::Panel.new(
+      Sidebars::Context.new(
+        current_user: user,
+        container: nil,
+        current_organization: Current.organization,
+        **context_adds
+      )
+    )
+  end
 
   def search_data
     {
@@ -292,7 +298,7 @@ module SidebarsHelper
           {
             text: _('Assigned'),
             href: merge_requests_dashboard_path(assignee_username: user.username),
-            count: user.assigned_open_merge_requests_count,
+            count: user.assigned_open_merge_requests_count(cached_only: true),
             userCount: 'assigned_merge_requests',
             extraAttrs: {
               'data-track-action': 'click_link',
@@ -304,7 +310,7 @@ module SidebarsHelper
           {
             text: _('Review requests'),
             href: merge_requests_dashboard_path(reviewer_username: user.username),
-            count: user.review_requested_open_merge_requests_count,
+            count: user.review_requested_open_merge_requests_count(cached_only: true),
             userCount: 'review_requested_merge_requests',
             extraAttrs: {
               'data-track-action': 'click_link',

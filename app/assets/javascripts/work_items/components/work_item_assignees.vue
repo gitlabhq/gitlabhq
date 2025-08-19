@@ -267,12 +267,7 @@ export default {
       const { localAssigneeIds } = this;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$emit('updateWidgetDraft', {
-          workItemType: this.workItemType,
-          fullPath: this.fullPath,
-          assignees: this.localAssignees,
-        });
-
+        this.$emit('updateWidgetDraft', { assignees: this.localAssignees });
         this.updateInProgress = false;
         return;
       }

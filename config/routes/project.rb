@@ -123,7 +123,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
           resource :operations, only: [:show, :update] do
             member do
-              post :reset_alerting_token
               post :reset_pagerduty_token
             end
           end
@@ -348,12 +347,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :search
           end
 
-          resources :deployments, only: [:index, :show] do
-            member do
-              get :metrics
-              get :additional_metrics
-            end
-          end
+          resources :deployments, only: [:index, :show]
         end
 
         resources :alert_management, only: [:index] do
@@ -364,6 +358,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
 
+        get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
+        get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
         resources :work_items, only: [:show, :index], param: :iid do
           collection do
             post :import_csv
@@ -416,7 +412,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           to: 'snippets/blobs#raw',
           format: false,
           as: :snippet_blob_raw,
-          constraints: { snippet_id: /\d+/ }
+          constraints: { snippet_id: /\d+/, ref: %r{[^\/]+} }
 
         draw :issues
         draw :merge_requests
@@ -553,17 +549,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      namespace :prometheus do
-        resources :metrics, constraints: { id: %r{[^\/]+} }, only: [:index, :new, :create, :edit, :update, :destroy] do # rubocop: disable Cop/PutProjectRoutesUnderScope
-          get :active_common, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
-          post :validate_query, on: :collection # rubocop:todo Cop/PutProjectRoutesUnderScope
-        end
-      end
-
       scope :prometheus, as: :prometheus do
         resources :alerts, constraints: { id: /\d+/ }, only: [] do # rubocop: disable Cop/PutProjectRoutesUnderScope
           post :notify, on: :collection, to: 'alerting/notifications#create', defaults: { endpoint_identifier: 'legacy-prometheus' } # rubocop: disable Cop/PutProjectRoutesUnderScope
-          get :metrics_dashboard, on: :member # rubocop:todo Cop/PutProjectRoutesUnderScope
         end
       end
 

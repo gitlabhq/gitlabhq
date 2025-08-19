@@ -33,6 +33,7 @@ default:
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
+  FF_TIMESTAMPS: "true"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "${RUBY_VERSION_NEXT}"
@@ -47,9 +48,6 @@ default:
 .default-merge-request-variables: &default-merge-request-variables
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
   CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
-  FF_NETWORK_PER_BUILD: "true"
-  FF_TIMESTAMPS: "true"
-  FF_USE_FASTZIP: "true"
   NO_SOURCEMAPS: "true"
   GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
 
@@ -209,8 +207,7 @@ workflow:
         GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "false"
 
 variables:
-  DEFAULT_PG_VERSION: "16" # default version is used to detect when job uses different postgres version
-  PG_VERSION: $DEFAULT_PG_VERSION
+  PG_VERSION: "16"
   DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-node-${NODE_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-chrome-${CHROME_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}"
   DEFAULT_JOB_TAG: "gitlab-org"
   GITLAB_LARGE_RUNNER_OPTIONAL: "gitlab-org"  # overridden just in gitlab-org/gitlab
@@ -237,32 +234,33 @@ variables:
   FORCE_COLOR: 1
   CLICOLOR_FORCE: 1
 
+  # File paths used in predictive testing flow
+  GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
+  GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
+  GLCI_PREDICTIVE_CHANGED_FILES_PATH: rspec/changed_files.txt
+  GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
+  GLCI_PREDICTIVE_RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
+  GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
+  GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH: crystalball/packed-mapping-alt.json
+  GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
+  GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
+  GLCI_PREDICTIVE_RSPEC_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
+
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
-  FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
   JEST_MATCHING_TEST_FILES_PATH: jest/matching_test_files.txt
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
   JOB_METRICS_FILE_PATH: "${CI_PROJECT_DIR}/tmp/job-metrics.json"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
-  RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
   RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
   RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH: rspec/test_already_failed_on_master.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
-  RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
-  RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt
-  RSPEC_MATCHING_TESTS_FOSS_PATH: rspec/matching_tests-foss.txt
-  RSPEC_MATCHING_TEST_FILES_PATH: rspec/matching_test_files.txt
-  RSPEC_PACKED_TESTS_MAPPING_PATH: crystalball/packed-mapping.json
-  RSPEC_PACKED_TESTS_MAPPING_ALT_PATH: crystalball/packed-mapping-alt.json
-  RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML: .gitlab/ci/rails/rspec-predictive.gitlab-ci.yml.erb
   RSPEC_PROFILING_FOLDER_PATH: rspec/profiling
-  RSPEC_TESTS_MAPPING_PATH: crystalball/mapping.json
-  RSPEC_TESTS_MAPPING_ALT_PATH: crystalball/mapping-alt.json
-  RSPEC_VIEWS_INCLUDING_PARTIALS_PATH: rspec/views_including_partials.txt
   RSPEC_AUTO_EXPLAIN_LOG_PATH: auto_explain/auto_explain.ndjson.gz
   RUBYOPT: "--yjit"
-  TMP_TEST_FOLDER: "${CI_PROJECT_DIR}/tmp/tests"
-  TMP_TEST_GITLAB_WORKHORSE_PATH: "${TMP_TEST_FOLDER}/${GITLAB_WORKHORSE_FOLDER}"
+  TMP_TEST_FOLDER: ${CI_PROJECT_DIR}/tmp/tests
+  GLCI_CACHED_SERVICES_FOLDER: ${CI_PROJECT_DIR}/tmp/services
+  GLCI_GITLAB_ASSETS_HASH_FILE: cached-assets-hash.txt
 
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
   ELASTIC_URL: "http://elastic:changeme@elasticsearch:9200"
@@ -298,12 +296,16 @@ variables:
   # CI jobs behavior can be changed by changing the value of these variables in the project's CI/CD variables
   AVERAGE_KNAPSACK_REPORT: "true"
   ENABLE_DEPSCORE: "true"
-  CACHE_ASSETS_AS_PACKAGE: "true"
   REUSE_FRONTEND_FIXTURES_ENABLED: "true"
   SIMPLECOV: "true"
 
+  # Runner features
+  FF_NETWORK_PER_BUILD: "true"
+  FF_TIMESTAMPS: "true"
+  FF_USE_FASTZIP: "true"
+
 include:
-  - local: .gitlab/ci/_skip.yml
+  - local: .gitlab/ci/overrides/skip.yml
     rules:
       - <<: *if-merge-request-security-canonical-sync
   - local: .gitlab/ci/version.yml
@@ -330,7 +332,10 @@ include:
       - if: '$CI_MERGE_REQUEST_LABELS =~ /quarantine/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
         when: never
       - when: always
-  - local: .gitlab/ci/_gem-cache.rails-next.yml
+  - local: .gitlab/ci/overrides/gem-cache.rails-next.yml
     rules:
       - *if-merge-request-labels-run-with-rails-next
       - *if-rails-next-schedule
+  - local: .gitlab/ci/overrides/assets-tmp-cache.yml
+    rules:
+      - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'

@@ -773,7 +773,7 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
       end
 
       let_it_be(:organization_users_attributes) do
-        create_list(:organization_user, Users::UpdateService::ORGANIZATION_USERS_LIMIT + 1, user: current_user)
+        create_list(:organization_user, Users::UpdateService::ORGANIZATION_USERS_LIMIT + 1, :without_common_organization, user: current_user)
           .map { |o| o.slice(:id) }
       end
 

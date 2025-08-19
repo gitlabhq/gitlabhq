@@ -12,16 +12,22 @@ module Types
       authorize :read_pipeline
       present_using ::Ci::PipelinePresenter
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
       field :id, GraphQL::Types::ID, null: false,
-        description: 'ID of the pipeline.'
+        description: 'ID of the pipeline.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :iid, GraphQL::Types::String, null: false,
         description: 'Internal ID of the pipeline.'
 
       field :name, GraphQL::Types::String, null: true,
-        description: 'Name of the pipeline.'
+        description: 'Name of the pipeline.',
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :sha, GraphQL::Types::String, null: true,
         description: "SHA of the pipeline's commit." do
@@ -60,7 +66,8 @@ module Types
         description: 'Coverage percentage.'
 
       field :created_at, Types::TimeType, null: false,
-        description: "Timestamp of the pipeline's creation."
+        description: "Timestamp of the pipeline's creation.",
+        scopes: [:api, :read_api, :ai_workflows]
 
       field :updated_at, Types::TimeType, null: false,
         description: "Timestamp of the pipeline's last activity."

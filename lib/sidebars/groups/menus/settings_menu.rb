@@ -102,7 +102,7 @@ module Sidebars
           return ::Sidebars::NilMenuItem.new(item_id: :usage_quotas) unless context.group.usage_quotas_enabled?
 
           ::Sidebars::MenuItem.new(
-            title: s_('UsageQuota|Usage Quotas'),
+            title: s_('UsageQuota|Usage quotas'),
             link: group_usage_quotas_path(context.group),
             active_routes: { path: 'usage_quotas#root' },
             item_id: :usage_quotas

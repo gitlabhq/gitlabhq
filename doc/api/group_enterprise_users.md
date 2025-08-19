@@ -201,6 +201,42 @@ Example response:
 }
 ```
 
+## Delete an enterprise user
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199646) in GitLab 18.3.
+
+{{</ history >}}
+
+Deletes the specified enterprise user.
+
+```plaintext
+DELETE /groups/:id/enterprise_users/:user_id
+```
+
+Supported attributes:
+
+| Attribute     | Type           | Required | Description                                                                                                                                                                                                                                                                              |
+|:--------------|:---------------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`          | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                          |
+| `user_id`     | integer        | yes      | ID of user account.                                                                                                                                                                                                                                                                      |
+| `hard_delete` | boolean        | no       | If `false`, deletes the user and moves their contributions [to a system-wide "Ghost User"](../user/profile/account/delete_account.md#associated-records). If `true`, deletes the user, their associated contributions, and any groups owned solely by the user. Default value: `false`.  |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/enterprise_users/:user_id"
+```
+
+If successful, returns `204 No content`.
+
+Other possible responses:
+
+- `403 Forbidden`: The authenticated user is not an Owner.
+- `404 Not found`: The user can not be found.
+- `409 Conflict`: Can not remove a user who is the sole Owner of a group.
+
 ## Disable two-factor authentication for an enterprise user
 
 {{< history >}}

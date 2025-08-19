@@ -88,6 +88,64 @@ describe('content_editor/extensions/reference', () => {
       },
     );
 
+    it('resolves references correctly around punctuation', async () => {
+      await waitUntilTransaction({
+        number: 2,
+        tiptapEditor,
+        action() {
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_USER_HTML });
+
+          tiptapEditor.commands.insertContent({ type: 'text', text: '@root, could you help?' });
+          triggerNodeInputRule({ tiptapEditor, inputRuleText: '@root,' });
+        },
+      });
+
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(
+          p(
+            reference({
+              referenceType: 'user',
+              originalText: '@root',
+              text: '@root',
+              href: '/root',
+            }),
+            ', could you help?',
+          ),
+        ).toJSON(),
+      );
+    });
+
+    it('resolves references correctly around parenthesis', async () => {
+      await waitUntilTransaction({
+        number: 2,
+        tiptapEditor,
+        action() {
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_USER_HTML });
+
+          tiptapEditor.commands.insertContent({
+            type: 'text',
+            text: 'Lets ask Administrator (@root) for help here',
+          });
+          triggerNodeInputRule({ tiptapEditor, inputRuleText: '(@root)' });
+        },
+      });
+
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(
+          p(
+            'Lets ask Administrator (',
+            reference({
+              referenceType: 'user',
+              originalText: '@root',
+              text: '@root',
+              href: '/root',
+            }),
+            ') for help here',
+          ),
+        ).toJSON(),
+      );
+    });
+
     it('resolves multiple references in the same paragraph correctly', async () => {
       await waitUntilTransaction({
         number: 2,

@@ -108,7 +108,7 @@ RSpec.shared_context 'project navbar structure' do
           _('CI/CD'),
           _('Packages and registries'),
           _('Monitor'),
-          s_('UsageQuota|Usage Quotas')
+          s_('UsageQuota|Usage quotas')
         ]
       }
     ].compact
@@ -128,7 +128,7 @@ RSpec.shared_context 'project navbar structure' do
       _('Packages and registries'),
       _('Monitor'),
       _('Analytics'),
-      s_('UsageQuota|Usage Quotas')
+      s_('UsageQuota|Usage quotas')
     ]
     structure
   end
@@ -154,7 +154,7 @@ RSpec.shared_context 'group navbar structure' do
         _('CI/CD'),
         _('Applications'),
         _('Packages and registries'),
-        s_('UsageQuota|Usage Quotas'),
+        s_('UsageQuota|Usage quotas'),
         _('Domain Verification')
       ]
     }
@@ -191,20 +191,7 @@ RSpec.shared_context 'group navbar structure' do
   let(:observability_nav_item) do
     {
       nav_item: _("Observability"),
-      nav_sub_items: [
-        _("Services"),
-        _("Traces Explorer"),
-        _("Logs Explorer"),
-        _("Metrics Explorer"),
-        _("Infrastructure Monitoring"),
-        _("Dashboard"),
-        _("Messaging Queues"),
-        _("API Monitoring"),
-        _("Alerts"),
-        _("Exceptions"),
-        _("Service Map"),
-        _("Settings")
-      ]
+      nav_sub_items: [_("O11y Service Settings"), _('Request Access')]
     }
   end
 
@@ -231,7 +218,6 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
-      (analyze_nav_item if Gitlab.ee?),
       observability_nav_item
     ]
   end
@@ -246,10 +232,6 @@ RSpec.shared_context 'dashboard navbar structure' do
       },
       {
         nav_item: _("Groups"),
-        nav_sub_items: []
-      },
-      {
-        nav_item: _('Organizations'),
         nav_sub_items: []
       },
       {

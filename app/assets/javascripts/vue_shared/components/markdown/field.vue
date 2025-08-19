@@ -265,6 +265,8 @@ export default {
         emojis: this.enableAutocomplete,
         members: this.enableAutocomplete,
         issues: this.enableAutocomplete,
+        issuesAlternative: this.enableAutocomplete,
+        workItems: this.enableAutocomplete,
         mergeRequests: this.enableAutocomplete,
         epics: this.enableAutocomplete,
         milestones: this.enableAutocomplete,

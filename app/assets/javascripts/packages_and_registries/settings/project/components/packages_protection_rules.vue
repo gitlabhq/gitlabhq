@@ -142,7 +142,7 @@ export default {
     },
     toastMessage() {
       return this.mutationItem
-        ? s__('PackageRegistry|Package protection rule updated.')
+        ? s__('PackageRegistry|Changes saved.')
         : s__('PackageRegistry|Package protection rule created.');
     },
   },

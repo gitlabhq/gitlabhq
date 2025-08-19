@@ -84,6 +84,7 @@ export const UNITS = {
   PER_DAY: 'PER_DAY',
   PERCENT: 'PERCENT',
   TIME_INTERVAL: 'TIME_INTERVAL',
+  MINUTES: 'MINUTES',
 };
 
 export const NUMBER_OF_DAYS_SELECTED = (numDays) => {
@@ -164,6 +165,18 @@ export const VULNERABILITY_HIGH_TYPE = 'vulnerability_high';
 export const VULNERABILITY_METRICS = {
   CRITICAL: VULNERABILITY_CRITICAL_TYPE,
   HIGH: VULNERABILITY_HIGH_TYPE,
+};
+
+export const PIPELINE_ANALYTICS_TYPE_COUNT = 'pipeline_count';
+export const PIPELINE_ANALYTICS_TYPE_SUCCESS_RATE = 'pipeline_success_rate';
+export const PIPELINE_ANALYTICS_TYPE_FAILURE_RATE = 'pipeline_failed_rate';
+export const PIPELINE_ANALYTICS_TYPE_MEDIAN = 'pipeline_duration_median';
+
+export const PIPELINE_ANALYTICS_METRICS = {
+  COUNT: PIPELINE_ANALYTICS_TYPE_COUNT,
+  SUCCESS_RATE: PIPELINE_ANALYTICS_TYPE_SUCCESS_RATE,
+  FAILURE_RATE: PIPELINE_ANALYTICS_TYPE_FAILURE_RATE,
+  MEDIAN: PIPELINE_ANALYTICS_TYPE_MEDIAN,
 };
 
 export const MERGE_REQUEST_THROUGHPUT_TYPE = 'merge_request_throughput';
@@ -282,6 +295,35 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
   },
 };
 
+export const PIPELINE_ANALYTICS_METRIC_METADATA = {
+  [PIPELINE_ANALYTICS_METRICS.COUNT]: {
+    description: s__(
+      'CICDAnalytics|The total number of pipelines that have run in the selected time period.',
+    ),
+    groupLink: '',
+    projectLink: '-/pipelines/charts',
+    docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
+  },
+  [PIPELINE_ANALYTICS_METRICS.SUCCESS_RATE]: {
+    description: s__('CICDAnalytics|The percentage of pipelines that completed successfully.'),
+    groupLink: '',
+    projectLink: '-/pipelines/charts',
+    docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
+  },
+  [PIPELINE_ANALYTICS_METRICS.FAILURE_RATE]: {
+    description: s__('CICDAnalytics|The percentage of pipelines that failed.'),
+    groupLink: '',
+    projectLink: '-/pipelines/charts',
+    docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
+  },
+  [PIPELINE_ANALYTICS_METRICS.MEDIAN]: {
+    description: s__('CICDAnalytics|The median time it takes for pipelines to complete.'),
+    groupLink: '',
+    projectLink: '-/pipelines/charts',
+    docsLink: helpPagePath('user/analytics/ci_cd_analytics#pipeline-metrics'),
+  },
+};
+
 export const VALUE_STREAM_METRIC_METADATA = {
   ...VALUE_STREAM_METRIC_TILE_METADATA,
   [FLOW_METRICS.ISSUES_COMPLETED]: {
@@ -366,6 +408,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
       anchor: 'root-cause-analysis-use-cases',
     }),
   },
+  ...PIPELINE_ANALYTICS_METRIC_METADATA,
 };
 
 export const USAGE_OVERVIEW_NO_DATA_ERROR = s__(

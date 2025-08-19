@@ -93,6 +93,12 @@ describe('Job Log', () => {
 
         expect(toggleCollapsibleLineMock).toHaveBeenCalled();
       });
+
+      it('emits toggleCollapsibleLine event', () => {
+        findLineHeader().trigger('click');
+
+        expect(wrapper.emitted('toggleCollapsibleLine')).toStrictEqual([[]]);
+      });
     });
 
     describe('duration', () => {

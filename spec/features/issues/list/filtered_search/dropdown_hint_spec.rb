@@ -67,12 +67,12 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
       end
 
       it 'opens the token dropdown when you click on it' do
-        click_link 'Author'
+        click_button 'Author'
 
         expect_visible_suggestions_list
         expect_suggestion '='
 
-        click_link 'is ='
+        click_button 'is ='
 
         expect_visible_suggestions_list
         expect_token_segment 'Author'
@@ -85,7 +85,7 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
       it 'reuses existing token text' do
         click_filtered_search_bar
         send_keys 'author', :backspace, :backspace
-        click_link 'Author'
+        click_button 'Author'
 
         expect_token_segment 'Author'
         expect_empty_search_term

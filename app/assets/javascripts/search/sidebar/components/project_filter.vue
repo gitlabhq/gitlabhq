@@ -27,13 +27,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      'query',
-      'projects',
-      'fetchingProjects',
-      'projectInitialJson',
-      'useSidebarNavigation',
-    ]),
+    ...mapState(['query', 'projects', 'fetchingProjects', 'projectInitialJson']),
     ...mapGetters(['frequentProjects', 'currentScope']),
     selectedProject() {
       return isEmpty(this.projectInitialJson) ? ANY_OPTION : this.projectInitialJson;

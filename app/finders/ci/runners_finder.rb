@@ -10,6 +10,7 @@ module Ci
       @params = params
       @group = params.delete(:group)
       @project = params.delete(:project)
+      @user = params.delete(:user)
       @current_user = current_user
     end
 
@@ -18,12 +19,15 @@ module Ci
                 project_runners
               elsif @group
                 group_runners
+              elsif @user
+                @user.ci_available_runners
               else
                 all_runners
               end
 
       items = by_ids(items)
       items = search(items)
+      items = assignable_for_project(items)
       items = by_active(items)
       items = by_status(items)
       items = by_upgrade_status(items)
@@ -74,7 +78,7 @@ module Ci
     end
 
     def group_runners
-      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_group_runners, @group)
+      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_runners, @group)
 
       case membership
       when :direct
@@ -91,9 +95,16 @@ module Ci
     end
 
     def project_runners
-      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_project_runners, @project)
+      raise Gitlab::Access::AccessDeniedError unless can?(@current_user, :read_runners, @project)
 
       ::Ci::Runner.owned_or_instance_wide(@project.id)
+    end
+
+    def assignable_for_project(items)
+      target_project = @params[:assignable_to_project]
+      return items unless target_project.present?
+
+      items.assignable_for(target_project)
     end
 
     def search(items)

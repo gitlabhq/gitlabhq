@@ -225,8 +225,8 @@ might not be published in the CI/CD catalog, but could be used for testing.
 
 {{< /history >}}
 
-When [referencing a CI/CD catalog component](#component-versions), you can use a
-special format to specify the latest [semantic version](#semantic-versioning) in a range.
+You can use a special format to specify the latest [semantic version](#semantic-versioning) in a range
+when referencing a CI/CD catalog component.
 
 This approach offers significant benefits for both consumers and authors of components:
 
@@ -265,6 +265,9 @@ In this example, referencing the component with:
 - `1.1` would use the `1.1.1` version.
 - `~latest` would use the `2.1.0` version.
 
+Semantic version ranges only work with published CI/CD catalog components, not with regular project components.
+This ensures that when you use shorthand syntax like `1.2` or `~latest`, you only pull components that have been validated and published to the catalog, rather than potentially untested code from any repository.
+
 Pre-release versions are never fetched when referencing a version range. To fetch
 a pre-release version, specify the full version, for example `1.0.1-rc`.
 
@@ -284,6 +287,9 @@ While it's possible for a component to use other components in turn, make sure t
   all the time and that consumers of your component get consistent behavior.
 - Update your dependencies regularly by pinning them to newer releases. Then publish a new release of your components with updated
   dependencies.
+- Evaluate the permissions of dependencies, and use dependencies that require the least amount of permissions.
+  For example, if you need to build an image, consider using [Buildah](https://buildah.io/) instead of Docker, so that you don't
+  require a Runner with a privileged Docker daemon.
 
 ### Write a clear `README.md`
 

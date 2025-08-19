@@ -118,6 +118,7 @@ To create a permalink:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `filter_blob_path`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 17.11.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 18.0.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/539215) in GitLab 18.2. Feature flag `filter_blob_path` removed.
 
 {{< /history >}}
 
@@ -153,7 +154,7 @@ The file finder uses fuzzy search and highlights results as you type.
 To search for a file, press <kbd>t</kbd> anywhere in your project, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. In the upper right, select **Find file**.
 1. On the dialog, start entering the filename:
 

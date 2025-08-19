@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin, product_group: :source_code do
+  RSpec.describe 'Create', :orchestrated, :repository_storage, :requires_admin,
+    feature_category: :source_code_management do
     describe 'Gitaly repository storage' do
       let(:user) { create(:user, :with_personal_access_token) }
       let(:parent_project) { create(:project, :with_readme, name: 'parent-project') }

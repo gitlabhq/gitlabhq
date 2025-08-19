@@ -79,8 +79,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   shared_examples 'validations called by different namespace types' do |method|
-    using RSpec::Parameterized::TableSyntax
-
     where(:namespace_type, :call_validation) do
       :namespace            | true
       :group                | true
@@ -112,8 +110,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
 
     context 'validating the parent of a namespace' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:parent_type, :child_type, :error) do
         nil                      | ref(:user_sti_name)      | nil
         nil                      | ref(:group_sti_name)     | nil
@@ -188,8 +184,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     describe 'path validator' do
-      using RSpec::Parameterized::TableSyntax
-
       let_it_be(:parent) { create(:namespace) }
 
       where(:namespace_type, :path, :valid) do
@@ -273,7 +267,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     describe '#parent_organization_match' do
-      let_it_be(:group) { create(:group, :with_organization) }
+      let_it_be(:group) { create(:group) }
 
       subject(:namespace) { build(:group, parent: group, organization: organization) }
 
@@ -294,7 +288,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
 
     describe '#no_conflict_with_organization_user_details' do
-      let!(:user) { create(:user, :with_namespace, in_organization: organization) }
+      let!(:user) { create(:user, :with_namespace, organization: organization) }
       let!(:organization_user_detail) do
         create(:organization_user_detail, organization: organization, user: user, username: 'test-username')
       end
@@ -365,8 +359,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#to_reference_base' do
-    using RSpec::Parameterized::TableSyntax
-
     let_it_be(:user) { create(:user) }
     let_it_be(:user_namespace) { user.namespace }
 
@@ -1002,9 +994,69 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#self_or_ancestors_archived?' do
-    using RSpec::Parameterized::TableSyntax
+  describe '#archived_ancestor' do
+    let_it_be_with_reload(:root_namespace) { create(:group) }
+    let_it_be_with_reload(:parent_namespace) { create(:group, parent: root_namespace) }
+    let_it_be_with_reload(:child_namespace) { create(:group, parent: parent_namespace) }
+    let_it_be_with_reload(:grandchild_namespace) { create(:group, parent: child_namespace) }
 
+    context 'when no ancestors are archived' do
+      it 'returns nil' do
+        expect(grandchild_namespace.archived_ancestor).to be_nil
+      end
+    end
+
+    context 'when one ancestor is archived' do
+      before do
+        parent_namespace.update!(archived: true)
+      end
+
+      it 'returns the archived ancestor' do
+        expect(grandchild_namespace.archived_ancestor).to eq(parent_namespace)
+      end
+    end
+
+    context 'when multiple ancestors are archived' do
+      before do
+        root_namespace.update!(archived: true)
+        parent_namespace.update!(archived: true)
+      end
+
+      it 'returns the first archived ancestor closest to the descendant' do
+        expect(grandchild_namespace.archived_ancestor).to eq(parent_namespace)
+      end
+    end
+
+    context 'when the namespace itself is archived' do
+      before do
+        grandchild_namespace.update!(archived: true)
+      end
+
+      it 'does not return itself, only ancestors' do
+        expect(grandchild_namespace.archived_ancestor).to be_nil
+      end
+    end
+
+    context 'when namespace has no ancestors' do
+      it 'returns nil for root namespace' do
+        expect(root_namespace.archived_ancestor).to be_nil
+      end
+    end
+
+    context 'with mixed archived and non-archived ancestors' do
+      before do
+        root_namespace.update!(archived: true)
+        # parent_namespace remains non-archived
+        child_namespace.update!(archived: true)
+      end
+
+      it 'returns the first archived ancestor closest to the descendant' do
+        expect(grandchild_namespace.archived_ancestor).to eq(child_namespace)
+      end
+    end
+  end
+
+  describe '#self_or_ancestors_archived?' do
     let(:grandparent) { create(:group) }
     let(:parent) { create(:group, parent: grandparent) }
     let(:namespace) { create(:group, parent: parent) }
@@ -1066,6 +1118,17 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         it 'does not raise an error and returns false' do
           expect { namespace.self_or_ancestors_archived? }.not_to raise_error
           expect(namespace.self_or_ancestors_archived?).to be false
+        end
+
+        context 'when ancestor is archived' do
+          before do
+            parent.update!(archived: true)
+          end
+
+          it 'does not raise an error and returns true' do
+            expect { namespace.self_or_ancestors_archived? }.not_to raise_error
+            expect(namespace.self_or_ancestors_archived?).to be true
+          end
         end
       end
     end
@@ -1843,21 +1906,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe ".clean_name" do
-    context "when the name complies with the group name regex" do
-      it "returns the name as is" do
-        valid_name = "Hello - World _ (Hi.)"
-        expect(described_class.clean_name(valid_name)).to eq(valid_name)
-      end
-    end
-
-    context "when the name does not comply with the group name regex" do
-      it "sanitizes the name by replacing all invalid char sequences with a space" do
-        expect(described_class.clean_name("Green'! Test~~~")).to eq("Green Test")
-      end
-    end
-  end
-
   describe ".username_reserved?" do
     subject(:username_reserved) { described_class.username_reserved?(username) }
 
@@ -1904,14 +1952,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     let(:username) { 'capyabra' }
 
-    let_it_be(:user) { create(:user, name: 'capybara') }
-    let_it_be(:group) { create(:group, name: 'capybara-group') }
+    let_it_be(:user) { create(:user, username: 'capybara', organization: organization) }
+    let_it_be(:group) { create(:group, name: 'capybara-group', organization: organization) }
     let_it_be(:subgroup) { create(:group, parent: group, name: 'capybara-subgroup') }
     let_it_be(:project) { create(:project, group: group, name: 'capybara-project') }
 
     let_it_be(:other_organization) { create(:organization) }
     let_it_be(:user_other_org) do
-      create(:user, :with_namespace, username: 'other-capybara', in_organization: other_organization)
+      create(:user, :with_namespace, username: 'other-capybara', organization: other_organization)
     end
 
     let_it_be(:group_other_org) { create(:group, path: 'other-capybara-group', organization: other_organization) }
@@ -2672,8 +2720,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#closest_setting' do
-    using RSpec::Parameterized::TableSyntax
-
     shared_examples_for 'fetching closest setting' do
       let!(:parent) { create(:group) }
       let!(:group) { create(:group, parent: parent) }
@@ -2726,8 +2772,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#shared_runners_setting' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :shared_runners_setting) do
       true  | true  | Namespace::SR_ENABLED
       true  | false | Namespace::SR_ENABLED
@@ -2745,8 +2789,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   end
 
   describe '#shared_runners_setting_higher_than?' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:shared_runners_enabled, :allow_descendants_override_disabled_shared_runners, :other_setting, :result) do
       true  | true  | Namespace::SR_ENABLED                    | false
       true  | true  | Namespace::SR_DISABLED_AND_OVERRIDABLE   | true

@@ -8,10 +8,10 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
   describe '#by_entity_type' do
     it 'builds the correct SQL' do
       expected_sql = <<~SQL
-        SELECT * FROM "audit_events" WHERE "audit_events"."entity_type" = 'Project'
+        SELECT * FROM `audit_events` WHERE `audit_events`.`entity_type` = 'Project'
       SQL
 
-      result_sql = instance.by_entity_type("Project").to_sql
+      result_sql = instance.by_entity_type('Project').to_sql
 
       expect(result_sql.strip).to eq(expected_sql.strip)
     end
@@ -20,7 +20,7 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
   describe '#by_entity_id' do
     it 'builds the correct SQL' do
       expected_sql = <<~SQL
-        SELECT * FROM "audit_events" WHERE "audit_events"."entity_id" = 42
+        SELECT * FROM `audit_events` WHERE `audit_events`.`entity_id` = 42
       SQL
 
       result_sql = instance.by_entity_id(42).to_sql
@@ -32,7 +32,7 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
   describe '#by_author_id' do
     it 'builds the correct SQL' do
       expected_sql = <<~SQL
-        SELECT * FROM "audit_events" WHERE "audit_events"."author_id" = 5
+        SELECT * FROM `audit_events` WHERE `audit_events`.`author_id` = 5
       SQL
 
       result_sql = instance.by_author_id(5).to_sql
@@ -46,7 +46,7 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
 
     it 'builds the correct SQL' do
       expected_sql = <<~SQL
-        SELECT * FROM "audit_events" WHERE "audit_events"."entity_id" = #{user.id}
+        SELECT * FROM `audit_events` WHERE `audit_events`.`entity_id` = #{user.id}
       SQL
 
       result_sql = instance.by_entity_username('Dummy').to_sql
@@ -60,7 +60,7 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
 
     it 'builds the correct SQL' do
       expected_sql = <<~SQL
-        SELECT * FROM "audit_events" WHERE "audit_events"."author_id" = #{user.id}
+        SELECT * FROM `audit_events` WHERE `audit_events`.`author_id` = #{user.id}
       SQL
 
       result_sql = instance.by_author_username('Dummy').to_sql
@@ -76,9 +76,9 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
 
     describe '.by_entity_type' do
       it 'calls the corresponding instance method' do
-        expect(instance).to receive(:by_entity_type).with("Project")
+        expect(instance).to receive(:by_entity_type).with('Project')
 
-        described_class.by_entity_type("Project")
+        described_class.by_entity_type('Project')
       end
     end
 
@@ -118,13 +118,13 @@ RSpec.describe ClickHouse::Models::AuditEvent, feature_category: :audit_events d
   describe 'method chaining' do
     it 'builds the correct SQL with chained methods' do
       expected_sql = <<~SQL.lines(chomp: true).join(' ')
-        SELECT * FROM "audit_events"
-        WHERE "audit_events"."entity_type" = 'Project'
-        AND "audit_events"."author_id" = 1
+        SELECT * FROM `audit_events`
+        WHERE `audit_events`.`entity_type` = 'Project'
+        AND `audit_events`.`author_id` = 1
       SQL
 
       instance = described_class.new
-      result_sql = instance.by_entity_type("Project").by_author_id(1).to_sql
+      result_sql = instance.by_entity_type('Project').by_author_id(1).to_sql
 
       expect(result_sql.strip).to eq(expected_sql.strip)
     end

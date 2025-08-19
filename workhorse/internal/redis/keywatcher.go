@@ -13,7 +13,7 @@ import (
 	"github.com/jpillora/backoff"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-	"github.com/redis/go-redis/v9"
+	redis "github.com/redis/go-redis/v9"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )

@@ -65,10 +65,6 @@ export default {
       type: Array,
       required: true,
     },
-    projectId: {
-      type: String,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,

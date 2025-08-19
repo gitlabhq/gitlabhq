@@ -1,13 +1,17 @@
 <script>
-import { GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import wikiPageQuery from '~/wikis/graphql/wiki_page.query.graphql';
+import wikiPageSubscribeMutation from '~/wikis/graphql/wiki_page_subscribe.mutation.graphql';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 
 export default {
   components: {
     GlButton,
+    GlIcon,
     GlLink,
     GlSprintf,
     WikiMoreDropdown,
@@ -28,6 +32,21 @@ export default {
     isEditingPath: { default: null },
     wikiUrl: { default: null },
     pagePersisted: { default: null },
+    queryVariables: { default: null },
+  },
+  apollo: {
+    wikiPage: {
+      query: wikiPageQuery,
+      variables() {
+        return { ...this.queryVariables, skipDiscussions: true };
+      },
+    },
+  },
+  data() {
+    return {
+      changingSubState: false,
+      wikiPage: {},
+    };
   },
   computed: {
     pageHeadingComputed() {
@@ -57,6 +76,16 @@ export default {
     editTooltip() {
       return `${this.editTooltipText} <kbd class='flat ml-1' aria-hidden=true>e</kbd>`;
     },
+    subscribeItem() {
+      return {
+        text: this.wikiPage?.subscribed ? __('Notifications On') : __('Notifications Off'),
+        icon: this.wikiPage?.subscribed ? 'notifications' : 'notifications-off',
+        action: this.toggleSubscribe,
+        extraAttrs: {
+          'data-testid': 'page-subscribe-button',
+        },
+      };
+    },
   },
   mounted() {
     if (this.editButtonUrl) {
@@ -80,6 +109,48 @@ export default {
     },
     setEditingMode() {
       this.$emit('is-editing', true);
+    },
+    async toggleSubscribe() {
+      if (this.changingSubState) return;
+
+      this.changingSubState = true;
+      const newSubState = !this.wikiPage.subscribed;
+
+      try {
+        await this.$apollo.mutate({
+          mutation: wikiPageSubscribeMutation,
+          variables: {
+            id: this.wikiPage.id,
+            subscribed: newSubState,
+          },
+          optimisticResponse: {
+            wikiPageSubscribe: {
+              errors: [],
+              wikiPage: {
+                id: this.wikiPage.id,
+                subscribed: newSubState,
+              },
+            },
+          },
+        });
+
+        const message = newSubState
+          ? __('Notifications turned on')
+          : __('Notifications turned off');
+        this.$toast.show(message);
+      } catch (error) {
+        this.handleSubscribeError(error, newSubState);
+      }
+
+      this.changingSubState = false;
+    },
+    handleSubscribeError(error, newSubState) {
+      const message = newSubState
+        ? __('An error occurred while subscribing to this page. Please try again later.')
+        : __('An error occurred while unsubscribing from this page. Please try again later.');
+
+      this.$toast.show(message);
+      Sentry.captureException(error);
     },
   },
   i18n: {
@@ -109,6 +180,19 @@ export default {
           @click="setEditingMode"
         >
           {{ $options.i18n.edit }}
+        </gl-button>
+        <gl-button
+          v-gl-tooltip.html
+          class="btn-icon"
+          :disabled="!wikiPage.id"
+          :title="subscribeItem.text"
+          data-testid="wiki-subscribe-button"
+          @click="toggleSubscribe"
+        >
+          <gl-icon
+            :name="subscribeItem.icon"
+            :class="{ '!gl-text-status-info': wikiPage.subscribed }"
+          />
         </gl-button>
         <gl-button
           v-gl-tooltip.html

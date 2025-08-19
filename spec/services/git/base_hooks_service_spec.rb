@@ -29,8 +29,6 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
     end
   end
 
-  subject { test_service.new(project, user, params) }
-
   let(:params) do
     {
       change: {
@@ -40,6 +38,8 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
       }
     }
   end
+
+  subject { test_service.new(project, user, params) }
 
   describe 'push event' do
     it 'creates push event' do
@@ -160,6 +160,7 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
           before: oldrev,
           checkout_sha: checkout_sha,
           push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
+          gitaly_context: {},
           ref: ref,
           variables_attributes: []
         }
@@ -192,12 +193,11 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         params[:push_options] = push_options
       end
 
-      it 'calls the create pipeline service' do
-        expect(Ci::PipelineCreation::PushOptions).to receive(:new).with(push_options).and_call_original
-
+      it 'triggers an async pipeline creation', :sidekiq_inline do
+        allow(Ci::CreatePipelineService).to receive(:new).and_call_original
         expect(Ci::CreatePipelineService)
           .to receive(:new)
-          .with(project, user, pipeline_params)
+          .with(project, user, pipeline_params.merge(push_options: push_options.deep_stringify_keys))
           .and_call_original
 
         expect { subject.execute }.to change { Ci::Pipeline.count }.by(1)
@@ -215,6 +215,36 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         my_job_deploy = pipeline.builds.find { |build| build.name == 'my-job-deploy' }
         expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
       end
+
+      context 'when feature flag "async_pipeline_creation_on_push" is disabled' do
+        before do
+          stub_feature_flags(async_pipeline_creation_on_push: false)
+        end
+
+        it 'calls the create pipeline service' do
+          expect(Ci::PipelineCreation::PushOptions).to receive(:new).with(push_options).and_call_original
+
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+                  .with(project, user, pipeline_params)
+                  .and_call_original
+
+          expect { subject.execute }.to change { Ci::Pipeline.count }.by(1)
+
+          pipeline = Ci::Pipeline.last
+
+          my_job_test = pipeline.builds.find { |build| build.name == 'my-job-test' }
+          expect(my_job_test.allow_failure).to be(true)
+
+          expect(pipeline.builds.count { |build| build.name.starts_with?('my-job-build') }).to eq(3)
+
+          my_job_test2 = pipeline.builds.find { |build| build.name == 'my-job-test-2' }
+          expect(my_job_test2.options[:script]).to eq(["echo 1", "echo 2"])
+
+          my_job_deploy = pipeline.builds.find { |build| build.name == 'my-job-deploy' }
+          expect(my_job_deploy.options[:script]).to eq(['echo "Deploying to staging using blue-green strategy"'])
+        end
+      end
     end
   end
 
@@ -225,30 +255,61 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         before: oldrev,
         checkout_sha: checkout_sha,
         push_options: an_instance_of(Ci::PipelineCreation::PushOptions), # defined in each context
+        gitaly_context: {},
         ref: ref,
         variables_attributes: variables_attributes # defined in each context
       }
     end
 
     shared_examples 'creates pipeline with params and expected variables' do
-      let(:pipeline_service) { double(execute: service_response) }
-      let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
-      let(:pipeline) { double(persisted?: true) }
+      let(:pipeline_service) { double(execute_async: service_response) }
+      let(:service_response) { double(error?: false) }
 
-      it 'calls the create pipeline service' do
+      it 'triggers an async pipeline creation' do
         expect(Ci::CreatePipelineService)
           .to receive(:new)
-          .with(project, user, pipeline_params)
-          .and_return(pipeline_service)
+                .with(project, user, pipeline_params.merge(push_options: push_options&.deep_stringify_keys))
+                .and_return(pipeline_service)
         expect(subject).not_to receive(:log_pipeline_errors)
 
         subject.execute
       end
+
+      context 'when feature flag "async_pipeline_creation_on_push" is disabled' do
+        let(:pipeline_service) { double(execute: service_response) }
+        let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
+        let(:pipeline) { double(persisted?: true) }
+
+        before do
+          stub_feature_flags(async_pipeline_creation_on_push: false)
+        end
+
+        it 'calls the create pipeline service' do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+                  .with(project, user, pipeline_params)
+                  .and_return(pipeline_service)
+          expect(subject).not_to receive(:log_pipeline_errors)
+
+          subject.execute
+        end
+      end
+    end
+
+    context 'without providing push options' do
+      let(:push_options) { nil }
+      let(:variables_attributes) { [] }
+
+      it_behaves_like 'creates pipeline with params and expected variables'
     end
 
     context 'with empty push options' do
       let(:push_options) { {} }
       let(:variables_attributes) { [] }
+
+      before do
+        params[:push_options] = push_options
+      end
 
       it_behaves_like 'creates pipeline with params and expected variables'
     end
@@ -333,14 +394,19 @@ RSpec.describe Git::BaseHooksService, feature_category: :source_code_management 
         before: oldrev,
         checkout_sha: checkout_sha,
         push_options: an_instance_of(Ci::PipelineCreation::PushOptions),
+        gitaly_context: {},
         ref: ref,
         variables_attributes: variables_attributes
       }
     end
 
-    let(:pipeline_service) { double(execute: service_response) }
+    let(:pipeline_service) { double(execute: service_response, execute_async: double(error?: false)) }
     let(:push_options) { {} }
     let(:variables_attributes) { [] }
+
+    before do
+      stub_feature_flags(async_pipeline_creation_on_push: false)
+    end
 
     context "when the pipeline is persisted" do
       let(:pipeline) { double(persisted?: true) }

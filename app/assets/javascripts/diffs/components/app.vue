@@ -2,15 +2,8 @@
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
-// eslint-disable-next-line no-restricted-imports
-import {
-  mapState as mapVuexState,
-  mapGetters as mapVuexGetters,
-  mapActions as mapVuexActions,
-} from 'vuex';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
-import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   keysFor,
   MR_PREVIOUS_FILE_IN_DIFF,
@@ -33,6 +26,7 @@ import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/grap
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -124,11 +118,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    endpointCodequality: {
-      type: String,
-      required: false,
-      default: '',
     },
     shouldShow: {
       type: Boolean,
@@ -238,19 +227,14 @@ export default {
       'latestDiff',
       'currentDiffFileId',
       'isTreeLoaded',
-      'conflictResolutionPath',
-      'canMerge',
       'hasConflicts',
       'viewDiffsFileByFile',
       'mrReviews',
       'renderTreeList',
       'showWhitespace',
-      'targetBranchName',
-      'branchName',
       'addedLines',
       'removedLines',
       'whichCollapsedTypes',
-      'isParallelView',
       'currentDiffIndex',
       'isVirtualScrollingEnabled',
       'isBatchLoading',
@@ -258,10 +242,9 @@ export default {
       'flatBlobsList',
       'diffFiles',
     ]),
-    ...mapState(useNotes, ['isNotesFetched', 'getNoteableData']),
+    ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
-    ...mapVuexState('findingsDrawer', ['activeDrawer']),
-    ...mapVuexGetters('findingsDrawer', ['activeDrawer']),
+    ...mapState(useFindingsDrawer, ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -270,6 +253,9 @@ export default {
       return this.diffFiles.filter((file, i) => {
         return file.file_hash === this.currentDiffFileId || (i === 0 && !this.currentDiffFileId);
       });
+    },
+    discussionsCount() {
+      return this.discussions.length;
     },
     canCurrentUserFork() {
       return this.currentUser.can_fork === true && this.currentUser.can_create_merge_request;
@@ -314,9 +300,6 @@ export default {
     },
     fileReviews() {
       return reviewStatuses(this.diffFiles, this.mrReviews);
-    },
-    resourceId() {
-      return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
     renderFileTree() {
       return this.renderDiffFiles && this.fileBrowserVisible;
@@ -423,7 +406,7 @@ export default {
       this.autoScrolled = true;
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
     this.$watch(
-      () => this.$store.state.notes.discussions.length,
+      () => this.discussionsCount,
       (newVal, prevVal) => {
         if (newVal > prevVal) {
           this.setDiscussions();
@@ -453,7 +436,6 @@ export default {
       'setFileForcedOpen',
       'fetchCoverageFiles',
       'rereadNoteHash',
-      'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setCurrentFileHash',
       'setHighlightedRow',
@@ -472,7 +454,7 @@ export default {
       'toggleTreeOpen',
     ]),
     ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
-    ...mapVuexActions('findingsDrawer', ['setDrawer']),
+    ...mapActions(useFindingsDrawer, ['setDrawer']),
     closeDrawer() {
       this.setDrawer({});
     },
@@ -723,7 +705,7 @@ export default {
 
       if (id.startsWith('#note_')) {
         const noteId = id.replace('#note_', '');
-        const discussion = this.$store.state.notes.discussions.find(
+        const discussion = this.discussions.find(
           (d) => d.diff_file && d.notes.find((n) => n.id === noteId),
         );
 

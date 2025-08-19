@@ -4,7 +4,8 @@ require "spec_helper"
 
 RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, feature_category: :code_review_workflow do
   let_it_be(:diff_file) { build(:diff_file) }
-  let(:web_component) { page.find('diff-file') }
+  let(:instance) { described_class.new(diff_file: diff_file) }
+  let(:virtual_rendering_params) { instance.virtual_rendering_params }
 
   shared_examples 'file mode changed' do
     before do
@@ -14,6 +15,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
     it 'shows changed file message' do
       render_component
       expect(page).to have_text("File mode changed from #{diff_file.a_mode} to #{diff_file.b_mode}.")
+      verify_virtual_rendering_params
     end
   end
 
@@ -26,6 +28,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows changed file message' do
         render_component
         expect(page).to have_text('File changed.')
+        verify_virtual_rendering_params
       end
 
       include_examples 'file mode changed'
@@ -39,6 +42,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows moved file message' do
         render_component
         expect(page).to have_text('File moved.')
+        verify_virtual_rendering_params
       end
 
       include_examples 'file mode changed'
@@ -51,6 +55,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         it 'shows changed file message' do
           render_component
           expect(page).to have_text("File changed and moved.")
+          verify_virtual_rendering_params
         end
       end
     end
@@ -63,6 +68,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows added file message' do
         render_component
         expect(page).to have_text('File added.')
+        verify_virtual_rendering_params
       end
     end
 
@@ -74,6 +80,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows deleted file message' do
         render_component
         expect(page).to have_text('File deleted.')
+        verify_virtual_rendering_params
       end
     end
 
@@ -89,6 +96,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows limit message' do
         render_component
         expect(page).to have_text("File size exceeds preview limit.")
+        verify_virtual_rendering_params
       end
     end
 
@@ -100,6 +108,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows limit message' do
         render_component
         expect(page).to have_text("Preview size limit exceeded, changes collapsed.")
+        verify_virtual_rendering_params
       end
     end
 
@@ -112,6 +121,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         render_component
         message = "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
         expect(page).to have_text(message)
+        verify_virtual_rendering_params
       end
     end
 
@@ -123,6 +133,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows no preview message' do
         render_component
         expect(page).to have_text("No diff preview for this file type.")
+        verify_virtual_rendering_params
       end
     end
 
@@ -134,6 +145,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows no preview message' do
         render_component
         expect(page).to have_text("No diff preview for this file type.")
+        verify_virtual_rendering_params
       end
     end
 
@@ -145,6 +157,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows no preview message' do
         render_component
         expect(page).to have_text("Contains only whitespace changes.")
+        verify_virtual_rendering_params
       end
     end
   end
@@ -154,6 +167,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows view file link' do
         render_component
         expect(page).to have_link("View file")
+        verify_virtual_rendering_params
       end
     end
 
@@ -165,6 +179,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
       it 'shows preview button' do
         render_component
         expect(page).to have_button("Show file contents")
+        verify_virtual_rendering_params
       end
 
       context 'when diff is collapsed' do
@@ -175,6 +190,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         it 'shows preview button' do
           render_component
           expect(page).to have_button("Show changes")
+          verify_virtual_rendering_params
         end
 
         context 'when diff is too large' do
@@ -186,6 +202,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
             render_component
             expect(page).to have_link("View original file")
             expect(page).to have_link("View changed file")
+            verify_virtual_rendering_params
           end
         end
       end
@@ -198,6 +215,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         it 'shows preview button' do
           render_component
           expect(page).to have_button("Show changes")
+          verify_virtual_rendering_params
         end
       end
     end
@@ -224,6 +242,7 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
           render_component
           expect(page).to have_link("View original file")
           expect(page).to have_link("View changed file")
+          verify_virtual_rendering_params
         end
       end
 
@@ -259,7 +278,15 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
     end
   end
 
-  def render_component(**args)
-    render_inline(described_class.new(diff_file: diff_file, **args))
+  def render_component
+    render_inline(instance)
+  end
+
+  def verify_virtual_rendering_params
+    action_buttons_present = page.has_selector?('[data-testid="rd-no-preview-action"]') ? 1 : 0
+    expect(virtual_rendering_params).to eq(
+      paragraphs_count: page.find_all('p').count,
+      action_buttons_present: action_buttons_present
+    )
   end
 end

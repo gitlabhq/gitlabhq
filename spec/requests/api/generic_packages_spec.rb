@@ -172,6 +172,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(expected_status)
         end
       end
+
+      it_behaves_like 'updating personal access token last used' do
+        subject { authorize_upload_file(workhorse_headers.merge(personal_access_token_header)) }
+      end
     end
 
     context 'application security' do
@@ -442,7 +446,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               aggregate_failures do
                 expect(response).to have_gitlab_http_status(:created)
 
-                package = project.packages.find_by(name: 'mypackage')
+                package = ::Packages::Generic::Package.for_projects(project).find_by(name: 'mypackage')
                 expect(package).to be_hidden
               end
             end
@@ -527,7 +531,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               end.to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
 
               expect(response).to have_gitlab_http_status(:created)
-              expect(project.package_files.find_by(file_name:)).not_to be_nil
+              expect(::Packages::PackageFile.for_projects(project).find_by(file_name:)).not_to be_nil
             end
           end
         end
@@ -854,6 +858,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    it_behaves_like 'updating personal access token last used' do
+      subject { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
+    end
+
     def upload_file(
       params, request_headers, send_rewritten_field: true, package_name: 'mypackage',
       package_version: '0.0.1', file_name: 'myfile.tar.gz')
@@ -1121,28 +1129,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
-    shared_examples 'log content type determination' do
-      it 'logs content type determination' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          determined_content_type: 'application/gzip'
-        )
-
-        subject
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(packages_generic_package_content_type: false)
-        end
-
-        it 'does not log content type determination' do
-          expect(Gitlab::AppJsonLogger).not_to receive(:info)
-
-          subject
-        end
-      end
-    end
-
     context 'when object storage is enabled' do
       let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
 
@@ -1160,8 +1146,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         before do
           stub_package_file_object_storage
         end
-
-        it_behaves_like 'log content type determination'
 
         it 'includes response-content-disposition and filename in the redirect file URL' do
           download
@@ -1191,8 +1175,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           stub_package_file_object_storage(proxy_download: true)
         end
 
-        it_behaves_like 'log content type determination'
-
         it 'sends a file with response-content-disposition and filename' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
             .with(instance_of(String), expected_headers)
@@ -1205,6 +1187,10 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it_behaves_like 'package registry SSRF protection'
       end
+    end
+
+    it_behaves_like 'updating personal access token last used' do
+      subject { download_file(personal_access_token_header) }
     end
 
     def download_file(request_headers, package_name: nil, file_name: nil)

@@ -56,6 +56,13 @@ describe('TwoFactorActionConfirm', () => {
         expect(findButton().props('variant')).toBe(variant);
       });
 
+      it('renders custom size', () => {
+        const size = 'small';
+        createComponent({ size });
+
+        expect(findButton().props('size')).toBe(size);
+      });
+
       it('renders the modal when button is clicked', async () => {
         createComponent({}, mountExtended);
         expect(findModal().props('visible')).toBe(false);

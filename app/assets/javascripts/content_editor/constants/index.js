@@ -96,4 +96,6 @@ export const COMMANDS = {
   UNASSIGN_REVIEWER: '/unassign_reviewer',
   UNLABEL: '/unlabel',
   ITERATION: '/iteration',
+  UNLINK: '/unlink',
+  STATUS: '/status',
 };

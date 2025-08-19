@@ -69,12 +69,32 @@ class Member < ApplicationRecord
   scope :in_hierarchy, ->(source) do
     source = source.root_ancestor
     groups = source.self_and_descendants
-    group_members = Member.default_scoped.where(source: groups).select(*Member.cached_column_list)
-
     projects = source.root_ancestor.all_projects
-    project_members = Member.default_scoped.where(source: projects).select(*Member.cached_column_list)
 
-    Member.default_scoped.from_union([group_members, project_members]).merge(self)
+    group_members = where(source: groups).select(*cached_column_list)
+    project_members = where(source: projects).select(*cached_column_list)
+
+    from_union([group_members, project_members])
+  end
+
+  scope :seat_assignable, ->(users:, namespace: nil) do
+    users = users.is_a?(ActiveRecord::Relation) ? users : Array.wrap(users)
+
+    scope = without_invites_and_requests(minimal_access: true).merge(with_user(users))
+    scope = scope.in_hierarchy(namespace) if namespace
+    scope
+  end
+
+  def self.seat_assignable?(user:, namespace: nil)
+    seat_assignable(users: user, namespace: namespace).exists?
+  end
+
+  def self.seat_assignable_highest_access_level(user:, namespace: nil)
+    seat_assignable(users: user, namespace: namespace).maximum(:access_level)
+  end
+
+  def self.seat_assignable_highest_access_levels(users:, namespace: nil)
+    seat_assignable(users: users, namespace: namespace).group(:user_id).maximum(:access_level)
   end
 
   scope :for_self_and_descendants, ->(group, columns = Member.cached_column_list) do
@@ -244,6 +264,10 @@ class Member < ApplicationRecord
       .order('source_id, source_type, LOWER(invite_email)')
   end
 
+  scope :by_user_types, ->(user_types) do
+    left_join_users.where(users: { user_type: user_types })
+  end
+
   scope :order_name_asc, -> do
     build_keyset_order_on_joined_column(
       scope: left_join_users,
@@ -346,6 +370,7 @@ class Member < ApplicationRecord
   after_save :log_invitation_token_cleanup
 
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
+  after_commit :log_previous_state_on_update, unless: :importing?, on: [:update]
   after_commit on: [:create, :update, :destroy], unless: :importing? do
     refresh_member_authorized_projects
   end
@@ -482,7 +507,7 @@ class Member < ApplicationRecord
 
     # overriden in EE
     def member_role_id(_group_link_table, _custom_role_for_group_link_enabled)
-      arel_table[:member_role_id]
+      Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
     end
   end
 
@@ -702,6 +727,14 @@ class Member < ApplicationRecord
 
   def post_destroy_access_request_hook
     system_hook_service.execute_hooks_for(self, :revoke)
+  end
+
+  def log_previous_state_on_update
+    Gitlab::AppLogger.info(
+      message: 'Refresh member authorized projects on update',
+      user_id: self.user_id,
+      previous_changes: previous_changes.keys
+    )
   end
 
   # Refreshes authorizations of the current member.

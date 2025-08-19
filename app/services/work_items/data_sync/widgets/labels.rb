@@ -42,6 +42,9 @@ module WorkItems
         end
 
         def handle_changed_labels_system_notes(label_links_batch)
+          # When promoting a work item to an epic, we already copy the notes for added/removed labels from the issue.
+          return if params[:operation] == :promote
+
           added_labels_ids = []
           removed_labels_ids = []
 

@@ -30,6 +30,7 @@ module Resolvers
       private
 
       def resolve_groups(**args)
+        args = { **args, organization: context[:current_organization] }
         ::Groups::UserGroupsFinder.new(current_user, object, args).execute
       end
     end

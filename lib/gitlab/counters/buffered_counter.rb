@@ -173,11 +173,10 @@ module Gitlab
       end
 
       def key
-        project_id = counter_record.project_id
         record_name = counter_record.class
         record_id = counter_record.id
 
-        "project:{#{project_id}}:counters:#{record_name}:#{record_id}:#{attribute}"
+        "#{counter_record.counters_key_prefix}:counters:#{record_name}:#{record_id}:#{attribute}"
       end
 
       def flushed_key

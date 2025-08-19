@@ -191,6 +191,84 @@ You can also filter the issues by:
 - **Project**: specify the Jira project key in the `project` parameter in the URL
   (for example, `/-/integrations/jira/issues?project=GTL`).
 
+## Jira verification
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192795) in GitLab 18.3.
+
+{{< /history >}}
+
+Prerequisites:
+
+- Ensure the Jira issues integration is [configured](#configure-the-integration)
+  and the **View Jira issues** checkbox is selected.
+
+You can set up verification rules to ensure Jira issues referenced in commit messages meet specific criteria before allowing pushes. This feature helps maintain consistent workflows between GitLab and Jira.
+
+To configure Jira verification:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Integrations**.
+1. Select **Jira issues**.
+1. Go to the **Jira verification** section.
+1. Configure the following verification checks:
+   - **Check issue exists**: Verifies that the Jira issue referenced in the commit message exists in Jira.
+   - **Check assignee**: Verifies that the committer is the assignee of the Jira issue referenced in the commit message.
+   - **Check issue status**: Verifies that the Jira issue referenced in the commit message has one of the allowed statuses.
+   - **Allowed statuses**: A comma-separated list of allowed Jira issue statuses (for example, `Ready, In Progress, Review`). This field is only available when **Check issue status** is enabled.
+1. Select **Save changes**.
+
+When a user attempts to push changes that don't meet the verification criteria, GitLab displays an error message indicating why the push was rejected.
+
+{{< alert type="note" >}}
+
+If a commit message contains multiple Jira issue keys, only the first one is used for verification checks.
+
+{{< /alert >}}
+
+### Example error messages
+
+- If a referenced Jira issue doesn't exist (when **Check issue exists** is enabled):
+
+  ```plaintext
+  Jira issue PROJECT-123 does not exist.
+  ```
+
+- If a referenced Jira issue isn't assigned to the committer (when **Check assignee** is enabled):
+
+  ```plaintext
+  Jira issue PROJECT-123 is not assigned to you. It is assigned to Jane Doe.
+  ```
+
+- If a referenced Jira issue has a status that's not in the allowed list (when **Check issue status** is enabled):
+
+  ```plaintext
+  Jira issue PROJECT-123 has status 'Done', which is not in the list of allowed statuses: Ready, In Progress, Review.
+  ```
+
+### Use case for verification checks
+
+Consider this example:
+
+1. Your team uses a workflow where Jira issues should be in a specific status when actively being worked on.
+1. You configure Jira verification to:
+   - Check that issues exist
+   - Verify that issues are in an "In Progress" or "Review" status
+1. A developer tries to push changes with the commit message "Fix PROJECT-123 by adding validation".
+1. GitLab checks that:
+   - The Jira issue PROJECT-123 exists
+   - The issue has a status of either "In Progress" or "Review"
+1. If all checks pass, the push is allowed. If any check fails, the push is rejected with an error message.
+
+This ensures your team follows the correct workflow by preventing code changes from being pushed when the corresponding Jira issue isn't in the right state.
+
 ## Create a Jira issue for a vulnerability
 
 {{< details >}}

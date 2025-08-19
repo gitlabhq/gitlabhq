@@ -1345,10 +1345,9 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe "GET /groups/:id/merge_requests" do
     let_it_be(:group, reload: true) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
+    let(:endpoint_path) { "/groups/#{group.id}/merge_requests" }
 
     include_context 'with merge requests'
-
-    let(:endpoint_path) { "/groups/#{group.id}/merge_requests" }
 
     before do
       group.add_reporter(user)
@@ -2748,12 +2747,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     context 'when user is using a composite identity', :request_store, :sidekiq_inline do
       let(:user) { create(:user, username: 'user-with-composite-identity') }
 
-      before do
-        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
-          user.username == 'user-with-composite-identity'
-        end
-      end
-
       let(:params) do
         {
           title: 'Test merge request',
@@ -2761,6 +2754,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           target_branch: 'master',
           author_id: user.id
         }
+      end
+
+      before do
+        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
+          user.username == 'user-with-composite-identity'
+        end
       end
 
       context 'when composite identity is missing' do

@@ -27,7 +27,8 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
             updated_attributes: %w[milestone_id]
           )
 
-        milestone.reload
+        expect { milestone.reload }.to raise_error ActiveRecord::RecordNotFound
+
         issues.each do |issue|
           expect(issue.reload.milestone).to be_nil
         end
@@ -36,7 +37,7 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
     end
 
     context 'on project milestones' do
-      let_it_be_with_reload(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }
+      let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }
 
       let(:container) { project }
 
@@ -74,8 +75,7 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
     end
 
     context 'on group milestones' do
-      let_it_be_with_reload(:milestone) { create(:milestone, group: group) }
-
+      let(:milestone) { create(:milestone, group: group) }
       let(:container) { group }
 
       it 'deletes milestone' do
@@ -87,8 +87,6 @@ RSpec.describe Milestones::DestroyService, feature_category: :team_planning do
       it_behaves_like 'deletes milestone id from issuables'
 
       it 'does not log destroy event and does not run on-delete webhook' do
-        expect(service).not_to receive(:execute_hooks).with(milestone, 'delete')
-
         expect { service.execute(milestone) }.not_to change { Event.count }
       end
     end

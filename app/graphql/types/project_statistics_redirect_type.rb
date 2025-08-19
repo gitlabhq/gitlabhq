@@ -5,8 +5,13 @@ module Types
   class ProjectStatisticsRedirectType < BaseObject
     graphql_name 'ProjectStatisticsRedirect'
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     field :repository, GraphQL::Types::String, null: false,
-      description: 'Redirection Route for repository.'
+      description: 'Redirection Route for repository.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :wiki, GraphQL::Types::String, null: false,
       description: 'Redirection Route for wiki.'

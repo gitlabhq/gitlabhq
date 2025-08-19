@@ -67,6 +67,7 @@ describe('Work items router', () => {
       router,
       provide: {
         canAdminLabel: true,
+        duoRemoteFlowsEnabled: false,
         fullPath: 'full-path',
         groupPath: '',
         isGroup: false,
@@ -79,6 +80,7 @@ describe('Work items router', () => {
         hasIssuableHealthStatusFeature: false,
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
+        newTrialPath: '',
         workItemPlanningViewEnabled: false,
       },
       propsData: {
@@ -147,7 +149,7 @@ describe('Work items router', () => {
   it(`renders create work item page on /issues/new route work item type set via localStorage draft`, async () => {
     localStorage.setItem(
       // full-path in router is set to `/work_item
-      'autosave/new-/work_item-widgets-draft',
+      'autosave/new-/work_item-new-route-widgets-draft',
       JSON.stringify({ TYPE: { name: 'Task' } }),
     );
     await createComponent(`/issues/new`);

@@ -52,16 +52,10 @@ module Tooling
     end
 
     def execute
-      if changed_files_pathname.nil?
-        raise ArgumentError, "A path to the changed files file must be given as :changed_files_pathname"
-      end
+      changes = from_api? ? file_changes + frontend_fixture_files : frontend_fixture_files
+      return changes if changed_files_pathname.nil?
 
-      case @from
-      when :api
-        write_array_to_file(changed_files_pathname, file_changes + frontend_fixture_files, append: false)
-      else
-        write_array_to_file(changed_files_pathname, frontend_fixture_files, append: true)
-      end
+      write_array_to_file(changed_files_pathname, changes, append: from_api? ? false : true)
     end
 
     def only_allowed_files_changed
@@ -73,6 +67,10 @@ module Tooling
     attr_reader :gitlab_token, :gitlab_endpoint, :mr_project_path,
       :mr_iid, :changed_files_pathname, :predictive_tests_pathname,
       :frontend_fixtures_mapping_pathname, :file_filter, :api_path_attributes
+
+    def from_api?
+      @from == :api
+    end
 
     def gitlab
       @gitlab ||= begin
@@ -101,15 +99,13 @@ module Tooling
     end
 
     def file_changes
-      @file_changes ||=
-        case @from
-        when :api
-          mr_changes.changes.select(&file_filter).flat_map do |change|
-            change.to_h.values_at(*api_path_attributes)
-          end.uniq
-        else
-          read_array_from_file(changed_files_pathname)
-        end
+      @file_changes ||= if from_api?
+                          mr_changes.changes.select(&file_filter).flat_map do |change|
+                            change.to_h.values_at(*api_path_attributes)
+                          end.uniq
+                        else
+                          read_array_from_file(changed_files_pathname)
+                        end
     end
 
     def mr_changes

@@ -69,6 +69,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         value: project.title },
       { key: 'CI_PROJECT_DESCRIPTION',
         value: project.description },
+      { key: 'CI_PROJECT_TOPICS',
+        value: project.topic_list.first(20).join(',').downcase },
       { key: 'CI_PROJECT_PATH',
         value: project.full_path },
       { key: 'CI_PROJECT_PATH_SLUG',
@@ -358,18 +360,30 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       end
     end
 
-    context 'when pipeline disables all except yaml variables' do
+    context 'when pipeline is duo_workflow source' do
       before do
         pipeline.source = :duo_workflow
+        workload = create(:ci_workload, pipeline: pipeline)
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VP1")
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VG1")
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VI1")
+        create(:ci_variable, project: workload.project, key: "VP1", value: "v1")
+        create(:ci_variable, project: workload.project, key: "VP2", value: "v2")
+        create(:ci_group_variable, group: workload.project.group, key: "VG1", value: "v3")
+        create(:ci_group_variable, group: workload.project.group, key: "VG2", value: "v3")
+        create(:ci_instance_variable, key: "VI1", value: "v3")
+        create(:ci_instance_variable, key: "VI2", value: "v3")
       end
 
-      it 'only includes the YAML and project predefined variables' do
+      it 'only includes the YAML, project predefined variables and user defined explicitly requested' do
         expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
         )
         expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
         )
+        expect(subject.map(&:key)).to include("VP1", "VG1", "VI1")
+        expect(subject.map(&:key)).not_to include("VP2", "VG2", "VI2")
       end
     end
 
@@ -402,15 +416,27 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
     context 'when pipeline disables all except yaml variables' do
       before do
         pipeline.source = :duo_workflow
+        workload = create(:ci_workload, pipeline: pipeline)
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VP1")
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VG1")
+        create(:ci_workload_variable_inclusion, workload: workload, project: workload.project, variable_name: "VI1")
+        create(:ci_variable, project: workload.project, key: "VP1", value: "v1")
+        create(:ci_variable, project: workload.project, key: "VP2", value: "v2")
+        create(:ci_group_variable, group: workload.project.group, key: "VG1", value: "v3")
+        create(:ci_group_variable, group: workload.project.group, key: "VG2", value: "v3")
+        create(:ci_instance_variable, key: "VI1", value: "v3")
+        create(:ci_instance_variable, key: "VI2", value: "v3")
       end
 
-      it 'only includes the YAML and project predefined variables' do
+      it 'only includes the YAML, project predefined variables and user defined explicitly requested' do
         expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'YAML_VARIABLE', value: 'value' })
         )
         expect(subject).to include(
           Gitlab::Ci::Variables::Collection::Item.fabricate({ key: 'CI_PROJECT_PATH', value: project.full_path })
         )
+        expect(subject.map(&:key)).to include("VP1", "VG1", "VI1")
+        expect(subject.map(&:key)).not_to include("VP2", "VG2", "VI2")
       end
     end
   end
@@ -815,6 +841,13 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   end
 
   shared_examples "secret CI variables" do
+    before do
+      # Clear memoization to ensure test isolation and prevent cached values
+      # from affecting test results across different scenarios
+      pipeline.clear_memoization(:protected_ref)
+      pipeline.clear_memoization(:git_ref)
+    end
+
     let(:protected_variable_item) do
       Gitlab::Ci::Variables::Collection::Item.fabricate(protected_variable)
     end
@@ -861,17 +894,21 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       let_it_be(:pipeline) { merge_request.pipelines_for_merge_request.first }
       let_it_be(:job) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline) }
 
-      context 'when ref is protected' do
+      context 'when the pipeline is protected' do
         before do
-          create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project)
+          allow(pipeline).to receive(:protected_ref?).and_return(true)
         end
 
-        it 'does not return protected variables as it is not supported for merge request pipelines' do
-          is_expected.to contain_exactly(unprotected_variable_item)
+        it 'returns protected variables' do
+          is_expected.to contain_exactly(protected_variable_item, unprotected_variable_item)
         end
       end
 
-      context 'when ref is not protected' do
+      context 'when the pipeline is not protected' do
+        before do
+          allow(pipeline).to receive(:protected_ref?).and_return(false)
+        end
+
         it { is_expected.to contain_exactly(unprotected_variable_item) }
       end
     end
@@ -902,15 +939,14 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       context 'with protected environments' do
         it 'memoizes the result by environment' do
-          expect(pipeline.project)
-            .to receive(:protected_for?)
-            .with(pipeline.jobs_git_ref)
-            .once.and_return(true)
+          expect(pipeline)
+          .to receive(:protected_ref?)
+          .once.and_return(true)
 
           expect_next_instance_of(described_class::Group) do |group_variables_builder|
             expect(group_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: 'production', protected_ref: true)
+              .with(environment: 'production', protected_ref: true, only: nil)
               .once
               .and_call_original
           end
@@ -924,21 +960,20 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       context 'with unprotected environments' do
         it 'memoizes the result by environment' do
-          expect(pipeline.project)
-            .to receive(:protected_for?)
-            .with(pipeline.jobs_git_ref)
-            .once.and_return(false)
+          expect(pipeline)
+          .to receive(:protected_ref?)
+          .once.and_return(false)
 
           expect_next_instance_of(described_class::Group) do |group_variables_builder|
             expect(group_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: nil, protected_ref: false)
+              .with(environment: nil, protected_ref: false, only: nil)
               .once
               .and_call_original
 
             expect(group_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: 'scoped', protected_ref: false)
+              .with(environment: 'scoped', protected_ref: false, only: nil)
               .once
               .and_call_original
           end
@@ -972,15 +1007,14 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       context 'with protected environments' do
         it 'memoizes the result by environment' do
-          expect(pipeline.project)
-            .to receive(:protected_for?)
-            .with(pipeline.jobs_git_ref)
+          expect(pipeline)
+            .to receive(:protected_ref?)
             .once.and_return(true)
 
           expect_next_instance_of(described_class::Project) do |project_variables_builder|
             expect(project_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: 'production', protected_ref: true)
+              .with(environment: 'production', protected_ref: true, only: nil)
               .once
               .and_call_original
           end
@@ -994,21 +1028,20 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
       context 'with unprotected environments' do
         it 'memoizes the result by environment' do
-          expect(pipeline.project)
-            .to receive(:protected_for?)
-            .with(pipeline.jobs_git_ref)
+          expect(pipeline)
+            .to receive(:protected_ref?)
             .once.and_return(false)
 
           expect_next_instance_of(described_class::Project) do |project_variables_builder|
             expect(project_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: nil, protected_ref: false)
+              .with(environment: nil, protected_ref: false, only: nil)
               .once
               .and_call_original
 
             expect(project_variables_builder)
               .to receive(:secret_variables)
-              .with(environment: 'scoped', protected_ref: false)
+              .with(environment: 'scoped', protected_ref: false, only: nil)
               .once
               .and_call_original
           end

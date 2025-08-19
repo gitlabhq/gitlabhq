@@ -60,7 +60,7 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
   end
 end
 
-RSpec.describe 'Default text editor preference', :js, feature_category: :user_profile do
+RSpec.describe 'Default text editor preference', :js, :allow_rich_text_editor_for_new_users, feature_category: :user_profile do
   include RichTextEditorHelpers
 
   let_it_be(:user) { create(:user) }
@@ -81,8 +81,9 @@ RSpec.describe 'Default text editor preference', :js, feature_category: :user_pr
   end
 
   context 'when default text editor is disabled' do
-    it 'is the default state' do
-      expect(checkbox).not_to be_checked
+    before do
+      checkbox.set(false)
+      click_button 'Save changes'
     end
 
     it 'disables radio buttons' do
@@ -108,6 +109,11 @@ RSpec.describe 'Default text editor preference', :js, feature_category: :user_pr
   context 'when default text editor is enabled' do
     before do
       checkbox.set(true)
+    end
+
+    it 'is the default state with rich text editor selected' do
+      expect(checkbox).to be_checked
+      expect(radio_rich_text).to be_checked
     end
 
     it 'enables radio buttons' do

@@ -105,7 +105,7 @@ describe('ProjectSelect', () => {
       await waitForPromises();
 
       // To be displayed in GlCollapsibleListbox once we implement
-      // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2132
+      // https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2591
       // https://gitlab.com/gitlab-org/gitlab/-/issues/389974
       expect(findGlCollapsibleListbox().text()).toBe('No matching results');
     });

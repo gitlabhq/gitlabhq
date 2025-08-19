@@ -27,7 +27,7 @@ These environments ensure that different projects don't interfere with each othe
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
 
-A Workspace can exist for a maximum of approximately one calendar year, `8760` hours. After this, it is automatically terminated.
+A workspace can exist for a maximum of approximately one calendar year, `8760` hours. After this, it is automatically terminated.
 
 For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
 
@@ -62,7 +62,7 @@ A running workspace remains accessible to the user even if user permissions are 
 To manage workspaces from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Edit**.
+1. In the upper right, select **Code**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
@@ -177,6 +177,13 @@ You can define a devfile in the following locations, relative to your project's 
 - /.devfile/{devfile_name}.yml
 ```
 
+{{< alert type="note" >}}
+
+Devfiles must be placed directly in the `.devfile` folder. Nested subfolders are not supported.
+For example, `.devfile/subfolder/devfile.yaml` is not recognized.
+
+{{< /alert >}}
+
 ### Validation rules
 
 - `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
@@ -207,20 +214,67 @@ You can specify the base image, dependencies, and other settings.
 
 The `container` component type supports the following schema properties only:
 
-| Property       | Description                                                                                                                    |
-|----------------| -------------------------------------------------------------------------------------------------------------------------------|
-| `image`        | Name of the container image to use for the workspace.                                                                          |
-| `memoryRequest`| Minimum amount of memory the container can use.                                                                                |
-| `memoryLimit`  | Maximum amount of memory the container can use.                                                                                |
-| `cpuRequest`   | Minimum amount of CPU the container can use.                                                                                   |
-| `cpuLimit`     | Maximum amount of CPU the container can use.                                                                                   |
-| `env`          | Environment variables to use in the container. Names must not start with `gl-`.                                                |
-| `endpoints`    | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
-| `volumeMounts` | Storage volume to mount in the container.                                                                                      |
+| Property          | Description                                                                                                                    |
+|----------------   | -------------------------------------------------------------------------------------------------------------------------------|
+| `image`           | Name of the container image to use for the workspace.                                                                          |
+| `memoryRequest`   | Minimum amount of memory the container can use.                                                                                |
+| `memoryLimit`     | Maximum amount of memory the container can use.                                                                                |
+| `cpuRequest`      | Minimum amount of CPU the container can use.                                                                                   |
+| `cpuLimit`        | Maximum amount of CPU the container can use.                                                                                   |
+| `env`             | Environment variables to use in the container. Names must not start with `gl-`.                                                |
+| `endpoints`       | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
+| `volumeMounts`    | Storage volume to mount in the container.                                                                                      |
+| `overrideCommand` | Override the container entrypoint with a keep-alive command. Defaults vary by component type.                                  |
+
+#### `overrideCommand` attribute
+
+The `overrideCommand` attribute is a boolean that controls how Workspaces handle container entrypoints.
+This attribute determines whether the container's original entrypoint is preserved or replaced
+with a keep-alive command.
+
+The default value for `overrideCommand` depends on the component type:
+
+- Main component with attribute `gl/inject-editor: true`: Defaults to `true` when not specified.
+- All other components: Defaults to `false` when not specified.
+
+When `true`, the container entrypoint is replaced with `tail -f /dev/null` to keep the
+container running.
+When `false`, the container uses either the devfile component `command`/`args` or the built container
+image's `Entrypoint`/`Cmd`.
+
+The following table shows how `overrideCommand` affects container behavior. For clarity, these terms
+are used in the table:
+
+- Devfile component: The `command` and `args` properties in the devfile component entry.
+- Container image: The `Entrypoint` and `Cmd` fields in the OCI container image.
+
+| `overrideCommand` | Devfile component | Container image | Result |
+|-------------------|-------------------|-----------------|--------|
+| `true`            | Specified         | Specified       | Validation error: Devfile component `command`/`args` cannot be specified when `overrideCommand` is `true`. |
+| `true`            | Specified         | Not specified   | Validation error: Devfile component `command`/`args` cannot be specified when `overrideCommand` is `true`. |
+| `true`            | Not specified     | Specified       | Container entrypoint replaced with `tail -f /dev/null`. |
+| `true`            | Not specified     | Not specified   | Container entrypoint replaced with `tail -f /dev/null`. |
+| `false`           | Specified         | Specified       | Devfile component `command`/`args` used as entrypoint. |
+| `false`           | Specified         | Not specified   | Devfile component `command`/`args` used as entrypoint. |
+| `false`           | Not specified     | Specified       | Container image `Entrypoint`/`Cmd` used. |
+| `false`           | Not specified     | Not specified   | Container exits prematurely (`CrashLoopBackOff`). <sup>1</sup> |
+
+**Footnotes**:
+
+1. When you create a workspace, it cannot access container image details, for example, from private
+or internal registries. When `overrideCommand` is `false` and the Devfile doesn't specify `command`
+or `args`, GitLab does not validate container images or check for required `Entrypoint` or `Cmd` fields.
+You must ensure that either the Devfile or container specifies these fields, or the container exits
+prematurely and the workspace fails to start.
 
 ### User-defined `postStart` events
 
-You can define custom `postStart` events in your devfile to run commands after the workspace starts. Use this type of event to:
+You can define custom `postStart` events in your devfile to run commands after the workspace starts.
+These `postStart` events do not block workspace accessibility. The workspace becomes available as
+soon as internal initialization is complete, even if your custom `postStart` commands are still
+running or waiting to run.
+
+Use this type of event to:
 
 - Set up development dependencies.
 - Configure the workspace environment.
@@ -230,6 +284,26 @@ You can define custom `postStart` events in your devfile to run commands after t
 
 For an example that shows how to configure `postStart` events,
 see the [example configurations](#example-configurations).
+
+#### Monitor `postStart` event progress
+
+When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs.
+All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
+
+To check the progress of your `postStart` scripts:
+
+1. Open a terminal in your workspace.
+1. Go to the workspace logs directory:
+
+   ```shell
+   cd /tmp/workspace-logs/
+   ```
+
+1. View the output logs to see command results:
+
+   ```shell
+   tail -f poststart-stdout.log
+   ```
 
 ### Example configurations
 
@@ -414,6 +488,36 @@ see [Create a custom workspace image that supports arbitrary user IDs](create_im
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
+
+## Workspace logs directory
+
+When a workspace starts, GitLab creates a logs directory to capture output
+from various initialization and startup processes.
+
+The workspace logs are stored in `/tmp/workspace-logs/`.
+
+This directory helps you monitor workspace startup progress and troubleshoot
+issues with `postStart` events, development tools, and other workspace components.
+For more information, see [Debug `postStart` events](workspaces_troubleshooting.md#debug-poststart-events).
+
+### Available log files
+
+The logs directory contains the following log files:
+
+| Log file               | Purpose                    | Content |
+|------------------------|----------------------------|---------|
+| `poststart-stdout.log` | `postStart` command output | Standard output from all `postStart` commands, including user-defined commands and internal GitLab startup tasks. |
+| `poststart-stderr.log` | `postStart` command errors | Error output and `stderr` from `postStart` commands. You can use these logs to troubleshoot failed startup scripts. |
+| `start-vscode.log`     | VS Code server startup     | Logs from the GitLab VS Code fork server initialization. |
+| `start-sshd.log`       | SSH daemon startup         | Output from SSH daemon initialization, including server startup and configuration details. |
+| `clone-unshallow.log`  | Git repository conversion  | Logs from the background process that converts the shallow clone to a full clone and retrieves the complete Git history for the project. |
+
+{{< alert type="note" >}}
+
+Log files are recreated each time you restart a workspace. Previous log files are not preserved
+when you stop and restart a workspace.
+
+{{< /alert >}}
 
 ## Shallow cloning
 

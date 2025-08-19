@@ -22,6 +22,17 @@ RSpec.describe UsersFinder do
         expect(users).to contain_exactly(normal_user)
       end
 
+      it 'filters by public email' do
+        user_with_public_email = create(:user)
+        unique_email = "public#{SecureRandom.hex(4)}@example.com"
+        create(:email, :confirmed, user: user_with_public_email, email: unique_email)
+        user_with_public_email.update!(public_email: unique_email)
+
+        users = described_class.new(user, public_email: unique_email).execute
+
+        expect(users).to contain_exactly(user_with_public_email)
+      end
+
       it 'filters by id' do
         users = described_class.new(user, id: normal_user.id).execute
 

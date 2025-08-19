@@ -2,10 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, :clean_gitlab_redis_shared_state, feature_category: :importers do
+  include Import::UserMappingHelper
+
   subject(:importer) { described_class.new(project, client) }
 
-  let_it_be(:project) { create(:project, :repository, :with_import_url) }
+  let_it_be_with_reload(:project) do
+    create(
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
+  end
+
   let_it_be(:author) { create(:user) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
@@ -25,19 +33,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
     )
   end
 
-  let(:note_attrs) do
-    {
-      noteable_id: issuable.id,
-      noteable_type: issuable.class.name,
-      project_id: project.id,
-      author_id: author.id,
-      system: true,
-      created_at: issue_event.created_at,
-      updated_at: issue_event.created_at,
-      imported_from: 'github'
-    }.stringify_keys
-  end
-
   let(:expected_system_note_metadata_attrs) do
     {
       action: "assignee",
@@ -45,6 +40,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
       updated_at: issue_event.created_at
     }.stringify_keys
   end
+
+  let(:cached_references) { placeholder_user_references(Import::SOURCE_GITHUB, project.import_state.id) }
 
   shared_examples 'create expected notes' do
     it 'creates expected note' do
@@ -98,16 +95,11 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
     let(:event_type) { 'assigned' }
 
     it 'pushes the reference' do
-      expect(subject)
-      .to receive(:push_with_record)
-      .with(
-        an_instance_of(Note),
-        :author_id,
-        issue_event[:actor].id,
-        an_instance_of(Gitlab::Import::SourceUserMapper)
-      )
-
       importer.execute(issue_event)
+
+      expect(cached_references).to match_array([
+        ['Note', an_instance_of(Integer), 'author_id', source_user.id]
+      ])
     end
   end
 
@@ -115,10 +107,9 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
     let(:event_type) { 'assigned' }
 
     it 'does not push any reference' do
-      expect(subject)
-      .not_to receive(:push_with_record)
-
       importer.execute(issue_event)
+
+      expect(cached_references).to be_empty
     end
   end
 
@@ -126,24 +117,23 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
     before do
       allow_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
         allow(finder).to receive(:database_id).and_return(issuable.id)
-        allow(finder).to receive(:author_id_for).with(issue_event, author_key: :actor).and_return([author.id, true])
       end
     end
 
     context 'when user mapping is enabled' do
-      let_it_be(:source_user) do
-        create(
-          :import_source_user,
-          placeholder_user_id: author.id,
-          source_user_identifier: 1000,
-          source_username: 'github_author',
-          source_hostname: project.safe_import_url,
-          namespace_id: project.root_ancestor.id
-        )
-      end
-
-      before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: true })
+      let_it_be(:source_user) { generate_source_user(project, 1000) }
+      let(:mapped_author_id) { source_user.mapped_user_id }
+      let(:note_attrs) do
+        {
+          noteable_id: issuable.id,
+          noteable_type: issuable.class.name,
+          author_id: mapped_author_id,
+          project_id: project.id,
+          system: true,
+          created_at: issue_event.created_at,
+          updated_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
       end
 
       context 'with Issue' do
@@ -157,11 +147,68 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_
         it_behaves_like 'process assigned & unassigned events'
         it_behaves_like 'push a placeholder reference'
       end
+
+      context 'when importing into a personal namespace' do
+        let_it_be(:user_namespace) { create(:namespace) }
+        let(:mapped_author_id) { user_namespace.owner_id }
+
+        before_all do
+          project.update!(namespace: user_namespace)
+        end
+
+        context 'with Issue' do
+          it_behaves_like 'process assigned & unassigned events'
+          it_behaves_like 'do not push placeholder reference'
+        end
+
+        context 'with MergeRequest' do
+          let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+          it_behaves_like 'process assigned & unassigned events'
+          it_behaves_like 'do not push placeholder reference'
+        end
+
+        context 'when user_mapping_to_personal_namespace_owner is disabled' do
+          let_it_be(:source_user) { generate_source_user(project, 1000) }
+          let(:mapped_author_id) { source_user.mapped_user_id }
+
+          before_all do
+            project.build_or_assign_import_data(
+              data: { user_mapping_to_personal_namespace_owner_enabled: false }
+            ).save!
+          end
+
+          context 'with Issue' do
+            it_behaves_like 'process assigned & unassigned events'
+            it_behaves_like 'push a placeholder reference'
+          end
+
+          context 'with MergeRequest' do
+            let(:issuable) { create(:merge_request, source_project: project, target_project: project) }
+
+            it_behaves_like 'process assigned & unassigned events'
+            it_behaves_like 'push a placeholder reference'
+          end
+        end
+      end
     end
 
     context 'when user mapping is disabled' do
+      let(:note_attrs) do
+        {
+          noteable_id: issuable.id,
+          noteable_type: issuable.class.name,
+          author_id: author.id,
+          project_id: project.id,
+          system: true,
+          created_at: issue_event.created_at,
+          updated_at: issue_event.created_at,
+          imported_from: 'github'
+        }.stringify_keys
+      end
+
       before do
-        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+        project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
         allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
           allow(finder).to receive(:find).with(1000, 'github_author').and_return(author.id)
         end

@@ -24,7 +24,7 @@ RSpec.describe ::Gitlab::Housekeeper::Substitutor do
     fake_keep_instance = instance_double(::Gitlab::Housekeeper::Keep)
     allow(fake_keep).to receive(:new).and_return(fake_keep_instance)
 
-    allow(fake_keep_instance).to receive(:each_change)
+    allow(fake_keep_instance).to receive(:each_identified_change)
       .and_yield(change)
 
     @previous_dir = Dir.pwd

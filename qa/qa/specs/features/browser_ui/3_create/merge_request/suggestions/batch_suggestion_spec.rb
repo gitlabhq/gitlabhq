@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :code_review do
+  RSpec.describe 'Create', feature_category: :code_review_workflow do
     describe 'Merge request batch suggestions' do
       let(:project) { create(:project, name: 'batch-suggestions-project') }
       let(:merge_request) do

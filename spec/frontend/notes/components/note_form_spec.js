@@ -14,7 +14,7 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
-import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock } from '../mock_data';
 
 jest.mock('~/lib/utils/autosave');
 
@@ -138,15 +138,15 @@ describe('issue_note_form component', () => {
     });
 
     it.each`
-      internal | placeholder
-      ${false} | ${'Write a comment or drag your files here…'}
-      ${true}  | ${'Write an internal note or drag your files here…'}
+      confidential | placeholder
+      ${false}     | ${'Write a comment or drag your files here…'}
+      ${true}      | ${'Write an internal note or drag your files here…'}
     `(
       'should set correct textarea placeholder text when discussion confidentiality is $internal',
-      async ({ internal, placeholder }) => {
-        props.note = {
-          ...note,
-          internal,
+      async ({ confidential, placeholder }) => {
+        props.discussion = {
+          ...discussionMock,
+          confidential,
         };
         createComponentWrapper();
 
@@ -244,9 +244,9 @@ describe('issue_note_form component', () => {
         });
       });
 
-      describe('when discussion is internal', () => {
+      describe('when discussion is confidential', () => {
         beforeEach(() => {
-          createComponentWrapper({ note: { internal: true } });
+          createComponentWrapper({ discussion: { confidential: true } });
         });
 
         it('passes correct internal note information to CommentFieldLayout', () => {

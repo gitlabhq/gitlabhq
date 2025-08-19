@@ -20,6 +20,9 @@ export default {
       default: () => [],
     },
   },
+  emits: {
+    toggleCollapsibleLine: () => true,
+  },
   computed: {
     ...mapState(['jobLog', 'jobLogSections', 'isJobLogComplete']),
     highlightedLines() {
@@ -51,6 +54,7 @@ export default {
     ...mapActions(['toggleCollapsibleLine', 'scrollBottom', 'setupFullScreenListeners']),
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
+      this.$emit('toggleCollapsibleLine');
     },
     isLineVisible(line) {
       const { lineNumber, section } = line;

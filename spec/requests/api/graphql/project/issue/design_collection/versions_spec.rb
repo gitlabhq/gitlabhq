@@ -26,10 +26,6 @@ RSpec.describe 'Getting versions related to an issue', feature_category: :design
 
   let_it_be(:owner) { issue.project.first_owner }
 
-  def version_query(params = version_params)
-    query_graphql_field(:versions, params, version_query_fields)
-  end
-
   let(:version_params) { nil }
 
   let(:version_query_fields) { ['edges { node { sha } }'] }
@@ -40,14 +36,18 @@ RSpec.describe 'Getting versions related to an issue', feature_category: :design
 
   let(:query) { make_query }
 
+  let(:design_collection) do
+    graphql_data_at(:project, :issue, :design_collection)
+  end
+
+  def version_query(params = version_params)
+    query_graphql_field(:versions, params, version_query_fields)
+  end
+
   def make_query(vq = version_query)
     graphql_query_for(:project, { fullPath: project.full_path },
       query_graphql_field(:issue, { iid: issue.iid.to_s },
         query_graphql_field(:design_collection, {}, vq)))
-  end
-
-  let(:design_collection) do
-    graphql_data_at(:project, :issue, :design_collection)
   end
 
   def response_values(data = graphql_data, key = 'sha')

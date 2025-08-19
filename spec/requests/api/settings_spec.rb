@@ -71,6 +71,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['max_terraform_state_size_bytes']).to eq(0)
       expect(json_response['pipeline_limit_per_project_user_sha']).to eq(0)
       expect(json_response['delete_inactive_projects']).to be(false)
+      expect(json_response['inactive_resource_access_tokens_delete_after_days']).to eq(30)
       expect(json_response['inactive_projects_delete_after_months']).to eq(2)
       expect(json_response['inactive_projects_min_size_mb']).to eq(0)
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
@@ -197,6 +198,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             organization_cluster_agent_authorization_enabled: true,
             disabled_oauth_sign_in_sources: 'unknown',
             import_sources: 'github,bitbucket',
+            inactive_resource_access_tokens_delete_after_days: 42,
             wiki_page_max_content_bytes: 12345,
             wiki_asciidoc_allow_uri_includes: true,
             personal_access_token_prefix: "GL-",
@@ -293,6 +295,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['organization_cluster_agent_authorization_enabled']).to eq(true)
         expect(json_response['disabled_oauth_sign_in_sources']).to eq([])
         expect(json_response['import_sources']).to match_array(%w[github bitbucket])
+        expect(json_response['inactive_resource_access_tokens_delete_after_days']).to eq(42)
         expect(json_response['wiki_page_max_content_bytes']).to eq(12345)
         expect(json_response['wiki_asciidoc_allow_uri_includes']).to be(true)
         expect(json_response['personal_access_token_prefix']).to eq("GL-")

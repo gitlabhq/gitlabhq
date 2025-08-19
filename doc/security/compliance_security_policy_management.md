@@ -16,6 +16,7 @@ title: Instance-wide compliance and security policy management
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/550318) on GitLab Self-Managed in GitLab 18.3.
 
 {{< /history >}}
 
@@ -40,16 +41,16 @@ To apply security policies across multiple groups and projects from a single and
 - GitLab Self-Managed.
 - GitLab 18.2 or later.
 - You must be instance administrator.
-- You must have an existing top-level group to serve as the CSP group.
+- You must have an existing top-level group to serve as the compliance and security policy group.
 - To use the REST API (optional), you must have a token with administrator access.
 
 ## Set up instance-wide compliance and security policy management
 
-To set up instance-wide compliance and security policy management, you designate a CSP group and then create policies and compliance frameworks in the group.
+To set up instance-wide compliance and security policy management, you designate a compliance and security policy group and then create policies and compliance frameworks in the group.
 
-### Designate a CSP group
+### Designate a compliance and security policy group
 
-You can designate a CSP group using either the GitLab UI or the REST API.
+You can designate a compliance and security policy group using either the GitLab UI or the REST API.
 
 #### Using the GitLab UI
 
@@ -59,9 +60,9 @@ You can designate a CSP group using either the GitLab UI or the REST API.
 
 #### Using the REST API
 
-You can also designate a CSP group programmatically using the REST API. The API is useful for automation or when managing multiple instances.
+You can also designate a compliance and security policy group programmatically using the REST API. The API is useful for automation or when managing multiple instances.
 
-To set a CSP group:
+To set a compliance and security policy group:
 
 ```shell
 curl --request PUT \
@@ -71,7 +72,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/admin/security/policy_settings"
 ```
 
-To clear the CSP group:
+To clear the compliance and security policy group:
 
 ```shell
 curl --request PUT \
@@ -81,7 +82,7 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/admin/security/policy_settings"
 ```
 
-To get the current CSP settings:
+To get the current compliance and security policy settings:
 
 ```shell
 curl --request GET \
@@ -91,11 +92,11 @@ curl --request GET \
 
 For more information, see the [policy settings API documentation](../api/policy_settings.md).
 
-The selected group becomes your compliance and security policy (CSP) group, serving as the central place to manage security policies and compliance frameworks across your instance.
+The selected group becomes your compliance and security policy group, serving as the central place to manage security policies and compliance frameworks across your instance.
 
-### Security policy management in the CSP group
+### Security policy management in the compliance and security policy group
 
-See the [centralized security policy management](../user/application_security/policies/centralized_security_policy_management.md) documentation.
+See the [compliance and security policy group](../user/application_security/policies/enforcement/compliance_and_security_policy_groups.md) documentation for security policies.
 
 ## User workflows
 
@@ -103,8 +104,8 @@ See the [centralized security policy management](../user/application_security/po
 
 Instance administrators can:
 
-1. **Designate a CSP group** from your existing top-level groups
-1. **Create CSP security policies** in the designated group
+1. **Designate a compliance and security policy group** from your existing top-level groups
+1. **Create security policies** in the designated group
 1. **Configure policy scope** to determine where policies apply
 1. **View policy coverage** to understand which policies are active across groups and projects
 1. **Edit and manage** centralized policies as needed
@@ -119,7 +120,7 @@ Group administrators and owners can:
 
 {{< alert type="note" >}}
 
-The **Policies** page displays only the policies from the CSP that are currently applied to your group.
+The **Policies** page displays only the policies from the compliance and security policy group that are currently applied to your group.
 
 {{< /alert >}}
 
@@ -133,7 +134,7 @@ Project administrators and owners can:
 
 {{< alert type="note" >}}
 
-The **Policies** page displays only the policies from the CSP that are currently applied to your group.
+The **Policies** page displays only the policies from the compliance and security policy that are currently applied to your group.
 
 {{< /alert >}}
 
@@ -146,32 +147,32 @@ Developers can:
 
 ## Beta considerations
 
-- Performance testing: While using a CSP in not expected to impact performance, comprehensive performance testing is ongoing.
+- Performance testing: While using a compliance and security policy group is not expected to impact performance, comprehensive performance testing is ongoing.
 - Mixed permission scenarios: Some edge cases with mixed permissions may require additional validation
 - User experience: Some UI elements may not be fully polished and could change in future releases
 - Compliance framework scoping: Scoping policies to compliance frameworks is not supported in the Beta release.
 
 ## Automate your migration from security policy projects
 
-If you already use a security policy project to enforce policies across multiple groups, you can designate one of the linked groups as your CSP group.
-However, you should unlink the security policy project from all of the groups that are not the CSP group. Otherwise, the same policies
-are enforced twice in those groups. Once from the linked security policy group and again from the CSP group.
+If you already use a security policy project to enforce policies across multiple groups, you can designate one of the linked groups as your compliance and security policy group.
+However, you should unlink the security policy project from all of the groups that are not the compliance and security policy group. Otherwise, the same policies
+are enforced twice in those groups. Once from the linked security policy group and again from the compliance and security policy group.
 
-To automate the process of migrating your groups to a CSP, you can use the following `csp_designation.rb` script.
+To automate the process of migrating your groups to a compliance and security policy group, you can use the following `csp_designation.rb` script.
 
-The script saves the IDs of all groups that are linked to the CSP policy project in the specified backup file. If necessary, this allows you to restore the previous state, including the links to the security policy project.
+The script saves the IDs of all groups that are linked to the policy project for the compliance and security policy group in the specified backup file. If necessary, this allows you to restore the previous state, including the links to the security policy project.
 
 Prerequisites:
 
-- You must have a security policy project linked to the group that you want to designate as your CSP group.
+- You must have a security policy project linked to the group that you want to designate as your compliance and security policy group.
 
 To use the script:
 
 1. Copy the entire `csp_designation.rb` script from the following section.
 1. In your terminal window, connect to your instance.
 1. Create a new file named `csp_designation.rb` and paste the script in the new file.
-1. Run the following command to assign a CSP group, changing:
-   - `<group_id>` to the GitLab ID of the group you want to set as your CSP group.
+1. Run the following command to assign a compliance and security policy group, changing:
+   - `<group_id>` to the GitLab ID of the group you want to set as your compliance and security policy group.
    - The first `/path/to/` instance to the full path of your desired directory for the backup file.
    - The second `/path/to/` instance to the full path of the directory where you saved the `csp_designation.rb` file.
 
@@ -265,7 +266,7 @@ CspDesignation.new(csp_group_id, backup_filename).public_send(action)
 
 ## Troubleshooting
 
-**Unable to designate CSP group**
+**Unable to designate compliance and security policy group**
 
 - Verify that you have instance administrator privileges.
 - Verify that the group is a top-level group (not a subgroup).

@@ -195,9 +195,28 @@ To view pipeline test results:
 1. Select the **Tests** tab.
 1. Select any test suite to see individual test cases.
 
-![Pipeline test results](img/pipelines_junit_test_report_v18_1.png)
+![Test results showing 1671 tests with 1 minute 11 seconds total execution time and individual job execution times.](img/pipelines_junit_test_report_v18_3.png)
 
 You can also retrieve test reports with the [Pipelines API](../../api/pipelines.md#get-a-test-report-for-a-pipeline).
+
+### Test timing metrics
+
+Test results display different timing metrics:
+
+Pipeline duration
+: Elapsed time from when the pipeline starts until it completes.
+
+Test execution time
+: Total time spent running all tests across all jobs, added together.
+
+Queue time
+: Time jobs spent waiting for available runners.
+
+When jobs run in parallel, cumulative test execution time can exceed pipeline duration.
+
+Pipeline duration shows how long you wait for results, while test execution time shows compute resources used.
+
+For example, a pipeline that completes in 81 minutes might show 9 hours 10 minutes of test execution time if many test jobs run in parallel across multiple runners.
 
 ## Add screenshots to test reports
 

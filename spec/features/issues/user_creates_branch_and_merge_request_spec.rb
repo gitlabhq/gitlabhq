@@ -3,10 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe 'User creates branch and merge request on issue page', :js, feature_category: :team_planning do
+  include Spec::Support::Helpers::ModalHelpers
+
   let(:membership_level) { :developer }
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, :public) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
+
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
 
   context 'when signed out' do
     before do
@@ -14,7 +20,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
     end
 
     it "doesn't show 'Create merge request' button" do
-      expect(page).not_to have_selector('.create-mr-dropdown-wrap')
+      expect(page).not_to have_button 'Create merge request'
     end
   end
 
@@ -30,49 +36,46 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         visit project_issue_path(project, issue)
       end
 
-      # In order to improve tests performance, all UI checks are placed in this test.
       it 'shows elements' do
-        button_create_merge_request = find('.js-create-merge-request')
-        button_toggle_dropdown = find('.create-mr-dropdown-wrap .dropdown-toggle')
+        click_button 'More options'
 
-        button_toggle_dropdown.click
-
-        dropdown = find('.create-merge-request-dropdown-menu')
-
-        page.within(dropdown) do
-          button_create_target = find('.js-create-target')
-          input_branch_name = find('.js-branch-name')
-          input_source = find('.js-ref')
-          li_create_branch = find("li[data-value='create-branch']")
-          li_create_merge_request = find("li[data-value='create-mr']")
-
-          # Test that all elements are presented.
-          expect(page).to have_content('Create merge request and branch')
-          expect(page).to have_content('Create branch')
-          expect(page).to have_content('Branch name')
-          expect(page).to have_content('Source (branch or tag)')
+        within_testid('create-options-dropdown') do
           expect(page).to have_button('Create merge request')
-          expect(page).to have_selector('.js-branch-name:focus')
+          expect(page).to have_button('Create branch')
 
-          test_selection_mark(li_create_branch, li_create_merge_request, button_create_target, button_create_merge_request)
-          test_branch_name_checking(input_branch_name)
-          test_source_checking(input_source)
+          click_button 'Create branch'
+        end
 
+        within_modal do
+          expect(page).to have_field('Source (branch or tag)', with: project.default_branch)
+          expect(page).to have_field('Branch name', with: issue.to_branch_name)
+
+          fill_in 'Source (branch or tag)', with: 'mas'
+
+          expect(page).to have_text('Source is not available')
+
+          fill_in 'Branch name', with: 'new-branch-name'
+
+          expect(page).to have_text('Branch name is available')
+
+          fill_in 'Branch name', with: project.default_branch
+
+          expect(page).to have_text('Branch is already taken')
           # The button inside dropdown should be disabled if any errors occurred.
           expect(page).to have_button('Create branch', disabled: true)
         end
-
-        # The top level button should be disabled if any errors occurred.
-        expect(page).to have_button('Create branch', disabled: true)
       end
 
       context 'when branch name is auto-generated' do
-        it 'creates a merge request', :sidekiq_might_not_need_inline do
+        it 'creates a merge request' do
           perform_enqueued_jobs do
-            select_dropdown_option('create-mr')
+            click_button 'Create merge request'
+            within_modal do
+              click_button 'Create merge request'
+            end
 
-            expect(page).to have_content('New merge request')
-            expect(page).to have_content("From #{issue.to_branch_name} into #{project.default_branch}")
+            expect(page).to have_css('h1', text: 'New merge request')
+            expect(page).to have_text("From #{issue.to_branch_name} into #{project.default_branch}")
             expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
             expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
             expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: issue.to_branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
@@ -80,24 +83,29 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         it 'creates a branch' do
-          select_dropdown_option('create-branch')
+          click_button 'More options'
+          click_button 'Create branch'
+          within_modal do
+            click_button 'Create branch'
+          end
 
-          wait_for_requests
-
-          expect(page).to have_selector('.ref-selector ', text: '1-cherry-coloured-funk')
-          expect(page).to have_current_path project_tree_path(project, '1-cherry-coloured-funk'), ignore_query: true
+          expect(page).to have_css('.gl-toast', text: 'Branch created.')
         end
       end
 
       context 'when branch name is custom' do
         let(:branch_name) { 'custom-branch-name' }
 
-        it 'creates a merge request', :sidekiq_might_not_need_inline do
+        it 'creates a merge request' do
           perform_enqueued_jobs do
-            select_dropdown_option('create-mr', branch_name)
+            click_button 'Create merge request'
+            within_modal do
+              fill_in 'Branch name', with: branch_name
+              click_button 'Create merge request'
+            end
 
-            expect(page).to have_content('New merge request')
-            expect(page).to have_content("From #{branch_name} into #{project.default_branch}")
+            expect(page).to have_css('h1', text: 'New merge request')
+            expect(page).to have_text("From #{branch_name} into #{project.default_branch}")
             expect(page).to have_field("Title", with: "Draft: Resolve \"Cherry-Coloured Funk\"")
             expect(page).to have_field("Description", with: "Closes ##{issue.iid}")
             expect(page).to have_current_path(project_new_merge_request_path(project, merge_request: { source_branch: branch_name, target_branch: project.default_branch, issue_iid: issue.iid }))
@@ -105,86 +113,62 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         it 'creates a branch' do
-          select_dropdown_option('create-branch', branch_name)
+          click_button 'More options'
+          click_button 'Create branch'
+          within_modal do
+            fill_in 'Branch name', with: branch_name
+            click_button 'Create branch'
+          end
 
-          wait_for_requests
-
-          expect(page).to have_selector('.ref-selector', text: branch_name)
-          expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
+          expect(page).to have_css('.gl-toast', text: 'Branch created.')
         end
 
         context 'when source branch is non-default' do
           let(:source_branch) { 'feature' }
 
           it 'creates a branch' do
-            select_dropdown_option('create-branch', branch_name, source_branch)
-            wait_for_requests
+            click_button 'More options'
+            click_button 'Create branch'
+            within_modal do
+              fill_in 'Source (branch or tag)', with: source_branch
+              fill_in 'Branch name', with: branch_name
+              click_button 'Create branch'
+            end
 
-            expect(page).to have_selector('.ref-selector', text: branch_name)
-            expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
+            expect(page).to have_css('.gl-toast', text: 'Branch created.')
           end
         end
       end
 
       context 'when branch name is invalid' do
-        shared_examples 'has error message' do |dropdown|
+        context 'when creating a merge request' do
           it 'has error message' do
-            select_dropdown_option(dropdown, 'custom-branch-name w~th ^bad chars?')
-
-            wait_for_requests
+            click_button 'Create merge request'
+            within_modal do
+              fill_in 'Branch name', with: 'custom-branch-name w~th ^bad chars?'
+            end
 
             expect(page).to have_text("Can't contain spaces, ~, ^, ?")
           end
         end
 
-        context 'when creating a merge request', :sidekiq_might_not_need_inline do
-          it_behaves_like 'has error message', 'create-mr'
+        context 'when creating a branch' do
+          it 'has error message' do
+            click_button 'More options'
+            click_button 'Create branch'
+            within_modal do
+              fill_in 'Branch name', with: 'custom-branch-name w~th ^bad chars?'
+            end
+
+            expect(page).to have_text("Can't contain spaces, ~, ^, ?")
+          end
         end
-
-        context 'when creating a branch', :sidekiq_might_not_need_inline do
-          it_behaves_like 'has error message', 'create-branch'
-        end
-      end
-    end
-
-    context "when there is a referenced merge request" do
-      let!(:note) do
-        create(
-          :note,
-          :on_issue,
-          :system,
-          project: project,
-          noteable: issue,
-          note: "mentioned in #{referenced_mr.to_reference}"
-        )
-      end
-
-      let(:referenced_mr) do
-        create(
-          :merge_request,
-          :simple,
-          source_project: project,
-          target_project: project,
-          description: "Fixes #{issue.to_reference}",
-          author: user
-        )
-      end
-
-      before do
-        referenced_mr.cache_merge_request_closes_issues!(user)
-
-        visit project_issue_path(project, issue)
-      end
-
-      it 'disables the create branch button', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/27985' do
-        expect(page).to have_css('.create-mr-dropdown-wrap .unavailable:not(.hidden)')
-        expect(page).to have_css('.create-mr-dropdown-wrap .available.hidden', visible: false)
-        expect(page).to have_content(/Related merge requests/)
       end
     end
 
     context 'when merge requests are disabled' do
       before do
+        stub_feature_flags(work_item_view_for_issues: false)
         project.project_feature.update!(merge_requests_access_level: 0)
 
         visit project_issue_path(project, issue)
@@ -196,22 +180,12 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       end
     end
 
-    context 'when issue is confidential' do
-      let(:issue) { create(:issue, :confidential, project: project) }
-
-      it 'enables the create branch button' do
-        visit project_issue_path(project, issue)
-
-        expect(page).to have_css('.create-mr-dropdown-wrap')
-        expect(page).to have_button('Create confidential merge request')
-      end
-    end
-
     context 'when related branch exists' do
       let!(:project) { create(:project, :repository, :private) }
       let(:branch_name) { "#{issue.iid}-foo" }
 
       before do
+        stub_feature_flags(work_item_view_for_issues: false)
         project.repository.create_branch(branch_name)
 
         visit project_issue_path(project, issue)
@@ -219,11 +193,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
       context 'when user is developer' do
         it 'shows related branches' do
-          expect(page).to have_css('#related-branches')
-
-          wait_for_requests
-
-          expect(page).to have_content(branch_name)
+          within('#related-branches', match: :first) do
+            expect(page).to have_link(branch_name)
+          end
         end
       end
 
@@ -231,91 +203,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         let(:membership_level) { :guest }
 
         it 'does not show related branches' do
-          expect(page).not_to have_css('#related-branches')
-
-          wait_for_requests
-
-          expect(page).not_to have_content(branch_name)
+          expect(page).not_to have_css('[data-testid="work-item-development"]')
         end
       end
     end
-  end
-
-  private
-
-  def select_dropdown_option(option, branch_name = nil, source_branch = nil)
-    find('.create-mr-dropdown-wrap .dropdown-toggle').click
-    find("li[data-value='#{option}']").click
-
-    if branch_name || source_branch
-      find('.js-branch-name').set(branch_name) if branch_name
-      find('.js-ref').set(source_branch) if source_branch
-
-      # Javascript debounces AJAX calls.
-      # So we have to wait until AJAX requests are started.
-      # Details are in app/assets/javascripts/issues/create_merge_request_dropdown.js
-      # this.refDebounce = _.debounce(...)
-      sleep 0.5
-
-      wait_for_requests
-    end
-
-    find('.js-create-merge-request').click
-  end
-
-  def test_branch_name_checking(input_branch_name)
-    expect(input_branch_name.value).to eq(issue.to_branch_name)
-
-    input_branch_name.set('new-branch-name')
-    branch_name_message = find('.js-branch-message')
-
-    expect(branch_name_message).to have_text('Checking branch name availability…')
-
-    wait_for_requests
-
-    expect(branch_name_message).to have_text('Branch name is available')
-
-    input_branch_name.set(project.default_branch)
-
-    expect(branch_name_message).to have_text('Checking branch name availability…')
-
-    wait_for_requests
-
-    expect(branch_name_message).to have_text('Branch is already taken')
-  end
-
-  def test_selection_mark(li_create_branch, li_create_merge_request, button_create_target, button_create_merge_request)
-    page.within(li_create_merge_request) do
-      expect(page).to have_selector('[data-testid="check-icon"]')
-      expect(button_create_target).to have_text('Create merge request')
-      expect(button_create_merge_request).to have_text('Create merge request')
-    end
-
-    li_create_branch.click
-
-    page.within(li_create_branch) do
-      expect(page).to have_selector('[data-testid="check-icon"]')
-      expect(button_create_target).to have_text('Create branch')
-      expect(button_create_merge_request).to have_text('Create branch')
-    end
-  end
-
-  def test_source_checking(input_source)
-    expect(input_source.value).to eq(project.default_branch)
-
-    input_source.set('mas') # Intentionally entered first 3 letters of `master` to check autocomplete feature later.
-    source_message = find('.js-ref-message')
-
-    expect(source_message).to have_text('Checking source availability…')
-
-    wait_for_requests
-
-    expect(source_message).to have_text('Source is not available')
-
-    # JavaScript gets refs started with `mas` (entered above) and places the first match.
-    # User sees `mas` in black color (the part they entered) and the `ter` in gray color (a hint).
-    # Since hinting is implemented via text selection and rspec/capybara doesn't have matchers for it,
-    # we just checking the whole source name.
-    expect(input_source.value).to eq(project.default_branch)
   end
 end

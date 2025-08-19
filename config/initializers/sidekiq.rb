@@ -139,3 +139,5 @@ Sidekiq::Cron::Poller.prepend Gitlab::Patch::SidekiqCronPoller
 Sidekiq::Client.prepend Gitlab::SidekiqSharding::Validator::Client
 Sidekiq::RedisClientAdapter::CompatMethods.prepend Gitlab::SidekiqSharding::Validator
 Sidekiq::Job::Setter.prepend Gitlab::Patch::SidekiqJobSetter
+
+Gitlab::BackgroundTask.new(Gitlab::SidekiqMiddleware::Throttling::RecoveryTask.new).start if Gitlab::Runtime.sidekiq?

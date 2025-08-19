@@ -183,6 +183,20 @@ RSpec.describe API::Helpers::Authentication do
         expect(object).to receive(:token_from_namespace_inheritable).and_return(token)
         expect(subject).to be_nil
       end
+
+      context 'when token is a personal access token' do
+        before do
+          allow(object).to receive(:token_from_namespace_inheritable).and_return(personal_access_token)
+        end
+
+        it 'calls PersonalAccessTokens::LastUsedService' do
+          expect_next_instance_of(PersonalAccessTokens::LastUsedService, personal_access_token) do |service|
+            expect(service).to receive(:execute)
+          end
+
+          subject
+        end
+      end
     end
 
     describe '#ci_build_from_namespace_inheritable' do

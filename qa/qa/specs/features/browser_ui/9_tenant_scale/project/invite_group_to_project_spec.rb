@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Tenant Scale' do
-    describe 'Invite group', product_group: :organizations, quarantine: {
+  RSpec.describe 'Tenant Scale', feature_category: :organization do
+    describe 'Invite group', quarantine: {
       type: :bug,
       issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/436950",
       only: { pipeline: %i[canary production] }

@@ -1,0 +1,12 @@
+---
+name: read_from_new_ci_destinations
+description: >
+  Controls whether to read job processing data from ci_job_definitions, new columns in ci_builds and
+  new association table for jobs->environment, or from the legacy ci_builds_metadata when disabled.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/552057
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199971
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/552063
+milestone: '18.3'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

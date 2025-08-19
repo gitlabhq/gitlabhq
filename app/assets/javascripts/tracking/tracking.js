@@ -1,4 +1,4 @@
-import { Tracker } from 'jh_else_ce/tracking/tracker';
+import { Tracker } from './tracker';
 import { addExperimentContext } from './utils';
 
 const Tracking = Object.assign(Tracker, {

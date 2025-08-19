@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :project_management do
+  RSpec.describe 'Plan', feature_category: :team_planning do
     describe 'Custom issue templates' do
       let(:template_name) { 'custom_issue_template' }
       let(:template_content) { 'This is a custom issue template test' }

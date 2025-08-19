@@ -99,11 +99,19 @@ do not actively work to add them:
 - Pages in the `/development` directory.
 - Pages authored by the support team, which are under the `doc/administration/troubleshooting` directory.
 
-Sometimes pages for deprecated features are not in the global nav, depending on how long ago the feature was deprecated.
+Sometimes a feature page must be excluded from the global navigation. For example,
+pages for deprecated features might not be in the global nav, depending on how long ago the feature was deprecated.
+To make it clear these pages are excluded from the global navigation on purpose,
+add the following code to the page's front matter:
+
+```yaml
+ignore_in_report: true
+```
 
 All other pages should be in the global nav.
 
 The technical writing team runs a report to determine which pages are not in the nav.
+This report skips pages with `ignore_in_report: true` in the front matter.
 The team reviews this list each month.
 
 ### Use GitLab section

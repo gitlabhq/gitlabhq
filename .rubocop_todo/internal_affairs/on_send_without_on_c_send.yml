@@ -1,6 +1,5 @@
 ---
 InternalAffairs/OnSendWithoutOnCSend:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/active_model_errors_direct_manipulation.rb'
     - 'rubocop/cop/active_record_association_reload.rb'

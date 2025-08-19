@@ -5,11 +5,8 @@ require 'spec_helper'
 RSpec.describe ActiveRecord::FixedItemsModel::HasOne, feature_category: :shared do
   before do
     stub_const('TestStaticModel', Class.new do
-      include ActiveModel::Model
-      include ActiveModel::Attributes
       include ActiveRecord::FixedItemsModel::Model
 
-      attribute :id, :integer
       attribute :name, :string
     end)
 

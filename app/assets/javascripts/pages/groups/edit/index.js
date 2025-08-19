@@ -10,6 +10,8 @@ import initSearchSettings from '~/search_settings';
 import initSettingsPanels from '~/settings_panels';
 import initConfirmDanger from '~/init_confirm_danger';
 import { initGroupSettingsReadme } from '~/groups/settings/init_group_settings_readme';
+import initArchiveSettings from '~/groups_projects/archive';
+import initUnarchiveSettings from '~/groups_projects/unarchive';
 
 initFilePickers();
 initConfirmDanger();
@@ -28,3 +30,5 @@ initSearchSettings();
 initCascadingSettingsLockTooltips();
 
 initGroupSettingsReadme();
+initArchiveSettings();
+initUnarchiveSettings();

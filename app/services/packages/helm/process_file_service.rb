@@ -30,6 +30,8 @@ module Packages
             cleanup_temp_package
           end
         end
+
+        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(package.project_id, @channel)
       end
 
       private
@@ -37,8 +39,6 @@ module Packages
       attr_reader :channel, :package_file
 
       def package_protected?
-        return false if Feature.disabled?(:packages_protected_packages_helm, @package_file.project)
-
         service_response =
           ::Packages::Protection::CheckRuleExistenceService.for_push(
             project: @package_file.project,
@@ -83,12 +83,11 @@ module Packages
       strong_memoize_attr :temp_package
 
       def package
-        project_packages = package_file.package.project.packages
-        package = project_packages.with_package_type(:helm)
-                                  .with_name(chart_name)
-                                  .with_version(chart_version)
-                                  .not_pending_destruction
-                                  .last
+        package = ::Packages::Helm::Package.for_projects(package_file.package.project)
+                                           .with_name(chart_name)
+                                           .with_version(chart_version)
+                                           .not_pending_destruction
+                                           .last
         package || temp_package
       end
       strong_memoize_attr :package

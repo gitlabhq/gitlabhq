@@ -1,0 +1,15 @@
+---
+description: File upload was successful in upload blob modal
+internal_events: true
+action: file_upload_successful_in_upload_blob_modal
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201020
+tiers:
+  - free
+  - premium
+  - ultimate

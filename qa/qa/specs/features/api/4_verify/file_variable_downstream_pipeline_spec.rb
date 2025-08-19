@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_authoring,
+  RSpec.describe 'Verify', feature_category: :pipeline_composition,
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424903',
       type: :bug

@@ -75,6 +75,6 @@ If you modify the extension registry URLs:
 
 - Users who previously opted in must opt in again with the new registry.
 - Users who have not opted in are not affected.
-- Active Web IDE or Workspaces sessions continue to use their current configuration until refreshed.
+- Active Web IDE or Workspace sessions continue to use their current configuration until refreshed.
 
 {{< /alert >}}

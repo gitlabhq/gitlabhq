@@ -13,7 +13,6 @@ import IssueMilestone from '~/issuable/components/issue_milestone.vue';
 import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { ListType } from '../constants';
-import { setError } from '../graphql/cache_updates';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 
@@ -64,10 +63,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    index: {
-      type: Number,
-      required: true,
     },
     showWorkItemTypeIcon: {
       type: Boolean,
@@ -212,10 +207,6 @@ export default {
     },
   },
   methods: {
-    setError,
-    isIndexLessThanlimit(index) {
-      return index < this.limitBeforeCounter;
-    },
     assigneeUrl(assignee) {
       if (!assignee) return '';
       return `${this.rootPath}${assignee.username}`;

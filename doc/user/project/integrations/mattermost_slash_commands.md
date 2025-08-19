@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Mattermost slash commands
+description: "Configure Mattermost slash commands to run common GitLab operations from a Mattermost chat environment."
 ---
 
 {{< details >}}
@@ -38,7 +39,7 @@ If Mattermost is installed on the same server as GitLab,
 you can automatically configure Mattermost slash commands:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Mattermost slash commands**.
 1. Under **Enable integration**, ensure the **Active** checkbox is selected.
 1. Select **Add to Mattermost**, and select **Save changes**.
@@ -74,7 +75,7 @@ To get configuration values from GitLab:
 1. In a different browser tab, sign in to
    GitLab as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Mattermost slash commands**. GitLab displays potential values for Mattermost settings.
 1. Copy the **Request URL** value. All other values are suggestions.
 1. Do not close this browser tab. You need it in a later step.

@@ -40,7 +40,13 @@ module Keeps
         random ~backend maintainer to review and merge these changes.
       MARKDOWN
 
-    def each_change
+    def each_identified_change
+      change = ::Gitlab::Housekeeper::Change.new
+      change.identifiers = change_identifiers
+      yield(change)
+    end
+
+    def make_change!(change)
       generate_rubocop_todos
 
       if rubocop_todo_files_unchanged?
@@ -48,7 +54,7 @@ module Keeps
         return
       end
 
-      yield(prepare_change)
+      prepare_change(change)
     end
 
     private
@@ -58,16 +64,14 @@ module Keeps
       Rake::Task["rubocop:todo:generate"].invoke
     end
 
-    def prepare_change
-      ::Gitlab::Housekeeper::Change.new.tap do |change|
-        change.title = TITLE
-        change.description = DESCRIPTION
-        change.labels = labels
-        change.identifiers = change_identifiers
-        change.changed_files = [RUBOCOP_TODO_DIR]
-        change.assignees = reviewer('trainee maintainer::backend') || reviewer('reviewer::backend')
-        change.reviewers = reviewer('maintainer::backend')
-      end
+    def prepare_change(change)
+      change.title = TITLE
+      change.description = DESCRIPTION
+      change.labels = labels
+      change.changed_files = [RUBOCOP_TODO_DIR]
+      change.assignees = reviewer('trainee maintainer::backend') || reviewer('reviewer::backend')
+      change.reviewers = reviewer('maintainer::backend')
+      change
     end
 
     def labels

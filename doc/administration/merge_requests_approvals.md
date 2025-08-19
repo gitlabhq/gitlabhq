@@ -15,7 +15,7 @@ title: Merge request approvals
 {{< /details >}}
 
 Merge request approval rules prevent users from overriding certain project settings.
-When enabled, these settings are 
+When enabled, these settings are
 [enforced for all projects and groups](../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 in the instance.
 

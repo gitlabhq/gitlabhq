@@ -13,12 +13,14 @@ describe('CatalogHeader', () => {
   const customProvide = {
     pageTitle: 'Catalog page',
     pageDescription: 'This is a nice catalog page',
+    legalDisclaimer: '',
   };
 
   const findBanner = () => wrapper.findComponent(GlBanner);
   const findFeedbackButton = () => findBanner().findComponent(GlButton);
   const findTitle = () => wrapper.find('h1');
   const findDescription = () => wrapper.findByTestId('page-description');
+  const findLegalDisclaimer = () => wrapper.findByTestId('legal-disclaimer');
 
   const createComponent = ({ props = {}, provide = {}, stubs = {} } = {}) => {
     wrapper = shallowMountExtended(CatalogHeader, {
@@ -56,6 +58,21 @@ describe('CatalogHeader', () => {
         expect(findTitle().text()).toBe(customProvide.pageTitle);
         expect(findDescription().text()).toBe(customProvide.pageDescription);
       });
+    });
+  });
+
+  describe('legal disclaimer', () => {
+    it('is rendered if provided', () => {
+      const legalDisclaimer = 'legal disclaimer';
+      createComponent({ provide: { ...customProvide, legalDisclaimer } });
+
+      expect(findLegalDisclaimer().text()).toBe(legalDisclaimer);
+    });
+
+    it('is not rendered if not provided', () => {
+      createComponent();
+
+      expect(findLegalDisclaimer().exists()).toBe(false);
     });
   });
 

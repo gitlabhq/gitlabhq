@@ -355,6 +355,92 @@ func TestRoundTripper_BodyLimitEdgeCases(t *testing.T) {
 	}
 }
 
+func TestRoundTripper_PerRequestModeOverride(t *testing.T) {
+	tests := []struct {
+		name           string
+		globalMode     Mode
+		requestMode    Mode
+		expectedStatus int
+		setRequestMode bool
+	}{
+		{
+			name:           "global enforced, override to logging",
+			globalMode:     ModeEnforced,
+			requestMode:    ModeLogging,
+			expectedStatus: http.StatusOK, // Should log but not block
+			setRequestMode: true,
+		},
+		{
+			name:           "global logging, override to enforced",
+			globalMode:     ModeLogging,
+			requestMode:    ModeEnforced,
+			expectedStatus: http.StatusRequestEntityTooLarge, // Should block
+			setRequestMode: true,
+		},
+		{
+			name:           "global enforced, override to disabled",
+			globalMode:     ModeEnforced,
+			requestMode:    ModeDisabled,
+			expectedStatus: http.StatusOK, // Should bypass completely
+			setRequestMode: true,
+		},
+		{
+			name:           "global disabled, override to enforced",
+			globalMode:     ModeDisabled,
+			requestMode:    ModeEnforced,
+			expectedStatus: http.StatusRequestEntityTooLarge, // Should enforce
+			setRequestMode: true,
+		},
+		{
+			name:           "no override, use global mode",
+			globalMode:     ModeEnforced,
+			expectedStatus: http.StatusRequestEntityTooLarge, // Use global enforced
+			setRequestMode: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockNext := &mockRoundTripper{
+				response: &http.Response{StatusCode: http.StatusOK},
+				customHandler: func(r *http.Request) (*http.Response, error) {
+					if r.Body != nil {
+						_, err := io.ReadAll(r.Body)
+						if err != nil {
+							return nil, err
+						}
+						r.Body.Close()
+					}
+					return &http.Response{StatusCode: http.StatusOK}, nil
+				},
+			}
+
+			rt := NewRoundTripper(mockNext, tt.globalMode)
+
+			// Create context with body limit
+			ctx := context.WithValue(context.Background(), BodyLimitKey, int64(100))
+
+			// Add per-request mode override if specified
+			if tt.setRequestMode {
+				ctx = context.WithValue(ctx, BodyLimitMode, tt.requestMode)
+			}
+
+			largeData := strings.Repeat("a", 150)
+			req, err := http.NewRequestWithContext(ctx, http.MethodPost, "http://example.com", strings.NewReader(largeData))
+			require.NoError(t, err)
+
+			res, err := rt.RoundTrip(req)
+			require.NoError(t, err)
+
+			if res.Body != nil {
+				defer res.Body.Close()
+			}
+
+			require.Equal(t, tt.expectedStatus, res.StatusCode)
+		})
+	}
+}
+
 func TestRoundTripper_NextRoundTripperError(t *testing.T) {
 	expectedErr := io.EOF
 	mockNext := &mockRoundTripper{

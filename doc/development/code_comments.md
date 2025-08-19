@@ -40,8 +40,8 @@ For example:
 Example of a good comment:
 
 ```ruby
-# Note: We need to handle nil values separately here because the external 
-# payment API treats empty strings and null values differently. 
+# Note: We need to handle nil values separately here because the external
+# payment API treats empty strings and null values differently.
 # See: https://api-docs.example.com/edge-cases
 def process_payment_amount(amount)
   # Implementation

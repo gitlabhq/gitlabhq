@@ -287,6 +287,7 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
 
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
+  let_it_be(:always_cleaned_up_widgets) { [:work_item_parent] }
 
   # rubocop: disable Layout/LineLength -- improved readability with one line per widget
   let_it_be(:widgets) do
@@ -329,7 +330,6 @@ RSpec.shared_examples 'for clone and move services' do
       # - do not consider cases where widget is missing, because that covers the cases of non-widget associations,
       #   e.g. related_vulnerabilities in EE
       next if widget[:widget].present? && new_work_item.get_widget(widget[:widget]).blank?
-
       # This example is being called from EE spec where we text move/clone on a group level work item(Epic).
       # Designs are only available for project level work items so we will skip the spec group level work items.
       next if widget[:assoc_name] == :designs && original_work_item.project.blank?
@@ -349,13 +349,12 @@ RSpec.shared_examples 'for clone and move services' do
       non_cleanupable_widgets = [:sent_notifications, :work_item_children]
       cleanup_data = Feature.enabled?(:cleanup_data_source_work_item_data, original_work_item.resource_parent)
 
-      if cleanup_data && described_class == move
+      if (cleanup_data || always_cleaned_up_widgets.include?(widget[:assoc_name])) && described_class == move
         expect(original_work_item.reload.public_send(widget[:assoc_name], *widget[:widget_args])).to be_blank
       elsif non_cleanupable_widgets.exclude?(widget[:assoc_name])
         # sent notifications and child work items are re-linked to new work item during the `move`
         # rather than deleted afterwards, so the original work item loses these items even before getting to the
         # cleanup data step.
-
         unless widget[:expected].blank?
           expect(original_work_item.reload.public_send(widget[:assoc_name], *widget[:widget_args])).not_to be_blank
         end

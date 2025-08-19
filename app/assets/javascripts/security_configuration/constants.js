@@ -54,6 +54,8 @@ export const SECRET_PUSH_PROTECTION_NAME = __('Secret push protection');
 
 export const SECRET_DETECTION = 'secret_detection';
 
+export const LICENSE_INFORMATION_SOURCE = 'license_information_source';
+
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,
   SAST_ADVANCED: ADVANCED_SAST_NAME,

@@ -62,6 +62,9 @@ module WorkItems
 
           if operation == :move
             ::WorkItems::DataSync::MoveService.transaction_callback(new_work_item, original_work_item, current_user)
+          elsif operation == :promote
+            ::WorkItems::LegacyEpics::IssuePromoteService.transaction_callback(new_work_item, original_work_item,
+              current_user)
           else
             ::WorkItems::DataSync::CloneService.transaction_callback(new_work_item, original_work_item, current_user)
           end

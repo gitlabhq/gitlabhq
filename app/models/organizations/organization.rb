@@ -32,7 +32,6 @@ module Organizations
     has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization
-    has_many :organization_user_aliases, inverse_of: :organization # deprecated
     has_many :organization_user_details, inverse_of: :organization
     # if considering disable_joins on the below see:
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140343#note_1705047949
@@ -105,6 +104,23 @@ module Organizations
 
     def web_url(only_path: nil)
       Gitlab::UrlBuilder.build(self, only_path: only_path)
+    end
+
+    # For example:
+    # scoped path   - /o/my-org/my-group/my-project
+    # unscoped path - /my-group/my-project
+    def scoped_paths?
+      Feature.enabled?(:organization_scoped_paths, self) && !default?
+    end
+
+    def inspect
+      "#<#{self.class.name} id:#{id} path:#{path}>"
+    end
+
+    def full_path
+      return '' unless scoped_paths?
+
+      "/o/#{path}"
     end
 
     private

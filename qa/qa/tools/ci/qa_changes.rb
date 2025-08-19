@@ -83,6 +83,15 @@ module QA
           only_spec_changes? && mr_diff.all? { |change| change[:deleted_file] }
         end
 
+        # All changes are changes to non e2e specs
+        #
+        # @return [Boolean]
+        def only_changes_to_non_e2e_spec_files?
+          return false if mr_diff.empty?
+
+          mr_diff.all? { |change| change[:path].start_with?("spec/", "ee/spec/") }
+        end
+
         private
 
         # @return [Array]

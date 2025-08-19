@@ -39,8 +39,8 @@ describe('find_jest_predictive_tests', () => {
 
     // Setup default environment variables
     process.env.JEST_MATCHING_TEST_FILES_PATH = '/tmp/jest_matching_tests.txt';
-    process.env.RSPEC_MATCHING_JS_FILES_PATH = '/tmp/js_files.txt';
-    process.env.RSPEC_CHANGED_FILES_PATH = '/tmp/changed_files.txt';
+    process.env.GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH = '/tmp/js_files.txt';
+    process.env.GLCI_PREDICTIVE_CHANGED_FILES_PATH = '/tmp/changed_files.txt';
   });
 
   afterEach(() => {
@@ -56,12 +56,12 @@ describe('find_jest_predictive_tests', () => {
 
     it('warns when environment variables are missing', () => {
       delete process.env.JEST_MATCHING_TEST_FILES_PATH;
-      delete process.env.RSPEC_MATCHING_JS_FILES_PATH;
+      delete process.env.GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH;
 
       hasRequiredEnvironmentVariables();
       expect(processSpy).toHaveBeenCalledTimes(1);
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Warning: Missing required environment variables: JEST_MATCHING_TEST_FILES_PATH, RSPEC_MATCHING_JS_FILES_PATH',
+        'Warning: Missing required environment variables: JEST_MATCHING_TEST_FILES_PATH, GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH',
       );
       expect(consoleWarnSpy).toHaveBeenCalledWith('Some functionality may not work as expected.');
     });

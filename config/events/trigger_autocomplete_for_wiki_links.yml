@@ -1,0 +1,18 @@
+---
+description: Triggering autocomplete for wiki links
+internal_events: true
+status: active
+action: trigger_autocomplete_for_wiki_links
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+product_categories:
+- wiki
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200401
+tiers:
+- free
+- premium
+- ultimate

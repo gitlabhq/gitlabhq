@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_state do
+RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_state, feature_category: :shared do
   using RSpec::Parameterized::TableSyntax
 
   let(:project_statistics) { create(:project_statistics) }
   let(:model) { CounterAttributeModel.find(project_statistics.id) }
 
-  it_behaves_like described_class, [:build_artifacts_size, :commit_count, :packages_size] do
+  it_behaves_like described_class, %w[build_artifacts_size commit_count packages_size uploads_size] do
     let(:model) { CounterAttributeModel.find(project_statistics.id) }
   end
 

@@ -8,7 +8,8 @@ RSpec.describe Packages::Composer::Package, type: :model, feature_category: :pac
   end
 
   describe 'delegates' do
-    it { is_expected.to delegate_method(:target_sha).to(:composer_metadatum) }
+    it { is_expected.to delegate_method(:target_sha).to(:composer_metadatum).allow_nil }
+    it { is_expected.to delegate_method(:composer_json).to(:composer_metadatum).allow_nil }
   end
 
   describe 'validations' do

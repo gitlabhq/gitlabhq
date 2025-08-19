@@ -15,6 +15,11 @@ module Resolvers
       description: 'Filter members by the given access levels.',
       required: false
 
+    argument :user_types, [Types::Users::TypeEnum],
+      required: false,
+      description: 'Filter by user type.',
+      experiment: { milestone: '18.3' }
+
     private
 
     def finder_class

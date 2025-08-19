@@ -1,9 +1,10 @@
-import { GlFormInput } from '@gitlab/ui';
+import { GlFormInput, GlFormGroup } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import ParameterFormGroup from '~/feature_flags/components/strategies/parameter_form_group.vue';
 import PercentRollout from '~/feature_flags/components/strategies/percent_rollout.vue';
 import { PERCENT_ROLLOUT_GROUP_ID } from '~/feature_flags/constants';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { percentRolloutStrategy } from '../../mock_data';
 
 const DEFAULT_PROPS = {
@@ -23,7 +24,7 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
       wrapper = factory();
 
       input = wrapper.findComponent(GlFormInput);
-      formGroup = wrapper.findComponent(ParameterFormGroup);
+      formGroup = wrapper.findComponent(ParameterFormGroup).findComponent(GlFormGroup);
     });
 
     it('displays the current value', () => {
@@ -39,7 +40,7 @@ describe('~/feature_flags/components/strategies/percent_rollout.vue', () => {
     });
 
     it('does not show errors', () => {
-      expect(formGroup.attributes('state')).toBe('true');
+      expect(parseBoolean(formGroup.attributes('state'))).toBe(true);
     });
   });
 

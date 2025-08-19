@@ -26,7 +26,7 @@ module Projects
 
       return unless admin_bot
 
-      notified_inactive_projects = Gitlab::InactiveProjectsDeletionWarningTracker.notified_projects
+      notified_inactive_projects = Gitlab::DormantProjectsDeletionWarningTracker.notified_projects
 
       project_id = last_processed_project_id
 
@@ -46,7 +46,7 @@ module Projects
               send_notification(project)
               log_audit_event(project, admin_bot)
             elsif grace_period_is_over?(deletion_warning_email_sent_on)
-              Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
+              Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).reset
               delete_project(project, admin_bot)
             end
           end

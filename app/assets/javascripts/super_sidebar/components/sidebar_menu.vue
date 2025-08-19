@@ -1,6 +1,5 @@
 <script>
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
-import { uniqBy } from 'lodash';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -152,12 +151,9 @@ export default {
     },
 
     pinnedItems() {
-      const baseItems = this.changedPinnedItemIds.ids
+      return this.changedPinnedItemIds.ids
         .map((id) => this.flatPinnableItems.find((item) => item.id === id))
         .filter(Boolean);
-
-      // Deduplicate Work items pinned items during migration from Issues + Epics
-      return uniqBy(baseItems, (item) => item.title);
     },
     supportsPins() {
       return this.isLoggedIn && PANELS_WITH_PINS.includes(this.panelType);
@@ -235,14 +231,19 @@ export default {
 </script>
 
 <template>
-  <div class="gl-relative gl-p-2">
-    <ul v-if="hasStaticItems" class="gl-m-0 gl-list-none gl-p-0" data-testid="static-items-section">
+  <div class="gl-relative gl-px-3 gl-py-2">
+    <ul
+      v-if="hasStaticItems"
+      class="gl-m-0 gl-mb-3 gl-list-none gl-p-0"
+      data-testid="static-items-section"
+    >
       <nav-item
         v-for="item in staticItems"
         :key="item.id"
         :item="item"
         is-static
         :async-count="asyncCount"
+        class="gl-font-bold"
       />
     </ul>
     <pinned-section
@@ -254,12 +255,7 @@ export default {
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />
-    <hr
-      v-if="supportsPins"
-      aria-hidden="true"
-      class="gl-mx-4 gl-my-2"
-      data-testid="main-menu-separator"
-    />
+    <hr v-if="supportsPins" aria-hidden="true" class="gl-my-4" data-testid="main-menu-separator" />
     <ul
       aria-labelledby="super-sidebar-context-header"
       class="gl-mb-0 gl-list-none gl-p-0"

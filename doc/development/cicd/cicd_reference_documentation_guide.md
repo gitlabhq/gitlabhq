@@ -46,6 +46,8 @@ Each keyword entry in the reference:
   - [Additional details](#additional-details)
   - [Related topics](#related-topics)
 
+- Must use a horizontal divider (`---`) to separate keyword entries.
+
 The keyword name must always be in backticks without a final `:`, like `artifacts`, not `artifacts:`.
 If it is a subkey of another keyword, write out all the subkeys to the "parent" key the first time it
 is used, like `artifacts:reports:dast`. Afterwards, you can use just the subkey alone, like `dast`.

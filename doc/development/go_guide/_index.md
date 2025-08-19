@@ -357,7 +357,7 @@ A few things to keep in mind when adding context:
 ### References for working with errors
 
 - [Go 1.13 errors](https://go.dev/blog/go1.13-errors).
-- [Programing with errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
+- [Programming with errors](https://peter.bourgon.org/blog/2019/09/11/programming-with-errors.html).
 - [Don't just check errors, handle them gracefully](https://dave.cheney.net/2016/04/27/dont-just-check-errors-handle-them-gracefully).
 
 ## CLIs

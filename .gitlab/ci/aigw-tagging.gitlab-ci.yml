@@ -4,10 +4,7 @@ trigger-ai-gateway-tagging:
   needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}curlimages/curl:latest
   script:
-    - |
-      curl -X POST --fail \
-        --header "PRIVATE-TOKEN: $AIGW_TAGGING_ACCESS_TOKEN" \
-        "https://gitlab.com/api/v4/projects/39903947/repository/tags?tag_name=self-hosted-${CI_COMMIT_TAG}&ref=main"
+    - ./scripts/aigw-tagging.sh
   extends:
     - .ai-gateway:rules:tagging
   allow_failure: true

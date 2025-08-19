@@ -15,9 +15,7 @@ module Import
       new.perform_failure(exception, msg['args'].first, msg['args'].second)
     end
 
-    def perform(import_source, import_uid, params = {})
-      return unless Feature.enabled?(:importer_user_mapping, User.actor_from_id(params['current_user_id']))
-
+    def perform(import_source, import_uid, _params = {})
       ::Import::PlaceholderReferences::LoadService.new(
         import_source: import_source,
         import_uid: import_uid

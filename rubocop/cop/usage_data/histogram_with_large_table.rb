@@ -19,6 +19,7 @@ module RuboCop
         MSG = 'Avoid histogram method on %{model_name}'
 
         # Match one level const as Issue, Gitlab
+        # @!method one_level_node(node)
         def_node_matcher :one_level_node, <<~PATTERN
           (send nil? :histogram
             `(const {nil? cbase} $_)
@@ -26,6 +27,7 @@ module RuboCop
         PATTERN
 
         # Match two level const as ::Clusters::Cluster, ::Ci::Pipeline
+        # @!method two_level_node(node)
         def_node_matcher :two_level_node, <<~PATTERN
           (send nil? :histogram
             `(const

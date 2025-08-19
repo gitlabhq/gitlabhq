@@ -63,134 +63,45 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
-  describe '#pipeline_variables_minimum_override_role' do
-    shared_examples 'enables restrict_user_defined_variables' do |role|
-      let(:setting) { described_class.new(project: project) }
+  describe 'CI/CD variable settings interaction' do
+    using RSpec::Parameterized::TableSyntax
 
-      it 'enables restrict_user_defined_variables' do
-        setting.pipeline_variables_minimum_override_role = role if role
+    where(:initial_role, :restrict_param, :role_param, :expected_restrict, :expected_role) do
+      # restrict_user_defined_variables changes only
+      :maintainer | false | nil         | false | :developer
+      :developer  | true  | nil         | true  | :maintainer
+      :maintainer | false | nil         | false | :developer
+      :owner      | false | nil         | false | :developer
+      :developer  | true  | nil         | true  | :maintainer
+      :owner      | true  | nil         | true  | :owner
 
-        expect(project.restrict_user_defined_variables?).to be_truthy
-      end
+      # pipeline_variables_minimum_override_role changes only
+      :owner      | nil   | :developer  | false | :developer
+      :owner      | nil   | :maintainer | true  | :maintainer
+      :developer  | nil   | :maintainer | true  | :maintainer
+      :maintainer | nil   | :owner      | true  | :owner
+
+      # both parameters together
+      :owner      | false | :developer  | false | :developer
+      :owner      | false | :maintainer | true  | :maintainer
+      :developer  | true  | :maintainer | true  | :maintainer
+      :maintainer | true  | :developer  | false | :developer
     end
 
-    shared_examples 'disables restrict_user_defined_variables' do |role|
-      let(:setting) { described_class.new(project: project) }
-
-      it 'disables restrict_user_defined_variables' do
-        setting.pipeline_variables_minimum_override_role = role if role
-
-        expect(project.restrict_user_defined_variables?).to be_falsey
-      end
-    end
-
-    shared_examples 'sets the default ci_pipeline_variables_minimum_override_role' do |expected_role|
-      it "sets ci_pipeline_variables_minimum_override_role to #{expected_role}" do
-        expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role)
-      end
-    end
-
-    context 'when restrict_user_defined_variables is false' do
+    with_them do
       let(:project) { build(:project) }
       let(:setting) { described_class.new(project: project) }
 
       before do
-        setting.pipeline_variables_minimum_override_role = :maintainer
-        setting.restrict_user_defined_variables = false
+        setting.pipeline_variables_minimum_override_role = initial_role
       end
 
-      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
-    end
+      it 'maintains consistency between restrict_user_defined_variables and pipeline_variables_minimum_override_role' do
+        setting.restrict_user_defined_variables = restrict_param unless restrict_param.nil?
+        setting.pipeline_variables_minimum_override_role = role_param unless role_param.nil?
 
-    context 'when restrict_user_defined_variables is true' do
-      let(:project) { build(:project) }
-      let(:setting) { described_class.new(project: project) }
-
-      before do
-        setting.pipeline_variables_minimum_override_role = :maintainer
-      end
-
-      it 'returns the set role' do
-        expect(setting.pipeline_variables_minimum_override_role).to eq('maintainer')
-      end
-    end
-
-    context 'when a namespace is defined' do
-      let(:project) { create(:project, :with_namespace_settings) }
-
-      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
-
-      it_behaves_like 'enables restrict_user_defined_variables', 'maintainer'
-      it_behaves_like 'disables restrict_user_defined_variables', 'developer'
-
-      context 'when application setting `pipeline_variables_default_allowed` is false' do
-        before do
-          stub_application_setting(pipeline_variables_default_allowed: false)
-        end
-
-        it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'no_one_allowed'
-      end
-    end
-
-    context 'when a namespace is not defined' do
-      let_it_be(:project) { create(:project) }
-
-      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
-
-      it_behaves_like 'enables restrict_user_defined_variables', 'maintainer'
-      it_behaves_like 'disables restrict_user_defined_variables', 'developer'
-    end
-
-    context 'when application setting `pipeline_variables_default_allowed` is true' do
-      before do
-        stub_application_setting(pipeline_variables_default_allowed: true)
-      end
-
-      context 'and a namespace is defined' do
-        let(:project) { create(:project, :with_namespace_settings) }
-
-        it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
-
-        it_behaves_like 'enables restrict_user_defined_variables', 'maintainer'
-        it_behaves_like 'disables restrict_user_defined_variables', 'developer'
-      end
-
-      context 'and a namespace is not defined' do
-        let(:project) { create(:project) }
-
-        it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
-
-        it_behaves_like 'enables restrict_user_defined_variables', 'maintainer'
-        it_behaves_like 'disables restrict_user_defined_variables', 'developer'
-      end
-    end
-  end
-
-  describe '#pipeline_variables_minimum_override_role=' do
-    let(:project) { build(:project) }
-    let(:setting) { described_class.new(project: project) }
-
-    context 'when setting a value' do
-      before do
-        setting.pipeline_variables_minimum_override_role = 'developer'
-      end
-
-      it 'sets the role' do
-        expect(setting.pipeline_variables_minimum_override_role_for_database).to eq(described_class::DEVELOPER_ROLE)
-      end
-
-      it 'disables restrict_user_defined_variables' do
-        expect(setting.restrict_user_defined_variables?).to be false
-      end
-    end
-
-    context 'when setting nil value' do
-      before do
-        setting.pipeline_variables_minimum_override_role = nil
-      end
-
-      it 'does not change the current settings' do
-        expect(setting.restrict_user_defined_variables?).to be true
+        expect(setting.restrict_user_defined_variables?).to eq(expected_restrict)
+        expect(setting.pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
       end
     end
   end
@@ -271,6 +182,20 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       with_them do
         it { expect(subject).to eq(result_keep_latest_artifact) }
       end
+    end
+  end
+
+  describe '#display_pipeline_variables' do
+    let_it_be(:project) { create(:project) }
+
+    it 'defaults to false' do
+      expect(project.ci_cd_settings.display_pipeline_variables).to be(false)
+    end
+
+    it 'returns the value' do
+      project.ci_cd_settings.update!(display_pipeline_variables: true)
+
+      expect(project.ci_cd_settings.display_pipeline_variables).to be(true)
     end
   end
 

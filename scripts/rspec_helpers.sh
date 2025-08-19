@@ -15,31 +15,18 @@ function update_tests_metadata() {
   cleanup_individual_job_reports
 }
 
-function retrieve_tests_mapping() {
-  local mapping_archive="${1:-$RSPEC_PACKED_TESTS_MAPPING_PATH}"
-  local mapping_path="${2:-$RSPEC_TESTS_MAPPING_PATH}"
-
-  mkdir -p $(dirname "$mapping_archive")
-
-  if [[ ! -f "${mapping_archive}" ]]; then
-    (curl --fail --location  -o "${mapping_archive}.gz" "https://gitlab-org.gitlab.io/gitlab/${mapping_archive}.gz" && gzip -d "${mapping_archive}.gz") || echo "{}" > "${mapping_archive}"
-  fi
-
-  scripts/unpack-test-mapping "${mapping_archive}" "${mapping_path}"
-}
-
 function retrieve_frontend_fixtures_mapping() {
-  mkdir -p $(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
+  mkdir -p $(dirname "$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH")
 
-  if [[ ! -f "${FRONTEND_FIXTURES_MAPPING_PATH}" ]]; then
-    (curl --fail --location  -o "${FRONTEND_FIXTURES_MAPPING_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FRONTEND_FIXTURES_MAPPING_PATH}") || echo "{}" > "${FRONTEND_FIXTURES_MAPPING_PATH}"
+  if [[ ! -f "${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}" ]]; then
+    (curl --fail --location  -o "${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}" "https://gitlab-org.gitlab.io/gitlab/${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}") || echo "{}" > "${GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH}"
   fi
 }
 
 function update_tests_mapping() {
-  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}" crystalball/described/rspec*.yml
+  pack_and_gzip_mapping "${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_PATH}" "${GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_PATH}" crystalball/described/rspec*.yml
 
-  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_ALT_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_ALT_PATH}" crystalball/coverage/rspec*.yml
+  pack_and_gzip_mapping "${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ALT_PATH}" "${GLCI_PREDICTIVE_RSPEC_PACKED_TESTS_MAPPING_ALT_PATH}" crystalball/coverage/rspec*.yml
 }
 
 function pack_and_gzip_mapping() {
@@ -157,7 +144,7 @@ function debug_rspec_variables() {
 
   echoinfo "CRYSTALBALL: ${CRYSTALBALL:-}"
 
-  echoinfo "RSPEC_TESTS_MAPPING_ENABLED: ${RSPEC_TESTS_MAPPING_ENABLED:-}"
+  echoinfo "GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED: ${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"
   echoinfo "RSPEC_TESTS_FILTER_FILE: ${RSPEC_TESTS_FILTER_FILE:-}"
 }
 
@@ -280,7 +267,7 @@ function rspec_parallelized_job() {
   # e.g. 'rspec unit pg14 1/24 278964' would become 'rspec_unit_pg14_1_24_278964'
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="--force-color ${1:-}"
-  local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"
+  local rspec_tests_mapping_enabled="${GLCI_PREDICTIVE_RSPEC_TESTS_MAPPING_ENABLED:-}"
   local spec_folder_prefixes=""
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"
   local knapsack_folder_path="$(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}")/"
@@ -526,22 +513,6 @@ function rspec_fail_fast() {
   fi
 }
 
-function filter_rspec_matched_foss_tests() {
-  local matching_tests_file="${1}"
-  local foss_matching_tests_file="${2}"
-
-  # Keep only FOSS files that exists
-  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("spec/") && File.exist?(f) }.join(" ")' > "${foss_matching_tests_file}"
-}
-
-function filter_rspec_matched_ee_tests() {
-  local matching_tests_file="${1}"
-  local ee_matching_tests_file="${2}"
-
-  # Keep only EE files that exists
-  cat ${matching_tests_file} | ruby -e 'puts $stdin.read.split(" ").select { |f| f.start_with?("ee/spec/") && File.exist?(f) }.join(" ")' > "${ee_matching_tests_file}"
-}
-
 function generate_frontend_fixtures_mapping() {
   local pattern=""
 
@@ -561,7 +532,7 @@ function generate_frontend_fixtures_mapping() {
 
   export GENERATE_FRONTEND_FIXTURES_MAPPING="true"
 
-  mkdir -p $(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
+  mkdir -p $(dirname "$GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH")
 
   rspec_simple_job_with_retry "--pattern \"${pattern}\""
 }

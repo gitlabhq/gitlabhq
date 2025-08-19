@@ -48,7 +48,7 @@ Info level severity vulnerabilities contain information that may have value, but
 
 ## Unknown severity
 
-Issues identified at this level do not have enough context to clearly demonstrate severity.  
+Issues identified at this level do not have enough context to clearly demonstrate severity.
 
 GitLab vulnerability analyzers include popular open source scanning tools. Each
 open source scanning tool provides their own native vulnerability severity level value. These values

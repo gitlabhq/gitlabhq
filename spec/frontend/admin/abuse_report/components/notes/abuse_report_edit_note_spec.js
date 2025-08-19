@@ -10,7 +10,6 @@ import AbuseReportEditNote from '~/admin/abuse_report/components/notes/abuse_rep
 import AbuseReportCommentForm from '~/admin/abuse_report/components/notes/abuse_report_comment_form.vue';
 
 import {
-  mockAbuseReport,
   mockDiscussionWithNoReplies,
   editAbuseReportNoteResponse,
   editAbuseReportNoteResponseWithErrors,
@@ -23,7 +22,6 @@ Vue.use(VueApollo);
 describe('Abuse Report Edit Note', () => {
   let wrapper;
 
-  const mockAbuseReportId = mockAbuseReport.report.globalId;
   const mockNote = mockDiscussionWithNoReplies[0];
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(editAbuseReportNoteResponse);
@@ -33,17 +31,10 @@ describe('Abuse Report Edit Note', () => {
 
   const findAbuseReportCommentForm = () => wrapper.findComponent(AbuseReportCommentForm);
 
-  const createComponent = ({
-    mutationHandler = mutationSuccessHandler,
-    abuseReportId = mockAbuseReportId,
-    discussionId = '',
-    note = mockNote,
-  } = {}) => {
+  const createComponent = ({ mutationHandler = mutationSuccessHandler, note = mockNote } = {}) => {
     wrapper = shallowMountExtended(AbuseReportEditNote, {
       apolloProvider: createMockApollo([[updateNoteMutation, mutationHandler]]),
       propsData: {
-        abuseReportId,
-        discussionId,
         note,
       },
     });
@@ -57,7 +48,6 @@ describe('Abuse Report Edit Note', () => {
     it('should show the comment form', () => {
       expect(findAbuseReportCommentForm().exists()).toBe(true);
       expect(findAbuseReportCommentForm().props()).toMatchObject({
-        abuseReportId: mockAbuseReportId,
         isSubmitting: false,
         autosaveKey: `${mockNote.id}-comment`,
         commentButtonText: 'Save comment',

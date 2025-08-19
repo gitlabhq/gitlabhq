@@ -106,7 +106,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_COMPILE_PRODUCTION_ASSETS: 'true',
         ENABLE_COMPILE_STORYBOOK: 'true',
         ENABLE_COMPILE_TEST_ASSETS: 'true',
-        ENABLE_CACHE_ASSETS: 'true',
         ENABLE_DETECT_TESTS: 'true',
         ENABLE_ESLINT: 'true',
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA: 'true',
@@ -174,7 +173,6 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disa
         ENABLE_COMPILE_PRODUCTION_ASSETS=true
         ENABLE_COMPILE_STORYBOOK=true
         ENABLE_COMPILE_TEST_ASSETS=true
-        ENABLE_CACHE_ASSETS=true
         ENABLE_DETECT_TESTS=true
         ENABLE_ESLINT=true
         ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA=true

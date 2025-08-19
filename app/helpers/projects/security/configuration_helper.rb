@@ -4,7 +4,7 @@ module Projects
   module Security
     module ConfigurationHelper
       def security_upgrade_path
-        "#{ApplicationHelper.promo_url}/pricing/"
+        promo_pricing_url
       end
 
       def vulnerability_training_docs_path

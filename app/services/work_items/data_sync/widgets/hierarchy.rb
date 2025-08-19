@@ -6,6 +6,10 @@ module WorkItems
       class Hierarchy < Base
         ALLOWED_PARAMS = %i[parent_work_item_id].freeze
 
+        def self.cleanup_source_work_item_data?(_work_item)
+          true
+        end
+
         def after_save_commit
           return unless target_work_item.get_widget(:hierarchy)
 
@@ -18,13 +22,15 @@ module WorkItems
         end
 
         def post_move_cleanup
+          # cleanup parent link
+          remove_parent_link_from_work_item
+
+          return unless self.class.superclass.cleanup_source_work_item_data?(work_item)
+
           # Cleanup children linked to moved item when that is an issue because we are currently creating those
           # child items in the destination namespace anyway. If we decide to relink child items for Issue WIT
           # then we should not be deleting them here.
           work_item.child_links.each { |child_link| child_link.work_item.destroy! } if work_item.work_item_type.issue?
-
-          # cleanup parent link
-          work_item.parent_link&.destroy!
         end
 
         private
@@ -80,6 +86,14 @@ module WorkItems
               params: { parent_work_item_id: target_work_item.id, skip_work_item_type_check: true }
             ).execute
           end
+        end
+
+        def remove_parent_link_from_work_item
+          return unless work_item.parent_link
+
+          ::WorkItems::ParentLinks::DestroyService
+          .new(work_item.parent_link, current_user, skip_policy_check: true)
+          .execute
         end
       end
     end

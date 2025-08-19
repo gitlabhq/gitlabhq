@@ -79,30 +79,6 @@ module Projects
         end
 
         def valid_alert_manager_token?(token, integration)
-          valid_for_alerts_endpoint?(token, integration) ||
-            valid_for_manual?(token)
-        end
-
-        def valid_for_manual?(token)
-          # If migration from Integrations::Prometheus to
-          # AlertManagement::HttpIntegrations is complete,
-          # we should use use the HttpIntegration as SSOT.
-          # Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/409734
-          return false if project.alert_management_http_integrations
-                            .for_endpoint_identifier('legacy-prometheus')
-                            .any?
-
-          prometheus = project.find_or_initialize_integration('prometheus')
-          return false unless prometheus&.manual_configuration?
-
-          if setting = project.alerting_setting
-            compare_token(token, setting.token)
-          else
-            token.nil?
-          end
-        end
-
-        def valid_for_alerts_endpoint?(token, integration)
           return false unless integration&.active?
 
           compare_token(token, integration.token)

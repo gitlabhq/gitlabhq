@@ -8,41 +8,41 @@ RSpec.describe RuboCop::Cop::Scalability::FileUploads, feature_category: :scalab
 
   context 'with required params' do
     it 'detects File in types array' do
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
       params do
         requires :certificate, allow_blank: false, types: [String, File]
                                                                    ^^^^ #{message}
       end
-      PATTERN
+      RUBY
     end
 
     it 'detects File as type argument' do
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
       params do
         requires :attachment, type: File
                                     ^^^^ #{message}
       end
-      PATTERN
+      RUBY
     end
   end
 
   context 'with optional params' do
     it 'detects File in types array' do
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
       params do
         optional :certificate, allow_blank: false, types: [String, File]
                                                                    ^^^^ #{message}
       end
-      PATTERN
+      RUBY
     end
 
     it 'detects File as type argument' do
-      expect_offense(<<~PATTERN)
+      expect_offense(<<~RUBY)
       params do
         optional :attachment, type: File
                                     ^^^^ #{message}
       end
-      PATTERN
+      RUBY
     end
   end
 end

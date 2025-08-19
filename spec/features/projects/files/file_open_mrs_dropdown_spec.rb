@@ -35,44 +35,22 @@ RSpec.describe 'Projects > Files > Open MRs dropdown', :js, feature_category: :s
     create_mr(another_source_branch, another_mr_title)
   end
 
-  context 'when feature flags are enabled' do
-    before do
-      stub_feature_flags(
-        filter_blob_path: true
-      )
-    end
+  it 'shows correct count and lists all MRs in dropdown' do
+    visit project_blob_path(project, "master/#{file_path}")
 
-    it 'shows correct count and lists all MRs in dropdown' do
-      visit project_blob_path(project, "master/#{file_path}")
+    badge = find_by_testid('open-mr-badge')
+    expect(badge).to have_content('2 Open')
 
-      badge = find_by_testid('open-mr-badge')
-      expect(badge).to have_content('2 Open')
+    badge.click
+    wait_for_requests
 
-      badge.click
-      wait_for_requests
-
-      within_testid('disclosure-content') do
-        expect(page).to have_content(mr_title)
-        expect(page).to have_content(another_mr_title)
-
-        click_link mr_title
-      end
-
+    within_testid('disclosure-content') do
       expect(page).to have_content(mr_title)
-    end
-  end
+      expect(page).to have_content(another_mr_title)
 
-  context 'when feature flags are disabled' do
-    before do
-      stub_feature_flags(
-        filter_blob_path: false
-      )
+      click_link mr_title
     end
 
-    it 'does not display the open MRs badge' do
-      visit project_blob_path(project, "master/#{file_path}")
-
-      expect(page).not_to have_testid('open-mr-badge')
-    end
+    expect(page).to have_content(mr_title)
   end
 end

@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+export STABLE_BRANCH_PATTERN="^[0-9-]+-stable(-ee)?$"
+export VERSION_TAG_PATTERN="^v([0-9]+)\.([0-9]+)\.([0-9]+).+(ee)$"
+
 function retry() {
   retry_times_sleep 2 3 "$@"
 }
@@ -104,23 +108,6 @@ function bundle_install_script() {
     eval "bundle install ${BUNDLE_INSTALL_FLAGS}"
   fi
 
-  # pg 1.6+ comes with precompiled extensions which should allow us to remove this after it is upgraded
-  if [[ "$GLCI_BUNDLE_SKIP_PG_REINSTALL" != "true" && $(bundle info pg) ]]; then
-    # If a job overrides default postgres version, reinstall pg gem to compile native extensions correctly
-    if [[ "$PG_VERSION" != "$DEFAULT_PG_VERSION" ]]; then
-      echo "Reinstalling pg gem to ensure native extensions match postgres version"
-      # Bundler will complain about replacing gems in world-writeable directories, so lock down access.
-      # This appears to happen when the gems are uncached, since the Runner uses a restrictive umask.
-      find vendor -type d -exec chmod 700 {} +
-      # When we test multiple versions of PG in the same pipeline, we have a single `setup-test-env`
-      # job but the `pg` gem needs to be rebuilt since it includes extensions (https://guides.rubygems.org/gems-with-extensions).
-      # Uncomment the following line if multiple versions of PG are tested in the same pipeline.
-      bundle pristine pg
-    else
-      echo "Default version of postgres in use, skipping reinstallation of pg gem"
-    fi
-  fi
-
   section_end "bundle-install"
 }
 
@@ -138,14 +125,6 @@ function yarn_install_script_storybook() {
   retry yarn storybook:install --frozen-lockfile
 
   section_end "yarn-install-storybook"
-}
-
-function assets_compile_script() {
-  section_start "assets-compile" "Compiling frontend assets"
-
-  bin/rake gitlab:assets:compile
-
-  section_end "assets-compile"
 }
 
 function setup_database_yml() {
@@ -377,12 +356,10 @@ function fail_pipeline_early() {
 }
 
 function assets_image_tag() {
-  local cache_assets_hash_file="cached-assets-hash.txt"
-
   if [[ -n "${CI_COMMIT_TAG}" ]]; then
     echo -n "${CI_COMMIT_REF_NAME}"
-  elif [[ -f "${cache_assets_hash_file}" ]]; then
-    echo -n "assets-hash-$(cat ${cache_assets_hash_file} | cut -c1-10)"
+  elif [[ -f "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
+    echo -n "assets-hash-$(cat ${GLCI_GITLAB_ASSETS_HASH_FILE} | cut -c1-10)"
   else
     echo -n "${CI_COMMIT_SHA}"
   fi
@@ -489,12 +466,22 @@ function download_local_gems() {
 }
 
 function define_trigger_branch_in_build_env() {
-  target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_REF_NAME}}"
-  stable_branch_regex="^[0-9-]+-stable(-ee)?$"
+  target_branch_name="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-${CI_COMMIT_BRANCH}}"
+
+  # If target_branch_name is empty and CI_COMMIT_TAG has version format, derive from tag
+  if [[ -z "$target_branch_name" && -n "$CI_COMMIT_TAG" ]]; then
+    # Match pattern like v42.2.0-rc42-ee and extract version parts
+    if [[ $CI_COMMIT_TAG =~ $VERSION_TAG_PATTERN ]]; then
+      major="${BASH_REMATCH[1]}"
+      minor="${BASH_REMATCH[2]}"
+      ee_suffix="${BASH_REMATCH[4]}"
+      target_branch_name="${major}-${minor}-stable-${ee_suffix}"
+    fi
+  fi
 
   echo "target_branch_name: ${target_branch_name}"
 
-  if [[ $target_branch_name =~ $stable_branch_regex  ]]
+  if [[ $target_branch_name =~ $STABLE_BRANCH_PATTERN  ]]
   then
     export TRIGGER_BRANCH="${target_branch_name%-ee}"
   else
@@ -539,7 +526,6 @@ function log_disk_usage() {
       echo "********************************************************************"
 
       exit_code=111
-      alert_job_in_slack $exit_code "Auto-retried due to low free disk space."
 
       exit $exit_code
     fi
@@ -593,19 +579,16 @@ function find_custom_exit_code() {
     -e "OpenSSL::SSL::SSLError" "$trace_file"; then
     echoerr "Detected network connection error. Changing exit code to 110."
     exit_code=110
-    alert_job_in_slack "$exit_code" "Network connection error"
 
   elif grep -i -q -e "no space left on device" "$trace_file"; then
     echoerr "Detected no space left on device. Changing exit code to 111."
     exit_code=111
-    alert_job_in_slack "$exit_code" "Low disk space"
 
   elif grep -i -q \
     -e "error: downloading artifacts from coordinator" \
     -e "error: uploading artifacts as \"archive\" to coordinator" "$trace_file"; then
     echoerr "Detected artifact transit error. Changing exit code to 160."
     exit_code=160
-    alert_job_in_slack "$exit_code" "Artifact transit error"
 
   elif grep -i -q \
     -e "500 Internal Server Error" \
@@ -617,18 +600,15 @@ function find_custom_exit_code() {
     -e "503 Service Unavailable" "$trace_file"; then
     echoerr "Detected 5XX error. Changing exit code to 161."
     exit_code=161
-    alert_job_in_slack "$exit_code" "5XX error"
 
   elif grep -i -q -e "gitaly spawn failed" "$trace_file"; then
     echoerr "Detected gitaly spawn failure error. Changing exit code to 162."
     exit_code=162
-    alert_job_in_slack "$exit_code" "Gitaly spawn failure"
 
   elif grep -i -q -e \
     "Rspec suite is exceeding the 80 minute limit and is forced to exit with error" "$trace_file"; then
     echoerr "Detected rspec timeout risk. Changing exit code to 163."
     exit_code=163
-    alert_job_in_slack "$exit_code" "RSpec taking longer than 80 minutes and forced to fail."
 
   elif grep -i -q \
     -e "Redis client could not fetch cluster information: Connection refused" \
@@ -636,23 +616,19 @@ function find_custom_exit_code() {
     -e "CLUSTERDOWN The cluster is down" "$trace_file"; then
     echoerr "Detected Redis cluster error. Changing exit code to 164."
     exit_code=164
-    alert_job_in_slack "$exit_code" "Redis cluster error"
 
   elif grep -i -q -e "segmentation fault" "$trace_file"; then
     echoerr "Detected segmentation fault. Changing exit code to 165."
     exit_code=165
-    alert_job_in_slack "$exit_code" "Segmentation fault"
 
   elif grep -i -q -e "Error: EEXIST: file already exists" "$trace_file"; then
     echoerr "Detected EEXIST error. Changing exit code to 166."
     exit_code=166
-    alert_job_in_slack "$exit_code" "EEXIST: file already exists"
 
   elif grep -i -q -e \
     "fatal: remote error: GitLab is currently unable to handle this request due to load" "$trace_file"; then
     echoerr "Detected GitLab overload error in job trace. Changing exit code to 167."
     exit_code=167
-    alert_job_in_slack "$exit_code" "gitlab.com overload"
 
   elif grep -i -q -e "GRPC::ResourceExhausted" "$trace_file"; then
     echoerr "Detected GRPC::ResourceExhausted. Changing exit code to 168."
@@ -672,53 +648,4 @@ function find_custom_exit_code() {
 
   echoinfo "will exit with $exit_code"
   return "$exit_code"
-}
-
-function alert_job_in_slack() {
-  local exit_code=$1
-  local alert_reason=$2
-  local slack_channel="#dx_development-analytics_alerts"
-
-  echoinfo "Reporting ${CI_JOB_URL} to Slack channel ${slack_channel}"
-
-  json_payload=$(cat <<JSON
-{
-	"blocks": [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "*<${CI_PROJECT_URL}|${CI_PROJECT_PATH}> pipeline <${CI_PIPELINE_URL}|#${CI_PIPELINE_ID}> needs attention*"
-			}
-		},
-		{
-			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": "*Branch:* \n\`${CI_COMMIT_REF_NAME}\`"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Job:* \n<${CI_JOB_URL}|${CI_JOB_NAME}>"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Error code:* \n\`${exit_code}\`"
-				},
-				{
-					"type": "mrkdwn",
-					"text": "*Reason:* \n${alert_reason}"
-				}
-			]
-		}
-	],
-  "channel": "${slack_channel}"
-}
-JSON
-)
-
-  curl --silent -o /dev/null -X POST "${CI_SLACK_WEBHOOK_URL}" \
-    -H 'Content-type: application/json' \
-    -d "${json_payload}"
 }

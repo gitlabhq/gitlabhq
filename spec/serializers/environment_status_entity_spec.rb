@@ -40,55 +40,11 @@ RSpec.describe EnvironmentStatusEntity do
 
   it { is_expected.not_to include(:retry_url) }
   it { is_expected.not_to include(:stop_url) }
-  it { is_expected.not_to include(:metrics_url) }
-  it { is_expected.not_to include(:metrics_monitoring_url) }
 
   context 'when the user is project maintainer' do
     let(:user) { maintainer }
 
     it { is_expected.to include(:stop_url) }
     it { is_expected.to include(:retry_url) }
-  end
-
-  context 'when deployment has metrics' do
-    let(:user) { maintainer }
-    let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true, configured?: true) }
-
-    let(:simple_metrics) do
-      {
-        success: true,
-        metrics: {},
-        last_update: 42
-      }
-    end
-
-    before do
-      allow(deployment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
-      allow(entity).to receive(:deployment).and_return(deployment)
-
-      expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
-        allow(deployment_metrics).to receive(:prometheus_adapter).and_return(prometheus_adapter)
-
-        allow(prometheus_adapter).to receive(:query)
-          .with(:deployment, deployment).and_return(simple_metrics)
-      end
-    end
-
-    context 'when deployment succeeded' do
-      it 'returns metrics url' do
-        expect(subject[:metrics_url])
-          .to eq("/#{project.full_path}/-/environments/#{environment.id}/deployments/#{deployment.iid}/metrics")
-      end
-    end
-
-    context 'when deployment is running' do
-      before do
-        deployment.update!(status: :running)
-      end
-
-      it 'does not return metrics url' do
-        expect(subject[:metrics_url]).to be_nil
-      end
-    end
   end
 end

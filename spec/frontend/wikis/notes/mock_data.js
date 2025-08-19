@@ -73,7 +73,6 @@ export const note = {
     adminNote: false,
     awardEmoji: false,
     createNote: true,
-    resolveNote: false,
   },
   discussion: {
     __typename: 'Discussion',
@@ -81,6 +80,9 @@ export const note = {
     resolved: false,
     resolvable: true,
     resolvedBy: null,
+    userPermissions: {
+      resolveNote: false,
+    },
   },
   awardEmoji: {
     nodes: [],
@@ -99,6 +101,14 @@ export const awardEmoji = {
 export const noteableId = '7';
 
 export const queryVariables = { slug: 'home', projectId: 'gid://gitlab/Group/7' };
+export const wikiPageQueryMockData = {
+  title: 'home',
+  id: 'gid://gitlab/WikiPage/1',
+  subscribed: false,
+  userPermissions: {
+    markNoteAsInternal: false,
+  },
+};
 
 export const wikiCommentFormProvideData = {
   pageInfo,

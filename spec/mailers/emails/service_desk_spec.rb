@@ -13,12 +13,11 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:issue) { create(:issue, project: project, description: 'Some **issue** description') }
+  let_it_be_with_reload(:issue) { create(:issue, project: project, description: 'Some **issue** description') }
   let_it_be(:email) { 'someone@gitlab.com' }
-  let_it_be(:expected_unsubscribe_url) { unsubscribe_sent_notification_url('b7721fc7e8419911a8bea145236a0519') }
   let_it_be(:credential) { build(:service_desk_custom_email_credential, project: project).save!(validate: false) }
   let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
-  let_it_be(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
+  let_it_be_with_reload(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
   let_it_be(:issue_email_participant) { create(:issue_email_participant, issue: issue, email: email) }
 
   let(:template) { double(content: template_content) }
@@ -139,6 +138,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'with an issue id, issue path and unsubscribe url placeholders' do
+      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(SentNotification.last) }
       let(:template_content) do
         'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
           '[Unsubscribe](%{UNSUBSCRIBE_URL})'
@@ -287,7 +287,8 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'generates Reply-To address from custom email' do
       reply_address = subject.reply_to.first
-      expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{SentNotification.last.reply_key}@")
+      notification = SentNotification.last
+      expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{notification.partitioned_reply_key}@")
 
       expect(reply_address).to eq(expected_reply_address)
     end
@@ -311,7 +312,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     let_it_be(:expected_html) { expected_text }
 
-    before_all do
+    before do
       issue.update!(external_author: email)
     end
 

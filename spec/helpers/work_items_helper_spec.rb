@@ -13,6 +13,10 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   end
 
   describe '#work_items_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
     describe 'with project context' do
       let_it_be(:project) { build(:project) }
       let_it_be(:current_user) { build(:user, owner_of: project) }
@@ -34,13 +38,15 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             project_namespace_full_path: project.namespace.full_path,
             register_path: new_user_registration_path(redirect_to_referer: 'yes'),
             sign_in_path: user_session_path(redirect_to_referer: 'yes'),
-            new_comment_template_paths: include({ text: "Your comment templates",
-                                                  href: profile_comment_templates_path }.to_json),
             report_abuse_path: add_category_abuse_reports_path,
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,
             is_signed_in: current_user.present?.to_s,
-            time_tracking_limit_to_hours: "false"
+            time_tracking_limit_to_hours: "false",
+            can_read_crm_organization: 'true',
+            releases_path: project_releases_path(project, format: :json),
+            project_import_jira_path: project_import_jira_path(project),
+            can_read_crm_contact: 'true'
           }
         )
       end
@@ -58,6 +64,14 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           )
         end
       end
+
+      it 'returns the correct new trial path' do
+        expect(helper).to respond_to(:self_managed_new_trial_url)
+        allow(helper).to receive(:self_managed_new_trial_url).and_return('subscription_portal_trial_url')
+        expect(helper.work_items_data(project, current_user)).to include(
+          { new_trial_path: "subscription_portal_trial_url" }
+        )
+      end
     end
 
     context 'with group context' do
@@ -74,15 +88,18 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           }
         )
       end
+
+      it 'does not include project-specific data' do
+        expect(helper.work_items_data(group, current_user)).not_to have_key(:releases_path)
+      end
     end
   end
 
-  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needed for querying the work item type
   describe '#add_work_item_show_breadcrumb' do
     subject(:add_work_item_show_breadcrumb) { helper.add_work_item_show_breadcrumb(resource_parent, work_item.iid) }
 
     context 'on a group' do
-      let_it_be(:resource_parent) { create(:group) }
+      let_it_be(:resource_parent) { build_stubbed(:group) }
       let_it_be(:work_item) { build(:work_item, namespace: resource_parent) }
 
       it 'adds the correct breadcrumb' do
@@ -93,7 +110,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
     end
 
     context 'on a project' do
-      let_it_be(:resource_parent) { build(:project) }
+      let_it_be(:resource_parent) { build_stubbed(:project) }
       let_it_be(:work_item) { build(:work_item, namespace: resource_parent.namespace) }
 
       it 'adds the correct breadcrumb' do
@@ -103,5 +120,4 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       end
     end
   end
-  # rubocop:enable RSpec/FactoryBot/AvoidCreate
 end

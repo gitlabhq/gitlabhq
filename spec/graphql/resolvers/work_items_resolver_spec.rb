@@ -163,31 +163,81 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
       end
 
       context 'with parent_ids filter' do
-        context 'when filtering by more than 100 parent ids' do
-          let(:too_many_parent_ids) { (1..101).to_a }
+        shared_examples 'a parent_id filter' do |param_builder|
+          context 'when filtering by more than 100 parent ids' do
+            let(:too_many_parent_ids) { (1..101).to_a }
 
-          it 'throws an error' do
-            response = batch_sync { resolve_items(parent_ids: too_many_parent_ids) }
+            it 'throws an error' do
+              params = param_builder.call(parent_ids: too_many_parent_ids)
+              response = batch_sync { resolve_items(params) }
 
-            expect(response).to be_a(GraphQL::ExecutionError)
-            expect(response.message).to eq('You can only provide up to 100 parentIds at once.')
+              expect(response).to be_a(GraphQL::ExecutionError)
+              expect(response.message).to eq('You can only provide up to 100 parentIds at once.')
+            end
+          end
+
+          context 'when converting global ids to work item ids' do
+            let_it_be(:work_item1) { create(:work_item) }
+            let_it_be(:work_item2) { create(:work_item) }
+
+            let(:global_ids) { [work_item1.to_global_id, work_item2.to_global_id] }
+            let(:context) { { arg_style: :internal_prepared } }
+
+            it 'correctly processes global IDs and maps to work item model_ids' do
+              expect(GitlabSchema).to receive(:parse_gids).with(global_ids, expected_type: ::WorkItem).and_call_original
+
+              params = param_builder.call(parent_ids: global_ids.map(&:to_s))
+              batch_sync { resolve_items(params, context) }
+            end
           end
         end
 
-        context 'when converting global ids to work item ids' do
-          let_it_be(:work_item1) { create(:work_item) }
-          let_it_be(:work_item2) { create(:work_item) }
+        context 'when passed at the top level' do
+          it_behaves_like 'a parent_id filter', ->(args) { args }
+        end
 
-          let(:global_ids) { [work_item1.to_global_id, work_item2.to_global_id] }
-          let(:context) { { arg_style: :internal_prepared } }
+        context 'when passed through the hierarchy_filters argument' do
+          it_behaves_like 'a parent_id filter', ->(args) { { hierarchy_filters: args } }
+        end
+      end
 
-          it 'correctly processes global IDs and maps to work item model_ids' do
-            expect(GitlabSchema).to receive(:parse_gids)
-              .with(global_ids, expected_type: ::WorkItem)
-              .and_call_original
+      context 'with not parent_ids filter' do
+        let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project) }
+        let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project) }
+        let(:context) { { arg_style: :internal_prepared } }
 
-            batch_sync { resolve_items({ parent_ids: global_ids.map(&:to_s) }, context) }
-          end
+        before do
+          create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+        end
+
+        it 'filters by not parent ids' do
+          items = resolve_items({ not: { parent_ids: [work_item_without_parent.to_global_id.to_s] } }, context)
+
+          expect(items).not_to include(work_item_with_parent)
+          expect(items).to include(work_item_without_parent)
+        end
+      end
+
+      context 'with parent_wildcard_id filter' do
+        let_it_be(:work_item_without_parent) { create(:work_item, :issue, project: project) }
+        let_it_be(:work_item_with_parent) { create(:work_item, :task, project: project) }
+
+        before do
+          create(:parent_link, work_item_parent: work_item_without_parent, work_item: work_item_with_parent)
+        end
+
+        it 'returns work items with any parent' do
+          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'ANY' })
+
+          expect(items).to include(work_item_with_parent)
+          expect(items).not_to include(work_item_without_parent)
+        end
+
+        it 'returns work items with no parent' do
+          items = resolve_items(hierarchy_filters: { parent_wildcard_id: 'NONE' })
+
+          expect(items).to include(work_item_without_parent)
+          expect(items).not_to include(work_item_with_parent)
         end
       end
 
@@ -311,42 +361,6 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
 
     it "returns nil without breaking" do
       expect(resolve_items(iids: ["don't", "break"])).to be_empty
-    end
-  end
-
-  context 'when searching for work items in ES for GLQL request' do
-    let(:request_params) { { 'operationName' => 'GLQL' } }
-    let(:glql_ctx) do
-      { request: instance_double(ActionDispatch::Request, params: request_params, referer: 'http://localhost') }
-    end
-
-    before do
-      allow(Gitlab::CurrentSettings).to receive(:elasticsearch_search?).and_return(true)
-      allow(project).to receive(:use_elasticsearch?).and_return(true)
-    end
-
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(glql_es_integration: true)
-      end
-
-      it 'uses GLQL WorkItemsFinder' do
-        expect(::WorkItems::Glql::WorkItemsFinder).to receive(:new).and_call_original
-
-        batch_sync { resolve_items({ label_name: item1.labels }, glql_ctx).to_a }
-      end
-    end
-
-    context 'when feature flag is not enabled' do
-      before do
-        stub_feature_flags(glql_es_integration: false)
-      end
-
-      it 'falls back to old WorkItemsFinder' do
-        expect(::WorkItems::Glql::WorkItemsFinder).not_to receive(:new)
-
-        batch_sync { resolve_items({ label_name: item1.labels }, glql_ctx).to_a }
-      end
     end
   end
 

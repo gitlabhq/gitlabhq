@@ -32,10 +32,25 @@ module Gitlab
         end
       end
 
+      # Searches for recently viewed items matching the given term
+      #
+      # @param term [String, nil] Search term to filter items by title, or nil for no filtering
+      # @return [Array<ActiveRecord::Base>] Array of matching items ordered by recency
       def search(term)
-        finder.new(user, search: term, in: 'title', skip_full_text_search_project_condition: true)
-          .execute
-          .limit(SEARCH_LIMIT).without_order.id_in_ordered(latest_ids)
+        ids = latest_ids
+        query_items_by_ids(term, ids)
+      end
+
+      # Returns the most recently viewed items with their view timestamps
+      #
+      # @return [Hash<ActiveRecord::Base, Time>] Hash where keys are recently viewed ActiveRecord
+      # objects and values are the timestamp of the last visit
+      def latest_with_timestamps
+        timestamps = latest_ids_with_timestamps
+        ids = timestamps.keys.map(&:to_i)
+        items = query_items_by_ids(nil, ids)
+
+        items.index_with { |item| Time.zone.at(timestamps[item.id.to_s]) }
       end
 
       private
@@ -44,6 +59,20 @@ module Gitlab
         with_redis do |redis|
           redis.zrevrange(key, 0, @items_limit - 1)
         end.map(&:to_i)
+      end
+
+      def latest_ids_with_timestamps
+        with_redis do |redis|
+          redis.zrevrange(key, 0, @items_limit - 1, with_scores: true)
+        end.to_h
+      end
+
+      def query_items_by_ids(term, ids)
+        return finder.new(user).klass.none if ids.empty?
+
+        finder.new(user, search: term, in: 'title', skip_full_text_search_project_condition: true)
+          .execute
+          .limit(SEARCH_LIMIT).without_order.id_in_ordered(ids)
       end
 
       def with_redis(&blk)

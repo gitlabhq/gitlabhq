@@ -13,6 +13,7 @@ module RuboCop
           'Updating limits on strings requires downtime. This can be avoided ' \
           'by using `text` and adding a limit with `add_text_limit`'
 
+        # @!method reverting?(node)
         def_node_matcher :reverting?, <<~PATTERN
           (def :down ...)
         PATTERN
@@ -40,14 +41,14 @@ module RuboCop
           migration_method = node.children[1]
 
           if migration_method == :string
-            modifier.type == :lvar
+            modifier.lvar_type?
           elsif ADD_COLUMN_METHODS.include?(migration_method)
             modifier.nil? && string_column?(node.children[4])
           end
         end
 
         def string_column?(column_type)
-          column_type.type == :sym && column_type.value == :string
+          column_type.sym_type? && column_type.value == :string
         end
       end
     end

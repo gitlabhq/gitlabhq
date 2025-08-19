@@ -60,6 +60,7 @@ module Issues
         if @issue.persisted?
           # Save the meeting directly since we only want to update one meeting, not all
           zoom_meeting.save
+          GraphqlTriggers.work_item_updated(@issue)
           track_incident_action(current_user, issue, :incident_zoom_meeting)
           success(message: _('Zoom meeting added'))
         else
@@ -85,6 +86,7 @@ module Issues
       @added_meeting.update(issue_status: :removed)
       track_meeting_removed_event
       SystemNoteService.zoom_link_removed(@issue, @project, current_user)
+      GraphqlTriggers.work_item_updated(@issue)
     end
 
     def success(message:, payload: nil)

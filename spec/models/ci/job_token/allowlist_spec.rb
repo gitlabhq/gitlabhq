@@ -11,10 +11,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
   let(:allowlist) { described_class.new(source_project, direction: direction) }
   let(:direction) { :outbound }
 
-  before do
-    allow(source_project).to receive(:job_token_policies_enabled?).and_return(true)
-  end
-
   describe '#projects' do
     subject(:projects) { allowlist.projects }
 
@@ -103,23 +99,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
           expect(project_link.target_project_id).to eq(added_project.id)
           expect(project_link.job_token_policies).to eq(policies)
         end
-
-        context 'when job token policies are disabled' do
-          before do
-            allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
-          end
-
-          it 'adds the project scope link but with empty job token policies' do
-            project_link = add_project
-
-            expect(allowlist.projects).to contain_exactly(source_project, added_project)
-            expect(project_link.added_by_id).to eq(user.id)
-            expect(project_link.source_project_id).to eq(source_project.id)
-            expect(project_link.target_project_id).to eq(added_project.id)
-            expect(project_link.default_permissions).to be(true)
-            expect(project_link.job_token_policies).to eq([])
-          end
-        end
       end
     end
   end
@@ -154,23 +133,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(group_link.source_project_id).to eq(source_project.id)
       expect(group_link.target_group_id).to eq(added_group.id)
       expect(group_link.job_token_policies).to eq(policies)
-    end
-
-    context 'when job token policies are disabled' do
-      before do
-        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'adds the group scope link but with empty job token policies' do
-        group_link = add_group
-
-        expect(allowlist.groups).to contain_exactly(added_group)
-        expect(group_link.added_by_id).to eq(user.id)
-        expect(group_link.source_project_id).to eq(source_project.id)
-        expect(group_link.target_group_id).to eq(added_group.id)
-        expect(group_link.default_permissions).to be(true)
-        expect(group_link.job_token_policies).to eq([])
-      end
     end
   end
 
@@ -331,25 +293,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(project_link.target_project_id).to eq(added_project1.id)
       expect(project_link.job_token_policies).to eq(policies)
     end
-
-    context 'when job token policies are disabled' do
-      before do
-        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'adds the project scope link but with empty job token policies' do
-        add_projects
-
-        project_links = Ci::JobToken::ProjectScopeLink.where(source_project_id: source_project.id)
-        project_link = project_links.first
-
-        expect(allowlist.projects).to match_array([source_project, added_project1, added_project2])
-        expect(project_link.added_by_id).to eq(user.id)
-        expect(project_link.source_project_id).to eq(source_project.id)
-        expect(project_link.target_project_id).to eq(added_project1.id)
-        expect(project_link.job_token_policies).to eq([])
-      end
-    end
   end
 
   describe '#bulk_add_groups!' do
@@ -374,26 +317,6 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
       expect(group_link.target_group_id).to eq(added_group1.id)
       expect(group_link.job_token_policies).to eq(policies)
       expect(group_link.autopopulated).to be true
-    end
-
-    context 'when job token policies are disabled' do
-      before do
-        allow(source_project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'adds the group scope link but with empty job token policies' do
-        add_groups
-
-        group_links = Ci::JobToken::GroupScopeLink.where(source_project_id: source_project.id)
-        group_link = group_links.first
-
-        expect(allowlist.groups).to match_array([added_group1, added_group2])
-        expect(group_link.added_by_id).to eq(user.id)
-        expect(group_link.source_project_id).to eq(source_project.id)
-        expect(group_link.target_group_id).to eq(added_group1.id)
-        expect(group_link.job_token_policies).to eq([])
-        expect(group_link.autopopulated).to be true
-      end
     end
   end
 

@@ -26,6 +26,7 @@ module RuboCop
         MSG = 'Use one of the %{count_methods} methods for counting on %{class_name}'
 
         # Match one level const as Issue, Gitlab
+        # @!method one_level_node(node)
         def_node_matcher :one_level_node, <<~PATTERN
           (send
             (const {nil? cbase} $...)
@@ -33,6 +34,7 @@ module RuboCop
         PATTERN
 
         # Match two level const as ::Clusters::Cluster, ::Ci::Pipeline
+        # @!method two_level_node(node)
         def_node_matcher :two_level_node, <<~PATTERN
           (send
             (const

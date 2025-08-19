@@ -11,10 +11,12 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
     create(:project_incident_management_setting, project: project, send_email: true, create_issue: true)
   end
 
-  let(:service) { described_class.new(project, payload) }
-  let(:token_input) { 'token' }
+  let_it_be(:integration) { create(:alert_management_prometheus_integration, project: project) }
 
-  subject { service.execute(token_input) }
+  let(:service) { described_class.new(project, payload) }
+  let(:token_input) { integration.token }
+
+  subject { service.execute(token_input, integration) }
 
   context 'with valid payload' do
     let(:payload_raw) { prometheus_alert_payload(firing: ['Alert A'], resolved: ['Alert B']) }
@@ -22,48 +24,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
     let(:payload_alert_firing) { payload_raw['alerts'].first }
     let(:token) { 'token' }
     let(:source) { 'Prometheus' }
-
-    context 'with manual prometheus installation' do
-      where(:alerting_setting, :token_value, :token_input, :manual_configuration, :result) do
-        true  | 'token' | 'token' | true  | :success
-        true  | 'token' | 'x'     | true  | :failure
-        true  | 'token' | nil     | true  | :failure
-        false | nil     | nil     | true  | :success
-        false | nil     | 'token' | true  | :failure
-        true  | 'token' | 'token' | false | :failure
-        false | nil     | nil     | false | :failure
-        true  | 'token' | 'token' | nil   | :failure
-      end
-
-      with_them do
-        let(:alert_manager_token) { token_input }
-
-        before do
-          if manual_configuration.nil?
-            # Don't create a prometheus integration at all
-          else
-            create(:prometheus_integration, project: project, manual_configuration: manual_configuration)
-          end
-
-          if alerting_setting
-            create(
-              :project_alerting_setting,
-              project: project,
-              token: token_value
-            )
-          end
-        end
-
-        case result = params[:result]
-        when :success
-          it_behaves_like 'processes one firing and one resolved prometheus alerts'
-        when :failure
-          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
-        else
-          raise "invalid result: #{result.inspect}"
-        end
-      end
-    end
 
     context 'with HTTP integration' do
       where(:active, :token, :result) do
@@ -80,8 +40,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
         let(:token_input) { public_send(token) if token }
         let(:integration) { create(:alert_management_http_integration, active, project: project) if active }
 
-        subject { service.execute(token_input, integration) }
-
         case result = params[:result]
         when :success
           it_behaves_like 'processes one firing and one resolved prometheus alerts'
@@ -91,32 +49,9 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
           raise "invalid result: #{result.inspect}"
         end
       end
-
-      context 'with simultaneous manual configuration' do
-        let_it_be(:alerting_setting) { create(:project_alerting_setting, :with_http_integration, project: project) }
-        let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
-        let_it_be(:integration) { project.alert_management_http_integrations.last! }
-
-        subject { service.execute(integration.token, integration) }
-
-        it_behaves_like 'processes one firing and one resolved prometheus alerts'
-
-        context 'when HTTP integration is inactive' do
-          before do
-            integration.update!(active: false)
-          end
-
-          it_behaves_like 'alerts service responds with an error and takes no actions', :unauthorized
-        end
-      end
     end
 
     context 'incident settings' do
-      before do
-        create(:prometheus_integration, project: project)
-        create(:project_alerting_setting, project: project, token: token)
-      end
-
       it_behaves_like 'processes one firing and one resolved prometheus alerts'
 
       context 'when incident_management_setting does not exist' do
@@ -181,8 +116,6 @@ RSpec.describe Projects::Prometheus::Alerts::NotifyService, feature_category: :i
       before do
         stub_const("#{described_class}::PROCESS_MAX_ALERTS", max_alerts)
 
-        create(:prometheus_integration, project: project)
-        create(:project_alerting_setting, project: project, token: token)
         create(:alert_management_alert, project: project, fingerprint: fingerprint)
 
         allow(Gitlab::AppLogger).to receive(:warn)

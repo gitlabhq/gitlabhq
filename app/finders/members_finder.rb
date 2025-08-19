@@ -9,6 +9,7 @@ class MembersFinder
   # Params can be any of the following:
   #   sort:       string
   #   search:     string
+  #   user_types: [string]
   attr_reader :params
 
   def initialize(project, current_user, params: {})
@@ -56,6 +57,7 @@ class MembersFinder
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
     members = members.owners_and_maintainers if params[:owners_and_maintainers].present?
     members = members.by_access_level(params[:access_levels]) if params[:access_levels].present?
+    members = members.by_user_types(params[:user_types]) if params[:user_types].present?
     filter_by_max_role(members)
   end
 

@@ -823,7 +823,7 @@ class to handle the connection.
 As the Unified Backup CLI code is in a separate gem, the main codebase also contains specs to ensure the required views
 return the information needed by the tool. This ensures a "contract" between the two codebases.
 
-In case any of the columns needed by this vew needs to change, follow those steps:
+In case any of the columns needed by this view needs to change, follow those steps:
 
 - To drop a column
   - Coordinate with Durability team (responsible for the Unified Backup) and Gitaly (responsible for `gitaly-backup`)

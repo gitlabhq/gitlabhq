@@ -23,10 +23,9 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
 
     let(:extra_opts) { {} }
     let(:creator) { admin }
+    let(:snippet) { subject.payload[:snippet] }
 
     subject { described_class.new(project: project, current_user: creator, params: opts).execute }
-
-    let(:snippet) { subject.payload[:snippet] }
 
     shared_examples 'a service that creates a snippet' do
       it 'creates a snippet with the provided attributes' do
@@ -429,12 +428,12 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
           "text: [text.txt](/uploads#{text_file})"
         end
 
+        let(:extra_opts) { { description: description, title: title, files: files } }
+
         before do
           allow(FileUtils).to receive(:mkdir_p)
           allow(FileUtils).to receive(:move)
         end
-
-        let(:extra_opts) { { description: description, title: title, files: files } }
 
         it 'stores the snippet description correctly' do
           stub_file_mover(text_file)

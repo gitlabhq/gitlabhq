@@ -10,32 +10,32 @@
 
 %h1.gl-sr-only= title
 
-.top-area
+.gl-flex.gl-border-b-1.gl-border-b-solid.gl-border-b-default.gl-flex-wrap-reverse
   = gl_tabs_nav({ class: 'gl-grow gl-border-b-0' }) do
     = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
     = gl_tab_link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), { item_active: @mode == 'active', title: s_('Branches|Show active branches') }
     = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { item_active: @mode == 'stale', title: s_('Branches|Show stale branches') }
     = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: %w[overview active stale].exclude?(@mode), title: s_('Branches|Show all branches') }
 
-  .nav-controls
-    #js-branches-sort-dropdown{ data: {
-        project_branches_filtered_path: project_branches_path(@project, state: @mode),
-        sort_options: branches_sort_options_hash.to_json,
-        show_dropdown: @mode == 'overview' ? 'false' : 'true',
-        sorted_by: @sort }
-    }
-
+  .gl-flex.gl-items-center.gl-gap-3.gl-mt-3.sm:gl-mt-0.gl-ml-auto
     - if can_view_branch_rules?
-      = link_button_to project_settings_repository_path(@project, anchor: 'js-branch-rules') do
+      = render Pajamas::ButtonComponent.new(variant: :confirm, category: :tertiary, href: project_settings_repository_path(@project, anchor: 'js-branch-rules'), button_options: { data: { testid: "view-branch-rules" }}) do
         = s_('Branches|View branch rules')
 
     - if can_push_code?
       = link_button_to new_project_branch_path(@project), variant: :confirm do
         = s_('Branches|New branch')
-      .js-delete-merged-branches.gl-w-7{ data: {
+      .js-delete-merged-branches{ data: {
           default_branch: @project.repository.root_ref,
           form_path: project_merged_branches_path(@project) }
         }
+.row-content-block.gl-border-t-0
+  #js-branches-sort-dropdown{ data: {
+      project_branches_filtered_path: project_branches_path(@project, state: @mode),
+      sort_options: branches_sort_options_hash.to_json,
+      show_dropdown: @mode == 'overview' ? 'false' : 'true',
+      sorted_by: @sort }
+}
 
 = render_if_exists 'projects/commits/mirror_status'
 

@@ -1,5 +1,6 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
+import GreetingHeader from './greeting_header.vue';
 import MergeRequestsWidget from './merge_requests_widget.vue';
 import WorkItemsWidget from './work_items_widget.vue';
 import ActivityWidget from './activity_widget.vue';
@@ -8,7 +9,8 @@ import TodosWidget from './todos_widget.vue';
 
 export default {
   components: {
-    GlAlert,
+    GlLink,
+    GreetingHeader,
     MergeRequestsWidget,
     WorkItemsWidget,
     ActivityWidget,
@@ -32,74 +34,40 @@ export default {
       type: String,
       required: true,
     },
-  },
-  data() {
-    return {
-      hasMergeRequestsMetadataError: false,
-      hasWorkItemsMetadataError: false,
-    };
+    activityPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <h1 class="gl-mb-6">{{ __("Today's highlights") }}</h1>
-    <div class="gl-grid gl-grid-cols-1 gl-gap-6 md:gl-grid-cols-3">
-      <div class="gl-flex gl-flex-col gl-gap-6 md:gl-col-span-2">
-        <gl-alert
-          v-if="hasMergeRequestsMetadataError"
-          variant="warning"
-          data-testid="merge-requests-fetch-metadata-error"
-          @dismiss="hasMergeRequestsMetadataError = false"
-          >{{
-            s__(
-              'Homepage|The number of merge requests is not available. Please refresh the page to try again.',
-            )
-          }}</gl-alert
-        >
-        <gl-alert
-          v-if="hasWorkItemsMetadataError"
-          variant="warning"
-          data-testid="work-items-fetch-metadata-desktop-error"
-          class="gl-hidden md:gl-block"
-          @dismiss="hasWorkItemsMetadataError = false"
-          >{{
-            s__(
-              'Homepage|The number of issues is not available. Please refresh the page to try again.',
-            )
-          }}</gl-alert
-        >
-        <div class="gl-grid gl-grid-cols-1 gl-gap-5 lg:gl-grid-cols-2">
+    <greeting-header />
+    <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/main:gl-grid-cols-3">
+      <div class="gl-flex gl-flex-col gl-gap-6 @md/main:gl-col-span-2">
+        <div class="gl-grid gl-grid-cols-1 gl-gap-5 @lg/main:gl-grid-cols-2">
           <merge-requests-widget
             :review-requested-path="reviewRequestedPath"
             :assigned-to-you-path="assignedMergeRequestsPath"
-            @fetch-metadata-error="hasMergeRequestsMetadataError = true"
           />
-          <gl-alert
-            v-if="hasWorkItemsMetadataError"
-            variant="warning"
-            data-testid="work-items-fetch-metadata-mobile-error"
-            class="gl-block md:gl-hidden"
-            @dismiss="hasWorkItemsMetadataError = false"
-            >{{
-              s__(
-                'Homepage|The number of issues is not available. Please refresh the page to try again.',
-              )
-            }}</gl-alert
-          >
           <work-items-widget
             :assigned-to-you-path="assignedWorkItemsPath"
             :authored-by-you-path="authoredWorkItemsPath"
-            @fetch-metadata-error="hasWorkItemsMetadataError = true"
           />
         </div>
         <todos-widget />
-        <activity-widget />
+        <activity-widget :activity-path="activityPath" />
       </div>
       <div>
         <recently-viewed-widget />
       </div>
+    </div>
+    <div class="gl-mt-5 gl-text-center">
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/553938" target="_blank">{{
+        __('Leave feedback')
+      }}</gl-link>
     </div>
   </div>
 </template>

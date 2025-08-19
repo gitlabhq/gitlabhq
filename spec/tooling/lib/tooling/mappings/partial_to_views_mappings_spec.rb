@@ -5,61 +5,33 @@ require 'fileutils'
 require_relative '../../../../../tooling/lib/tooling/mappings/partial_to_views_mappings'
 
 RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :tooling do
-  attr_accessor :view_base_folder, :changed_files_file, :views_with_partials_file
+  attr_accessor :view_base_folder
 
   let(:instance) do
-    described_class.new(changed_files_pathname, views_with_partials_pathname, view_base_folder: view_base_folder)
+    described_class.new(changed_files, view_base_folder: view_base_folder)
   end
 
-  let(:changed_files_pathname)       { changed_files_file.path }
   let(:views_with_partials_pathname) { views_with_partials_file.path }
-  let(:changed_files_content)        { "changed_file1 changed_file2" }
-  let(:views_with_partials_content)  { "previously_added_view.html.haml" }
+  let(:changed_files) { %w[changed_file1 changed_file2] }
+  let(:views_with_partials) { ["previously_added_view.html.haml"] }
 
   around do |example|
-    self.changed_files_file       = Tempfile.new('changed_files_file')
-    self.views_with_partials_file = Tempfile.new('views_with_partials_file')
-
     # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
     #     Tempfile.html#class-Tempfile-label-Explicit+close
-    begin
-      Dir.mktmpdir do |tmp_views_base_folder|
-        self.view_base_folder = tmp_views_base_folder
-        example.run
-      end
-    ensure
-      changed_files_file.close
-      views_with_partials_file.close
-      changed_files_file.unlink
-      views_with_partials_file.unlink
+    Dir.mktmpdir do |tmp_views_base_folder|
+      self.view_base_folder = tmp_views_base_folder
+      example.run
     end
-  end
-
-  before do
-    # We write into the temp files initially, to check how the code modified those files
-    File.write(changed_files_pathname, changed_files_content)
-    File.write(views_with_partials_pathname, views_with_partials_content)
   end
 
   describe '#execute' do
     subject { instance.execute }
 
-    let(:changed_files)         { ["#{view_base_folder}/my_view.html.haml"] }
-    let(:changed_files_content) { changed_files.join(" ") }
+    let(:changed_files) { ["#{view_base_folder}/my_view.html.haml"] }
 
     before do
       # We create all of the changed_files, so that they are part of the filtered files
       changed_files.each { |changed_file| FileUtils.touch(changed_file) }
-    end
-
-    it 'does not modify the content of the input file' do
-      expect { subject }.not_to change { File.read(changed_files_pathname) }
-    end
-
-    context 'when no partials were modified' do
-      it 'does not change the output file' do
-        expect { subject }.not_to change { File.read(views_with_partials_pathname) }
-      end
     end
 
     context 'when some partials were modified' do
@@ -82,7 +54,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
         end
 
         it 'does not change the output file' do
-          expect { subject }.not_to change { File.read(views_with_partials_pathname) }
+          expect(subject).to be_empty
         end
       end
 
@@ -91,10 +63,8 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
           File.write("#{view_base_folder}/my_view.html.haml", "render 'my_partial'")
         end
 
-        it 'writes the view including the partial to the output' do
-          expect { subject }.to change { File.read(views_with_partials_pathname) }
-                            .from(views_with_partials_content)
-                            .to(views_with_partials_content + " #{view_base_folder}/my_view.html.haml")
+        it 'returns partial' do
+          expect(subject).to eq(["#{view_base_folder}/my_view.html.haml"])
         end
       end
     end
@@ -103,7 +73,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
   describe '#filter_files' do
     subject { instance.filter_files }
 
-    let(:changed_files_content) { file_path }
+    let(:changed_files) { [file_path] }
 
     context 'when the file does not exist on disk' do
       let(:file_path) { "#{view_base_folder}/_index.html.erb" }
@@ -169,11 +139,11 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
 
       before do
         FileUtils.mkdir_p("#{view_base_folder}/components/subfolder")
-        File.write(changed_files_content, "I am a partial!")
+        changed_files.each { |f| File.write(f, "I am a partial!") }
       end
 
       context 'when the partial is not part of the changed files' do
-        let(:changed_files_content) { "#{view_base_folder}/components/subfolder/_not_the_partial.html.haml" }
+        let(:changed_files) { ["#{view_base_folder}/components/subfolder/_not_the_partial.html.haml"] }
 
         it 'returns false' do
           expect(subject).to be_falsey
@@ -181,7 +151,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
       end
 
       context 'when the partial is part of the changed files' do
-        let(:changed_files_content) { "#{view_base_folder}/components/subfolder/_relative_partial.html.haml" }
+        let(:changed_files) { ["#{view_base_folder}/components/subfolder/_relative_partial.html.haml"] }
 
         it 'returns true' do
           expect(subject).to be_truthy
@@ -196,11 +166,11 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
       before do
         FileUtils.mkdir_p("#{view_base_folder}/components")
         FileUtils.mkdir_p("#{view_base_folder}/shared")
-        File.write(changed_files_content, "I am a partial!")
+        changed_files.each { |f| File.write(f, "I am a partial!") }
       end
 
       context 'when the partial is not part of the changed files' do
-        let(:changed_files_content) { "#{view_base_folder}/shared/not_the_partial" }
+        let(:changed_files) { ["#{view_base_folder}/shared/not_the_partial"] }
 
         it 'returns false' do
           expect(subject).to be_falsey
@@ -208,7 +178,7 @@ RSpec.describe Tooling::Mappings::PartialToViewsMappings, feature_category: :too
       end
 
       context 'when the partial is part of the changed files' do
-        let(:changed_files_content) { "#{view_base_folder}/shared/_absolute_partial.html.haml" }
+        let(:changed_files) { ["#{view_base_folder}/shared/_absolute_partial.html.haml"] }
 
         it 'returns true' do
           expect(subject).to be_truthy

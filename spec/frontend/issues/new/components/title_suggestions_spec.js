@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import TitleSuggestionsItem from '~/issues/new/components/title_suggestions_item.vue';
 import getIssueSuggestionsQuery from '~/issues/new/queries/issues.query.graphql';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { mockIssueSuggestionResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -37,6 +38,8 @@ describe('Issue title suggestions component', () => {
     return waitForPromises();
   };
 
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+
   afterEach(() => {
     mockApollo = null;
   });
@@ -45,12 +48,12 @@ describe('Issue title suggestions component', () => {
     createComponent({ search: '' });
     await waitForDebounce();
 
-    expect(wrapper.isVisible()).toBe(false);
+    expect(findCrudComponent().isVisible()).toBe(false);
   });
 
   it('does not render when loading', () => {
     createComponent();
-    expect(wrapper.isVisible()).toBe(false);
+    expect(findCrudComponent().isVisible()).toBe(false);
   });
 
   it('does not render with empty issues data', async () => {
@@ -68,7 +71,7 @@ describe('Issue title suggestions component', () => {
     createComponent({ queryResponse: jest.fn().mockResolvedValue(emptyIssuesResponse) });
     await waitForDebounce();
 
-    expect(wrapper.isVisible()).toBe(false);
+    expect(findCrudComponent().isVisible()).toBe(false);
   });
 
   it('does not render when the path is not a valid project path', async () => {
@@ -91,7 +94,17 @@ describe('Issue title suggestions component', () => {
     });
 
     it('renders component', () => {
-      expect(wrapper.findAll('li')).toHaveLength(MOCK_ISSUES_COUNT);
+      expect(findCrudComponent().isVisible()).toBe(true);
+      expect(findCrudComponent().props()).toMatchObject({
+        title: 'Similar issues',
+        count: MOCK_ISSUES_COUNT,
+      });
+    });
+
+    it('renders help text', () => {
+      expect(wrapper.text()).toContain(
+        'These existing issues have a similar title. It might be better to comment there instead of creating another similar issue.',
+      );
     });
 
     it('renders list of issues', () => {
@@ -99,11 +112,11 @@ describe('Issue title suggestions component', () => {
     });
 
     it('adds margin class to first item', () => {
-      expect(wrapper.findAll('li').at(0).classes()).toContain('gl-mb-3');
+      expect(wrapper.findAll('li').at(0).classes()).toContain('gl-mb-4');
     });
 
     it('does not add margin class to last item', () => {
-      expect(wrapper.findAll('li').at(1).classes()).not.toContain('gl-mb-3');
+      expect(wrapper.findAll('li').at(1).classes()).not.toContain('gl-mb-4');
     });
   });
 });

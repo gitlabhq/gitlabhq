@@ -6,10 +6,6 @@ RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, 
   let_it_be(:user) { create(:user) }
   let_it_be(:import_path) { "#{Dir.tmpdir}/group_import_spec" }
 
-  before_all do
-    current_organization.users << user
-  end
-
   before do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|
       allow(import_export).to receive(:storage_path).and_return(import_path)

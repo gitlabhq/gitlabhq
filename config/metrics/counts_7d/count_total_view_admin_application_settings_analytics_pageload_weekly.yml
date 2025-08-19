@@ -1,7 +1,7 @@
 ---
 key_path: counts.count_total_view_admin_application_settings_analytics_pageload_weekly
 description: Weekly count of total users who visisted the admin application settings analytics page
-product_group: personal_productivity
+product_group: engagement
 performance_indicator_type: []
 value_type: number
 status: active

@@ -77,4 +77,19 @@ describe('Project Setting Row', () => {
   it('should hide the help text if it is set', () => {
     expect(findHelpText().exists()).toBe(false);
   });
+
+  describe('slot content', () => {
+    beforeEach(() => {
+      wrapper = shallowMountExtended(projectSettingRow, {
+        slots: {
+          default: '<div data-testid="slot-content">Slot Content</div>',
+        },
+        stubs: { GlFormGroup },
+      });
+    });
+
+    it('should render slot content in the template', () => {
+      expect(wrapper.findByTestId('slot-content').exists()).toBe(true);
+    });
+  });
 });

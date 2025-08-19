@@ -79,6 +79,18 @@ module Integrations
       super
     end
 
+    override :dup
+    def dup
+      new_integration = super
+
+      new_slack_integration = slack_integration.dup
+      new_slack_integration.alias = new_integration.parent.full_path
+      new_slack_integration.authorized_scope_names = slack_integration.authorized_scope_names
+      new_integration.slack_integration = new_slack_integration
+
+      new_integration
+    end
+
     override :requires_webhook?
     def self.requires_webhook?
       false

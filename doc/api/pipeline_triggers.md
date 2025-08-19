@@ -27,7 +27,8 @@ GET /projects/:id/triggers
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
 ```json
@@ -61,7 +62,8 @@ GET /projects/:id/triggers/:trigger_id
 | `trigger_id` | integer        | Yes      | The trigger ID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 
 ```json
@@ -90,8 +92,10 @@ POST /projects/:id/triggers
 | `id`          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form description="my description" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers"
 ```
 
 ```json
@@ -121,8 +125,10 @@ PUT /projects/:id/triggers/:trigger_id
 | `description` | string         | No       | The trigger name |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form description="my description" "https://gitlab.example.com/api/v4/projects/1/triggers/10"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form description="my description" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/10"
 ```
 
 ```json
@@ -151,7 +157,9 @@ DELETE /projects/:id/triggers/:trigger_id
 | `trigger_id` | integer        | Yes      | The trigger ID |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/5"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/triggers/5"
 ```
 
 ## Trigger a pipeline with a token
@@ -193,7 +201,7 @@ Example request with [variables](../ci/variables/_index.md):
 curl --request POST \
   --form "variables[VAR1]=value1" \
   --form "variables[VAR2]=value2" \
-  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+  --url "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
 Example request with [inputs](../ci/inputs/_index.md):
@@ -202,7 +210,7 @@ Example request with [inputs](../ci/inputs/_index.md):
 curl --request POST \
   --header "Content-Type: application/json" \
   --data '{"inputs": {"environment": "environment", "scan_security": false, "level": 3}}' \
-  "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
+  --url "https://gitlab.example.com/api/v4/projects/123/trigger/pipeline?token=2cb1840fb9dfc9fb0b7b1609cd29cb&ref=main"
 ```
 
 Example response:

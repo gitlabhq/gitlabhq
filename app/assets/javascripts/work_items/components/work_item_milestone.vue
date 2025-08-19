@@ -169,7 +169,6 @@ export default {
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
         this.$emit('updateWidgetDraft', {
-          fullPath: this.fullPath,
           milestone: this.localMilestone
             ? {
                 ...this.localMilestone,
@@ -178,7 +177,6 @@ export default {
                 projectMilestone: false,
               }
             : null,
-          workItemType: this.workItemType,
         });
         this.updateInProgress = false;
         this.searchTerm = '';

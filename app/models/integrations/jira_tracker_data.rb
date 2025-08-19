@@ -12,3 +12,5 @@ module Integrations
     enum :deployment_type, { unknown: 0, server: 1, cloud: 2 }, prefix: :deployment
   end
 end
+
+Integrations::JiraTrackerData.prepend_mod

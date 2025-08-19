@@ -25,7 +25,11 @@ module Ci
         end
 
         ServiceResponse.success(payload: { job: job })
+      rescue StateMachines::InvalidTransition, Ci::CreateCommitStatusService::InvalidState => e
+        ServiceResponse.error(message: e.message, payload: { job: job })
       rescue StandardError => e
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/556736
         ServiceResponse.error(message: e.message, payload: { job: job })
       end
 

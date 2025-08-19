@@ -7,6 +7,7 @@ class MigrationSchemaValidator
   FILENAME = 'db/structure.sql'
 
   MIGRATION_DIRS = %w[db/migrate db/post_migrate].freeze
+  PARTITION_MANAGER_CONFIG = %w[config/initializers/postgres_partitioning.rb].freeze
 
   SCHEMA_VERSION_DIR = 'db/schema_migrations'
 
@@ -38,15 +39,13 @@ class MigrationSchemaValidator
   end
 
   def validate!
-    if committed_migrations.empty?
-      puts "\e[32m No migrations found, skipping schema validation\e[0m"
+    unless committed_migrations.any? || partition_manager_config_changes?
+      puts "\e[32m No new migrations or partition configuration changes found, skipping schema validation\e[0m"
       return
     end
 
-    # only check allowed to be skipped is validate_schema_on_rollback!
+    # validate_ignore_columns! should never be skipped, the ignore_column directive must always be present
     validate_ignore_columns!
-    validate_schema_on_migrate!
-    validate_schema_version_files!
 
     if skip_validation?
       puts "\e[32m Label #{SKIP_VALIDATION_LABEL} is present, skipping schema validation\e[0m"
@@ -54,6 +53,8 @@ class MigrationSchemaValidator
     end
 
     validate_schema_on_rollback!
+    validate_schema_on_migrate!
+    validate_schema_version_files!
   end
 
   private
@@ -182,6 +183,12 @@ class MigrationSchemaValidator
 
       run(git_command).split("\n")
     end
+  end
+
+  def partition_manager_config_changes?
+    git_command = "git diff --name-only #{diff_target} -- #{PARTITION_MANAGER_CONFIG.join(' ')}"
+
+    run(git_command).split("\n").any?
   end
 
   def diff_target

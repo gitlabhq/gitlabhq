@@ -60,4 +60,9 @@ RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter, feature_category: :wi
     result = filter('<p><a id="cross-references"></a>A link to another location within an AsciiDoc document.</p>').to_html
     expect(result).to eq(%(<p><a></a>A link to another location within an AsciiDoc document.</p>))
   end
+
+  it 'preserves toc class' do
+    result = filter('<div id="toc" class="toc">foo</div>').to_html
+    expect(result).to eq('<div class="toc">foo</div>')
+  end
 end

@@ -1,6 +1,5 @@
 ---
 Sidekiq/EnforceDatabaseHealthSignalDeferral:
-  Details: grace period
   Exclude:
     - 'app/workers/analytics/usage_trends/count_job_trigger_worker.rb'
     - 'app/workers/analytics/usage_trends/counter_job_worker.rb'
@@ -205,4 +204,3 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'ee/app/workers/system_access/saml_microsoft_group_sync_worker.rb'
     - 'ee/app/workers/vulnerabilities/orphaned_remediations_cleanup_worker.rb'
     - 'ee/app/workers/vulnerabilities/remove_all_vulnerabilities_worker.rb'
-    - 'ee/app/workers/work_items/validate_epic_work_item_sync_worker.rb'

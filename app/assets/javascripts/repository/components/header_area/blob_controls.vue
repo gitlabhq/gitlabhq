@@ -273,11 +273,7 @@ export default {
     class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-self-end"
     data-testid="blob-controls"
   >
-    <open-mr-badge
-      v-if="glFeatures.filterBlobPath"
-      :project-path="projectPath"
-      :blob-path="filePath"
-    />
+    <open-mr-badge :project-path="projectPath" :blob-path="filePath" />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :title="findFileTooltip"

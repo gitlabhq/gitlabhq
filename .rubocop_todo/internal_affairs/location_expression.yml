@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 InternalAffairs/LocationExpression:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/avoid_route_redirect_leading_slash.rb'
     - 'rubocop/cop/background_migration/avoid_silent_rescue_exceptions.rb'

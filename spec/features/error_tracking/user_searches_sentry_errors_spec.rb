@@ -22,21 +22,39 @@ RSpec.describe 'When a user searches for Sentry errors', :js, :use_clean_rails_m
     ).to_return(status: 200, body: error_search_response_body, headers: { 'Content-Type' => 'application/json' })
   end
 
-  it 'displays the results' do
-    sign_in(project.first_owner)
-    visit project_error_tracking_index_path(project)
-
-    page.within(find('.gl-table')) do
-      results = page.all('.table-row')
-      expect(results.count).to be(3)
+  context 'when the error tracking feature flag is disabled' do
+    before do
+      stub_feature_flags(hide_error_tracking_features: false)
     end
 
-    find('form > .gl-form-input').set('NotFound').native.send_keys(:return)
+    it 'displays the results' do
+      sign_in(project.first_owner)
+      visit project_error_tracking_index_path(project)
 
-    page.within(find('.gl-table')) do
-      results = page.all('.table-row')
-      expect(results.count).to be(1)
-      expect(results.first).to have_content('NotFound')
+      page.within(find('.gl-table')) do
+        results = page.all('.table-row')
+        expect(results.count).to be(3)
+      end
+
+      find('form > .gl-form-input').set('NotFound').native.send_keys(:return)
+
+      page.within(find('.gl-table')) do
+        results = page.all('.table-row')
+        expect(results.count).to be(1)
+        expect(results.first).to have_content('NotFound')
+      end
+    end
+  end
+
+  context 'when the error tracking feature flag is enabled' do
+    before do
+      sign_in(project.first_owner)
+
+      visit project_error_tracking_index_path(project)
+    end
+
+    it 'renders not found' do
+      expect(page).to have_content('Page not found')
     end
   end
 end

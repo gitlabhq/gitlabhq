@@ -223,7 +223,6 @@ export default {
   methods: {
     ...mapActions('details', [
       'startPollingStacktrace',
-      'updateStatus',
       'setStatus',
       'updateResolveStatus',
       'updateIgnoreStatus',

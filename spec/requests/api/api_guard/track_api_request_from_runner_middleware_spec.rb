@@ -179,7 +179,7 @@ RSpec.describe API::APIGuard::TrackAPIRequestFromRunnerMiddleware, :request_stor
           subject(:request) do
             get api(endpoint),
               params: { id: token_user_project.id },
-              headers: { REMOTE_ADDR: ip_address, 'Gitlab-Agentk-Api-Request' => cluster_agent_token }
+              headers: { REMOTE_ADDR: ip_address, 'Gitlab-Agent-Api-Request' => cluster_agent_token }
           end
 
           it_behaves_like 'event tracking' do

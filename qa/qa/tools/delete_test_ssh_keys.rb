@@ -8,8 +8,8 @@
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 #   - GITLAB_QA_ACCESS_TOKEN should have API access and belong to the user whose keys will be deleted
 
-# Optional environment variables: DELETE_BEFORE (default: 1 day ago)
-#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 1 day ago
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise default is 24 hours ago
 
 # Run `rake delete_test_ssh_keys`
 
@@ -27,7 +27,7 @@ module QA
 
         results = delete_ssh_keys(test_ssh_keys)
 
-        log_results(results)
+        log_results(results, @dry_run)
       end
 
       private
@@ -55,7 +55,7 @@ module QA
       end
 
       def resource_request(key, **options)
-        Runtime::API::Request.new(@api_client, "/user/keys/#{key[:id]}", **options).url
+        Runtime::API::Request.new(api_client, "/user/keys/#{key[:id]}", **options).url
       end
 
       def resource_path(resource)

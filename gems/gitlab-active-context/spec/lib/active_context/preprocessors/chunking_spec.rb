@@ -67,7 +67,7 @@ RSpec.describe ActiveContext::Preprocessors::Chunking do
     end
 
     it 'logs the error and returns failed references' do
-      expect(ActiveContext::Logger).to receive(:retryable_exception).with(error, ref: anything).twice
+      expect(ActiveContext::Logger).to receive(:retryable_exception).with(error, class: 'Class', ref: anything).twice
 
       result = preprocess_refs
 

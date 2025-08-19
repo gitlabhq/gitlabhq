@@ -10,6 +10,7 @@ import {
   initSuperSidebarCollapsedState,
 } from './super_sidebar_collapsed_state_manager';
 import SuperSidebar from './components/super_sidebar.vue';
+import SuperTopbar from './components/super_topbar.vue';
 import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
 
 export { initPageBreadcrumbs } from './super_sidebar_breadcrumbs';
@@ -193,6 +194,76 @@ export const initSuperSidebarToggle = () => {
       // Copy classes from HAML-defined button to ensure same positioning,
       // including JS_TOGGLE_EXPAND_CLASS.
       return h(SuperSidebarToggle, { class: el.className });
+    },
+  });
+};
+
+/**
+ * This init function duplicates the args of `initSuperSidebar` for now.
+ * TODO: When we clean up the `global_topbar` feature flag, we should remove the unused args from
+ * both functions.
+ */
+export const initSuperTopbar = async ({
+  rootPath,
+  sidebarData,
+  searchPath,
+  issuesPath,
+  mrPath,
+  autocompletePath,
+  settingsPath,
+  searchContext,
+  projectsPath,
+  groupsPath,
+  projectFilesPath,
+  projectBlobPath,
+  commandPaletteCommands,
+  commandPaletteLinks,
+  contextSwitcherLinks,
+  isImpersonating,
+  isGroup,
+}) => {
+  const el = document.querySelector('.js-super-topbar');
+  if (!el) return false;
+
+  return new Vue({
+    el,
+    apolloProvider: await getApolloProvider(),
+    provide: {
+      rootPath,
+      isImpersonating,
+
+      commandPaletteCommands,
+      commandPaletteLinks,
+      contextSwitcherLinks,
+      autocompletePath,
+      settingsPath,
+      searchContext,
+      projectFilesPath,
+      projectBlobPath,
+      projectsPath,
+      groupsPath,
+      groupPath: groupsPath,
+      fullPath: sidebarData.work_items?.full_path,
+      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
+      workItemPlanningViewEnabled: parseBoolean(
+        sidebarData.work_items?.work_item_planning_view_enabled,
+      ),
+      isGroup,
+    },
+    store: createStore({
+      searchPath,
+      issuesPath,
+      mrPath,
+      autocompletePath,
+      searchContext,
+      search: '',
+    }),
+    render(h) {
+      return h(SuperTopbar, {
+        props: {
+          sidebarData,
+        },
+      });
     },
   });
 };

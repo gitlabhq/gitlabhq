@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -15,6 +16,7 @@ import {
   getSortOptions,
   getTypeTokenOptions,
 } from 'ee_else_ce/issues/list/utils';
+import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
@@ -64,6 +66,8 @@ import {
   TOKEN_TITLE_SUBSCRIBED,
   TOKEN_TITLE_TYPE,
   TOKEN_TITLE_UPDATED,
+  TOKEN_TITLE_ORGANIZATION,
+  TOKEN_TITLE_CONTACT,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CLOSED,
@@ -79,6 +83,10 @@ import {
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_UPDATED,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TITLE_RELEASE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -92,8 +100,10 @@ import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
+import WorkItemListActions from '../components/work_item_list_actions.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
+  CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_ENUM_MAP,
   STATE_CLOSED,
@@ -115,7 +125,13 @@ const LabelToken = () =>
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const ReleaseToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/release_token.vue');
 const LocalBoard = () => import('./local_board/local_board.vue');
+const CrmOrganizationToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
+const CrmContactToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -123,6 +139,7 @@ const statusMap = {
 };
 
 export default {
+  CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   components: {
     GlLoadingIcon,
@@ -139,6 +156,7 @@ export default {
     LocalBoard,
     WorkItemListHeading,
     WorkItemUserPreferences,
+    WorkItemListActions,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -159,6 +177,11 @@ export default {
     'isSignedIn',
     'showNewWorkItem',
     'workItemType',
+    'canReadCrmOrganization',
+    'hasStatusFeature',
+    'canReadCrmContact',
+    'releasesPath',
+    'metadataLoading',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -170,11 +193,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    newCommentTemplatePaths: {
-      type: Array,
-      required: false,
-      default: () => [],
     },
     eeSearchTokens: {
       type: Array,
@@ -248,7 +266,7 @@ export default {
         return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return isEmpty(this.pageParams) || this.metadataLoading;
       },
       result({ data }) {
         this.namespaceId = data?.namespace?.id;
@@ -272,7 +290,7 @@ export default {
         return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
-        return isEmpty(this.pageParams);
+        return isEmpty(this.pageParams) || this.metadataLoading;
       },
       result({ data }) {
         this.handleListDataResults(data);
@@ -355,6 +373,7 @@ export default {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens, {
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+        hasStatusFeature: this.hasStatusFeature,
       });
     },
     defaultWorkItemTypes() {
@@ -497,6 +516,17 @@ export default {
         });
       }
 
+      if (!this.isGroup) {
+        tokens.push({
+          type: TOKEN_TYPE_RELEASE,
+          title: TOKEN_TITLE_RELEASE,
+          icon: 'rocket-launch',
+          token: ReleaseToken,
+          fetchReleases: this.fetchReleases,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-work-items-recent-tokens-release`,
+        });
+      }
+
       if (!this.workItemType) {
         tokens.push({
           type: TOKEN_TYPE_TYPE,
@@ -606,6 +636,34 @@ export default {
           unique: true,
           token: DateToken,
           operators: OPERATORS_AFTER_BEFORE,
+        });
+      }
+
+      if (this.canReadCrmOrganization) {
+        tokens.push({
+          type: TOKEN_TYPE_ORGANIZATION,
+          title: TOKEN_TITLE_ORGANIZATION,
+          icon: 'organization',
+          token: CrmOrganizationToken,
+          fullPath: this.rootPageFullPath,
+          isProject: !this.isGroup,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-crm-organizations`,
+          operators: OPERATORS_IS,
+          unique: true,
+        });
+      }
+
+      if (this.canReadCrmContact) {
+        tokens.push({
+          type: TOKEN_TYPE_CONTACT,
+          title: TOKEN_TITLE_CONTACT,
+          icon: 'user',
+          token: CrmContactToken,
+          fullPath: this.rootPageFullPath,
+          isProject: !this.isGroup,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-crm-contacts`,
+          operators: OPERATORS_IS,
+          unique: true,
         });
       }
 
@@ -719,6 +777,8 @@ export default {
     this.addStateToken();
     this.autocompleteCache = new AutocompleteCache();
     window.addEventListener('popstate', this.checkDrawerParams);
+    this.releasesCache = [];
+    this.areReleasesFetched = false;
   },
   beforeDestroy() {
     window.removeEventListener('popstate', this.checkDrawerParams);
@@ -815,6 +875,9 @@ export default {
     async handleBulkEditSuccess(event) {
       this.showBulkEditSidebar = false;
       this.refetchItems(event);
+      if (event?.toastMessage) {
+        this.$toast.show(event.toastMessage);
+      }
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -832,7 +895,11 @@ export default {
       this.updateState(tokens);
       this.pageParams = getInitialPageParams(this.pageSize);
 
-      this.$router.push({ query: this.urlParams });
+      this.$router.push({ query: this.urlParams }).catch((error) => {
+        if (error.name !== 'NavigationDuplicated') {
+          throw error;
+        }
+      });
     },
     handleNextPage() {
       this.pageParams = {
@@ -990,6 +1057,26 @@ export default {
       this.isInitialLoadComplete = false;
       this.refetchItems({ refetchCounts: true });
     },
+    fetchReleases(search) {
+      if (this.areReleasesFetched) {
+        const data = search
+          ? fuzzaldrinPlus.filter(this.releasesCache, search, { key: 'tag' })
+          : this.releasesCache.slice(0, 10);
+        return Promise.resolve(data);
+      }
+
+      return axios
+        .get(this.releasesPath)
+        .then(({ data }) => {
+          this.releasesCache = data;
+          this.areReleasesFetched = true;
+          return data.slice(0, 10);
+        })
+        .catch(() => {
+          this.error = s__('WorkItem|Something went wrong while fetching items. Please try again.');
+          return [];
+        });
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1010,7 +1097,6 @@ export default {
         :active-item="activeItem"
         :open="isItemSelected"
         :issuable-type="activeWorkItemType"
-        :new-comment-template-paths="newCommentTemplatePaths"
         click-outside-exclude-selector=".issuable-list"
         @close="activeItem = null"
         @addChild="refetchItems"
@@ -1058,6 +1144,7 @@ export default {
           <work-item-user-preferences
             :display-settings="displaySettings"
             :full-path="rootPageFullPath"
+            :is-epics-list="isEpicsList"
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
@@ -1081,6 +1168,7 @@ export default {
               v-if="showNewWorkItem"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
+              :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
               :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
@@ -1111,11 +1199,13 @@ export default {
                 v-if="showNewWorkItem"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
+                :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
                 :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
               />
+              <work-item-list-actions />
             </div>
           </work-item-list-heading>
         </template>
@@ -1161,16 +1251,18 @@ export default {
         </template>
 
         <template #sidebar-items="{ checkedIssuables }">
-          <work-item-bulk-edit-sidebar
-            v-if="showBulkEditSidebar"
-            :checked-items="checkedIssuables"
-            :full-path="rootPageFullPath"
-            :is-epics-list="isEpicsList"
-            :is-group="isGroup"
-            @finish="bulkEditInProgress = false"
-            @start="bulkEditInProgress = true"
-            @success="handleBulkEditSuccess"
-          />
+          <div class="gl-h-[calc(100%-57px)] gl-overflow-y-auto">
+            <work-item-bulk-edit-sidebar
+              v-if="showBulkEditSidebar"
+              :checked-items="checkedIssuables"
+              :full-path="rootPageFullPath"
+              :is-epics-list="isEpicsList"
+              :is-group="isGroup"
+              @finish="bulkEditInProgress = false"
+              @start="bulkEditInProgress = true"
+              @success="handleBulkEditSuccess"
+            />
+          </div>
         </template>
 
         <template #health-status="{ issuable = {} }">
@@ -1178,6 +1270,13 @@ export default {
             v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.HEALTH)"
             :issue="issuable"
           />
+        </template>
+        <template #custom-status="{ issuable }">
+          <slot
+            v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.STATUS)"
+            name="custom-status"
+            :issuable="issuable"
+          ></slot>
         </template>
       </issuable-list>
     </template>
@@ -1188,6 +1287,7 @@ export default {
       <empty-state-without-any-issues>
         <template #new-issue-button>
           <create-work-item-modal
+            :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
             :full-path="rootPageFullPath"
             :is-group="isGroup"
             :preselected-work-item-type="preselectedWorkItemType"

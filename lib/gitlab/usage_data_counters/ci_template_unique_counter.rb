@@ -17,6 +17,26 @@ module Gitlab::UsageDataCounters
       p_ci_templates_composer
       p_ci_templates_implicit_auto_devops
       p_ci_templates_implicit_jobs_dast_default_branch_deploy
+      p_ci_templates_maven
+      p_ci_templates_nodejs
+      p_ci_templates_crystal
+      p_ci_templates_go
+      p_ci_templates_cosign
+      p_ci_templates_dart
+      p_ci_templates_deploy_ecs
+      p_ci_templates_diffblue_cover
+      p_ci_templates_django
+      p_ci_templates_docker
+      p_ci_templates_dotnet
+      p_ci_templates_dotnet_core
+      p_ci_templates_elixir
+      p_ci_templates_flutter
+      p_ci_templates_getting_started
+      p_ci_templates_gradle
+      p_ci_templates_grails
+      p_ci_templates_indeni_cloudrail
+      p_ci_templates_ios_fastlane
+      p_ci_templates_julia
     ].freeze
 
     class << self

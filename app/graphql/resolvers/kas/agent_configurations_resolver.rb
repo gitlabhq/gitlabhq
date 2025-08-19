@@ -15,7 +15,7 @@ module Resolvers
 
         kas_client.list_agent_config_files(project: project)
       rescue GRPC::BadStatus, Gitlab::Kas::Client::ConfigurationError => e
-        raise Gitlab::Graphql::Errors::ResourceNotAvailable, e.class.name
+        raise_resource_not_available_error! e.class.name
       end
 
       private

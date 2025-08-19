@@ -54,7 +54,7 @@ the following sections and tables provide an alternative.
 | `enabled` | `boolean` | true | Flag to enable (`true`) or disable (`false`) the policy. |
 | `content` | `object` of [`content`](#content-type) | true | Reference to the CI/CD configuration to inject into project pipelines. |
 | `pipeline_config_strategy` | `string` | false | Can be `inject_policy`, `inject_ci` (deprecated), or `override_project_ci`. See [pipeline strategies](#pipeline-configuration-strategies) for more information. |
-| `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
+| `policy_scope` | `object` of [`policy_scope`](_index.md#configure-the-policy-scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped. |
 | `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables. By default, the policy variables are enforced with the highest precedence and users cannot override them. |
@@ -68,12 +68,51 @@ Note the following:
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
-- Regardless of the `needs` keyword, jobs in a pipeline do not begin until the `.pipeline-policy-pre` stage completes. To run non-blocking jobs at the beginning of the pipeline, add a custom stage that runs before the `.pre` stage. For example: `stages: [custom-non-blocking-stage, .pre]`.
 - Choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names, which can lead to unwanted results if a job name exists multiple times in the same pipeline. For example, the `needs` keyword makes one job dependent on another. If there are multiple jobs with the name `example`, a job that `needs` the `example` job name depends on only one of the `example` job instances at random.
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 - The order of the policies matters for the applied suffix.
 - If any policy applied to a given project has `suffix: never`, the pipeline fails if another job with the same name is already present in the pipeline.
 - Pipeline execution policies are enforced on all branches and pipeline sources. You can use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
+
+### `.pipeline-policy-pre` stage
+
+Jobs in the `.pipeline-policy-pre` stage always execute. This stage is designed for security and compliance use cases.
+Jobs in the pipeline do not begin until the `.pipeline-policy-pre` stage completes.
+
+If you don't require this behavior for your workflow, you can use the `.pre` stage or a custom stage instead.
+
+#### Ensure that `.pipeline-policy-pre` succeeds
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< alert type="note" >}}
+
+This feature is experimental and might change in future releases. Test it thoroughly in
+non-production environments only, as it might be unstable in production.
+
+{{< /alert >}}
+
+To ensure that `.pipeline-policy-pre` completes and succeeds, enable the `ensure_pipeline_policy_pre_succeeds`
+experiment in the security policy configuration. The `.gitlab/security-policies/policy.yml` YAML
+configuration file is stored in your security policy project:
+
+```yaml
+experiments:
+  ensure_pipeline_policy_pre_succeeds:
+    enabled: true
+```
+
+If the `.pipeline-policy-pre` stage fails or all jobs in the stage are skipped, all jobs in later stages are skipped, including:
+
+- Jobs with `needs: []`
+- Jobs with `when: always`
+
+When multiple pipeline execution policies apply, the experiment takes effect if enabled in any of them,
+ensuring that `.pipeline-policy-pre` must succeed.
 
 ### Job naming best practice
 
@@ -301,56 +340,7 @@ the policy configuration is not as well protected as when using the `allowlist` 
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
-[Scope](_index.md#scope).
-
-## Pipeline execution policy limits
-
-For performance reasons, GitLab limits the number of pipeline execution policies that can run as part of a security policy project or pipeline. By default, these are the maximum number of pipelines execution policies:
-
-- Five per security policy project
-- Five per pipeline
-
-### Adjust policy limits
-
-{{< history >}}
-
-- [Configurable limits introduced](https://gitlab.com/groups/gitlab-org/-/epics/16929) in GitLab 17.11.
-
-{{< /history >}}
-
-The *Maximum 5 pipeline execution policies per security policy project* limit can be adjusted at different levels:
-
-#### Adjust the limit for an instance
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-On GitLab Self-Managed instances, administrators can adjust the limits for the entire instance, up to a maximum of 20 pipeline execution policies:
-
-1. Go to **Admin Area** > **Settings** > **Security and compliance**.
-1. Expand the **Security policies** section.
-1. Set a new value for **Maximum number of pipeline execution policies allowed per security policy configuration**.
-1. Select **Save changes**.
-
-#### Adjust the limit for a top-level group
-
-GitLab instance administrators can modify the limits for top-level groups. These group limits can exceed the configured or default instance limits.
-
-{{< alert type="note" >}}
-Increasing these limits can affect system performance, especially for complex policies or when applying many policies simultaneously.
-{{< /alert >}}
-
-To adjust the limit for a top-level group:
-
-1. Go to **Admin Area** > **Overview** > **Groups**.
-1. In the row of the top-level group you want to modify, select **Edit**.
-1. Set a new value for **Maximum number of pipeline execution policies allowed per security policy configuration**.
-1. Select **Save changes**.
-
-When the limit for an individual group is set to zero, the system will fall back to using the instance-wide default value. This ensures that groups with a zero limit can still create pipeline execution policies according to the instance default configuration.
+[Scope](_index.md#configure-the-policy-scope).
 
 ## Manage access to the CI/CD configuration
 
@@ -803,7 +793,7 @@ These examples demonstrate what you can achieve with pipeline execution policies
 ### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](security_policy_projects.md):
+[security policy project](enforcement/security_policy_projects.md):
 
 ```yaml
 ---

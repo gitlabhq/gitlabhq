@@ -39,6 +39,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       '_test_gitlab_ci_table'                        | :gitlab_ci
       '_test_gitlab_main_clusterwide_table'          | :gitlab_main_clusterwide
       '_test_gitlab_main_cell_table'                 | :gitlab_main_cell
+      '_test_gitlab_main_org_table'                  | :gitlab_main_org
       '_test_gitlab_pm_table'                        | :gitlab_pm
       '_test_gitlab_sec_table'                       | :gitlab_sec
       '_test_my_table'                               | :gitlab_shared
@@ -131,7 +132,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     subject { described_class.table_schemas!(tables) }
 
     it 'returns the matched schemas' do
-      expect(subject).to match_array %i[gitlab_main_cell gitlab_ci].to_set
+      expect(subject).to match_array %i[gitlab_main_cell gitlab_ci gitlab_main_org].to_set
     end
 
     context 'when one of the tables does not have a matching table schema' do

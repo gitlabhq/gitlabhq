@@ -25,14 +25,14 @@ title: Rate limit on Projects API
 
 You can configure the rate limit per IP address and per user for requests to the following [projects API](../../api/projects.md#list-all-projects).
 
-| Limit                                                                                                     | Default | Interval   |
-|-----------------------------------------------------------------------------------------------------------|---------|------------|
-| [GET /projects](../../api/projects.md#list-all-projects) (unauthenticated requests)                       | 400     | 10 minutes |
-| [GET /projects](../../api/projects.md#list-all-projects) (authenticated requests)                         | 2000    | 10 minutes |
-| [GET /projects/:id](../../api/projects.md#get-a-single-project)                                             | 400     | 1 minute   |
-| [GET /users/:user_id/projects](../../api/projects.md#list-a-users-projects)                               | 300     | 1 minute   |
-| [GET /users/:user_id/contributed_projects](../../api/projects.md#list-projects-a-user-has-contributed-to) | 100     | 1 minute   |
-| [GET /users/:user_id/starred_projects](../../api/project_starring.md#list-projects-starred-by-a-user)             | 100     | 1 minute   |
+| Limit                                                                                                       | Default | Interval |
+|-------------------------------------------------------------------------------------------------------------|---------|----------|
+| [`GET /projects`](../../api/projects.md#list-all-projects) (unauthenticated requests)                       | 400     | 10 minutes |
+| [`GET /projects`](../../api/projects.md#list-all-projects) (authenticated requests)                         | 2000    | 10 minutes |
+| [`GET /projects/:id`](../../api/projects.md#get-a-single-project)                                           | 400     | 1 minute |
+| [`GET /users/:user_id/projects`](../../api/projects.md#list-a-users-projects)                               | 300     | 1 minute |
+| [`GET /users/:user_id/contributed_projects`](../../api/projects.md#list-projects-a-user-has-contributed-to) | 100     | 1 minute |
+| [`GET /users/:user_id/starred_projects`](../../api/project_starring.md#list-projects-starred-by-a-user)     | 100     | 1 minute |
 
 To change the rate limit:
 

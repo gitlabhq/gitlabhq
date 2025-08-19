@@ -21,7 +21,6 @@ import { getDiffFileMock } from '../mock_data/diff_file';
 
 jest.mock('~/lib/utils/autosave');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
-jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
 jest.mock('~/alert');
 
 Vue.use(PiniaVuePlugin);

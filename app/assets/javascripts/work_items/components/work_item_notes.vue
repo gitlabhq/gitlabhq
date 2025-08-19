@@ -344,7 +344,7 @@ export default {
         this.$emit('error', i18n.fetchError);
       },
       result({ data }) {
-        this.workItemNamespace = data.workspace?.workItem?.namespace;
+        this.workItemNamespace = data?.workspace?.workItem?.namespace;
         this.isLoadingMore = false;
         if (this.hasNextPage) {
           this.fetchMoreNotes();
@@ -602,6 +602,7 @@ export default {
               :markdown-preview-path="markdownPreviewPath"
               :new-comment-template-paths="newCommentTemplatePaths"
               :assignees="assignees"
+              :can-reply="canCreateNote"
               :can-set-work-item-metadata="canSetWorkItemMetadata"
               :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="isWorkItemConfidential"

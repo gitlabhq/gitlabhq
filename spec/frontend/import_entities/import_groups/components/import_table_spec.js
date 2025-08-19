@@ -54,6 +54,8 @@ describe('import table', () => {
     },
   };
 
+  const findSomethingWentWrongEmptyState = () =>
+    wrapper.findByTestId('something-went-wrong-empty-state');
   const findImportSelectedDropdown = () => wrapper.findByTestId('import-selected-groups-dropdown');
   const findRowImportDropdownAtIndex = (idx) =>
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
@@ -105,6 +107,7 @@ describe('import table', () => {
         historyPath: '/fake_history_path',
         historyShowPath: '/:id/fake_history_path',
         defaultTargetNamespace,
+        importGroupPath: '/fakepath/#import-group-pane',
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -550,7 +553,7 @@ describe('import table', () => {
 
       expect(bulkImportSourceGroupsQueryMock).toHaveBeenCalledWith(
         expect.anything(),
-        expect.objectContaining({ page: 2, perPage: 50 }),
+        expect.objectContaining({ page: 2, perPage: 20 }),
         expect.anything(),
         expect.anything(),
       );
@@ -807,7 +810,11 @@ describe('import table', () => {
 
   it('renders pagination bar with storage key', async () => {
     createComponent({
-      bulkImportSourceGroups: () => new Promise(() => {}),
+      bulkImportSourceGroups: () => ({
+        nodes: [generateFakeEntry({ id: 5, status: STATUSES.FINISHED })],
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
     });
     await waitForPromises();
 
@@ -1006,6 +1013,34 @@ describe('import table', () => {
           ],
         },
       });
+    });
+  });
+
+  describe('something went wrong', () => {
+    it('displays error if fetching groups fails', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => {
+          throw new Error();
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findSomethingWentWrongEmptyState().exists()).toBe(true);
+    });
+
+    it('does not display error if fetching groups succesed', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [FAKE_GROUP],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+
+      await waitForPromises();
+
+      expect(findSomethingWentWrongEmptyState().exists()).toBe(false);
     });
   });
 });

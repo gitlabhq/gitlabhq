@@ -17,6 +17,25 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       cluster_image_scanning: 9
     }.freeze
 
+    ANALYZER_STATUSES = {
+      not_configured: 0,
+      success: 1,
+      failed: 2
+    }.freeze
+
+    EDITABLE_STATES = {
+      locked: 0,
+      editable_attributes: 10,
+      editable: 20
+    }.freeze
+
+    DEFAULT_CONFIGURATION_SOURCE = :sbom
+
+    CONFIGURATION_SOURCE_TYPES = {
+      DEFAULT_CONFIGURATION_SOURCE => 0,
+      pmdb: 1
+    }.with_indifferent_access.freeze
+
     def self.analyzer_types
       ANALYZER_TYPES
     end
@@ -28,6 +47,18 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
         secret_detection_pipeline_based: 12,
         container_scanning_pipeline_based: 13
       })
+    end
+
+    def self.analyzer_statuses
+      ANALYZER_STATUSES
+    end
+
+    def self.editable_states
+      EDITABLE_STATES
+    end
+
+    def self.configuration_source_types
+      CONFIGURATION_SOURCE_TYPES
     end
   end
 end

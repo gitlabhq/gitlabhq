@@ -431,6 +431,10 @@ module ProjectsHelper
   def show_lfs_misconfiguration_banner?(project)
     return false unless project.repository && project.lfs_enabled?
 
+    if current_user&.dismissed_callout_for_project?(feature_name: :lfs_misconfiguration_banner, project: project)
+      return false
+    end
+
     Rails.cache.fetch("show_lfs_misconfiguration_banner_#{project.id}", expires_in: 5.minutes) do
       project.lfs_objects_projects.project_repository_type.any? && !project.repository.has_gitattributes?
     end
@@ -581,7 +585,7 @@ module ProjectsHelper
   def show_archived_project_banner?(project)
     return false unless project
 
-    project.persisted? && project.archived?
+    project.persisted? && project.self_or_ancestors_archived?
   end
 
   def show_inactive_project_deletion_banner?(project)
@@ -592,7 +596,7 @@ module ProjectsHelper
   end
 
   def inactive_project_deletion_date(project)
-    Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
+    Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).scheduled_deletion_date
   end
 
   def show_clusters_alert?(project)
@@ -739,6 +743,31 @@ module ProjectsHelper
     )
   end
 
+  def project_archive_settings_app_data(project)
+    {
+      resource_type: 'project',
+      resource_id: project.id,
+      resource_path: project_path(project),
+      help_path: help_page_path('user/project/working_with_projects.md', anchor: 'archive-a-project')
+    }
+  end
+
+  def project_unarchive_settings_app_data(project)
+    {
+      resource_type: 'project',
+      resource_id: project.id,
+      resource_path: project_path(project),
+      ancestors_archived: project.ancestors_archived?.to_s,
+      help_path: help_page_path('user/project/working_with_projects.md', anchor: 'unarchive-a-project')
+    }
+  end
+
+  def show_archived_badge?(project)
+    return true if project.archived?
+
+    Feature.enabled?(:archive_group, project.root_ancestor) && project.ancestors_archived?
+  end
+
   private
 
   def can_admin_project_clusters?(project)
@@ -851,6 +880,8 @@ module ProjectsHelper
   end
 
   def current_ref
+    return current_branch if @repository.try(:branch_exists?, current_branch)
+
     @ref || @repository.try(:root_ref)
   end
 

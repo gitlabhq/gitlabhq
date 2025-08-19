@@ -57,3 +57,23 @@ export const FULL_DATE_TIME_FORMAT = `mmm dd yyyy HH:MM:ss.l Z`;
 export const SHORT_DATE_TIME_FORMAT = `mmm dd yyyy HH:MM:ss Z`;
 
 export const ISSUE_PATH_ID_SEPARATOR = '#';
+
+export const MESSAGE_TYPES = {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  AUTH_STATUS: 'O11Y_AUTH_STATUS',
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  JWT_LOGIN: 'O11Y_JWT_LOGIN',
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  JWT_LOGIN_ENCRYPTED: 'O11Y_JWT_LOGIN_ENCRYPTED',
+};
+export const TIMEOUTS = {
+  MAX_MESSAGE_AGE: 1 * 60 * 1000,
+  MAX_CLOCK_SKEW: 30 * 1000,
+  BASE_RETRY_DELAY: 2000,
+  CLEANUP_INTERVAL: 60 * 1000,
+};
+
+export const RETRY_CONFIG = {
+  MAX_RETRIES: 3,
+  EXPONENTIAL_BACKOFF_BASE: 2,
+};

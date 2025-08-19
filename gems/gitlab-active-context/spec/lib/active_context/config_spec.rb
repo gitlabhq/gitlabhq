@@ -22,6 +22,43 @@ RSpec.describe ActiveContext::Config do
       expect(described_class.connection_model).to eq(connection_model)
       expect(described_class.logger).to eq(logger)
     end
+
+    describe 'queue_classes' do
+      subject(:configure) do
+        described_class.configure do |config|
+          config.queue_classes = queue_classes
+        end
+      end
+
+      context 'when not an array' do
+        let(:queue_classes) { Test::Queues::Mock }
+
+        it 'raises an error' do
+          expect { configure }.to raise_error described_class::QueueClassError, "`queue_classes` must be an array"
+        end
+      end
+
+      context 'when not an ActiveContext queue' do
+        let(:queue_classes) { [Test::Collections::Mock] }
+
+        it 'raises an error' do
+          expect { configure }.to raise_error(
+            described_class::QueueClassError,
+            "`queue_classes` must include `ActiveContext::Concerns::Queue`"
+          )
+        end
+      end
+
+      context 'when queue_classes is valid' do
+        let(:queue_classes) { [Test::Queues::Mock] }
+
+        it 'sets the queue_classes' do
+          configure
+
+          expect(described_class.queue_classes).to eq queue_classes
+        end
+      end
+    end
   end
 
   describe '.enabled?' do

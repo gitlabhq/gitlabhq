@@ -52,12 +52,9 @@ module Ci
     belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
 
-    before_validation :ensure_organization_id, on: :update, if: :runner
-
     validates :runner, presence: true
     validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
-    validates :sharding_key_id, presence: true, on: :create, unless: :instance_type?
     validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :version, length: { maximum: 2048 }
     validates :revision, length: { maximum: 255 }
@@ -67,7 +64,6 @@ module Ci
     validates :config, json_schema: { filename: 'ci_runner_config' }
     validates :runtime_features, json_schema: { filename: 'ci_runner_runtime_features' }
 
-    validate :no_sharding_key_id, if: :instance_type?
     validate :no_organization_id, if: :instance_type?
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at,
@@ -144,6 +140,17 @@ module Ci
       exists?(ip_address:)
     end
 
+    def self.version_regex_expression_for_version(version)
+      case version
+      when /\d+\.\d+\.\d+/
+        '^\d+\.\d+\.\d+'
+      when /\d+\.\d+(\.)?/
+        '^\d+\.\d+\.'
+      else
+        '^\d+\.'
+      end
+    end
+
     def uncached_contacted_at
       read_attribute(:contacted_at)
     end
@@ -195,28 +202,8 @@ module Ci
       Ci::Runners::ProcessRunnerVersionUpdateWorker.perform_async(new_version)
     end
 
-    def no_sharding_key_id
-      errors.add(:runner_manager, 'cannot have sharding_key_id assigned') if sharding_key_id
-    end
-
     def no_organization_id
       errors.add(:runner_manager, 'cannot have organization_id assigned') if organization_id
-    end
-
-    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
-    def ensure_organization_id
-      self.organization_id = runner.organization_id
-    end
-
-    def self.version_regex_expression_for_version(version)
-      case version
-      when /\d+\.\d+\.\d+/
-        '^\d+\.\d+\.\d+'
-      when /\d+\.\d+(\.)?/
-        '^\d+\.\d+\.'
-      else
-        '^\d+\.'
-      end
     end
   end
 end

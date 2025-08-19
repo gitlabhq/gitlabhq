@@ -35,14 +35,30 @@ RSpec.describe 'getting Alert Management Alert Issue', feature_category: :team_p
   let(:first_alert) { alerts.first }
 
   context 'with gitlab alert' do
-    before do
-      create(:alert_management_alert, :with_incident, project: project, payload: payload)
+    context 'when hid_incident_management_features flag is disabled' do
+      before do
+        create(:alert_management_alert, :with_incident, project: project, payload: payload)
+        stub_feature_flags(hide_incident_management_features: false)
+      end
+
+      it 'includes the correct alert issue payload data' do
+        post_graphql(graphql_query, current_user: current_user)
+
+        expect(first_alert).to include('issue' => { "iid" => "1", "state" => "opened" })
+      end
     end
 
-    it 'includes the correct alert issue payload data' do
-      post_graphql(graphql_query, current_user: current_user)
+    context 'when hide_incident_management_features flag is enabled' do
+      it 'does not return alert issue data and raises a GraphQL error' do
+        create(:alert_management_alert, :with_incident, project: project, payload: payload)
+        post_graphql(graphql_query, current_user: current_user)
 
-      expect(first_alert).to include('issue' => { "iid" => "1", "state" => "opened" })
+        expect(alerts).to be_nil
+        parsed_errors = Gitlab::Json.parse(response.body)['errors']
+        expect(parsed_errors).to include(
+          a_hash_including('message' => a_string_matching(/Field 'alertManagementAlerts' doesn't exist/))
+        )
+      end
     end
   end
 

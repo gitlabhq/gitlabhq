@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', feature_category: :source_code_management do
     let(:project) { create(:project, name: 'project-qa-test', description: 'project for qa test') }
 
-    describe 'Create, Retrieve and Delete branches via API', :requires_admin, product_group: :source_code do
+    describe 'Create, Retrieve and Delete branches via API', :requires_admin do
       created_branch = 'create-branch'
       deleted_branch = 'delete-branch'
       filename = 'file.txt'

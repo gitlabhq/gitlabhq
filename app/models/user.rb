@@ -34,8 +34,10 @@ class User < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
   include Gitlab::InternalEventsTracking
+  include SafelyChangeColumnDefault
 
-  ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
+  columns_changing_default :organization_id
+
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
@@ -67,6 +69,9 @@ class User < ApplicationRecord
 
   SERVICE_ACCOUNT_PREFIX = 'service_account'
   NOREPLY_EMAIL_DOMAIN = "noreply.#{Gitlab.config.gitlab.host}".freeze
+
+  CI_PROJECT_RUNNERS_BATCH_SIZE = 15_000
+  CI_RUNNERS_PROJECT_COUNT_LIMIT = 10_000
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
   add_authentication_token_field :incoming_email_token, insecure: true, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
@@ -280,7 +285,6 @@ class User < ApplicationRecord
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user # deprecated
   has_many :organization_user_details, class_name: 'Organizations::OrganizationUserDetail', inverse_of: :user
 
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
@@ -453,7 +457,6 @@ class User < ApplicationRecord
     :pinned_nav_items, :pinned_nav_items=,
     :achievements_enabled, :achievements_enabled=,
     :enabled_following, :enabled_following=,
-    :home_organization, :home_organization_id, :home_organization_id=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
     :text_editor, :text_editor=,
@@ -477,9 +480,12 @@ class User < ApplicationRecord
   delegate :organization, :organization=, to: :user_detail, prefix: true, allow_nil: true
   delegate :discord, :discord=, to: :user_detail, allow_nil: true
   delegate :github, :github=, to: :user_detail, allow_nil: true
-  delegate :email_reset_offered_at, :email_reset_offered_at=, to: :user_detail, allow_nil: true
   delegate :project_authorizations_recalculated_at, :project_authorizations_recalculated_at=, to: :user_detail, allow_nil: true
   delegate :bot_namespace, :bot_namespace=, to: :user_detail, allow_nil: true
+  delegate :email_otp, :email_otp=, to: :user_detail, allow_nil: true
+  delegate :email_otp_required_after, :email_otp_required_after=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_at, :email_otp_last_sent_at=, to: :user_detail, allow_nil: true
+  delegate :email_otp_last_sent_to, :email_otp_last_sent_to=, to: :user_detail, allow_nil: true
 
   accepts_nested_attributes_for :user_preference, update_only: true
   accepts_nested_attributes_for :user_detail, update_only: true
@@ -1468,7 +1474,7 @@ class User < ApplicationRecord
   end
 
   def authorized_project?(project, min_access_level = nil)
-    authorized_projects(min_access_level).exists?({ id: project.id })
+    authorized_projects(min_access_level).exists?(id: project.id)
   end
 
   # Typically used in conjunction with projects table to get projects
@@ -1885,8 +1891,10 @@ class User < ApplicationRecord
 
     namespace_attributes = { path: username, name: name }
 
-    # Do not explicitly assign if organization is `nil`
-    namespace_attributes[:organization] = organization if organization
+    if organization
+      namespace_attributes[:organization] = organization
+      namespace_attributes[:visibility_level] = organization.visibility_level
+    end
 
     build_namespace(namespace_attributes)
     namespace.build_namespace_settings
@@ -2105,21 +2113,6 @@ class User < ApplicationRecord
       end
   end
 
-  def runner_available?(runner)
-    runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
-
-    # NOTE: This is a workaround to the fact that `ci_available_group_runners` does not return the group runners that the
-    # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
-    # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
-    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
-    # and that would get used by `ci_available_group_runners`, but that would require deeper changes
-    # from the ~"group::authorization" team.
-    # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
-    return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
-
-    ci_available_runners.include?(runner)
-  end
-
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
     group_email = if notification_settings.loaded?
@@ -2187,8 +2180,10 @@ class User < ApplicationRecord
     Feature.enabled?(:merge_request_dashboard, self, type: :beta)
   end
 
-  def assigned_open_merge_requests_count(force: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+  def assigned_open_merge_requests_count(force: false, cached_only: false)
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
       params = { state: 'opened', non_archived: true }
 
       if merge_request_dashboard_enabled?
@@ -2197,12 +2192,26 @@ class User < ApplicationRecord
         params[:assignee_id] = id
       end
 
-      MergeRequestsFinder.new(self, params).execute.count
+      begin
+        MergeRequestsFinder.new(self, params).execute.count
+      # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Expensive query can throw 500 error, temporary while the query gets improved
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
+        # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
+        Gitlab::AppLogger.error(
+          message: 'Timeout counting assigned merge requests',
+          user_id: id,
+          error: e.message
+        )
+
+        nil
+      end
     end
   end
 
-  def review_requested_open_merge_requests_count(force: false)
+  def review_requested_open_merge_requests_count(force: false, cached_only: false)
     Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
       params = { reviewer_id: id, state: 'opened', non_archived: true }
       params[:review_states] = %w[unapproved unreviewed review_started] if merge_request_dashboard_enabled?
 
@@ -2925,9 +2934,15 @@ class User < ApplicationRecord
     # track the size of project_ids to optimise this query further in future
     track_ci_available_project_runners_query(project_ids.size)
 
-    # Load all project IDs upfront to handle indirect project access through group invitations
-    # and avoid CTE query when filtering runners for better performance
-    Ci::Runner.belonging_to_project(project_ids)
+    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
+
+    projects_with_runners = Set.new
+
+    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
+      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
+    end
+
+    Ci::Runner.belonging_to_project(projects_with_runners)
   end
 
   def track_ci_available_project_runners_query(size_of_project_ids)
@@ -2941,6 +2956,14 @@ class User < ApplicationRecord
   end
 
   def ci_available_group_runners
+    # NOTE: `ci_available_group_runners` does not return the group runners that the user has access to in group A, when
+    # the user is owner of group B and group B has been invited as owner to group A.
+    # Instead it only returns group runners that belong to a group that the user is a direct owner of.
+    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
+    # and that would get used by `ci_available_group_runners`, but that would require deeper changes from the
+    # ~"group::authorization" team.
+    # NOTE: Issue captured in https://gitlab.com/gitlab-org/gitlab/-/issues/549985
+
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)

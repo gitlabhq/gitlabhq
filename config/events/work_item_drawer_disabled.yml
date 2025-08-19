@@ -1,0 +1,17 @@
+---
+description: User disables drawer/side panel mode for work items, choosing to open items in modal or full page view instead
+internal_events: true
+status: active
+action: work_item_drawer_disabled
+identifiers:
+  - project
+  - namespace
+  - user
+product_group: product_planning
+product_categories:
+  - team_planning
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198482
+tiers:
+  - premium
+  - ultimate

@@ -33,38 +33,18 @@ module VerifiesWithEmail
     return unless user = find_verification_user
 
     if send_rate_limited?(user)
-      message = format(
-        s_("IdentityVerification|You've reached the maximum amount of resends. Wait %{interval} and try again."),
-        interval: rate_limit_interval(:email_verification_code_send)
-      )
-      render json: { status: :failure, message: message }
+      render_send_rate_limited
     else
       secondary_email = user_secondary_email(user, email_params[:email])
 
       if email_params[:email].present? && secondary_email.present?
-        send_verification_instructions(user, secondary_email: secondary_email)
+        lock_and_send_verification_instructions(user, secondary_email: secondary_email)
       elsif email_params[:email].blank?
-        send_verification_instructions(user)
+        lock_and_send_verification_instructions(user)
       end
 
       render json: { status: :success }
     end
-  end
-
-  def update_email
-    return unless user = find_verification_user
-    return render json: { status: :error, message: 'Feature not available' } unless offer_email_reset_enabled?(user)
-
-    log_verification(user, :email_update_requested)
-    result = Users::EmailVerification::UpdateEmailService.new(user: user).execute(email: email_params[:email])
-
-    if result[:status] == :success
-      send_verification_instructions(user)
-    else
-      handle_verification_failure(user, result[:reason], result[:message])
-    end
-
-    render json: result
   end
 
   def successful_verification
@@ -86,7 +66,7 @@ module VerifiesWithEmail
     User.find_by_id(session[:verification_user_id])
   end
 
-  def send_verification_instructions(user, secondary_email: nil, reason: nil)
+  def lock_and_send_verification_instructions(user, secondary_email: nil, reason: nil)
     service = Users::EmailVerification::GenerateTokenService.new(attr: :unlock_token, user: user)
     raw_token, encrypted_token = service.execute
     user.unlock_token = encrypted_token
@@ -95,25 +75,42 @@ module VerifiesWithEmail
   end
 
   def send_verification_instructions_email(user, token, secondary_email)
-    email = secondary_email || verification_email(user)
+    email = secondary_email || user.email
     Notify.verification_instructions_email(email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
   end
 
+  # As this is a prepended controller action, we only want to block
+  # log in if the VerifiesWithEmail is required
+  def requires_verify_email?(user)
+    user.access_locked? || user.unlock_token || !trusted_ip_address?(user)
+  end
+
   def verify_email(user)
-    if user.unlock_token
-      # Prompt for the token if it already has been set. If the token has expired, send a new one.
-      send_verification_instructions(user) if unlock_token_expired?(user)
-      prompt_for_email_verification(user)
-    elsif user.access_locked? || !trusted_ip_address?(user)
-      # require email verification if:
-      # - their account has been locked because of too many failed login attempts, or
-      # - they have logged in before, but never from the current ip address
-      reason = 'sign in from untrusted IP address' unless user.access_locked?
-      send_verification_instructions(user, reason: reason) unless send_rate_limited?(user)
-      prompt_for_email_verification(user)
+    return true unless requires_verify_email?(user)
+
+    # If they've received too many codes already, we won't send more
+    unless send_rate_limited?(user)
+      # If access is locked but there's no unlock_token, or the token has
+      # expired, send a new one
+      if user.access_locked?
+        if !user.unlock_token || unlock_token_expired?(user) # rubocop:disable Style/IfUnlessModifier -- This is easier to read
+          lock_and_send_verification_instructions(user)
+        end
+      # If they're not already locked but from a new IP, lock and send a
+      # code
+      elsif !trusted_ip_address?(user)
+        lock_and_send_verification_instructions(
+          user,
+          reason: 'sign in from untrusted IP address'
+        )
+      end
     end
+
+    # At this point they have a non-expired token in their email inbox.
+    # Prompt for them to enter it.
+    prompt_for_email_verification(user)
   end
 
   def verify_token(user, token)
@@ -137,6 +134,14 @@ module VerifiesWithEmail
     redirect_to new_user_session_path, alert: message
   end
 
+  def render_send_rate_limited
+    message = format(
+      s_("IdentityVerification|You've reached the maximum amount of resends. Wait %{interval} and try again."),
+      interval: rate_limit_interval(:email_verification_code_send)
+    )
+    render json: { status: :failure, message: message }
+  end
+
   def rate_limit_interval(rate_limit)
     interval_in_seconds = Gitlab::ApplicationRateLimiter.rate_limits[rate_limit][:interval]
     distance_of_time_in_words(interval_in_seconds)
@@ -152,7 +157,6 @@ module VerifiesWithEmail
   end
 
   def handle_verification_success(user)
-    handle_email_reset_on_verification(user)
     user.unlock_access!
     log_verification(user, :successful)
 
@@ -161,13 +165,6 @@ module VerifiesWithEmail
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
-  end
-
-  def handle_email_reset_on_verification(user)
-    return unless offer_email_reset_enabled?(user)
-
-    user.confirm if unconfirmed_verification_email?(user)
-    user.email_reset_offered_at = Time.current
   end
 
   def trusted_ip_address?(user)
@@ -210,8 +207,12 @@ module VerifiesWithEmail
   end
 
   def unlock_token_expired?(user)
-    return false unless user.locked_at
-
-    user.locked_at < Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes.ago
+    Users::EmailVerification::ValidateTokenService.new(
+      attr: :unlock_token,
+      user: user,
+      # We explicitly pass nil - we're only checking expiry, not the
+      # token itself
+      token: nil
+    ).expired_token?
   end
 end

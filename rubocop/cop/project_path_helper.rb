@@ -17,7 +17,7 @@ module RuboCop
         namespace_expr, project_expr = arguments(node)
         return unless namespace_expr && project_expr
 
-        return unless namespace_expr.type == :send
+        return unless namespace_expr.send_type?
         return unless method_name(namespace_expr) == :namespace
         return unless receiver(namespace_expr) == project_expr
 

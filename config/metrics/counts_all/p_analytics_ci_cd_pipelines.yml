@@ -1,7 +1,9 @@
 ---
 key_path: redis_hll_counters.analytics.p_analytics_ci_cd_pipelines
 description: Count of unique visits to the project level CI CD Analytics pipelines tab
-product_group: optimize
+product_group: runner
+product_categories:
+- fleet_visibility
 value_type: number
 status: active
 milestone: '14.6'

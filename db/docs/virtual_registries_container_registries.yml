@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_container_registries
+classes:
+  - VirtualRegistries::Container::Registry
+feature_categories:
+  - virtual_registry
+description: A virtual registry object for a container.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195984
+milestone: '18.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

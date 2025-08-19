@@ -189,17 +189,10 @@ exports[`AutocompleteHelper for reference type "iteration", searches for "27" co
 ]
 `;
 
-exports[`AutocompleteHelper for reference type "label", searches for "c" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "label", searches for "bc" correctly 1`] = `
 [
-  "Contour",
-  "Corolla",
-  "Cygsync",
-  "scoped label",
-  "Amsche",
   "Bronce",
   "Bryncefunc",
-  "Onesync",
-  "Pynefunc",
 ]
 `;
 
@@ -267,6 +260,55 @@ exports[`AutocompleteHelper for reference type "wiki", searches for "ho" correct
 [
   "Home",
   "How to use GitLab",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters statuses using apollo cache for command "/status "" 1`] = `
+[
+  "To do",
+  "In progress",
+  "Done",
+  "Won't do",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters statuses using apollo cache for command "/status "pro" 1`] = `
+[
+  "In progress",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters users using apollo cache for command "/assign" 1`] = `
+[
+  "florida.schoen",
+  "root",
+  "all",
+  "lakeesha.batz",
+  "laurene_blick",
+  "myrtis",
+  "patty",
+  "Commit451",
+  "flightjs",
+  "gitlab-instance-ade037f9",
+  "gitlab-org",
+  "gnuwget",
+  "h5bp",
+  "jashkenas",
+  "twitter",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters users using apollo cache for command "/unassign" 1`] = `
+[
+  "errol",
+  "evelynn_olson",
+]
+`;
+
+exports[`AutocompleteHelper for work items filters work items using apollo cache for command "/unlink" 1`] = `
+[
+  31,
+  30,
 ]
 `;
 

@@ -2,6 +2,7 @@
 
 class Projects::DeploymentsController < Projects::ApplicationController
   before_action :authorize_read_deployment!
+  before_action :environment
 
   feature_category :continuous_delivery
   urgency :low
@@ -17,45 +18,14 @@ class Projects::DeploymentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def show
-    @deployment = environment.all_deployments.find_by_iid!(params[:id])
-  end
-
-  def metrics
-    return render_404 unless deployment_metrics.has_metrics?
-
-    @metrics = deployment_metrics.metrics
-    if @metrics&.any?
-      render json: @metrics, status: :ok
-    else
-      head :no_content
-    end
-  end
-
-  def additional_metrics
-    return render_404 unless deployment_metrics.has_metrics?
-
-    respond_to do |format|
-      format.json do
-        metrics = deployment_metrics.additional_metrics
-
-        if metrics.any?
-          render json: metrics
-        else
-          head :no_content
-        end
-      end
-    end
+    # A deployment belongs to both a project and an environment so either
+    # association could be used to fetch this record. However, because the
+    # IID is defined at the project level, looking up via project is a more
+    # efficient query as it can use the unique index on (project_id, iid).
+    @deployment = project.deployments.find_by_iid!(params[:id])
   end
 
   private
-
-  def deployment_metrics
-    @deployment_metrics ||= DeploymentMetrics.new(deployment.project, deployment)
-  end
-
-  def deployment
-    @deployment ||= environment.deployments.find_successful_deployment!(params[:id])
-  end
 
   def environment
     @environment ||= project.environments.find(params[:environment_id])

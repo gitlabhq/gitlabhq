@@ -1,0 +1,5 @@
+<%= _('Hi %{username}!') % { username: sanitize_name(@user.name) } %>
+
+<%= _('Your personal access token, named %{token_name}, has been rotated.') % { token_name: @token_name } %>
+
+<%= _('You can view it in your personal access tokens settings %{pat_link}.') % { pat_link: @target_url } %>

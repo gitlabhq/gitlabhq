@@ -122,7 +122,7 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
 
             settings_block = find_by_testid(settings_block_id)
             expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
-            expect(page).to have_content('Package protection rule updated.')
+            expect(page).to have_content('Changes saved.')
             expect(settings_block).to have_content('v1.*')
             expect(find_by_testid('package-type')).to have_content('PyPI')
             expect(find_by_testid('minimum-access-level-push-value')).to have_content('Administrator')
@@ -212,7 +212,7 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
           end
 
           expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
-          expect(page).to have_content('Protection rule updated.')
+          expect(page).to have_content('Changes saved.')
 
           within_testid settings_block_id do |settings_block|
             expect(settings_block).to have_content("#{project.full_path}/*test*-updated")

@@ -47,7 +47,7 @@ module BulkImports
       [schema, tables]
     end
 
-    def self.defer_on_database_health_signal?
+    def self.defer_on_database_health_signal?(**_kwargs)
       Feature.enabled?(:bulk_import_deferred_workers)
     end
 

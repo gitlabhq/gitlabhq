@@ -4,7 +4,7 @@ import { stubComponent } from 'helpers/stub_component';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
-import Presenter from '~/glql/core/presenter';
+import FieldPresenter from '~/glql/components/presenters/field.vue';
 import { MOCK_LABELS, MOCK_ASSIGNEES } from '../../mock_data';
 
 describe('CollectionPresenter', () => {
@@ -12,14 +12,12 @@ describe('CollectionPresenter', () => {
 
   const createWrapper = ({ data }) => {
     wrapper = mountExtended(CollectionPresenter, {
-      provide: {
-        presenter: new Presenter(),
-      },
       propsData: { data },
       stubs: {
         GlLabel: stubComponent(GlLabel, {
           template: '<span>{{ title }}</span>',
         }),
+        FieldPresenter,
       },
     });
   };

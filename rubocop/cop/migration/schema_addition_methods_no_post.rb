@@ -18,10 +18,12 @@ module RuboCop
 
         SYMBOLIZED_MATCHER = FORBIDDEN_METHODS.map { |w| ":#{w}" }.join(' | ')
 
+        # @!method on_forbidden_method(node)
         def_node_matcher :on_forbidden_method, <<~PATTERN
           (send nil? {#{SYMBOLIZED_MATCHER}} ...)
         PATTERN
 
+        # @!method rolling_back_migration(node)
         def_node_matcher :rolling_back_migration, <<~PATTERN
           (def :down  ...)
         PATTERN
@@ -32,7 +34,7 @@ module RuboCop
           return if rolling_back_migration?(node)
 
           on_forbidden_method(node) do
-            add_offense(node, message: MSG)
+            add_offense(node)
           end
         end
 

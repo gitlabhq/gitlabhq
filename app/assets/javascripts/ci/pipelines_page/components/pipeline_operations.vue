@@ -34,6 +34,9 @@ export default {
     };
   },
   computed: {
+    fullPath() {
+      return this.pipeline?.project?.full_path.slice(1);
+    },
     hasActions() {
       return (
         this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions
@@ -91,6 +94,7 @@ export default {
       <pipelines-manual-actions
         v-if="hasActions"
         :iid="pipeline.iid"
+        :full-path="fullPath"
         @refresh-pipeline-table="$emit('refresh-pipelines-table')"
       />
 

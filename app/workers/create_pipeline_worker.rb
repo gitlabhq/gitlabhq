@@ -17,8 +17,12 @@ class CreatePipelineWorker # rubocop:disable Scalability/IdempotentWorker
   def perform(project_id, user_id, ref, source, execute_options = {}, creation_params = {})
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464671')
 
-    project = Project.find(project_id)
-    user = User.find(user_id)
+    project = Project.find_by_id(project_id)
+    return unless project
+
+    user = User.find_by_id(user_id)
+    return unless user
+
     execute_options = execute_options.deep_symbolize_keys
     creation_params = creation_params.symbolize_keys.merge(ref: ref)
 

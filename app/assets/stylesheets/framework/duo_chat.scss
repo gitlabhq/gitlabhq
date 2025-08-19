@@ -4,3 +4,7 @@
 #duo-chat {
   z-index: #{$zindex-modal-backdrop - 1};
 }
+
+.duo-chat-message a.anchor {
+ @apply gl-hidden;
+}

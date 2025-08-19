@@ -69,7 +69,7 @@ software development organization.
 1. Do not invite any GitLab members or other users to join the group yet.
 1. Select **Create group**.
 
-> In GitLab, a namespace provides a place to organize your related projects.
+In GitLab, a namespace provides a place to organize your related projects.
 
 You have created the parent group for your organization. Next you will create subgroups.
 
@@ -86,7 +86,8 @@ working areas:
 
 You will now create subgroups to reflect this organization structure.
 
-> Subgroups and projects must have visibility settings that are at least as restrictive as the visibility setting of their parent group. For example, you cannot have a private parent group and a public subgroup.
+Subgroups and projects must have visibility settings that are at least as restrictive as the visibility setting of their parent group.
+For example, you cannot have a private parent group and a public subgroup.
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
@@ -185,9 +186,10 @@ First, you will add all the users to the parent group, Development.
 On the **Group Members** page of the Development group and all subgroups, check
 the membership of these groups.
 
-> The **Source** is the origin of the user's membership of this group. The added members are direct members because you added them directly to the group.
->
-> The **Max role** is the added members' highest level of access they are allowed to have in this group. You can use the dropdown list in this column to change the added members' roles in this group.
+- The **Source** is the origin of the user's membership of this group. The added members are direct members because
+  you added them directly to the group.
+- The **Max role** is the added members' highest level of access they are allowed to have in this group.
+  You can use the dropdown list in this column to change the added members' roles in this group.
 
 All the users you have added as parent group members are also members of all the
 subgroups with the same role.
@@ -263,7 +265,12 @@ Review the invite errors and try again:
 - Alex Smith: Access level should be greater than or equal to Owner inherited membership from group Development
 ```
 
-> You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group, as they have an inherited membership from the parent group.
+{{< alert type="note" >}}
+
+You cannot give Alex a subgroup role with an access level less than their role for the subgroup's parent group,
+as they have an inherited membership from the parent group.
+
+{{< /alert >}}
 
 You decide to keep Alex as an Owner in this subgroup as it is appropriate given
 their role for the organization. Select **Cancel** to cancel this invite.
@@ -359,7 +366,12 @@ in the User Experience subgroup.
 However, due to inherited permissions, adding Grayson Garcia to the User Experience
 subgroup also adds them to the UX Design nested subgroup as a Developer.
 
-> Be mindful of inherited permissions for groups and subgroups. Add users to a minimum number of groups and subgroups to minimize the chance of inadvertently adding a user to a group they do not need to be a member of.
+{{< alert type="note" >}}
+
+Be mindful of inherited permissions for groups and subgroups. Add users to a minimum number of groups and subgroups
+to minimize the chance of inadvertently adding a user to a group they do not need to be a member of.
+
+{{< /alert >}}
 
 1. Go to the User Experience subgroup members page.
 1. Add Frankie Ali and Hunter Silva as **Reporters**. Give Hunter the same expiration date.

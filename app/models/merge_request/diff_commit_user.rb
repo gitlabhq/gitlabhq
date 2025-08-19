@@ -48,9 +48,13 @@ class MergeRequest::DiffCommitUser < ApplicationRecord
     rows = []
 
     input.each do |item|
-      name, email, organization_id = item
-      conditions = { name: name, email: email }
-      conditions[:organization_id] = organization_id if with_organization
+      if with_organization
+        name, email, organization_id = item
+        conditions = { name: name, email: email, organization_id: organization_id }
+      else
+        name, email = item
+        conditions = { name: name, email: email }
+      end
 
       queries[conditions.values] = where(conditions).to_sql
     end

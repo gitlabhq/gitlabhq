@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package' do
+  RSpec.describe 'Package', feature_category: :container_registry do
     describe 'SaaS Container Registry', :smoke,
-      only: { subdomain: :staging }, product_group: :container_registry do
+      only: { subdomain: :staging } do
       before do
         Flow::Login.sign_in
       end

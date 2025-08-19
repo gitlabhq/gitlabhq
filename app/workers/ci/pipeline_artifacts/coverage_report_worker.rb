@@ -21,7 +21,7 @@ module Ci
         return unless pipeline
 
         pipeline.root_ancestor.try do |root_ancestor_pipeline|
-          next unless root_ancestor_pipeline.self_and_project_descendants_complete?
+          next if root_ancestor_pipeline.self_and_project_descendants.alive.any?
 
           Ci::PipelineArtifacts::CoverageReportService.new(root_ancestor_pipeline).execute
         end

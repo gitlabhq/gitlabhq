@@ -195,19 +195,6 @@ export const generateMetricLink = ({
 };
 
 /**
- * Extracts the relevant feature and license flags needed for VSA
- *
- * @param {Object} gon the global `window.gon` object populated when the page loads
- * @returns an object containing the extracted feature flags and their boolean status
- */
-export const extractVSAFeaturesFromGON = () => ({
-  // licensed feature toggles
-  cycleAnalyticsForGroups: Boolean(gon?.licensed_features?.cycleAnalyticsForGroups),
-  cycleAnalyticsForProjects: Boolean(gon?.licensed_features?.cycleAnalyticsForProjects),
-  groupLevelAnalyticsDashboard: Boolean(gon?.licensed_features?.groupLevelAnalyticsDashboard),
-});
-
-/**
  * Takes a raw GraphQL response which could contain data for a group or project namespace,
  * and returns the data for the namespace which is present in the response.
  *

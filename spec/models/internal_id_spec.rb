@@ -14,6 +14,46 @@ RSpec.describe InternalId do
 
   context 'validations' do
     it { is_expected.to validate_presence_of(:usage) }
+
+    context 'when both project and namespace are blank' do
+      it 'sets an error' do
+        internal_id = described_class.new
+        expect(internal_id.valid?).to be(false)
+        expect(internal_id.errors.full_messages).to include("both project and namespace can't be blank")
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+      end
+    end
+
+    context 'when project is set and namespace is blank' do
+      it 'is accepted' do
+        internal_id = described_class.new
+        internal_id.project = project
+        expect(internal_id.valid?).to be(false)
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+      end
+    end
+
+    context 'when both project and namespace are set' do
+      it 'sets an error' do
+        internal_id = described_class.new
+        internal_id.project = project
+        internal_id.namespace = project.project_namespace
+        expect(internal_id.valid?).to be(false)
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
+        expect(internal_id.errors.full_messages).to include("both project and namespace can't be set")
+      end
+    end
+
+    context 'when project is blank and namespace is set' do
+      it 'is accepted' do
+        internal_id = described_class.new
+        internal_id.namespace = project.project_namespace
+        expect(internal_id.valid?).to be(false)
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be blank")
+        expect(internal_id.errors.full_messages).not_to include("both project and namespace can't be set")
+      end
+    end
   end
 
   describe '.flush_records!' do

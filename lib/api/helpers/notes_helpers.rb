@@ -85,7 +85,7 @@ module API
       end
 
       def noteable_read_ability_name(noteable)
-        "read_#{ability_name(noteable)}".to_sym
+        :"read_#{ability_name(noteable)}"
       end
 
       def ability_name(noteable)

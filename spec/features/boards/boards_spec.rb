@@ -321,9 +321,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
         end
 
         it 'filters by milestone' do
-          set_filter("milestone", "\"#{milestone.title}")
-          click_link milestone.title
-          filter_submit.click
+          set_filter("milestone", milestone.title)
+          click_on milestone.title
+          submit_filter
 
           wait_for_requests
           wait_for_board_cards(2, 1)
@@ -444,7 +444,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
           set_filter("label", bug.title)
           click_on bug.title
 
-          submit_filter
+          filter_submit.click
 
           wait_for_requests
 
@@ -494,18 +494,6 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
 
       it 'shows the button' do
         expect(page).to have_button('Toggle focus mode')
-      end
-    end
-
-    context 'keyboard shortcuts' do
-      before do
-        visit_project_board(project, board)
-        wait_for_requests
-      end
-
-      it 'allows user to use keyboard shortcuts' do
-        find('body').native.send_keys('i')
-        expect(page).to have_content('New Issue')
       end
     end
   end
@@ -569,15 +557,7 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
   end
 
   def submit_filter
-    filter_input.native.send_keys(:enter)
-  end
-
-  def click_filter_link(link_text)
-    page.within(filtered_search) do
-      expect(page).to have_button(link_text)
-
-      click_on link_text
-    end
+    find_by_testid('filtered-search-term-input').native.send_keys(:enter)
   end
 
   def remove_list

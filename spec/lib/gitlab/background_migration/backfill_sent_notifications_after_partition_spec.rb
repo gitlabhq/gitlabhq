@@ -7,8 +7,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSentNotificationsAfterPartit
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:sent_notifications) { table(:sent_notifications) }
-  let(:p_sent_notifications) { partitioned_table(:sent_notifications_7abbf02cb6) }
   let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:p_sent_notifications) do
+    partitioned_table(
+      :p_sent_notifications,
+      by: :partition,
+      strategy: :sliding_list,
+      next_partition_if: ->(_) {},
+      detach_partition_if: ->(_) {}
+    )
+  end
 
   let(:user) do
     table(:users).create!(email: 'email@example.com', username: 'user1', projects_limit: 10,
@@ -253,7 +261,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSentNotificationsAfterPartit
       expect do
         migrate
         # 11 records, 2 per batch, 6 batches, 7 queries per batch
-      end.to make_queries_matching(/INSERT INTO sent_notifications_7abbf02cb6/, 42)
+      end.to make_queries_matching(/INSERT INTO p_sent_notifications/, 42)
     end
 
     it 'sets correct namespace_id in every record' do

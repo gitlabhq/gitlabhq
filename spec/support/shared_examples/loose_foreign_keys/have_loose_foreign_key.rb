@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'it has loose foreign keys' do
+  include LooseForeignKeysHelper
+
   let(:factory_name) { nil }
+  let(:factory_attributes) { {} }
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
   let(:fully_qualified_table_name) { "#{connection.current_schema}.#{table_name}" }
@@ -36,7 +39,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
   end
 
   it 'records record deletions' do
-    model = create(factory_name) # rubocop: disable Rails/SaveBang
+    model = create(factory_name, **factory_attributes)
 
     # using delete to avoid cross-database modification errors when associations with dependent option are present
     model.delete
@@ -47,12 +50,12 @@ RSpec.shared_examples 'it has loose foreign keys' do
   end
 
   it 'cleans up record deletions' do
-    model = create(factory_name) # rubocop: disable Rails/SaveBang
+    model = create(factory_name, **factory_attributes)
     model_id = model.id
 
     expect { model.delete }.to change { deleted_records.count }.by(1)
 
-    LooseForeignKeys::ProcessDeletedRecordsService.new(connection: connection).execute
+    process_loose_foreign_key_deletions(record: model)
 
     expect(deleted_records.where(primary_key_value: model_id).status_pending.count).to eq(0)
     expect(deleted_records.where(primary_key_value: model_id).status_processed.count).to eq(1)

@@ -12,21 +12,10 @@ class RequeueBackfillNamespacesRedirectRoutesNamespaceId < Gitlab::Database::Mig
   SUB_BATCH_SIZE = 250
 
   def up
-    # Clear previous background migration execution from QueueBackfillNamespacesRedirectRoutesNamespaceId
-    delete_batched_background_migration(MIGRATION, :redirect_routes, :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :redirect_routes,
-      :id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      max_batch_size: MAX_BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # NOOP because we need to requeue this BBM as some records remain (https://postgres.ai/console/gitlab/gitlab-production-main/sessions/41950/commands/128689)
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :redirect_routes, :id, [])
+    # NOOP because we need to requeue this BBM as some records remain (https://postgres.ai/console/gitlab/gitlab-production-main/sessions/41950/commands/128689)
   end
 end

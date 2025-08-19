@@ -6,8 +6,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   include Features::MergeRequestHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project) }
+  let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, namespace: group) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
   before do
@@ -135,6 +135,18 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
       expect(helper.show_new_issue_link?(nil)).to be_falsey
     end
 
+    it 'is false when project is archived' do
+      project.update!(archived: true)
+
+      expect(helper.show_new_issue_link?(project)).to be(false)
+    end
+
+    it 'is false when project group is archived' do
+      group.update!(archived: true)
+
+      expect(helper.show_new_issue_link?(project)).to be(false)
+    end
+
     it 'is true when there is a project and no logged in user' do
       expect(helper.show_new_issue_link?(build(:project))).to be_truthy
     end
@@ -149,10 +161,11 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe '#show_moved_service_desk_issue_warning?' do
+    let_it_be(:support_bot) { Users::Internal.support_bot }
     let(:project1) { create(:project, service_desk_enabled: true) }
     let(:project2) { create(:project, service_desk_enabled: true) }
-    let!(:old_issue) { create(:issue, author: Users::Internal.support_bot, project: project1) }
-    let!(:new_issue) { create(:issue, author: Users::Internal.support_bot, project: project2) }
+    let!(:old_issue) { create(:issue, author: support_bot, project: project1) }
+    let!(:new_issue) { create(:issue, author: support_bot, project: project2) }
 
     before do
       allow(Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }

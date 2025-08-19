@@ -26,9 +26,10 @@ This may result in a larger than expected downtime.
 Upgrading Geo sites involves performing:
 
 1. Version-specific upgrade steps, depending on the version being upgraded to or from:
-   - [GitLab 17 changes](../../../update/versions/gitlab_17_changes.md)
-   - [GitLab 16 changes](../../../update/versions/gitlab_16_changes.md)
-   - [GitLab 15 changes](../../../update/versions/gitlab_15_changes.md)
+   - [GitLab 18 upgrade notes](../../../update/versions/gitlab_18_changes.md)
+   - [GitLab 17 upgrade notes](../../../update/versions/gitlab_17_changes.md)
+   - [GitLab 16 upgrade notes](../../../update/versions/gitlab_16_changes.md)
+   - [GitLab 15 upgrade notes](../../../update/versions/gitlab_15_changes.md)
 1. [General upgrade steps](#general-upgrade-steps), for all upgrades.
 
 ## General upgrade steps
@@ -48,7 +49,7 @@ and all **secondary** sites:
 1. SSH into each node of the **primary** site.
 1. [Upgrade GitLab on the **primary** site](../../../update/package/_index.md#by-using-the-official-repositories-recommended).
 1. Perform testing on the **primary** site, particularly if you paused replication in step 1 to protect DR.
-   [There are some suggestions for post-upgrade testing](../../../update/_index.md#pre-upgrade-and-post-upgrade-checks) in the upgrade documentation.
+   For more information about post-upgrade testing, see [pre-upgrade and post-upgrade checks](../../../update/upgrade.md#pre-upgrade-and-post-upgrade-checks).
 1. Ensure that the secrets in the `/etc/gitlab/gitlab-secrets.json` file of both the primary site and the secondary site are the same. The file must be the same on all of a site's nodes.
 1. SSH into each node of **secondary** sites.
 1. [Upgrade GitLab on each **secondary** site](../../../update/package/_index.md#by-using-the-official-repositories-recommended).

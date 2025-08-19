@@ -158,6 +158,7 @@ describe('ide/init_gitlab_web_ide', () => {
         },
         featureFlags: {
           languageServerWebIDE: gon.features.webIdeLanguageServer,
+          additionalSourceControlOperations: true,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',

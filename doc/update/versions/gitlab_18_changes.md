@@ -2,7 +2,8 @@
 stage: GitLab Delivery
 group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab 18 changes
+title: GitLab 18 upgrade notes
+description: Upgrade notes for GitLab 18 versions.
 ---
 
 {{< details >}}
@@ -18,11 +19,36 @@ Ensure you review these instructions for:
 - Your installation type.
 - All versions between your current version and your target version.
 
-For more information about upgrading GitLab Helm Chart, see [the release notes for 9.0](https://docs.gitlab.com/charts/releases/9_0/).
+For additional information for Helm chart installations, see
+[the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
 
 ## Issues to be aware of when upgrading from 16.11
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
+
+## Issues to be aware of when upgrading from 17.11
+
+- **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details at [here](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
+
+  **Prevention:** Open the Rails console and enable the feature flag before upgrading:
+
+  ```shell
+  $ sudo gitlab-rails console
+  Feature.enable(:ci_only_one_persistent_ref_creation)
+  ```
+
+  **If already affected:** Run this command and retry the failed pipelines:
+
+  ```shell
+  $ sudo gitlab-rails console
+  Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
+  ```
+
+## 18.3.0
+
+### Geo installations 18.3.0
+
+- The [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/545533) that caused `rake gitlab:geo:check` to incorrectly report a failure when installing a Geo secondary site has been fixed in 18.3.0.
 
 ## 18.1.0
 

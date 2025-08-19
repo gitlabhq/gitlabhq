@@ -1,6 +1,14 @@
 <script>
-import { GlCollapsibleListbox, GlFormRadioGroup, GlFormRadio, GlTableLite } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import {
+  GlCollapsibleListbox,
+  GlFormRadioGroup,
+  GlFormRadio,
+  GlFormGroup,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
+import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   POLICIES_BY_RESOURCE,
   JOB_TOKEN_RESOURCES,
@@ -8,21 +16,15 @@ import {
   POLICY_NONE,
 } from '../constants';
 
-export const TABLE_FIELDS = [
-  {
-    key: 'resource.text',
-    label: s__('JobToken|Resource'),
-    class: '!gl-border-none !gl-py-3 !gl-pl-0 !gl-align-middle gl-w-28',
-  },
-  {
-    key: 'policies',
-    label: __('Permissions'),
-    class: '!gl-border-none !gl-py-3',
-  },
-];
-
 export default {
-  components: { GlCollapsibleListbox, GlFormRadioGroup, GlFormRadio, GlTableLite },
+  components: {
+    GlCollapsibleListbox,
+    GlFormRadioGroup,
+    GlFormRadio,
+    GlFormGroup,
+    GlSprintf,
+    GlLink,
+  },
   props: {
     isDefaultPermissionsSelected: {
       type: Boolean,
@@ -65,24 +67,26 @@ export default {
   },
   i18n: {
     defaultPermissions: s__(
-      'JobToken|Use the standard permissions model based on user membership and roles.',
+      'JobToken|Job token inherits permissions from user role and membership.',
     ),
     fineGrainedPermissions: s__(
-      'JobToken|Apply permissions that grant access to individual resources.',
+      `JobToken|Job token permissions are limited to user's role and selected resource and scopes.`,
     ),
   },
-  TABLE_FIELDS,
   POLICIES_BY_RESOURCE,
+  apiEndpointsHelpPath: helpPagePath('ci/jobs/fine_grained_permissions', {
+    anchor: 'available-api-endpoints',
+  }),
 };
 </script>
 
 <template>
   <div>
-    <label>{{ __('Permissions') }}</label>
+    <label>{{ s__('CICD|Permission configuration') }}</label>
     <gl-form-radio-group
       :checked="isDefaultPermissionsSelected"
       :disabled="disabled"
-      class="gl-mb-6"
+      class="gl-mb-5"
       @change="emitPermissionTypeChange"
     >
       <gl-form-radio :value="true" data-testid="default-radio">
@@ -95,22 +99,39 @@ export default {
       </gl-form-radio>
     </gl-form-radio-group>
 
-    <gl-table-lite
+    <gl-form-group
       v-if="!isDefaultPermissionsSelected"
-      :fields="$options.TABLE_FIELDS"
-      :items="$options.POLICIES_BY_RESOURCE"
-      fixed
+      :label="s__('JobToken|Select resources and scope')"
     >
-      <template #cell(policies)="{ item, value: policies }">
-        <gl-collapsible-listbox
-          :items="policies"
-          :disabled="disabled"
-          :selected="selected[item.resource.value]"
-          block
-          class="gl-w-20"
-          @select="emitPoliciesChange($event, item)"
-        />
+      <template #label-description>
+        <gl-sprintf
+          :message="s__('JobToken|Learn more about available %{linkStart}API endpoints%{linkEnd}.')"
+        >
+          <template #link="{ content }">
+            <gl-link :href="$options.apiEndpointsHelpPath" target="_blank">{{ content }}</gl-link>
+          </template>
+        </gl-sprintf>
       </template>
-    </gl-table-lite>
+
+      <ul
+        class="gl-mb-0 gl-mt-3 gl-grid gl-grid-cols-[minmax(14rem,max-content),minmax(10rem,max-content)] gl-items-center gl-gap-5 gl-pl-0"
+        data-testid="resources-dropdowns"
+      >
+        <li
+          v-for="item in $options.POLICIES_BY_RESOURCE"
+          :key="item.resource.text"
+          class="gl-contents"
+        >
+          {{ item.resource.text }}
+          <gl-collapsible-listbox
+            :items="item.policies"
+            :disabled="disabled"
+            :selected="selected[item.resource.value]"
+            block
+            @select="emitPoliciesChange($event, item)"
+          />
+        </li>
+      </ul>
+    </gl-form-group>
   </div>
 </template>

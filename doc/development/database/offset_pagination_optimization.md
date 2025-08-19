@@ -36,7 +36,7 @@ Optimizations should be always rolled out with feature flags, you can also targe
 
 ```ruby
 # - Only apply optimization for large page number lookups
-# - When label_names filter parameter is given, the optimziation will not have effect (complex JOIN).
+# - When label_names filter parameter is given, the optimization will not have effect (complex JOIN).
 if params[:page] > 100 && params[:label_names].blank? && Feature.enabled?(:my_optimized_offet_query)
   Gitlab::Pagination::Offset::PaginationWithIndexOnlyScan.new(scope: scope, page: params[:page], per_page: params[:per_page]).paginate_with_kaminari
 else
@@ -93,7 +93,7 @@ It produces an execution plan which uses an index scan:
          Buffers: shared hit=73212
          I/O Timings: read=0.000 write=0.000
 
- 
+
 Time: 143.779 ms
   - planning: 5.222 ms
   - execution: 138.557 ms

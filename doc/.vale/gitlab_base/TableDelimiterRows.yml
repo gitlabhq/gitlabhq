@@ -9,4 +9,4 @@ vocab: false
 level: error
 scope: raw
 raw:
-  - '(?<=\|\n) *\| ?-{0,2} ?\|'
+  - '(?<=\|\n) *\| ?:?-{0,2}:? ?\|'

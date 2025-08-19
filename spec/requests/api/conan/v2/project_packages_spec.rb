@@ -9,15 +9,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
   let(:project_id) { project.id }
   let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
 
-  shared_examples 'conan package revisions feature flag check' do
-    before do
-      stub_feature_flags(conan_package_revisions_support: false)
-    end
-
-    it_behaves_like 'returning response status with message', status: :not_found,
-      message: "404 'conan_package_revisions_support' feature flag is disabled Not Found"
-  end
-
   shared_examples 'package without revisions returns not found' do |resource: 'Revision'|
     let_it_be(:package) { create(:conan_package, project: project, without_revisions: true) }
 
@@ -132,9 +123,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
 
     it_behaves_like 'conan check_credentials endpoint'
-    it_behaves_like 'conan package revisions feature flag check' do
-      subject { get api(url), headers: headers }
-    end
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
@@ -146,7 +134,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan search endpoint'
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'conan search endpoint with access to package registry for everyone'
-    it_behaves_like 'conan package revisions feature flag check'
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -178,7 +165,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'recipe file download endpoint'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
@@ -228,7 +214,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { get api(url), headers: headers }
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'package file download endpoint'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
@@ -275,7 +260,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
-      it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse recipe file upload endpoint', revision: true
     end
@@ -289,9 +273,8 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
           headers: headers_with_token
       end
 
-      it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
-      it_behaves_like 'workhorse authorize endpoint'
+      it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
 
     describe 'PUT /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -305,7 +288,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
-      it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
       it_behaves_like 'workhorse package file upload endpoint', revision: true
     end
@@ -321,9 +303,8 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
       subject(:request) { put api(url), headers: headers_with_token }
 
-      it_behaves_like 'conan package revisions feature flag check'
       it_behaves_like 'packages feature check'
-      it_behaves_like 'workhorse authorize endpoint'
+      it_behaves_like 'workhorse authorize endpoint', with_checksum_deploy_header: false
     end
   end
 
@@ -356,7 +337,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
     end
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'enforcing read_packages job token policy'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'conan FIPS mode'
@@ -377,7 +357,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { delete api(url), headers: headers }
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'rejects invalid recipe'
@@ -449,7 +428,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       ])
     end
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'enforcing read_packages job token policy'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
@@ -520,7 +498,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       subject(:request) { api_request }
     end
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'conan FIPS mode'
@@ -608,7 +585,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'GET package references metadata endpoint'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
-    it_behaves_like 'conan package revisions feature flag check'
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
@@ -622,7 +598,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'GET package references metadata endpoint', with_recipe_revision: true
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'project not found by project id'
-    it_behaves_like 'conan package revisions feature flag check'
   end
 
   describe 'DELETE /api/v4/projects/:id/packages/conan/v2/conans/:package_name/package_version/:package_username/' \
@@ -641,7 +616,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
     subject(:request) { delete api(url), headers: headers }
 
-    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'packages feature check'
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'rejects invalid recipe'

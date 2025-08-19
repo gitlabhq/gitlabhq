@@ -61,7 +61,7 @@ module QA
             click_element('work-item-edit-form-button')
 
             within_element('work-item-description-wrapper') do
-              fill_element('markdown-editor-form-field', new_description)
+              fill_editor_element('markdown-editor-form-field', new_description)
               click_element('save-description')
             end
           end

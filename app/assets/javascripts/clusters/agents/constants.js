@@ -45,7 +45,7 @@ export const EVENT_ACTIONS_CLICK = 'click_button';
 
 export const TOKEN_NAME_LIMIT = 255;
 
-export const REVOKE_TOKEN_MODAL_ID = 'revoke-token-%{tokenName}';
+export const REVOKE_TOKEN_MODAL_ID = 'revoke-token-%{tokenId}';
 
 export const INTEGRATION_STATUS_VALID_TOKEN = {
   icon: 'status-success',

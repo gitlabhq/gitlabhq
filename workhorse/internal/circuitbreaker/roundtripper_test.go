@@ -2,20 +2,23 @@ package circuitbreaker
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
-	"net/url"
+	"os"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/alicebob/miniredis/v2"
+	redis "github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+
+	configRedis "gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
 // mockRoundTripper implements http.RoundTripper for testing
@@ -33,8 +36,7 @@ func (m *mockRoundTripper) RoundTrip(_ *http.Request) (*http.Response, error) {
 }
 
 func TestRoundTripCircuitBreaker(t *testing.T) {
-	redisConfig, cleanup := setupRedisConfig(t)
-	defer cleanup()
+	rdb := InitRdb(t)
 
 	testCases := []struct {
 		name       string
@@ -60,7 +62,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 					Header:     delegateResponseHeader,
 				},
 			}
-			rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
+			rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, rdb)
 
 			reqBody, err := json.Marshal(map[string]string{"key_id": "test-user-" + tc.name})
 			require.NoError(t, err)
@@ -68,7 +70,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 			require.NoError(t, err)
 
 			// Make enough requests to trip the circuit breaker
-			for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 1 {
+			for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 2 {
 				resp, _ := rt.RoundTrip(req)
 
 				body, err := io.ReadAll(resp.Body)
@@ -164,7 +166,7 @@ func TestResponseToErrorHeaderCondition(t *testing.T) {
 	}
 }
 
-func TestRedisConfigErrors(t *testing.T) {
+func TestNilRedisInstance(t *testing.T) {
 	mockRT := &mockRoundTripper{
 		response: &http.Response{
 			StatusCode: http.StatusOK,
@@ -172,54 +174,29 @@ func TestRedisConfigErrors(t *testing.T) {
 		},
 	}
 
-	testCases := []struct {
-		name        string
-		redisConfig *config.RedisConfig
-	}{
-		{
-			name:        "Nil Redis config",
-			redisConfig: nil,
-		},
-		{
-			name: "Invalid Redis URL",
-			redisConfig: func() *config.RedisConfig {
-				invalidURL, _ := url.Parse("invalid://localhost:6379")
-				return &config.RedisConfig{
-					URL: config.TomlURL{URL: *invalidURL},
-				}
-			}(),
-		},
-	}
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, nil)
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, tc.redisConfig)
+	req, err := http.NewRequest("GET", "http://example.com", nil)
+	require.NoError(t, err)
 
-			req, err := http.NewRequest("GET", "http://example.com", nil)
-			require.NoError(t, err)
+	resp, _ := rt.RoundTrip(req)
 
-			resp, _ := rt.RoundTrip(req)
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	resp.Body.Close()
 
-			body, err := io.ReadAll(resp.Body)
-			require.NoError(t, err)
-			resp.Body.Close()
-			resp.Body = io.NopCloser(bytes.NewBuffer(body))
-
-			// Should use delegate directly in both cases
-			assert.Equal(t, http.StatusOK, resp.StatusCode)
-			assert.Equal(t, delegateBody, string(body))
-		})
-	}
+	// Request goes to the delegate roundTripper
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, delegateBody, string(body))
 }
 
 func TestCircuitBreakerNilRedisKey(t *testing.T) {
-	redisConfig, cleanup := setupRedisConfig(t)
-	defer cleanup()
+	rdb := InitRdb(t)
 
 	errorResp := delegateErrorResponse()
 	mockRT := &mockRoundTripper{response: errorResp}
 	errorResp.Body.Close()
-	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, rdb)
 
 	reqBody, err := json.Marshal(map[string]string{"not_a_key_id": "test-value"})
 	require.NoError(t, err)
@@ -231,13 +208,12 @@ func TestCircuitBreakerNilRedisKey(t *testing.T) {
 }
 
 func TestCircuitBreakerRedisKeyException(t *testing.T) {
-	redisConfig, cleanup := setupRedisConfig(t)
-	defer cleanup()
+	rdb := InitRdb(t)
 
 	errorResp := delegateErrorResponse()
 	mockRT := &mockRoundTripper{response: errorResp}
 	errorResp.Body.Close()
-	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, rdb)
 
 	req, err := http.NewRequest("POST", "http://example.com", &errorReader{})
 	require.NoError(t, err)
@@ -249,6 +225,7 @@ func delegateErrorResponse() *http.Response {
 	return &http.Response{
 		StatusCode: http.StatusTooManyRequests,
 		Body:       io.NopCloser(bytes.NewBufferString(delegateBody)),
+		Header:     http.Header{enableCircuitBreakerHeader: []string{"true"}},
 	}
 }
 
@@ -259,7 +236,9 @@ func (e *errorReader) Read(_ []byte) (n int, err error) {
 }
 
 func testCircuitBreakerResponse(t *testing.T, rt http.RoundTripper, req *http.Request, expectedBody string) {
-	for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 2 {
+	// We make 3 additional requests. 1 to track the user in the circuit breaker, the second to open the circuit breaker, and the third
+	// to test against the opened circuit breaker
+	for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 3 {
 		resp, _ := rt.RoundTrip(req)
 
 		body, err := io.ReadAll(resp.Body)
@@ -272,7 +251,7 @@ func testCircuitBreakerResponse(t *testing.T, rt http.RoundTripper, req *http.Re
 	}
 }
 
-func TestGetRedisKey(t *testing.T) {
+func TestGetUserKey(t *testing.T) {
 	tests := []struct {
 		name     string
 		body     string
@@ -281,7 +260,7 @@ func TestGetRedisKey(t *testing.T) {
 		{
 			name:     "with key_id",
 			body:     `{"key_id":"123456"}`,
-			expected: "gobreaker:key_id:123456",
+			expected: "123456",
 		},
 		{
 			name:     "without key_id",
@@ -300,7 +279,7 @@ func TestGetRedisKey(t *testing.T) {
 			req, err := http.NewRequest("POST", "http://example.com", strings.NewReader(tc.body))
 			require.NoError(t, err)
 
-			key, _ := getRedisKey(req)
+			key, _ := getUserKey(req)
 			assert.Equal(t, tc.expected, key)
 
 			// Verify body can still be read
@@ -311,20 +290,16 @@ func TestGetRedisKey(t *testing.T) {
 	}
 }
 
-// Create a miniredis instance
-func setupRedisConfig(t *testing.T) (*config.RedisConfig, func()) {
-	s, err := miniredis.Run()
+func InitRdb(t *testing.T) *redis.Client {
+	buf, err := os.ReadFile("../../config.toml")
 	require.NoError(t, err)
-
-	redisURL, err := url.Parse("redis://" + s.Addr())
+	cfg, err := config.LoadConfig(string(buf))
 	require.NoError(t, err)
-	redisConfig := &config.RedisConfig{
-		URL: config.TomlURL{URL: *redisURL},
-	}
-
-	cleanup := func() {
-		s.Close()
-	}
-
-	return redisConfig, cleanup
+	rdb, err := configRedis.Configure(cfg)
+	require.NoError(t, err)
+	t.Cleanup(func() {
+		rdb.FlushAll(context.Background())
+		assert.NoError(t, rdb.Close())
+	})
+	return rdb
 }

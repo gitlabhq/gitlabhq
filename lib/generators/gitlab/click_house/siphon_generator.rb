@@ -30,6 +30,7 @@ module Gitlab
         21 => 'Int8',
         23 => 'Int64',
         25 => 'String',
+        869 => 'String', # ip address type
         1016 => 'Array(Int64)',
         1043 => 'String',
         1082 => 'Date32',

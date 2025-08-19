@@ -236,7 +236,7 @@ system provides significant benefits:
 
 - **Selective Reindexing**: Only updates specific document types when needed, avoiding full re-indexes
 - **Automated Maintenance**: Updates proceed without requiring human intervention
-- **Consistent Experience**: Provides the same migration path for both GitLab.com and self-managed instances
+- **Consistent Experience**: Provides the same migration path for both GitLab.com and GitLab Self-Managed instances
 
 #### Framework Components
 

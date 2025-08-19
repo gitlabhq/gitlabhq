@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # These helpers allow you to manage and register
-# U2F and WebAuthn devices
+# WebAuthn devices
 #
 # Usage:
 #   describe "..." do
@@ -19,13 +19,13 @@ module Features
 
     def enable_two_factor_authentication
       click_on _('Enable two-factor authentication')
-      expect(page).to have_content(_('Set up new device'))
+      expect(page).to have_content(_('Register device'))
       wait_for_requests
     end
 
     def manage_two_factor_authentication
       click_on 'Manage two-factor authentication'
-      expect(page).to have_content("Set up new device")
+      expect(page).to have_content(_('Register device'))
       wait_for_requests
     end
 
@@ -47,6 +47,8 @@ module Features
     def webauthn_device_registration(webauthn_device: nil, name: 'My device', password: 'fake')
       webauthn_device ||= FakeWebauthnDevice.new(page, name)
       webauthn_device.respond_to_webauthn_registration
+      click_on _('Register device')
+      wait_for_requests
       click_on _('Set up new device')
       webauthn_fill_form_and_submit(name: name, password: password)
       webauthn_device

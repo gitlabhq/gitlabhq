@@ -743,6 +743,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         let_it_be(:project) { create(:project, :empty_repo) }
         let_it_be(:user)    { project.first_owner }
 
+        let(:initialization_params) { base_initialization_params.merge(before: nil) }
+        let(:changed_file) { 'file2.txt' }
+        let(:ref) { 'feature_2' }
+
         before_all do
           project.repository.add_branch(user, 'feature_1', 'master')
 
@@ -756,10 +760,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             user, 'file2.txt', 'file 2', message: 'Create file2.txt', branch_name: 'feature_2'
           )
         end
-
-        let(:initialization_params) { base_initialization_params.merge(before: nil) }
-        let(:changed_file) { 'file2.txt' }
-        let(:ref) { 'feature_2' }
 
         context 'for jobs rules' do
           let(:config) do

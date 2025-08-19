@@ -1,5 +1,6 @@
 /* Common setup for both unit and integration test environments */
 import { ReadableStream, WritableStream } from 'node:stream/web';
+import { BroadcastChannel } from 'node:worker_threads';
 import * as jqueryMatchers from 'custom-jquery-matchers';
 import Vue from 'vue';
 import { enableAutoDestroy } from '@vue/test-utils';
@@ -17,6 +18,7 @@ import '~/commons/bootstrap';
 
 global.ReadableStream = ReadableStream;
 global.WritableStream = WritableStream;
+global.BroadcastChannel = BroadcastChannel;
 
 enableAutoDestroy(afterEach);
 

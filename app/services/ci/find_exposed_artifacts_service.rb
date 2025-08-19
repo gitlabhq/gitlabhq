@@ -15,25 +15,15 @@ module Ci
     def for_pipeline(pipeline, limit: MAX_EXPOSED_ARTIFACTS)
       results = []
 
-      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
-        pipeline.builds.latest.each_batch do |job_batch|
-          job_batch.select_with_exposed_artifacts.each do |job|
-            exposed_artifacts = for_job(job)
-            results << exposed_artifacts if exposed_artifacts
-
-            break if results.size >= limit
-          end
+      pipeline.builds.latest.each_batch do |job_batch|
+        job_batch.select_with_exposed_artifacts.each do |job|
+          exposed_artifacts = for_job(job)
+          results << exposed_artifacts if exposed_artifacts
 
           break if results.size >= limit
         end
-      else
-        pipeline.builds.latest.with_exposed_artifacts.find_each do |job|
-          if job_exposed_artifacts = for_job(job)
-            results << job_exposed_artifacts
-          end
 
-          break if results.size >= limit
-        end
+        break if results.size >= limit
       end
 
       results
@@ -42,11 +32,11 @@ module Ci
     def for_job(job)
       return unless job.has_exposed_artifacts?
 
-      metadata_entries = first_2_metadata_entries_for_artifacts_paths(job)
+      metadata_entries = first_2_metadata_entries_for_artifacts_exposed_paths(job)
       return if metadata_entries.empty?
 
       {
-        text: job.artifacts_expose_as,
+        text: job.artifacts_exposed_as,
         url: path_for_entries(metadata_entries, job),
         job_path: project_job_path(job.project, job),
         job_name: job.name
@@ -58,10 +48,10 @@ module Ci
     # we don't need to fetch all artifacts entries for a job because
     # it could contain many. We only need to know whether it has 1 or more
     # artifacts, so fetching the first 2 would be sufficient.
-    def first_2_metadata_entries_for_artifacts_paths(job)
+    def first_2_metadata_entries_for_artifacts_exposed_paths(job)
       return [] unless job.artifacts_metadata
 
-      job.artifacts_paths
+      job.artifacts_exposed_paths
         .lazy
         .map { |path| job.artifacts_metadata_entry(path, recursive: true) }
         .select { |entry| entry.exists? }

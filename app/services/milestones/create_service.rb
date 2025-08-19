@@ -7,8 +7,8 @@ module Milestones
 
       before_create(milestone)
 
-      if milestone.save && milestone.project_milestone?
-        event_service.open_milestone(milestone, current_user)
+      if milestone.save
+        event_service.open_milestone(milestone, current_user) if milestone.project_milestone?
         execute_hooks(milestone, 'create')
       end
 

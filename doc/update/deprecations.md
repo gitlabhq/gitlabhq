@@ -1187,6 +1187,28 @@ In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.
 
 </div>
 
+<div class="deprecation " data-milestone="18.6">
+
+### Prometheus 2.x bundled with the Omnibus Linux package
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- Removal in GitLab <span class="milestone">18.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9196).
+
+</div>
+
+Prometheus 2.x that is bundled with the Linux package is deprecated and will be updated to
+the latest Prometheus 3.x release in GitLab 18.6.
+
+Prometheus 3 contains some potentially breaking changes such as a new log format and stricter
+header validation. For more information, see the [Prometheus migration guide](https://prometheus.io/docs/prometheus/3.0/migration).
+
+This change does not impact GitLab Helm chart installations.
+
+</div>
+
 <div class="deprecation breaking-change" data-milestone="18.6">
 
 ### Replace compliance standards adherence dashboard with compliance status dashboard
@@ -1210,11 +1232,46 @@ configure the adherence that you require.
 In GitLab 18.6, we'll replace the compliance standards adherence dashboard with the compliance status dashboard for more accurate reporting on requirements and controls.
 
 </div>
+
+<div class="deprecation " data-milestone="18.6">
+
+### User setting to disable exact code search
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- Removal in GitLab <span class="milestone">18.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/554933).
+
+</div>
+
+The user setting to disable exact code search is now deprecated. On GitLab.com, you can no longer disable exact code search in profile preferences.
+
+Exact code search provides a better user experience and is compatible with existing search APIs. This user setting is planned for removal in GitLab 18.6 to ensure all users benefit from improved search functionality.
+
+</div>
 </div>
 
 <div class="milestone-wrapper" data-milestone="18.5">
 
 ## GitLab 18.5
+
+<div class="deprecation " data-milestone="18.5">
+
+### Early Mistral models deprecated for GitLab Duo Self-Hosted
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.3</span>
+- End of Support in GitLab <span class="milestone">18.5</span>
+- Removal in GitLab <span class="milestone">18.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/557156).
+
+</div>
+
+In GitLab 18.5, GitLab will deprecate support for the Mistral 7B-it, Mixtral 8x7B, and Mixtral 8x22B models for use with GitLab Duo Self-Hosted. GitLab Duo Enterprise customers can continue to use these models with GitLab Duo Self-Hosted, but will no longer receive technical support for configurations with these models. GitLab Duo Self-Hosted will continue to support Mistral Small 24B Instruct 2506, which has been [validated as fully compatible](https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/) with all generally available GitLab Duo Self-Hosted features.
+
+</div>
 
 <div class="deprecation " data-milestone="18.5">
 

@@ -64,11 +64,19 @@ export default {
       default: undefined,
     },
   },
+  methods: {
+    handleClick(event) {
+      this.$emit('click', event);
+      if (this.isLink && this.href) {
+        event.stopPropagation();
+      }
+    },
+  },
 };
 </script>
 
 <template>
-  <component :is="isLink ? 'gl-link' : 'span'" :href="isLink ? href : null">
+  <component :is="isLink ? 'gl-link' : 'span'" :href="href" @click="handleClick">
     <!-- wrapper  -->
     <component
       :is="wrapperComponent"

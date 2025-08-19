@@ -30,6 +30,7 @@ module RuboCop
           helper instead
         MSG
 
+        # @!method modifies_sidekiq_middleware?(node)
         def_node_search :modifies_sidekiq_middleware?, <<~PATTERN
           (send
             (const

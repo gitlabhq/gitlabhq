@@ -15,9 +15,8 @@ module Preloaders
         associations: {
           creator: [],
           organization: [],
-          project_namespace: :namespace_settings_with_ancestors_inherited_settings,
           group: :route,
-          namespace: :owner
+          namespace: [:owner, :namespace_settings_with_ancestors_inherited_settings]
         }
       ).call
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute

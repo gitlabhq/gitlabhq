@@ -375,6 +375,11 @@ export default [
               message:
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
+            {
+              group: ['@gitlab/ui/src/*'],
+              message:
+                'Avoid importing from @gitlab/ui/src. The build system uses aliases to import specific build variants of gitlab-ui modules, and consumer files should not override these aliases.',
+            },
           ],
         },
       ],
@@ -590,7 +595,6 @@ export default [
     files: ['**/*.graphql'],
 
     languageOptions: {
-
       parserOptions: {
         parser: graphqlPlugin.parser,
         graphQLConfig: {
@@ -671,6 +675,14 @@ export default [
     },
   },
 
+  {
+    files: ['storybook/config/test-runner.js'],
+
+    rules: {
+      'unicorn/filename-case': 'off',
+    },
+  },
+
   // Jest config
   jestConfig,
 
@@ -720,6 +732,43 @@ export default [
     rules: {
       '@gitlab/require-i18n-strings': 'off',
       'no-restricted-imports': 'off',
+    },
+  },
+
+  // k6 performance test configuration
+  {
+    files: ['qa/performance_test/k6_test/**/*.js'],
+
+    languageOptions: {
+      globals: {
+        __ENV: 'readonly',
+        __ITER: 'readonly',
+        __VU: 'readonly',
+        open: 'readonly',
+      },
+    },
+
+    settings: {
+      'import/ignore': [
+        'k6',
+        'k6/',
+        'https://jslib.k6.io',
+      ],
+    },
+
+    rules: {
+      // k6 modules are not resolvable by standard import resolver
+      'import/no-unresolved': 'off',
+      // k6 allows .js extensions in URLs
+      'import/extensions': 'off',
+      // k6 performance tests don't need internationalization
+      '@gitlab/require-i18n-strings': 'off',
+      // Console logging is expected in k6 tests
+      'no-console': 'off',
+      // Allow unnamed functions in k6 tests
+      'func-names': 'off',
+      // k6 globals are defined above
+      'no-undef': 'off',
     },
   },
   ...jhConfigs,

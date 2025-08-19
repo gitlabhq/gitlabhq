@@ -35,7 +35,7 @@ address in the body of the email instead.
 To include the author's email address in the email body:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Select the **Include author name in email notification email body** checkbox.
 1. Select **Save changes**.
@@ -54,7 +54,7 @@ GitLab can send email in multipart format (HTML and plain text) or plain text on
 To enable multipart email:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Select **Enable multipart email**.
 1. Select **Save changes**.
@@ -74,7 +74,7 @@ This configuration option sets the email hostname for [private commit emails](..
 To change the hostname used in private commit emails:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Enter the desired hostname in the **Custom hostname (for private commit emails)** field.
 1. Select **Save changes**.
@@ -102,7 +102,7 @@ can be used for legal, auditing, or compliance reasons, for example.
 To add additional text to emails:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Enter your text in the **Additional text** field.
 1. Select **Save changes**.
@@ -114,7 +114,7 @@ GitLab sends email notifications to users when their account has been deactivate
 To disable these notifications:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Clear the **Enable user deactivation emails** checkbox.
 1. Select **Save changes**.
@@ -136,7 +136,7 @@ setting.
 To add additional text to deactivation emails:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Enter your text in the **Additional text for deactivation email** field.
 1. Select **Save changes**.
@@ -159,7 +159,7 @@ In GitLab 17.7 and later, the following inherited group and project members can 
 To enable token expiration emails to inherited group and project members:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **Email**.
 1. Under **Expiry notification emails about group and project access tokens should be sent to:**, select **All direct and inherited members of the group or project**.
 1. Select the **Enforce this setting for all groups on this instance** checkbox.

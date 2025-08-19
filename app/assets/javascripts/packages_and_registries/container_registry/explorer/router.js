@@ -6,7 +6,7 @@ import List from './pages/list.vue';
 
 Vue.use(VueRouter);
 
-export default function createRouter(base, breadCrumbState) {
+export default function createRouter(base) {
   const router = new VueRouter({
     base,
     mode: 'history',
@@ -24,9 +24,6 @@ export default function createRouter(base, breadCrumbState) {
         name: 'details',
         path: '/:id',
         component: Details,
-        meta: {
-          nameGenerator: () => breadCrumbState.name,
-        },
       },
     ],
   });

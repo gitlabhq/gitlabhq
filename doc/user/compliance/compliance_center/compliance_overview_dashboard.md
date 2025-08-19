@@ -15,6 +15,7 @@ title: Compliance overview dashboard
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13909) in GitLab 18.2 with a flag named `compliance_group_dashboard`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/555804) in GitLab 18.3. Feature flag `compliance_group_dashboard` removed.
 
 {{< /history >}}
 

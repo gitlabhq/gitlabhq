@@ -622,6 +622,11 @@ task.
 
 The `duo_add_on_groups` setting automatically [manages Duo add-on seats](../../duo_add_on_seat_management_with_ldap.md) for users who authenticate through LDAP. This feature helps organizations to streamline their **GitLab Duo** seat allocation process based on LDAP group memberships.
 
+Duo seat synchronization occurs in two ways:
+
+- **On user sign-in**: When a user signs in through LDAP, GitLab immediately checks their group memberships.
+- **Scheduled sync**: GitLab automatically syncs all LDAP users daily at 02:00 AM (server time) to ensure seat assignments are up to date even without user sign-ins.
+
 To enable add-on seat management for groups, you must configure the `duo_add_on_groups` setting in your GitLab instance:
 
 {{< tabs >}}
@@ -662,7 +667,7 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
        ldap:
          servers:
            main:
-           duo_add_on_groups: => ['duo_group_1', 'duo_group_2'],
+            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
 1. Save the file and apply the new values:
@@ -796,7 +801,7 @@ network and LDAP server response time affects these metrics.
 
 ### Adjust LDAP user sync schedule
 
-By default, GitLab runs a worker once per day at 01:30 a.m. server time to
+By default, GitLab runs a worker once per day at 01:30 AM server time to
 check and update GitLab users against LDAP.
 
 {{< alert type="warning" >}}
@@ -991,6 +996,109 @@ sync to run once every two hours at the top of the hour.
      ee_cron_jobs:
        ldap_group_sync_worker:
          cron: "*/30 * * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
+### Adjust LDAP Duo add-on seat sync schedule
+
+By default, GitLab runs a Duo add-on seat sync process daily at 02:00 AM server time to
+check LDAP group membership and assign or remove Duo add-on seats accordingly.
+
+{{< alert type="warning" >}}
+
+Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
+
+{{< /alert >}}
+
+You can manually configure LDAP Duo add-on seat sync times by setting configuration values. The following example shows how to set the sync to run once every four hours.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_add_on_seat_sync_worker_cron'] = "0 */4 * * *"
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       cron_jobs:
+         ldap_add_on_seat_sync_worker:
+           cron: "0 */4 * * *"
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Docker" >}}
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_add_on_seat_sync_worker_cron'] = "0 */4 * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ee_cron_jobs:
+       ldap_add_on_seat_sync_worker:
+         cron: "0 */4 * * *"
    ```
 
 1. Save the file and restart GitLab:

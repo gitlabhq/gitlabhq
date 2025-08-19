@@ -6,10 +6,10 @@ import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { __ } from '~/locale';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
-import MergeRequestTabs from 'jh_else_ce/merge_request_tabs';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import { getParameterValues, setUrlParams } from './lib/utils/url_utility';
+import MergeRequestTabs from './merge_request_tabs';
 import TaskList from './task_list';
 
 function MergeRequest(opts) {

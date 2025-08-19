@@ -10,7 +10,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
       class="commit-actions gl-flex gl-gap-3 gl-items-start gl-my-2"
     >
       <div
-        class="gl-flex gl-h-7 gl-items-center gl-ml-5"
+        class="gl-flex gl-h-7 gl-items-center"
       >
         <ci-icon-stub
           class="gl-mr-2"
@@ -20,7 +20,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         />
       </div>
       <gl-button-group-stub
-        class="gl-flex gl-items-center gl-ml-4 js-commit-sha-group"
+        class="gl-flex gl-items-center js-commit-sha-group"
       >
         <gl-button-stub
           buttontextclasses=""

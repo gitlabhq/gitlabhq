@@ -9,23 +9,25 @@ module API
         requires :name, type: String, desc: 'The name of the label to be created'
         requires :color, type: String, desc: "The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The description of label to be created'
+        optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 
       params :label_update_params do
         optional :new_name, type: String, desc: 'The new name of the label'
         optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The new description of label'
+        optional :archived, type: Boolean, desc: 'Whether the label is archived'
       end
 
       params :project_label_update_params do
         use :label_update_params
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
-        at_least_one_of :new_name, :color, :description, :priority
+        at_least_one_of :new_name, :color, :description, :priority, :archived
       end
 
       params :group_label_update_params do
         use :label_update_params
-        at_least_one_of :new_name, :color, :description
+        at_least_one_of :new_name, :color, :description, :archived
       end
 
       def find_label(parent, id_or_title, params = { include_ancestor_groups: true })
@@ -81,6 +83,7 @@ module API
         # params is used to update the label so we need to remove this field here
         params.delete(:label_id)
         params.delete(:name)
+        params.delete(:archived) unless Feature.enabled?(:labels_archive, :instance)
 
         update_params = declared_params(include_missing: false)
 

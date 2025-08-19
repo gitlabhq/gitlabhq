@@ -215,6 +215,7 @@ RSpec.describe JsonSchemaValidator, feature_category: :shared do
           config[:run] = 'C'
           allow(job).to receive(:read_attribute_for_validation).and_return({ run: config[:run] })
           allow(JSONSchemer).to receive(:schema).and_return(JSONSchemer.schema(schema))
+          allow(File).to receive(:exist?).with(anything).and_return(true)
           allow(File).to receive(:read).with(anything).and_return(schema.to_json)
         end
 

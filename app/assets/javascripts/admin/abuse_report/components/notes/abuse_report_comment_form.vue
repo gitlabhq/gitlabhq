@@ -22,10 +22,6 @@ export default {
   },
   inject: ['uploadNoteAttachmentPath'],
   props: {
-    abuseReportId: {
-      type: String,
-      required: true,
-    },
     isSubmitting: {
       type: Boolean,
       required: false,

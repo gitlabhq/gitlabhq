@@ -24,7 +24,6 @@ export default {
     return {
       hasQuickAction: false,
       quickActionExplanation: '',
-      insertTrailingBreak: false,
     };
   },
   computed: {

@@ -87,6 +87,7 @@ glab mr merge
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLM: Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku)
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -97,7 +98,7 @@ glab mr merge
 
 {{< /history >}}
 
-The GitLab CLI includes features powered by [GitLab Duo](../../user/ai_features.md). These include:
+The GitLab CLI includes features powered by [GitLab Duo](../../user/gitlab_duo/_index.md). These include:
 
 - [`glab duo ask`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/duo/ask.md)
 
@@ -171,6 +172,21 @@ $ echo $CI_JOB_ID
 9811701914
 ```
 
+### Use the CLI as a Docker credential helper
+
+You can use the CLI as a [Docker credential helper](https://docs.docker.com/reference/cli/docker/login/#credential-helpers)
+when pulling images from the GitLab [container registry](../../user/packages/container_registry/_index.md) or the
+[container image dependency proxy](../../user/packages/dependency_proxy/_index.md). To configure the credential helper
+do the following:
+
+1. Run `glab auth login`.
+1. Select the type of GitLab instance to sign in to. If prompted, enter your GitLab hostname.
+1. For sign-in method, select `Web`.
+1. Enter a comma-separated list of domains used for the container registry and container image proxy.
+   When signing in to GitLab.com, default values are provided.
+1. After authenticating, run `glab auth configure-docker` to initialize the credential helper in
+   your Docker configuration.
+
 ## Report issues
 
 Open an issue in the [`gitlab-org/cli` repository](https://gitlab.com/gitlab-org/cli/-/issues/new)
@@ -205,3 +221,18 @@ before performing completions:
 
 For more information, see [issue 122](https://github.com/1Password/shell-plugins/issues/122)
 for the 1Password shell plugin.
+
+### Commands use the wrong Git remote
+
+If a Git repository has multiple remotes and you select the wrong one, commands might return empty
+results if they query the wrong remote. To fix this problem, change the remote `glab` uses for a repository:
+
+1. From your terminal, run `git config edit`.
+1. Find the lines that include `glab-resolved = base`, and if incorrect, remove them.
+1. Save your changes to your Git configuration file.
+1. To set the default you'd like to use, run this command. Edit the example and replace `origin`
+   with the name of your preferred remote:
+
+   ```shell
+   git config --append remote.origin.glab-resolved base
+   ```

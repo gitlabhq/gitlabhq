@@ -58,11 +58,11 @@ still giving you access to other recent work:
 
 GitLab shows the total number of **Active** merge requests on the left sidebar on all pages. For example, this user has:
 
-![The top left area of the ](img/homepage_totals_v17_9.png)
+![The top left area of the ](img/homepage_totals_v18_3.png)
 
-- 31 open issues ({{< icon name="issue-type-issue" >}})
-- 8 active merge requests ({{< icon name="merge-request-open" >}})
-- 29 to-do items ({{< icon name="todo-done" >}})
+- 9 open issues ({{< icon name="issue-type-issue" >}})
+- 1 active merge request ({{< icon name="merge-request-open" >}})
+- 1 to-do item ({{< icon name="todo-done" >}})
 
 Each table row groups related information about a merge request together into columns:
 
@@ -98,7 +98,7 @@ In the **Workflow** view, the **Active** tab sorts merge requests in this order:
 
 - **Returned to you**
 - **Review requested**
-- **Assigned to you**
+- **Your merge requests**
 
 Merge requests in these states are excluded from the **Active** count:
 
@@ -170,21 +170,12 @@ This review flow assumes:
 
 Merge requests in one of the **Active** statuses count toward the total shown on the left sidebar:
 
-- Active statuses: **Assigned to you**, **Returned to you**, **Review requested**
+- Active statuses: **Returned to you**, **Review requested**, **Your merge requests**
 - Inactive statuses: **Waiting for assignee**, **Waiting for approvals**, **Approved by you**, **Approved by others**
 
 ## Workflow view: active statuses
 
 These merge requests need attention from you, or a member of your team.
-
-### Assigned to you
-
-You're the merge request author or assignee. You've not added reviewers yet.
-
-- Next step: Add reviewers to start the review process.
-- Statuses:
-  - **Draft**: The merge request is marked as draft.
-  - **Reviewers needed**: The merge request is not a draft, but has no reviewers.
 
 ### Returned to you
 
@@ -203,6 +194,15 @@ You're a reviewer for this merge request.
 - Statuses:
   - **Requested**: You've not yet started a review.
   - **Review started**: You've started a review, but not completed it yet.
+
+### Your merge requests
+
+You're the merge request author or assignee. You've not added reviewers yet.
+
+- Next step: Add reviewers to start the review process.
+- Statuses:
+  - **Draft**: The merge request is marked as draft.
+  - **Reviewers needed**: The merge request is not a draft, but has no reviewers.
 
 ## Workflow view: inactive statuses
 

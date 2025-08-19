@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Usage Quotas', :js, feature_category: :consumables_cost_management do
+RSpec.describe 'Groups > Usage quotas', :js, feature_category: :consumables_cost_management do
   include UsageQuotasHelpers
 
   let_it_be_with_reload(:group) { create(:group) }
@@ -18,7 +18,7 @@ RSpec.describe 'Groups > Usage Quotas', :js, feature_category: :consumables_cost
     sign_in(user)
   end
 
-  it_behaves_like 'Usage Quotas is accessible' do
+  it_behaves_like 'Usage quotas is accessible' do
     let(:usage_quotas_path) { group_usage_quotas_path(group) }
 
     before do
@@ -31,7 +31,7 @@ RSpec.describe 'Groups > Usage Quotas', :js, feature_category: :consumables_cost
       visit edit_group_path(sub_group)
 
       within_testid('super-sidebar') do
-        expect(page).not_to have_link('Usage Quotas')
+        expect(page).not_to have_link('Usage quotas')
       end
     end
 

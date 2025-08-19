@@ -139,7 +139,7 @@ To remove a worker class, follow these steps over three minor releases:
    This ensures that instances related to the worker class are no longer being enqueued.
 
 1. Ensure both the frontend and backend code no longer relies on any of the work that used to be done by the worker.
-1. In the relevant worker classes, replace the contents of the `perform` method with a no-op, while keeping any arguments in tact.
+1. In the relevant worker classes, replace the contents of the `perform` method with a no-op, while keeping any arguments intact.
 
    For example, if you're working with the following `ExampleWorker`:
 

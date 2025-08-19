@@ -35,9 +35,10 @@ setting deployment or release tags automatically.
 
 In the GitLab UI, each tag displays:
 
-![Example of a single tag](img/tag-display_v15_9.png)
+![Example of a single tag](img/tag-display_v18_3.png)
 
-- The tag name. ({{< icon name="tag" >}})
+- The tag name ({{< icon name="tag" >}})
+- Copy the tag name ({{< icon name="copy-to-clipboard" >}}).
 - Optional. If the tag is [protected](../../protected_tags.md), a **protected** badge.
 - The commit SHA ({{< icon name="commit" >}}), linked to the commit's contents.
 - The commit's title and creation date.
@@ -114,6 +115,14 @@ GitLab enforces these additional rules on all tags:
 - Tag names starting with 40 or 64 hexadecimal characters are prohibited, because they are similar to Git commit hashes.
 - Tag names cannot start with `-`, `refs/heads/`, `refs/tags/`, or `refs/remotes/`
 - Tag names are case-sensitive.
+
+## Copy a tag name
+
+To copy a tag name to your clipboard:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code** > **Tags**.
+1. Next to the tag name, select **Copy tag name** ({{< icon name="copy-to-clipboard" >}}).
 
 ## Prevent tag deletion
 

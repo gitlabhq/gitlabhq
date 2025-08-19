@@ -1,6 +1,5 @@
 ---
 InternalAffairs/NumblockHandler:
-  Details: grace period
   Exclude:
     - 'rubocop/cop/avoid_break_from_strong_memoize.rb'
     - 'rubocop/cop/avoid_return_from_blocks.rb'

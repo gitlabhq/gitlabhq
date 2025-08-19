@@ -165,15 +165,12 @@ module Gitlab
               end
             end
 
-            # vulnerability_signatures_dedup_by_type depends on vulnerability_finding_signatures_enabled
-            qualified_signature = @signatures_enabled && Feature.enabled?(:vulnerability_signatures_dedup_by_type, project)
-
             signature_algorithms.map do |algorithm, values|
               value = values.join('|')
               signature = ::Gitlab::Ci::Reports::Security::FindingSignature.new(
                 algorithm_type: algorithm,
                 signature_value: value,
-                qualified_signature: qualified_signature
+                qualified_signature: @signatures_enabled
               )
 
               signature if signature.valid?

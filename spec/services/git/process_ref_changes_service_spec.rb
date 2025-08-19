@@ -115,7 +115,7 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
       end
     end
 
-    context 'pipeline creation' do
+    context 'pipeline creation', :sidekiq_inline do
       context 'with valid .gitlab-ci.yml' do
         before do
           stub_ci_pipeline_to_return_yaml_file
@@ -151,9 +151,11 @@ RSpec.describe Git::ProcessRefChangesService, feature_category: :source_code_man
           it "calls Gitlab::AppJsonLogger when a Git push is made" do
             # We expect some logs from Gitlab::Ci::Pipeline::CommandLogger,
             # but no logs from warn_if_over_process_limit
+            allow(Gitlab::AppJsonLogger).to receive(:info).and_call_original
             expect(Gitlab::AppJsonLogger).to receive(:info).with(
               hash_including("class" => "Gitlab::Ci::Pipeline::CommandLogger")
             ).twice
+            expect(Gitlab::AppJsonLogger).not_to receive(:info).with(message: /ref count exceeded limit/)
 
             expect { subject.execute }.to change { Ci::Pipeline.count }.by(changes.count - 1)
           end

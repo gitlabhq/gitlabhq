@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', feature_category: :web_ide do
     describe 'Settings Sync in Web IDE',
       :requires_admin,
       :skip_live_env,
       :orchestrated,
-      :mtls, # The extension marketplace requires running Web IDE in a secure context.
-      product_group: :remote_development,
-      feature_category: :web_ide do
+      :mtls do # The extension marketplace requires running Web IDE in a secure context.
       include_context 'Web IDE test prep'
       let(:test_user) { Runtime::User::Store.test_user }
 

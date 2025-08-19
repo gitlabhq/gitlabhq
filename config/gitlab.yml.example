@@ -217,10 +217,23 @@ production: &base
     # initial_gitlab_product_usage_data: true
 
   ## Openbao settings
-  ## Optional: Configure custom OpenBao server URL
-  ## If not specified, defaults to GitLab's host with port 8200
+  ## Configure OpenBao server URLs for secrets management
+  ## Two URLs can be configured to support different network architectures:
+  ##
+  ## - url: External URL used by GitLab Runners and external clients
+  ##   This URL should be accessible from outside the cluster/network
+  ##   Example: https://vault.company.com:8200
+  ##
+  ## - internal_url: Internal URL used by Rails application for direct communication
+  ##   This URL is used for Rails-to-OpenBao communication within the cluster/network
+  ##   Provides better performance and security for internal connections
+  ##   Example: https://vault.company-internal.com:8200
+  ##
+  ## If internal_url is not specified, the Rails application will use the external URL
+  ## If neither is specified, defaults to GitLab's host with port 8200
   # openbao:
-    # url: https://vault.company.com:8200  # Example for external server
+    # url: https://vault.company.com:8200  # External URL for runners and external clients
+    # internal_url: https://vault.company-internal.com:8200 # Internal URL for Rails application
 
   ## Custom claim values for JWT ID Tokens
   # ci_id_tokens:
@@ -651,6 +664,11 @@ production: &base
     # NOTE: This will only take effect if LDAP is enabled
     ldap_group_sync_worker:
       cron: "0 * * * *"
+
+    # Periodically sync LDAP Duo add-on seat assignments.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_add_on_seat_sync_worker:
+      cron: "0 2 * * *"
 
     # GitLab Geo metrics update worker
     # NOTE: This will only take effect if Geo is enabled

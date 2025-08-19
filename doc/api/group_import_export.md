@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Group import and export API
+description: "Import and export groups with the REST API."
 ---
 
 {{< details >}}
@@ -53,7 +54,9 @@ POST /groups/:id/export
 | `id`      | integer/string | yes      | ID of the group |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/export"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/export"
 ```
 
 ```json
@@ -77,10 +80,11 @@ GET /groups/:id/export/download
 ```shell
 group=1
 token=secret
-curl --request GET\
-     --header "PRIVATE-TOKEN: ${token}" \
-     --output download_group_${group}.tar.gz \
-     "https://gitlab.example.com/api/v4/groups/${group}/export/download"
+
+curl --request GET \
+  --header "PRIVATE-TOKEN: ${token}" \
+  --output download_group_${group}.tar.gz \
+  --url "https://gitlab.example.com/api/v4/groups/${group}/export/download"
 ```
 
 ```shell
@@ -122,9 +126,11 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "name=imported-group" --form "path=imported-group" \
-     --form "file=@/path/to/file" "https://gitlab.example.com/api/v4/groups/import"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "name=imported-group" --form "path=imported-group" \
+  --form "file=@/path/to/file" \
+  --url "https://gitlab.example.com/api/v4/groups/import"
 ```
 
 ## Related topics

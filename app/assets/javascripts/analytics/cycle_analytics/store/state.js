@@ -5,7 +5,6 @@ import {
 
 export default () => ({
   id: null,
-  features: {},
   groupPath: {},
   namespace: {
     name: null,

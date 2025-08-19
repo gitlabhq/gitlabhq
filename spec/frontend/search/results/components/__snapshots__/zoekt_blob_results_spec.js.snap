@@ -26,7 +26,6 @@ exports[`ZoektBlobResults when component loads normally renders component proper
         <blob-body-stub
           file="[object Object]"
           position="1"
-          systemcolorscheme="gl-light"
         />
       </div>
     </div>
@@ -49,7 +48,6 @@ exports[`ZoektBlobResults when component loads normally renders component proper
         <blob-body-stub
           file="[object Object]"
           position="2"
-          systemcolorscheme="gl-light"
         />
       </div>
       <div

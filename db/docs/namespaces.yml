@@ -10,7 +10,7 @@ feature_categories:
 description: Storing namespaces records for groups, users and projects
 introduced_by_url: https://github.com/gitlabhq/gitlabhq/pull/2051
 milestone: "<6.0"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 schema_inconsistencies:
 - type: missing_indexes
   object_name: index_namespaces_on_created_at

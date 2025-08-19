@@ -82,20 +82,11 @@ export default {
     hasChildren() {
       return this.group.hasChildren;
     },
-    hasAvatar() {
-      return this.group.avatarUrl !== null;
-    },
-    hasComplianceFramework() {
-      return Boolean(this.group.complianceFramework?.name);
-    },
     isGroup() {
       return this.group.type === ITEM_TYPE.GROUP;
     },
     microdata() {
       return this.group.microdata || {};
-    },
-    complianceFramework() {
-      return this.group.complianceFramework;
     },
     showActionsMenu() {
       return this.isGroup && (this.group.canEdit || this.group.canRemove || this.group.canLeave);

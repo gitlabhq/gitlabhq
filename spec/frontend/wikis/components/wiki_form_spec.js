@@ -171,6 +171,27 @@ describe('WikiForm', () => {
     restoreLocation();
   });
 
+  it.each`
+    title   | display
+    ${''}   | ${'empty string'}
+    ${' '}  | ${'whitespace only'}
+    ${null} | ${'null'}
+  `('shows an error on attempted submit if the title is $display', async ({ title }) => {
+    createWrapper({ persisted: true, mountFn: mount });
+
+    expect(findTitle().props('state')).toBe(null);
+
+    findTitle().setValue(title);
+    await findForm().trigger('submit');
+
+    expect(findTitle().props('state')).toBe(false);
+
+    findTitle().setValue('my page');
+    await findForm().trigger('submit');
+
+    expect(findTitle().props('state')).toBe(true);
+  });
+
   describe('when wiki page is a template', () => {
     beforeEach(() => {
       mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/templates/abc');

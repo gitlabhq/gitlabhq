@@ -281,7 +281,7 @@ describe('Package Files', () => {
         createComponent({ canDelete });
         await waitForPromises();
 
-        expect(findFirstActionMenu().exists()).toBe(false);
+        expect(findFirstRow().findComponent(GlDisclosureDropdown).exists()).toBe(false);
       });
     });
   });

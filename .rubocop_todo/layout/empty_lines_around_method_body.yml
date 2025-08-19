@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/EmptyLinesAroundMethodBody:
-  Details: grace period
   Exclude:
     - 'app/models/group.rb'
     - 'app/services/members/destroy_service.rb'

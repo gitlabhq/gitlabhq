@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
-    describe 'SSH keys support', :smoke, product_group: :source_code do
+  RSpec.describe 'Create', feature_category: :source_code_management do
+    describe 'SSH keys support', :smoke do
       let(:key_title) { "key for ssh tests create #{Time.now.to_f}" }
 
       key = nil

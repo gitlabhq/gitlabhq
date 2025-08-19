@@ -3,8 +3,6 @@ import { createWrapper, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
@@ -48,7 +46,8 @@ import {
   MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
 import { useNotes } from '~/notes/store/legacy_notes';
-import createDiffsStore from '../create_diffs_store';
+import { useBatchComments } from '~/batch_comments/store';
+import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
 const TEST_ENDPOINT = `${TEST_HOST}/diff/endpoint`;
@@ -57,7 +56,6 @@ const UPDATED_COMMIT_URL = `${TEST_HOST}/COMMIT/NEW`;
 const ENDPOINT_BATCH_URL = `${TEST_HOST}/diff/endpointBatch`;
 const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
 
-Vue.use(Vuex);
 Vue.use(VueApollo);
 Vue.use(PiniaVuePlugin);
 
@@ -92,7 +90,6 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         ...props,
       },
-      store: createDiffsStore(),
       pinia,
     });
   };
@@ -122,6 +119,8 @@ describe('diffs/components/app', () => {
     store.assignDiscussionsToDiff.mockResolvedValue();
 
     useNotes();
+    useBatchComments();
+    useFindingsDrawer();
 
     stubPerformanceWebAPI();
     // setup globals (needed for component to mount :/)

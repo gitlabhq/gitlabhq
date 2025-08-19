@@ -20,6 +20,7 @@
           %tbody
             - @matching_refs.each do |matching_tag|
               = render partial: "projects/protected_tags/shared/matching_tag", object: matching_tag
+        = render('kaminari/gitlab/without_count', previous_path: @prev_path, next_path: @next_path, event_tracking: nil)
     - else
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
         - c.with_body do

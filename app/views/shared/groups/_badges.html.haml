@@ -1,8 +1,8 @@
-- return unless deletion_in_progress_or_scheduled_in_hierarchy_chain?(group)
-
 - css_class = local_assigns.fetch(:css_class, '')
 
 - if group.self_deletion_in_progress?
   = render Pajamas::BadgeComponent.new(_('Deletion in progress'), variant: 'warning', class: css_class)
-- else
+- elsif group.scheduled_for_deletion_in_hierarchy_chain?
   = render Pajamas::BadgeComponent.new(_('Pending deletion'), variant: 'warning', class: css_class)
+- elsif Feature.enabled?(:archive_group, group) && group.self_or_ancestors_archived?
+  = render Pajamas::BadgeComponent.new(_('Archived'), variant: 'info', class: css_class)

@@ -1,7 +1,5 @@
 import { GlDrawer } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import VueApollo from 'vue-apollo';
@@ -26,14 +24,12 @@ jest.mock('~/autosave');
 jest.mock('~/vue_shared/components/markdown/eventhub');
 
 Vue.use(PiniaVuePlugin);
-Vue.use(Vuex);
 Vue.use(VueApollo);
 
 describe('ReviewDrawer', () => {
   let wrapper;
   let pinia;
   let trackingSpy;
-  let getCurrentUserLastNote;
 
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findDrawerHeading = () => wrapper.findByTestId('reviewer-drawer-heading');
@@ -53,31 +49,6 @@ describe('ReviewDrawer', () => {
   };
 
   const createComponent = ({ canApprove = true, glFeatures = {} } = {}) => {
-    getCurrentUserLastNote = Vue.observable({ id: 1 });
-
-    const store = new Vuex.Store({
-      getters: {
-        getNotesData: () => ({
-          markdownDocsPath: '/markdown/docs',
-          quickActionsDocsPath: '/quickactions/docs',
-        }),
-        getNoteableData: () => ({
-          id: 1,
-          preview_note_path: '/preview',
-        }),
-        noteableType: () => 'merge_request',
-        getCurrentUserLastNote: () => getCurrentUserLastNote,
-        getDiscussion: () => jest.fn(),
-      },
-      modules: {
-        diffs: {
-          namespaced: true,
-          state: {
-            projectPath: 'gitlab-org/gitlab',
-          },
-        },
-      },
-    });
     const requestHandlers = [
       [
         userCanApproveQuery,
@@ -102,7 +73,6 @@ describe('ReviewDrawer', () => {
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
     wrapper = mountExtended(ReviewDrawer, {
       pinia,
-      store,
       apolloProvider,
       provide: { glFeatures },
     });
@@ -112,8 +82,12 @@ describe('ReviewDrawer', () => {
     pinia = createTestingPinia({
       plugins: [globalAccessorPlugin],
     });
-    useLegacyDiffs();
-    useNotes();
+    useLegacyDiffs().projectPath = 'gitlab-org/gitlab';
+    useNotes().noteableData.id = 1;
+    useNotes().noteableData.preview_note_path = '/preview';
+    useNotes().noteableData.noteableType = 'merge_request';
+    useNotes().notesData.markdownDocsPath = '/markdown/docs';
+    useNotes().notesData.quickActionsDocsPath = '/quickactions/docs';
     useBatchComments();
   });
 
@@ -236,6 +210,9 @@ describe('ReviewDrawer', () => {
   });
 
   it('switches to the overview tab after submit', async () => {
+    useNotes().discussions = [
+      { id: 1, notes: [{ id: 1, userData: {}, author: { id: useNotes().userData.id } }] },
+    ];
     window.mrTabs = { tabShown: jest.fn() };
 
     useBatchComments().drawerOpened = true;
@@ -246,9 +223,9 @@ describe('ReviewDrawer', () => {
 
     await waitForPromises();
 
-    getCurrentUserLastNote.id = 2;
+    useNotes().discussions[0].notes[0].id = 2;
 
-    await Vue.nextTick();
+    await nextTick();
 
     expect(window.mrTabs.tabShown).toHaveBeenCalledWith('show');
   });

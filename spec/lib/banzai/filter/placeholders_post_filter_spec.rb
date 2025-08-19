@@ -285,7 +285,8 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       markdown = '[test](%{gitlab_server}/%{project_title}/foo.png)'
       expected = '<p dir="auto"><a href="localhost/%{project_title}/foo.png" ' \
         'data-placeholder="%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png" ' \
-        'rel="nofollow noreferrer noopener" target="_blank">test</a></p>'
+        'rel="nofollow noreferrer noopener" target="_blank" ' \
+        'data-canonical-src="%%7Bgitlab_server%7D/%%7Bproject_title%7D/foo.png">test</a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end
@@ -294,7 +295,8 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
       markdown = '[test](%{gitlab_server}/%{foo}/foo.png)'
       expected = '<p dir="auto"><a href="localhost/%%7Bfoo%7D/foo.png" ' \
         'data-placeholder="%%7Bgitlab_server%7D/%%7Bfoo%7D/foo.png" ' \
-        'rel="nofollow noreferrer noopener" target="_blank">test</a></p>'
+        'rel="nofollow noreferrer noopener" target="_blank" ' \
+        'data-canonical-src="%%7Bgitlab_server%7D/%%7Bfoo%7D/foo.png">test</a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end
@@ -302,7 +304,8 @@ RSpec.describe Banzai::Filter::PlaceholdersPostFilter, feature_category: :markdo
     it 'does not allow placeholders in link text (parser limitation)' do
       markdown = '[%{gitlab_server}](%{gitlab_server})'
       expected = '<p dir="auto"><a href="localhost" data-placeholder="%%7Bgitlab_server%7D" ' \
-        'rel="nofollow noreferrer noopener" target="_blank">%{gitlab_server}</a></p>'
+        'rel="nofollow noreferrer noopener" target="_blank" ' \
+        'data-canonical-src="%%7Bgitlab_server%7D">%{gitlab_server}</a></p>'
 
       expect(run_pipeline(markdown)).to eq expected
     end

@@ -21,7 +21,7 @@ module API
         end
         strong_memoize_attr :project_or_nil
 
-        def enqueue_sync_metadata_cache_worker(project, package_name)
+        def enqueue_sync_npm_metadata_cache_worker(project, package_name)
           ::Packages::Npm::CreateMetadataCacheWorker.perform_async(project.id, package_name)
         end
 

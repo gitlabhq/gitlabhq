@@ -1,0 +1,10 @@
+---
+name: ci_skip_locked_pipelines
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514867
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197152
+rollout_issue_url:
+milestone: '18.3'
+group: group::ci platform
+type: wip
+default_enabled: false

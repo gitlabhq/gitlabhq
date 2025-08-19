@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlFormTextarea } from '@gitlab/ui';
-import { memoize, cloneDeep, isNumber, uniqueId } from 'lodash';
+import { cloneDeep, isNumber, uniqueId } from 'lodash';
 import { s__ } from '~/locale';
 import RelatedIssuesRoot from '~/related_issues/components/related_issues_root.vue';
 import featureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -9,7 +9,6 @@ import {
   ROLLOUT_STRATEGY_ALL_USERS,
   ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
   ROLLOUT_STRATEGY_USER_ID,
-  ALL_ENVIRONMENTS_NAME,
   NEW_VERSION_FLAG,
 } from '../constants';
 import Strategy from './strategy.vue';
@@ -85,10 +84,7 @@ export default {
     return {
       formName: this.name,
       formDescription: this.description,
-
       formStrategies: cloneDeep(this.strategies),
-
-      newScope: '',
     };
   },
   computed: {
@@ -120,9 +116,6 @@ export default {
       }
     },
 
-    isAllEnvironment(name) {
-      return name === ALL_ENVIRONMENTS_NAME;
-    },
     /**
      * When the user clicks the submit button
      * it triggers an event with the form data
@@ -139,9 +132,6 @@ export default {
       this.$emit('handleSubmit', flag);
     },
 
-    isRolloutPercentageInvalid: memoize(function isRolloutPercentageInvalid(percentage) {
-      return !this.$options.rolloutPercentageRegex.test(percentage);
-    }),
     onFormStrategyChange(strategy, index) {
       const currentUserListId = this.filteredStrategies[index]?.userList?.id;
       const newUserListId = strategy?.userList?.id;

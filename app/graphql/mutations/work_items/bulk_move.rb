@@ -50,6 +50,11 @@ module Mutations
       def resolve(ids:, source_full_path:, target_full_path:)
         target_project = resolve_project(full_path: target_full_path).sync
 
+        if target_project.blank?
+          raise Gitlab::Graphql::Errors::ArgumentError,
+            _('At this moment, it is only possible to move work items to projects.')
+        end
+
         result = ::WorkItems::BulkMoveService.new(
           current_user: current_user,
           work_item_ids: ids.map(&:model_id),

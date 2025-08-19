@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: none
+group: unassigned
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Development guidelines for Integrations
 title: Integration development guidelines
@@ -204,7 +204,14 @@ To create metric definitions:
 1. Replace `milestone` with the current milestone and `introduced_by_url` with the merge request link.
 1. Verify all other attributes have correct values by checking the [metrics guide](../internal_analytics/metrics/metrics_dictionary.md#metrics-definition-and-validation).
 
-For example, to create metric definitions for the Slack integration, you copy the metrics [1](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180122_projects_slack_active.yml), [2](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180124_groups_slack_active.yml), [3](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), [4](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml), and [5](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180129_projects_inheriting_slack_active.yml)), then replace `Slack` with the name of the new integration.
+For example, to create metric definitions for the Slack integration, you copy these metrics, and
+then replace `Slack` with the name of the new integration:
+
+- [`20210216180122_projects_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180122_projects_slack_active.yml)
+- [`20210216180124_groups_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180124_groups_slack_active.yml)
+- [`20210216180127_instances_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180127_instances_slack_active.yml)
+- [`20210216180131_groups_inheriting_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180131_groups_inheriting_slack_active.yml)
+- [`20210216180129_projects_inheriting_slack_active.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/metrics/counts_all/20210216180129_projects_inheriting_slack_active.yml)
 
 ### Security requirements
 
@@ -436,7 +443,7 @@ end
 
 ## Expose the integration in the REST API
 
-To expose the integration in the [REST API](../../api/integrations.md):
+To expose the integration in the [REST API](../../api/project_integrations.md):
 
 1. Add the integration's class (`::Integrations::FooBar`) to `API::Helpers::IntegrationsHelpers.integration_classes`.
 1. Add the integration's API arguments to `API::Helpers::IntegrationsHelpers.integrations`, for example:
@@ -445,7 +452,7 @@ To expose the integration in the [REST API](../../api/integrations.md):
    'foo-bar' => ::Integrations::FooBar.api_arguments
    ```
 
-1. Update the reference documentation in `doc/api/integrations.md` and `doc/api/group_integrations.md`, add a new section for your integration, and document all properties.
+1. Update the reference documentation in `doc/api/project_integrations.md` and `doc/api/group_integrations.md`, add a new section for your integration, and document all properties.
 
 You can also refer to our [REST API style guide](../api_styleguide.md).
 
@@ -518,7 +525,7 @@ see the [feature deprecation guidelines](../deprecation_guidelines/_index.md).
 
 ### Deprecate an integration
 
-You must announce any deprecation [no later than the third milestone preceding intended removal](../deprecation_guidelines/_index.md#when-can-a-feature-be-deprecated).
+You must announce any deprecation no later than the third milestone preceding intended removal.
 To deprecate an integration:
 
 - [Add a deprecation entry](../deprecation_guidelines/_index.md#update-the-deprecations-and-removals-documentation).
@@ -536,7 +543,7 @@ In the major milestone of intended removal (M.0), disable the integration and de
 - Delete the integration model's `#execute` and `#test` methods (if defined), but keep the model.
 - Add a post-migration to delete the integration records from PostgreSQL (see [example merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114721)).
 - [Mark the integration documentation as removed](../documentation/styleguide/deprecations_and_removals.md#remove-a-page).
-- Update the [project](../../api/integrations.md) and [group](../../api/group_integrations.md) integrations API pages.
+- Update the [project](../../api/project_integrations.md) and [group](../../api/group_integrations.md) integrations API pages.
 
 In the next minor release (M.1):
 

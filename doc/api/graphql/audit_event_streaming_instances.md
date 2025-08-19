@@ -140,7 +140,7 @@ You need the ID values returned by this query for the update and delete mutation
 
 ### Update streaming destinations
 
-Update a HTTP streaming destination for an instance.
+Update an HTTP streaming destination for an instance.
 
 Prerequisites:
 

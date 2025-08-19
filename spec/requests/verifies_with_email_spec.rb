@@ -9,6 +9,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
   let(:user) { create(:user) }
 
+  before do
+    allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+  end
+
   shared_examples_for 'does not send verification instructions' do
     let(:recipient_email) { nil }
 
@@ -38,11 +42,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     it_behaves_like 'locks the user and sends verification instructions'
 
     context 'when an unconfirmed verification email exists' do
-      let(:new_email) { 'new@email' }
-      let(:user) { create(:user, unconfirmed_email: new_email, confirmation_sent_at: 1.minute.ago) }
+      let(:user) { create(:user, unconfirmed_email: 'new@email', confirmation_sent_at: 1.minute.ago) }
 
-      it 'sends a verification instructions email to the unconfirmed email address' do
-        mail = ActionMailer::Base.deliveries.find { |d| d.to.include?(new_email) }
+      it 'sends a verification instructions email to the existing email address' do
+        mail = ActionMailer::Base.deliveries.find { |d| d.to.include?(user.email) }
         expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
       end
     end
@@ -57,7 +60,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
     end
   end
 
-  shared_examples_for 'rate limited' do
+  shared_examples_for 'rate limited by login attempts' do
     it 'redirects to the login form and shows an alert message' do
       expect(response).to redirect_to(new_user_session_path)
       expect(flash[:alert])
@@ -76,25 +79,26 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
   end
 
   shared_examples_for 'verifying with email' do
-    context 'when rate limited' do
+    context 'when rate limited by login attempts' do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:user_sign_in,
+          hash_including(scope: user)).and_return(true)
         sign_in
       end
 
-      it_behaves_like 'rate limited'
+      it_behaves_like 'rate limited by login attempts'
     end
 
     context 'when the user already has an unlock_token set' do
       before do
-        user.update!(unlock_token: 'token')
+        user.update!(unlock_token: 'token', locked_at: Time.current)
         sign_in
       end
 
       it_behaves_like 'prompt for email verification'
     end
 
-    context 'when the user is already locked' do
+    context 'when the user is already locked with no token' do
       before do
         user.update!(locked_at: Time.current)
         perform_enqueued_jobs { sign_in }
@@ -157,9 +161,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         stub_session(session_data: { verification_user_id: user.id })
       end
 
-      context 'when rate limited and a verification_token param exists' do
+      context 'when rate limited by code entry and a verification_token param exists' do
         before do
-          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification,
+            hash_including(scope: user.unlock_token)).and_return(true)
 
           post(user_session_path(user: { verification_token: 'token' }))
         end
@@ -204,27 +209,11 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
             .and change { AuditEvent.count }.by(1)
             .and change { AuthenticationEvent.count }.by(1)
             .and change { user.last_activity_on }.to(Date.today)
-            .and change { user.email_reset_offered_at }.to(Time.current)
         end
 
         it 'returns the success status and a redirect path' do
           submit_token
           expect(json_response).to eq('status' => 'success', 'redirect_path' => users_successful_verification_path)
-        end
-
-        context 'when an unconfirmed verification email exists' do
-          before do
-            user.update!(email: new_email)
-          end
-
-          let(:new_email) { 'new@email' }
-
-          it 'confirms the email' do
-            expect { submit_token }
-              .to change { user.reload.email }.to(new_email)
-              .and change { user.confirmed_at }
-              .and change { user.unconfirmed_email }.from(new_email).to(nil)
-          end
         end
 
         context 'when email reset functionality is disabled' do
@@ -233,45 +222,30 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
               user.update!(email: 'new@email')
             end
 
-            it 'does not confirm the email or change email_reset_offered_at' do
+            it 'does not confirm the email' do
               expect { submit_token }
                 .to not_change { user.reload.email }
-                .and not_change { user.reload.email_reset_offered_at }
             end
-          end
-
-          context 'when email reset has already been offered' do
-            before do
-              user.update!(email_reset_offered_at: 1.hour.ago)
-            end
-
-            it_behaves_like 'does not perform email reset actions'
-          end
-
-          context 'when the `offer_email_reset` feature flag is disabled' do
-            before do
-              stub_feature_flags(offer_email_reset: false)
-            end
-
-            it_behaves_like 'does not perform email reset actions'
           end
         end
       end
 
       context 'when not completing identity verification and logging in with another account' do
         let(:another_user) { create(:user) }
+        let(:current_organization) { another_user.organization }
 
         before do
           post user_session_path, params: { user: { login: another_user.username, password: another_user.password } }
         end
 
-        it 'redirects to the root path' do
+        it 'redirects to the root path', :with_organization_url_helpers do
           expect(response).to redirect_to(root_path)
         end
       end
     end
 
-    context 'when signing in with a valid password' do
+    context 'when signing in with a valid password', :with_organization_url_helpers do
+      let(:current_organization) { user.organization }
       let(:headers) { {} }
       let(:sign_in) do
         post user_session_path, params: { user: { login: user.username, password: user.password } }, headers: headers
@@ -390,9 +364,10 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       end
     end
 
-    context 'when exceeding the rate limit' do
+    context 'when exceeding the code send rate limit' do
       before do
-        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification_code_send,
+          hash_including(scope: user)).and_return(true)
 
         stub_session(session_data: { verification_user_id: user.id })
 
@@ -410,97 +385,6 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
       it 'does not send an email' do
         mail = find_email_for(user)
         expect(mail).to be_nil
-      end
-    end
-  end
-
-  describe 'update_email' do
-    let(:new_email) { 'new@email' }
-
-    subject(:do_request) { patch(users_update_email_path(user: { email: new_email })) }
-
-    context 'when no verification_user_id session variable exists' do
-      it 'returns 204 No Content' do
-        do_request
-
-        expect(response).to have_gitlab_http_status(:no_content)
-        expect(response.body).to be_empty
-      end
-    end
-
-    context 'when a verification_user_id session variable exists' do
-      before do
-        stub_session(session_data: { verification_user_id: user.id })
-      end
-
-      it 'locks the user' do
-        do_request
-
-        expect(user.reload.unlock_token).not_to be_nil
-        expect(user.locked_at).not_to be_nil
-      end
-
-      it 'sends a changed notification to the primary email and verification instructions to the unconfirmed email' do
-        perform_enqueued_jobs { do_request }
-
-        sent_mails = ActionMailer::Base.deliveries.map { |mail| { mail.to[0] => mail.subject } }
-
-        expect(sent_mails).to match_array([
-          { user.reload.unconfirmed_email => s_('IdentityVerification|Verify your identity') },
-          { user.email => 'Email Changed' }
-        ])
-      end
-
-      it 'calls the UpdateEmailService and returns a success response' do
-        expect_next_instance_of(Users::EmailVerification::UpdateEmailService, user: user) do |instance|
-          expect(instance).to receive(:execute).with(email: new_email).and_call_original
-        end
-
-        do_request
-
-        expect(json_response).to eq('status' => 'success')
-      end
-
-      context 'when the `offer_email_reset` feature flag is disabled' do
-        before do
-          stub_feature_flags(offer_email_reset: false)
-        end
-
-        it 'returns an error response' do
-          do_request
-
-          expect(json_response).to eq('status' => 'error', 'message' => 'Feature not available')
-        end
-
-        it 'does not call the UpdateEmailService' do
-          expect(Users::EmailVerification::UpdateEmailService).not_to receive(:new)
-
-          do_request
-        end
-      end
-    end
-
-    context 'when failing to update the email address' do
-      let(:service_response) do
-        {
-          status: 'failure',
-          reason: 'the reason',
-          message: 'the message'
-        }
-      end
-
-      before do
-        stub_session(session_data: { verification_user_id: user.id })
-      end
-
-      it 'calls the UpdateEmailService and returns an error response' do
-        expect_next_instance_of(Users::EmailVerification::UpdateEmailService, user: user) do |instance|
-          expect(instance).to receive(:execute).with(email: new_email).and_return(service_response)
-        end
-
-        do_request
-
-        expect(json_response).to eq(service_response.with_indifferent_access)
       end
     end
   end

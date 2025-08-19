@@ -16,7 +16,7 @@ module BulkImports
 
           return unless existing_record
 
-          Issuable::DestroyService.new(container: portable, current_user: context.current_user)
+          Issues::DestroyService.new(container: portable, current_user: context.current_user)
             .execute(existing_record)
         end
       end

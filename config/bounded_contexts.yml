@@ -30,7 +30,6 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - cloud_connector # Also in CloudConnector
       - duo_workflow
       - workflow_catalog
       - knowledge_graph
@@ -94,7 +93,9 @@ domains:
   CloudConnector:
     description:
     feature_categories:
-      - cloud_connector
+      - plan_provisioning
+      - add-on_provisioning
+      - system_access
 
   Clusters:
     description:
@@ -195,6 +196,11 @@ domains:
     feature_categories:
       - mlops
 
+  Mcp:
+    description: MCP server, tools and associated classes and tooling.
+    feature_categories:
+      - mcp_server
+
   Namespaces:
     description: Managing groups, subgroups and user namespaces
     feature_categories:
@@ -248,6 +254,11 @@ domains:
     description:
     feature_categories:
       - pages
+  
+  DeployTokens:
+    description: Managing deploy tokens
+    feature_categories:
+      - continuous_delivery
 
   Projects:
     description: Managing projects as workspaces and their lifecycle. Feature specific behavior must not go here.

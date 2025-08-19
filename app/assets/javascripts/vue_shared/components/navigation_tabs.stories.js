@@ -2,7 +2,7 @@ import NavigationTabs from './navigation_tabs.vue';
 
 export default {
   component: NavigationTabs,
-  title: 'vue_shared/components/navigation_tabs',
+  title: 'vue_shared/navigation_tabs',
 };
 
 const Template = (args, { argTypes }) => ({

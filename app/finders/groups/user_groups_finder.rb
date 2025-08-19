@@ -27,6 +27,7 @@ module Groups
       return Group.none if target_user.blank?
 
       items = by_permission_scope
+      items = by_organization(items)
 
       # Search will perform an ORDER BY to ensure exact matches are returned first.
       return by_search(items, exact_matches_first: true) if exact_matches_first_enabled?
@@ -61,6 +62,12 @@ module Groups
 
     def permission_scope_import_projects?
       params[:permission_scope] == :import_projects
+    end
+
+    def by_organization(items)
+      return items unless params[:organization]
+
+      items.in_organization(params[:organization])
     end
 
     def sort(items)

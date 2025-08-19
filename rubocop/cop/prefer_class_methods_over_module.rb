@@ -32,6 +32,7 @@ module RuboCop
 
       MSG = 'Do not use module ClassMethods, use class_methods block instead.'
 
+      # @!method extend_activesupport_concern?(node)
       def_node_matcher :extend_activesupport_concern?, <<~PATTERN
         (:send nil? :extend (:const (:const nil? :ActiveSupport) :Concern))
       PATTERN
@@ -62,7 +63,7 @@ module RuboCop
 
       def container_module_of(node)
         while node = node.parent
-          break if node.type == :module
+          break if node.module_type?
         end
 
         node

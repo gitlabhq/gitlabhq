@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', product_group: :project_management do
+  RSpec.describe 'Plan', feature_category: :team_planning do
     describe 'collapse comments in issue discussions' do
       let(:my_first_reply) { 'My first reply' }
       let(:one_reply) { '1 reply' }
@@ -19,6 +19,7 @@ module QA
             show.select_all_activities_filter
             show.comment('My first discussion')
             show.reply_to_comment(1, my_first_reply)
+            expect(show).to have_resolve_discussion_button
 
             show.collapse_replies
             expect(show).to have_content(one_reply)

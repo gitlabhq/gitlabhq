@@ -13,7 +13,7 @@ import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './components/jobs_table.vue';
 import JobsTableEmptyState from './components/jobs_table_empty_state.vue';
 import JobsTableTabs from './components/jobs_table_tabs.vue';
-import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE } from './constants';
+import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE, BUILD_KIND } from './constants';
 
 export default {
   name: 'JobsPageApp',
@@ -84,7 +84,7 @@ export default {
       filterSearchTriggered: false,
       jobsCount: null,
       count: 0,
-      requestData: {},
+      requestData: { kind: BUILD_KIND },
       pagination: {
         ...DEFAULT_PAGINATION,
       },
@@ -98,12 +98,17 @@ export default {
     // Show only when not loading and filtered search has not been triggered
     // So we don't show empty state when results are empty on a filtered search
     showEmptyState() {
+      const queryStringObject = queryToObject(window.location.search);
+      const hasNonDefaultFilters = Object.keys(queryStringObject).some(
+        (key) => key !== 'kind' && queryStringObject[key] !== BUILD_KIND,
+      );
+
       return (
         this.jobs.list.length === 0 &&
         !this.scope &&
         !this.loading &&
         !this.filterSearchTriggered &&
-        !this.validatedQueryString
+        !hasNonDefaultFilters
       );
     },
     showPagination() {
@@ -114,8 +119,12 @@ export default {
     },
     validatedQueryString() {
       const queryStringObject = queryToObject(window.location.search);
+      const validated = validateQueryString(queryStringObject);
 
-      return validateQueryString(queryStringObject);
+      return {
+        kind: BUILD_KIND,
+        ...validated,
+      };
     },
   },
   watch: {
@@ -129,12 +138,27 @@ export default {
       }
     },
   },
+  async mounted() {
+    const queryStringObject = queryToObject(window.location.search);
+
+    // Check if kind is missing from the URL and add default
+    if (!queryStringObject?.kind) {
+      const defaultParams = {
+        ...this.validatedQueryString,
+        kind: BUILD_KIND,
+      };
+
+      updateHistory({
+        url: setUrlParams(defaultParams, window.location.href, true),
+      });
+    }
+  },
   methods: {
     resetRequestData() {
       if (this.glFeatures.feSearchBuildByName) {
-        this.requestData = { statuses: null, sources: null, name: null };
+        this.requestData = { statuses: null, sources: null, name: null, kind: BUILD_KIND };
       } else {
-        this.requestData = { statuses: null, sources: null };
+        this.requestData = { statuses: null, sources: null, kind: BUILD_KIND };
       }
     },
     resetPagination() {
@@ -186,6 +210,10 @@ export default {
         if (filter.type === 'jobs-source') {
           this.requestData.sources = filter.value.data;
         }
+
+        if (filter.type === 'kind') {
+          this.requestData.kind = filter.value.data;
+        }
       });
 
       this.$apollo.queries.jobs.refetch({
@@ -234,6 +262,7 @@ export default {
     <jobs-table-tabs
       :all-jobs-count="count"
       :loading="loading"
+      :filters="requestData"
       class="gl-mt-3"
       @fetchJobsByStatus="fetchJobsByStatus"
     />

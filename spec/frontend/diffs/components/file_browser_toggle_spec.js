@@ -8,15 +8,17 @@ import { useFileBrowser } from '~/diffs/stores/file_browser';
 import {
   keysFor,
   MR_TOGGLE_FILE_BROWSER,
-  MR_TOGGLE_FILE_BROWSER_DEPRECATED,
+  MR_FOCUS_FILE_BROWSER,
 } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
-const hotkeys = keysFor(MR_TOGGLE_FILE_BROWSER);
+const toggleHotkeys = keysFor(MR_TOGGLE_FILE_BROWSER);
+const focusHotkeys = keysFor(MR_FOCUS_FILE_BROWSER);
 
 Vue.use(PiniaVuePlugin);
 
@@ -55,7 +57,7 @@ describe('FileBrowserToggle', () => {
     expect(toggle.props('selected')).toBe(true);
     expect(toggle.attributes('data-testid')).toBe('file-tree-button');
     expect(toggle.attributes('aria-label')).toBe('Hide file browser');
-    expect(toggle.attributes('aria-keyshortcuts')).toBe(hotkeys[0]);
+    expect(toggle.attributes('aria-keyshortcuts')).toBe(toggleHotkeys[0]);
     const icon = toggle.findComponent(GlAnimatedSidebarIcon);
     expect(icon.exists()).toBe(true);
     // Vue compat doesn't know about component props if it extends other component
@@ -85,17 +87,37 @@ describe('FileBrowserToggle', () => {
   });
 
   describe('shortcuts', () => {
-    it('toggles visibility on shortcut trigger', () => {
-      createComponent();
-      Mousetrap.trigger(hotkeys[0]);
-      expect(useFileBrowser().toggleFileBrowserVisibility).toHaveBeenCalled();
+    describe('toggle visibility', () => {
+      it('toggles visibility on shortcut trigger', () => {
+        createComponent();
+        Mousetrap.trigger(toggleHotkeys[0]);
+        expect(useFileBrowser().toggleFileBrowserVisibility).toHaveBeenCalled();
+      });
+
+      it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
+        createComponent();
+        wrapper.destroy();
+        Mousetrap.trigger(toggleHotkeys[0]);
+        expect(useFileBrowser().toggleFileBrowserVisibility).not.toHaveBeenCalled();
+      });
     });
 
-    it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
-      createComponent();
-      wrapper.destroy();
-      Mousetrap.trigger(hotkeys[0]);
-      expect(useFileBrowser().toggleFileBrowserVisibility).not.toHaveBeenCalled();
+    describe('focus', () => {
+      it('focuses search field on shortcut trigger', async () => {
+        setHTMLFixture(`<input id="diff-tree-search">`);
+        createComponent();
+        Mousetrap.trigger(focusHotkeys[0]);
+        await nextTick();
+        expect(useFileBrowser().setFileBrowserVisibility).toHaveBeenCalledWith(true);
+        expect(document.activeElement).toBe(document.querySelector('#diff-tree-search'));
+      });
+
+      it('does not focus on shortcut trigger after component is destroyed', () => {
+        createComponent();
+        wrapper.destroy();
+        Mousetrap.trigger(focusHotkeys[0]);
+        expect(useFileBrowser().setFileBrowserVisibility).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -112,18 +134,6 @@ describe('FileBrowserToggle', () => {
       useFileBrowser().fileBrowserVisible = false;
       await nextTick();
       expect(findTooltip().text()).toContain('Show file browser');
-    });
-  });
-
-  describe('deprecated shortcut', () => {
-    const deprecatedShortcuts = keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED);
-
-    it('displays deprecation warning on toggle once', () => {
-      createComponent();
-      Mousetrap.trigger(deprecatedShortcuts[0]);
-      Mousetrap.trigger(deprecatedShortcuts[0]);
-      expect(useFileBrowser().toggleFileBrowserVisibility).toHaveBeenCalledTimes(2);
-      expect(showToast).toHaveBeenCalledTimes(1);
     });
   });
 });

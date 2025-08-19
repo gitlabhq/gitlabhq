@@ -3,6 +3,7 @@ stage: Create
 group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Migrating GitLab by using direct transfer
+description: "Direct transfer for data migration between GitLab instances."
 ---
 
 {{< details >}}
@@ -49,9 +50,8 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [beta](../../../policy/development_stages_support.md#beta) and not ready for production
-  use) or without projects. Copying projects with groups is available:
-  - On GitLab.com by default.
+- Copy groups with or without projects.
+  Copying groups with projects is available by default on GitLab.com.
 
 Not all group and project resources are copied. See list of copied resources below:
 
@@ -60,13 +60,6 @@ Not all group and project resources are copied. See list of copied resources bel
 
 After you start a migration, you should not make any changes to imported groups or projects
 on the source instance because these changes might not be copied to the destination instance.
-
-{{< alert type="warning" >}}
-
-Importing groups with projects is in [beta](../../../policy/development_stages_support.md#beta). This feature is not
-ready for production use.
-
-{{< /alert >}}
 
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).

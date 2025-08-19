@@ -36,7 +36,7 @@ module Packages
 
       def npm_package_already_taken
         return unless follows_npm_naming_convention?
-        return unless project&.package_already_taken?(name, version, package_type: :npm)
+        return unless package_exists_in_hierarchy?
 
         errors.add(:base, _('Package already exists'))
       end
@@ -46,6 +46,21 @@ module Packages
         return false unless project&.root_namespace&.path
 
         project.root_namespace.path == ::Packages::Npm.scope_of(name)
+      end
+
+      def package_exists_in_hierarchy?
+        return false unless project
+
+        self.class.with_name(name)
+          .with_version(version)
+          .not_pending_destruction
+          .for_projects(
+            project
+              .root_ancestor
+              .all_projects
+              .id_not_in(project.id)
+              .select(:id)
+          ).exists?
       end
     end
   end

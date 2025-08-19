@@ -221,21 +221,5 @@ RSpec.describe Repositories::LfsStorageController, feature_category: :source_cod
         it_behaves_like "an error response", :not_found, 'Not found', :get, :download
       end
     end
-
-    context 'when validate_lfs_object_access FF is disabled' do
-      let_it_be(:unrelated_lfs_object) { create(:lfs_object, :with_file) }
-
-      before do
-        private_project.add_developer(user)
-        stub_feature_flags(validate_lfs_object_access: false)
-      end
-
-      it 'returns the file' do
-        get :download, params: { repository_path: repository_path, oid: lfs_object.oid }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to eq lfs_object.file.read
-      end
-    end
   end
 end

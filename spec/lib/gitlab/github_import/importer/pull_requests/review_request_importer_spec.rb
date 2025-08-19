@@ -5,17 +5,15 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include Import::UserMappingHelper
 
-  let_it_be(:project) { create(:project, :with_import_url, :import_user_mapping_enabled, :in_group) }
-  let_it_be(:reviewer) { create(:user, username: 'alice') }
-  let_it_be(:source_user) do
+  let_it_be_with_reload(:project) do
     create(
-      :import_source_user,
-      source_user_identifier: 1,
-      source_hostname: project.safe_import_url,
-      import_type: Import::SOURCE_GITHUB,
-      namespace: project.root_ancestor
+      :project, :in_group, :github_import,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
     )
   end
+
+  let_it_be(:reviewer) { create(:user, username: 'alice') }
+  let_it_be(:source_user) { generate_source_user(project, 1) }
 
   let(:client) { instance_double('Gitlab::GithubImport::Client') }
   let(:merge_request) { create(:merge_request) }
@@ -61,9 +59,56 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestImport
     ])
   end
 
+  context 'when importing into a personal namespace' do
+    let_it_be(:user_namespace) { create(:namespace) }
+
+    before_all do
+      project.update!(namespace: user_namespace)
+    end
+
+    it 'does not push any references' do
+      expect { 2.times { importer.execute } }.not_to raise_error
+
+      expect(user_references).to be_empty
+    end
+
+    it 'imports reviewers mapped to the personal namespace owner' do
+      expect { 2.times { importer.execute } }.not_to raise_error
+
+      expect(merge_request.reviewers.size).to eq(1)
+      expect(merge_request.reviewers.last.id).to eq(user_namespace.owner_id)
+    end
+
+    context 'when user_mapping_to_personal_namespace_owner is disabled' do
+      before_all do
+        project.build_or_assign_import_data(
+          data: { user_mapping_to_personal_namespace_owner_enabled: false }
+        ).save!
+      end
+
+      it 'pushes placeholder references' do
+        expect { 2.times { importer.execute } }.not_to raise_error
+
+        created_reviewers = merge_request.merge_request_reviewers.sort_by(&:user_id)
+
+        expect(user_references).to match_array([
+          ['MergeRequestReviewer', created_reviewers.first.id, 'user_id', instance_of(Integer)]
+        ])
+      end
+
+      it 'imports reviewers mapped to the import user' do
+        expect { 2.times { importer.execute } }.not_to raise_error
+
+        reviewers = merge_request.reviewers
+        expect(reviewers.size).to eq(1)
+        expect(reviewers).to all(be_import_user)
+      end
+    end
+  end
+
   context 'when user contribution mapping is disabled' do
     before do
-      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false })
+      project.build_or_assign_import_data(data: { user_contribution_mapping_enabled: false }).save!
       allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
         allow(finder).to receive(:find).with(1, reviewer.username).and_return(reviewer.id)
         allow(finder).to receive(:find).with(2, 'foo').and_return(nil)

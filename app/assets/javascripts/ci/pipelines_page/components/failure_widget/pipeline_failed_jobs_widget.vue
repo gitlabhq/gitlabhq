@@ -69,9 +69,6 @@ export default {
     graphqlResourceEtag() {
       return graphqlEtagPipelinePath(this.graphqlPath, this.pipelineIid);
     },
-    bodyClasses() {
-      return this.isExpanded ? '' : 'gl-hidden';
-    },
     failedJobsCountBadge() {
       return `${this.isMaximumJobLimitReached ? '100+' : this.failedJobsCount}`;
     },

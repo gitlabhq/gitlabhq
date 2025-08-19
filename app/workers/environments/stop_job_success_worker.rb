@@ -17,7 +17,10 @@ module Environments
     private
 
     def stop_environment(job)
-      job.persisted_environment.fire_state_event(:stop_complete)
+      environment = job.persisted_environment
+      environment.fire_state_event(:stop_complete)
+
+      Environments::DeleteManagedResourcesService.new(environment, current_user: job.user).execute
     end
   end
 end

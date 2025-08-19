@@ -12,9 +12,9 @@ module InternalEventsCli
       PROPERTY_EXAMPLES = {
         'label' => "'string'",
         'property' => "'string'",
-        'value' => '72',
-        'custom_key' => 'custom_value'
+        'value' => '72'
       }.freeze
+      DEFAULT_PROPERTY_VALUE = "'custom_value'"
 
       attr_reader :cli, :event
 
@@ -291,7 +291,7 @@ module InternalEventsCli
 
       def format_additional_properties
         additional_properties.map do |property, details|
-          example_value = PROPERTY_EXAMPLES[property]
+          example_value = PROPERTY_EXAMPLES.fetch(property, DEFAULT_PROPERTY_VALUE)
           description = details['description'] || 'TODO'
 
           yield(property, example_value, description)
@@ -301,7 +301,7 @@ module InternalEventsCli
       def rspec_composable_matchers
         identifier_args = identifiers.map do |identifier|
           "    #{identifier}: #{identifier}"
-        end.join(",\n")
+        end
 
         property_args = format_additional_properties do |property, value|
           "  #{property}: #{value}"
@@ -315,7 +315,10 @@ module InternalEventsCli
           TEXT
         end
 
-        args = [*identifier_args, *property_args].compact.join(",\n")
+        args = []
+        args += [*identifier_args] unless identifier_args.empty?
+        args += [*property_args] unless property_args.empty?
+        args = args.join(",\n")
 
         unless args.empty?
           args = <<~TEXT.chomp
@@ -325,15 +328,27 @@ module InternalEventsCli
           TEXT
         end
 
-        metrics_list = related_metrics.map do |metric|
-          "    '#{metric.key_path}'"
-        end.join(",\n")
+        non_sum_metrics_list = []
+        sum_metrics_list = []
+        related_metrics.map do |metric|
+          target_array = metric.operator == 'sum(value)' ? sum_metrics_list : non_sum_metrics_list
+          target_array << "    '#{metric.key_path}'"
+        end
 
-        unless metrics_list.empty?
-          metrics_list = <<~TEXT.chomp
+        metrics_list = ""
+        unless non_sum_metrics_list.empty?
+          metrics_list += <<~TEXT.chomp
             .and increment_usage_metrics(
-            #{metrics_list}
+            #{non_sum_metrics_list.join(",\n")}
               )
+          TEXT
+        end
+
+        unless sum_metrics_list.empty?
+          metrics_list += <<~TEXT.chomp
+            .and increment_usage_metrics(
+            #{sum_metrics_list.join(",\n")}
+              ).by(#{PROPERTY_EXAMPLES.fetch('value')})
           TEXT
         end
 

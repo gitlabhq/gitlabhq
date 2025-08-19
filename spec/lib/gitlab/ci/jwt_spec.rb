@@ -280,7 +280,7 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
         end
 
         it 'generates JWT for the given job with ttl equal to build timeout' do
-          expect(build).to receive(:metadata_timeout).and_return(3_600)
+          expect(build).to receive(:timeout_value).and_return(3_600)
 
           payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
           ttl = payload["exp"] - payload["iat"]
@@ -289,7 +289,7 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
         end
 
         it 'generates JWT for the given job with default ttl if build timeout is not set' do
-          expect(build).to receive(:metadata_timeout).and_return(nil)
+          expect(build).to receive(:timeout_value).and_return(nil)
 
           payload, _headers = JWT.decode(jwt, rsa_key.public_key, true, { algorithm: 'RS256' })
           ttl = payload["exp"] - payload["iat"]

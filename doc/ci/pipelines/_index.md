@@ -96,7 +96,7 @@ operation of the pipeline.
 To execute a pipeline manually:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
 1. (Optional) Enter any:
@@ -108,6 +108,46 @@ To execute a pipeline manually:
 1. Select **New pipeline**.
 
 The pipeline now executes the jobs as configured.
+
+#### View manual pipeline variables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323097) in GitLab 17.2 [with a flag](../../administration/feature_flags/_index.md) named `ci_show_manual_variables_in_pipeline`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505440) in GitLab 18.4 with a project setting. Feature flag `ci_show_manual_variables_in_pipeline` removed.
+
+{{< /history >}}
+
+You can see all variables that are specified when the pipeline runs manually.
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+The required role depends on what you want to do:
+
+| Action | Minimum role |
+|--------|-------------|
+| View variable names | Guest |
+| View variable values | Developer |
+| Configure visibility setting | Owner |
+
+{{< alert type="warning" >}}
+
+When you turn on this setting, users with the Developer role can view variable values that might contain sensitive information from any manual pipeline run. For sensitive data like credentials or tokens, use [protected variables](../variables/_index.md#protect-a-cicd-variable) or [external secrets management](../secrets/_index.md) instead of manual pipeline variables.
+
+{{< /alert >}}
+
+To view manual pipeline variables:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Select **Display pipeline variables**.
+1. Go to **Build > Pipelines** and select a pipeline that was run manually.
+1. Select the **Manual Variables** tab.
+
+Variable values are masked by default. If you have the Developer role or higher,
+you can select the eye icon to reveal values.
 
 #### Prefill variables in manual pipelines
 
@@ -251,7 +291,7 @@ The `ci.skip` push option does not skip merge request pipelines.
 Users with the Owner role for a project can delete a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select either the pipeline ID (for example `#123456789`) or the pipeline status icon
    (for example **Passed**) of the pipeline to delete.
 1. In the top right of the pipeline details page, select **Delete**.
@@ -291,6 +331,9 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be [tagged](../yaml/_index.md#tags) accordingly.
 
+Review the [documentation](merge_request_pipelines.md#control-access-to-protected-variables-and-runners) to understand how access to
+protected variables and runners work in the context of Merge request pipelines.
+
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
@@ -320,13 +363,12 @@ regardless of the tag pipeline's success, failure, or cancellation.
 Prerequisites:
 
 - The upstream project must be [public](../../user/public_access.md).
-- The user must have the Developer role
-  in the upstream project.
+- The user must have the Developer role in the upstream project.
 
 To trigger the pipeline when the upstream project is rebuilt:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Pipeline subscriptions**.
 1. Select **Add project**.
 1. Enter the project you want to subscribe to, in the format `<namespace>/<project>`.
@@ -391,7 +433,7 @@ running time is:
 To view all the pipelines that ran for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 
 You can filter the **Pipelines** page by:
 
@@ -441,7 +483,7 @@ When you configure jobs with the [`needs`](../yaml/_index.md#needs) keyword, you
 two options for how to group the jobs in the pipeline details page. To group the jobs
 by stage configuration, select **stage** in the **Group jobs by** section:
 
-![jobs grouped by stage](img/pipeline_stage_view_v17_9.png)
+![A pipeline graph showing jobs grouped under each stage](img/pipeline_stage_view_v17_9.png)
 
 To group the jobs by [`needs`](../yaml/_index.md#needs) configuration, select **Job dependencies**.
 You can optionally select **Show dependencies** to render lines between dependent jobs.

@@ -43,13 +43,6 @@ RSpec.describe AlertManagement::HttpIntegrations::DestroyService, feature_catego
       it_behaves_like 'error response', 'Name cannot be removed'
     end
 
-    context 'when destroying a legacy Prometheus integration' do
-      let_it_be(:existing_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
-      let!(:integration) { existing_integration }
-
-      it_behaves_like 'error response', 'Legacy Prometheus integrations cannot currently be removed'
-    end
-
     it 'successfully returns the integration' do
       expect(response).to be_success
 

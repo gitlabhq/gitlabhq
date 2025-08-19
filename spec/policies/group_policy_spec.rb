@@ -30,7 +30,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     specify do
       expect_allowed(*public_permissions)
-      expect_disallowed(:upload_file)
+      expect_allowed(:upload_file)
       expect_disallowed(*(guest_permissions - public_permissions))
       expect_disallowed(*(planner_permissions - guest_permissions))
       expect_disallowed(*reporter_permissions)
@@ -608,7 +608,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         admin_work_item
         create_package
         create_projects
-        create_runner
+        create_runners
         create_subgroup
         edit_billing
         import_projects
@@ -1799,7 +1799,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'create_runner' do
+  describe 'create_runners' do
     shared_examples 'disallowed when group runner registration disabled' do
       context 'with group runner registration disabled' do
         before do
@@ -1810,13 +1810,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         context 'with specific group runner registration enabled' do
           let(:runner_registration_enabled) { true }
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_disallowed(:create_runners) }
         end
 
         context 'with specific group runner registration disabled' do
           let(:runner_registration_enabled) { false }
 
-          it { is_expected.to be_disallowed(:create_runner) }
+          it { is_expected.to be_disallowed(:create_runners) }
         end
       end
     end
@@ -1825,14 +1825,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { admin }
 
       context 'when admin mode is enabled', :enable_admin_mode do
-        it { is_expected.to be_allowed(:create_runner) }
+        it { is_expected.to be_allowed(:create_runners) }
 
         context 'with specific group runner registration disabled' do
           before do
             group.runner_registration_enabled = false
           end
 
-          it { is_expected.to be_allowed(:create_runner) }
+          it { is_expected.to be_allowed(:create_runners) }
         end
 
         context 'with group runner registration disabled' do
@@ -1844,26 +1844,26 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           context 'with specific group runner registration enabled' do
             let(:runner_registration_enabled) { true }
 
-            it { is_expected.to be_allowed(:create_runner) }
+            it { is_expected.to be_allowed(:create_runners) }
           end
 
           context 'with specific group runner registration disabled' do
             let(:runner_registration_enabled) { false }
 
-            it { is_expected.to be_allowed(:create_runner) }
+            it { is_expected.to be_allowed(:create_runners) }
           end
         end
       end
 
       context 'when admin mode is disabled' do
-        it { is_expected.to be_disallowed(:create_runner) }
+        it { is_expected.to be_disallowed(:create_runners) }
       end
     end
 
     context 'with owner' do
       let(:current_user) { owner }
 
-      it { is_expected.to be_allowed(:create_runner) }
+      it { is_expected.to be_allowed(:create_runners) }
 
       it_behaves_like 'disallowed when group runner registration disabled'
     end
@@ -1871,37 +1871,37 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     context 'with maintainer' do
       let(:current_user) { maintainer }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with reporter' do
       let(:current_user) { reporter }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with planner' do
       let(:current_user) { planner }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with guest' do
       let(:current_user) { guest }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with developer' do
       let(:current_user) { developer }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
 
     context 'with anonymous' do
       let(:current_user) { nil }
 
-      it { is_expected.to be_disallowed(:create_runner) }
+      it { is_expected.to be_disallowed(:create_runners) }
     end
   end
 
@@ -2125,6 +2125,54 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it 'disallows setting metadata for new issues and work items' do
         expect_disallowed :set_new_issue_metadata, :set_new_work_item_metadata
+      end
+    end
+  end
+
+  describe 'view_edit_page permission' do
+    subject(:policy) { described_class.new(current_user, group) }
+
+    context 'when user has remove_group permission' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:view_edit_page) }
+    end
+
+    context 'when user has archive_group permission' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:view_edit_page) }
+
+      context 'when archive_group feature flag is disabled' do
+        before do
+          stub_feature_flags(archive_group: false)
+        end
+
+        it { is_expected.to be_allowed(:view_edit_page) }
+      end
+    end
+
+    context 'when user does not have archive_group permissions' do
+      let(:current_user) { maintainer }
+
+      it { is_expected.to be_disallowed(:view_edit_page) }
+    end
+
+    context 'with archived group' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      context 'when user is owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:view_edit_page) }
+      end
+
+      context 'when user is maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:view_edit_page) }
       end
     end
   end

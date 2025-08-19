@@ -168,7 +168,13 @@ To update the `CODEOWNERS` file:
 1. Run the Rake task with this command: `bundle exec rake tw:codeowners`
 1. Review the changes in the `CODEOWNERS` file.
 1. Add and commit all your changes and push your branch up to `origin`.
-1. Create a merge request and assign it to a technical writing manager for review.
+1. Create a merge request and add the `~"pipeline:skip-undercoverage"` label to it.
+
+   Because this merge request modifies a code file, GitLab Bot runs a `tier-3`
+   pipeline when the MR is approved. The pipeline fails at
+   [`rspec:undercoverage`](../pipelines/_index.md#rspecundercoverage-job) because we don't have tests for
+   `codeowners.rake`. Add the label to skip the test coverage check.
+1. Assign the merge request to a technical writing manager for review.
 
 When you update the `codeowners.rake` file:
 

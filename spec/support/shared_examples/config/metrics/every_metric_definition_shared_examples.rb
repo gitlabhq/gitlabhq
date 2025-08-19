@@ -20,7 +20,6 @@ RSpec.shared_examples 'every metric definition' do
 
   let(:ignored_metric_files_key_patterns) do
     %w[
-      ci_runners_online
       mock_ci
       mock_monitoring
       user_auth_by_provider
@@ -108,14 +107,15 @@ RSpec.shared_examples 'every metric definition' do
   describe 'metrics classes' do
     let(:parent_metric_classes) do
       [
-        Gitlab::Usage::Metrics::Instrumentations::BaseMetric,
         Gitlab::Usage::Metrics::Instrumentations::BaseIntegrationsMetric,
-        Gitlab::Usage::Metrics::Instrumentations::GenericMetric,
+        Gitlab::Usage::Metrics::Instrumentations::BaseMetric,
+        Gitlab::Usage::Metrics::Instrumentations::CountCreatingCiBuildMetric,
         Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric,
-        Gitlab::Usage::Metrics::Instrumentations::RedisMetric,
-        Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric,
+        Gitlab::Usage::Metrics::Instrumentations::GenericMetric,
         Gitlab::Usage::Metrics::Instrumentations::NumbersMetric,
         Gitlab::Usage::Metrics::Instrumentations::PrometheusMetric,
+        Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric,
+        Gitlab::Usage::Metrics::Instrumentations::RedisMetric,
         Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric
       ]
     end

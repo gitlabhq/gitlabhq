@@ -1,7 +1,7 @@
 ---
 key_path: counts.projects_inheriting_matrix_active
 description: Count of active projects inheriting integrations for Matrix
-product_group: personal_productivity
+product_group: engagement
 value_type: number
 status: active
 milestone: "17.3"

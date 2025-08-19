@@ -28,7 +28,8 @@ module MergeRequests
         current_user,
         ref: ref,
         push_options: params[:push_options],
-        pipeline_creation_request: params[:pipeline_creation_request]
+        pipeline_creation_request: params[:pipeline_creation_request],
+        gitaly_context: params[:gitaly_context]
       ).execute(:merge_request_event, merge_request: merge_request)
     end
 

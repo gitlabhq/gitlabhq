@@ -7,8 +7,6 @@ module Ci
       include ScopeEventTracking
 
       def execute(target, default_permissions, policies)
-        return error_updating(nil) unless project.job_token_policies_enabled?
-
         validate_target_exists!(target)
         validate_permissions!(target)
 

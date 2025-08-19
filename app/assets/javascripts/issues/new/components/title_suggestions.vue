@@ -1,14 +1,14 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
-import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import query from '../queries/issues.query.graphql';
 import TitleSuggestionsItem from './title_suggestions_item.vue';
 
 export default {
   components: {
-    HelpIcon,
     TitleSuggestionsItem,
+    CrudComponent,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -63,7 +63,7 @@ export default {
       return !this.isSearchEmpty && this.issues.length && !this.loading;
     },
     helpIconTitle() {
-      return this.helpText || this.$options.helpText;
+      return this.helpText || this.$options.i18n.helpText;
     },
     suggestionsTitle() {
       return this.title || __('Similar issues');
@@ -76,28 +76,39 @@ export default {
       }
     },
   },
-  helpText: __(
-    'These existing issues have a similar title. It might be better to comment there instead of creating another similar issue.',
-  ),
+  i18n: {
+    helpText: __(
+      'These existing issues have a similar title. It might be better to comment there instead of creating another similar issue.',
+    ),
+  },
 };
 </script>
 
 <template>
-  <div v-show="showSuggestions" class="form-group">
-    <div v-once class="gl-pb-3">
-      {{ suggestionsTitle }}
-      <help-icon v-gl-tooltip.bottom :title="helpIconTitle" :aria-label="helpIconTitle" />
+  <crud-component
+    v-show="showSuggestions"
+    is-collapsible
+    persist-collapsed-state
+    anchor-id="work-item-similar-items"
+    :title="suggestionsTitle"
+    :count="issues.length"
+    class="!-gl-mt-4 gl-mb-5"
+  >
+    <div
+      class="gl-mx-3 gl-mt-3 gl-rounded-base gl-bg-strong gl-px-3 gl-py-2 gl-text-sm gl-font-semibold gl-text-subtle"
+    >
+      {{ helpIconTitle }}
     </div>
-    <ul class="gl-m-0 gl-list-none gl-p-0">
+    <ul class="content-list">
       <li
         v-for="(suggestion, index) in issues"
         :key="suggestion.id"
         :class="{
-          'gl-mb-3': index !== issues.length - 1,
+          'gl-mb-4': index !== issues.length - 1,
         }"
       >
         <title-suggestions-item :suggestion="suggestion" />
       </li>
     </ul>
-  </div>
+  </crud-component>
 </template>

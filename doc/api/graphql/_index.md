@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: Developer Experience
+group: API
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Programmatic interaction with GitLab.
 title: GraphQL API
@@ -84,9 +84,11 @@ Tokens require the correct [scope](#token-scopes).
 Example of token authentication using an `Authorization: Bearer <token>` request header:
 
 ```shell
-curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer <token>" \
-     --header "Content-Type: application/json" --request POST \
-     --data "{\"query\": \"query {currentUser {name}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql" \
+  --header "Authorization: Bearer <token>" \
+  --header "Content-Type: application/json" \
+  --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 ##### Parameter authentication
@@ -94,17 +96,19 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer <token>" \
 Example of using an OAuth 2.0 token in the `access_token` parameter:
 
 ```shell
-curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
-     --header "Content-Type: application/json" --request POST \
-     --data "{\"query\": \"query {currentUser {name}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
+  --header "Content-Type: application/json" \
+  --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 You can pass in personal, project, or group access tokens using the `private_token` parameter:
 
 ```shell
-curl "https://gitlab.com/api/graphql?private_token=<access_token>" \
-     --header "Content-Type: application/json" --request POST \
-     --data "{\"query\": \"query {currentUser {name}}\"}"
+curl --request POST \
+  --url "https://gitlab.com/api/graphql?private_token=<access_token>" \
+  --header "Content-Type: application/json" \
+  --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
 ##### Token scopes
@@ -378,5 +382,10 @@ in the JSON-embedded query.
 ```shell
 export CAPTCHA_RESPONSE="<CAPTCHA response obtained from CAPTCHA service>"
 export SPAM_LOG_ID="<spam_log_id obtained from initial REST response>"
-curl --header "Authorization: Bearer $PRIVATE_TOKEN" --header "Content-Type: application/json" --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" --request POST --data-binary '{"query": "mutation {createSnippet(input: {title: \"Title\" visibilityLevel: public blobActions: [ { action: create filePath: \"BlobPath\" content: \"BlobContent\" } ] }) { snippet { id title } errors }}"}' "https://gitlab.example.com/api/graphql"
+curl --request POST \
+  --header "Authorization: Bearer $PRIVATE_TOKEN" \
+  --header "Content-Type: application/json" \
+  --header "X-GitLab-Captcha-Response: $CAPTCHA_RESPONSE" \
+  --header "X-GitLab-Spam-Log-Id: $SPAM_LOG_ID" \
+  --data-binary '{"query": "mutation {createSnippet(input: {title: \"Title\" visibilityLevel: public blobActions: [ { action: create filePath: \"BlobPath\" content: \"BlobContent\" } ] }) { snippet { id title } errors }}"}' "https://gitlab.example.com/api/graphql"
 ```

@@ -7,11 +7,11 @@ import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_us
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __ } from '~/locale';
 import SidebarParticipant from '~/sidebar/components/assignees/sidebar_participant.vue';
-import { BULK_UPDATE_UNASSIGNED } from '../../constants';
+import { BULK_EDIT_NO_VALUE } from '../../constants';
 import { formatUserForListbox } from '../../utils';
 
 export default {
-  BULK_UPDATE_UNASSIGNED,
+  BULK_EDIT_NO_VALUE,
   components: {
     GlCollapsibleListbox,
     GlFormGroup,
@@ -31,6 +31,11 @@ export default {
       type: String,
       required: false,
       default: undefined,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -85,7 +90,7 @@ export default {
         listboxItems.push({
           text: __('Unassigned'),
           textSrOnly: true,
-          options: [{ text: __('Unassigned'), value: BULK_UPDATE_UNASSIGNED }],
+          options: [{ text: __('Unassigned'), value: BULK_EDIT_NO_VALUE }],
         });
       }
 
@@ -96,22 +101,21 @@ export default {
         });
       }
 
+      // Add currentUser to top of "All" if there's no search and they're not in the "Selected" section
+      const allOptions =
+        !this.searchTerm && this.currentUser && this.currentUser.id !== this.selectedId
+          ? [
+              this.currentUser,
+              ...this.users.filter(
+                (user) => user.id !== this.selectedId && user.id !== this.currentUser.id,
+              ),
+            ]
+          : this.users.filter((user) => user.id !== this.selectedId);
+
       listboxItems.push({
         text: __('All'),
         textSrOnly: true,
-        options: this.users
-          .reduce((acc, user) => {
-            // If user is the selected user, take them out of the list
-            if (user.id === this.selectedId) {
-              return acc;
-            }
-            // If user is the current user, move them to the beginning of the list
-            if (user.id === this.currentUser?.id) {
-              return [user].concat(acc);
-            }
-            return acc.concat(user);
-          }, [])
-          .map(formatUserForListbox),
+        options: allOptions.map(formatUserForListbox),
       });
 
       return listboxItems;
@@ -123,7 +127,7 @@ export default {
       if (this.selectedAssignee) {
         return this.selectedAssignee.name;
       }
-      if (this.selectedId === BULK_UPDATE_UNASSIGNED) {
+      if (this.selectedId === BULK_EDIT_NO_VALUE) {
         return __('Unassigned');
       }
       return __('Select assignee');
@@ -184,13 +188,14 @@ export default {
       :searching="isLoading"
       :selected="selectedId"
       :toggle-text="toggleText"
+      :disabled="disabled"
       @reset="reset"
       @search="setSearchTermDebounced"
       @select="handleSelect"
       @shown="handleShown"
     >
       <template #list-item="{ item }">
-        <template v-if="item.value === $options.BULK_UPDATE_UNASSIGNED">{{ item.text }}</template>
+        <template v-if="item.value === $options.BULK_EDIT_NO_VALUE">{{ item.text }}</template>
         <sidebar-participant v-else-if="item" :user="item" />
       </template>
     </gl-collapsible-listbox>

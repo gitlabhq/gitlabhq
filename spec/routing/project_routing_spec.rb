@@ -873,12 +873,6 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
     it_behaves_like 'redirecting a legacy path', '/gitlab/gitlabhq/pipeline_schedules', '/gitlab/gitlabhq/-/pipeline_schedules'
   end
 
-  describe Projects::Settings::OperationsController, 'routing' do
-    it 'to #reset_alerting_token' do
-      expect(post('/gitlab/gitlabhq/-/settings/operations/reset_alerting_token')).to route_to('projects/settings/operations#reset_alerting_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
-    end
-  end
-
   describe Projects::Settings::RepositoryController, 'routing' do
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/settings/repository')).to route_to('projects/settings/repository#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
@@ -1004,6 +998,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       expect(get('/gitlab/gitlabhq/-/snippets/1/raw/master/lib/version.rb'))
         .to route_to('projects/snippets/blobs#raw',
           namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
+    end
+
+    context 'when reference has special symbols' do
+      it "to #raw" do
+        expect(get('/gitlab/gitlabhq/-/snippets/1/raw/0.0.x-rc/lib/version.rb'))
+          .to route_to('projects/snippets/blobs#raw',
+            namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: '0.0.x-rc', path: 'lib/version.rb')
+      end
     end
   end
 

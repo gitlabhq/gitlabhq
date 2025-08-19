@@ -15,53 +15,71 @@ RSpec.describe Resolvers::AlertManagement::AlertResolver do
 
   subject { resolve_alerts(args) }
 
-  context 'user does not have permission' do
-    it { is_expected.to eq(AlertManagement::Alert.none) }
+  context 'hide_incident_management_features flag disabled' do
+    before do
+      stub_feature_flags(hide_incident_management_features: false)
+    end
+
+    context 'user does not have permission' do
+      it { is_expected.to eq(AlertManagement::Alert.none) }
+    end
+
+    context 'user has permission' do
+      before do
+        project.add_developer(current_user)
+      end
+
+      it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
+
+      context 'finding by iid' do
+        let(:args) { { iid: resolved_alert.iid } }
+
+        it { is_expected.to contain_exactly(resolved_alert) }
+      end
+
+      context 'finding by status' do
+        let(:args) { { statuses: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
+
+        it { is_expected.to contain_exactly(ignored_alert) }
+      end
+
+      context 'filtering by domain' do
+        let_it_be(:alert1) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
+        let_it_be(:alert2) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
+        let_it_be(:alert3) { create(:alert_management_alert, project: project, monitoring_tool: 'generic') }
+
+        let(:args) { { domain: 'operations' } }
+
+        it { is_expected.to contain_exactly(resolved_alert, ignored_alert, alert3) }
+      end
+
+      describe 'sorting' do
+        # Other sorting examples in spec/finders/alert_management/alerts_finder_spec.rb
+        context 'when sorting by events count' do
+          let_it_be(:alert_count_6) { create(:alert_management_alert, project: project, events: 6) }
+          let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
+
+          it 'sorts alerts ascending' do
+            expect(resolve_alerts(sort: :event_count_asc)).to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6]
+          end
+
+          it 'sorts alerts descending' do
+            expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert]
+          end
+        end
+      end
+    end
   end
 
-  context 'user has permission' do
+  context 'when hide_incident_management_features is enabled' do
     before do
       project.add_developer(current_user)
     end
 
-    it { is_expected.to contain_exactly(resolved_alert, ignored_alert) }
-
-    context 'finding by iid' do
-      let(:args) { { iid: resolved_alert.iid } }
-
-      it { is_expected.to contain_exactly(resolved_alert) }
-    end
-
-    context 'finding by status' do
-      let(:args) { { statuses: [Types::AlertManagement::StatusEnum.values['IGNORED'].value] } }
-
-      it { is_expected.to contain_exactly(ignored_alert) }
-    end
-
-    context 'filtering by domain' do
-      let_it_be(:alert1) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
-      let_it_be(:alert2) { create(:alert_management_alert, project: project, monitoring_tool: 'other', domain: :threat_monitoring) }
-      let_it_be(:alert3) { create(:alert_management_alert, project: project, monitoring_tool: 'generic') }
-
-      let(:args) { { domain: 'operations' } }
-
-      it { is_expected.to contain_exactly(resolved_alert, ignored_alert, alert3) }
-    end
-
-    describe 'sorting' do
-      # Other sorting examples in spec/finders/alert_management/alerts_finder_spec.rb
-      context 'when sorting by events count' do
-        let_it_be(:alert_count_6) { create(:alert_management_alert, project: project, events: 6) }
-        let_it_be(:alert_count_3) { create(:alert_management_alert, project: project, events: 3) }
-
-        it 'sorts alerts ascending' do
-          expect(resolve_alerts(sort: :event_count_asc)).to eq [ignored_alert, resolved_alert, alert_count_3, alert_count_6]
-        end
-
-        it 'sorts alerts descending' do
-          expect(resolve_alerts(sort: :event_count_desc)).to eq [alert_count_6, alert_count_3, resolved_alert, ignored_alert]
-        end
-      end
+    it 'returns a GraphQL::ExecutionError' do
+      result = resolve_alerts
+      expect(result).to be_a(GraphQL::ExecutionError)
+      expect(result.message).to eq("Field 'alertManagementAlerts' doesn't exist on type 'Project'.")
     end
   end
 

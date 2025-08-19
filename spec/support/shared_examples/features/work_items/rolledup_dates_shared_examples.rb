@@ -259,5 +259,46 @@ RSpec.shared_examples 'work items rolled up dates' do
         end
       end
     end
+
+    it 'displays the default state with no dates and "Inherited" mode selected' do
+      within work_item_due_dates_selector do
+        expect(page).to have_text('Start: None')
+        expect(page).to have_text('Due: None')
+      end
+
+      inherited_radio = find('input[type="radio"][value="inherited"]')
+      expect(inherited_radio).to be_checked
+
+      fixed_radio = find('input[type="radio"][value="fixed"]')
+      expect(fixed_radio).not_to be_checked
+    end
+
+    it 'reveals both date pickers when editing dates' do
+      find_and_click_edit work_item_due_dates_selector
+
+      expect(page).to have_selector('[data-testid="start-date-picker"]')
+      expect(page).to have_selector('[data-testid="due-date-picker"]')
+    end
+
+    it 'displays fixed dates in the user\'s preferred format when in "Fixed" mode' do
+      choose('Fixed')
+      expect(find('input[type="radio"][value="fixed"]')).to be_checked
+
+      find_and_click_edit work_item_due_dates_selector
+
+      fill_in 'Start', with: '2020-12-01'
+      fill_in 'Due', with: '2020-12-02'
+
+      within work_item_due_dates_selector do
+        click_button 'Apply'
+      end
+
+      wait_for_all_requests
+
+      within work_item_due_dates_selector do
+        expect(page).to have_text('Start: Dec 1, 2020')
+        expect(page).to have_text('Due: Dec 2, 2020')
+      end
+    end
   end
 end

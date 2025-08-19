@@ -49,7 +49,7 @@ for the different IDEs:
 
 ## Code Suggestions returns a 401 error
 
-Code Suggestions [depends on a license token](../../../ai_features.md) that
+Code Suggestions [depends on a license token](../../../gitlab_duo/_index.md) that
 [synchronizes your subscription](../../../../administration/license.md) with GitLab.
 
 If the token expires, GitLab Duo Code Suggestions returns the following error
@@ -60,7 +60,7 @@ Token validation failed in Language Server:
 (Failed to check token: Error: Fetching Information about personal access token
 ```
 
-If GitLab has access to the [cloud server](../../../ai_features.md), try
+If GitLab has access to the [cloud server](../../../gitlab_duo/_index.md), try
 [manually synchronizing your license](../../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting
@@ -93,6 +93,7 @@ If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab 
 If Code Suggestions are enabled for the IDE, but suggestions are still not displayed:
 
 1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
+   - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
 1. On the top menu, select **View > Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.

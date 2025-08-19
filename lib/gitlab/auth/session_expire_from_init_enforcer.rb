@@ -19,8 +19,7 @@ module Gitlab
       end
 
       def self.enabled?
-        Feature.enabled?(:session_expire_from_init, :instance) &&
-          Gitlab::CurrentSettings.session_expire_from_init
+        Gitlab::CurrentSettings.session_expire_from_init
       end
 
       def self.timeout_value

@@ -40,9 +40,12 @@ The GitLab official Docker image is available:
 
 [View the release process for the self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
-Use the image tag that corresponds to your GitLab version.
-For example, if your GitLab version is `vX.Y.0`, use the `self-hosted-vX.Y.0-ee` tag.
-Ensure that the image version matches your GitLab version to avoid compatibility issues.
+If your GitLab version is `vX.Y.*-ee`, use the AI gateway Docker image with the latest `self-hosted-vX.Y.*-ee` tag. For example, if GitLab is on version `v18.2.1-ee`, and the AI gateway Docker image has:
+
+- Versions `self-hosted-v18.2.0-ee`, `self-hosted-v18.2.1-ee`, and `self-hosted-v18.2.2-ee`, use `self-hosted-v18.2.2-ee`.
+- Versions `self-hosted-v18.2.0-ee` and `self-hosted-v18.2.1-ee`, use `self-hosted-v18.2.1-ee`.
+- Only one version, `self-hosted-v18.2.0-ee`, use `self-hosted-v18.2.0-ee`.
+
 Newer features are available from nightly builds, but backwards compatibility is not guaranteed.
 
 {{< alert type="note" >}}
@@ -371,7 +374,7 @@ If access issues persist, check that authentication is correctly configured, and
 
 In case of persistent issues, the error message may suggest bypassing authentication with `AIGW_AUTH__BYPASS_EXTERNAL=true`, but only do this for troubleshooting.
 
-You can also run a [health check](../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) by going to **Admin > GitLab Duo**.
+You can also run a [health check](../administration/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) by going to **Admin > GitLab Duo**.
 
 These tests are performed for offline environments:
 
@@ -482,7 +485,7 @@ To resolve this issue, create a new `EmptyDir` volume and mount it at `/tmp`.
 You can do this in either of the following ways:
 
 - From the command line:
-  
+
   ```shell
   oc set volume <object_type>/<name> --add --name=tmpVol --type=emptyDir --mountPoint=/tmp
   ```
@@ -493,7 +496,7 @@ You can do this in either of the following ways:
   volumes:
   - name: tmp-volume
     emptyDir: {}
-  
+
   volumeMounts:
   - name: tmp-volume
     mountPath: "/tmp"

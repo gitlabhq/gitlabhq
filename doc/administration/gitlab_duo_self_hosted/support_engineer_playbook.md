@@ -192,17 +192,23 @@ curl --request POST "<model_endpoint>/v1/chat/completions" \
 
 ### Step 1: Enable Verbose Logging
 
-Check if the `expanded_ai_logging` feature flag is enabled, in GitLab Rails console:
+Check if the `Capture detailed information about AI-related activities and requests` instance setting is enabled, in GitLab Rails console:
 
 ```ruby
-Feature.enabled?(:expanded_ai_logging)
+::Ai::Setting.instance.enabled_instance_verbose_ai_logs
 ```
 
 If it returns `false`, enable the flag using:
 
 ```ruby
-Feature.enable(:expanded_ai_logging)
+::Ai::Setting.instance.update!(enabled_instance_verbose_ai_logs: true)
 ```
+
+{{< alert type="note" >}}
+
+To enable logging, use the `enabled_instance_verbose_ai_logs` instance setting. Do not use the `expanded_ai_logging` feature flag. Only use the `expanded_ai_logging` feature flag on GitLab.com for debugging purposes. Do not use this feature flag in GitLab Self-Managed instances, including instances running GitLab Duo Self-Hosted.
+
+{{< /alert >}}
 
 ### Step 2: Reproduce the Issue
 

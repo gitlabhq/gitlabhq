@@ -24,7 +24,7 @@ GitLab by using our OpenID authentication feature.
 
 ## Prerequisites
 
-1. [Install Vault](https://developer.hashicorp.com/vault/docs/install).
+1. [Install Vault](https://developer.hashicorp.com/vault/install).
 1. Run Vault.
 
 ## Get the OpenID Connect client ID and secret from GitLab

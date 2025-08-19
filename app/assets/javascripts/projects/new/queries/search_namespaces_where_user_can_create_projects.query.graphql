@@ -13,6 +13,9 @@ query searchNamespacesWhereUserCanCreateProjects($search: String) {
     namespace {
       id
       fullPath
+      name
+      visibility
+      webUrl
     }
   }
 }

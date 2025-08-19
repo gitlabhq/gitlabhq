@@ -30,6 +30,7 @@ module MergeRequests
       allow_duplicate = params.with_indifferent_access[:allow_duplicate]
       pipeline_creation_request = params.with_indifferent_access[:pipeline_creation_request]
       push_options = params.with_indifferent_access[:push_options]
+      gitaly_context = params.with_indifferent_access[:gitaly_context]
 
       MergeRequests::CreatePipelineService
         .new(
@@ -38,7 +39,8 @@ module MergeRequests
           params: {
             allow_duplicate: allow_duplicate,
             pipeline_creation_request: pipeline_creation_request,
-            push_options: push_options
+            push_options: push_options,
+            gitaly_context: gitaly_context
           }
         ).execute(merge_request)
 

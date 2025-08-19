@@ -26,8 +26,10 @@ For an overview, see [Editing for style and topic type](https://youtu.be/HehnjPg
 
 In addition to the four primary topic types, you can use the following:
 
-- Page type: [Tutorials](tutorial.md)
+- Page type: [Tutorial](tutorial.md)
 - Page type: [Get started](get_started.md)
+- Page type: [Top-level](top_level_page.md)
+- Page type: [Prompt example](prompt_example.md)
 - Topic type: [Related topics](#related-topics)
 - Page or topic type: [Glossaries](glossary.md)
 

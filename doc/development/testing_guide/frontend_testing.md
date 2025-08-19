@@ -1032,6 +1032,18 @@ You can generate fixtures by running:
 
 You can find generated fixtures are in `tmp/tests/frontend/fixtures-ee`.
 
+To generate a single fixture for a _spec.js file identify the import from `test_fixtures/` directory:
+
+```javascript
+// spec/frontend/authentication/webauthn/authenticate_spec.js
+
+import htmlWebauthnAuthenticate from 'test_fixtures/webauthn/authenticate.html';
+```
+
+The corresponding fixture file is `spec/frontend/fixtures/webauthn.rb`
+
+To generate the single fixture from the command line run `bin/rspec spec/frontend/fixtures/webauthn.rb`
+
 ### Download fixtures
 
 We generate fixtures in GitLab CI, and store them in the package registry.

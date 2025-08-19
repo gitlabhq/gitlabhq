@@ -135,7 +135,7 @@ FactoryBot.define do
         status { :success }
 
         after(:build) do |pipeline, evaluator|
-          pipeline.builds << build(:ci_build, :report_results, pipeline: pipeline, project: pipeline.project)
+          pipeline.builds << build(:ci_build, :success, :report_results, pipeline: pipeline, project: pipeline.project)
         end
       end
 

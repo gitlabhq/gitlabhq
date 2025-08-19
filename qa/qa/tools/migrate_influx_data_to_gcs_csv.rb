@@ -5,7 +5,7 @@ require 'csv'
 module QA
   module Tools
     class MigrateInfluxDataToGcsCsv < MigrateInfluxDataToGcs
-      TEST_STATS_FIELDS = %w[id testcase file_path name product_group stage job_id job_name
+      TEST_STATS_FIELDS = %w[id testcase file_path name product_group feature_category stage job_id job_name
         job_url pipeline_id pipeline_url merge_request merge_request_iid smoke quarantined
         retried retry_attempts run_time run_type status ui_fabrication api_fabrication total_fabrication].freeze
       FABRICATION_STATS_FIELDS = %w[timestamp resource fabrication_method http_method run_type

@@ -182,7 +182,7 @@ To use a custom description template with Service Desk:
 ## Support Bot user
 
 Behind the scenes, Service Desk works by the special Support Bot user creating issues.
-This user isn't a [billable user](../../../subscriptions/self_managed/_index.md#billable-users),
+This user isn't a [billable user](../../../subscriptions/manage_users_and_seats.md#criteria-for-non-billable-users),
 so it does not count toward the license limit count.
 
 In GitLab 16.0 and earlier, comments generated from Service Desk emails show `GitLab Support Bot`

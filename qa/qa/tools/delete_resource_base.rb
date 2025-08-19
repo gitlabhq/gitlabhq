@@ -9,6 +9,7 @@ module QA
       include Support::API
       include Support::Repeater
       include Support::Waiter
+      include SharedResourceDeletion
 
       ITEMS_PER_PAGE = '100'
       PAGE_CUTOFF = '10'
@@ -18,48 +19,37 @@ module QA
         gitlab-e2e-sandbox-group-4
         gitlab-e2e-sandbox-group-5
         gitlab-e2e-sandbox-group-6
-        gitlab-e2e-sandbox-group-7].freeze
+        gitlab-e2e-sandbox-group-7
+        gitlab-e2e-sandbox-group-8].freeze
 
       def initialize(dry_run: false)
         %w[GITLAB_ADDRESS GITLAB_QA_ACCESS_TOKEN].each do |var|
           raise ArgumentError, "Please provide #{var} environment variable" unless ENV[var]
         end
 
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
-          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @delete_before = Date.parse(ENV['DELETE_BEFORE'] || (Date.today - 1).to_s)
+        @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (24 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
         @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
         @type = nil
       end
 
-      # Permanently deletes a given resource
-      #
-      # @param [Hash] resource
-      # @return [Array<String, Hash>] results
-      def delete_permanently(resource)
-        # We need to get the path_with_namespace of the project again since marking it for deletion changes the name
-        resource = get_resource(resource) if @type.include?('project')
-        return unless resource
-
-        path = resource_path(resource)
-        response = delete(resource_request(resource, permanently_remove: true, full_path: path))
-        wait_for_resource_deletion(resource, true) if success?(response&.code)
-
-        if permanently_deleted?(resource)
-          log_permanent_deletion(resource)
-        else
-          log_failure(resource, response)
-        end
+      def api_client
+        @api_client ||= Runtime::API::Client.new(
+          ENV['GITLAB_ADDRESS'],
+          personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN']
+        )
       end
 
       # Deletes a list of resources
       #
-      # @param [Array<Hash>] resources
-      # @param [Boolean] wait until the end of the script to verify deletions. used for deletions that take a long time
+      # @param [Array<Hash>] resources List of resources to delete
+      # @param [Boolean] delayed_verifications Wait until the end of the script to verify deletions
+      # @param [Boolean] permanent Permanently delete resources instead of marking for deletion
+      # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes
       # @param [Hash] API call options
       # @return [Array<String, Hash>] results
-      def delete_resources(resources, delayed_verification = false, **options)
+      def delete_resources(
+        resources, delayed_verification = false, permanent = @permanently_delete, skip_verification = false, **options)
         logger.info("Deleting #{resources.length} #{@type}s...\n")
 
         unverified_deletions = []
@@ -67,9 +57,10 @@ module QA
 
         resources.each do |resource|
           path = resource_path(resource)
+          resource[:type] = @type
           logger.info("Deleting #{@type} #{path}...")
 
-          result = delete_resource(resource, delayed_verification, **options)
+          result = delete_resource(resource, delayed_verification, permanent, skip_verification, **options)
 
           if result.is_a?(Array)
             results.append(result)
@@ -78,54 +69,17 @@ module QA
           end
         end
 
-        results.concat(verify_deletions(unverified_deletions)) unless unverified_deletions.empty?
+        results.concat(verify_deletions(unverified_deletions, permanent)) unless unverified_deletions.empty?
 
         results
       end
 
-      # Deletes a given resource
+      # Fetches the user ID of the given username
       #
-      # @param [<Hash>] resource
-      # @param [Boolean] wait until the end of the script to verify deletion
-      # @param [Integer] max retries for unlinking security policy projects
-      # @param [Hash] API call options
-      # @return [Array<String, Hash>] results
-      def delete_resource(resource, delayed_verification = false, max_retries = 6, **options)
-        retry_count = 0
-
-        while retry_count <= max_retries
-          # If delayed deletion is not enabled, resource will be permanently deleted
-          response = delete(resource_request(resource, **options))
-
-          case
-          when success?(response&.code) || response.include?("already marked for deletion")
-            return resource if delayed_verification
-
-            wait_for_resource_deletion(resource)
-
-            return log_permanent_deletion(resource) if permanently_deleted?(resource)
-
-            return log_failure(resource, response) unless mark_for_deletion_possible?(resource)
-
-            return @permanently_delete ? delete_permanently(resource) : log_marked_for_deletion(resource)
-          when response&.code == HTTP_STATUS_NOT_FOUND
-            return log_permanent_deletion(resource)
-          when response&.code == HTTP_STATUS_BAD_REQUEST && response&.include?("security policy project")
-            if retry_count < max_retries
-              find_and_unassign_security_policy_project(resource)
-              retry_count += 1
-              next
-            end
-          end
-
-          return log_failure(resource, response)
-        end
-
-        log_failure(resource, response)
-      end
-
+      # @param [String] qa_username
+      # @return [Integer]
       def fetch_qa_user_id(qa_username)
-        user_response = get Runtime::API::Request.new(@api_client, "/users", username: qa_username).url
+        user_response = get Runtime::API::Request.new(api_client, "/users", username: qa_username).url
 
         unless user_response.code == HTTP_STATUS_OK
           logger.error("Request for #{qa_username} returned (#{user_response.code}): `#{user_response}` ")
@@ -147,7 +101,7 @@ module QA
 
       # Fetches resources by api path that were created before the @delete_before date
       #
-      # @param api_path [String] api path to fetch resources from
+      # @param [String] api_path Api path to fetch resources from
       # @return [Array<Hash>] list of parsed resource hashes
       def fetch_resources(api_path)
         logger.info("Fetching #{@type}s created before #{@delete_before} on #{ENV['GITLAB_ADDRESS']}...")
@@ -157,14 +111,14 @@ module QA
 
         while page_no.present?
           response = get Runtime::API::Request.new(
-            @api_client,
+            api_client,
             api_path,
             page: page_no,
             per_page: ITEMS_PER_PAGE
           ).url
 
           if response.code == HTTP_STATUS_OK
-            resources.concat(parse_body(response).select { |r| Date.parse(r[:created_at]) < @delete_before })
+            resources.concat(parse_body(response).select { |r| Time.parse(r[:created_at]) < @delete_before })
           else
             logger.error("Request for #{@type} returned (#{response.code}): `#{response}` ")
             exit 1 if fatal_response?(response.code)
@@ -181,225 +135,13 @@ module QA
         resources
       end
 
-      # Fetches the given resource again and parses its response
-      #
-      # @param [Hash] resource
-      # @return [Hash] resource
-      def get_resource(resource)
-        response = get(resource_request(resource))
-
-        if success?(response&.code)
-          parse_body(response)
-        else
-          logger.warn("Get #{resource_path(resource)}, returned #{response.code}")
-          nil
-        end
-      end
-
-      # Print results of dry run
-      #
-      # @param [Array<Hash>] list of resource hashes
-      # @return [void]
-      def log_dry_run_output(resources)
-        return logger.info("No #{@type}s would be deleted") if resources.empty?
-
-        logger.info("The following #{resources.length} #{@type}s would be deleted:")
-
-        resources.each do |resource|
-          created_at = resource[:created_at]
-          path = resource_path(resource)
-          logger.info("#{path} - created at: #{created_at}")
-        end
-      end
-
-      # Print failure message for a given resource
-      #
-      # @param [<Hash>] resource
-      # @param [<Hash>] response
-      # @return [Array<String, Hash>] results
-      def log_failure(resource, response)
-        path = resource_path(resource)
-        logger.error("\e[31mFAILED\e[0m to delete #{@type} #{path} with #{response.code}.\n")
-        ["failed_deletions", { path: path, response: response }]
-      end
-
-      # Print marked for deletion message for a given resource
-      #
-      # @param [<Hash>] resource
-      # @return [Array<String, Hash>] results
-      def log_marked_for_deletion(resource)
-        path = resource_path(resource)
-        logger.info("\e[32mSUCCESS\e[0m: Marked #{@type} #{path} for deletion\n")
-        ["marked_deletions", resource]
-      end
-
-      # Print permanent deletion message for a given resource
-      #
-      # @param [<Hash>] resource
-      # @return [Array<String, Hash>] results
-      def log_permanent_deletion(resource)
-        path = resource_path(resource)
-        logger.info("\e[32mSUCCESS\e[0m: Permanently deleted #{@type} #{path}\n")
-        ["permanent_deletions", resource]
-      end
-
-      # Print results of entire script run
-      #
-      # @param [Array<String, Hash>] results
-      # @return [void]
-      def log_results(results)
-        return logger.info("Dry run complete") if @dry_run
-
-        return logger.info("No results to report") if results.blank?
-
-        processed_results = results.group_by(&:shift).transform_values(&:flatten)
-
-        marked_deletions = processed_results["marked_deletions"]
-        permanent_deletions = processed_results["permanent_deletions"]
-        failed_deletions = processed_results["failed_deletions"]
-
-        logger.info("Marked #{marked_deletions.length} #{@type}(s) for deletion") unless marked_deletions.blank?
-        logger.info("Deleted #{permanent_deletions.length} #{@type}(s)") unless permanent_deletions.blank?
-
-        print_failed_deletion_attempts(failed_deletions)
-
-        logger.info('Done')
-
-        exit 1 unless failed_deletions.blank?
-      end
-
-      # Check if a resource can be marked for deletion
-      #
-      # @param resource [Hash] Resource to check
-      # @return [Boolean]
-      def mark_for_deletion_possible?(resource)
-        resource.key?(:marked_for_deletion_on)
-      end
-
-      # Check if resource is marked for deletion
-      #
-      # @param resource [Hash] Resource to check
-      # @param fetch_again [Boolean] Whether to fetch the resource again before checking
-      # @return [Boolean]
-      def self_deletion_scheduled?(resource, fetch_again: false)
-        if fetch_again
-          resource = get_resource(resource)
-          return false unless resource
-        end
-
-        resource[:marked_for_deletion_on]
-      end
-
-      # Check if resource is permanently deleted
-      #
-      # @param resource [Hash] Resource to check
-      # @return [Boolean]
-      def permanently_deleted?(resource)
-        response = get(resource_request(resource))
-        response.code == HTTP_STATUS_NOT_FOUND
-      end
-
-      # Prints failed deletion attempts
-      #
-      # @param failed_deletions [Array<Hash{path=>String, response=>Hash}>] List of hashes of failed deletion attempts
-      # @return [void]
-      def print_failed_deletion_attempts(failed_deletions)
-        return logger.info('No failed deletion attempts to report!') if failed_deletions.blank?
-
-        logger.info("\e[31mThere were #{failed_deletions.length} failed deletion attempts:\e[0m\n")
-
-        failed_deletions.each do |attempt|
-          logger.info("Resource: #{attempt[:path]}")
-          logger.error("Response: #{attempt[:response]}\n")
-        end
-      end
-
-      # Resource path of a given resource
-      #
-      # @param resource [Hash] Resource
-      # @return [String] Resource path
-      def resource_path(resource)
-        resource[:full_path] || resource[:path_with_namespace] || resource[:web_url]
-      end
-
       # Create a new api client for the specified token - used for deleting test user personal resources
       #
-      # @param token [String] Personal access token
+      # @param [String] token Personal access token
       # @return [Runtime::API::Client] API client
       def user_api_client(token)
         Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
           personal_access_token: token)
-      end
-
-      def verify_deletions(unverified_deletions)
-        logger.info('Verifying deletions...')
-
-        unverified_deletions.filter_map do |resource|
-          wait_for_resource_deletion(resource, permanent: true)
-          response = get(resource_request(resource))
-
-          if response&.code == HTTP_STATUS_NOT_FOUND
-            log_permanent_deletion(resource)
-          else
-            log_failure(resource, response)
-          end
-        end
-      end
-
-      # Wait for resource to be deleted (resource cannot be found or resource has been marked for deletion)
-      #
-      # @param resource [Hash] Resource to wait for deletion for
-      # @return [Boolean] Whether the resource was deleted
-      def wait_for_resource_deletion(resource, permanent = false)
-        wait_until(max_duration: 160, sleep_interval: 1, raise_on_failure: false) do
-          response = get(resource_request(resource))
-          deleted = response&.code == HTTP_STATUS_NOT_FOUND
-
-          if permanent
-            deleted
-          else
-            deleted || (success?(response&.code) && self_deletion_scheduled?(parse_body(response)))
-          end
-        end
-      end
-
-      # Finds and unassigns a security policy project from a resource
-      # Note: full_path is used for REST API resources and fullPath is used for GraphQL resources
-      # We can only unassign a security policy project through GraphQL and not the REST API.
-      #
-      # @param resource [Hash] Resource to remove security policy project from
-      # @return [void]
-      def find_and_unassign_security_policy_project(resource)
-        if has_security_policy_project?(resource)
-          unassign_security_policy_project(resource[:full_path])
-        elsif projects_with_security_policy_projects(resource).present?
-          projects_with_security_policy_projects(resource).each do |project|
-            unassign_security_policy_project(project[:fullPath])
-          end
-        elsif subgroups_with_security_policy_projects(resource).present?
-          subgroups_with_security_policy_projects(resource).each do |subgroup|
-            unassign_security_policy_project(subgroup[:fullPath])
-          end
-        end
-      end
-
-      def unassign_security_policy_project(path)
-        logger.info("Unassigning security policy project for #{path}")
-
-        mutation = <<~GQL
-          mutation {
-            securityPolicyProjectUnassign(input: { fullPath: "#{path}" }) {
-              errors
-            }
-          }
-        GQL
-
-        graphql_request(mutation)
-      end
-
-      def graphql_request(query)
-        response = post(Runtime::API::Request.new(@api_client, '/graphql').url, { query: query })
-        parse_body(response)
       end
     end
   end

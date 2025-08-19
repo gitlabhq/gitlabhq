@@ -207,11 +207,9 @@ When you submit a review, GitLab does the following:
 - Performs any quick actions you added to your review comments.
 - Shows the outcome of your review.
 
-To submit your completed review:
-
 1. On the top right, select **Your review** to show details about your review:
 
-   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_2.png)
+   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
 
 1. Review your pending comments. Edit them as needed.
 1. Select the outcome of your review.
@@ -226,6 +224,17 @@ To submit your completed review:
    quick actions you want performed.
 
 You can also use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
+
+### Discard your pending review
+
+When you discard a review, your unpublished comments are deleted and you cannot restore them.
+To do this:
+
+1. On the top right, select **Your review** to show details about your review:
+
+   ![The review drawer, showing a review in progress. It contains a single-line review comment, and a comment spanning two lines of code.](img/review_drawer_v18_3.png)
+
+1. Select **Discard review**.
 
 ### Prevent merge when you request changes
 
@@ -295,51 +304,9 @@ another user with permission to merge the merge request can override this check:
 
 ## Download merge request changes
 
-### As a diff
-
-To download the changes included in a merge request as a diff:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
-1. Select your merge request.
-1. In the upper-right corner, select **Code > Plain diff**.
-
-If you know the URL of the merge request, you can also download the diff from
-the command line by appending `.diff` to the URL. This example downloads the diff
-for merge request `000000`:
-
-```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff
-```
-
-To download and apply the diff in a one-line CLI command:
-
-```shell
-curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git apply
-```
-
-### As a patch file
-
-To download the changes included in a merge request as a patch file:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
-1. Select your merge request.
-1. In the upper-right corner, select **Code > Patches**.
-
-If you know the URL of the merge request, you can also download the patch from
-the command line by appending `.patch` to the URL. This example downloads the patch
-file for merge request `000000`:
-
-```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch
-```
-
-To download and apply the patch in a one-line CLI command using [`git am`](https://git-scm.com/docs/git-am):
-
-```shell
-curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" | git am
-```
+You can download the changes from a merge request as a diff or patch file.
+For more information and examples, see
+[Download merge request changes](../changes.md#download-merge-request-changes).
 
 ## Associated features
 
@@ -347,6 +314,8 @@ Merge requests are related to these features:
 
 - [Cherry-pick changes](../cherry_pick_changes.md):
   In the GitLab UI, select **Cherry-pick** in a merged merge request or a commit to cherry-pick it.
+- [Compare changes](../changes.md):
+  View and download the diff of changes included in a merge request.
 - [Fast-forward merge requests](../methods/_index.md#fast-forward-merge):
   For a linear Git history and a way to accept merge requests without creating merge commits
 - [Find the merge request that introduced a change](../versions.md):
@@ -363,5 +332,7 @@ Merge requests are related to these features:
 
 ## Related topics
 
+- [Compare changes in merge requests](../changes.md)
+- [Compare branches](../../repository/branches/_index.md#compare-branches)
 - [Merge methods](../methods/_index.md)
 - [Draft Notes API](../../../../api/draft_notes.md)

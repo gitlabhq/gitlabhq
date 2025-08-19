@@ -169,41 +169,11 @@ RSpec.describe 'Querying CI_JOB_TOKEN allowlist for a project', feature_category
         )
       end
 
-      before do
-        allow_next_found_instance_of(Project) do |project|
-          allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-        end
-      end
-
       it 'returns the correct data' do
         post_graphql(query, current_user: current_user)
 
         expect(allowlist['groupsAllowlist']).to eq(expected_groups_allowlist)
         expect(allowlist['projectsAllowlist']).to eq(expected_projects_allowlist)
-      end
-
-      context 'when job token policies are disabled' do
-        before do
-          allow_next_found_instance_of(Project) do |project|
-            allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-          end
-        end
-
-        it 'returns job token policies as null', :aggregate_failures do
-          post_graphql(query, current_user: current_user)
-
-          expect(allowlist.dig('groupsAllowlist', 'nodes', 0, 'jobTokenPolicies')).to be_nil
-          expect(allowlist.dig('projectsAllowlist', 'nodes', 0, 'jobTokenPolicies')).to be_nil
-          expect(allowlist.dig('projectsAllowlist', 'nodes', 1, 'jobTokenPolicies')).to be_nil
-        end
-
-        it 'returns default permissions as true', :aggregate_failures do
-          post_graphql(query, current_user: current_user)
-
-          expect(allowlist.dig('groupsAllowlist', 'nodes', 0, 'defaultPermissions')).to be(true)
-          expect(allowlist.dig('projectsAllowlist', 'nodes', 0, 'defaultPermissions')).to be(true)
-          expect(allowlist.dig('projectsAllowlist', 'nodes', 1, 'defaultPermissions')).to be(true)
-        end
       end
 
       it 'avoids N+1 queries', :use_sql_query_cache do

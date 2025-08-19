@@ -7,6 +7,7 @@ feature_categories:
 description: Records the addition and removal of issues to iterations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37617
 milestone: '13.3'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514595
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
 table_size: small

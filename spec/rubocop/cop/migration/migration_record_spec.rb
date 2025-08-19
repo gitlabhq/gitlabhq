@@ -6,12 +6,12 @@ require_relative '../../../../rubocop/cop/migration/migration_record'
 RSpec.describe RuboCop::Cop::Migration::MigrationRecord do
   shared_examples 'a disabled cop' do |klass|
     it 'does not register any offenses' do
-      expect_no_offenses(<<~SOURCE)
+      expect_no_offenses(<<~RUBY)
         class MyMigration < Gitlab::Database::Migration[2.0]
           class Project < #{klass}
           end
         end
-      SOURCE
+      RUBY
     end
   end
 

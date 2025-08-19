@@ -14,16 +14,21 @@ export default () => {
 
   const {
     reviewRequestedPath,
+    activityPath,
     assignedMergeRequestsPath,
     assignedWorkItemsPath,
     authoredWorkItemsPath,
     duoCodeReviewBotUsername,
+    mergeRequestsReviewRequestedTitle,
+    mergeRequestsYourMergeRequestsTitle,
   } = el.dataset;
 
   return new Vue({
     el,
     provide: {
       duoCodeReviewBotUsername,
+      mergeRequestsReviewRequestedTitle,
+      mergeRequestsYourMergeRequestsTitle,
     },
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
@@ -32,6 +37,7 @@ export default () => {
       return createElement(HomepageApp, {
         props: {
           reviewRequestedPath,
+          activityPath,
           assignedMergeRequestsPath,
           assignedWorkItemsPath,
           authoredWorkItemsPath,

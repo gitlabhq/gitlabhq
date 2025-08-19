@@ -15,8 +15,8 @@ module SystemNotes
 
     protected
 
-    def create_note(note_summary)
-      note_params = note_summary.note.merge(system: true)
+    def create_note(note_summary, skip_touch_noteable: false)
+      note_params = note_summary.note.merge(system: true, skip_touch_noteable: skip_touch_noteable)
       note_params[:system_note_metadata] = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
 
       Note.create(note_params)

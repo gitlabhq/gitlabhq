@@ -9,31 +9,21 @@ RSpec.describe 'Incident Management index', :js, feature_category: :incident_man
   let_it_be(:incident) { create(:incident, project: project) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     stub_feature_flags(hide_incident_management_features: false)
     sign_in(user)
 
     visit project_incidents_path(project)
-    wait_for_all_requests
   end
 
   describe 'incident list is visited' do
     context 'by reporter' do
       let(:user) { reporter }
 
-      it 'shows the create new incident button' do
-        expect(page).to have_selector('.create-incident-button')
-      end
+      it 'when "Create incident" is clicked shows the create issue page with the Incident type pre-selected' do
+        click_link 'Create incident'
 
-      it 'when clicked shows the create issue page with the Incident type pre-selected' do
-        find('.create-incident-button').click
-        wait_for_all_requests
-
-        expect(page).to have_selector('.dropdown-menu-toggle')
-        expect(page).to have_selector('.js-issuable-type-filter-dropdown-wrap')
-
-        page.within('.js-issuable-type-filter-dropdown-wrap') do
-          expect(page).to have_content('Incident')
-        end
+        expect(page).to have_select('Type', selected: 'Incident')
       end
     end
   end

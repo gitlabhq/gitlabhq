@@ -25,7 +25,7 @@ To enable debug logs in JetBrains:
 1. Select **OK** or **Save**.
 
 If you experience [certificate errors](#certificate-errors) or other connection errors, and
-use a HTTP proxy to connect to your GitLab instance, you must
+use an HTTP proxy to connect to your GitLab instance, you must
 [configure the Language Server to use a proxy](../language_server/_index.md#configure-the-language-server-to-use-a-proxy)
 for the GitLab Language Server.
 

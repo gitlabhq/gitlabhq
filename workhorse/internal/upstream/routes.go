@@ -2,6 +2,7 @@ package upstream
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -59,6 +60,7 @@ type routeOptions struct {
 	matchers        []matcherFunc
 	allowOrigins    *regexp.Regexp
 	bodyLimit       int64
+	bodyLimitMode   bodylimit.Mode
 }
 
 const (
@@ -130,6 +132,15 @@ func withBodyLimit(bodyLimit int64) func(*routeOptions) {
 	}
 }
 
+func withBodyLimitMode(bodyLimitMode bodylimit.Mode) func(*routeOptions) {
+	return func(options *routeOptions) {
+		if bodyLimitMode < bodylimit.ModeDisabled || bodyLimitMode > bodylimit.ModeEnforced {
+			panic(fmt.Sprintf("invalid body limit mode: %d", bodyLimitMode))
+		}
+		options.bodyLimitMode = bodyLimitMode
+	}
+}
+
 func (u *upstream) observabilityMiddlewares(handler http.Handler, method string, metadata routeMetadata, opts *routeOptions) http.Handler {
 	handler = log.AccessLogger(
 		handler,
@@ -172,8 +183,9 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 func (u *upstream) route(method string, metadata routeMetadata, handler http.Handler, opts ...func(*routeOptions)) routeEntry {
 	// Instantiate a route with the defaults
 	options := routeOptions{
-		tracing:   true,
-		bodyLimit: 100 * 1024 * 1024, // 100MB
+		tracing:       true,
+		bodyLimit:     100 * 1024 * 1024,       // 100MB
+		bodyLimitMode: bodylimit.ModeUseGlobal, // use global mode without redefining
 	}
 
 	for _, f := range opts {
@@ -191,7 +203,7 @@ func (u *upstream) route(method string, metadata routeMetadata, handler http.Han
 	}
 
 	if options.bodyLimit > 0 {
-		handler = withBodyLimitContext(options.bodyLimit, handler)
+		handler = withBodyLimitContext(options.bodyLimit, options.bodyLimitMode, handler)
 	}
 
 	return routeEntry{
@@ -420,6 +432,9 @@ func configureRoutes(u *upstream) {
 			newRoute(apiGroupPattern+`/wikis/attachments\z`, "api_groups_wikis_attachments", railsBackend), tempfileMultipartProxy),
 		u.route("POST",
 			newRoute(apiPattern+`graphql\z`, "api_graphql", railsBackend), tempfileMultipartProxy, withBodyLimit(20*1024*1024)), // 20 Mb
+		// See https://gitlab.com/gitlab-org/gitlab/-/issues/535366
+		u.route("POST",
+			newRoute(apiProjectPattern+`/remote_mirrors\z`, "api_projects_remote_mirrors", railsBackend), proxy, withBodyLimit(100*1024), withBodyLimitMode(bodylimit.ModeEnforced)), // 100 Kb
 		u.route("POST",
 			newRoute(apiTopicPattern, "api_topics", railsBackend), tempfileMultipartProxy),
 		u.route("PUT",
@@ -644,7 +659,7 @@ func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Han
 
 func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
 	if u.Config.CircuitBreakerConfig.Enabled {
-		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.Config.Redis)
+		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.rdb)
 
 		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
 	}
@@ -653,9 +668,16 @@ func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.I
 }
 
 // Define a context key with a body limit value for route
-func withBodyLimitContext(bodyLimit int64, next http.Handler) http.Handler {
+func withBodyLimitContext(bodyLimit int64, bodyLimitMode bodylimit.Mode, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), bodylimit.BodyLimitKey, bodyLimit)
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, bodylimit.BodyLimitKey, bodyLimit)
+
+		// if mode is redefined for the route
+		if bodyLimitMode != bodylimit.ModeUseGlobal {
+			ctx = context.WithValue(ctx, bodylimit.BodyLimitMode, bodyLimitMode)
+		}
+
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})

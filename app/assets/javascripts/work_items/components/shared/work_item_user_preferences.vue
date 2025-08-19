@@ -9,11 +9,12 @@ import {
 import produce from 'immer';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
 import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
-import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS } from '~/work_items/constants';
+import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS, METADATA_KEYS } from '~/work_items/constants';
 
 export default {
   name: 'WorkItemUserPreferences',
@@ -27,6 +28,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['isGroup', 'isSignedIn'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
@@ -43,6 +45,11 @@ export default {
     fullPath: {
       type: String,
       required: true,
+    },
+    isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -62,9 +69,11 @@ export default {
       return this.displaySettings.namespacePreferences?.hiddenMetadataKeys || [];
     },
     applicableMetadataPreferences() {
-      return this.$options.constants.WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
-        (item) => !this.isGroup || item.isPresentInGroup,
-      );
+      return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
+        return item.key === METADATA_KEYS.STATUS
+          ? !this.isEpicsList
+          : !this.isGroup || item.isPresentInGroup;
+      });
     },
   },
   methods: {
@@ -76,7 +85,8 @@ export default {
     },
 
     async toggleMetadataDisplaySettings(metadataKey) {
-      const newHiddenKeys = this.hiddenMetadataKeys.includes(metadataKey)
+      const wasHidden = this.hiddenMetadataKeys.includes(metadataKey);
+      const newHiddenKeys = wasHidden
         ? this.hiddenMetadataKeys.filter((key) => key !== metadataKey)
         : [...this.hiddenMetadataKeys, metadataKey];
 
@@ -90,6 +100,18 @@ export default {
           variables: {
             namespace: this.fullPath,
             displaySettings: input,
+          },
+          optimisticResponse: {
+            workItemUserPreferenceUpdate: {
+              errors: [],
+              userPreferences: {
+                displaySettings: {
+                  hiddenMetadataKeys: newHiddenKeys,
+                },
+                __typename: 'WorkItemTypesUserPreference',
+              },
+              __typename: 'WorkItemUserPreferenceUpdatePayload',
+            },
           },
           update: (
             cache,
@@ -106,14 +128,20 @@ export default {
               },
               (existingData) =>
                 produce(existingData, (draftData) => {
-                  if (draftData?.currentUser?.workItemPreferences) {
-                    draftData.currentUser.workItemPreferences.displaySettings =
-                      userPreferences.displaySettings;
-                  }
+                  draftData.currentUser.workItemPreferences = {
+                    ...(draftData.currentUser.workItemPreferences ?? {}),
+                    displaySettings: userPreferences.displaySettings,
+                  };
                 }),
             );
           },
         });
+
+        if (!wasHidden) {
+          this.trackEvent('work_item_metadata_field_hidden', {
+            property: metadataKey,
+          });
+        }
       } catch (error) {
         createAlert({
           message: __('Something went wrong while saving the preference.'),
@@ -124,9 +152,11 @@ export default {
     },
 
     async toggleSidePanelPreference() {
+      const isEnabled = this.shouldOpenItemsInSidePanel;
+
       const input = {
         workItemsDisplaySettings: {
-          shouldOpenItemsInSidePanel: !this.shouldOpenItemsInSidePanel,
+          shouldOpenItemsInSidePanel: !isEnabled,
         },
       };
 
@@ -159,6 +189,10 @@ export default {
             );
           },
         });
+
+        if (isEnabled) {
+          this.trackEvent('work_item_drawer_disabled');
+        }
       } catch (error) {
         createAlert({
           message: __('Something went wrong while saving the preference.'),
@@ -169,9 +203,6 @@ export default {
         this.isLoading = false;
       }
     },
-  },
-  constants: {
-    WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS,
   },
 };
 </script>

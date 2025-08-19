@@ -770,6 +770,7 @@ export const participantsQueryResponse = {
         id: 'gid://gitlab/Issue/1',
         iid: '1',
         participants: {
+          count: 4,
           nodes: [
             // Remove duplicated entry https://gitlab.com/gitlab-org/gitlab/-/issues/327822
             mockUser1,

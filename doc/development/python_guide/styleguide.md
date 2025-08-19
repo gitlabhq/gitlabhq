@@ -102,7 +102,7 @@ def test_get_product_price(argument1, argument2, expected_result):
 def test_my_function(argument1, argument2, argument3, expected_response):
    ...
 
-# Good: NamedTuples improve readibility for larger test scenarios.
+# Good: NamedTuples improve readability for larger test scenarios.
 
 from typing import NamedTuple
 

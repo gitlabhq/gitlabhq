@@ -6,12 +6,6 @@ module API
       class ProjectPackages < ::API::Base
         MAX_FILES_COUNT = MAX_PACKAGE_REVISIONS_COUNT = 1000
 
-        before do
-          if Feature.disabled?(:conan_package_revisions_support, Feature.current_request)
-            not_found!("'conan_package_revisions_support' feature flag is disabled")
-          end
-        end
-
         helpers do
           include Gitlab::Utils::StrongMemoize
           def package_files(finder_params)

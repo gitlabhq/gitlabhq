@@ -30,7 +30,7 @@ This tutorial is adapted from the following GitLab Unfiltered videos:
 
 ## Before you begin
 
-Make sure you have the following before you complete this tutorial:
+Before you begin this tutorial make sure you have the following:
 
 - A GitLab Ultimate subscription.
 - A test project. You can use any project you like, but consider creating a test project specifically for this tutorial.
@@ -68,7 +68,7 @@ Let's test this feature by adding the fake secret `glpat-12345678901234567890` t
 
    ```plaintext
    hello, world!
-   
+
    # To make the example work, remove
    # the spaces before and after the dash:
    glpat - 12345678901234567890

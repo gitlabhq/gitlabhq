@@ -117,7 +117,7 @@ export default {
             :src="resource.avatarUrl"
             shape="rect"
             :size="32"
-            @label-link-click="$emit('click-avatar')"
+            @label-link-click="(event) => $emit('click-avatar', event)"
           >
             <template #meta>
               <div class="gl-px-1">
@@ -127,10 +127,7 @@ export default {
               </div>
             </template>
             <slot name="avatar-default">
-              <list-item-description
-                v-if="resource.descriptionHtml"
-                :description-html="resource.descriptionHtml"
-              />
+              <list-item-description :resource="resource" />
             </slot>
           </gl-avatar-labeled>
         </div>

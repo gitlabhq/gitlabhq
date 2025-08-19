@@ -16,12 +16,14 @@ module Gitlab
     READ_USER_SCOPE = :read_user
     CREATE_RUNNER_SCOPE = :create_runner
     MANAGE_RUNNER_SCOPE = :manage_runner
+    MCP_SCOPE = :mcp
     API_SCOPES = [
       API_SCOPE, READ_API_SCOPE,
       READ_USER_SCOPE,
       CREATE_RUNNER_SCOPE, MANAGE_RUNNER_SCOPE,
       K8S_PROXY_SCOPE,
-      SELF_ROTATE_SCOPE
+      SELF_ROTATE_SCOPE,
+      MCP_SCOPE
     ].freeze
 
     # Scopes for Duo
@@ -102,6 +104,8 @@ module Gitlab
     ].freeze
 
     CI_JOB_USER = 'gitlab-ci-token'
+
+    extend Gitlab::InternalEventsTracking
 
     class << self
       prepend_mod_with('Gitlab::Auth') # rubocop: disable Cop/InjectEnterpriseEditionModule
@@ -252,14 +256,21 @@ module Gitlab
       end
 
       def user_with_password_for_git(login, password)
-        if Feature.enabled?(:prevent_token_prefixed_password_fallback_sessionless, :instance) &&
-            password.present? &&
-            Authn::AgnosticTokenIdentifier.token?(password)
-          return
-        end
+        # Prevent LDAP and database authentication attempts when password is a token
+        return if password.present? && Authn::AgnosticTokenIdentifier.token?(password)
 
         user = find_with_user_password(login, password)
         return unless user
+
+        if user.ldap_user? &&
+            Gitlab::CurrentSettings.password_authentication_enabled_for_git? &&
+            Gitlab::Auth::Ldap::Config.prevent_ldap_sign_in?
+          track_internal_event(
+            'authenticate_to_ldap_with_git_over_https_when_prevent_ldap_sign_in_is_enabled',
+            user: user,
+            category: name
+          )
+        end
 
         verifier = TwoFactorAuthVerifier.new(user)
 
@@ -336,9 +347,10 @@ module Gitlab
           write_virtual_registry: %i[write_dependency_proxy],
           read_repository: %i[download_code],
           write_repository: %i[download_code push_code],
-          create_runner: %i[create_instance_runner create_runner],
+          create_runner: %i[create_instance_runners create_runners],
           manage_runner: %i[assign_runner update_runner delete_runner],
-          ai_workflows: %i[push_code download_code]
+          ai_workflows: %i[push_code download_code],
+          mcp: %i[execute_mcp_tool] # This ability doesn't exist yet
         }
 
         scopes.flat_map do |scope|
@@ -408,8 +420,9 @@ module Gitlab
         if build.user
           return unless build.user.can_log_in_with_non_expired_password? || bot_user_can_read_project?(build.user, build.project)
 
+          auth_context = { authentication_method: :ci_job_token, authentication_method_id: build.id }
           # If user is assigned to build, use restricted credentials of user
-          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities)
+          Gitlab::Auth::Result.new(build.user, build.project, :build, build_authentication_abilities, auth_context)
         else
           # Otherwise use generic CI credentials (backward compatibility)
           Gitlab::Auth::Result.new(nil, build.project, :ci, build_authentication_abilities)

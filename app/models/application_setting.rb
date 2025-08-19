@@ -8,10 +8,14 @@ class ApplicationSetting < ApplicationRecord
   include Sanitizable
   include Gitlab::EncryptedAttribute
   include SafelyChangeColumnDefault
+  include IgnorableColumns
 
-  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :wiki_page_max_content_bytes
+  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period,
+    :wiki_page_max_content_bytes
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
+  ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
+  ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -36,8 +40,6 @@ class ApplicationSetting < ApplicationRecord
   DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE = 1.kilobyte
 
   USERS_UNCONFIRMED_SECONDARY_EMAILS_DELETE_AFTER_DAYS = 3
-
-  INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
 
   DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
@@ -698,6 +700,11 @@ class ApplicationSetting < ApplicationRecord
   attribute :resource_usage_limits, ::Gitlab::Database::Type::IndifferentJsonb.new, default: -> { {} }
   validates :resource_usage_limits, json_schema: { filename: 'resource_usage_limits' }
 
+  jsonb_accessor :resource_access_tokens_settings,
+    inactive_resource_access_tokens_delete_after_days: [:integer, { default: 30 }]
+
+  validates :resource_access_tokens_settings, json_schema: { filename: 'resource_access_tokens_settings' }
+
   jsonb_accessor :group_settings,
     top_level_group_creation_enabled: [:boolean, { default: true }],
     disable_invite_members: [:boolean, { default: false }]
@@ -860,7 +867,8 @@ class ApplicationSetting < ApplicationRecord
       :pypi_package_requests_forwarding,
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
-      :lock_maven_package_requests_forwarding
+      :lock_maven_package_requests_forwarding,
+      :pages_unique_domain_default_enabled
     )
   end
 
@@ -871,7 +879,10 @@ class ApplicationSetting < ApplicationRecord
   validates :asciidoc_max_includes,
     numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
 
-  jsonb_accessor :pages, pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }]
+  jsonb_accessor :pages,
+    pages_extra_deployments_default_expiry_seconds: [:integer, { default: 86400 }],
+    pages_unique_domain_default_enabled: [:boolean, { default: true }]
+
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
   jsonb_accessor :anti_abuse_settings,
@@ -1212,15 +1223,9 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def allow_user_remember_me?
-    return false if session_expire_from_init_enabled?
+    return false if session_expire_from_init?
 
     remember_me_enabled?
-  end
-
-  # check the model first, as this will be false on most instances
-  # only check Redis / FF if setting is enabled
-  def session_expire_from_init_enabled?
-    session_expire_from_init? && Feature.enabled?(:session_expire_from_init, :instance)
   end
 
   private
@@ -1261,7 +1266,7 @@ class ApplicationSetting < ApplicationRecord
   end
 
   def reset_deletion_warning_redis_key
-    Gitlab::InactiveProjectsDeletionWarningTracker.reset_all
+    Gitlab::DormantProjectsDeletionWarningTracker.reset_all
   end
 
   def should_prevent_visibility_restriction?

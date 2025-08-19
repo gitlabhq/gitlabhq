@@ -2,13 +2,18 @@ package gitaly
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 
 	gitalyclient "gitlab.com/gitlab-org/gitaly/v16/client"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/gitaly/v16/streamio"
+	"google.golang.org/grpc/metadata"
 )
+
+// ClientContextMetadataKey is the key used by rails to propagate client context back to internal APIs
+const ClientContextMetadataKey = "gitaly-client-context-bin"
 
 // SmartHTTPClient encapsulates the SmartHTTPServiceClient for Gitaly.
 type SmartHTTPClient struct {
@@ -48,7 +53,13 @@ func infoRefsReader(stream infoRefsClient) io.Reader {
 }
 
 // ReceivePack performs a receive pack operation with Git configuration options.
-func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.Repository, glID string, glUsername string, glRepository string, gitConfigOptions []string, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
+func (client *SmartHTTPClient) ReceivePack(ctx context.Context, repo *gitalypb.Repository, glID string, glUsername string, glRepository string, gitConfigOptions []string, glBuildID string, clientRequest io.Reader, clientResponse io.Writer, gitProtocol string) error {
+	clientContextMetadata, err := json.Marshal(map[string]string{"glBuildId": glBuildID})
+	if err != nil {
+		return err
+	}
+	ctx = metadata.AppendToOutgoingContext(ctx, ClientContextMetadataKey, string(clientContextMetadata))
+
 	stream, err := client.PostReceivePack(ctx)
 	if err != nil {
 		return err

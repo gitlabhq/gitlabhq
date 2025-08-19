@@ -301,7 +301,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'does not allow a subgroup to have the same name as an existing subgroup' do
           sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
-          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: organization)
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: sub_group1.organization)
 
           expect(sub_group1).to be_valid
           expect(sub_group2).not_to be_valid
@@ -1781,6 +1781,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to include(inactive_group, inactive_subgroup) }
       it { is_expected.not_to include(active_group) }
     end
+
+    describe '.with_integrations' do
+      let_it_be(:group_with_integration) { create(:group) }
+      let_it_be(:group_without_integration) { create(:group) }
+
+      before do
+        create(:integrations_slack, :group, group: group_with_integration, group_mention_events: true, group_confidential_mention_events: true)
+      end
+
+      subject { described_class.with_integrations }
+
+      it { is_expected.to include(group_with_integration) }
+      it { is_expected.not_to include(group_without_integration) }
+    end
   end
 
   describe '.project_creation_levels_for_user' do
@@ -2502,9 +2516,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     context 'when organization owner' do
       let_it_be(:group) { create(:group) }
-      let_it_be(:org_owner) do
-        create(:organization_owner, organization: organization).user
-      end
+      let_it_be(:org_owner) { create(:user, owner_of: group.organization) }
 
       it 'returns OWNER by default' do
         expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
@@ -4341,6 +4353,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#work_items_project_issues_list_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_project_issues_list }
+      let(:feature_flag_method) { :work_items_project_issues_list_feature_flag_enabled? }
+    end
+  end
+
   describe '#work_item_status_feature_available?' do
     subject { group.work_item_status_feature_available? }
 
@@ -4352,13 +4371,20 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     subject { group.supports_group_work_items? }
 
-    it { is_expected.to be false }
+    it 'returns false' do
+      expect(subject).to be false
+    end
   end
 
-  describe '#glql_integration_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :glql_integration }
-      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
+  describe '#has_active_hooks?' do
+    let(:group) { build(:group) }
+
+    subject { group.has_active_hooks? }
+
+    # Would work in plain CE-version since it's implementation always returns false.
+    # Would work in EE-version since licensed features are disabled for specs in specs/ by deafult.
+    it 'returns false' do
+      expect(subject).to be false
     end
   end
 
@@ -4366,13 +4392,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :glql_load_on_click }
       let(:feature_flag_method) { :glql_load_on_click_feature_flag_enabled? }
-    end
-  end
-
-  describe '#work_items_bulk_edit_feature_flag_enabled?' do
-    it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_items_bulk_edit }
-      let(:feature_flag_method) { :work_items_bulk_edit_feature_flag_enabled? }
     end
   end
 

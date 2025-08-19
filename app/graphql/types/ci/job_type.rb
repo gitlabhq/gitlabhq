@@ -103,6 +103,8 @@ module Types
         description: 'Path to the ref.'
       field :retried, GraphQL::Types::Boolean, null: true,
         description: 'Indicates that the job has been retried.'
+      field :retry_path, GraphQL::Types::String, null: true,
+        description: 'Retry path of the job.'
       field :retryable, GraphQL::Types::Boolean, null: false,
         description: 'Indicates the job can be retried.'
       field :scheduled, GraphQL::Types::Boolean, null: false, method: :scheduled?,
@@ -243,6 +245,12 @@ module Types
         ::Gitlab::Routing.url_helpers.project_job_path(object.project, object) unless object.is_a?(::Ci::Bridge)
       end
 
+      def retry_path
+        return unless retryable
+
+        ::Gitlab::Routing.url_helpers.retry_project_job_path(object.project, object)
+      end
+
       def play_path
         ::Gitlab::Routing.url_helpers.play_project_job_path(object.project, object)
       end
@@ -256,7 +264,7 @@ module Types
       end
 
       def manual_variables
-        if object.action?
+        if object.try(:action?) && !object.is_a?(GenericCommitStatus)
           BatchLoader::GraphQL.for(object.id).batch do |job_ids, loader|
             variables_by_job_id = ::Ci::JobVariable.for_jobs(job_ids).group_by(&:job_id)
 

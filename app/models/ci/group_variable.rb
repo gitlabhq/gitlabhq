@@ -45,6 +45,15 @@ module Ci
     self.limit_name = 'group_ci_variables'
     self.limit_scope = :group
 
+    def self.sort_by_attribute(method)
+      case method.to_s
+      when 'created_at_asc' then order_created_asc
+      when 'created_at_desc' then order_created_desc
+      when 'key_asc' then order_key_asc
+      when 'key_desc' then order_key_desc
+      end
+    end
+
     def audit_details
       key
     end
@@ -55,15 +64,6 @@ module Ci
 
     def group_ci_cd_settings_path
       Gitlab::Routing.url_helpers.group_settings_ci_cd_path(group)
-    end
-
-    def self.sort_by_attribute(method)
-      case method.to_s
-      when 'created_at_asc' then order_created_asc
-      when 'created_at_desc' then order_created_desc
-      when 'key_asc' then order_key_asc
-      when 'key_desc' then order_key_desc
-      end
     end
   end
 end

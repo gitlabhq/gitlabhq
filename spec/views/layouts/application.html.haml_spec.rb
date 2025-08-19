@@ -45,6 +45,17 @@ RSpec.describe 'layouts/application' do
         expect(rendered).to include('data-namespace-id="3"')
       end
     end
+
+    context 'when user has `global_topbar` feature enabled' do
+      before do
+        stub_feature_flags(global_topbar: true)
+      end
+
+      it 'renders the new global topbar' do
+        render
+        expect(rendered).to include('super-topbar')
+      end
+    end
   end
 
   context 'when user is not signed in' do

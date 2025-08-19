@@ -8,6 +8,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
 import CommitListItemDescription from '~/projects/commits/components/commit_list_item_description.vue';
+import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
 import { mockCommit } from './mock_data';
 
 describe('CommitListItem', () => {
@@ -44,6 +45,11 @@ describe('CommitListItem', () => {
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findActionButtons = () => wrapper.findComponent(CommitListItemActionButtons);
   const findDescription = () => wrapper.findComponent(CommitListItemDescription);
+  const findExpandCollapseButton = () => wrapper.findComponent(ExpandCollapseButton);
+  const findMobileCommitShortId = () => wrapper.findByTestId('commit-sha-mobile');
+  const findMobileOverflowMenu = () => wrapper.findByTestId('mobile-overflow-menu');
+  const findMobileExpandCollapseContainer = () =>
+    wrapper.findByTestId('mobile-expand-collapse-button-container');
 
   describe('avatar rendering', () => {
     describe('when commit has author', () => {
@@ -188,6 +194,46 @@ describe('CommitListItem', () => {
       await actionButtons.vm.$emit('click');
       const description = findDescription();
       expect(description.isVisible()).toBe(true);
+    });
+  });
+
+  describe('mobile-only elements', () => {
+    describe('short commit ID', () => {
+      it('renders short commit ID with mobile-only classes', () => {
+        const shortIdElement = findMobileCommitShortId();
+        expect(shortIdElement.text()).toBe(mockCommit.shortId);
+        expect(shortIdElement.classes()).toContain('sm:gl-hidden');
+      });
+    });
+
+    describe('overflow menu', () => {
+      it('renders overflow menu with mobile-only classes', () => {
+        const overflowMenu = findMobileOverflowMenu();
+        expect(overflowMenu.classes()).toContain('sm:gl-hidden');
+      });
+    });
+
+    describe('expand/collapse button container', () => {
+      it('renders expand/collapse button container with mobile-only classes', () => {
+        const container = findMobileExpandCollapseContainer();
+        expect(container.classes()).toContain('sm:gl-hidden');
+      });
+
+      it('renders expand/collapse button inside container', () => {
+        const expandCollapseButton = findExpandCollapseButton();
+        expect(expandCollapseButton.props()).toMatchObject({
+          isCollapsed: true,
+          anchorId: `commit-list-item-${mockCommit.id}`,
+          size: 'medium',
+        });
+      });
+
+      it('handles click event from expand/collapse button', async () => {
+        const expandCollapseButton = findExpandCollapseButton();
+        await expandCollapseButton.vm.$emit('click');
+        const description = findDescription();
+        expect(description.isVisible()).toBe(true);
+      });
     });
   });
 });

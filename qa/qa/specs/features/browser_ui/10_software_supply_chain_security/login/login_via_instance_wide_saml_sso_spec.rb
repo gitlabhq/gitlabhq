@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Software Supply Chain Security', :orchestrated, :instance_saml, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :orchestrated, :instance_saml, feature_category: :system_access do
     describe 'Instance wide SAML SSO' do
       it(
         'user logs in to gitlab with SAML SSO',

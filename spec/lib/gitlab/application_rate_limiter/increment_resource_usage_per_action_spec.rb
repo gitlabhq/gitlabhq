@@ -4,10 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, :freeze_time,
   :clean_gitlab_redis_rate_limiting, feature_category: :shared do
-  let(:resource_key) { 'usage_duration_s' }
+  let(:resource_key) { :usage_duration_s }
   let(:usage) { 100 }
   let(:cache_key) { 'test' }
   let(:expiry) { 60 }
+  let(:key_does_not_exist) { -2 }
 
   subject(:counter) { described_class.new(resource_key) }
 
@@ -19,8 +20,12 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
     end
   end
 
-  def increment
-    counter.increment(cache_key, expiry)
+  def increment(ttl = expiry)
+    counter.increment(cache_key, ttl)
+  end
+
+  def ttl
+    Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
   end
 
   describe '#increment' do
@@ -30,15 +35,22 @@ RSpec.describe Gitlab::ApplicationRateLimiter::IncrementResourceUsagePerAction, 
       expect(increment).to eq 3 * usage
     end
 
-    it 'sets time to live (TTL) for the key' do
-      def ttl
-        Gitlab::Redis::RateLimiting.with { |r| r.ttl(cache_key) }
-      end
-
-      key_does_not_exist = -2
-
+    it 'sets time to live (TTL) for the key on first increment' do
       expect(ttl).to eq key_does_not_exist
       expect { increment }.to change { ttl }.by(a_value > 0)
+      expect { increment(expiry + 1) }.not_to change { ttl }
+    end
+
+    context 'when usage value is 0' do
+      let(:usage) { 0 }
+
+      it 'does not store the value in Redis' do
+        expect(increment).to eq usage
+
+        Gitlab::Redis::RateLimiting.with do |r|
+          expect(r.get(cache_key)).to be_nil
+        end
+      end
     end
   end
 

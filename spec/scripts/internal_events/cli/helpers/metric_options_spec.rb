@@ -10,12 +10,14 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
   let(:filter_name) { nil }
   let(:defined) { false }
   let(:supported) { true }
+  let(:operator) { 'unique_count' }
   let(:styling_stub) { Pastel.new }
 
   let(:metric) do
     instance_double(InternalEventsCli::NewMetric,
       time_frame: instance_double(InternalEventsCli::Metric::TimeFrames, description: "Time frame"),
-      identifier: InternalEventsCli::Metric::Identifier.new(identifier)
+      identifier: InternalEventsCli::Metric::Identifier.new(identifier),
+      operator: InternalEventsCli::Metric::Operator.new(operator)
     )
   end
 
@@ -124,6 +126,7 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::Option, feature_catego
 
   context 'with no identifier' do
     let(:identifier) { nil }
+    let(:operator) { 'count' }
 
     it 'highlights key words in the name' do
       expect(option.formatted).to eq({
@@ -179,15 +182,17 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::EventSelection, featur
       expect(selection.shared_filters).to contain_exactly('property', 'value')
       expect(selection.filter_options).to contain_exactly('property', 'value')
       expect(selection.shared_identifiers).to contain_exactly('user', 'project', 'namespace')
-      expect(selection.uniqueness_options).to contain_exactly('user', 'project', 'namespace', 'property', 'value', nil)
+      expect(selection.operable_identifiers).to contain_exactly(
+        'user', 'project', 'namespace', 'property', 'value', nil
+      )
 
-      expect(selection.can_be_unique?('user')).to be(true)
-      expect(selection.can_be_unique?('label')).to be(false)
-      expect(selection.can_be_unique?(nil)).to be(true)
+      expect(selection.supports_operations?('user')).to be(true)
+      expect(selection.supports_operations?('label')).to be(false)
+      expect(selection.supports_operations?(nil)).to be(true)
 
-      expect(selection.can_filter_when_unique?('value')).to be(true)
-      expect(selection.can_filter_when_unique?('label')).to be(false)
-      expect(selection.can_filter_when_unique?('user')).to be(true)
+      expect(selection.can_filter_when_operated_on?('value')).to be(true)
+      expect(selection.can_filter_when_operated_on?('label')).to be(false)
+      expect(selection.can_filter_when_operated_on?('user')).to be(true)
 
       expect(selection.exclude_filter_identifier?('property')).to be(false)
       expect(selection.exclude_filter_identifier?('value')).to be(false)
@@ -209,16 +214,16 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::EventSelection, featur
       expect(selection.shared_filters).to contain_exactly('property')
       expect(selection.filter_options).to contain_exactly('property', 'value')
       expect(selection.shared_identifiers).to contain_exactly('user', 'namespace')
-      expect(selection.uniqueness_options).to contain_exactly('user', 'namespace', 'property', nil)
+      expect(selection.operable_identifiers).to contain_exactly('user', 'namespace', 'property', nil)
 
-      expect(selection.can_be_unique?('user')).to be(true)
-      expect(selection.can_be_unique?('property')).to be(true)
-      expect(selection.can_be_unique?('project')).to be(false)
+      expect(selection.supports_operations?('user')).to be(true)
+      expect(selection.supports_operations?('property')).to be(true)
+      expect(selection.supports_operations?('project')).to be(false)
 
-      expect(selection.can_filter_when_unique?('value')).to be(false)
-      expect(selection.can_filter_when_unique?('label')).to be(false)
-      expect(selection.can_filter_when_unique?('property')).to be(true)
-      expect(selection.can_filter_when_unique?('user')).to be(true)
+      expect(selection.can_filter_when_operated_on?('value')).to be(false)
+      expect(selection.can_filter_when_operated_on?('label')).to be(false)
+      expect(selection.can_filter_when_operated_on?('property')).to be(true)
+      expect(selection.can_filter_when_operated_on?('user')).to be(true)
 
       expect(selection.exclude_filter_identifier?('property')).to be(false)
       expect(selection.exclude_filter_identifier?('value')).to be(false)
@@ -241,16 +246,16 @@ RSpec.describe InternalEventsCli::Helpers::MetricOptions::EventSelection, featur
       expect(selection.shared_filters).to be_empty
       expect(selection.filter_options).to contain_exactly('property', 'value')
       expect(selection.shared_identifiers).to contain_exactly('user')
-      expect(selection.uniqueness_options).to contain_exactly('user', nil)
+      expect(selection.operable_identifiers).to contain_exactly('user', nil)
 
-      expect(selection.can_be_unique?('user')).to be(true)
-      expect(selection.can_be_unique?('property')).to be(false)
-      expect(selection.can_be_unique?('project')).to be(false)
+      expect(selection.supports_operations?('user')).to be(true)
+      expect(selection.supports_operations?('property')).to be(false)
+      expect(selection.supports_operations?('project')).to be(false)
 
-      expect(selection.can_filter_when_unique?('value')).to be(false)
-      expect(selection.can_filter_when_unique?('label')).to be(false)
-      expect(selection.can_filter_when_unique?('property')).to be(false)
-      expect(selection.can_filter_when_unique?('user')).to be(true)
+      expect(selection.can_filter_when_operated_on?('value')).to be(false)
+      expect(selection.can_filter_when_operated_on?('label')).to be(false)
+      expect(selection.can_filter_when_operated_on?('property')).to be(false)
+      expect(selection.can_filter_when_operated_on?('user')).to be(true)
 
       expect(selection.exclude_filter_identifier?('property')).to be(false)
       expect(selection.exclude_filter_identifier?('value')).to be(false)

@@ -11,6 +11,7 @@ module RuboCop
 
       MSG = 'Put new group routes under /-/ scope'
 
+      # @!method dash_scope?(node)
       def_node_matcher :dash_scope?, <<~PATTERN
         (:send nil? :scope (hash <(pair (sym :path)(str "groups/*group_id/-")) ...>))
       PATTERN

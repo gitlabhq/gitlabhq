@@ -80,6 +80,7 @@ module Gitlab
           # Any middlewares after DuplicateJobs::Server can return/intercept jobs.
           ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
           ::Gitlab::SidekiqMiddleware::PauseControl::Server,
+          ::Gitlab::SidekiqMiddleware::Throttling::Server,
           ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
           skip_jobs ? ::Gitlab::SidekiqMiddleware::SkipJobs : nil,
           ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,

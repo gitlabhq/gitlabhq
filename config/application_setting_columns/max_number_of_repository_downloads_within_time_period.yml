@@ -6,8 +6,7 @@ column: max_number_of_repository_downloads_within_time_period
 db_type: integer
 default: '0'
 description: 'Reporting time period (in seconds). Default: 0, Maximum: 864000 seconds
-  (10 days). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87980)
-  in GitLab 15.1. GitLab Self-Managed, Ultimate only.'
+  (10 days). GitLab Self-Managed, Ultimate only.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

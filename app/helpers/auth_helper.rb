@@ -220,14 +220,15 @@ module AuthHelper
     current_user.allow_password_authentication_for_web? && !current_user.password_automatically_set?
   end
 
-  def auth_app_owner_text(owner)
-    return _('An administrator added this OAuth application ') unless owner
+  def auth_app_owner_text(application)
+    return _('An anonymous service added this dynamically created OAuth application ') if application.dynamic?
+    return _('An administrator added this OAuth application ') unless application.owner
 
-    if owner.is_a?(Group)
-      group_link = link_to(owner.name, group_path(owner))
+    if application.owner.is_a?(Group)
+      group_link = link_to(application.owner.name, group_path(application.owner))
       safe_format(_("%{group_link} added this OAuth application "), group_link: group_link)
     else
-      user_link = link_to(owner.name, user_path(owner))
+      user_link = link_to(application.owner.name, user_path(application.owner))
       safe_format(_("%{user_link} added this OAuth application "), user_link: user_link)
     end
   end
@@ -241,10 +242,10 @@ module AuthHelper
               end
 
     { button_text: _('Delete one-time password authenticator'),
-      icon: ('remove' if Feature.enabled?(:redesign_user_account_otp, current_user)),
+      icon: 'remove',
       message: message,
       path: destroy_otp_profile_two_factor_auth_path,
-      password_required: password_required.to_s }.compact
+      password_required: password_required.to_s }
   end
 
   def delete_webauthn_device_data(password_required, path)
@@ -273,7 +274,8 @@ module AuthHelper
     { button_text: _('Disable two-factor authentication'),
       message: message,
       path: profile_two_factor_auth_path,
-      password_required: password_required.to_s }
+      password_required: password_required.to_s,
+      size: 'small' }
   end
 
   def codes_two_factor_authentication_data(password_required)
@@ -289,6 +291,7 @@ module AuthHelper
       method: 'post',
       path: codes_profile_two_factor_auth_path,
       password_required: password_required.to_s,
+      size: 'small',
       variant: 'default' }
   end
 

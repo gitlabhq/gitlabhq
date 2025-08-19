@@ -80,7 +80,6 @@ module Gitlab
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_management_project: count(::Clusters::Cluster.with_management_project),
-            clusters_integrations_prometheus: count(::Clusters::Integrations::Prometheus.enabled),
             kubernetes_agents: count(::Clusters::Agent),
             kubernetes_agents_with_token: distinct_count(::Clusters::AgentToken, :agent_id),
             in_review_folder: count(::Environment.in_review_folder),
@@ -305,7 +304,6 @@ module Gitlab
 
         {
           clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
-          clusters_integrations_prometheus: cluster_integrations_user_distinct_count(::Clusters::Integrations::Prometheus, time_period),
           operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
             start: minimum_id(User),
             finish: maximum_id(User)),

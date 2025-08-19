@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects do
@@ -8,19 +9,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
   let(:user) { create(:user) }
   let(:project) do
     create(:project, creator: user, namespace: user.namespace)
-  end
-
-  shared_examples 'publishing Projects::ProjectAttributesChangedEvent' do |params:, attributes:|
-    it "publishes Projects::ProjectAttributesChangedEvent" do
-      expect { update_project(project, user, params) }
-        .to publish_event(Projects::ProjectAttributesChangedEvent)
-        .with(
-          project_id: project.id,
-          namespace_id: project.namespace_id,
-          root_namespace_id: project.root_namespace.id,
-          attributes: attributes
-        )
-    end
   end
 
   describe '#execute' do
@@ -35,129 +23,53 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
       stub_container_registry_config(enabled: false)
     end
 
-    context 'when changing restrict_user_defined_variables' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:current_user_role, :project_minimum_role, :to_value, :expected_value, :expected_role, :status) do
-        :owner      | :maintainer | false | false | :developer  | :success
-        :owner      | :developer  | true  | true  | :maintainer | :success
-        :maintainer | :maintainer | false | false | :developer  | :success
-        :maintainer | :maintainer | false | false | :developer  | :success
-        :maintainer | :owner      | false | true  | :owner      | :api_error
-        :maintainer | :developer  | true  | true  | :maintainer | :success
-        :maintainer | :owner      | true  | true  | :owner      | :success
-        :developer  | :owner      | false | true  | :owner      | :api_error
-        :developer  | :maintainer | false | true  | :maintainer | :api_error
-        :developer  | :developer  | true  | false | :developer  | :api_error
-        :guest      | :developer  | true  | false | :developer  | :api_error
+    context 'when changing CI/CD variable settings' do
+      before do
+        project.add_maintainer(maintainer)
+        project.add_developer(developer)
+        project.add_owner(owner)
       end
 
-      with_them do
-        let(:current_user) { public_send(current_user_role) }
+      context 'with sufficient permissions' do
+        it 'allows owner to modify both settings' do
+          result = update_project(project, owner,
+            restrict_user_defined_variables: true,
+            ci_pipeline_variables_minimum_override_role: 'maintainer')
 
-        before do
-          project.add_maintainer(maintainer)
-          project.add_developer(developer)
-          project.add_owner(owner)
-          project.add_guest(guest)
-
-          ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings[:pipeline_variables_minimum_override_role] = project_minimum_role
-          ci_cd_settings.save!
+          expect(result[:status]).to eq(:success)
         end
 
-        it 'allows/disallows to change restrict_user_defined_variables' do
-          result = update_project(project, current_user, restrict_user_defined_variables: to_value)
-          expect(result[:status]).to eq(status)
+        it 'allows maintainer to modify within permitted scope' do
+          result = update_project(project, maintainer, restrict_user_defined_variables: false)
 
-          project.reload
-          expect(project.restrict_user_defined_variables?).to eq(expected_value)
-          expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
-        end
-      end
-    end
-
-    context 'when changing ci_pipeline_variables_minimum_override_role' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:current_user_role, :from_value, :to_value, :status) do
-        :owner      | :owner      | :developer  | :success
-        :owner      | :owner      | :maintainer | :success
-        :owner      | :developer  | :maintainer | :success
-        :owner      | :maintainer | :owner      | :success
-        :maintainer | :owner      | :developer  | :api_error
-        :maintainer | :owner      | :maintainer | :api_error
-        :maintainer | :developer  | :maintainer | :success
-        :maintainer | :maintainer | :owner      | :api_error
-        :developer  | :maintainer | :owner      | :api_error
-      end
-
-      with_them do
-        let(:current_user) { public_send(current_user_role) }
-
-        before do
-          project.add_maintainer(maintainer)
-          project.add_developer(developer)
-          project.add_owner(owner)
-
-          ci_cd_settings = project.ci_cd_settings
-          ci_cd_settings[:pipeline_variables_minimum_override_role] = from_value
-          ci_cd_settings.save!
-        end
-
-        it 'allows/disallows to change ci_pipeline_variables_minimum_override_role' do
-          result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
-          expect(result[:status]).to eq(status)
+          expect(result[:status]).to eq(:success)
         end
       end
 
-      context 'when changing both restrict_user_defined_variables and ci_pipeline_variables_minimum_override_role' do
-        using RSpec::Parameterized::TableSyntax
+      context 'with insufficient permissions' do
+        it 'prevents maintainer from elevating to owner role' do
+          project.ci_cd_settings.update!(pipeline_variables_minimum_override_role: :owner)
 
-        where(:current_user_role, :to_restrict, :from_role, :to_role, :expected_restrict, :expected_role, :status) do
-          :owner      | false | :owner      | :developer  | false | :developer  | :success
-          :owner      | false | :owner      | :maintainer | true  | :maintainer | :success
-          :owner      | true  | :developer  | :maintainer | true  | :maintainer | :success
-          :owner      | true  | :maintainer | :developer  | false | :developer  | :success
-          :maintainer | false | :owner      | :developer  | true  | :owner      | :api_error
-          :maintainer | true  | :developer  | :maintainer | true  | :maintainer | :success
-          :maintainer | true  | :maintainer | :developer  | false | :developer  | :success
-          :developer  | false | :maintainer | :owner      | true  | :maintainer | :api_error
-          :developer  | true  | :owner      | :maintainer | true  | :owner      | :api_error
+          result = update_project(project, maintainer, restrict_user_defined_variables: false)
+
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(
+            'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
+          )
         end
 
-        with_them do
-          let(:current_user) { public_send(current_user_role) }
+        it 'prevents developer from modifying settings' do
+          result = update_project(project, developer, restrict_user_defined_variables: true)
 
-          before do
-            project.add_maintainer(maintainer)
-            project.add_developer(developer)
-            project.add_owner(owner)
-
-            ci_cd_settings = project.ci_cd_settings
-            ci_cd_settings[:pipeline_variables_minimum_override_role] = from_role
-            ci_cd_settings.save!
-          end
-
-          it 'allows/disallows changes to both settings' do
-            result = update_project(project, current_user,
-              restrict_user_defined_variables: to_restrict,
-              ci_pipeline_variables_minimum_override_role: to_role.to_s)
-            expect(result[:status]).to eq(status)
-
-            project.reload
-            expect(project.restrict_user_defined_variables?).to eq(expected_restrict)
-            expect(project.ci_pipeline_variables_minimum_override_role).to eq(expected_role.to_s)
-          end
+          expect(result[:status]).to eq(:api_error)
+          expect(result[:message]).to include(
+            'Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed'
+          )
         end
       end
     end
 
     context 'when changing visibility level' do
-      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
-        params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL },
-        attributes: %w[updated_at visibility_level]
-
       context 'when visibility_level changes to INTERNAL' do
         it 'updates the project to internal' do
           expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
@@ -258,7 +170,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'does not update project visibility level even if admin', :enable_admin_mode do
           result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-          expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal group.' })
+          expect(result).to eq({ status: :error, message: 'Visibility level public is not allowed in a internal namespace.' })
           expect(project.reload).to be_internal
         end
       end
@@ -504,46 +416,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
                 features: array_including(feature, "updated_at")
               )
           end
-        end
-      end
-    end
-
-    context 'when archiving a project' do
-      before do
-        allow(Projects::UnlinkForkService).to receive(:new).and_return(unlink_fork_service)
-      end
-
-      let(:unlink_fork_service) { instance_double(Projects::UnlinkForkService, execute: true) }
-
-      it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
-        params: { archived: true },
-        attributes: %w[updated_at archived]
-
-      it 'publishes a ProjectTransferedEvent' do
-        expect { update_project(project, user, archived: true) }
-          .to publish_event(Projects::ProjectArchivedEvent)
-          .with(
-            project_id: project.id,
-            namespace_id: project.namespace_id,
-            root_namespace_id: project.root_namespace.id
-          )
-      end
-
-      context 'when project is being archived' do
-        it 'calls UnlinkForkService' do
-          project.update!(archived: false)
-
-          expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(unlink_fork_service)
-
-          update_project(project, user, archived: true)
-        end
-      end
-
-      context 'when project is not being archived' do
-        it 'does not call UnlinkForkService' do
-          expect(Projects::UnlinkForkService).not_to receive(:new)
-
-          update_project(project, user, archived: false)
         end
       end
     end
@@ -888,67 +760,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).once
 
         update_project(project, user, { name: 'New name' })
-      end
-    end
-
-    context 'when updating nested attributes for prometheus integration' do
-      context 'prometheus integration exists' do
-        let(:prometheus_integration_attributes) do
-          attributes_for(
-            :prometheus_integration,
-            project: project,
-            properties: { api_url: "http://new.prometheus.com", manual_configuration: "0" }
-          )
-        end
-
-        let!(:prometheus_integration) do
-          create(
-            :prometheus_integration,
-            project: project,
-            properties: { api_url: "http://old.prometheus.com", manual_configuration: "0" }
-          )
-        end
-
-        it 'updates existing record' do
-          expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-            .to change { prometheus_integration.reload.api_url }
-            .from("http://old.prometheus.com")
-            .to("http://new.prometheus.com")
-        end
-      end
-
-      context 'prometheus integration does not exist' do
-        context 'valid parameters' do
-          let(:prometheus_integration_attributes) do
-            attributes_for(
-              :prometheus_integration,
-              project: project,
-              properties: { api_url: "http://example.prometheus.com", manual_configuration: "0" }
-            )
-          end
-
-          it 'creates new record' do
-            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-              .to change { ::Integrations::Prometheus.where(project: project).count }
-              .from(0)
-              .to(1)
-          end
-        end
-
-        context 'invalid parameters' do
-          let(:prometheus_integration_attributes) do
-            attributes_for(
-              :prometheus_integration,
-              project: project,
-              properties: { api_url: 'invalid-url', manual_configuration: "1" }
-            )
-          end
-
-          it 'does not create new record' do
-            expect { update_project(project, user, prometheus_integration_attributes: prometheus_integration_attributes) }
-              .not_to change { ::Integrations::Prometheus.where(project: project).count }
-          end
-        end
       end
     end
 

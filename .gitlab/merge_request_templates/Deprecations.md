@@ -6,10 +6,10 @@
 
 If there is no relevant deprecation issue, hit pause and:
 
-- Review the [process for deprecating and removing features](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+- Review the [process for deprecating and removing features](https://docs.gitlab.com/development/deprecation_guidelines/).
 - Connect with the Product Manager DRI.
 
-Deprecation announcements can and should be created and merged into Docs at any time, to optimize user awareness and planning. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
+Deprecation announcements can be created and merged into Docs once approval has been granted to proceed with the change. We encourage confirmed deprecations to be merged as soon as the required reviews are complete, even if weeks ahead of the target milestone's release post. For the announcement to be included in a specific release post and that release's documentation packages, this MR must be reviewed/merged per the due dates below:
 
 **10 days (Monday) before the Release Date**: Assign this MR to these team members as Reviewer and for Approval (optional unless noted as required):
 
@@ -28,7 +28,7 @@ Deprecation announcements can and should be created and merged into Docs at any 
 Please review:
 
 - The definitions of ["Deprecation"](https://docs.gitlab.com/update/terminology/#deprecation), ["End of Support"](https://docs.gitlab.com/update/terminology/#end-of-support), and ["Removal"](https://docs.gitlab.com/update/terminology/#removal).
-- The [guidelines for deprecations](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+- The [guidelines for deprecations](https://docs.gitlab.com/development/deprecation_guidelines/).
 - The process for [creating a deprecation announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#creating-the-announcement).
 
 They are frequently updated, and everyone should make sure they are aware of the current standards (PM, PMM, EM, and TW).

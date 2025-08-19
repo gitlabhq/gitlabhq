@@ -2418,68 +2418,6 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdProvisionedUsers
-  "/api/v4/groups/{id}/users":
-    get:
-      description: Get a list of users for the group
-      produces:
-      - application/json
-      parameters:
-      - in: query
-        name: search
-        description: Search users by name, email or username
-        type: string
-        required: false
-      - in: query
-        name: active
-        description: Filters only active users
-        type: boolean
-        default: false
-        required: false
-      - in: query
-        name: include_saml_users
-        description: Return users with a SAML identity in this group
-        type: boolean
-        required: false
-      - in: query
-        name: include_service_accounts
-        description: Return service accounts owned by this group
-        type: boolean
-        required: false
-      - in: query
-        name: page
-        description: Current page number
-        type: integer
-        format: int32
-        default: 1
-        required: false
-        example: 1
-      - in: query
-        name: per_page
-        description: Number of items per page
-        type: integer
-        format: int32
-        default: 20
-        required: false
-        example: 20
-      - in: path
-        name: id
-        type: integer
-        format: int32
-        required: true
-      responses:
-        '200':
-          description: Get a list of users for the group
-          schema:
-            "$ref": "#/definitions/API_Entities_UserPublic"
-        '400':
-          description: Bad request
-        '403':
-          description: Forbidden
-        '404':
-          description: 404 Not Found
-      tags:
-      - groups
-      operationId: getApiV4GroupsIdUsers
   "/api/v4/groups/{id}/ssh_certificates":
     get:
       summary: Get a list of Groups::SshCertificate for a Group.
@@ -5274,6 +5212,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4GroupsIdIntegrationsJiraCloudApp
+  "/api/v4/groups/{id}/integrations/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4GroupsIdIntegrationsLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4GroupsIdIntegrationsLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4GroupsIdIntegrationsLinear
   "/api/v4/groups/{id}/integrations/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -6290,6 +6263,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -6370,6 +6344,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -20348,6 +20323,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdServicesJiraCloudApp
+  "/api/v4/projects/{id}/services/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4ProjectsIdServicesLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdServicesLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4ProjectsIdServicesLinear
   "/api/v4/projects/{id}/services/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -21364,6 +21374,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -21444,6 +21455,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -22381,6 +22393,41 @@ paths:
       tags:
       - integrations
       operationId: putApiV4ProjectsIdIntegrationsJiraCloudApp
+  "/api/v4/projects/{id}/integrations/linear":
+    put:
+      summary: Create/Edit Linear integration
+      description: Set Linear integration.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      - name: putApiV4ProjectsIdIntegrationsLinear
+        in: body
+        required: true
+        schema:
+          "$ref": "#/definitions/putApiV4ProjectsIdIntegrationsLinear"
+      responses:
+        '200':
+          description: Create/Edit Linear integration
+          schema:
+            "$ref": "#/definitions/API_Entities_IntegrationBasic"
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '422':
+          description: Unprocessable entity
+      tags:
+      - integrations
+      operationId: putApiV4ProjectsIdIntegrationsLinear
   "/api/v4/projects/{id}/integrations/matrix":
     put:
       summary: Create/Edit Matrix integration
@@ -23397,6 +23444,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -23477,6 +23525,7 @@ paths:
         - jenkins
         - jira
         - jira-cloud-app
+        - linear
         - matrix
         - mattermost-slash-commands
         - slack-slash-commands
@@ -29766,6 +29815,11 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[spp_repository_pipeline_access]
         description: Grant read-only access to security policy configurations for
           enforcement in linked CI/CD projects
@@ -30429,6 +30483,11 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
         type: boolean
         required: false
       - in: formData
@@ -31174,6 +31233,11 @@ paths:
       - in: formData
         name: override_params[auto_duo_code_review_enabled]
         description: Enable automatic reviews by GitLab Duo on merge requests
+        type: boolean
+        required: false
+      - in: formData
+        name: override_params[duo_remote_flows_enabled]
+        description: Enable GitLab Duo remote flows for this project
         type: boolean
         required: false
       - in: formData
@@ -44726,7 +44790,7 @@ definitions:
         properties:
           duo_workflow_mcp_enabled:
             type: boolean
-            description: Enable MCP support for Duo Workflow
+            description: Enable MCP support for Duo Agent Platform
     required:
     - name
     - path
@@ -44923,7 +44987,7 @@ definitions:
         properties:
           duo_workflow_mcp_enabled:
             type: boolean
-            description: Enable MCP support for Duo Workflow
+            description: Enable MCP support for Duo Agent Platform
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
@@ -45547,6 +45611,8 @@ definitions:
         type: string
       auto_duo_code_review_enabled:
         type: string
+      duo_remote_flows_enabled:
+        type: string
       web_based_commit_signing_enabled:
         type: string
       spp_repository_pipeline_access:
@@ -45908,6 +45974,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:
@@ -46757,16 +46826,16 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked_and_hidden:
-        type: string
+        type: boolean
         description: Whether the variable is masked and hidden
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string
@@ -46791,13 +46860,13 @@ definitions:
         type: string
         description: The value of a variable
       protected:
-        type: string
+        type: boolean
         description: Whether the variable is protected
       masked:
-        type: string
+        type: boolean
         description: Whether the variable is masked
       raw:
-        type: string
+        type: boolean
         description: Whether the variable will be expanded
       variable_type:
         type: string
@@ -47666,6 +47735,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -47701,6 +47788,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4GroupsIdIntegrationsLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4GroupsIdIntegrationsMatrix:
     type: object
     properties:
@@ -48898,6 +49001,8 @@ definitions:
         type: string
       group_saml_identity:
         "$ref": "#/definitions/API_Entities_Identity"
+      group_scim_identity:
+        "$ref": "#/definitions/API_Entities_ScimIdentity"
       email:
         type: string
       is_using_seat:
@@ -48945,7 +49050,7 @@ definitions:
         type: boolean
       remove_project:
         type: boolean
-      admin_security_labels:
+      admin_security_attributes:
         type: boolean
       manage_security_policy_link:
         type: boolean
@@ -48990,6 +49095,8 @@ definitions:
       read_crm_contact:
         type: boolean
       read_dependency:
+        type: boolean
+      read_admin_groups:
         type: boolean
       read_code:
         type: boolean
@@ -51031,9 +51138,15 @@ definitions:
     type: object
     properties:
       total:
-        type: integer
-        format: int32
-        example: 3363
+        type: object
+        example:
+          time: 0.42
+          count: 2
+          success: 2
+          failed: 0
+          skipped: 0
+          error: 0
+          suite_error:
       test_suites:
         "$ref": "#/definitions/TestSuiteSummaryEntity"
     description: TestReportSummaryEntity model
@@ -54194,6 +54307,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -54229,6 +54360,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4ProjectsIdServicesLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4ProjectsIdServicesMatrix:
     type: object
     properties:
@@ -56020,6 +56167,24 @@ definitions:
         type: boolean
         description: When set to `true`, opens a prefilled form on the Jira instancewhen
           creating a Jira issue from a vulnerability.
+      jira_check_enabled:
+        type: boolean
+        description: Verify Jira issues referenced in commit messages exist before
+          allowing the push.
+      jira_exists_check_enabled:
+        type: boolean
+        description: Verify the Jira issues referenced in commit messages exist in
+          Jira.
+      jira_assignee_check_enabled:
+        type: boolean
+        description: Verify the committer is the assignee of the Jira issues referenced
+          in commit messages.
+      jira_status_check_enabled:
+        type: boolean
+        description: Verify the status of Jira issues referenced in commit messages.
+      jira_allowed_statuses_as_string:
+        type: string
+        description: Comma-separated list of allowed Jira issue statuses.
       commit_events:
         type: boolean
         description: Trigger event when a commit is created or updated.
@@ -56055,6 +56220,22 @@ definitions:
         description: Indicates whether to inherit the default settings. Defaults to
           `false`.
     description: Create/Edit Jira Cloud App integration
+  putApiV4ProjectsIdIntegrationsLinear:
+    type: object
+    properties:
+      workspace_url:
+        type: string
+        description: Linear workspace URL (for example, https://linear.app/example)
+      push_events:
+        type: boolean
+        description: Trigger event for pushes to the repository.
+      use_inherited_settings:
+        type: boolean
+        description: Indicates whether to inherit the default settings. Defaults to
+          `false`.
+    required:
+    - workspace_url
+    description: Create/Edit Linear integration
   putApiV4ProjectsIdIntegrationsMatrix:
     type: object
     properties:
@@ -60399,6 +60580,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -60815,6 +60999,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -61249,6 +61436,8 @@ definitions:
       prevent_merge_without_jira_issue:
         type: string
       auto_duo_code_review_enabled:
+        type: string
+      duo_remote_flows_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string
@@ -61702,6 +61891,9 @@ definitions:
       auto_duo_code_review_enabled:
         type: boolean
         description: Enable automatic reviews by GitLab Duo on merge requests
+      duo_remote_flows_enabled:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this project
       spp_repository_pipeline_access:
         type: boolean
         description: Grant read-only access to security policy configurations for
@@ -65640,6 +65832,9 @@ definitions:
         example: 'null'
       commit_email:
         type: string
+      preferred_language:
+        type: string
+        example: en
       shared_runners_minutes_limit:
         type: string
       extra_shared_runners_minutes_limit:
@@ -65654,8 +65849,6 @@ definitions:
         type: string
       created_by:
         "$ref": "#/definitions/API_Entities_UserBasic"
-      email_reset_offered_at:
-        type: string
       using_license_seat:
         type: string
       is_auditor:

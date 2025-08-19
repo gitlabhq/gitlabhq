@@ -156,8 +156,6 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types).and_call_original
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_widgets)
       expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
-      expect(Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter)
-        .not_to receive(:upsert_restrictions)
 
       expect(subject).to eq(default_issue_type)
     end

@@ -95,4 +95,27 @@ RSpec.shared_examples 'search recent items' do
       expect(results.count).to eq(Gitlab::Search::RecentItems::SEARCH_LIMIT)
     end
   end
+
+  describe '#latest_with_timestamps', :clean_gitlab_redis_shared_state do
+    let(:item1) { create_item(content: "item 1", parent: parent) }
+    let(:item2) { create_item(content: "item 2", parent: parent) }
+    let(:item3) { create_item(content: "item 3", parent: parent) }
+
+    it 'returns items with their view timestamps in correct order' do
+      travel_to(3.hours.ago) { recent_items.log_view(item1) }
+      travel_to(2.hours.ago) { recent_items.log_view(item2) }
+      travel_to(1.hour.ago) { recent_items.log_view(item3) }
+
+      results = recent_items.latest_with_timestamps
+
+      expect(results.values).to all(be_a(Time))
+      expect(results.keys).to eq([item3, item2, item1])
+    end
+
+    it 'returns empty hash when no items are viewed' do
+      results = recent_items.latest_with_timestamps
+
+      expect(results).to eq({})
+    end
+  end
 end

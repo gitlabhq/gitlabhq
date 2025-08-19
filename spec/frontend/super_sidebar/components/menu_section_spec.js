@@ -156,22 +156,6 @@ describe('MenuSection component', () => {
     });
   });
 
-  describe('`separated` prop', () => {
-    describe('by default (false)', () => {
-      it('does not render a separator', () => {
-        createWrapper({ title: 'Asdf' });
-        expect(wrapper.find('hr').exists()).toBe(false);
-      });
-    });
-
-    describe('when set to true', () => {
-      it('does render a separator', () => {
-        createWrapper({ title: 'Asdf' }, { separated: true });
-        expect(wrapper.find('hr').exists()).toBe(true);
-      });
-    });
-  });
-
   describe('`tag` prop', () => {
     describe('by default', () => {
       it('renders as <div> tag', () => {

@@ -133,6 +133,7 @@ $dark-il: #de935f;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{$gl-color-neutral-600};
 
+  --code-empty-background: #{$gl-color-neutral-900};
   --code-line-number-background-color: #{$dark-main-bg};
   --code-line-number-color: #{$dark-line-num-color};
   --code-line-number-hover-background-color: #{$gl-color-purple-800};
@@ -432,3 +433,5 @@ $dark-il: #de935f;
   .vi { color: $dark-vi; } /* Name.Variable.Instance */
   .il { color: $dark-il; } /* Literal.Number.Integer.Long */
 }
+
+@include merge-conflicts-syntax-highlight-theme('dark');

@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
               {
                 'table' => test_entity_ref_table,
                 'column' => 'user_id',
-                'entity_column' => 'entity_id'
+                'deduplication_column' => 'deduplication_id'
               },
               {
                 'table' => test_array_ref_table,
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
           CREATE TABLE #{test_entity_ref_table} (
             id serial PRIMARY KEY,
             user_id integer NOT NULL,
-            entity_id integer NOT NULL,
+            deduplication_id integer NOT NULL,
             data varchar(255) NOT NULL
           );
       SQL
@@ -198,11 +198,11 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
 
         # Create a unique index on reference table to check reference update does not violate uniqueness
         connection.execute(<<~SQL)
-            CREATE INDEX unique_test_index_reference ON #{test_entity_ref_table} (user_id, entity_id);
+            CREATE INDEX unique_test_index_reference ON #{test_entity_ref_table} (user_id, deduplication_id);
         SQL
         # Create entity-based references
         connection.execute(<<~SQL)
-            INSERT INTO #{test_entity_ref_table} (user_id, entity_id, data) VALUES
+            INSERT INTO #{test_entity_ref_table} (user_id, deduplication_id, data) VALUES
             (1, 100, 'entity ref to good ID'),
             (2, 100, 'entity ref to bad ID - will be deleted'),
             (2, 200, 'entity ref to bad ID - will be updated');
@@ -250,12 +250,16 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
         expect(standard_ref).to eq(1) # Updated from 2 to 1
 
         # entity-based reference: duplicate deleted
-        entity_100_refs = connection.select_all("SELECT * FROM #{test_entity_ref_table} WHERE entity_id = 100").to_a
+        entity_100_refs = connection.select_all(
+          "SELECT * FROM #{test_entity_ref_table} WHERE deduplication_id = 100"
+        ).to_a
         expect(entity_100_refs.size).to eq(1)
         expect(entity_100_refs.first['user_id']).to eq(1) # Update from 2 to 1
 
         # entity-based reference: non-duplicate updated
-        entity_200_ref = connection.select_value("SELECT user_id FROM #{test_entity_ref_table} WHERE entity_id = 200")
+        entity_200_ref = connection.select_value(
+          "SELECT user_id FROM #{test_entity_ref_table} WHERE deduplication_id = 200"
+        )
         expect(entity_200_ref).to eq(1) # Updated from 2 to 1
 
         # array reference updated
@@ -274,6 +278,114 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
             AND t.relname = '#{test_table}'
         SQL
         expect(is_unique).to be true
+      end
+
+      context 'with unique constraint conflicts in references' do
+        let(:test_constraint_table) { '_test_constraint_table' }
+        let(:test_constraint_index) { '_test_constraint_unique_idx' }
+        let(:indexes_to_repair) do
+          {
+            test_table => {
+              test_unique_index => {
+                'columns' => %w[name email],
+                'unique' => true,
+                'references' => [
+                  {
+                    'table' => test_constraint_table,
+                    'column' => 'user_id',
+                    'deduplication_column' => 'version'
+                  }
+                ]
+              }
+            }
+          }
+        end
+
+        before do
+          # Create a table with a unique constraint
+          connection.execute(<<~SQL)
+            CREATE TABLE #{test_constraint_table} (
+              id serial PRIMARY KEY,
+              user_id integer NOT NULL,
+              version varchar(255) NOT NULL,
+              data varchar(255) NOT NULL,
+              UNIQUE(user_id, version)
+            );
+          SQL
+          connection.execute(<<~SQL)
+            CREATE UNIQUE INDEX #{test_constraint_index} ON #{test_constraint_table} (user_id, version);
+          SQL
+
+          # Insert test data with potential conflicts
+          connection.execute(<<~SQL)
+            INSERT INTO #{test_constraint_table} (user_id, version, data) VALUES
+            (1, '1.0.0', 'version 1.0.0 for good ID'),
+            (2, '1.0.0', 'version 1.0.0 for bad ID - would cause conflict on update'),
+            (2, '2.0.0', 'version 2.0.0 for bad ID - safe to update');
+          SQL
+        end
+
+        after do
+          connection.execute("DROP TABLE IF EXISTS #{test_constraint_table} CASCADE")
+        end
+
+        it 'handles unique constraint conflicts correctly' do
+          records_before = connection.select_all("SELECT * FROM #{test_constraint_table}").to_a
+          expect(records_before.size).to eq(3)
+
+          repairer.run
+
+          # After repair: only conflicting record should be deleted
+          records_after = connection.select_all("SELECT * FROM #{test_constraint_table}").to_a
+          expect(records_after.size).to eq(2)
+
+          # Version 1.0.0 record should remain with user_id=1
+          version_1 = connection.select_value(
+            "SELECT user_id FROM #{test_constraint_table} WHERE version = '1.0.0'"
+          )
+          expect(version_1).to eq(1)
+
+          # Version 2.0.0 record should be updated to user_id=1
+          version_2 = connection.select_value(
+            "SELECT user_id FROM #{test_constraint_table} WHERE version = '2.0.0'"
+          )
+          expect(version_2).to eq(1)
+
+          # Verify unique index created on main test_table
+          test_index_exists_before = connection.select_value(<<~SQL).present?
+            SELECT 1
+            FROM pg_indexes
+            WHERE tablename = '#{test_table}'
+            AND indexname = '#{test_unique_index}'
+          SQL
+          expect(test_index_exists_before).to be true
+        end
+      end
+
+      context 'when references table does not exists' do
+        let(:indexes_to_repair) do
+          {
+            test_table => {
+              test_unique_index => {
+                'columns' => %w[name email],
+                'unique' => true,
+                'references' => [
+                  {
+                    'table' => '_non_existing_reference_table_',
+                    'column' => 'user_id'
+                  }
+                ]
+              }
+            }
+          }
+        end
+
+        it 'logs that the table does not exist and skips processing' do
+          expect(logger).to receive(:info).with(/Reference table '_non_existing_reference_table_' does not exist/)
+          expect(repairer).not_to receive(:update_references)
+
+          repairer.run
+        end
       end
 
       context 'with dry run' do

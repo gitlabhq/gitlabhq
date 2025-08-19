@@ -10,6 +10,12 @@ import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+  TRACKING_LABEL_TODO_ITEMS,
+  TRACKING_PROPERTY_ALL_TODOS,
+} from '~/homepage/tracking_constants';
 import { todosResponse } from '../../todos/mock_data';
 
 Vue.use(VueApollo);
@@ -32,11 +38,14 @@ describe('TodosWidget', () => {
     });
   };
 
+  const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
   const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
   const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findErrorMessage = () =>
+    wrapper.findByText('Your to-do items are not available. Please refresh the page to try again.');
 
   describe('rendering', () => {
     it('shows a link to all todos', () => {
@@ -136,11 +145,20 @@ describe('TodosWidget', () => {
       expect(findTodoItems()).toHaveLength(0);
     });
 
-    it('captures error with Sentry when query fails', async () => {
-      createComponent({ todosQueryHandler: todosQueryErrorHandler });
-      await waitForPromises();
+    describe('when query fails', () => {
+      beforeEach(() => {
+        createComponent({ todosQueryHandler: todosQueryErrorHandler });
+        return waitForPromises();
+      });
 
-      expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      it('captures error with Sentry when query fails', () => {
+        expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+      });
+
+      it('shows an error and hides the filters dropdown when query fails', () => {
+        expect(findFilterDropdown().exists()).toBe(false);
+        expect(findErrorMessage().exists()).toBe(true);
+      });
     });
   });
 
@@ -175,7 +193,6 @@ describe('TodosWidget', () => {
   });
 
   describe('filter functionality', () => {
-    const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
     const findFilteredEmptyState = () =>
       wrapper.findByText('Sorry, your filter produced no results');
 
@@ -228,13 +245,27 @@ describe('TodosWidget', () => {
         data: {
           currentUser: {
             id: 'user-1',
-            todos: { nodes: [] },
+            todos: {
+              nodes: [],
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+              },
+            },
           },
         },
       };
 
-      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
-      createComponent({ todosQueryHandler: emptyQueryHandler });
+      const queryHandler = jest.fn((value) => {
+        // Return an empty response if the filter is provided
+        if (value.action) {
+          return emptyResponse;
+        }
+        return todosResponse;
+      });
+      createComponent({ todosQueryHandler: queryHandler });
 
       await findFilterDropdown().vm.$emit('select', 'build_failed');
       await waitForPromises();
@@ -280,6 +311,32 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(provided.currentUserId.value).toBe(todosResponse.data.currentUser.id);
+    });
+  });
+
+  describe('tracking', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('tracks click on "All to-do items" link', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      const allTodosLink = findAllTodosLink();
+
+      allTodosLink.element.addEventListener('click', (e) => e.preventDefault());
+      allTodosLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
+        {
+          label: TRACKING_LABEL_TODO_ITEMS,
+          property: TRACKING_PROPERTY_ALL_TODOS,
+        },
+        undefined,
+      );
     });
   });
 });

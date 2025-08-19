@@ -89,7 +89,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
 
         it 'exposes current_organization' do
           expect(gon).to receive(:current_organization=).with(
-            current_organization.slice(:id, :name, :web_url, :avatar_url)
+            current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
           )
 
           add_gon_variables

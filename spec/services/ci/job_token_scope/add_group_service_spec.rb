@@ -25,26 +25,6 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
       expect(group_link.default_permissions).to eq(default_permissions)
       expect(group_link.job_token_policies).to eq(policies)
     end
-
-    context 'when job token policies are disabled' do
-      before do
-        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-      end
-
-      it 'adds the group to the scope without the policies', :aggregate_failures do
-        expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
-
-        expect(result).to be_success
-
-        group_link = result.payload[:group_link]
-
-        expect(group_link.source_project).to eq(project)
-        expect(group_link.target_group).to eq(target_group)
-        expect(group_link.added_by).to eq(current_user)
-        expect(group_link.default_permissions).to be(true)
-        expect(group_link.job_token_policies).to eq([])
-      end
-    end
   end
 
   shared_examples 'event tracking' do
@@ -78,10 +58,6 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
 
     let(:default_permissions) { false }
 
-    before do
-      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
-
     it_behaves_like 'editable group job token scope' do
       context 'when user has permissions on source and target groups' do
         before_all do
@@ -91,22 +67,6 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
 
         it_behaves_like 'adds group'
         it_behaves_like 'event tracking'
-
-        context 'when default_permissions is set to true' do
-          let(:default_permissions) { true }
-
-          it_behaves_like 'adds group'
-          it_behaves_like 'event tracking'
-        end
-
-        context 'when token scope is disabled' do
-          before do
-            project.ci_cd_settings.update!(job_token_scope_enabled: false)
-          end
-
-          it_behaves_like 'adds group'
-          it_behaves_like 'event tracking'
-        end
       end
 
       context 'when group is already in the allowlist' do

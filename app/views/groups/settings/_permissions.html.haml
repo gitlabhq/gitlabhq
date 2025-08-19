@@ -29,12 +29,22 @@
     - if @group.licensed_feature_available?(:group_wikis)
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
-    = render_if_exists 'groups/settings/auto_assign_duo_pro', f: f, group: @group
     = render_if_exists 'groups/settings/product_analytics_settings', f: f, group: @group
     = render 'groups/settings/git_access_protocols', f: f, group: @group
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group
+
+    - if @group.enterprise_user_settings_available?(current_user)
+      %fieldset.form-group.gl-form-group
+        %legend.col-form-label.col-form-label
+          = s_('GroupSettings|Enterprise users')
+          .label-description
+            = s_('GroupSettings|Settings that apply only to enterprise users associated with this group.')
+        = render_if_exists 'groups/settings/enterprise_users_pats', f: f, group: @group
+        = render_if_exists 'groups/settings/hide_email_on_profile', f: f, group: @group
+        = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
+
     = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
     = render 'groups/settings/resource_access_token_creation', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
@@ -45,7 +55,6 @@
     = render_if_exists 'groups/settings/placeholder_confirmation_bypass', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
-    = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
 
     %h5= _('Customer relations')

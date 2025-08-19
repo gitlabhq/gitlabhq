@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits the profile preferences page', :js, feature_category: :user_profile do
+RSpec.describe 'User visits the profile preferences page', :js, :with_organization_url_helpers, feature_category: :user_profile do
   include ListboxHelpers
 
   let(:user) { create(:user) }
+  let(:current_organization) { user.organization }
 
   before do
     sign_in(user)

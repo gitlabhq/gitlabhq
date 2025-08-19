@@ -2,9 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::Runner::BulkDelete, feature_category: :fleet_visibility do
+RSpec.describe Mutations::Ci::Runner::BulkDelete, factory_default: :keep, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
+  let_it_be(:organization) { create_default(:organization) }
   let_it_be(:admin_user) { create(:user, :admin) }
 
   let(:current_ctx) { { current_user: user } }
@@ -80,6 +81,108 @@ RSpec.describe Mutations::Ci::Runner::BulkDelete, feature_category: :fleet_visib
           expect { response }.not_to change { Ci::Runner.count }
           expect(response[:errors]).to match_array("User does not have permission to delete any of the runners")
         end
+      end
+    end
+  end
+
+  context 'for N+1 Query', :request_store do
+    let_it_be(:user) { create(:user) }
+
+    # destroy_all itself triggers N+1 queries, so we are patching this method to
+    # ensure that the select calls (specifically authorization checks) that are being tested are not impacted by this
+    before do
+      allow(Ci::Runner).to receive(:id_in).and_wrap_original do |original_method, ids|
+        relation = original_method.call(ids)
+        allow(relation).to receive(:destroy_all).and_return(relation.to_a)
+        relation
+      end
+    end
+
+    def expect_constant_queries(single_runner, all_runners, ctx = current_ctx)
+      control = ActiveRecord::QueryRecorder.new do
+        sync(resolve(described_class, args: { ids: single_runner.map(&:to_global_id) }, ctx: ctx))
+      end
+
+      expect do
+        sync(resolve(described_class, args: { ids: all_runners.map(&:to_global_id) }, ctx: ctx))
+      end.not_to exceed_query_limit(control)
+    end
+
+    context 'with project runners' do
+      let_it_be(:owner_project) { create(:project, owners: user) }
+      let_it_be(:maintainer_project) { create(:project, maintainers: user) }
+      let_it_be(:developer_project) { create(:project, developers: user) }
+
+      context 'with single runner per project' do
+        let_it_be(:owner_runner) { create(:ci_runner, :project, projects: [owner_project]) }
+        let_it_be(:maintainer_runner) { create(:ci_runner, :project, projects: [maintainer_project]) }
+        let_it_be(:developer_runner) { create(:ci_runner, :project, projects: [developer_project]) }
+
+        it 'does not cause N+1 queries' do
+          runners = [owner_runner, maintainer_runner, developer_runner]
+          expect_constant_queries([developer_runner], runners)
+        end
+      end
+
+      context 'with multiple runners per project' do
+        let_it_be(:owner_runners) { create_list(:ci_runner, 3, :project, projects: [owner_project]) }
+        let_it_be(:maintainer_runners) { create_list(:ci_runner, 3, :project, projects: [maintainer_project]) }
+        let_it_be(:developer_runners) { create_list(:ci_runner, 3, :project, projects: [developer_project]) }
+
+        it 'does not cause N+1 queries' do
+          all_runners = owner_runners + maintainer_runners + developer_runners
+          expect_constant_queries([developer_runners.first], all_runners)
+        end
+      end
+
+      context 'with different project access levels' do
+        let_it_be(:runners_with_diff_access_levels) do
+          [
+            create(:ci_runner, :project, projects: [owner_project]),
+            create(:ci_runner, :project, projects: [maintainer_project]),
+            create(:ci_runner, :project, projects: [developer_project])
+          ]
+        end
+
+        it 'preloads runner policies efficiently across different access levels' do
+          expect_constant_queries([runners_with_diff_access_levels.last], runners_with_diff_access_levels)
+        end
+      end
+    end
+
+    context 'with group runners' do
+      let_it_be(:owner_group) { create(:group, owners: user) }
+      let_it_be(:maintainer_group) { create(:group, maintainers: user) }
+      let_it_be(:developer_group) { create(:group, developers: user) }
+
+      context 'with single runner per group' do
+        let_it_be(:owner_group_runner) { create(:ci_runner, :group, groups: [owner_group]) }
+        let_it_be(:maintainer_group_runner) { create(:ci_runner, :group, groups: [maintainer_group]) }
+        let_it_be(:developer_group_runner) { create(:ci_runner, :group, groups: [developer_group]) }
+
+        it 'does not cause N+1 queries' do
+          runners = [owner_group_runner, maintainer_group_runner, developer_group_runner]
+          expect_constant_queries([owner_group_runner], runners)
+        end
+      end
+
+      context 'with multiple runners per group' do
+        let_it_be(:owner_group_runners) { create_list(:ci_runner, 3, :group, groups: [owner_group]) }
+        let_it_be(:maintainer_group_runners) { create_list(:ci_runner, 3, :group, groups: [maintainer_group]) }
+
+        it 'handles without N+1' do
+          all_runners = owner_group_runners + maintainer_group_runners
+          expect_constant_queries([owner_group_runners.first], all_runners)
+        end
+      end
+    end
+
+    context 'with admin user and instance runners' do
+      let_it_be(:instance_runners) { create_list(:ci_runner, 5, :instance) }
+      let(:admin_ctx) { { current_user: admin_user } }
+
+      it 'does not cause N+1 queries' do
+        expect_constant_queries([instance_runners.first], instance_runners, admin_ctx)
       end
     end
   end

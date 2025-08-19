@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Chat
+title: GitLab Duo Chat (Classic)
 ---
 
 {{< details >}}
@@ -10,8 +10,9 @@ title: GitLab Duo Chat
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4), Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
+- LLMs: Anthropic Claude and Vertex AI Search. The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -23,10 +24,11 @@ title: GitLab Duo Chat
 - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Updated naming to GitLab Duo Chat (Classic) in 18.3.
 
 {{< /history >}}
 
-GitLab Duo Chat is an AI-native assistant that accelerates development with
+GitLab Duo Chat (Classic) is an AI assistant that accelerates development with
 contextual, conversational AI. Chat:
 
 - Explains code and suggests improvements directly in your development environment.
@@ -38,100 +40,57 @@ contextual, conversational AI. Chat:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY)
 <!-- Video published on 2024-04-18 -->
 
+Learn about the new [GitLab Duo Chat (Agentic)](agentic_chat.md).
+
 ## Supported editor extensions
 
 You can use GitLab Duo Chat in:
 
 - The GitLab UI
 - [The GitLab Web IDE (VS Code in the cloud)](../project/web_ide/_index.md)
-- VS Code, with the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
-- JetBrains IDEs, with the [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
-- Eclipse, with the [GitLab for Eclipse extension](https://marketplace.eclipse.org/content/gitlab-eclipse)
-- Visual Studio for Windows, with the [GitLab Extension for Visual Studio](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
+
+You can also use GitLab Duo Chat in these IDEs by installing an editor extension:
+
+- [VS Code](../../editor_extensions/visual_studio_code/setup.md)
+- [JetBrains](../../editor_extensions/jetbrains_ide/setup.md)
+- [Eclipse](../../editor_extensions/eclipse/setup.md)
+- [Visual Studio](../../editor_extensions/visual_studio/setup.md)
 
 {{< alert type="note" >}}
 
-If you have GitLab Self-Managed: GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, but the experience might be degraded.
 
 {{< /alert >}}
-
-## The context Chat is aware of
-
-GitLab Duo Chat is sometimes aware of the context you're working in.
-Other times, you must be more specific with your request.
-
-Duo Chat always has access to:
-
-- GitLab documentation.
-- General programming and coding knowledge.
-
-In addition, Chat is aware of different information, depending on where you use it.
-
-### In the GitLab UI
-
-| Area and available context | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
-|------|----------------|----------------|----------------------|-----------------|-----------------|
-| Code files and file content | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
-| Epics and epic details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
-| Issues and issue details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Merge requests (MRs) and MR details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits and commit details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
-| Pipeline jobs and job details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
-| Work items and work item details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the work item, ask about `this work item`, `this`, or the URL. From any UI area, ask about the URL. |
-
-### In IDEs
-
-| Area and available context | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
-|------|----------------|----------------|----------------------|-----------------|-----------------|
-| Selected lines in editor and selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Files and file content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
-| Epics and epic details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Issues and issue details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Work items and work item details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-
-In addition, in the IDEs, when you use any of the slash commands,
-like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
-code you selected.
-
-### Additional features
-
-[Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) automatically enriches
-code generation requests for [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md).
-If your project has access to Code Suggestions, then the `/refactor`, `/fix`, and `/tests` slash commands
-also have access to the latest Repository X-Ray report, and include that report as context for Duo.
-
-The extensions for GitLab Duo scan for secrets and sensitive values matching known formats. The extensions
-redact this sensitive content locally before sending it to Duo Chat, or using it for code generation.
-This applies to files added via `/include`, and all generation commands.
 
 ## Use GitLab Duo Chat in the GitLab UI
 
+Prerequisites:
+
+- You must have access to GitLab Duo Chat and GitLab Duo must be turned on.
+- You must be where Chat is available. It is not available on:
+  - The **Your work** pages, like the To-Do List.
+  - Your **User settings** page.
+  - The **Help** menu.
+
+To use GitLab Duo Chat in the GitLab UI:
+
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
+   - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
+   - It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
+
+To ask a new, unrelated question, clear the context by typing `/reset` or `/clear` and selecting **Send**.
+
+### View the Chat history
 
 The 25 most recent messages are retained in the chat history.
 
-To ask a new question unrelated to the previous conversation, you might receive better answers
-if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
+To view the history:
 
-{{< alert type="note" >}}
+- In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
 
-The **GitLab Duo Chat** button is **not available** on:
-
-- The **Your work** pages, like the [To-Do List](../todos.md).
-- Your [**User settings**](../profile/_index.md) page.
-- The **Help** menu.
-
-{{< /alert >}}
-
-### Have multiple conversations with Chat
-
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
+### Have multiple conversations
 
 {{< history >}}
 
@@ -141,34 +100,31 @@ The **GitLab Duo Chat** button is **not available** on:
 
 {{< /history >}}
 
-In GitLab 17.10 and later, you can have multiple simultaneous conversations with Chat.
+In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-1. Enter your question in the chat text box and press **Enter** or select **Send**.
-1. To create a new conversation with Chat, you can either:
-   - In the top-left corner of the Chat drawer, select **New Chat**.
-   - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
+1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
+1. Create a new conversation with Chat by selecting one of the following:
+   - In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).
+   - In the message box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
    A new Chat drawer replaces the previous one.
-
-   You can have an unlimited number of simultaneous conversations with Chat.
-
-1. To view all of your conversations, in the top-left corner of the Chat drawer, select **Chat History**.
-
-   Conversations created before the multiple conversations feature was enabled are not visible in the Chat history.
-
+1. Create another new conversation.
+1. To view all of your conversations, in the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
 1. To switch between conversations, in your Chat history, select the appropriate conversation.
 
-   Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
+Every conversation persists an unlimited number of messages. However, only the last 25 messages are sent to the LLM to fit the content in the LLM's context window.
 
-#### Delete a conversation
+Conversations created before this feature was enabled are not visible in the Chat history.
+
+### Delete a conversation
 
 To delete a conversation:
 
-1. In the top-left corner of the Chat drawer, select **Chat History**.
-1. In the Chat history, select **Delete conversation**.
+1. In the upper-right corner of the Chat drawer, select **Chat history** ({{< icon name="history" >}}).
+1. In the history, select **Delete conversation** ({{< icon name="remove" >}}).
 
-> By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
-> However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
+By default, individual conversations expire and are automatically deleted after 30 days of inactivity.
+However, administrators can [change this expiration period](#configure-chat-conversation-expiration).
 
 ## Use GitLab Duo Chat in the Web IDE
 
@@ -184,15 +140,18 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 1. Open the Web IDE:
    1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
    1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
-1. Then open Chat by using one of the following methods:
+1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
-     1. Select **Explain selected code**, **Generate Tests**, or **Refactor**.
-   - Use the keyboard shortcut: <kbd>ALT</kbd>+<kbd>d</kbd> (on Windows and Linux) or <kbd>Option</kbd>+<kbd>d</kbd> (on Mac)
-1. In the message box, enter your question and press **Enter** or select **Send**.
+     1. Select **Explain selected snippet**, **Fix**, **Generate tests**, **Open Quick Chat**, or **Refactor**.
+   - Use the keyboard shortcut:
+     - On Windows or Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+     - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you simplify this?`.
+If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
+For example, you can select code and ask Chat, `Can you simplify this?`.
 
 ## Use GitLab Duo Chat in VS Code
 
@@ -208,32 +167,16 @@ Prerequisites:
 
 - You've [installed and configured the VS Code extension](../../editor_extensions/visual_studio_code/setup.md).
 
-To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
+To use GitLab Duo Chat in the GitLab Workflow extension for VS Code:
 
 1. In VS Code, open a file. The file does not need to be a file in a Git repository.
 1. On the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-1. In the message box, enter your question and press **Enter** or select **Send**.
-1. In the chat pane, on the top right corner, select **Show Status** to show information
-   in the Command Palette.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
-### Select code and use Duo Chat
+If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
+For example, you can select code and ask Chat, `Can you simplify this?`.
 
-You can interact with Duo Chat while you're working with a subset of code.
-
-1. In VS Code, open a file. The file does not need to be a file in a Git repository.
-1. In the file, select some code.
-1. Right-click and select **GitLab Duo Chat**.
-1. Select an option, or **Open Quick Chat** and ask a question, like `Can you simplify this code?` and press <kbd>Enter</kbd>.
-
-### Close Duo Chat
-
-To close Duo Chat:
-
-- For Duo Chat on the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
-- For the quick chat window that's embedded in your file, in the upper-right corner,
-  select **Collapse** ({{< icon name="chevron-lg-up" >}}).
-
-### In the editor window
+### Use Chat while working in the editor window
 
 {{< history >}}
 
@@ -244,22 +187,35 @@ To close Duo Chat:
 
 To open GitLab Duo Chat in the editor window, use any of these methods:
 
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- Right-clicking in the currently open file in your IDE, then selecting **GitLab Duo Chat > Open Quick Chat**.
-  Optionally, select some code to provide additional context.
-- Opening the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette),
-  then selecting **GitLab Duo Chat: Open Quick Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
+- In the currently open file in your IDE, right-click and select **GitLab Duo Chat > Open Quick Chat**.
+  Select some code to provide additional context.
+- Open the Command Palette, then select **GitLab Duo Chat: Open Quick Chat**.
 
 After Quick Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor`.
-1. To send your question, select **Send**, or press <kbd>Command</kbd> + <kbd>Enter</kbd>.
-1. Use the **Copy Snippet** and **Insert Snippet** links above code blocks in the responses to interact with them.
-1. To exit chat, either select the chat icon in the gutter, or press **Escape** while focused on the chat.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor`.
+1. To send your question, select **Send**, or press <kbd>Command</kbd>+<kbd>Enter</kbd>.
+1. To interact with the responses, above the code blocks, use the **Copy Snippet** and **Insert Snippet** links.
+1. To exit chat, select the chat icon in the gutter, or press **Escape** while focused on the chat.
+
+### Check the status of Chat
+
+To check the health of your GitLab Duo configuration:
+
+- In the chat pane, in the upper-right corner, select **Status**.
+
+### Close Chat
+
+To close GitLab Duo Chat:
+
+- For GitLab Duo Chat on the left sidebar, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}).
+- For the quick chat window that's embedded in your file, in the upper-right corner,
+  select **Collapse** ({{< icon name="chevron-lg-up" >}}).
 
 ## Use GitLab Duo Chat in Visual Studio for Windows
 
@@ -275,7 +231,7 @@ To use GitLab Duo Chat in the GitLab extension for Visual Studio:
    - In the file that you have open in the editor, select some code.
      1. Right-click and select **GitLab Duo Chat**.
      1. Select **Explain selected code** or **Generate Tests**.
-1. In the message box, enter your question and press **Enter** or select **Send**.
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 If you have selected code in the editor, this selection is sent along with your question to the AI. This way you can ask questions about this code selection. For instance, `Could you refactor this?`.
 
@@ -300,10 +256,10 @@ To use GitLab Duo Chat in the GitLab plugin for JetBrains IDEs:
 
 To open GitLab Duo Chat in a chat window, use any of these methods:
 
-- On the right tool window bar, by selecting **GitLab Duo Chat**.
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd>
+- On the right tool window bar, select **GitLab Duo Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
 - From an open editor file:
   1. Right-click and select **GitLab Duo Chat**.
   1. Select **Open Chat Window**.
@@ -318,13 +274,13 @@ To open GitLab Duo Chat in a chat window, use any of these methods:
 
 After GitLab Duo Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor` and `/reset`.
-1. To send your question, press **Enter** or select **Send**.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor` and `/reset`.
+1. To send your question, press <kbd>Enter</kbd> or select **Send**.
 1. Use the buttons within code blocks in the responses to interact with them.
 
-### In GitLab Duo Quick Chat in the editor view
+### In an editor window
 
 {{< history >}}
 
@@ -332,23 +288,23 @@ After GitLab Duo Chat opens:
 
 {{< /history >}}
 
-To open GitLab Duo Chat Quick Chat in the editor window, use any of these methods:
+To open GitLab Duo Chat in the editor window, use any of these methods:
 
-- From a keyboard shortcut, by pressing:
-  - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
-  - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- In an open file in your IDE, by selecting some code,
-  then, in the floating toolbar, selecting **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- Right-clicking, then selecting **GitLab Duo Chat > Open Quick Chat**.
+- From a keyboard shortcut:
+  - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
+  - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
+- In an open file in your IDE, select some code,
+  then, in the floating toolbar, select **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
+- Right-click and select **GitLab Duo Chat > Open Quick Chat**.
 
 After Quick Chat opens:
 
-1. In the message box, enter your question. The available commands are shown while you enter text:
-   - Enter `/` to display all available commands.
-   - Enter `/re` to display `/refactor` and `/reset`.
-1. To send your question, press **Enter**.
-1. Use the buttons around code blocks in the responses to interact with them.
-1. To exit chat, either select **Escape to close**, or press **Escape** while focused on the chat.
+1. In the message box, enter your question. You can also:
+   - Type `/` to display all available commands.
+   - Type `/re` to display `/refactor` and `/reset`.
+1. To send your question, press <kbd>Enter</kbd>.
+1. To interact with the responses, use the buttons around the code blocks.
+1. To exit chat, either select **Escape to close**, or press <kbd>Escape</kbd> while focused on the chat.
 
 <div class="video-fallback">
   <a href="https://youtu.be/5JbAM5g2VbQ">View how to use GitLab Duo Quick Chat</a>.
@@ -373,26 +329,10 @@ Prerequisites:
 To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 
 1. Open a project in Eclipse.
-1. To open the chat window, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
-   - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd> on Windows and Linux
-   - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
-1. In the message box, enter your question and press **Enter** or select **Send**.
-
-## Watch a demo and get tips
-
-<div class="video-fallback">
-  <a href="https://youtu.be/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_">View how to set up and use GitLab Duo Chat</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/l6vsd1HMaYA?si=etXpFbj1cBvWyj3_" frameborder="0" allowfullscreen> </iframe>
-</figure>
-<!-- Video published on 2023-11-10 -->
-
-For tips and tricks about integrating GitLab Duo Chat into your AI-native DevSecOps workflows,
-read the blog post:
-[10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
-
-[View examples of how to use GitLab Duo Chat](examples.md).
+1. Select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
+   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>d</kbd>
+   - On macOS: <kbd>Option</kbd>+<kbd>d</kbd>
+1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
 
 ## Configure Chat conversation expiration
 
@@ -412,7 +352,6 @@ Prerequisites:
 1. Select **GitLab Duo**.
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:
-
    - **Expire conversation based on time conversation was last updated**.
    - **Expire conversation based on time conversation was created**.
 1. Select **Save changes**.
@@ -424,7 +363,7 @@ Different language models can be the source for GitLab Duo Chat.
 - On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
   cloud-based AI gateway that is hosted by GitLab.
 - On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
-  security and privacy by making sure nothing is sent to an external model.
+  security and privacy by making sure nothing is sent to an external model. You can use GitLab AI vendor models, other supported language models, or bring your own compatible model.
 
 ## Input and output length
 
@@ -432,13 +371,13 @@ For each Chat conversation, input and output length is limited:
 
 - Input is limited to 200,000 tokens (roughly 680,000 characters). The input tokens
   include:
-  - All the [context that Chat is aware of](#the-context-chat-is-aware-of).
+  - All the [context that Chat is aware of](../gitlab_duo/context.md#gitlab-duo-chat).
   - All the previous questions and answers in that conversation.
 - Output is limited to 8,192 tokens (roughly 28,600 characters).
 
 ## Give feedback
 
-Your feedback is important to us as we continually enhance your GitLab Duo Chat experience.
+Your feedback is important to us as we continually enhance the GitLab Duo Chat experience.
 Leaving feedback helps us customize the Chat for your needs and improve its performance for everyone.
 
 To give feedback about a specific response, use the feedback buttons in the response message.

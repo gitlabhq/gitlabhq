@@ -57,7 +57,7 @@ Security incidents related to credentials exposure can vary in severity from low
 
 #### Event types
 
-- Review the available [audit events](../administration/audit_event_reports.md) for your group or namespace.
+- Review the available [audit events](../administration/compliance/audit_event_reports.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../user/compliance/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../user/compliance/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/cicd/job_logs.md) for any pipelines ran by an adversary
@@ -76,7 +76,7 @@ If you suspect that a user account or bot account has been compromised, you shou
 
 #### Event types
 
-Review the [audit events](../administration/audit_event_reports.md) available to you to identify any suspicious account behavior. For example:
+Review the [audit events](../administration/compliance/audit_event_reports.md) available to you to identify any suspicious account behavior. For example:
 
 - Suspicious sign-in events.
 - Creation or deletion of personal, project, and group access tokens.
@@ -114,7 +114,7 @@ In such instances, you should:
 - Check if there are any recent modifications to the source code in the repository. You can check the commit history of the modified file to determine the actor who made the changes. If you suspect suspicious edits, investigate the user activity using the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Any suspicious modification to any code that is called by that file can cause issues and should be investigated and may lead to exposed secrets.
 - Consider rotating the exposed secrets after determining the production impact of revocation.
-- Review [audit logs](../administration/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
+- Review [audit logs](../administration/compliance/audit_event_reports.md) available to you for any suspicious modifications to user and project settings.
 
 ##### Secrets exposed through misconfigured GitLab CI/CD
 
@@ -142,7 +142,7 @@ It is important to [regularly update GitLab](../policy/maintenance.md), update y
 
 If you suspect that your GitLab instance has been compromised, you should:
 
-- Review the [audit events](../administration/audit_event_reports.md) available to you for suspicious account behavior.
+- Review the [audit events](../administration/compliance/audit_event_reports.md) available to you for suspicious account behavior.
 - Review [all users](../administration/moderate_users.md) (including the Administrative root user), and follow the steps in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account) if necessary.
 - Review the Credentials Inventory, if available to you.
 - Change any sensitive credentials, variables, tokens, and secrets. For example, those located in instance configuration, database, CI/CD pipelines, or elsewhere.
@@ -175,7 +175,7 @@ Security incidents can occur as a result of improperly configured project or gro
 
 If you suspect unauthorized modifications to project settings, consider taking the following steps:
 
-- Begin by reviewing the available [audit events](../administration/audit_event_reports.md) to identify the user responsible for the action.
+- Begin by reviewing the available [audit events](../administration/compliance/audit_event_reports.md) to identify the user responsible for the action.
 - If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](responding_to_security_incidents.md#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
@@ -202,4 +202,4 @@ You can also consider implementing abuse rate limiting as detailed in [Git abuse
 
 GitLab SIRT maintains an active repository of detections in the [GitLab SIRT public project](https://gitlab.com/gitlab-security-oss/guard/-/tree/main/detections).
 
-The detections in this repository are based on the audit events and in the general Sigma rule format. You can use sigma rule converter to get the rules in your desired format. Visit the repository for more information about Sigma format and tools related to it. Make sure you have GitLab audit logs ingested to your SIEM. You should follow the audit event streaming guide [for your self-managed instance](../administration/audit_event_streaming/_index.md) or [GitLab.com top-level group](../user/compliance/audit_event_streaming.md) to stream audit events to your desired destination.
+The detections in this repository are based on the audit events and in the general Sigma rule format. You can use sigma rule converter to get the rules in your desired format. Visit the repository for more information about Sigma format and tools related to it. Make sure you have GitLab audit logs ingested to your SIEM. You should follow the audit event streaming guide [for your self-managed instance](../administration/compliance/audit_event_streaming.md) or [GitLab.com top-level group](../user/compliance/audit_event_streaming.md) to stream audit events to your desired destination.

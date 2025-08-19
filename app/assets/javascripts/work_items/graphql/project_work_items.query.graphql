@@ -9,7 +9,8 @@ query projectWorkItems(
 ) {
   workspace: project(fullPath: $fullPath) {
     id
-    workItems(search: $searchTerm, types: $types, in: $in) @include(if: $searchByText) {
+    workItems(search: $searchTerm, types: $types, state: opened, in: $in)
+      @include(if: $searchByText) {
       nodes {
         id
         iid

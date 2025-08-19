@@ -132,6 +132,12 @@ export const TOGGLE_CANARY = {
   defaultKeys: ['g x'], // eslint-disable-line @gitlab/require-i18n-strings
 };
 
+export const DUO_CHAT = {
+  id: 'globalShortcuts.duoChat',
+  description: __('Open GitLab Duo Chat'),
+  defaultKeys: ['d'],
+};
+
 export const BOLD_TEXT = {
   id: 'editing.boldText',
   description: __('Bold text'),
@@ -190,7 +196,10 @@ export const TOGGLE_MARKDOWN_PREVIEW = {
   // However, this particular shortcut has been in place since before the `mod` key was available.
   // We've chosen to leave this implemented as-is for the time being to avoid breaking people's workflows.
   // See discussion in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45308#note_527490548.
-  defaultKeys: ['ctrl+shift+p', 'command+shift+p'],
+  // Update 2025-07-17: Adding `alt` version to fix an issue in Windows
+  // This new combination is compatible across Mac, Linux and Windows.
+  // See https://gitlab.com/gitlab-org/gitlab/-/issues/17600#note_2633177789
+  defaultKeys: ['ctrl+shift+p', 'command+shift+p', 'alt+shift+p'],
 };
 
 /**
@@ -402,6 +411,13 @@ export const PROJECT_FILES_GO_TO_COMPARE = {
   defaultKeys: ['shift+c'],
 };
 
+export const FOCUS_FILE_TREE_BROWSER_FILTER_BAR = {
+  id: 'projectFiles.focusFTBFilterBar',
+  description: __('Focus file tree browser filter bar'),
+  defaultKeys: ['f'],
+  overrideGlobalHotkey: true,
+};
+
 export const ISSUABLE_COMMENT_OR_REPLY = {
   id: 'issuables.commentReply',
   description: __('Comment/Reply (quoting selected text)'),
@@ -457,19 +473,19 @@ export const MR_GO_TO_FILE = {
   customizable: false,
 };
 
-export const MR_TOGGLE_FILE_BROWSER_DEPRECATED = {
-  id: 'mergeRequests.toggleFileBrowserDeprecated',
-  description: __('Toggle file browser'),
+export const MR_FOCUS_FILE_BROWSER = {
+  id: 'mergeRequests.focusFileBrowser',
+  description: __('Focus file browser'),
   defaultKeys: ['f'],
   customizable: false,
-  // TODO: remap https://gitlab.com/gitlab-org/gitlab/-/issues/533312#note_2433282146
+  // there's no filtered search on the page, instead we focus the file browser search manually
   overrideGlobalHotkey: true,
 };
 
 export const MR_TOGGLE_FILE_BROWSER = {
   id: 'mergeRequests.toggleFileBrowser',
   description: __('Toggle file browser'),
-  defaultKeys: ['mod+b'],
+  defaultKeys: ['shift+f'],
   customizable: false,
 };
 
@@ -614,6 +630,7 @@ const GLOBAL_SHORTCUTS_GROUP = {
     TOGGLE_PERFORMANCE_BAR,
     HIDE_APPEARING_CONTENT,
     TOGGLE_SUPER_SIDEBAR,
+    DUO_CHAT,
   ],
 };
 
@@ -717,6 +734,7 @@ const MR_SHORTCUTS_GROUP = {
     MR_NEXT_UNRESOLVED_DISCUSSION,
     MR_PREVIOUS_UNRESOLVED_DISCUSSION,
     MR_COPY_SOURCE_BRANCH_NAME,
+    MR_FOCUS_FILE_BROWSER,
     MR_TOGGLE_FILE_BROWSER,
     MR_ADD_TO_REVIEW,
     MR_ADD_COMMENT_NOW,

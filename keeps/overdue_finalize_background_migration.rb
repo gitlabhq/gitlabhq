@@ -24,7 +24,7 @@ module Keeps
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep
-    def each_change
+    def each_identified_change
       batched_background_migrations.each do |migration_yaml_file, migration|
         next unless before_cuttoff_milestone?(migration['milestone'])
 
@@ -37,39 +37,55 @@ module Keeps
         last_migration_file = last_migration_for_job(job_name)
         next unless last_migration_file
 
-        change = initialize_change(migration, migration_record, job_name, last_migration_file)
-
-        queue_method_node = find_queue_method_node(last_migration_file)
-
-        migration_name = truncate_migration_name("FinalizeHK#{job_name}")
-        PostDeploymentMigration::PostDeploymentMigrationGenerator
-          .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
-        generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
-        migration_file = generator.invoke_all.first
-        change.changed_files = [migration_file]
-
-        add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
-        ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
-
-        digest = Digest::SHA256.hexdigest(generator.migration_number)
-        digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s
-        File.open(digest_file, 'w') { |f| f.write(digest) }
-
-        add_finalized_by_to_yaml(migration_yaml_file, generator.migration_number)
-
-        change.changed_files << digest_file
-        change.changed_files << migration_yaml_file
-
+        change = ::Gitlab::Housekeeper::Change.new
+        change.identifiers = [self.class.name.demodulize, job_name]
+        change.context = {
+          migration: migration,
+          migration_record: migration_record,
+          job_name: job_name,
+          last_migration_file: last_migration_file,
+          migration_yaml_file: migration_yaml_file
+        }
         yield(change)
       end
     end
 
-    def initialize_change(migration, migration_record, job_name, last_migration_file)
-      # Finalize the migration
-      change = ::Gitlab::Housekeeper::Change.new
-      change.title = "Finalize BBM #{job_name}"
+    def make_change!(change)
+      migration = change.context[:migration]
+      migration_record = change.context[:migration_record]
+      job_name = change.context[:job_name]
+      last_migration_file = change.context[:last_migration_file]
+      migration_yaml_file = change.context[:migration_yaml_file]
 
-      change.identifiers = [self.class.name.demodulize, job_name]
+      initialize_change_details(change, migration, migration_record, job_name, last_migration_file)
+
+      queue_method_node = find_queue_method_node(last_migration_file)
+
+      migration_name = truncate_migration_name("FinalizeHK#{job_name}")
+      PostDeploymentMigration::PostDeploymentMigrationGenerator
+        .source_root('generator_templates/post_deployment_migration/post_deployment_migration/')
+      generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
+      migration_file = generator.invoke_all.first
+      change.changed_files = [migration_file]
+
+      add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
+      ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(migration_file)
+
+      digest = Digest::SHA256.hexdigest(generator.migration_number)
+      digest_file = Pathname.new('db').join('schema_migrations', generator.migration_number.to_s).to_s
+      File.open(digest_file, 'w') { |f| f.write(digest) }
+
+      add_finalized_by_to_yaml(migration_yaml_file, generator.migration_number)
+
+      change.changed_files << digest_file
+      change.changed_files << migration_yaml_file
+
+      change
+    end
+
+    def initialize_change_details(change, migration, migration_record, job_name, last_migration_file)
+      # Finalize the migration
+      change.title = "Finalize BBM #{job_name}"
       change.description = change_description(migration_record, job_name, last_migration_file)
 
       feature_category = migration['feature_category']
@@ -83,8 +99,6 @@ module Keeps
         change.identifiers,
         fallback_feature_category: 'database'
       )
-
-      change
     end
 
     def change_description(migration_record, job_name, last_migration_file)

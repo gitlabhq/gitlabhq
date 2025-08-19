@@ -117,11 +117,11 @@ module Types
     }
     mount_mutation Mutations::Notes::AbuseReport::Create
     mount_mutation Mutations::Notes::AbuseReport::Update, experiment: { milestone: '17.5' }
-    mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true
+    mount_mutation Mutations::Notes::Create::Note, calls_gitaly: true, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Create::DiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::ImageDiffNote, calls_gitaly: true
     mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true
-    mount_mutation Mutations::Notes::Update::Note
+    mount_mutation Mutations::Notes::Update::Note, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::Notes::Update::ImageDiffNote
     mount_mutation Mutations::Notes::ConvertToThread
     mount_mutation Mutations::Notes::RepositionImageDiffNote
@@ -237,10 +237,10 @@ module Types
     mount_mutation Mutations::Packages::DestroyFiles
     mount_mutation Mutations::Packages::Cleanup::Policy::Update
     mount_mutation Mutations::Echo
-    mount_mutation Mutations::WorkItems::Create, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Create, experiment: { milestone: '15.1' }, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::WorkItems::CreateFromTask, experiment: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Delete, experiment: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::Update, experiment: { milestone: '15.1' }
+    mount_mutation Mutations::WorkItems::Update, experiment: { milestone: '15.1' }, scopes: [:api, :ai_workflows]
     mount_mutation Mutations::WorkItems::CSV::Export, experiment: { milestone: '15.10' }
     mount_mutation Mutations::WorkItems::CSV::Import, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::Convert, experiment: { milestone: '15.11' }
@@ -251,11 +251,14 @@ module Types
     mount_mutation Mutations::WorkItems::Hierarchy::AddChildrenItems, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::BulkUpdate, experiment: { milestone: '17.4' }
     mount_mutation Mutations::WorkItems::BulkMove, experiment: { milestone: '18.2' }
+    mount_mutation Mutations::WorkItems::Reorder, experiment: { milestone: '18.3' }
     mount_mutation Mutations::WorkItems::UserPreference::Update, experiment: { milestone: '17.10' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy
     mount_mutation Mutations::Pages::MarkOnboardingComplete
+    mount_mutation Mutations::Pages::SetPagesForceHttps
+    mount_mutation Mutations::Pages::SetPagesUseUniqueDomain
     mount_mutation Mutations::Uploads::Delete
     mount_mutation Mutations::Users::SetNamespaceCommitEmail
     mount_mutation Mutations::WorkItems::Subscribe, experiment: { milestone: '16.3' }

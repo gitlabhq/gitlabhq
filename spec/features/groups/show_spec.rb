@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group show page', feature_category: :groups_and_projects do
+RSpec.describe 'Group show page', :with_current_organization, feature_category: :groups_and_projects do
   include Features::InviteMembersModalHelpers
 
   let_it_be(:user) { create(:user) }
@@ -91,18 +91,43 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
         before do
           group.add_owner(user)
           sign_in(user)
+        end
+
+        subject(:page_content) do
           visit path
+          page
         end
 
         it 'shows `Create subgroup` link' do
           link = new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
-          expect(page).to have_link(s_('GroupsEmptyState|Create subgroup'), href: link)
+          expect(page_content).to have_link(s_('GroupsEmptyState|Create subgroup'), href: link)
         end
 
-        it 'shows `Create project` link' do
-          expect(page)
-            .to have_link(s_('GroupsEmptyState|Create project'), href: new_project_path(namespace_id: group.id))
+        context 'when current Organization does not have scoped paths' do
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(false)
+          end
+
+          it 'shows `Create project` link' do
+            expect(page_content)
+              .to have_link(s_('GroupsEmptyState|Create project'), href: new_project_path(namespace_id: group.id))
+          end
+        end
+
+        context 'when current Organization has scoped paths' do
+          before do
+            allow(current_organization).to receive(:scoped_paths?).and_return(true)
+          end
+
+          it 'shows `Create project` link' do
+            expected_path = new_organization_project_path(
+              namespace_id: group.id,
+              organization_path: current_organization.path
+            )
+            expect(page_content)
+              .to have_link(s_('GroupsEmptyState|Create project'), href: expected_path)
+          end
         end
       end
     end

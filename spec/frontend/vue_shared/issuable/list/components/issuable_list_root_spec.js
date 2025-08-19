@@ -1,4 +1,4 @@
-import { GlAlert, GlKeysetPagination, GlPagination, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueDraggable from 'vuedraggable';
@@ -8,10 +8,10 @@ import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import IssuableBulkEditSidebar from '~/vue_shared/issuable/list/components/issuable_bulk_edit_sidebar.vue';
-import IssuableGrid from '~/vue_shared/issuable/list/components/issuable_grid.vue';
 import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import IssuableListRoot from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import IssuableTabs from '~/vue_shared/issuable/list/components/issuable_tabs.vue';
+import ResourceListsLoadingStateList from '~/vue_shared/components/resource_lists/loading_state_list.vue';
 import { mockIssuableListProps } from '../mock_data';
 
 describe('IssuableListRoot component', () => {
@@ -23,11 +23,12 @@ describe('IssuableListRoot component', () => {
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findGlKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
-  const findIssuableGrid = () => wrapper.findComponent(IssuableGrid);
   const findIssuableItem = () => wrapper.findComponent(IssuableItem);
   const findIssuableTabs = () => wrapper.findComponent(IssuableTabs);
   const findPageSizeSelector = () => wrapper.findComponent(PageSizeSelector);
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
+  const findResourceListsLoadingStateList = () =>
+    wrapper.findComponent(ResourceListsLoadingStateList);
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(IssuableListRoot, {
@@ -149,10 +150,11 @@ describe('IssuableListRoot component', () => {
     expect(wrapper.findComponent(IssuableBulkEditSidebar).exists()).toBe(true);
   });
 
-  it('renders skeleton loader when in loading state', () => {
+  it('renders loading state component when in loading state', () => {
     createComponent({ issuablesLoading: true });
 
-    expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(
+    expect(findResourceListsLoadingStateList().exists()).toBe(true);
+    expect(findResourceListsLoadingStateList().props('listLength')).toBe(
       mockIssuableListProps.issuables.length,
     );
   });
@@ -247,12 +249,6 @@ describe('IssuableListRoot component', () => {
 
       expect(wrapper.emitted('select-issuable')).toEqual([[issuable]]);
     });
-  });
-
-  it('renders IssuableGrid component when in grid view context', () => {
-    createComponent({ isGridView: true });
-
-    expect(findIssuableGrid().exists()).toBe(true);
   });
 
   it('renders contents for slot "empty-state" when there are no issuables', () => {

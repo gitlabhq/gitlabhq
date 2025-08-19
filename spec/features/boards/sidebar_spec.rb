@@ -41,7 +41,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
       wait_for_requests
     end
 
-    it_behaves_like 'work item drawer'
+    it_behaves_like 'work item drawer on the boards'
   end
 
   def first_card

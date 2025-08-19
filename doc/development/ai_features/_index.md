@@ -25,6 +25,12 @@ to install the AI gateway with GDK.
 
 ### Required: Run `gitlab:duo:setup` script
 
+{{< alert type="note" >}}
+Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
+For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
+
+{{< /alert >}}
+
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
 
 **How**:
@@ -260,7 +266,7 @@ B --> C[Llm::ExecuteMethodService]
 C --> D[One of services, for example: Llm::GenerateSummaryService]
 D -->|scheduled| E[AI worker:Llm::CompletionWorker]
 E -->F[::Gitlab::Llm::Completions::Factory]
-F -->G[`::Gitlab::Llm::VertexAi::Completions::...` class using `::Gitlab::Llm::Templates::...` class]
+F -->G[#96;::Gitlab::Llm::VertexAi::Completions::...#96; class using #96;::Gitlab::Llm::Templates::...#96; class]
 G -->|calling| H[Gitlab::Llm::VertexAi::Client]
 H --> |response| I[::Gitlab::Llm::GraphqlSubscriptionResponseService]
 I --> J[GraphqlTriggers.ai_completion_response]

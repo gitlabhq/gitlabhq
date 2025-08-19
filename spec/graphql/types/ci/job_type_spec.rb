@@ -40,6 +40,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       refName
       refPath
       retryable
+      retryPath
       retried
       runner
       runnerManager
@@ -83,6 +84,29 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
 
     context 'when the job is a bridge' do
       let(:job) { create(:ci_bridge, project: project, user: user) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '#retry_path' do
+    subject { resolve_field(:retry_path, job, current_user: user, object_type: described_class) }
+
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:user) { create(:user) }
+
+    context 'when the build is retryable' do
+      let_it_be(:job) { create(:ci_build, :retryable, project: project) }
+
+      it 'returns the retry path for the job' do
+        is_expected.to eq("/#{project.full_path}/-/jobs/#{job.id}/retry")
+      end
+    end
+
+    context 'when the build is not retryable' do
+      let_it_be(:job) { create(:ci_build, project: project) }
 
       it 'returns nil' do
         is_expected.to be_nil

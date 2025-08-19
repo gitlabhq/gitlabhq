@@ -1,9 +1,10 @@
 <!-- Use this template as a starting point for deprecations. -->
-<!-- For guidance on the overall deprecations, removals and breaking changes workflow, please visit [Breaking changes, deprecations, and removing features](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes). -->
+<!-- For guidance on the overall deprecations, removals and breaking changes workflow, please visit [Breaking changes, deprecations, and removing features](https://docs.gitlab.com/development/deprecation_guidelines/). -->
 
 **A written process alone is unlikely to be sufficient to navigate through the complexity of how customers use GitLab. Please use this template as guidance with steps to take when deprecating GitLab functionality, but not as an exhaustive list designed to generate positive outcomes every time. Deprecations are often nuanced in their impact and the approach needed may not be fully covered in this template. Each team must be accountable for their deprecation, weighing the positives and negatives to ensure we prioritize results for customers.**
 
 ---
+Only create this issue once you have received leadership approval on your breaking change request, as outlined [here](https://docs.gitlab.com/development/deprecation_guidelines/).
 
 ### Deprecation Summary
 
@@ -23,9 +24,6 @@ _Describe why deprecation of this feature is necessary, ideally with dashboards/
 <!--
 The description of the deprecation should state what actions the user should take to rectify the behavior. If the deprecation is scheduled for an upcoming release, the content should remain in the deprecations documentation page until it has been completed. For example, if a deprecation is announced in 14.9 and scheduled to be completed in 15.0, the same content would be included in the documentation for 14.9, 14.10, and 15.0.
 
-**If this issue proposes a breaking change outside a major release XX.0, you need to get approval from your manager and request collaboration from Product Operations on communication. Be sure to follow the guidance**:
-
-- https://docs.gitlab.com/ee/development/deprecation_guidelines/#requesting-a-breaking-change-in-a-minor-release
 -->
 
 ### Breaking Change?
@@ -36,12 +34,6 @@ Does this deprecation contain a breaking change? ```Yes / No```
 <!-- If yes:
 - Add the ~"breaking change" label to this issue.
 - Add instructions for how users can update their workflow.
-- After creating this issue, add an Internal Note in the comments below to document the pros and cons of this change and why we are choosing to make a breaking change. Answer the following: 
-   - What migration paths are available?
-   - Describe tradeoffs between the migration paths taking into account customer, financial, technical or operational impact?
-   - Are there different migration path options for different users? (ex. available for ultimate users, but not free users?)
-   - Are there external requirements that we need to meet that restrict our available options?
-   - Consider the information you will also be adding in the "Affected Customers" section - this will impact how you plan for migration alternatives.
  -->
 
 <!--
@@ -69,24 +61,6 @@ What pricing tiers are impacted?
 /label  ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
  -->
 
-[ ] Internal note outlining details of customer impact has been created 
-
-<!--
-After creating the issue, add an Internal Note to discuss customer impact, using this template:
-
-| Tier     | Number of Customers Impacted |
-| -------- | ---------------------------- |
-| Free     |              (number)                |
-| Premium  |              (number)                |
-| Ultimate |              (number)                |
-| Notable Customers | Document how many notable / critical customers are on the impacted customer list. If this is not known, please document that. |
-
-Do your homework on the data - if you don’t have access to the right customer data, find someone who does. Your counterpart from the product data analytics team can likely help you; reach out to your manager if you are unable to answer this question.
-
-A notable customer is one that may have a large revenue or reputational impact for GitLab - there aren't firm guidelines about what would make a customer notable or not. Consult with your manager if you need input on this.
-
-Get customer feedback, if possible, and document the insights from customer conversations.
--->
 
 ### Deprecation Milestone
 
@@ -133,18 +107,13 @@ issues that were created ahead of time, and the MRs doing the actual deprecation
 
 An internal slack post and a release post are not sufficient notification for our customers or internal stakeholders. Plan to communicate proactively and directly with affected customers and the internal stakeholders supporting them.
 
-Internal Communication Plan
-- [ ] Create an internal note in the comment thread of this issue with a comprehensive narrative of customer impacts, with the intended audience of internal stakeholders who directly interact with customers. 
-  - Consider: what will the CSM / AE / SA teams need to tell their customers? What will they want to know about customer sentiment and impact?
-  - If customers must take an action, include in this internal note the following information: what action is needed, the steps they can take to complete it, the due date for that action, and the consequences of not completing the action in time. 
-- [ ] Internal announcement plan (timeline for notifications, audience, channels, etc)
-- [ ] Support and enablement plan
-  - Support readiness: Document how the support team should handle tickets related to this deprecation / breaking change.
-  - Customer Success readiness: Ensure the CS team knows how to bring questions or concerns from clients to the right internal team members.
+**Internal Communication Plan**
+This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
+- [ ] [Support Preparedness issue](https://gitlab.com/gitlab-com/support/support-team-meta/-/blob/master/.gitlab/issue_templates/Support%20Preparedness.md?ref_type=heads) created
+- [ ] Guidance for Engineering, Product, Security, Customer Success, and Sales created
 
-
-
-External Communication Plan
+**External Communication Plan**
+This will have been documented in your [breaking change request](https://gitlab.com/gitlab-com/Product/-/issues/new?issuable_template=Breaking-Change-Exception). You can use this checklist to track completion of these items.
 - [ ] Customer announcement plan (timeline for notifications, audience, channels, etc)
 - [ ] Ensure you have approvals from legal and corp comms for any communication being sent directly to customers.
 - [ ] As soon as possible, but no later than the third milestone preceding the major release, ensure that the following are complete (for example, given the following release schedule: `17.8, 17.9, 17.10, 17.11, 18.0` – `17.9` is the third milestone preceding the major release). 
@@ -177,16 +146,6 @@ External Communication Plan
    - [ ] _add issue link_
 - [ ] (Optional) Create UI controls for instance admins to disable the breaking change, providing flexibility to Self-Managed / Dedicated customers. Optional as this depends on the breaking change.
    - [ ] _add issue link_
-
-#### Approvals
-
-- [ ] Product Manager `@PM`
-- [ ] Engineering Manager `@EM`
-- [ ] Senior Engineering Manager / Director `@senior-eng-leader`
-- [ ] Group / Director of Product Management `@senior-product-leader`
-- [ ] Product / Eng Leaders in the `CPO` or `CTO` organizations, as applicable (optional - depends on scope of change)
-
-Keep in mind that approval check boxes and deprecations notices alone are not sufficient communication about breaking changes. Despite having approvals documented here, the PM/EM will still need to take active steps to partner with internal stakeholders and customers to ensure a positive user experience.
 
 #### Stakeholder Mentions
 

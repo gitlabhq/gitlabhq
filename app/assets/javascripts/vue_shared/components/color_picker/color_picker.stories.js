@@ -15,6 +15,7 @@ const makeStory = ({ props } = {}) => {
 
   Story.args = {
     ...Object.fromEntries(Object.keys(ColorPicker.props).map((prop) => [prop, propDefault(prop)])),
+    label: 'Select a color',
     suggestedColors: {},
     ...props,
   };
@@ -33,5 +34,5 @@ export const InvalidState = makeStory({
 
 export default {
   component: ColorPicker,
-  title: 'vue_shared/components/color_picker',
+  title: 'vue_shared/color_picker',
 };

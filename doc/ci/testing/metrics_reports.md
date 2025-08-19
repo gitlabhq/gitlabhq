@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Metrics Reports
+title: Metrics reports
 ---
 
 {{< details >}}
@@ -12,63 +12,80 @@ title: Metrics Reports
 
 {{< /details >}}
 
-GitLab provides a lot of great reporting tools for things like [merge requests](../../user/project/merge_requests/_index.md) - [Unit test reports](unit_test_reports.md), [code quality](code_quality.md), and performance tests. While JUnit is a great open framework for tests that "pass" or "fail", it is also important to see other types of metrics from a given change.
+Metrics reports display custom metrics in merge requests to track performance,
+memory usage, and other measurements between branches.
 
-You can configure your job to use custom Metrics Reports, and GitLab displays a report on the merge request so that it's easier and faster to identify changes without having to check the entire log.
+Use metrics reports to:
 
-![Metrics Reports](img/metrics_reports_v13_0.png)
-
-## Use cases
-
-Consider the following examples of data that can use Metrics Reports:
-
-1. Memory usage
-1. Load testing results
-1. Code complexity
-1. Code coverage stats
+- Monitor memory usage changes.
+- Track load testing results.
+- Measure code complexity.
+- Compare code coverage statistics.
 
 ## Metrics processing workflow
 
-Metrics for a branch are read from the latest metrics report artifact (default filename: `metrics.txt`) as string values.
+When a pipeline runs, GitLab reads metrics from the report artifact and stores them as string values
+for comparison. The default filename is `metrics.txt`.
 
-For an MR, the values of these metrics from the feature branch are compared to the values from the target branch. Then they are displayed in the MR widget in this order:
+For a merge request, GitLab compares the metrics from the feature branch to the values from the target
+branch and displays them in the merge request widget in this order:
 
 - Existing metrics with changed values.
-- Metrics that have been added by the MR. Marked with a **New** badge.
-- Metrics that have been removed by the MR. Marked with a **Removed** badge.
+- Metrics added by the merge request (marked with a **New** badge).
+- Metrics removed by the merge request (marked with a **Removed** badge).
 - Existing metrics with unchanged values.
 
-## How to set it up
+## Configure metrics reports
 
-Add a job that creates a [metrics report](../yaml/artifacts_reports.md#artifactsreportsmetrics) (default filename: `metrics.txt`). The file should conform to the [OpenMetrics](https://openmetrics.io/) format.
+Add metrics reports to your CI/CD pipeline to track custom metrics in merge requests.
+
+Prerequisites:
+
+- The metrics file must use the [OpenMetrics](https://prometheus.io/docs/instrumenting/exposition_formats/#openmetrics-text-format) text format.
+
+To configure metrics reports:
+
+1. In your `.gitlab-ci.yml` file, add a job that generates a metrics report.
+1. Add a script to the job that generates metrics in OpenMetrics format.
+1. Configure the job to upload the metrics file with [`artifacts:reports:metrics`](../yaml/artifacts_reports.md#artifactsreportsmetrics).
 
 For example:
 
 ```yaml
 metrics:
+  stage: test
   script:
-    - echo 'metric_name metric_value' > metrics.txt
+    - echo 'memory_usage_bytes 2621440' > metrics.txt
+    - echo 'response_time_seconds 0.234' >> metrics.txt
+    - echo 'test_coverage_percent 87.5' >> metrics.txt
+    - echo '# EOF' >> metrics.txt
   artifacts:
     reports:
       metrics: metrics.txt
 ```
 
-## Advanced Example
+After the pipeline runs, the metrics reports display in the merge request widget.
 
-For OpenMetrics text format specifications and examples, see the
-[Prometheus documentation](https://prometheus.io/docs/instrumenting/exposition_formats/#text-format-example).
+![Metrics report widget in a merge request displaying metric names and values.](img/metrics_report_v18_3.png)
 
-Metrics display in the merge request widget as:
-
-![Metrics Reports Advanced](img/metrics_reports_advanced_v13_0.png)
+For additional format specifications and examples, see
+[Prometheus text format details](https://prometheus.io/docs/instrumenting/exposition_formats/#text-format-details).
 
 ## Troubleshooting
 
+When working with metrics reports, you might encounter the following issues.
+
 ### Metrics reports did not change
 
-You can see `Metrics reports did not change` when trying to view metrics reports in merge requests. Reasons for this are:
+You might see **Metrics report scanning detected no new changes** when viewing metrics reports in merge requests.
 
-- The target branch for the merge request doesn't have a baseline metrics report for comparison.
-- You don't have a paid subscription.
+This issue occurs when:
 
-There is [an issue open](https://gitlab.com/gitlab-org/gitlab/-/issues/343065) to improve this message.
+- The target branch doesn't have a baseline metrics report for comparison.
+- Your GitLab subscription doesn't include metrics reports (Premium or Ultimate required).
+
+To resolve this issue:
+
+1. Verify your GitLab subscription tier includes metrics reports.
+1. Ensure the target branch has a pipeline with metrics reports configured.
+1. Verify that your metrics file uses valid OpenMetrics format.

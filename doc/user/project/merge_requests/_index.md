@@ -51,8 +51,8 @@ GitLab checks these locations in order from 1 to 5, and applies the first templa
 found to your merge request:
 
 | Name | Project UI<br>setting | Group<br>`default.md` | Instance<br>`default.md` | Project<br>`default.md` | No template |
-| :-- | :--: | :--: | :--: | :--: | :--: |
-| Standard commit message | 1 | 2 | 3 | 4 | 5 |
+|:-----|:---------------------:|:---------------------:|:------------------------:|:-----------------------:|:-----------:|
+| Standard commit message | 1  |           2           |            3             |            4            |      5      |
 | Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
 | Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-a-number), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 

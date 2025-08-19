@@ -59,11 +59,6 @@ export default {
       required: false,
       default: () => [],
     },
-    infoText: {
-      type: [String, Boolean],
-      required: false,
-      default: false,
-    },
     hasIssues: {
       type: Boolean,
       required: true,

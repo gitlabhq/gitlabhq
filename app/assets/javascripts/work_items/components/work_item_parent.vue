@@ -175,7 +175,7 @@ export default {
         return !this.searchStarted && !this.allowedChildTypes?.length;
       },
       update(data) {
-        return data.workspace.workItems.nodes.filter((wi) => this.workItemId !== wi.id) || [];
+        return data.workspace?.workItems?.nodes?.filter((wi) => this.workItemId !== wi.id) || [];
       },
       error() {
         this.$emit(
@@ -237,14 +237,12 @@ export default {
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
           this.$emit('updateWidgetDraft', {
-            fullPath: this.fullPath,
             parent: this.isSelectedParentAvailable
               ? {
                   ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
                   webUrl: this.parentWebUrl ?? null,
                 }
               : null,
-            workItemType: this.workItemType,
           });
 
           this.searchStarted = false;
@@ -329,7 +327,7 @@ export default {
     :update-in-progress="updateInProgress"
     :reset-button-label="s__('WorkItem|Clear')"
     :toggle-dropdown-text="listboxText"
-    :search-placeholder="s__('WorkItem|Search or paste URL')"
+    :search-placeholder="s__('WorkItem|Search or enter URL')"
     data-testid="work-item-parent"
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"

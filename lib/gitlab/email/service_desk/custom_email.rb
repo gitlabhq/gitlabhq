@@ -7,8 +7,8 @@ module Gitlab
       # support all features and methods of ingestable email addresses like
       # incoming_email and service_desk_email.
       module CustomEmail
-        REPLY_ADDRESS_KEY_REGEXP = /\+([0-9a-f]{32})@/
         EMAIL_REGEXP_WITH_ANCHORS = /\A(?>[a-zA-Z0-9]+|[\-._]+){1,255}@[\w\-.]{1,255}\.{1}[a-zA-Z]{2,63}\z/
+        REPLY_ADDRESS_KEY_REGEXP = /\+(?<full_reply_key>#{::SentNotification::FULL_REPLY_KEY_REGEX})@/
 
         class << self
           def reply_address(issue, reply_key)
@@ -26,7 +26,7 @@ module Gitlab
             match_data = REPLY_ADDRESS_KEY_REGEXP.match(email)
             return unless match_data
 
-            key = match_data[1]
+            key = match_data[:full_reply_key]
 
             settings = find_service_desk_setting_from_reply_address(email, key)
             # We intentionally don't check whether custom email is enabled

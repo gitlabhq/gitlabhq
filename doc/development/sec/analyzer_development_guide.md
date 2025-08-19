@@ -363,7 +363,7 @@ This process applies to the following groups:
 - [Static Analysis (SAST)](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/static-analysis)
 - [Secret Detection](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/secret-detection)
 
-Other groups are reponsible for documenting their own major version release process.
+Other groups are responsible for documenting their own major version release process.
 
 Choose one of the following scenarios based on whether the major version release contains breaking changes:
 
@@ -820,4 +820,14 @@ This issue will guide you through the whole release process. In general, you hav
 
 All dependencies and upstream scanners (if any) used in the analyzer source are updated on a monthly cadence which primarily includes security fixes and non-breaking changes.
 
-- Static Analysis team uses a custom internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of all the SAST analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among Static Analysis team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
+##### SAST and Secret Detection
+
+SAST and Secret Detection teams use an internal tool ([SastBot](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation)) to automate dependency management of SAST and Pipeline-based Secret Detection analyzers. SastBot generates MRs on the **8th of each month** and distributes their assignment among team members to take them forward for review. For details on the process, see [Dependency Update Automation](https://gitlab.com/gitlab-org/security-products/analyzers/sast-analyzer-deps-bot#dependency-update-automation).
+
+SastBot requires different access tokens for each job. It uses the `DEP_GITLAB_TOKEN` environment variable to retrieve the token when running scheduled pipeline jobs.
+
+| Scheduled Pipeline | Token Source | Role | Scope | `DEP_GITLAB_TOKEN` Token Configuration Location | Token Expiry |
+|--------------------|--------------|------|-------|-------------------------------------------------|--------------|
+| `Merge Request Metadata Update` | [`security-products/analyzers`](https://gitlab.com/gitlab-org/security-products/analyzers) group | `developer` | `api` | Settings \> CI/CI Variables section (Masked, Protected, Hidden) | `Jul 25, 2026` |
+| `Release Issue Creation` | [`security-products/release`](https://gitlab.com/gitlab-org/security-products/release) project | `planner` | `api` | Configuration section of the scheduled pipeline job | `Jul 28, 2026` |
+| Analyzers | [`sast-bot`](https://gitlab.com/gitlab-org/security-products/analyzers/sast-bot) group | `developer` | `api` | Configuration section of the scheduled pipeline job | `Jul 28, 2026` |

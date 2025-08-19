@@ -27,7 +27,7 @@ module Resolvers
       def resolve(id: nil, sha: nil)
         version = cutoff(id, sha)
 
-        raise ::Gitlab::Graphql::Errors::ResourceNotAvailable, 'cutoff not found' unless version.present?
+        raise_resource_not_available_error! 'cutoff not found' unless version.present?
 
         if version == :unconstrained
           find

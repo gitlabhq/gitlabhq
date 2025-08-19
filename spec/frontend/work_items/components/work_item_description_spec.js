@@ -15,17 +15,21 @@ import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_it
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
+import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
-import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
+import { autocompleteDataSources, newWorkItemId } from '~/work_items/utils';
 import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
+  namespacePathsQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
 jest.mock('~/lib/utils/autosave');
+
+const { markdownPaths } = namespacePathsQueryResponse.data.namespace;
 
 describe('WorkItemDescription', () => {
   let wrapper;
@@ -77,6 +81,8 @@ describe('WorkItemDescription', () => {
     .fn()
     .mockResolvedValue(mockWorkspacePermissionsResponse);
 
+  const mockNamespacePathsHandler = jest.fn().mockResolvedValue(namespacePathsQueryResponse);
+
   const mockFullPath = 'test-project-path';
 
   const createComponent = async ({
@@ -110,6 +116,7 @@ describe('WorkItemDescription', () => {
         [updateWorkItemMutation, mutationHandler],
         [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
         [projectPermissionsQuery, workspacePermissionsHandler],
+        [namespacePathsQuery, mockNamespacePathsHandler],
       ]),
       propsData: {
         fullPath,
@@ -158,8 +165,8 @@ describe('WorkItemDescription', () => {
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
-        renderMarkdownPath: markdownPreviewPath({ fullPath, iid }),
-        autocompleteDataSources: autocompleteDataSources({ fullPath, iid }),
+        renderMarkdownPath: markdownPaths.markdownPreviewPath,
+        autocompleteDataSources: autocompleteDataSources({ fullPath, iid, markdownPaths }),
       });
     });
 
@@ -197,11 +204,12 @@ describe('WorkItemDescription', () => {
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
-        renderMarkdownPath: markdownPreviewPath({ fullPath, iid, isGroup: true }),
+        renderMarkdownPath: markdownPaths.markdownPreviewPath,
         autocompleteDataSources: autocompleteDataSources({
           fullPath,
           iid,
           isGroup: true,
+          markdownPaths,
         }),
       });
     });
@@ -248,16 +256,13 @@ describe('WorkItemDescription', () => {
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
-        renderMarkdownPath: markdownPreviewPath({
-          fullPath,
-          iid: NEW_WORK_ITEM_IID,
-          isGroup: true,
-        }),
+        renderMarkdownPath: markdownPaths.markdownPreviewPath,
         autocompleteDataSources: autocompleteDataSources({
           fullPath,
           iid: NEW_WORK_ITEM_IID,
           isGroup: true,
           workItemTypeId: 'gid://gitlab/WorkItems::Type/5',
+          markdownPaths,
         }),
       });
     });
@@ -361,24 +366,35 @@ describe('WorkItemDescription', () => {
   });
 
   describe('when edit mode is active', () => {
-    it('shows markdown editor in edit mode only when the correct props are passed', () => {
+    it('does not show markdown editor while markdown paths are loading', () => {
       createComponent({ editMode: true });
+
+      expect(findMarkdownEditor().exists()).toBe(false);
+    });
+
+    it('shows markdown editor in edit mode only when the correct props are passed', async () => {
+      createComponent({ editMode: true });
+      await waitForPromises();
 
       expect(findMarkdownEditor().exists()).toBe(true);
     });
 
-    it('emits the `updateDraft` event when the description is updated', () => {
+    it('emits the `updateDraft` event when the description is updated', async () => {
       createComponent({ editMode: true });
       const updatedDesc = 'updated desc with inline editing disabled';
+
+      await waitForPromises();
 
       findMarkdownEditor().vm.$emit('input', updatedDesc);
 
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
     });
 
-    it('does not emit the `updateDraft` event when the description is updated from mounted hook of markdown-editor', () => {
+    it('does not emit the `updateDraft` event when the description is updated from mounted hook of markdown-editor', async () => {
       createComponent({ editMode: true, isCreateFlow: true });
       const updatedDesc = 'updated desc with inline editing disabled';
+
+      await waitForPromises();
 
       findMarkdownEditor().vm.$emit('input', updatedDesc, true);
 

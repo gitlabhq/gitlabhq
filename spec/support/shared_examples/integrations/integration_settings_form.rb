@@ -71,7 +71,10 @@ RSpec.shared_examples 'integration settings form' do
 
   # Fields that have specific handling on the frontend
   def exclude_field?(integration, field)
-    integration.is_a?(Integrations::Jira) && field[:name] == 'jira_auth_type'
+    integration.is_a?(Integrations::Jira) && %w[
+      jira_auth_type jira_check_enabled jira_exists_check_enabled
+      jira_assignee_check_enabled jira_status_check_enabled jira_allowed_statuses_as_string
+    ].include?(field[:name])
   end
 
   # Some integrations are only editable when active, otherwise their fields are disabled

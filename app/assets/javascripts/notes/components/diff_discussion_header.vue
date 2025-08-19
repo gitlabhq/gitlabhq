@@ -36,20 +36,11 @@ export default {
     firstNote() {
       return this.notes[0];
     },
-    lastNote() {
-      return this.notes[this.notes.length - 1];
-    },
     author() {
       return this.firstNote.author;
     },
     resolvedText() {
       return this.discussion.resolved_by_push ? __('Automatically resolved') : __('Resolved');
-    },
-    lastUpdatedBy() {
-      return this.notes.length > 1 ? this.lastNote.author : null;
-    },
-    lastUpdatedAt() {
-      return this.notes.length > 1 ? this.lastNote.created_at : null;
     },
     headerText() {
       const linkStart = `<a href="${escape(this.discussion.discussion_path)}">`;

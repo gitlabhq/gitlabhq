@@ -26,10 +26,10 @@ Documentation is not typically required when a **backend feature** is added or c
 
 ## Pipelines and branch naming
 
-The [CI/CD pipelines for the `gitlab` and `gitlab-runner` projects](../pipelines/_index.md) are configured to
+The CI/CD pipelines for the `gitlab` and `gitlab-runner` projects are configured to
 run shorter, faster pipelines on merge requests that contain only documentation changes.
 
-If you submit documentation-only changes to Omnibus, Charts, or Operator,
+If you submit documentation-only changes to `omnibus-gitlab`, `charts/gitlab`, or `gitlab-operator`,
 to make the shorter pipeline run, you must follow these guidelines when naming your branch:
 
 | Branch name           | Valid example                |
@@ -48,6 +48,10 @@ When you edit these pages, the long pipeline appears the same as in a code MR,
 but you do not need any additional approvals. If the `pre-merge-checks` job fails on merge with a
 `Expected latest pipeline (link) to be a tier-3 pipeline!` message, add the `~"pipeline::tier-3"`
 label to the MR and run a new pipeline.
+
+If your merge requests include any code changes, long pipelines are run for them.
+
+For more information on long pipelines, see [pipelines for the GitLab project](../pipelines/_index.md).
 
 ## Moving content
 

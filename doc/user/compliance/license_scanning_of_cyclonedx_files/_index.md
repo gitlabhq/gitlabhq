@@ -234,8 +234,13 @@ CycloneDX reports for licenses. For more information, see the offline [quick sta
 
 ## Use CycloneDX report as a source of license information
 
-The ability to use a CI report artifact as a source of license information data was introduced in GitLab 17.5 behind the feature flag `license_scanning_with_sbom_licenses` and enabled by default in 17.6.
-In GitLab 17.8 the feature flag `license_scanning_with_sbom_licenses` was removed.
+{{< history >}}
+
+- Introduced in GitLab 17.5 [with a flag](../../../administration/feature_flags/_index.md) named `license_scanning_with_sbom_licenses`. Disabled by default.
+- Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.6.
+- Generally available in GitLab 17.8. Feature flag `license_scanning_with_sbom_licenses` removed.
+
+{{< /history >}}
 
 The License Scanning uses the [licenses](https://cyclonedx.org/use-cases/#license-compliance) field of the CycloneDX JSON SBOM when available. If the license information is unavailable, the license information imported from the external license database will be used(current behavior).
 License information can be provided using a valid SPDX identifier or a license name. However, providing a license using an SPDX License Expression is not supported.
@@ -244,6 +249,24 @@ More information about the license field format can be found on the [CycloneDX](
 Compatible CycloneDX SBOM generators that provide the licenses field can be found in the [CycloneDX Tool Center](https://cyclonedx.org/tool-center/).
 
 Only licenses providing an SPDX identifier are currently supported. Extending this feature beyond SDPX licenses is tracked in [issue 505677](https://gitlab.com/gitlab-org/gitlab/-/issues/505677).
+
+### Configure license information source
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501662) in GitLab 18.3.
+
+{{< /history >}}
+
+Choose which license information source to use when both are available.
+
+To configure the preferred source of license information for a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure** > **Security configuration**.
+1. In the **License information source** section, select either:
+   - **SBOM** (default) - Uses license information from CycloneDX reports.
+   - **PMDB** - Uses license information from the external license database.
 
 ## Troubleshooting
 

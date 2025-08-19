@@ -5,7 +5,6 @@ require 'spec_helper'
 RSpec.describe Noteable, feature_category: :code_review_workflow do
   let!(:active_diff_note1) { create(:diff_note_on_merge_request) }
   let(:project) { active_diff_note1.project }
-  subject { active_diff_note1.noteable }
 
   let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: subject, in_reply_to: active_diff_note1) }
   let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: subject, position: active_position2) }
@@ -42,6 +41,8 @@ RSpec.describe Noteable, feature_category: :code_review_workflow do
       diff_refs: project.commit('874797c3a73b60d2187ed6e2fcabd289ff75171e').diff_refs
     )
   end
+
+  subject { active_diff_note1.noteable }
 
   describe '#discussions' do
     let(:discussions) { subject.discussions }

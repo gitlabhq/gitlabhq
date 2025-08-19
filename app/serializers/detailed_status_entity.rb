@@ -38,7 +38,11 @@ class DetailedStatusEntity < Grape::Entity
     Gitlab::Favicon.ci_status_overlay(status.favicon)
   end
 
-  expose :action, if: ->(status, _) { status.has_action? } do
+  expose :action, if: ->(status, options) {
+    return false if options[:disable_stage_actions] && status&.subject.is_a?(Ci::Stage)
+
+    status&.has_action?
+  } do
     expose :action_icon, as: :icon, documentation: { type: 'string', example: 'cancel' }
     expose :action_title, as: :title, documentation: { type: 'string', example: 'Cancel' }
     expose :action_path, as: :path, documentation: { type: 'string', example: '/namespace1/project1/-/jobs/2/cancel' }

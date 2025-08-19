@@ -14,6 +14,9 @@ describe('Pipeline operations', () => {
     pipeline: {
       id: 329,
       iid: 234,
+      project: {
+        full_path: 'root/ci-project',
+      },
       details: {
         has_manual_actions: true,
         has_scheduled_actions: false,
@@ -26,7 +29,6 @@ describe('Pipeline operations', () => {
       retry_path: '/root/ci-project/-/pipelines/329/retry',
     },
   };
-
   const createComponent = (props = defaultProps) => {
     wrapper = shallowMountExtended(PipelineOperations, {
       propsData: {

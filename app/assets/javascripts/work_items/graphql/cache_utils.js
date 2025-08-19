@@ -308,13 +308,19 @@ export const getNewWorkItemSharedCache = ({
   workItemAttributesWrapperOrder,
   widgetDefinitions,
   fullPath,
+  context,
   workItemType,
   relatedItemId,
   isValidWorkItemDescription,
   workItemDescription = '',
 }) => {
-  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({ fullPath, relatedItemId });
-  const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType, relatedItemId });
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({ fullPath, context, relatedItemId });
+  const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
+    fullPath,
+    context,
+    workItemType,
+    relatedItemId,
+  });
   const workItemTypeSpecificWidgets =
     getWorkItemWidgets(JSON.parse(getDraft(fullDraftAutosaveKey))) || {};
   const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
@@ -612,6 +618,7 @@ export const getNewWorkItemSharedCache = ({
 
 export const setNewWorkItemCache = async ({
   fullPath,
+  context,
   widgetDefinitions,
   workItemType,
   workItemTypeId,
@@ -650,7 +657,7 @@ export const setNewWorkItemCache = async ({
   const isValidWorkItemTitle = workItemTitle.trim().length > 0;
   const isValidWorkItemDescription = workItemDescription.trim().length > 0;
 
-  const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType, relatedItemId });
+  const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, context, workItemType, relatedItemId });
   const getStorageDraftString = getDraft(autosaveKey);
 
   const draftData = JSON.parse(getDraft(autosaveKey));
@@ -660,6 +667,7 @@ export const setNewWorkItemCache = async ({
     workItemAttributesWrapperOrder,
     widgetDefinitions,
     fullPath,
+    context,
     workItemType,
     isValidWorkItemDescription,
     workItemDescription,
@@ -724,6 +732,7 @@ export const setNewWorkItemCache = async ({
           movedToWorkItemUrl: null,
           duplicatedToWorkItemUrl: null,
           promotedToEpicUrl: null,
+          showPlanUpgradePromotion: false,
           project: null,
           namespace: {
             id: newWorkItemPath,

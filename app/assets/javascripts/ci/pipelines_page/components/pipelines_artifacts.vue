@@ -24,10 +24,6 @@ export default {
     },
   },
   props: {
-    pipelineId: {
-      type: Number,
-      required: true,
-    },
     artifacts: {
       type: Array,
       required: false,
@@ -74,7 +70,7 @@ export default {
 
 <style scoped>
 /* TODO: Use max-height prop when gitlab-ui got updated.
-See https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2374 */
+See https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2472 */
 ::v-deep .gl-new-dropdown-inner {
   max-height: 310px !important;
 }

@@ -223,5 +223,29 @@ RSpec.describe Discussions::UpdateDiffPositionService, feature_category: :code_r
         include_examples 'outdated diff note'
       end
     end
+
+    context 'when position tracer returns nil for outdated discussion' do
+      let(:line) { 9 }
+      let(:tracer_double) { instance_double(Gitlab::Diff::PositionTracer) }
+
+      before do
+        allow(Gitlab::Diff::PositionTracer).to receive(:new).and_return(tracer_double)
+        allow(tracer_double).to receive(:trace).and_return({ position: nil, outdated: true })
+      end
+
+      it "doesn't update the position" do
+        subject.execute(discussion)
+
+        expect(discussion.original_position).to eq(old_position)
+        expect(discussion.position).to eq(old_position)
+      end
+
+      it 'creates a system discussion' do
+        expect(SystemNoteService).to receive(:diff_discussion_outdated).with(
+          discussion, project, current_user, nil)
+
+        subject.execute(discussion)
+      end
+    end
   end
 end

@@ -120,7 +120,7 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
 
       context 'when feature is not available' do
         before do
-          stub_feature_flags(import_export_work_items_csv: false)
+          stub_feature_flags(work_items_project_issues_list: false)
         end
 
         it_behaves_like 'response with 404 status'

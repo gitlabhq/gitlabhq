@@ -30,8 +30,10 @@ module WorkItems
 
       items = by_widgets(items)
       items = by_timeframe(items, with_namespace_cte: with_namespace_cte)
+      items = by_work_item_parent_ids(items)
+      items = by_negated_work_item_parent_ids(items)
 
-      by_work_item_parent_ids(items)
+      by_parent_wildcard_id(items)
     end
 
     def by_widgets(items)
@@ -57,7 +59,35 @@ module WorkItems
 
       return items unless work_item_parent_ids.present?
 
-      items.with_work_item_parent_ids(work_item_parent_ids)
+      parent_ids = if params[:include_descendant_work_items]
+                     ::Gitlab::WorkItems::WorkItemHierarchy.new(WorkItem.id_in(work_item_parent_ids))
+                                                           .base_and_descendants
+                                                           .select(:id)
+                   else
+                     work_item_parent_ids
+                   end
+
+      items.with_work_item_parent_ids(parent_ids)
+    end
+
+    def by_negated_work_item_parent_ids(items)
+      not_work_item_parent_ids = not_params[:work_item_parent_ids]
+      return items unless not_work_item_parent_ids.present?
+
+      items.not_in_parent_ids(not_work_item_parent_ids)
+    end
+
+    def by_parent_wildcard_id(items)
+      wildcard = params[:parent_wildcard_id]&.to_s&.downcase
+
+      case wildcard
+      when ::IssuableFinder::Params::FILTER_NONE
+        items.no_parent
+      when ::IssuableFinder::Params::FILTER_ANY
+        items.any_parent
+      else
+        items
+      end
     end
 
     def accessible_projects

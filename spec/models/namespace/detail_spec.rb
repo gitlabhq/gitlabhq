@@ -10,7 +10,7 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:namespace) }
-    it { is_expected.to validate_length_of(:description).is_at_most(500) }
+    it { is_expected.to validate_length_of(:description).is_at_most(2000) }
   end
 
   context 'with loose foreign key on namespace_details.creator_id' do

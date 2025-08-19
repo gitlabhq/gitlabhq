@@ -88,6 +88,45 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
   end
 
+  describe 'archived' do
+    let_it_be_with_reload(:parent_group) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, :public, namespace: parent_group) }
+
+    let(:project_full_path) { project.full_path }
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project_full_path}") {
+            archived
+          }
+        }
+      )
+    end
+
+    subject(:project_archived_result) do
+      result = GitlabSchema.execute(query).as_json
+      result.dig('data', 'project', 'archived')
+    end
+
+    where(:project_archived, :parent_archived, :expected_result) do
+      false | false | false
+      false | true  | true
+      true  | false | true
+      true  | true  | true
+    end
+
+    with_them do
+      before do
+        parent_group.update!(archived: parent_archived)
+        project.update!(archived: project_archived)
+      end
+
+      it 'returns expected archived result' do
+        expect(project_archived_result).to eq(expected_result)
+      end
+    end
+  end
+
   describe 'container_registry_enabled' do
     let_it_be(:project, reload: true) { create(:project, :public) }
     let_it_be(:user) { create(:user) }
@@ -511,7 +550,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   it_behaves_like 'a GraphQL type with labels' do
-    let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups, :searchIn, :title] }
+    let(:labels_resolver_arguments) { [:search_term, :includeAncestorGroups, :searchIn, :title, :archived] }
   end
 
   describe 'jira_imports' do
@@ -554,7 +593,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
     it do
       is_expected.to have_graphql_arguments(:statuses, :with_artifacts, :name, :sources,
-        :after, :before, :first, :last)
+        :after, :before, :first, :last, :kind)
     end
   end
 
@@ -1481,6 +1520,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_at, developers: user)
     end
 
+    let_it_be(:project_being_deleted) do
+      create(:project, pending_delete: true, developers: user)
+    end
+
     let_it_be(:pending_delete_project) { create(:project, marked_for_deletion_at: marked_for_deletion_at) }
     let_it_be(:parent_pending_delete_project) { create(:project, group: pending_delete_group) }
 
@@ -1493,6 +1536,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
             markedForDeletion
             markedForDeletionOn
             permanentDeletionDate
+            isSelfDeletionInProgress
+            isSelfDeletionScheduled
           }
         }
       )
@@ -1509,7 +1554,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       {
         marked_for_deletion: result.dig('data', 'project', 'markedForDeletion'),
         marked_for_deletion_on: result.dig('data', 'project', 'markedForDeletionOn'),
-        permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate')
+        permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate'),
+        is_self_deletion_in_progress: result.dig('data', 'project', 'isSelfDeletionInProgress'),
+        is_self_deletion_scheduled: result.dig('data', 'project', 'isSelfDeletionScheduled')
       }
     end
 
@@ -1523,12 +1570,20 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       expect(marked_for_deletion_on_time).to eq(pending_delete_project.marked_for_deletion_at.iso8601)
     end
 
+    it 'returns false for is_self_deletion_in_progress' do
+      expect(project_data[:is_self_deletion_in_progress]).to be false
+    end
+
     context 'when project is scheduled for deletion' do
       it 'returns date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])
           .to eq(
             ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_at).strftime('%F')
           )
+      end
+
+      it 'returns true for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be true
       end
     end
 
@@ -1537,6 +1592,10 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
 
       it 'marked_for_deletion returns true' do
         expect(project_data[:marked_for_deletion]).to be true
+      end
+
+      it 'returns false for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be false
       end
     end
 
@@ -1547,9 +1606,21 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         expect(project_data[:marked_for_deletion]).to be false
       end
 
+      it 'returns false for is_self_deletion_scheduled' do
+        expect(project_data[:is_self_deletion_scheduled]).to be false
+      end
+
       it 'returns theoretical date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])
           .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(Date.current).strftime('%F'))
+      end
+    end
+
+    context 'when project is being deleted' do
+      let(:project_full_path) { project_being_deleted.full_path }
+
+      it 'returns true for is_self_deletion_in_progress' do
+        expect(project_data[:is_self_deletion_in_progress]).to be true
       end
     end
   end
@@ -1611,7 +1682,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[id fullPath workItems languages].each do |field_name|
+    %w[id fullPath workItems languages statisticsDetailsPaths].each do |field_name|
       it "includes :ai_workflows scope for the #{field_name} field" do
         field = described_class.fields[field_name]
         expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)

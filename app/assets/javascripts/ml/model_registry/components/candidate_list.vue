@@ -25,7 +25,6 @@ export default {
     return {
       candidates: {},
       errorMessage: '',
-      skipQueries: true,
       queryVariables: undefined,
     };
   },

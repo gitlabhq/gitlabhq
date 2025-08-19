@@ -103,7 +103,6 @@ Parameters:
 | `allow_committer_approval`                           | boolean           | No       | Allow or prevent committers from self approving merge requests. |
 | `allow_overrides_to_approver_list_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
 | `retain_approvals_on_push`                           | boolean           | No       | Retain approval count on a new push. |
-| `selective_code_owner_removals`                      | boolean           | No       | Reset approvals from Code Owners if their files changed. You must disable the `retain_approvals_on_push` field to use this field. |
 | `require_reauthentication_to_approve`                | boolean           | No       | Require approver to authenticate before adding the approval. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) in GitLab 17.1. |
 
 Example request:

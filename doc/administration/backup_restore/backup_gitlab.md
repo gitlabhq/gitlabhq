@@ -98,7 +98,7 @@ In general, this data is the single source of truth for most user-generated cont
 PostgreSQL also holds some cached data like HTML-rendered Markdown, and by default, merge request diffs.
 However, merge request diffs can also be configured to be offloaded to the file system or object storage, see [Blobs](#blobs).
 
-Gitaly Cluster's Praefect service uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
+Gitaly Cluster (Praefect) uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
 
 A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/16/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
 
@@ -106,8 +106,8 @@ Unfortunately, the larger the database, the longer it takes `pg_dump` to execute
 
 ### Git repositories
 
-A GitLab instance can have one or more repository shards. Each shard is a Gitaly instance or Gitaly Cluster that
-is responsible for allowing access and operations on the locally stored Git repositories. Gitaly can run
+A GitLab instance can have one or more repository shards. Each shard is a Gitaly instance or Gitaly Cluster (Praefect)
+that is responsible for allowing access and operations on the locally stored Git repositories. Gitaly can run
 on a machine:
 
 - With a single disk.
@@ -1473,7 +1473,7 @@ and port 5432 with the Linux package (Omnibus):
 sudo GITLAB_BACKUP_PGHOST=192.168.1.10 GITLAB_BACKUP_PGPORT=5432 /opt/gitlab/bin/gitlab-backup create
 ```
 
-If you run GitLab on [multiple databases](../postgresql/multiple_databases.md), you can override database settings by including
+If you run GitLab on [multiple databases](../postgresql/_index.md), you can override database settings by including
 the database name in the environment variable. For example if your `main` and `ci` databases are
 hosted on different database servers, you would append their name after the `GITLAB_BACKUP_` prefix,
 leaving the `PG*` names as is:
@@ -1517,7 +1517,7 @@ In the following cases, consider using file system data transfer or snapshots as
 
 {{< alert type="warning" >}}
 
-Gitaly Cluster [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
+Gitaly Cluster (Praefect) [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
 
 {{< /alert >}}
 

@@ -6,7 +6,11 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
-import { WORK_ITEM_TYPE_NAME_ISSUE, WORK_ITEM_TYPE_NAME_TASK } from '~/work_items/constants';
+import {
+  CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
+} from '~/work_items/constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
@@ -37,6 +41,7 @@ describe('WorkItemDescriptionRendered', () => {
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDescriptionRendered, {
       propsData: {
+        fullPath: 'full/path',
         workItemId: 'gid://gitlab/WorkItem/818',
         workItemDescription,
         canEdit,
@@ -44,9 +49,6 @@ describe('WorkItemDescriptionRendered', () => {
         workItemType,
         withoutHeadingAnchors,
         enableTruncation,
-      },
-      provide: {
-        fullPath: 'full/path',
       },
       stubs: {
         CreateWorkItemModal,
@@ -272,12 +274,14 @@ describe('WorkItemDescriptionRendered', () => {
           allowedWorkItemTypes: [],
           alwaysShowWorkItemTypeSelect: false,
           asDropdownItem: false,
+          creationContext: CREATION_CONTEXT_DESCRIPTION_CHECKLIST,
           description: `lly really long title
 
 
 and more text
 
 and even more`,
+          fullPath: 'full/path',
           hideButton: true,
           isGroup: false,
           namespaceFullName: '',

@@ -270,5 +270,35 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
         expect { subject }.to raise_error(Gitlab::Database::GitlabSchema::UnknownSchemaError)
       end
     end
+
+    context 'when worker_class is not in allowed list' do
+      let(:loose_foreign_keys_yaml) do
+        {
+          'projects' => [
+            {
+              'table' => 'namespaces',
+              'column' => 'namespace_id',
+              'on_delete' => 'async_delete',
+              'worker_class' => 'UnknownWorker'
+            }
+          ]
+        }
+      end
+
+      subject { described_class.definitions }
+
+      before do
+        described_class.instance_variable_set(:@definitions, nil)
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
+      end
+
+      after do
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
+      it 'raises ArgumentError with descriptive message' do
+        expect { subject }.to raise_error(ArgumentError, "Worker class 'UnknownWorker' is not in the allowed list")
+      end
+    end
   end
 end

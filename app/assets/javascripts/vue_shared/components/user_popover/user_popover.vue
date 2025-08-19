@@ -136,7 +136,7 @@ export default {
       return `@${this.user?.username}`;
     },
     cssClasses() {
-      const classList = ['user-popover', 'gl-max-w-48', 'gl-overflow-hidden'];
+      const classList = ['user-popover', 'gl-w-34', 'gl-overflow-hidden'];
 
       if (this.userCannotMerge) {
         classList.push('user-popover-cannot-merge');
@@ -232,7 +232,7 @@ export default {
         :src="user.avatarUrl"
         :label="user.name"
         :sub-label="username"
-        class="gl-w-full"
+        class="gl-w-full gl-break-anywhere"
       >
         <template v-if="isBlocked">
           <span class="gl-mt-4 gl-italic">{{ $options.I18N_USER_BLOCKED }}</span>

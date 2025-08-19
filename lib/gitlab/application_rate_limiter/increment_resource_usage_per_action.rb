@@ -4,15 +4,18 @@ module Gitlab
   module ApplicationRateLimiter
     class IncrementResourceUsagePerAction < BaseStrategy
       def initialize(key)
-        @usage = ::Gitlab::SafeRequestStore[key].to_f
+        @usage = ::Gitlab::SafeRequestStore[key.to_sym].to_f
       end
 
       def increment(cache_key, expiry)
+        return 0 if @usage == 0
+
         with_redis do |redis|
-          redis.pipelined do |pipeline|
-            pipeline.incrbyfloat(cache_key, @usage)
-            pipeline.expire(cache_key, expiry)
-          end.first
+          new_value = redis.incrbyfloat(cache_key, @usage)
+
+          redis.expire(cache_key, expiry) if new_value == @usage
+
+          new_value
         end
       end
 

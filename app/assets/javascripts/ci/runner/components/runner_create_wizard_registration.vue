@@ -17,7 +17,13 @@ import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
-import { DOCKER_HELP_URL, KUBERNETES_HELP_URL, I18N_FETCH_ERROR } from '../constants';
+import {
+  DOCKER_HELP_URL,
+  KUBERNETES_HELP_URL,
+  I18N_FETCH_ERROR,
+  CREATION_STATE_FINISHED,
+  RUNNER_REGISTRATION_POLLING_INTERVAL_MS,
+} from '../constants';
 import { captureException } from '../sentry_utils';
 import OperatingSystemInstruction from './registration/wizard_operating_system_instruction.vue';
 import GoogleCloudRegistrationInstructions from './registration/google_cloud_registration_instructions.vue';
@@ -88,11 +94,21 @@ export default {
         createAlert({ message: I18N_FETCH_ERROR });
         captureException({ error, component: this.$options.name });
       },
+      pollInterval() {
+        if (this.isRunnerRegistered) {
+          // stop polling
+          return 0;
+        }
+        return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
+      },
     },
   },
   computed: {
     loading() {
       return this.$apollo.queries.runner.loading;
+    },
+    isRunnerRegistered() {
+      return this.runner?.creationState === CREATION_STATE_FINISHED;
     },
   },
   DOCKER_HELP_URL,
@@ -265,6 +281,20 @@ export default {
           </gl-sprintf>
         </crud-component>
       </template>
+      <div
+        v-if="isRunnerRegistered"
+        class="gl-sticky gl-bottom-0 -gl-mb-4 gl-bg-alpha-light-36 gl-py-4 gl-backdrop-blur-sm"
+        data-testid="runner-registered-alert"
+      >
+        <gl-alert variant="success" :dismissible="false">
+          🎉
+          {{
+            s__(
+              "Runners|You've registered a new runner! Your runner is online and ready to run jobs.",
+            )
+          }}
+        </gl-alert>
+      </div>
     </template>
     <template v-if="!loading" #next>
       <gl-button category="primary" variant="default" :href="runnersPath">

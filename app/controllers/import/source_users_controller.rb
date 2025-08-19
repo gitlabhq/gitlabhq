@@ -2,8 +2,6 @@
 
 module Import
   class SourceUsersController < ApplicationController
-    prepend_before_action :check_feature_flag!
-
     before_action :check_source_user_valid!
 
     respond_to :html
@@ -54,10 +52,6 @@ module Import
       Import::SourceUser.find_by_reassignment_token(params[:reassignment_token])
     end
     strong_memoize_attr :source_user
-
-    def check_feature_flag!
-      not_found unless source_user.nil? || Feature.enabled?(:importer_user_mapping, source_user.reassigned_by_user)
-    end
 
     def banner(partial)
       render_to_string(

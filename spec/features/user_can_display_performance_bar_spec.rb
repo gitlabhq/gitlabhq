@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User can display performance bar', :js, feature_category: :cloud_connector do
+RSpec.describe 'User can display performance bar', :js, feature_category: :performance_tooling do
   shared_examples 'performance bar cannot be displayed' do
     it 'does not show the performance bar by default' do
       expect(page).not_to have_css('#js-peek')

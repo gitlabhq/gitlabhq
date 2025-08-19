@@ -32,14 +32,11 @@ module Types
             description: 'IID of the target item for markdown preview.'
         end
 
-      field :autocomplete_sources_path,
-        GraphQL::Types::String,
+      field :autocomplete_sources_path, # rubocop:disable Graphql/JSONType -- it return supported items in json
+        GraphQL::Types::JSON,
         null: true,
-        description: 'Path for autocomplete sources for a given namespace.',
+        description: 'Supported paths for autocomplete sources for a given namespace.',
         fallback_value: nil do
-          argument :autocomplete_type, Types::Namespaces::MarkdownPaths::AutocompleteTypeEnum,
-            required: true,
-            description: 'Type of autocomplete source (e.g., members, labels, etc.).'
           argument :iid, GraphQL::Types::String,
             required: false,
             description: 'IID of the work item.'
@@ -64,16 +61,18 @@ module Types
         ::Gitlab::Routing.url_helpers
       end
 
-      def build_autocomplete_params(iid:, work_item_type_id:)
-        params = { type: 'WorkItem' }
+      def build_autocomplete_params(iid: nil, work_item_type_id: nil)
+        strong_memoize_with(:build_autocomplete_params, iid, work_item_type_id) do
+          params = { type: 'WorkItem' }
 
-        if new_work_item?(iid) && work_item_type_id
-          params[:work_item_type_id] = extract_id_from_gid(work_item_type_id)
-        elsif iid
-          params[:type_id] = iid
+          if new_work_item?(iid) && work_item_type_id
+            params[:work_item_type_id] = extract_id_from_gid(work_item_type_id)
+          elsif iid
+            params[:type_id] = iid
+          end
+
+          params
         end
-
-        params
       end
 
       def extract_id_from_gid(gid)

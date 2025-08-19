@@ -59,10 +59,14 @@ POST /projects/:id/invitations
 | `member_role_id` | integer        | no                                | Assigns the new member to the provided custom role. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134100)) in GitLab 16.6. Ultimate only. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "email=test@example.com&user_id=1&access_level=30" "https://gitlab.example.com/api/v4/groups/:id/invitations"
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --data "email=test@example.com&user_id=1&access_level=30" "https://gitlab.example.com/api/v4/projects/:id/invitations"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/invitations" \
+  --data "email=test@example.com&user_id=1&access_level=30"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/invitations" \
+  --data "email=test@example.com&user_id=1&access_level=30"
 ```
 
 Example responses:
@@ -120,8 +124,10 @@ GET /projects/:id/invitations
 | `query`    | string         | no       | A query string to search for invited members by invite email. Query text must match email address exactly. When empty, returns all invitations. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/invitations?query=member@example.org"
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/invitations?query=member@example.org"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/:id/invitations?query=member@example.org"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/invitations?query=member@example.org"
 ```
 
 Example response:
@@ -157,8 +163,12 @@ PUT /projects/:id/invitations/:email
 | `expires_at`   | string         | no       | A date string in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`). |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/55/invitations/email@example.org?access_level=40"
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/55/invitations/email@example.org?access_level=40"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/55/invitations/email@example.org?access_level=40"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/55/invitations/email@example.org?access_level=40"
 ```
 
 Example response:
@@ -185,8 +195,12 @@ DELETE /projects/:id/invitations/:email
 | `email`   | string         | yes      | The email address to which the invitation was previously sent |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/55/invitations/email@example.org"
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/55/invitations/email@example.org"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/55/invitations/email@example.org"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/55/invitations/email@example.org"
 ```
 
 - Returns `204` and no content on success.

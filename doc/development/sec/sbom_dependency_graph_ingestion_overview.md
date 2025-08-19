@@ -7,7 +7,7 @@ title: SBoM dependency graph ingestion overview
 
 ## Overview
 
-The process starts after all `SBoM::Occurence` models have been ingested because we ingest them in slices and it would be tricky to process that in slices as well.
+The process starts after all `SBoM::Occurrence` models have been ingested because we ingest them in slices and it would be tricky to process that in slices as well.
 
 All work happens in a background worker which will be added in a subsequent MR so that we do not increase the time it takes to ingest an SBoM report. This means that there will be a delay between when the SBoM report is ingested and before the dependency graph is updated.
 

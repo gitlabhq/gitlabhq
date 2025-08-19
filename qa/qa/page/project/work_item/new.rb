@@ -39,7 +39,7 @@ module QA
           end
 
           def fill_description(description)
-            fill_element('markdown-editor-form-field', description)
+            fill_editor_element('markdown-editor-form-field', description)
           end
 
           def choose_milestone(milestone)

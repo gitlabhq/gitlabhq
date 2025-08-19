@@ -23,7 +23,6 @@ import inboundRemoveGroupCIJobTokenScopeMutation from '~/token_access/graphql/mu
 import inboundRemoveProjectCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundUpdateCIJobTokenScopeMutation from '~/token_access/graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
-import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '~/token_access/graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
 import getAuthLogCountQuery from '~/token_access/graphql/queries/get_auth_log_count.query.graphql';
 import getCiJobTokenScopeAllowlistQuery from '~/token_access/graphql/queries/get_ci_job_token_scope_allowlist.query.graphql';
 import removeAutopopulatedEntriesMutation from '~/token_access/graphql/mutations/remove_autopopulated_entries.mutation.graphql';
@@ -35,7 +34,6 @@ import { stubComponent } from 'helpers/stub_component';
 import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
-  inboundGroupsAndProjectsWithScopeResponse,
   inboundRemoveNamespaceSuccess,
   inboundUpdateScopeSuccessResponse,
   mockAuthLogsCountResponse,
@@ -58,7 +56,10 @@ describe('TokenAccess component', () => {
   const authLogCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(4));
   const ciJobTokenScopeAllowlistResponseHandler = jest
     .fn()
-    .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse);
+    .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse());
+  const ciJobTokenScopeAllowlistWithoutAutopopulatedEntriesResponseHandler = jest
+    .fn()
+    .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse(false));
   const authLogZeroCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(0));
   const autopopulateAllowlistResponseHandler = jest
     .fn()
@@ -72,12 +73,6 @@ describe('TokenAccess component', () => {
   const inboundJobTokenScopeDisabledResponseHandler = jest
     .fn()
     .mockResolvedValue(inboundJobTokenScopeDisabledResponse);
-  const inboundGroupsAndProjectsWithScopeResponseHandler = jest
-    .fn()
-    .mockResolvedValue(inboundGroupsAndProjectsWithScopeResponse(true));
-  const inboundGroupsAndProjectsWithoutAutopopulatedEntriesResponseHandler = jest
-    .fn()
-    .mockResolvedValue(inboundGroupsAndProjectsWithScopeResponse(false));
   const inboundRemoveGroupSuccessHandler = jest
     .fn()
     .mockResolvedValue(inboundRemoveNamespaceSuccess);
@@ -116,20 +111,13 @@ describe('TokenAccess component', () => {
 
   const createComponent = (
     requestHandlers,
-    {
-      isJobTokenPoliciesEnabled = false,
-      enforceAllowlist = false,
-      projectAllowlistLimit = 2,
-      stubs = {},
-      isLoading = false,
-    } = {},
+    { enforceAllowlist = false, projectAllowlistLimit = 2, stubs = {}, isLoading = false } = {},
   ) => {
     wrapper = shallowMountExtended(InboundTokenAccess, {
       provide: {
         fullPath: projectPath,
         enforceAllowlist,
         projectAllowlistLimit,
-        isJobTokenPoliciesEnabled,
       },
       apolloProvider: createMockApollo(requestHandlers),
       mocks: {
@@ -156,10 +144,7 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
+          [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
         ],
         { isLoading: true },
       );
@@ -178,10 +163,7 @@ describe('TokenAccess component', () => {
         await createComponent(
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithScopeResponseHandler,
-            ],
+            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
           { projectAllowlistLimit },
@@ -212,10 +194,7 @@ describe('TokenAccess component', () => {
     it('handles fetches auth log count error correctly', async () => {
       await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
         [getAuthLogCountQuery, failureHandler],
       ]);
 
@@ -233,22 +212,17 @@ describe('TokenAccess component', () => {
 
       createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ]);
 
       expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledWith(expectedVariables);
-      expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledWith(
-        expectedVariables,
-      );
+      expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledWith(expectedVariables);
     });
 
     it('handles fetch groups and projects error correctly', async () => {
       await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, failureHandler],
+        [getCiJobTokenScopeAllowlistQuery, failureHandler],
       ]);
 
       expect(createAlert).toHaveBeenCalledWith({
@@ -259,10 +233,7 @@ describe('TokenAccess component', () => {
     it('handles fetch scope error correctly', async () => {
       await createComponent([
         [inboundGetCIJobTokenScopeQuery, failureHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ]);
 
       expect(createAlert).toHaveBeenCalledWith({
@@ -271,10 +242,9 @@ describe('TokenAccess component', () => {
     });
 
     it('adds the current project at the top of the list', async () => {
-      await createComponent(
-        [[getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler]],
-        { isJobTokenPoliciesEnabled: true },
-      );
+      await createComponent([
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
+      ]);
 
       expect(findTokenAccessTable().props('items')[0].fullPath).toBe('root/my-repo');
       expect(findTokenAccessTable().props('items')[1].fullPath).toBe('abc/123');
@@ -287,10 +257,7 @@ describe('TokenAccess component', () => {
     it('is on and the alert is hidden', async () => {
       await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ]);
 
       expect(findRadioGroup().attributes('checked')).toBe('true');
@@ -300,10 +267,7 @@ describe('TokenAccess component', () => {
     it('is off and the alert is visible', async () => {
       await createComponent([
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ]);
 
       expect(findRadioGroup().attributes('checked')).toBeUndefined();
@@ -314,10 +278,7 @@ describe('TokenAccess component', () => {
       it('uses the correct "options" prop', async () => {
         await createComponent([
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
+          [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
         ]);
 
         const expectedOptions = [
@@ -434,12 +395,7 @@ describe('TokenAccess component', () => {
   describe('namespace form', () => {
     beforeEach(() =>
       createComponent(
-        [
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
-        ],
+        [[getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler]],
         { stubs: { CrudComponent } },
       ),
     );
@@ -474,7 +430,7 @@ describe('TokenAccess component', () => {
 
         findNamespaceForm().vm.$emit('saved');
 
-        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
+        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
       });
     });
   });
@@ -484,10 +440,7 @@ describe('TokenAccess component', () => {
       createComponent(
         [
           [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-          [
-            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-            inboundGroupsAndProjectsWithScopeResponseHandler,
-          ],
+          [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
           [autopopulateAllowlistMutation, autopopulateAllowlistResponseHandler],
           [removeAutopopulatedEntriesMutation, removeAutopopulatedEntriesMutationHandler],
           [getAuthLogCountQuery, authLogCountResponseHandler],
@@ -551,7 +504,7 @@ describe('TokenAccess component', () => {
 
       it('calls the autopopulate allowlist mutation and refetches allowlist and job token setting', async () => {
         expect(autopopulateAllowlistResponseHandler).toHaveBeenCalledTimes(0);
-        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(1);
+        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(1);
         expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledTimes(1);
 
         findFormSelector().vm.$emit('select', JOB_TOKEN_FORM_AUTOPOPULATE_AUTH_LOG);
@@ -560,18 +513,15 @@ describe('TokenAccess component', () => {
         await nextTick();
 
         expect(autopopulateAllowlistResponseHandler).toHaveBeenCalledTimes(1);
-        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
-        expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledTimes(2);
+        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
+        expect(inboundJobTokenScopeEnabledResponseHandler).toHaveBeenCalledTimes(3);
       });
 
       it('shows error alert when mutation returns an error', async () => {
         createComponent(
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithScopeResponseHandler,
-            ],
+            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
             [autopopulateAllowlistMutation, autopopulateAllowlistResponseErrorHandler],
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
@@ -596,10 +546,7 @@ describe('TokenAccess component', () => {
         createComponent(
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithScopeResponseHandler,
-            ],
+            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
             [autopopulateAllowlistMutation, failureHandler],
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
@@ -674,14 +621,14 @@ describe('TokenAccess component', () => {
 
       it('calls the remove autopopulated entries mutation and refetches allowlist', async () => {
         expect(removeAutopopulatedEntriesMutationHandler).toHaveBeenCalledTimes(0);
-        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(1);
+        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(1);
 
         triggerRemoveEntries();
         await waitForPromises();
         await nextTick();
 
         expect(removeAutopopulatedEntriesMutationHandler).toHaveBeenCalledTimes(1);
-        expect(inboundGroupsAndProjectsWithScopeResponseHandler).toHaveBeenCalledTimes(2);
+        expect(ciJobTokenScopeAllowlistResponseHandler).toHaveBeenCalledTimes(2);
       });
 
       it('shows toast message when mutation is successful', async () => {
@@ -698,10 +645,7 @@ describe('TokenAccess component', () => {
         createComponent(
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithScopeResponseHandler,
-            ],
+            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
             [removeAutopopulatedEntriesMutation, removeAutopopulatedEntriesMutationErrorHandler],
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
@@ -725,10 +669,7 @@ describe('TokenAccess component', () => {
         createComponent(
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
-            [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithScopeResponseHandler,
-            ],
+            [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
             [removeAutopopulatedEntriesMutation, failureHandler],
             [getAuthLogCountQuery, authLogCountResponseHandler],
           ],
@@ -774,8 +715,8 @@ describe('TokenAccess component', () => {
           [
             [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
             [
-              inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-              inboundGroupsAndProjectsWithoutAutopopulatedEntriesResponseHandler,
+              getCiJobTokenScopeAllowlistQuery,
+              ciJobTokenScopeAllowlistWithoutAutopopulatedEntriesResponseHandler,
             ],
             [getAuthLogCountQuery, authLogZeroCountResponseHandler],
           ],
@@ -847,10 +788,7 @@ describe('TokenAccess component', () => {
     beforeEach(() => {
       const requestHandlers = [
         [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeDisabledResponseHandler],
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ];
 
       return createComponent(requestHandlers, { enforceAllowlist: true });
@@ -866,10 +804,7 @@ describe('TokenAccess component', () => {
   describe('allowlist counts', () => {
     beforeEach(() => {
       const requestHandlers = [
-        [
-          inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
-          inboundGroupsAndProjectsWithScopeResponseHandler,
-        ],
+        [getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler],
       ];
 
       return createComponent(requestHandlers, { stubs: { CrudComponent } });
@@ -891,13 +826,13 @@ describe('TokenAccess component', () => {
       });
 
       it('shows project count', () => {
-        expect(findProjectCount().text()).toBe('1');
+        expect(findProjectCount().text()).toBe('3');
       });
 
       it('has project count tooltip', () => {
         const tooltip = getBinding(findProjectCount().element, 'gl-tooltip');
 
-        expect(tooltip).toMatchObject({ modifiers: { d0: true }, value: '1 project has access' });
+        expect(tooltip).toMatchObject({ modifiers: { d0: true }, value: '3 projects have access' });
       });
     });
 
@@ -922,36 +857,6 @@ describe('TokenAccess component', () => {
       });
     });
   });
-
-  describe.each`
-    isJobTokenPoliciesEnabled | oldQueryCallCount | newQueryCallCount
-    ${true}                   | ${0}              | ${1}
-    ${false}                  | ${1}              | ${0}
-  `(
-    'when isJobTokenPoliciesEnabled is $isJobTokenPoliciesEnabled',
-    ({ isJobTokenPoliciesEnabled, oldQueryCallCount, newQueryCallCount }) => {
-      const oldQueryHandler = jest.fn();
-      const newQueryHandler = jest.fn();
-
-      beforeEach(() => {
-        createComponent(
-          [
-            [inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery, oldQueryHandler],
-            [getCiJobTokenScopeAllowlistQuery, newQueryHandler],
-          ],
-          { isJobTokenPoliciesEnabled },
-        );
-      });
-
-      it(`calls the old query ${oldQueryCallCount} times`, () => {
-        expect(oldQueryHandler).toHaveBeenCalledTimes(oldQueryCallCount);
-      });
-
-      it(`calls the new query ${newQueryCallCount} times`, () => {
-        expect(newQueryHandler).toHaveBeenCalledTimes(newQueryCallCount);
-      });
-    },
-  );
 
   describe('editing an allowlist item', () => {
     const item = {};

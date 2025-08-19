@@ -310,6 +310,11 @@ export default {
       required: false,
       default: false,
     },
+    projectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
   },
   data() {
     const defaults = {
@@ -382,14 +387,6 @@ export default {
       return options;
     },
 
-    environmentsEnabled() {
-      return this.environmentsAccessLevel > featureAccessLevel.NOT_ENABLED;
-    },
-
-    monitorEnabled() {
-      return this.monitorAccessLevel > featureAccessLevel.NOT_ENABLED;
-    },
-
     repositoryEnabled() {
       return this.repositoryAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -435,9 +432,6 @@ export default {
         this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER
       );
     },
-    monitorOperationsFeatureAccessLevelOptions() {
-      return this.featureAccessLevelOptions.filter(({ value }) => value <= this.monitorAccessLevel);
-    },
     findDiffPreviewValue: {
       get() {
         return this.emailsEnabled && this.showDiffPreviewInEmail;
@@ -445,9 +439,6 @@ export default {
       set(newValue) {
         this.showDiffPreviewInEmail = newValue;
       },
-    },
-    wasProjectInitiallyPrivate() {
-      return this.currentSettings.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER;
     },
   },
   watch: {
@@ -1123,6 +1114,7 @@ export default {
       <secret-manager-settings
         v-if="isSecretsManagerAvailable"
         :can-manage-secrets-manager="canManageSecretManager"
+        :project-id="projectId"
         :full-path="confirmationPhrase"
       />
       <other-project-settings />

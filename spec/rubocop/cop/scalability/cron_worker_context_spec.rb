@@ -5,33 +5,33 @@ require_relative '../../../../rubocop/cop/scalability/cron_worker_context'
 
 RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
   it 'adds an offense when including CronjobQueue' do
-    expect_offense(<<~CODE)
+    expect_offense(<<~RUBY)
       class SomeWorker
         include CronjobQueue
                 ^^^^^^^^^^^^ Manually define an ApplicationContext for cronjob-workers.[...]
       end
-    CODE
+    RUBY
   end
 
   it 'does not add offenses for other workers' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeWorker
       end
-    CODE
+    RUBY
   end
 
   it 'does not add an offense when the class defines a context' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeWorker
         include CronjobQueue
 
         with_context user: 'bla'
       end
-    CODE
+    RUBY
   end
 
   it 'does not add an offense when the worker calls `with_context`' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeWorker
         include CronjobQueue
 
@@ -41,11 +41,11 @@ RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
           end
         end
       end
-    CODE
+    RUBY
   end
 
   it 'does not add an offense when the worker calls `bulk_perform_async_with_contexts`' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeWorker
         include CronjobQueue
 
@@ -55,11 +55,11 @@ RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
                                                            context_proc: -> (thing) { { project: thing.project } })
         end
       end
-    CODE
+    RUBY
   end
 
   it 'does not add an offense when the worker calls `bulk_perform_in_with_contexts`' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeWorker
         include CronjobQueue
 
@@ -69,6 +69,6 @@ RSpec.describe RuboCop::Cop::Scalability::CronWorkerContext do
                                                         context_proc: -> (thing) { { project: thing.project } })
         end
       end
-    CODE
+    RUBY
   end
 end

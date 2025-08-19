@@ -6,7 +6,7 @@
 
 .file-holder.file.gl-mb-3
   .js-file-title.file-title.gl-flex.gl-items-center.gl-rounded-t-base{ data: { current_action: action } }
-    .editor-ref.block-truncated.has-tooltip{ title: current_action?(:edit, :update) ? ref : params[:id] }
+    .editor-ref.gl-truncate.has-tooltip{ title: current_action?(:edit, :update) ? ref : params[:id] }
       = sprite_icon('branch', size: 12)
       - if current_action?(:edit, :update)
         %span#editor_ref

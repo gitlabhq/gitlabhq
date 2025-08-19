@@ -14,6 +14,8 @@ module Types
       null: false,
       description: 'Global ID of the label.'
 
+    field :archived, GraphQL::Types::Boolean, null: false, description: 'Indicates the label is archived.'
+
     field :lock_on_merge, GraphQL::Types::Boolean, null: false,
       description: 'Indicates this label is locked for merge requests ' \
         'that have been merged.'

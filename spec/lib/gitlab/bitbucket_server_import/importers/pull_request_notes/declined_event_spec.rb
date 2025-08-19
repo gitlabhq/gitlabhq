@@ -6,7 +6,10 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
   include Import::UserMappingHelper
 
   let_it_be_with_reload(:project) do
-    create(:project, :repository, :bitbucket_server_import, :import_user_mapping_enabled)
+    create(
+      :project, :repository, :bitbucket_server_import, :in_group,
+      :import_user_mapping_enabled, :user_mapping_to_personal_namespace_owner_enabled
+    )
   end
 
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
@@ -22,6 +25,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
 
   let_it_be(:source_user) { generate_source_user(project, declined_event[:decliner_username]) }
 
+  let(:cached_references) { placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id) }
+
   def expect_log(stage:, message:, iid:, event_id:)
     allow(Gitlab::BitbucketServerImport::Logger).to receive(:info).and_call_original
     expect(Gitlab::BitbucketServerImport::Logger)
@@ -34,7 +39,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
     it 'pushes placeholder references' do
       importer.execute(declined_event)
 
-      cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
       expect(cached_references).to contain_exactly(
         ['Event', instance_of(Integer), 'author_id', source_user.id],
         ["ResourceStateEvent", instance_of(Integer), "user_id", source_user.id],
@@ -90,6 +94,56 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
       end
     end
 
+    context 'when importing into a personal namespace' do
+      let_it_be(:user_namespace) { create(:namespace) }
+      let_it_be(:project) do
+        project.update!(namespace: user_namespace)
+        project
+      end
+
+      let_it_be(:source_user) { generate_source_user(project, declined_event[:decliner_username]) }
+
+      it 'does not push placeholder references' do
+        importer.execute(declined_event)
+
+        expect(cached_references).to be_empty
+      end
+
+      it 'imports the declined event mapped to the personal namespace owner' do
+        importer.execute(declined_event)
+
+        expect(merge_request.resource_state_events.first.user_id).to eq(user_namespace.owner_id)
+        expect(merge_request.metrics.reload.latest_closed_by_id).to eq(user_namespace.owner_id)
+        expect(merge_request.events.first.author_id).to eq(user_namespace.owner_id)
+      end
+
+      context 'when user_mapping_to_personal_namespace_owner is disabled' do
+        before do
+          project.build_or_assign_import_data(
+            data: { user_mapping_to_personal_namespace_owner_enabled: false }
+          ).save!
+        end
+
+        it 'pushes placeholder references' do
+          importer.execute(declined_event)
+
+          expect(cached_references).to contain_exactly(
+            ['Event', instance_of(Integer), 'author_id', source_user.id],
+            ["ResourceStateEvent", instance_of(Integer), "user_id", source_user.id],
+            ['MergeRequest::Metrics', instance_of(Integer), 'latest_closed_by_id', source_user.id]
+          )
+        end
+
+        it 'imports the declined event mapped to the placeholder user' do
+          importer.execute(declined_event)
+
+          expect(merge_request.resource_state_events.first.user_id).to eq(source_user.mapped_user_id)
+          expect(merge_request.metrics.reload.latest_closed_by_id).to eq(source_user.mapped_user_id)
+          expect(merge_request.events.first.author_id).to eq(source_user.mapped_user_id)
+        end
+      end
+    end
+
     context 'when user contribution mapping is disabled' do
       let_it_be(:decliner_author) { create(:user, username: 'decliner_author', email: 'decliner_author@example.org') }
 
@@ -106,7 +160,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Decli
       it 'does not push placeholder references' do
         importer.execute(declined_event)
 
-        cached_references = placeholder_user_references(::Import::SOURCE_BITBUCKET_SERVER, project.import_state.id)
         expect(cached_references).to be_empty
       end
 
