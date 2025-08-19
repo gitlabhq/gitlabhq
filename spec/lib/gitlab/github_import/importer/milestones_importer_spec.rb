@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:project) { create(:project, import_source: 'foo/bar') }
-  let(:client) { double(:client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
   let(:importer) { described_class.new(project, client) }
   let(:due_on) { Time.new(2017, 2, 1, 12, 00) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }

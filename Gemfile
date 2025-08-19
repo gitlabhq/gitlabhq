@@ -192,6 +192,7 @@ gem 'hamlit', '~> 3.0.0', feature_category: :shared
 # Files attachments
 gem 'carrierwave', '~> 1.3', feature_category: :shared
 gem 'mini_magick', '~> 4.12', feature_category: :shared
+gem 'marcel', '~> 1.0.4', feature_category: :shared
 
 # PDF generation
 gem 'prawn', feature_category: :vulnerability_management

@@ -125,6 +125,18 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         expect(File.exist?(file.path)).to eq(true)
       end
 
+      context 'when filename includes login redirect' do
+        let(:redirect_url) { 'https://example.com/some-text/login?return_to=gpre366' }
+
+        it 'returns the original file_url' do
+          expect(::Import::Clients::HTTP).to receive(:get).with(file_url, { follow_redirects: false })
+            .and_return sample_response
+
+          file = downloader.perform
+          expect(file).to eq(file_url)
+        end
+      end
+
       context 'when attachment is a video media file' do
         let(:file_url) { "https://github.com/user-attachments/assets/73433gh3" }
         let(:redirect_url) { "https://github-production-user-asset-6210df.s3.amazonaws.com/73433gh3.mov" }
@@ -184,6 +196,22 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
     it 'removes file with parent folder' do
       downloader.delete
       expect(Dir.exist?(tmp_dir_path)).to eq false
+    end
+  end
+
+  describe '#github_assets_url_regex' do
+    context 'with GHE domain' do
+      let(:web_endpoint) { 'https://github.enterprise.com' }
+      let(:file_url) { "#{web_endpoint}/project/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11" }
+
+      subject(:downloader) { described_class.new(file_url, web_endpoint: web_endpoint) }
+
+      it 'matches GHE assets URLs' do
+        allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+
+        regex = downloader.send(:github_assets_url_regex)
+        expect(file_url).to match(regex)
+      end
     end
   end
 end

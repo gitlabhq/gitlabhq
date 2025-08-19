@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 class Projects::RunnersController < Projects::ApplicationController
-  before_action :authorize_read_runners!
+  before_action :authorize_read_runners!, only: [:index]
   before_action :authorize_admin_runners!, except: [:index, :show]
   before_action :authorize_create_runners!, only: [:new, :register]
   before_action :runner, only: [:edit, :destroy, :pause, :resume, :show, :register]
+
+  before_action only: [:show] do
+    authorize_runner!(:read_runner)
+  end
 
   before_action only: [:edit, :pause, :resume] do
     authorize_runner!(:update_runner)
@@ -74,10 +78,6 @@ class Projects::RunnersController < Projects::ApplicationController
 
   def runner
     @runner ||= Ci::Runner.find(safe_params[:id])
-  end
-
-  def runner_params
-    params.require(:runner).permit(Ci::Runner::FORM_EDITABLE)
   end
 
   def runner_update_service

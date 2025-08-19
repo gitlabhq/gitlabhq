@@ -51,7 +51,8 @@ module Gitlab
         def create_issue
           author_id, author_found = user_finder.author_id_for(issue)
 
-          description = MarkdownText.format(issue.description, issue.author, author_found, project: project)
+          description = MarkdownText.format(issue.description, issue.author, author_found, project: project,
+            client: client)
           assignee_ids = issue_assignee_map.keys
 
           attributes = {

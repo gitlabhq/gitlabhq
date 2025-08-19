@@ -34,7 +34,7 @@ module Gitlab
             original_commit_id: note[:original_commit_id],
             diff_hunk: note[:diff_hunk],
             author: user,
-            note: GithubImport::MarkdownText.format(note[:body]),
+            note: note[:body],
             created_at: note[:created_at],
             updated_at: note[:updated_at],
             note_id: note[:id],
@@ -54,7 +54,6 @@ module Gitlab
           hash = Representation.symbolize_hash(raw_hash)
 
           hash[:author] &&= Representation::User.from_json_hash(hash[:author])
-          hash[:note] &&= GithubImport::MarkdownText.format(hash[:note])
 
           new(hash)
         end

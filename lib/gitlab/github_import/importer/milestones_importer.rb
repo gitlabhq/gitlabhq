@@ -46,7 +46,7 @@ module Gitlab
         end
 
         def description_for(milestone)
-          MarkdownText.format(milestone[:description], project: project)
+          MarkdownText.format(milestone[:description], project: project, client: client)
         end
 
         def state_for(milestone)

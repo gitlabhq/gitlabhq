@@ -20,7 +20,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
     }
   end
 
-  let(:client) { double(:client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
   let(:github_release_name) { 'Initial Release' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:released_at) { Time.new(2017, 1, 1, 12, 00) }

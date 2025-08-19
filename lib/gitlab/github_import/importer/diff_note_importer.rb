@@ -110,7 +110,7 @@ module Gitlab
         end
 
         def note_body
-          @note_body ||= MarkdownText.format(note.note, note.author, author_found)
+          @note_body ||= MarkdownText.format(note.note, note.author, author_found, project: project, client: client)
         end
 
         def author

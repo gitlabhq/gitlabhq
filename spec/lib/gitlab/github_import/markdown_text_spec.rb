@@ -42,6 +42,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
 
     context 'when Github EE with custom domain name' do
       let(:github_domain) { 'https://custom.github.com/' }
+      let(:client) { double(:client, web_endpoint: github_domain) }
       let(:text_in) do
         <<-TEXT
         #{paragraph}
@@ -51,12 +52,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
         TEXT
       end
 
-      before do
-        allow(Gitlab::Auth::OAuth::Provider)
-          .to receive(:config_for).with('github').and_return({ 'url' => github_domain })
-      end
-
-      it { expect(described_class.format(text_in, project: project)).to eq text_out }
+      it { expect(described_class.format(text_in, project: project, client: client)).to eq text_out }
     end
   end
 
@@ -94,7 +90,7 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
     end
 
     it 'fetches attachments' do
-      attachments = described_class.fetch_attachments(text)
+      attachments = described_class.fetch_attachments(text, "https://github.com")
 
       expect(attachments.map(&:name)).to contain_exactly('special-image', 'tag-image', 'some-doc')
       expect(attachments.map(&:url)).to contain_exactly(
@@ -105,7 +101,31 @@ RSpec.describe Gitlab::GithubImport::MarkdownText, feature_category: :importers 
     end
 
     it 'returns an empty array when passed nil' do
-      expect(described_class.fetch_attachments(nil)).to be_empty
+      expect(described_class.fetch_attachments(nil, nil)).to be_empty
+    end
+
+    context 'with GHE web endpoint' do
+      let(:web_endpoint) { 'https://github.enterprise.com' }
+      let(:image_extension) { Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.sample }
+      let(:ghe_image_attachment) do
+        "![ghe-image](#{web_endpoint}/user-attachments/assets/uuid-1.#{image_extension})"
+      end
+
+      let(:text) do
+        <<-TEXT.split("\n").map(&:strip).join("\n")
+          Comment with GHE attachment
+          #{ghe_image_attachment}
+        TEXT
+      end
+
+      it 'fetches attachments from GHE domain' do
+        attachments = described_class.fetch_attachments(text, web_endpoint)
+
+        expect(attachments.map(&:name)).to contain_exactly('ghe-image')
+        expect(attachments.map(&:url)).to contain_exactly(
+          "#{web_endpoint}/user-attachments/assets/uuid-1.#{image_extension}"
+        )
+      end
     end
   end
 

@@ -14,12 +14,15 @@ module Gitlab
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
       SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
 
-      attr_reader :file_url, :filename, :file_size_limit, :options
+      attr_reader :file_url, :filename, :file_size_limit, :options, :web_endpoint
 
-      def initialize(file_url, options: {}, file_size_limit: DEFAULT_FILE_SIZE_LIMIT)
+      def initialize(
+        file_url, options: {}, file_size_limit: DEFAULT_FILE_SIZE_LIMIT,
+        web_endpoint: ::Octokit::Default.web_endpoint)
         @file_url = file_url
         @options = options
         @file_size_limit = file_size_limit
+        @web_endpoint = web_endpoint
 
         filename = URI(file_url).path.split('/').last
         @filename = ensure_filename_size(filename)
@@ -30,9 +33,12 @@ module Gitlab
 
         download_url = get_assets_download_redirection_url
 
+        # skip download for GHE server urls that redirect to a login url
+        return file_url if download_url.include?("login?return_to=")
+
         parsed_file_name = File.basename(URI.parse(download_url).path)
 
-        # if the file is a media type, we update both the @filename and @filepath with the filetype extension
+        # if the file has a video filetype extension, we update both the @filename and @filepath with the filetype ext.
         if parsed_file_name.end_with?(*SUPPORTED_VIDEO_MEDIA_TYPES.map { |ext| ".#{ext}" })
           @filename = ensure_filename_size(parsed_file_name)
           add_extension_to_file_path(filename)
@@ -72,7 +78,7 @@ module Gitlab
       end
 
       def github_assets_url_regex
-        %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/(assets|files)/}
+        %r{#{Regexp.escape(web_endpoint)}/.*/(assets|files)/}
       end
 
       def download_from(url)

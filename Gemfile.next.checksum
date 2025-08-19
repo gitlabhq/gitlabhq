@@ -386,7 +386,7 @@
 {"name":"lru_redux","version":"1.1.0","platform":"ruby","checksum":"ee71d0ccab164c51de146c27b480a68b3631d5b4297b8ffe8eda1c72de87affb"},
 {"name":"lumberjack","version":"1.2.7","platform":"ruby","checksum":"a5c6aae6b4234f1420dbcd80b23e3bca0817bd239440dde097ebe3fa63c63b1f"},
 {"name":"mail","version":"2.8.1","platform":"ruby","checksum":"ec3b9fadcf2b3755c78785cb17bc9a0ca9ee9857108a64b6f5cfc9c0b5bfc9ad"},
-{"name":"marcel","version":"1.0.2","platform":"ruby","checksum":"a013b677ef46cbcb49fd5c59b3d35803d2ee04dd75d8bfdc43533fc5a31f7e4e"},
+{"name":"marcel","version":"1.0.4","platform":"ruby","checksum":"0d5649feb64b8f19f3d3468b96c680bae9746335d02194270287868a661516a4"},
 {"name":"marginalia","version":"1.11.1","platform":"ruby","checksum":"cb63212ab63e42746e27595e912cb20408a1a28bcd0edde55d15b7c45fa289cf"},
 {"name":"matrix","version":"0.4.2","platform":"ruby","checksum":"71083ccbd67a14a43bfa78d3e4dc0f4b503b9cc18e5b4b1d686dc0f9ef7c4cc0"},
 {"name":"memory_profiler","version":"1.1.0","platform":"ruby","checksum":"79a17df7980a140c83c469785905409d3027ca614c42c086089d128b805aa8f8"},

@@ -52,7 +52,10 @@ module Gitlab
           end
 
           def has_attachments?(object)
-            object_representation(object).has_attachments?
+            note_text = object_representation(object)
+            return false if note_text.text.blank?
+
+            Gitlab::GithubImport::MarkdownText.fetch_attachments(note_text.text, client.web_endpoint).present?
           end
         end
       end

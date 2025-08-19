@@ -57,10 +57,10 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
       context 'with an instance runner' do
         let(:runner) { create(:ci_runner, :instance) }
 
-        it 'renders a 404' do
+        it 'renders show with 200 status code' do
           get :show, params: params
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
     end
@@ -155,37 +155,99 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
   end
 
-  describe '#destroy' do
-    before_all do
-      project.add_maintainer(user)
-    end
-
-    it 'destroys the runner' do
-      expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, user) do |service|
-        expect(service).to receive(:execute).once.and_call_original
+  describe '#edit' do
+    context 'when user is maintainer' do
+      before_all do
+        project.add_maintainer(user)
       end
 
-      delete :destroy, params: params
+      it 'renders show with 200 status code' do
+        get :edit, params: params
 
-      expect(response).to have_gitlab_http_status(:found)
-      expect(Ci::Runner.find_by(id: runner.id)).to be_nil
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'with an instance runner' do
+        let_it_be(:runner) { create(:ci_runner, :instance) }
+
+        it 'does not allow editing the runner' do
+          get :edit, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with a project runner the user does not manage' do
+        let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
+        it 'does not allow editing the runner' do
+          get :edit, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(runner.active).to eq(true)
+        end
+      end
     end
 
-    context 'with an instance runner' do
-      let_it_be(:runner) { create(:ci_runner, :instance) }
+    context 'when user is not maintainer' do
+      before_all do
+        project.add_developer(user)
+      end
 
-      it 'does not allow deleting the runner' do
-        delete :destroy, params: params
+      it 'renders a 404' do
+        get :edit, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
-        expect(Ci::Runner.exists?(runner.id)).to be_truthy
+      end
+    end
+  end
+
+  describe '#destroy' do
+    context 'when user is maintainer' do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it 'destroys the runner' do
+        expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, user) do |service|
+          expect(service).to receive(:execute).once.and_call_original
+        end
+
+        delete :destroy, params: params
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(Ci::Runner.find_by(id: runner.id)).to be_nil
+      end
+
+      context 'with an instance runner' do
+        let_it_be(:runner) { create(:ci_runner, :instance) }
+
+        it 'does not allow deleting the runner' do
+          delete :destroy, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(Ci::Runner.exists?(runner.id)).to be_truthy
+        end
+      end
+
+      context 'with a project runner the user does not manage' do
+        let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
+        it 'does not allow deleting the runner' do
+          delete :destroy, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(Ci::Runner.exists?(runner.id)).to be_truthy
+        end
       end
     end
 
-    context 'with a project runner the user does not manage' do
-      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+    context 'when user is not maintainer' do
+      before_all do
+        project.add_developer(user)
+      end
 
-      it 'does not allow deleting the runner' do
+      it 'renders a 404' do
         delete :destroy, params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -245,7 +307,7 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     end
 
     context 'with a project runner the user does not manage' do
-      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+      let_it_be(:runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       it 'does not allow pausing the runner' do
         post :pause, params: params
@@ -257,49 +319,103 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
   end
 
   describe '#toggle_shared_runners' do
-    let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
 
-    before do
-      project.add_maintainer(user) # rubocop: disable RSpec/BeforeAllRoleAssignment
+    context 'when user is maintainer' do
+      before do
+        project.add_maintainer(user) # rubocop: disable RSpec/BeforeAllRoleAssignment
+      end
+
+      it 'toggles shared_runners_enabled when the group allows shared runners' do
+        project.update!(shared_runners_enabled: true)
+
+        post :toggle_shared_runners, params: params
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.shared_runners_enabled).to eq(false)
+      end
+
+      it 'toggles shared_runners_enabled when the group disallows shared runners but allows overrides' do
+        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
+        project.update!(shared_runners_enabled: false)
+
+        post :toggle_shared_runners, params: params
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.shared_runners_enabled).to eq(true)
+      end
+
+      it 'does not enable if the group disallows shared runners' do
+        group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
+        project.update!(shared_runners_enabled: false)
+
+        post :toggle_shared_runners, params: params
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(project.shared_runners_enabled).to eq(false)
+        expect(json_response['error'])
+          .to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
+      end
     end
 
-    it 'toggles shared_runners_enabled when the group allows shared runners' do
-      project.update!(shared_runners_enabled: true)
+    context 'when user is not maintainer' do
+      before do
+        project.add_developer(user) # rubocop: disable RSpec/BeforeAllRoleAssignment
+      end
 
-      post :toggle_shared_runners, params: params
+      it 'does not allow toggling' do
+        project.update!(shared_runners_enabled: true)
 
-      project.reload
+        post :toggle_shared_runners, params: params
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(project.shared_runners_enabled).to eq(false)
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(project.shared_runners_enabled).to eq(true)
+      end
+    end
+  end
+
+  describe '#toggle_group_runners' do
+    context 'when user is maintainer' do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it 'toggles toggle_group_runners' do
+        project.update!(group_runners_enabled: true)
+
+        post :toggle_group_runners, params: params
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(project.group_runners_enabled).to eq(false)
+      end
     end
 
-    it 'toggles shared_runners_enabled when the group disallows shared runners but allows overrides' do
-      group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: true)
-      project.update!(shared_runners_enabled: false)
+    context 'when user is not maintainer' do
+      before_all do
+        project.add_developer(user)
+      end
 
-      post :toggle_shared_runners, params: params
+      it 'does not allow toggling group_runners_enabled' do
+        project.update!(group_runners_enabled: true)
 
-      project.reload
+        post :toggle_group_runners, params: params
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(project.shared_runners_enabled).to eq(true)
-    end
+        project.reload
 
-    it 'does not enable if the group disallows shared runners' do
-      group.update!(shared_runners_enabled: false, allow_descendants_override_disabled_shared_runners: false)
-      project.update!(shared_runners_enabled: false)
-
-      post :toggle_shared_runners, params: params
-
-      project.reload
-
-      expect(response).to have_gitlab_http_status(:unauthorized)
-      expect(project.shared_runners_enabled).to eq(false)
-      expect(json_response['error'])
-        .to eq('Shared runners enabled cannot be enabled because parent group does not allow it')
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(project.group_runners_enabled).to eq(true)
+      end
     end
   end
 end

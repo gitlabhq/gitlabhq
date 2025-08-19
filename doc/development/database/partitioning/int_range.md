@@ -130,7 +130,7 @@ class BackfillPartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.2
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     enqueue_partitioning_data_migration :merge_request_diff_commits
@@ -168,7 +168,7 @@ class CleanupPartitionMergeRequestDiffCommitsBackfill < Gitlab::Database::Migrat
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     finalize_backfilling_partitioned_table :merge_request_diff_commits

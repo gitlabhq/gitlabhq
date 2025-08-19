@@ -1172,7 +1172,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    marcel (1.0.2)
+    marcel (1.0.4)
     marginalia (1.11.1)
       actionpack (>= 5.2)
       activerecord (>= 5.2)
@@ -2253,6 +2253,7 @@ DEPENDENCIES
   lru_redux
   mail (= 2.8.1)
   mail-smtp_pool (~> 0.1.0)!
+  marcel (~> 1.0.4)
   marginalia (~> 1.11.1)
   memory_profiler (~> 1.0)
   microsoft_graph_mailer (~> 0.1.0)!

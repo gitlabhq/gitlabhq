@@ -303,7 +303,7 @@ Note that for a new type you need to use a new name and ENUM value.
 ```ruby
 class AddTicketWorkItemType < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   ISSUE_ENUM_VALUE = 0
   # Enum value comes from the model where the enum is defined in

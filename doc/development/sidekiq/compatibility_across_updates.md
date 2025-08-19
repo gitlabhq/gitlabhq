@@ -212,7 +212,7 @@ in a **post-deployment migration**:
 
 ```ruby
 class MigrateTheRenamedSidekiqQueue < Gitlab::Database::Migration[2.1]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   disable_ddl_transaction!
 
   def up

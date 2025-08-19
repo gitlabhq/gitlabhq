@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
   let_it_be(:user) { create(:user) }
   let_it_be(:source_user) { generate_source_user(project, '4') }
 
-  let(:client) { double(:client) }
+  let(:client) { double(:client, web_endpoint: 'https://github.com') }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:note_body) { 'This is my note' }

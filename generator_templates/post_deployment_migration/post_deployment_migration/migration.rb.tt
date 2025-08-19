@@ -19,7 +19,7 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
   #
   # Configure the `gitlab_schema` to perform data manipulation (DML).
   # Visit: https://docs.gitlab.com/ee/development/database/migrations_for_multiple_databases.html
-  # restrict_gitlab_migration gitlab_schema: :gitlab_main
+  # restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   # Add dependent 'batched_background_migrations.queued_migration_version' values.
   # DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS = []

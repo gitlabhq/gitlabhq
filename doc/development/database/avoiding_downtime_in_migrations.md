@@ -637,7 +637,7 @@ to migrate the existing data:
 # frozen_string_literal: true
 
 class BackfillMergeRequestMetricsForBigintConversion < Gitlab::Database::Migration[2.1]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   TABLE = :merge_request_metrics
   COLUMNS = %i[id]

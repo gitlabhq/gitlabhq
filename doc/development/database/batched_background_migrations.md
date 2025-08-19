@@ -409,7 +409,7 @@ end
 class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migration[2.2]
   milestone '17.4'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "ResolveVulnerabilitiesForRemovedAnalyzers"
   BATCH_SIZE = 10_000
@@ -477,7 +477,7 @@ end
 class CleanupBackfillNamespaceType < Gitlab::Database::Migration[2.1]
   MIGRATION = "MyMigrationClass"
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     delete_batched_background_migration(MIGRATION, :vulnerabilities, :id, [])
@@ -609,7 +609,7 @@ as the batching strategy.
    class BackfillNamespaceType < Gitlab::Database::Migration[2.1]
      MIGRATION = 'BackfillNamespaceType'
 
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
+     restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
      def up
        queue_batched_background_migration(
@@ -691,7 +691,7 @@ class ProjectsWithIssuesMigration < Gitlab::Database::Migration[2.1]
   MIGRATION = 'BatchProjectsWithIssues'
   BATCH_SIZE = 5000
   SUB_BATCH_SIZE = 500
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   disable_ddl_transaction!
   def up
@@ -849,7 +849,7 @@ end
 
 #### Apply a workaround for our migration helpers (optional)
 
-If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
+If your batched background migration touches tables from a schema other than the one you specified by using `restrict_gitlab_migration` helper (example: the scheduling migration has `restrict_gitlab_migration gitlab_schema: :gitlab_main_org` but the background job uses tables from the `:gitlab_ci` schema) then the migration will fail. To prevent that from happening you must to monkey patch database helpers so they don't fail the testing pipeline job:
 
 1. Add the schema names to [`RestrictGitlabSchema`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb#L57)
 
@@ -914,7 +914,7 @@ Example:
 class QueueBackfillRoutesNamespaceId < Gitlab::Database::Migration[2.1]
   MIGRATION = 'BackfillRouteNamespaceId'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   ...
   ...
 
@@ -1434,7 +1434,7 @@ background migration.
      BATCH_SIZE = 1000
      SUB_BATCH_SIZE = 100
 
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
+     restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
      def up
        queue_batched_background_migration(
@@ -1469,7 +1469,7 @@ background migration.
    When queuing a batched background migration, you need to restrict
    the schema to the database where you make the actual changes.
    In this case, we are updating `routes` records, so we set
-   `restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however,
+   `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`. If, however,
    you need to perform a CI data migration, you would set
    `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 
@@ -1486,7 +1486,7 @@ background migration.
    class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.1]
      disable_ddl_transaction!
 
-     restrict_gitlab_migration gitlab_schema: :gitlab_main
+     restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
      def up
        ensure_batched_background_migration_is_finished(
