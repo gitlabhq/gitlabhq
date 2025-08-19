@@ -1,3 +1,6 @@
+@use 'sass:map';
+@import '@gitlab/ui/src/scss/variables';
+
 /**
  * Prefilled mixins
  * Mixins with fixed values
@@ -456,6 +459,128 @@
 
     .gl-dark & {
       background-color: rgb(from #{$bgcolor} r g b / 84%) !important;
+    }
+  }
+}
+
+@mixin main-container-width-up($name) {
+  $min: map.get($breakpoints, $name);
+  @if $min == null {
+    @error "#{$name} is not a valid breakpoint for this @container query.";
+  }
+  @container main (width >= #{$min}) {
+    @content;
+  }
+}
+
+@mixin main-container-width-down($name) {
+  $max: map.get($breakpoints, $name);
+  @if ($max == null or $max == 0) {
+    @error "#{$name} is not a valid breakpoint for this @media query.";
+  }
+  // The maximum value is reduced by 0.02px to work around the limitations of
+  // `min-` and `max-` prefixes and with fractional viewport sizes.
+  // See: https://www.w3.org/TR/mediaqueries-4/#mq-min-max
+  // Use 0.02px rather than 0.01px to work around a current rounding bug in Safari.
+  // See https://bugs.webkit.org/show_bug.cgi?id=178261
+  $breakpoint-max-range-precision: 0.02px;
+
+  @container main (width <= #{$max - $breakpoint-max-range-precision}) {
+    @content;
+  }
+}
+
+@mixin make-container-grid-columns($columns: $grid-columns, $gutter: $grid-gutter-width, $breakpoints: $grid-breakpoints) {
+  // Common properties for all breakpoints
+  %grid-column {
+    position: relative;
+    width: 100%;
+    padding-right: $gutter * .5;
+    padding-left: $gutter * .5;
+  }
+
+  .gl-row {
+    @include make-row();
+  }
+
+  // Remove the negative margin from default .row, then the horizontal padding
+  // from all immediate children columns (to prevent runaway style inheritance).
+  .gl-no-gutters {
+    margin-right: 0;
+    margin-left: 0;
+
+    > .gl-col,
+    > [class*="gl-col-"] {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+
+  @each $breakpoint in map.keys($breakpoints) {
+    $breakpoint-value: breakpoint-min($breakpoint, $breakpoints);
+    $min: if($breakpoint-value, $breakpoint-value, "0px");
+    $infix: breakpoint-infix($breakpoint, $breakpoints);
+
+    @if $columns > 0 {
+      // Allow columns to stretch full width below their breakpoints
+      @for $i from 1 through $columns {
+        .gl-col#{$infix}-#{$i} {
+          @extend %grid-column; // stylelint-disable-line at-rule-disallowed-list
+        }
+      }
+    }
+
+    .gl-col#{$infix},
+    .gl-col#{$infix}-auto {
+      @extend %grid-column; // stylelint-disable-line at-rule-disallowed-list
+    }
+
+    @container (width >= #{$min}) {
+      // Provide basic `.gl-col-{bp}` classes for equal-width flexbox columns
+      .gl-col#{$infix} {
+        flex-basis: 0;
+        flex-grow: 1;
+        max-width: 100%;
+      }
+
+      @if $grid-row-columns > 0 {
+        @for $i from 1 through $grid-row-columns {
+          .gl-row-cols#{$infix}-#{$i} {
+            @include row-cols($i);
+          }
+        }
+      }
+
+      .gl-col#{$infix}-auto {
+        @include make-col-auto();
+      }
+
+      @if $columns > 0 {
+        @for $i from 1 through $columns {
+          .gl-col#{$infix}-#{$i} {
+            @include make-col($i, $columns);
+          }
+        }
+      }
+
+     .gl-order#{$infix}-first { order: -1; }
+
+     .gl-order#{$infix}-last { order: $columns + 1; }
+
+      @for $i from 0 through $columns {
+       .gl-order#{$infix}-#{$i} { order: $i; }
+      }
+
+      @if $columns > 0 {
+        // `$columns - 1` because offsetting by the width of an entire row isn't possible
+        @for $i from 0 through ($columns - 1) {
+          @if not ($infix == "" and $i == 0) { // Avoid emitting useless.gl-offset-0
+           .gl-offset#{$infix}-#{$i} {
+              @include make-col-offset($i, $columns);
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -250,4 +250,34 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       described_class.ci_job_status_updated(job)
     end
   end
+
+  describe '.ci_pipeline_schedule_status_updated' do
+    let_it_be(:schedule) { create(:ci_pipeline_schedule, project: project, owner: project.first_owner) }
+
+    it 'triggers the ci_pipeline_schedule_status_updated subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_pipeline_schedule_status_updated,
+        { project_id: schedule.project.to_gid },
+        schedule
+      )
+
+      described_class.ci_pipeline_schedule_status_updated(schedule)
+    end
+
+    describe 'when ci_pipeline_schedules_status_realtime is disabled' do
+      before do
+        stub_feature_flags(ci_pipeline_schedules_status_realtime: false)
+      end
+
+      it 'does not trigger the ci_pipeline_schedules_status_realtime subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_pipeline_schedule_status_updated,
+          { project_id: schedule.project.to_gid },
+          schedule
+        )
+
+        described_class.ci_pipeline_schedule_status_updated(schedule)
+      end
+    end
+  end
 end

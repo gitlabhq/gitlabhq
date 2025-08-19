@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-builder.title   truncate(issuable.title, length: 160)
+builder.title   truncate(issuable.title, length: 160), type: 'html'
 builder.updated issuable.updated_at.xmlschema
 builder.media   :thumbnail, width: "40", height: "40", url: image_url(avatar_icon_for_user(issuable.author))
 
@@ -10,7 +10,7 @@ end
 
 builder.summary issuable.title
 builder.description truncate(issuable.description, length: 240) if issuable.description
-builder.content issuable.description if issuable.description
+builder.content issuable.description, type: 'html' if issuable.description
 builder.milestone issuable.milestone.title if issuable.milestone
 
 unless issuable.labels.empty?

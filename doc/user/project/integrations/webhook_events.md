@@ -167,8 +167,12 @@ Payload example:
 Tag events are triggered when you create or delete tags in the repository.
 
 This hook is not executed if a single push includes changes for more than three
-tags by default (depending on the
-[`push_event_hooks_limit` setting](../../../api/settings.md#available-settings)).
+tags by default. This limit is controlled by the `push_event_hooks_limit` setting
+(default: `3`), which applies to both tags and branches. When exceeded, **no webhooks
+are triggered at all** for that push event.
+
+For GitLab Self-Managed instances, administrators can modify this limit using the
+[Application Settings API](../../../api/settings.md#available-settings).
 
 Request header:
 

@@ -728,18 +728,16 @@ tests = [
       ee/spec/features/gitlab_subscriptions/trials/duo_pro/two_step_creation_with_one_existing_namespace_flow_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials/duo_pro_controller_spec.rb
     ]
+    # rubocop:enable Layout/LineLength
   },
 
   {
     explanation: 'Spec for in-app duo enterprise trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller.rb',
     expected: %w[
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/access_denied_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/two_step_creation_with_multiple_existing_namespace_flow_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/two_step_creation_with_one_existing_namespace_flow_spec.rb
+      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials/duo_enterprise_controller_spec.rb
     ]
-    # rubocop:enable Layout/LineLength
   },
 
   {

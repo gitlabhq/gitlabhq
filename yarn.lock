@@ -1404,10 +1404,10 @@
     vue-resizable "1.3.4"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/eslint-plugin@21.2.0":
-  version "21.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-21.2.0.tgz#0b9b4c0c1e012f5262d172aeafdfe72a31c6fadf"
-  integrity sha512-m5mK6mMojp0Jclr0i6ipjv3YM76pJIw+Tsimbn5DNR+lVXSIz4i7gOP3RW4oMgu0ThSVA3klta8TKfdigKoh1g==
+"@gitlab/eslint-plugin@21.2.1":
+  version "21.2.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/eslint-plugin/-/eslint-plugin-21.2.1.tgz#0cf60fd388139755577ec41e5d06679e5b31d59e"
+  integrity sha512-aa24XQpO+DV6BJXJWWMfPaqPs7uy8ThjmgRUB1G4bzaNf/u0OYTTON+t/+rT/qAVY3x7iDGgbHA1k8o/daa9sA==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^7.14.1"
     confusing-browser-globals "^1.0.11"

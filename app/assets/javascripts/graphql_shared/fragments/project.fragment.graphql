@@ -30,6 +30,7 @@ fragment Project on Project {
     stringValue
   }
   userPermissions {
+    archiveProject
     removeProject
     viewEditPage
     adminAllResources @gl_introduced(version: "18.3.0")

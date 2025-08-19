@@ -17,15 +17,12 @@ This glossary provides definitions for terms related to security features in Git
 
 ## Analyzer
 
-Software that performs a scan. The scan analyzes an attack surface for vulnerabilities and produces
-a report containing findings. Reports adhere to the [Secure report format](#secure-report-format).
+Software that analyzes a [scan target type](#scan-target-type) for security vulnerabilities. Internally, it is responsible for gathering required configuration parameters, performing necessary data transformations to convert the target into a standardized format for the [Scanner](#scanner) to execute the scan operation. Finally, it produces a report in the format required by the caller.
 
-Analyzers integrate into GitLab using a CI job. The report produced by the analyzer is published as
-an artifact after the job is complete. GitLab ingests this report, allowing users to visualize and
-manage found vulnerabilities.
+CI-based Analyzers integrate into GitLab using a CI job. The report produced by the CI-based Analyzer is published as an artifact after the job completes. GitLab ingests this report, allowing users to visualize and manage found vulnerabilities. The generated reports adhere to the [Secure report format](#secure-report-format).
 
-Many GitLab analyzers follow a standard approach using Docker to run a wrapped scanner. For example,
-the image `semgrep` is an analyzer that wraps the scanner `Semgrep`.
+Many GitLab analyzers follow a standard approach using Docker to run a wrapped Scanner. For example,
+the image `semgrep` is an analyzer that wraps the scanner `Semgrep`. However, some analyzers run directly within GitLab Rails or other target environments rather than in separate containers.
 
 ## Attack surface
 
@@ -274,6 +271,18 @@ An example primary identifier is `CVE`, which is used for Trivy. The identifier 
 Subsequent scans must return the same value for the same finding, even if the location has slightly
 changed.
 
+## Processor
+
+Software that accepts an input and transforms it according to specified criteria, either by modifying the input data or by attaching additional metadata as an output. Processors exist to support Scanner operations and are commonly used in pre-scan and post-scan phases. Unlike [Filters](#pre-filter), Processors do not have decision-making capabilities to control workflow continuation or termination based on business logic - they perform transformations and pass the results forward unconditionally.
+
+### Pre-Processor
+
+Pre-processors typically perform data preparation tasks such as normalizing input formats, enriching scan targets with additional context, applying target-specific transformations, or augmenting configuration parameters. They ensure that the Scanner receives properly formatted and enhanced inputs optimized for the scanning operation.
+
+### Post-Processor
+
+Post-processors apply intelligent analysis to scan results after the [Scanner](#scanner) completes its operation. Post-processors enhance raw Scanner output through operations like vulnerability classification, false positive filtering, severity adjustment, and contextual enrichment. Scanner results can pass through multiple Post-processors in sequence before the processed results are returned to the [Analyzer](#analyzer).
+
 ## Reachability
 
 Reachability indicates whether a [component](#component) listed as a dependency in a project is actually used in the codebase.
@@ -298,10 +307,13 @@ Describes the type of scan. This must be one of the following:
 
 This list is subject to change as scanners are added.
 
+## Scan target type
+
+A discrete unit of content or artifact that serves as the scope boundary for running the scan. Each scan target type represents a self-contained entity with defined scanning constraints. A specific instance of a scan target type (such as a particular Git repository or container image) is referred to as a "scan target". Examples of scan target types include Git repositories, file systems, containers, etc.
+
 ## Scanner
 
-Software that can scan for vulnerabilities (for example, Trivy). The resulting scan report is
-typically not in the [Secure report format](#secure-report-format).
+Software that scans for security vulnerabilities in a scan target (an instance of a [scan target type](#scan-target-type)). It is generally a stateless component that receives necessary scan configuration parameters and scan payloads from the Analyzer. The resulting scan report is not necessarily in the [Secure report format](#secure-report-format). A scanner can be a sophisticated component that wraps one or more scan engines with additional processors (for example, the Secret Detection Scanner), or it can be as simple as a standalone scan engine (for example, Trivy).
 
 ## Secure product
 

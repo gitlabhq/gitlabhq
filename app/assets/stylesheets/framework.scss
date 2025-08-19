@@ -57,3 +57,5 @@
 @import 'framework/diffs';
 @import 'framework/duo_chat';
 @import 'framework/crud';
+
+@include make-container-grid-columns;

@@ -319,15 +319,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.trigger_pipeline_status_change_subscription' do
+  describe '.trigger_status_change_subscriptions' do
     let(:pipeline) { build(:ci_pipeline, user: user) }
 
     %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
       context "when pipeline receives #{action} event" do
-        it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
-          expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+        context 'without a schedule' do
+          it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+            expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
 
-          pipeline.public_send(action)
+            pipeline.public_send(action)
+          end
+        end
+
+        context 'with a schedule' do
+          let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+          let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+
+          it 'triggers both GraphQL subscriptions' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+            expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+
+            pipeline.public_send(action)
+          end
         end
       end
     end

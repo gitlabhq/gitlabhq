@@ -24,7 +24,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/components/gitlab_subscriptions/trials/duo_pro/lead_form_with_errors_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/form_errors_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/creation_failure_component_spec.rb'
-    - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/resubmit_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/trial_form_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/ultimate/trial_form_with_errors_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trials/welcome/trial_form_component_spec.rb'

@@ -28565,6 +28565,11 @@ msgstr ""
 msgid "Geo sites"
 msgstr ""
 
+msgid "Geo|%d Registry"
+msgid_plural "Geo|%d Registries"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Geo|%d group selected"
 msgid_plural "Geo|%d groups selected"
 msgstr[0] ""
@@ -28603,6 +28608,9 @@ msgid "Geo|%{titlePlural} synced"
 msgstr ""
 
 msgid "Geo|%{titlePlural} verified"
+msgstr ""
+
+msgid "Geo|1000+ Registries"
 msgstr ""
 
 msgid "Geo|Add New Site"
@@ -49481,7 +49489,13 @@ msgstr ""
 msgid "Project & Group can not be assigned at the same time"
 msgstr ""
 
+msgid "Project '%{project_name}' has been successfully archived."
+msgstr ""
+
 msgid "Project '%{project_name}' has been successfully restored."
+msgstr ""
+
+msgid "Project '%{project_name}' has been successfully unarchived."
 msgstr ""
 
 msgid "Project '%{project_name}' is being deleted."
@@ -51118,10 +51132,16 @@ msgstr ""
 msgid "ProjectsNew|my-awesome-project"
 msgstr ""
 
+msgid "Projects|An error occurred archiving the project. Please refresh the page to try again."
+msgstr ""
+
 msgid "Projects|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
 msgid "Projects|An error occurred restoring the project. Please refresh the page to try again."
+msgstr ""
+
+msgid "Projects|An error occurred unarchiving the project. Please refresh the page to try again."
 msgstr ""
 
 msgid "Projects|Delete %{nameWithNamespace}"
@@ -67701,6 +67721,9 @@ msgstr ""
 msgid "Unapproved the current merge request."
 msgstr ""
 
+msgid "Unarchive"
+msgstr ""
+
 msgid "Unarchive project"
 msgstr ""
 
@@ -72106,6 +72129,9 @@ msgstr ""
 msgid "WorkItemStatus|%{status_name} is not a valid status for this item."
 msgstr ""
 
+msgid "WorkItemStatus|Name"
+msgstr ""
+
 msgid "WorkItemStatus|Options could not be loaded for field: %{dropdownLabel}. Please try again."
 msgstr ""
 
@@ -73094,9 +73120,6 @@ msgid "WorkItem|Ticket"
 msgstr ""
 
 msgid "WorkItem|Time tracking"
-msgstr ""
-
-msgid "WorkItem|Title"
 msgstr ""
 
 msgid "WorkItem|To do"

@@ -2,15 +2,25 @@ import {
   ACTION_EDIT,
   ACTION_DELETE,
   ACTION_RESTORE,
+  ACTION_UNARCHIVE,
+  ACTION_ARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 import { sprintf, __ } from '~/locale';
 
-export const availableGraphQLProjectActions = ({ userPermissions, markedForDeletionOn }) => {
+export const availableGraphQLProjectActions = ({
+  userPermissions,
+  markedForDeletionOn,
+  archived,
+}) => {
   const availableActions = [];
 
   if (userPermissions.viewEditPage) {
     availableActions.push(ACTION_EDIT);
+  }
+
+  if (userPermissions.archiveProject) {
+    availableActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
   }
 
   if (userPermissions.removeProject && markedForDeletionOn) {
@@ -22,6 +32,22 @@ export const availableGraphQLProjectActions = ({ userPermissions, markedForDelet
   }
 
   return availableActions;
+};
+
+export const renderArchiveSuccessToast = (project) => {
+  toast(
+    sprintf(__("Project '%{project_name}' has been successfully archived."), {
+      project_name: project.nameWithNamespace,
+    }),
+  );
+};
+
+export const renderUnarchiveSuccessToast = (project) => {
+  toast(
+    sprintf(__("Project '%{project_name}' has been successfully unarchived."), {
+      project_name: project.nameWithNamespace,
+    }),
+  );
 };
 
 export const renderRestoreSuccessToast = (project) => {

@@ -13,10 +13,7 @@ module Gitlab
         # client - An instance of Gitlab::GithubImport::Client.
         # project - An instance of Project.
         def import(client, project)
-          import_settings = import_settings(project)
-
-          return move_to_next_stage(project, {}) if import_settings.disabled?(:collaborators_import) ||
-            import_settings.map_to_personal_namespace_owner?
+          return move_to_next_stage(project, {}) unless import_collaborators?(project)
 
           unless has_push_access?(client, project.import_source)
             log_no_push_access(project)
@@ -31,6 +28,14 @@ module Gitlab
         end
 
         private
+
+        def import_collaborators?(project)
+          import_settings = import_settings(project)
+          return false if import_settings.disabled?(:collaborators_import)
+          return false if import_settings.map_to_personal_namespace_owner?
+
+          ::Import::MemberLimitCheckService.new(project).execute.success?
+        end
 
         def has_push_access?(client, repo)
           client.repository(repo).dig(:permissions, :push)

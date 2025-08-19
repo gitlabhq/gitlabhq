@@ -30,7 +30,7 @@ features. Premium gets access to only a subset of GitLab Duo features.
 
 **How**:
 
-1. Follow [the process to obtain an Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
+1. Follow [the process to obtain an Ultimate license](https://handbook.gitlab.com/handbook/support/internal-support#gitlab-plan-or-license-for-team-members)
 for your local instance. Start with a GitLab Self-Managed Ultimate license. After you have a GitLab Self-Managed license configured, you can always [simulate a SaaS instance](../ee_features.md#simulate-a-saas-instance) and assign individual groups Premium and Ultimate licenses in the admin panel.
 1. [Upload your license activation code](../../administration/license.md#activate-gitlab-ee)
 1. [Set environment variables](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/contributing/runit.md#using-environment-variables) in GDK:
@@ -71,6 +71,8 @@ If you're having issues with your Duo license setup:
   seat to the `root` user only. If you want to test with other users, make sure
   to [assign them a seat](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - To more deeply debug why the root user cannot access a feature like Duo Chat, you can run `GlobalPolicy.new(User.first, User.first).debug(:access_duo_chat)`. This [Declarative Policy debug output](../policies.md#scores-order-performance) will help you dive into the specific access logic for more granular debugging.
+- Make sure there is only ever one License under `admin/subscriptions` and that it is an online license or open the rails console by running `rails c` in the GitLab project, then run `License.current`.
+- If you have several licenses, then open the rails console. Get all of the ids of other licenses and run `License.find(:id).destroy` where the ID is of the unwanted license. Legacy licenses are known to have caused problems with feature access.
 - Check logs for any authentication or license validation errors
 - For cloud license issues, reach out to `#s_fulfillment_engineering` in Slack
 - For AI Gateway connection issues, reach out to `#g_ai_framework` in Slack

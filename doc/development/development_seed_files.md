@@ -30,7 +30,7 @@ data for features.
 
 ### Seed project and group resources for GitLab Duo
 
-The [`gitlab:duo:setup` setup script](ai_features/_index.md#required-run-gitlabduosetup-script) will execute
+The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) will execute
 the development seed file for GitLab Duo project and group resources.
 However, if you would like to re-create the resources, you can re-run the seed task using the command:
 

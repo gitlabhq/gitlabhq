@@ -44,6 +44,19 @@ GitLab.com enforces [webhook limits](../../gitlab_com/_index.md#webhooks), inclu
 
 For GitLab Self-Managed, administrators can modify these limits.
 
+### Push event limits
+
+GitLab limits webhook triggers for push events that include multiple changes:
+
+- Default limit: 3 branches or tags per push.
+- Behavior when exceeded: No webhooks are triggered for the entire push event.
+- Applies to: Both project webhooks and system hooks.
+- Configuration: GitLab Self-Managed administrators can modify the `push_event_hooks_limit`
+  setting through the [Application Settings API](../../../api/settings.md#available-settings).
+
+If you frequently push multiple tags or branches simultaneously and need webhook
+notifications, contact your GitLab administrator to increase this limit.
+
 ## Group webhooks
 
 {{< details >}}

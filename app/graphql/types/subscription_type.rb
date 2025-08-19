@@ -13,6 +13,11 @@ module Types
       description: 'Triggered when a pipeline status is updated.',
       experiment: { milestone: '17.10' }
 
+    field :ci_pipeline_schedule_status_updated,
+      subscription: Subscriptions::Ci::PipelineSchedule::StatusUpdated, null: true,
+      description: 'Triggered when a pipeline schedule is updated.',
+      experiment: { milestone: '18.4' }
+
     field :issuable_assignees_updated,
       subscription: Subscriptions::IssuableUpdated, null: true,
       description: 'Triggered when the assignees of an issuable are updated.'

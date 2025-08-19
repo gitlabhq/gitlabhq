@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { GlTruncate, GlLink } from '@gitlab/ui';
 import DeploymentInfo from '~/vue_merge_request_widget/components/deployment/deployment_info.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { deploymentMockData } from './deployment_mock_data';
 
 // This component is well covered in ./deployment_spec.js
@@ -20,14 +21,17 @@ describe('Deployment Info component', () => {
     wrapper = mount(DeploymentInfo, componentOptions);
   };
 
+  const findTruncate = () => wrapper.findComponent(GlTruncate);
+  const findLink = () => wrapper.findComponent(GlLink);
+  const findDeploymentTime = () => wrapper.findComponent(TimeAgoTooltip);
+
   beforeEach(() => {
     factory();
   });
 
   it('should render gl-truncate for environment name', () => {
-    const envNameComponent = wrapper.findComponent(GlTruncate);
-    expect(envNameComponent.exists()).toBe(true, 'We should use gl-truncate for environment name');
-    expect(envNameComponent.props()).toEqual({
+    expect(findTruncate().exists()).toBe(true, 'We should use gl-truncate for environment name');
+    expect(findTruncate().props()).toEqual({
       text: deploymentMockData.name,
       withTooltip: true,
       position: 'middle',
@@ -35,8 +39,14 @@ describe('Deployment Info component', () => {
   });
 
   it('should have a link with a correct href to deployed environment', () => {
-    const envLink = wrapper.findComponent(GlLink);
-    expect(envLink.exists()).toBe(true, 'We should have gl-link pointing to deployed environment');
-    expect(envLink.attributes().href).toBe(deploymentMockData.url);
+    expect(findLink().exists()).toBe(
+      true,
+      'We should have gl-link pointing to deployed environment',
+    );
+    expect(findLink().attributes().href).toBe(deploymentMockData.url);
+  });
+
+  it('should display correct deployment time', () => {
+    expect(findDeploymentTime().props('time')).toBe(deploymentMockData.deployed_at);
   });
 });

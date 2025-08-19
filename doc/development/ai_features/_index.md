@@ -11,29 +11,66 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 ## Instructions for setting up GitLab Duo features in the local development environment
 
-### Required: Configure licenses
+Here is a list of all of the main steps to go through from a fresh, GDK-less computer to fully working ai-development ready.
+
+1. [Setup GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md#install-prerequisites). You should follow the [local network binding](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md) documentation as well.
+1. [Configure license](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk)
+1. [Setup your Google Cloud Platform account and the CLI](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#set-up-google-cloud-platform-in-ai-gateway)
+1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
+1. [If you want to use Duo Chat, Code Suggestions, and other non-Duo Agent Platform features, install and configure AI gateway](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md)
+1. [If you want to use Duo Agent Platform or Agentic Chat locally, setup Duo Workflow Service](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md)
+1. [Run the Duo setup Rake task](#run-gitlabduosetup-script)
+
+More details on each step can be found down below for help and troubleshooting.
+
+### Setup GDK
+
+After following the [installation documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md#install-prerequisites), executing `gdk status` should show all services as up and running. Login as the root user and make sure there are no errors.
+
+### Configure licenses
 
 See [GitLab Duo licensing for local development](ai_development_license.md).
 
-### Required: Install AI gateway
+**Important** Before tackling any other step, validate that you have a working License. Navigate to `admin/subscriptions` and make sure you see only one license and that is has the `online` label.
 
-**Why**: Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
+If there is any issue, check out [the troubleshooting documentation](ai_development_license.md#troubleshooting).
 
-**How**:
-Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md)
-to install the AI gateway with GDK.
+### Install AI gateway
 
-### Required: Run `gitlab:duo:setup` script
+This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md) to install the AI gateway with GDK.
 
 {{< alert type="note" >}}
 Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
 For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
-
 {{< /alert >}}
 
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
+AI gateway is what routes request between GitLab Rails and the LLM. The script should take care of most of the setup required. Once it has been run, make sure
+to check in your GDK database that the ai gateway URL is correct. Run:
 
-**How**:
+```ruby
+Ai::Setting.first.ai_gateway_url
+```
+
+This should return a URL that points to your local and uses the right port: `http://0.0.0.0:5052`.
+
+If the value points to a non-local URL, you can manually execute an update to your GDK database:
+
+```ruby
+Ai::Setting.first.update!(ai_gateway_url: "http://0.0.0.0:5052")
+```
+
+Now in your `gdk` directory, you can `cd` into the `gitlab-ai-gateway` directory and run `poetry sync`. This should install all project dependency. If this resolves without error, try now to run the test of the project with `make test`. If there are errors, check the results as it can help debug potential issues with your configuration.
+
+Finally, run `gdk tail gitlab-ai-gateway` from the GitLab project directory. There should be no errors in the log.
+
+### Setup Duo Workflow Service
+
+After following the steps in the [setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md), run `gdk status`. You should see the `duo-workflow-service` running. You can run `gdk tail duo-workflow-service` in case there might be errors.
+
+### Run `gitlab:duo:setup` script
+
+This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally. Below are several options. If you are unsure, use option 1.
 
 1. GitLab.com (SaaS) mode
 
@@ -74,6 +111,13 @@ For Duo Pro, [you can provision a license yourself](ai_development_license.md#se
    ```shell
    GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_pro]'
    ```
+
+  After the script finishes without error, now go to `gitlab-duo/test` and validate that you can see Duo Chat. Send a question to Chat
+  and make sure there are no errors. If there are, the two most common problems in development are [A1003](../../administration/gitlab_duo_self_hosted/troubleshooting.md#error-a1003) and [A9999](../../administration/gitlab_duo_self_hosted/troubleshooting.md#error-a9999).
+
+  A9999 is a catchall error. The biggest offender is not having the ai gateway URL setup properly as described in [Install AI gateway](#install-ai-gateway). If not, make sure to check the tests are passing in the `gitlab-ai-gateway` repository with `make test` and that `gdk tail gitlab-ai-gateway` returns no error.
+
+  A1003 is more around permissions, either an invalid/missing Anthropic token or a misconfiguration of `gcloud`.
 
 ## Tips for local development
 

@@ -302,62 +302,156 @@ This ensures that `!important` applies only where intended without affecting oth
 
 ## Responsive design
 
-Our UI should work well on mobile and desktop. To accomplish this we use [CSS media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries). In general we should take a mobile first approach to media queries. This means writing CSS for mobile, then using min-width media queries to override styles on desktop. A exception to this rule is setting the display mode on child components. For example when hiding `GlButton` on mobile we don't want to override the display mode set by our component CSS so we should use a max-width media query such as `max-lg:gl-hidden`.
+Our UI should work well on mobile and desktop. To accomplish this we use [CSS container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries). In general we should take a mobile first approach to container queries. This means writing CSS for mobile, then using min-width container queries to override styles on desktop. An exception to this rule is setting the display mode on child components. For example when hiding `GlButton` on mobile we don't want to override the display mode set by our component CSS so we should use a max-width container query.
+Our current Tailwind configuration does not support max-width container queries, so if such workaround
+is needed, you'd need to write some custom styles.
 
 ### Tailwind CSS classes
 
 ```html
-<!-- Bad -->
+<!-- Bad (using desktop-first media queries) -->
 <div class="gl-mt-5 max-lg:gl-mt-3"></div>
-
-<!-- Good -->
-<div class="gl-mt-3 md:gl-mt-5"></div>
-
-<!-- Bad -->
 <div class="gl-mt-3 sm:max-lg:gl-mt-5"></div>
 
-<!-- Good -->
-<div class="gl-mt-3 sm:gl-mt-5 lg:gl-mt-3"></div>
+<!-- Good (using mobile-first container queries) -->
+<div class="gl-mt-3 @md:gl-mt-5"></div>
+<div class="gl-mt-3 @sm:gl-mt-5 @lg:gl-mt-3"></div>
 
 <!-- Bad -->
 <!-- Changing the display mode of child components can cause visual regressions. -->
-<gl-button class="gl-hidden lg:gl-flex">Edit</gl-button>
+<gl-button class="gl-hidden @lg:gl-flex">Edit</gl-button>
 
 <!-- Good -->
-<gl-button class="max-lg:gl-hidden">Edit</gl-button>
+<gl-button class="my-button">Edit</gl-button>
+<style lang="scss">
+@include main-container-width-down(lg) {
+    .my-button {
+        display: none;
+    }
+}
+</style>
 ```
 
 ### Component classes
 
 ```scss
-// Bad
+// Bad (using desktop-first media queries)
 .class-name {
   @apply gl-mt-5 max-lg:gl-mt-3;
 }
 
-// Good
+// Good (using mobile-first container queries)
 .class-name {
-  @apply gl-mt-3 lg:gl-mt-5;
+  @apply gl-mt-3 @lg:gl-mt-5;
 }
 
-// Bad
+// Bad (using desktop-first container queries)
 .class-name {
   display: block;
 
-  @include media-breakpoint-down(lg) {
+  @include main-container-width-down(lg) {
     display: flex;
   }
 }
 
-// Good
+// Good (using mobile-first container queries)
 .class-name {
   display: flex;
 
-  @include media-breakpoint-up(lg) {
+  @include main-container-width-up(lg) {
     display: block;
   }
 }
 ```
+
+### Migrating from media queries
+
+As of August 2025, we are dropping legacy media queries in favor of container queries.
+Container queries give us a better way of building responsive layouts within self-contained
+application, without relying on the browser window width which might not be the best reference
+width in many cases.
+
+Since most of our code was previously written with media queries, it needs to be migrated over to
+container queries. To help with the process, we have built a migration script that performs the
+following tasks:
+
+- Replaces Tailwind media queries CSS utils with container queries utils.
+- Replaces Bootstrap responsive utils with their Tailwind container utils equivalents.
+- Replaces other legacy Bootstrap non-responsive utils with their Tailwind equivalents. This helps
+with another ongoing migration which we might as well tackle at the same time while we are changing
+many pages in the product.
+- Rewrites media queries in SCSS files to use container queries mixins instead.
+
+The script supports the following file types:
+
+- Vue
+- JavaScript
+- HAML<sup>*</sup>
+- SCSS
+
+<sup>*</sup>In HAML files, the script might break the syntax because the Tailwind container queries
+syntax leverages special characters that HAML inline class names don't support. Those would need to
+be moved to an explicit `class` attribute manually after running the script:
+
+```haml
+# This breaks the HAML syntax:
+%p.@md/main:gl-mt-2
+
+# To fix it, move the util to an explicit `class` attibute:
+%p{ class: "@md/main:gl-mt-2" }
+```
+
+To migrate a file, invoke the script with the files to migrate as its argument:
+
+```shell
+scripts/frontend/migrate_to_container_queries.mjs \
+    app/assets/stylesheets/page_bundles/admin/geo_replicable.scss \
+    ee/app/assets/javascripts/geo_replicable_item/components/app.vue
+```
+
+The script can be used in conjunction with the `find_frontend_files` script which finds all
+JavaScript/Vue assets a given file depends on. For example, you could use this combination to find
+a page's JavaScript entrypoint's dependencies and pass them all at once to the migration script:
+
+```shell
+scripts/frontend/migrate_to_container_queries.mjs $(scripts/frontend/find_frontend_files.mjs app/assets/javascripts/todos/index.js)
+```
+
+To find partials a given HAML view depends on, navigate to the relevant page in your GDK, then run
+the following script in the browser's console to copy the list of files to the clipboard:
+
+```javascript
+(() => {
+  const partialRegex = /BEGIN\s+(?<partial>\S+.haml)\s*/;
+  const extractPartial = node => {
+    const match = partialRegex.exec(node.data);
+    if (match?.groups?.partial) return match.groups.partial;
+    return null;
+  };
+
+  const nodeIterator = document.createNodeIterator(document.documentElement, NodeFilter.SHOW_COMMENT);
+  const partials = [];
+  let currentNode;
+  while ((currentNode = nodeIterator.nextNode())) {
+    const partial = extractPartial(currentNode);
+    if (partial) partials.push(partial);
+  }
+
+  copy(partials.join('\n'));
+})();
+```
+
+{{< alert type="note" >}}
+Keep in mind that, while the script can help speed up migrations, it also cannot migrate
+everything for you. In particular, you should pay attention to the following:
+
+- If you are using UI elements from NPM dependencies, those would need to be migrated or overriden
+manually.
+- The code you are migrating might contain some JavaScript that reacts to the window being
+resized. This kind of script would need to be migrated manually in a way that's "container-aware".
+- If your SCSS implements media queries with custom breakpoints, the script might not be able to
+rewrite those, so you'd need to migrate them manually.
+{{< /alert >}}
 
 ## Naming
 

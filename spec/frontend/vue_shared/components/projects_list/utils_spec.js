@@ -1,57 +1,85 @@
 import {
   availableGraphQLProjectActions,
   deleteParams,
+  renderArchiveSuccessToast,
   renderDeleteSuccessToast,
   renderRestoreSuccessToast,
+  renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import {
+  ACTION_ARCHIVE,
+  ACTION_DELETE,
   ACTION_EDIT,
   ACTION_RESTORE,
-  ACTION_DELETE,
+  ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-const MOCK_PROJECT_DELAY_DELETION_ENABLED = {
+const MOCK_PROJECT = {
   nameWithNamespace: 'With Delay Project',
   fullPath: 'path/to/project/2',
-  markedForDeletionOn: null,
-  permanentDeletionDate: '2024-03-31',
   group: {
     id: 'gid://gitlab/Group/2',
   },
 };
 
+const MOCK_PROJECT_DELAY_DELETION_ENABLED = {
+  ...MOCK_PROJECT,
+  markedForDeletionOn: null,
+  permanentDeletionDate: '2024-03-31',
+};
+
 const MOCK_PROJECT_PENDING_DELETION = {
-  nameWithNamespace: 'Pending Deletion Project',
-  fullPath: 'path/to/project/3',
+  ...MOCK_PROJECT,
   markedForDeletionOn: '2024-03-24',
   permanentDeletionDate: '2024-03-31',
-  group: {
-    id: 'gid://gitlab/Group/3',
-  },
 };
 
 describe('availableGraphQLProjectActions', () => {
   describe.each`
-    userPermissions                                  | markedForDeletionOn | availableActions
-    ${{ viewEditPage: false, removeProject: false }} | ${null}             | ${[]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${null}             | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeProject: true }}  | ${null}             | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${null}             | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${'2024-12-31'}     | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${'2024-12-31'}     | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    userPermissions                                  | markedForDeletionOn | archived | availableActions
+    ${{ viewEditPage: false, removeProject: false }} | ${null}             | ${false} | ${[]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${null}             | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeProject: true }}  | ${null}             | ${false} | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${null}             | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${'2024-12-31'}     | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${'2024-12-31'}     | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ archiveProject: true }}                      | ${null}             | ${false} | ${[ACTION_ARCHIVE]}
+    ${{ archiveProject: true }}                      | ${null}             | ${true}  | ${[ACTION_UNARCHIVE]}
+    ${{ archiveProject: false }}                     | ${null}             | ${false} | ${[]}
+    ${{ archiveProject: false }}                     | ${null}             | ${true}  | ${[]}
   `(
     'availableGraphQLProjectActions',
-    ({ userPermissions, markedForDeletionOn, availableActions }) => {
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletionOn is ${markedForDeletionOn}, then availableActions = [${availableActions}] and is sorted correctly`, () => {
+    ({ userPermissions, markedForDeletionOn, archived, availableActions }) => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletionOn is ${markedForDeletionOn}, and archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
-          availableGraphQLProjectActions({ userPermissions, markedForDeletionOn }),
+          availableGraphQLProjectActions({ userPermissions, markedForDeletionOn, archived }),
         ).toStrictEqual(availableActions);
       });
     },
   );
+});
+
+describe('renderArchiveSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderArchiveSuccessToast(MOCK_PROJECT);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Project '${MOCK_PROJECT.nameWithNamespace}' has been successfully archived.`,
+    );
+  });
+});
+
+describe('renderUnarchiveSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderUnarchiveSuccessToast(MOCK_PROJECT);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Project '${MOCK_PROJECT.nameWithNamespace}' has been successfully unarchived.`,
+    );
+  });
 });
 
 describe('renderRestoreSuccessToast', () => {

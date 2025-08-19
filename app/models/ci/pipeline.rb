@@ -191,7 +191,7 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
-    after_commit :trigger_pipeline_status_change_subscription, if: :saved_change_to_status?
+    after_commit :trigger_status_change_subscriptions, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -636,8 +636,12 @@ module Ci
       :ci_pipelines
     end
 
-    def trigger_pipeline_status_change_subscription
+    def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
+
+      return unless self.pipeline_schedule_id.present?
+
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule)
     end
 
     def uses_needs?
