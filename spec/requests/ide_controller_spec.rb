@@ -172,6 +172,20 @@ RSpec.describe IdeController, feature_category: :web_ide do
 
         expect(web_ide_oauth_application).to eq(existing_app)
       end
+
+      it 'includes the Web IDE favicon link tag with correct attributes' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        doc = Nokogiri::HTML(response.body)
+        favicon_link = doc.at_css('link#favicon')
+
+        expect(favicon_link).to be_present
+        expect(favicon_link['rel']).to eq('icon')
+        expect(favicon_link['type']).to eq('image/png')
+        expect(favicon_link['href']).to match_asset_path '/assets/favicon-web-ide.png'
+      end
     end
 
     describe 'content security policy' do

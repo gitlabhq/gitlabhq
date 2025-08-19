@@ -21,6 +21,7 @@ describe('ReviewerTitle component', () => {
     return mountExtended(Component, {
       apolloProvider,
       propsData: {
+        numberOfReviewers: 0,
         editable: false,
         ...props,
       },
@@ -40,15 +41,26 @@ describe('ReviewerTitle component', () => {
   describe('reviewer title', () => {
     it('renders reviewer', () => {
       wrapper = createComponent({
+        numberOfReviewers: 1,
         editable: false,
       });
 
       expect(wrapper.vm.$el.innerText.trim()).toEqual('Reviewer');
     });
+
+    it('renders 2 reviewers', () => {
+      wrapper = createComponent({
+        numberOfReviewers: 2,
+        editable: false,
+      });
+
+      expect(wrapper.vm.$el.innerText.trim()).toEqual('2 Reviewers');
+    });
   });
 
   it('does not render spinner by default', () => {
     wrapper = createComponent({
+      numberOfReviewers: 0,
       editable: false,
     });
 
@@ -58,6 +70,7 @@ describe('ReviewerTitle component', () => {
   it('renders spinner when loading', () => {
     wrapper = createComponent({
       loading: true,
+      numberOfReviewers: 0,
       editable: false,
     });
 

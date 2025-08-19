@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
 
 export default {
@@ -18,6 +18,10 @@ export default {
       required: false,
       default: false,
     },
+    numberOfReviewers: {
+      type: Number,
+      required: true,
+    },
     editable: {
       type: Boolean,
       required: true,
@@ -26,6 +30,12 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+  },
+  computed: {
+    reviewerTitle() {
+      const reviewers = this.numberOfReviewers;
+      return n__('Reviewer', `%d Reviewers`, reviewers);
     },
   },
   i18n: {
@@ -37,7 +47,7 @@ export default {
   <div
     class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-default"
   >
-    {{ __('Reviewer') }}
+    {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
     <template v-if="editable">
       <reviewer-dropdown

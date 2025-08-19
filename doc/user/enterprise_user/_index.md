@@ -13,83 +13,35 @@ description: Domain verification, two-factor authentication, enterprise user man
 
 {{< /details >}}
 
-Enterprise users are administered by an organization that has [verified their email domain](#add-group-domains)
-and purchased a [GitLab subscription](../../subscriptions/_index.md).
+Enterprise users are similar to standard GitLab users, but are administered by an organization.
+Each enterprise user is claimed and managed by a specific top-level group. To claim enterprise
+users, you must verify a group domain and have an active [subscription](../../subscriptions/_index.md).
 
-These users are identified by an `Enterprise` badge next to their names on the [Members list](../group/_index.md#filter-and-sort-members-in-a-group).
+If the subscription expires or is canceled:
 
-## Automatic claims of enterprise users
-
-A user is automatically claimed as an enterprise user of a group when both of the following conditions are met:
-
-- The user's primary email has a domain that has been [verified](#add-group-domains) by the group.
-- The user account meets at least one of the following conditions:
-  - It was created February 1, 2021 or later.
-  - It has a SAML or SCIM identity tied to the organization's group.
-  - It has a `provisioned_by_group_id` value that is the same as the group ID of the organization.
-  - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
-
-After the user is claimed as an enterprise user:
-
-- Their `enterprise_group_id` attribute is set to the organization's group's ID.
-- The user receives a [welcome email](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/views/notify/user_associated_with_enterprise_group_email.html.haml).
-
-If a group's purchased subscription expires or is canceled:
-
-- Users claimed as enterprise users remain enterprise users of that group.
-- The group is not able to [manage their enterprise users](#manage-enterprise-users).
+- Any existing enterprise users remain enterprise users in the group.
+- Group Owners cannot manage their enterprise users.
 - Primary emails for user accounts must be from a verified domain.
-- No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until the paid subscription is renewed.
-
-If a group's verified domains are removed:
-
-- Users claimed as enterprise users remain enterprise users of that group.
-- Primary emails for user accounts must be from a verified domain.
-- No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until domains are verified.
-
-If the organization moves its verified domains to another paid group, its enterprise users are [automatically claimed](#automatic-claims-of-enterprise-users) as enterprise users of that group.
-
-### Identifying unclaimed users
-
-If a user is not automatically claimed as an enterprise user, their existing access will not be revoked.
-A group with domain verification enabled can have both claimed and unclaimed users as members.
-
-The only difference between a member claimed as an enterprise user and a member that is not is that a Group Owner cannot [manage unclaimed users](#manage-enterprise-users).
-
-### Identifying group members that have not been claimed as enterprise users
-
-Groups that enable domain verification can have both claimed and unclaimed users as members.
-Unclaimed users retain their existing access, but are not managed by group Owners.
-
-See [Manage enterprise users in a namespace](#manage-enterprise-users).
-
-You can discover any unclaimed users in your group by accessing and analyzing your list of billable
-users at: `https://gitlab.com/groups/<group_id>/-/usage_quotas#seats-quota-tab`.
-
-From this list, unclaimed users one of the following:
-
-- No visible email address.
-- An email address that does not match your verified domain.
-
-To claim these users, they must update their primary email address to match the verified domain.
-These users are automatically claimed when the next scheduled claim worker runs.
+- New enterprise users cannot be associated with the group until a subscription is renewed.
 
 ## Manage group domains
 
 To claim GitLab.com users as enterprise users, you must add and verify ownership of a domain.
 Group domains are added to the top-level group and apply to all subgroups and projects
-in the group. While each group can have multiple domains, you can associate each domain
-with only one group at a time.
+in the group.
 
-Group domains are linked to a project in your top-level group. The
-linked project needs [GitLab Pages](../project/pages/_index.md), but does
-not need to create a GitLab Pages website. If GitLab Pages is turned off, you cannot
-verify the domain.
+While each group can have multiple domains, you can associate each domain with only one group
+at a time. If you move your domain to another paid group, all enterprise users are automatically
+claimed by the new group.
 
-Group domains are linked to a specified project in the top-level group, but apply to the
-entire group hierarchy including all nested subgroups and projects. Members in the linked project with
-[at least the Maintainer role](../permissions.md#project-members-permissions) can modify or
-remove the domain. If this project is deleted, your associated domains are also removed.
+Group domains are linked to a project in your top-level group. The linked project needs
+[GitLab Pages](../project/pages/_index.md), but does not need to create a GitLab Pages website.
+If GitLab Pages is turned off, you cannot verify the domain.
+
+Even though the domain is linked to a project, it is available to the entire group hierarchy
+including all nested subgroups and projects. Members in the linked project with
+[at least the Maintainer role](../permissions.md#project-members-permissions) can modify or remove
+the domain. If this project is deleted, your associated domains are also removed.
 
 For more information on group domains, see [epic 5299](https://gitlab.com/groups/gitlab-org/-/epics/5299).
 
@@ -172,6 +124,12 @@ From here, you can:
 
 ### Delete group domains
 
+Deleting a group domain can impact enterprise users in your group. After you delete the domain:
+
+- Any existing enterprise users remain enterprise users in the group.
+- Primary emails for user accounts must be from a verified domain.
+- New enterprise users cannot be associated with the group until another domain is verified.
+
 To delete a custom domain for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -185,6 +143,45 @@ In addition to the standard [group member permissions](../permissions.md#group-m
 Owners of a top-level group can also manage enterprise users in their group.
 
 You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.
+
+### Automatic claims of enterprise users
+
+Prerequisites:
+
+- The top-level group must [add and verify a group domain](#add-group-domains).
+- The user account must meet at least one of the following conditions:
+  - The user account was created on or after February 1, 2021.
+  - The user account has a SAML or SCIM identity tied to the organization's group.
+  - The user account has a `provisioned_by_group_id` attribute that matches the group ID.
+  - The user account is already a member of the group subscription purchased or renewed on or after February 1, 2021.
+
+After a group verifies ownership of a domain, users with an email address from a domain are
+automatically claimed by the group as enterprise users. No direct action is needed from
+group Owners.
+
+Any existing group members with an email address from a different domain retain their existing
+access, but can not be managed by group Owners. To claim these users, they must update their
+primary email address to match your group domain.
+
+The claim process can take up to four days to trigger. You can immediately run this process by manually [re-verifying the group domain](#edit-group-domains).
+
+After a group claims an enterprise user:
+
+- The user receives a [welcome email](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/views/notify/user_associated_with_enterprise_group_email.html.haml).
+- The group ID is added to the user's `enterprise_group_id` attribute.
+
+### Identifying enterprise users
+
+You can identify enterprise users from the [members list](../group/_index.md#filter-and-sort-members-in-a-group).
+All enterprise users have an `Enterprise` badge next to their names.
+
+You can discover any non-enterprise group members by analyzing the list of billable users at:
+`https://gitlab.com/groups/<group_id>/-/usage_quotas#seats-quota-tab`.
+
+From this list, non-enterprise users have one of the following:
+
+- An email address from a non-verified domain.
+- No visible email address.
 
 ### Restrict authentication methods
 

@@ -293,6 +293,13 @@ After the above steps have been completed, the automatic release process execute
 | Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
 | Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
 
+{{< alert type="warning" >}}
+
+Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
+variable permissions should be announced in the section's Slack channel.
+
+{{< /alert>}}
+
 ### Token rotation for service account
 
 The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account **must** be rotated before the `Expiry Date` listed [above](#service-account-used-in-the-automatic-release-process) by doing the following:

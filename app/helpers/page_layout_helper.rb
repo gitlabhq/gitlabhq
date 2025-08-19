@@ -51,6 +51,8 @@ module PageLayoutHelper
   end
 
   def favicon
+    return Gitlab::Favicon.web_ide_favicon if current_controller?(:ide)
+
     Gitlab::Favicon.main
   end
 

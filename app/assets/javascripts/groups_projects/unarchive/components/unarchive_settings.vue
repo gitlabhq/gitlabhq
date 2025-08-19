@@ -1,11 +1,12 @@
 <script>
-import { GlButton, GlCard, GlIcon, GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlButton, GlCard, GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { unarchiveGroup } from '~/api/groups_api';
 import { unarchiveProject } from '~/api/projects_api';
+import { InternalEvents } from '~/tracking';
 
 export default {
   components: {
@@ -17,6 +18,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     resourceType: {
       type: String,
@@ -122,6 +124,9 @@ export default {
       <gl-button
         v-if="!ancestorsArchived"
         data-testid="unarchive-button"
+        data-event-tracking="archive_namespace_in_settings"
+        data-event-property="unarchive"
+        :data-event-label="resourceType"
         class="gl-mt-5"
         :loading="loading"
         @click="unarchive"

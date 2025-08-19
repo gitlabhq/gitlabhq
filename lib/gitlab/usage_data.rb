@@ -13,8 +13,8 @@
 
 # NOTE:
 # Implementing metrics direct in `usage_data.rb` is deprecated,
-# please add new instrumentation class and use add_metric method.
-# For more information, see https://docs.gitlab.com/ee/development/service_ping/metrics_instrumentation.html
+# please add new Metrics Instrumentation class.
+# For more information, see https://docs.gitlab.com/development/internal_analytics/metrics/metrics_instrumentation
 
 module Gitlab
   class UsageData

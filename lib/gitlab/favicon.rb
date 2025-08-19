@@ -42,6 +42,11 @@ module Gitlab
         ActionController::Base.helpers.image_path(path, host: host)
       end
 
+      def web_ide_favicon
+        path = 'favicon-web-ide.png'
+        ActionController::Base.helpers.image_path(path, host: host)
+      end
+
       def available_status_names
         @available_status_names ||= Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', '*.png'))
             .map { |file| File.basename(file, '.png') }

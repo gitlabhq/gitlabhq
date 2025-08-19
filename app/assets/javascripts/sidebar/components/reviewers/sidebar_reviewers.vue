@@ -12,11 +12,11 @@ import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
 import { useBatchComments } from '~/batch_comments/store';
-import ReviewerTitle from 'ee_else_ce/sidebar/components/reviewers/reviewer_title.vue';
 import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
 import Store from '../../stores/sidebar_store';
+import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
 
 export const state = Vue.observable({

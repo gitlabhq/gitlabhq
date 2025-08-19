@@ -1,0 +1,22 @@
+---
+description: User archives or unarchives a project/group in the settings page
+internal_events: true
+status: active
+action: archive_namespace_in_settings
+identifiers:
+- project
+- namespace
+additional_properties:
+  label:
+    description: The type of namespace
+  property:
+    description: The type of event ('archive' or 'unarchive')
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201580
+tiers:
+- free
+- premium
+- ultimate

@@ -9,6 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
@@ -17,6 +18,8 @@ jest.mock('~/api/projects_api');
 
 describe('UnarchiveSettings', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const unarchiveFuncByType = {
     [RESOURCE_TYPES.GROUP]: unarchiveGroup,
@@ -89,6 +92,17 @@ describe('UnarchiveSettings', () => {
 
         beforeEach(() => {
           createComponent({ props: { resourceType } });
+        });
+
+        it('tracks internal event', () => {
+          const { triggerEvent, trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          triggerEvent(findGlButton().element);
+
+          expect(trackEventSpy).toHaveBeenCalledWith('archive_namespace_in_settings', {
+            label: resourceType,
+            property: 'unarchive',
+          });
         });
 
         it('calls unarchiveFunc', () => {

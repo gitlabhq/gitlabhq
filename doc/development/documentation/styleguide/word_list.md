@@ -324,10 +324,6 @@ Instead, use **assign**. For example:
 - Assign the issue to an epic.
 - Assign a user to the issue.
 
-## authenticated user
-
-Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
-
 ## authenticate
 
 Try to use the most suitable preposition when you use **authenticate** as a verb.
@@ -349,6 +345,10 @@ For example:
 
 - The client authenticates against the LDAP directory.
 - The script authenticates against the local user database.
+
+## authenticated user
+
+Use **authenticated user** instead of other variations, like **signed in user** or **logged in user**.
 
 ## before you begin
 
@@ -481,6 +481,20 @@ Use **check out** as a verb. For the Git command, use `checkout`.
 
 Use the hyphenated version of **cherry-pick**. Do not use **cherry pick**.
 
+## child
+
+Always use as a compound noun.
+
+Examples:
+
+- child issue
+- child epic
+- child objective
+- child key result
+- child pipeline
+
+See also: [descendant](#descendant), [parent](#parent) and [subgroup](#subgroup).
+
 ## CI, CD
 
 When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** alone.
@@ -497,20 +511,6 @@ You can omit **CI/CD** when the context is clear, especially after the first use
 ## CI/CD minutes
 
 Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
-
-## child
-
-Always use as a compound noun.
-
-Examples:
-
-- child issue
-- child epic
-- child objective
-- child key result
-- child pipeline
-
-See also: [descendant](#descendant), [parent](#parent) and [subgroup](#subgroup).
 
 ## click
 
@@ -1116,10 +1116,6 @@ When possible, use present tense instead of future tense. For example, use **aft
 
 For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
-## Geo
-
-Use title case for **Geo**.
-
 ## generally available, general availability
 
 Use lowercase for **generally available** and **general availability**.
@@ -1133,6 +1129,10 @@ do not say:
 - This feature has reached general availability.
 
 Do not use **GA** to abbreviate general availability.
+
+## Geo
+
+Use title case for **Geo**.
 
 ## GitLab
 
@@ -1345,11 +1345,6 @@ Use sentence case for **group access token**.
 
 Capitalize the first word when you refer to the UI.
 
-## guide
-
-We want to speak directly to users. On `docs.gitlab.com`, do not use **guide** as part of a page title.
-For example, **Snowplow Guide**. Instead, speak about the feature itself, and how to use it. For example, **Use Snowplow to do xyz**.
-
 ## Guest
 
 When writing about the Guest role:
@@ -1366,6 +1361,11 @@ When writing about the Guest role:
 Do not use bold.
 
 Do not use **Guest permissions**. A user who is assigned the Guest role has a set of associated permissions.
+
+## guide
+
+We want to speak directly to users. On `docs.gitlab.com`, do not use **guide** as part of a page title.
+For example, **Snowplow Guide**. Instead, speak about the feature itself, and how to use it. For example, **Use Snowplow to do xyz**.
 
 ## handy
 
@@ -1444,6 +1444,11 @@ and more precise terms are usually available. For example:
 - Instead of **Delete files using the Edit button**, use **Use the Edit button to delete files**.
 - Instead of **Replicating your server is required**, use **You must replicate your server**.
 
+## IP address
+
+Use **IP address** when referring to addresses used with Internet Protocol (IP). Do not refer to an IP address as an
+**IP**.
+
 ## issue
 
 Use lowercase for **issue**.
@@ -1469,11 +1474,6 @@ Thereafter, use **Issue Discussion Summary** by itself.
 ## issue weights
 
 Use lowercase for **issue weights**.
-
-## IP address
-
-Use **IP address** when referring to addresses used with Internet Protocol (IP). Do not refer to an IP address as an
-**IP**.
 
 ## it
 
@@ -1546,21 +1546,6 @@ Instead of:
 - This setting is turned on at the group level.
 - This is a project-level setting.
 
-## lifecycle, life cycle, life-cycle
-
-Use one word for **lifecycle**. Do not use **life cycle** or **life-cycle**.
-
-([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
-
-## list
-
-Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
-Use the full phrase **dropdown list** instead.
-
-Also, do not use **list** when referring to a page. For example, the **Issues** page
-is populated with a list of issues. However, you should call it the **Issues** page,
-and not the **Issues** list.
-
 ## license
 
 Licenses are different than subscriptions.
@@ -1592,12 +1577,27 @@ Instead of:
 - Buy a license.
 - Purchase a license.
 
+## lifecycle, life cycle, life-cycle
+
+Use one word for **lifecycle**. Do not use **life cycle** or **life-cycle**.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
 ## limitations
 
 Do not use **Limitations** as a topic title. For more information,
 see [reference topic titles](../topic_types/reference.md#reference-topic-titles).
 
 If you must, you can use the title **Known issues**.
+
+## list
+
+Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
+Use the full phrase **dropdown list** instead.
+
+Also, do not use **list** when referring to a page. For example, the **Issues** page
+is populated with a list of issues. However, you should call it the **Issues** page,
+and not the **Issues** list.
 
 ## log in, log on
 
@@ -2053,14 +2053,14 @@ Do not use **please** in the product documentation.
 In UI text, use **please** when we've inconvenienced the user. For more information,
 see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/p/please).
 
+## preferences
+
+Use **preferences** to describe user-specific, system-level settings like theme and layout.
+
 ## Premium
 
 Use **Premium**, in uppercase, for the subscription tier. When you refer to **Premium**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
-
-## preferences
-
-Use **preferences** to describe user-specific, system-level settings like theme and layout.
 
 ## prerequisites
 
@@ -2168,17 +2168,6 @@ Git repository, wiki, and other features.
 
 Use title case for **Repository Mirroring**.
 
-## resolution, resolve
-
-Use **resolution** when the troubleshooting solution fixes the issue permanently.
-A resolution usually involves file and code changes to correct the problem.
-For example:
-
-- To resolve this issue, edit the `.gitlab-ci.yml` file.
-- One resolution is to edit the `.gitlab-ci.yml` file.
-
-See also [workaround](#workaround).
-
 ## requirements
 
 When documenting the tasks that must be completed or the conditions that must be met before a user can complete the steps:
@@ -2191,6 +2180,17 @@ Do not use **requirements**.
 ## reset
 
 Use **reset** to describe the action associated with resetting an item to a new state.
+
+## resolution, resolve
+
+Use **resolution** when the troubleshooting solution fixes the issue permanently.
+A resolution usually involves file and code changes to correct the problem.
+For example:
+
+- To resolve this issue, edit the `.gitlab-ci.yml` file.
+- One resolution is to edit the `.gitlab-ci.yml` file.
+
+See also [workaround](#workaround).
 
 ## respectively
 
@@ -2231,18 +2231,18 @@ Two types of roles exist: [custom](#custom-role) and [default](#default-role).
 
 Roles are not the same as [**access levels**](#access-level).
 
+## roll back
+
+Use **roll back** for changing a GitLab version to an earlier one.
+
+Do not use **roll back** for licensing or subscriptions. Use **change the subscription tier** instead.
+
 ## Root Cause Analysis
 
 Use title case for **Root Cause Analysis**.
 
 On first mention on a page, use **GitLab Duo Root Cause Analysis**.
 Thereafter, use **Root Cause Analysis** by itself.
-
-## roll back
-
-Use **roll back** for changing a GitLab version to an earlier one.
-
-Do not use **roll back** for licensing or subscriptions. Use **change the subscription tier** instead.
 
 ## runner, runners
 
@@ -2382,6 +2382,11 @@ The session can start and stop.
 
 Do not use **AI session** or **agent session**.
 
+## settings
+
+A **setting** changes the default behavior of the product. A **setting** consists of a key/value pair,
+typically represented by a label with one or more options.
+
 ## setup, set up
 
 Use **setup** as a noun, and **set up** as a verb. For example:
@@ -2394,11 +2399,6 @@ Do not confuse **set up** with [**configure**](#configure).
 
 1. Set up your installation.
 1. Configure your installation.
-
-## settings
-
-A **setting** changes the default behavior of the product. A **setting** consists of a key/value pair,
-typically represented by a label with one or more options.
 
 ## sign in, sign-in
 
@@ -2504,20 +2504,6 @@ Use bold for tab names. For example:
 - The **Pipelines** tab
 - The **Overview** tab
 
-## that
-
-Do not use **that** when describing a noun. For example:
-
-Use:
-
-- The file you save...
-
-Instead of:
-
-- The file **that** you save...
-
-See also [this, these, that, those](#this-these-that-those).
-
 ## terminal
 
 Use lowercase for **terminal**. For example:
@@ -2542,6 +2528,20 @@ Thereafter, use **Test Generation** by itself.
 ## text box
 
 Use **text box** instead of **field** or **box** when referring to the UI element.
+
+## that
+
+Do not use **that** when describing a noun. For example:
+
+Use:
+
+- The file you save...
+
+Instead of:
+
+- The file **that** you save...
+
+See also [this, these, that, those](#this-these-that-those).
 
 ## there is, there are
 
@@ -2780,16 +2780,6 @@ Instead of:
 
 See [VS Code user interface](#vs-code-user-interface).
 
-## workaround
-
-Use **workaround** when the troubleshooting solution is a temporary fix.
-A workaround is usually an immediate fix and might have ongoing issues.
-For example:
-
-- The workaround is to temporarily pin your template to the deprecated version.
-
-See also [resolution](#resolution-resolve).
-
 ## while
 
 Use **while** to refer only to something occurring in time. For example,
@@ -2821,6 +2811,16 @@ When possible, do not use **within**. Use **in** instead, unless you are referri
 - The Wi-Fi signal is accessible within a 30-foot radius.
 
 ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
+## workaround
+
+Use **workaround** when the troubleshooting solution is a temporary fix.
+A workaround is usually an immediate fix and might have ongoing issues.
+For example:
+
+- The workaround is to temporarily pin your template to the deprecated version.
+
+See also [resolution](#resolution-resolve).
 
 ## yet
 

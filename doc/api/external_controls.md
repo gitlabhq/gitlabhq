@@ -31,7 +31,7 @@ External controls API requires HMAC, Timestamp, and Nonce authentication for sec
 ### Endpoint
 
 ```plaintext
-POST /api/v4/projects/:id/compliance_external_controls/:external_control_id/status
+PATCH /api/v4/projects/:id/compliance_external_controls/:external_control_id/status
 ```
 
 HTTP Headers:
@@ -60,7 +60,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --request POST \
+curl --request PATCH \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "X-Gitlab-Timestamp: <X-Gitlab-Timestamp>" \
   --header "X-Gitlab-Nonce: <X-Gitlab-Nonce>" \
