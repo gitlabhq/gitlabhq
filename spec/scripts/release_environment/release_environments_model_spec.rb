@@ -83,8 +83,9 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
   end
 
   describe '#omnibus_package_version' do
-    context 'when using CI_COMMIT_BRANCH' do
+    context 'when running in a branch pipeline' do
       it 'generates the correct omnibus package name' do
+        stub_env('CI_COMMIT_REF_NAME', '15-10-stable-ee')
         stub_env('CI_COMMIT_BRANCH', '15-10-stable-ee')
         stub_env('CI_PIPELINE_ID', '12345')
         stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
@@ -94,8 +95,8 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
       end
     end
 
-    context 'when using RC42 tag' do
-      it 'generates the correct omnibus package name from RC42 tag' do
+    context 'when running in an RC tag pipeline' do
+      it 'generates the correct omnibus package name from the RC tag' do
         stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc42-ee')
         stub_env('CI_COMMIT_BRANCH', nil) # This would be nil for tag pipelines
         stub_env('CI_PIPELINE_ID', '12345')
