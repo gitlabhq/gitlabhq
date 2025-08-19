@@ -1060,6 +1060,46 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
           expect_graphql_errors_to_be_empty
         end
       end
+
+      context 'when fetching latest discussions first' do
+        let_it_be(:notes) do
+          create_list(:note, 3, project: work_item.project, noteable: work_item)
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets(onlyTypes: [NOTES]) {
+              type
+              ... on WorkItemWidgetNotes {
+                discussions(filter: ALL_NOTES, first: 3, sort: CREATED_DESC) {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns latest discussions' do
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
+
+          expect(discussions).to include(
+            hash_including(
+              'id' => notes[2].discussion.to_global_id.to_s
+            ),
+            hash_including(
+              'id' => notes[1].discussion.to_global_id.to_s
+            ),
+            hash_including(
+              'id' => notes[0].discussion.to_global_id.to_s
+            )
+          )
+        end
+      end
     end
 
     describe 'designs widget' do

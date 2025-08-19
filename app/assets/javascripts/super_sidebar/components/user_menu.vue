@@ -299,7 +299,7 @@ export default {
 <template>
   <div
     :class="{
-      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-alpha-light-36': superTopbarEnabled,
+      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': superTopbarEnabled,
     }"
   >
     <gl-button
@@ -309,7 +309,7 @@ export default {
       :title="$options.i18n.stopImpersonating"
       :aria-label="$options.i18n.stopImpersonating"
       icon="incognito"
-      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0"
+      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0 dark:!gl-text-neutral-800"
       category="tertiary"
       data-method="delete"
       data-testid="stop-impersonation-btn"
@@ -352,7 +352,7 @@ export default {
 
         <div
           v-if="superTopbarEnabled && hasEmoji"
-          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
+          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
           <gl-emoji

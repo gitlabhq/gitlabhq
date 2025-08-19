@@ -114,7 +114,7 @@ module ResolvableDiscussion
     yield(notes_relation)
 
     # Set the notes array to the updated notes
-    @notes = notes_relation.fresh.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @notes = notes_relation.order_created_at_id_asc.to_a # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     noteable.broadcast_notes_changed
 

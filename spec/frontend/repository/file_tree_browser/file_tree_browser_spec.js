@@ -1,20 +1,26 @@
+import Vue from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import FileTreeBrowser, {
   TREE_WIDTH,
   FILE_TREE_BROWSER_STORAGE_KEY,
 } from '~/repository/file_tree_browser/file_tree_browser.vue';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
-import TreeList from '~/repository/file_tree_browser/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+
+Vue.use(PiniaVuePlugin);
 
 describe('FileTreeBrowser', () => {
   let wrapper;
+  let pinia;
+  let fileTreeBrowserStore;
 
   useLocalStorageSpy();
 
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
-  const findTreeList = () => wrapper.findComponent(TreeList);
   const findPanelResizer = () => wrapper.findComponent(PanelResizer);
 
   afterEach(() => {
@@ -33,19 +39,21 @@ describe('FileTreeBrowser', () => {
           name: routeName,
         },
       },
+      pinia,
     });
   };
 
   describe('when not on project overview page', () => {
-    beforeEach(() => createComponent());
+    beforeEach(() => {
+      pinia = createTestingPinia({ stubActions: false });
+      fileTreeBrowserStore = useFileTreeBrowserVisibility();
+      fileTreeBrowserStore.setFileTreeVisibility(true);
+      createComponent();
+    });
 
     it('renders the file browser height component', () => {
       expect(findFileBrowserHeight().exists()).toBe(true);
       expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: ${TREE_WIDTH}px;`);
-    });
-
-    it('renders the tree list component', () => {
-      expect(findTreeList().exists()).toBe(true);
     });
 
     describe('PanelResizer component', () => {
@@ -87,22 +95,6 @@ describe('FileTreeBrowser', () => {
 
         expect(findFileBrowserHeight().attributes('style')).toBe(`--tree-width: ${TREE_WIDTH}px;`);
       });
-    });
-  });
-
-  describe('when on project overview page', () => {
-    beforeEach(() => createComponent('projectRoot'));
-
-    it('does not render the file browser height component', () => {
-      expect(findFileBrowserHeight().exists()).toBe(false);
-    });
-
-    it('does not render the tree list component', () => {
-      expect(findTreeList().exists()).toBe(false);
-    });
-
-    it('does not render the panel resizer component', () => {
-      expect(findPanelResizer().exists()).toBe(false);
     });
   });
 });

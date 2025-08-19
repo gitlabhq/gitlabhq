@@ -162,6 +162,9 @@ export default {
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     getMRCodequalityAndSecurityReports: {
+      context: {
+        featureCategory: 'code_quality',
+      },
       query: getMRCodequalityAndSecurityReports,
       pollInterval: FINDINGS_POLL_INTERVAL,
       variables() {

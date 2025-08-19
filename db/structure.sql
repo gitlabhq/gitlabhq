@@ -24096,7 +24096,6 @@ ALTER SEQUENCE snippets_id_seq OWNED BY snippets.id;
 CREATE TABLE software_license_policies (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
-    software_license_id bigint,
     classification integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -34805,8 +34804,6 @@ CREATE INDEX idx_slack_integrations_scopes_on_slack_api_scope_id ON slack_integr
 
 CREATE UNIQUE INDEX idx_software_license_policies_unique_on_custom_license_project ON software_license_policies USING btree (project_id, custom_software_license_id, scan_result_policy_id);
 
-CREATE UNIQUE INDEX idx_software_license_policies_unique_on_project_and_scan_policy ON software_license_policies USING btree (project_id, software_license_id, scan_result_policy_id);
-
 CREATE INDEX idx_software_licenses_lower_name ON software_licenses USING btree (lower((name)::text));
 
 CREATE INDEX idx_status_check_responses_on_id_and_status ON status_check_responses USING btree (id, status);
@@ -38714,8 +38711,6 @@ CREATE INDEX index_snippets_on_visibility_level_and_secret ON snippets USING btr
 CREATE INDEX index_software_license_policies_on_approval_policy_rule_id ON software_license_policies USING btree (approval_policy_rule_id);
 
 CREATE INDEX index_software_license_policies_on_scan_result_policy_id ON software_license_policies USING btree (scan_result_policy_id);
-
-CREATE INDEX index_software_license_policies_on_software_license_id ON software_license_policies USING btree (software_license_id);
 
 CREATE INDEX index_software_licenses_on_spdx_identifier ON software_licenses USING btree (spdx_identifier);
 
@@ -46566,9 +46561,6 @@ ALTER TABLE ONLY group_scim_identities
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_rails_78f54ca485 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY software_license_policies
-    ADD CONSTRAINT fk_rails_7a7a2a92de FOREIGN KEY (software_license_id) REFERENCES software_licenses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY operations_scopes
     ADD CONSTRAINT fk_rails_7a9358853b FOREIGN KEY (strategy_id) REFERENCES operations_strategies(id) ON DELETE CASCADE;

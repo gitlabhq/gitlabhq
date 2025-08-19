@@ -126,7 +126,8 @@ class Note < ApplicationRecord
   scope :user, -> { where(system: false) }
   scope :not_internal, -> { where(internal: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }
-  scope :fresh, -> { order_created_asc.with_order_id_asc }
+  scope :order_created_at_id_asc, -> { order_created_asc.with_order_id_asc }
+  scope :order_created_at_id_desc, -> { order_created_desc.with_order_id_desc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
   scope :with_suggestions, -> { joins(:suggestions) }
   scope :inc_author, -> { includes(:author) }
@@ -267,7 +268,7 @@ class Note < ApplicationRecord
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
-      diff_notes.fresh.discussions.each do |discussion|
+      diff_notes.order_created_at_id_asc.discussions.each do |discussion|
         group_key =
           if discussion.on_image?
             discussion.file_new_path

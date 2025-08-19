@@ -182,7 +182,7 @@ class NotesFinder
   def sort(notes)
     sort = @params[:sort].presence
 
-    return notes.fresh unless sort
+    return notes.order_created_at_id_asc unless sort
 
     notes.order_by(sort)
   end

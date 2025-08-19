@@ -50,7 +50,7 @@ class Discussion
   end
 
   def self.build_discussions(discussion_ids, context_noteable = nil, preload_note_diff_file: false)
-    notes = model_class.where(discussion_id: discussion_ids).fresh
+    notes = model_class.where(discussion_id: discussion_ids).order_created_at_id_asc
     notes = notes.inc_note_diff_file if preload_note_diff_file
 
     grouped_notes = notes.group_by(&:discussion_id)
@@ -59,7 +59,7 @@ class Discussion
 
   def self.lazy_find(discussion_id)
     BatchLoader.for(discussion_id).batch do |discussion_ids, loader|
-      results = model_class.where(discussion_id: discussion_ids).fresh.to_a.group_by(&:discussion_id)
+      results = model_class.where(discussion_id: discussion_ids).order_created_at_id_asc.to_a.group_by(&:discussion_id)
       results.each do |discussion_id, notes|
         next if notes.empty?
 

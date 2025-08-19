@@ -65,7 +65,7 @@ RSpec.describe IssuableActions do
       expect(notes_result).to receive_messages(
         with_web_entity_associations: notes_result,
         inc_relations_for_view: notes_result,
-        fresh: notes_result
+        order_created_at_id_asc: notes_result
       )
 
       controller.discussions

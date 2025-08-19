@@ -91,16 +91,21 @@ Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 
-- Contents of the changed files
-- Filenames
 - Merge request title
 - Merge request description
+- File contents before changes applied (for context)
+- Merge request diffs
+- Filenames
+- [Custom instructions](#customize-instructions-for-gitlab-duo-code-review)
 
 ### Interact with GitLab Duo in reviews
 
 You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your merge request. You can ask follow-up questions on its review comments, or ask questions on any discussion thread in your merge request.
 
 Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve your merge request.
+
+Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
+There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
 
 ### Automatic reviews from GitLab Duo
 

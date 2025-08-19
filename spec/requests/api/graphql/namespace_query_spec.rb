@@ -158,10 +158,12 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
     end
 
     describe 'linkPaths' do
-      describe 'newWorkItemEmailAddress' do
-        let_it_be(:test_project) { create(:project, :public) }
-        let_it_be(:target_namespace) { test_project.project_namespace }
+      let_it_be(:test_project) { create(:project, :public) }
+      let_it_be(:target_namespace) { test_project.project_namespace }
 
+      let(:current_user) { user }
+
+      describe 'newWorkItemEmailAddress' do
         let(:query_fields) do
           <<~QUERY
           linkPaths {
@@ -173,8 +175,6 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
         end
 
         let(:query_string) { graphql_query_for(:namespace, { 'fullPath' => test_project.full_path }, query_fields) }
-
-        let(:current_user) { user }
 
         context 'when work item creation via email is supported' do
           before do
@@ -237,6 +237,47 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
             post_graphql(query_string, current_user: current_user)
 
             expect(graphql_dig_at(graphql_data, :namespace, :link_paths, :new_work_item_email_address)).to be_nil
+          end
+        end
+      end
+
+      describe 'newReleasesPath, newProjectImortJiraPath' do
+        let(:query_fields) do
+          <<~QUERY
+          linkPaths {
+            ... on ProjectNamespaceLinks {
+              releasesPath
+              projectImportJiraPath
+            }
+          }
+          QUERY
+        end
+
+        let(:query_string) { graphql_query_for(:namespace, { 'fullPath' => test_project.full_path }, query_fields) }
+
+        it 'returns the new project link paths' do
+          post_graphql(query_string, current_user: current_user)
+
+          link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
+
+          expect(link_paths).to include(
+            'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
+            'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project)
+          )
+        end
+
+        context 'when user is anonymous' do
+          let(:current_user) { nil }
+
+          it 'still returns the new project link paths' do
+            post_graphql(query_string, current_user: current_user)
+
+            link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
+
+            expect(link_paths).to include(
+              'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
+              'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project)
+            )
           end
         end
       end

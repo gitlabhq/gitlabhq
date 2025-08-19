@@ -306,10 +306,10 @@ RSpec.describe NotesFinder do
         described_class.new(user, params).execute
       end
 
-      it 'defaults to sort by .fresh' do
+      it 'defaults to sort by oldest first' do
         params = { project: project }
 
-        expect(Note).to receive(:fresh).once
+        expect(Note).to receive(:order_created_at_id_asc).once
 
         described_class.new(user, params).execute
       end

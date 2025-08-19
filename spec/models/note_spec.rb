@@ -1947,6 +1947,18 @@ RSpec.describe Note, feature_category: :team_planning do
         end
       end
     end
+
+    describe '.order_created_at_id_asc' do
+      it 'returns notes in ascending order' do
+        expect(described_class.order_created_at_id_asc).to eq([note1, note2])
+      end
+    end
+
+    describe '.order_created_at_id_desc' do
+      it 'returns notes in descending order' do
+        expect(described_class.order_created_at_id_desc).to eq([note2, note1])
+      end
+    end
   end
 
   describe 'banzai_render_context' do

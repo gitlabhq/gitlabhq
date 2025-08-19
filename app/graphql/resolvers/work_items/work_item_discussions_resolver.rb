@@ -18,6 +18,11 @@ module Resolvers
         default_value: ::Types::WorkItems::NotesFilterTypeEnum.default_value,
         description: 'Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY.'
 
+      argument :sort, ::Types::WorkItems::DiscussionsSortEnum,
+        required: false,
+        default_value: ::Types::WorkItems::DiscussionsSortEnum.default_value,
+        description: 'Sort order for the discussions.'
+
       type ::Types::Notes::DiscussionType.connection_type, null: true
 
       def resolve(**args)
@@ -51,6 +56,7 @@ module Resolvers
       def params(args)
         {
           notes_filter: args[:filter],
+          sort: args[:sort],
           cursor: args[:after],
           per_page: self.class.nodes_limit(args, @field, context: context)
         }

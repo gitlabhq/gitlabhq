@@ -101,7 +101,8 @@ module Noteable
   # This does not consider OutOfContextDiscussions in MRs
   # where notes from commits are overriden so that they have
   # the same discussion_id
-  def discussion_root_note_ids(notes_filter:)
+  def discussion_root_note_ids(notes_filter:, sort: :created_asc)
+    sort = :created_asc if sort.nil?
     relations = []
 
     relations << discussion_notes.select(
@@ -116,9 +117,17 @@ module Noteable
       relations += synthetic_note_ids_relations
     end
 
-    Note.from_union(relations, remove_duplicates: false)
-      .select(:table_name, :id, :created_at, :ids)
-      .fresh
+    discussions = Note.from_union(relations, remove_duplicates: false)
+                    .select(:table_name, :id, :created_at, :ids)
+
+    case sort
+    when :created_asc
+      discussions.order_created_at_id_asc
+    when :created_desc
+      discussions.order_created_at_id_desc
+    else
+      raise ArgumentError, 'Invalid sort order'
+    end
   end
 
   def capped_notes_count(max)

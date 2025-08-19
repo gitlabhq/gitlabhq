@@ -1247,6 +1247,10 @@ class Group < Namespace
   end
   strong_memoize_attr :crm_group?
 
+  def duo_remote_flows_enabled
+    false
+  end
+
   def has_issues_with_contacts?
     CustomerRelations::IssueContact.joins(:issue).where(issue: { project_id: Project.where(namespace_id: self_and_descendant_ids) }).exists?
   end

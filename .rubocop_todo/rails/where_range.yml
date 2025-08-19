@@ -75,7 +75,6 @@ Rails/WhereRange:
     - 'ee/app/workers/compliance_management/merge_requests/compliance_violations_consistency_worker.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_in_batch.rb'
     - 'lib/gitlab/background_migration/disable_legacy_open_source_license_for_inactive_public_projects.rb'
-    - 'lib/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'lib/gitlab/database/background_migration/batched_job.rb'
     - 'lib/gitlab/database/reindexing/index_selection.rb'
     - 'lib/gitlab/relative_positioning/item_context.rb'

@@ -82,7 +82,7 @@ export default {
     <gl-button
       id="super-sidebar-search"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      button-text-classes="gl-flex gl-w-full"
+      button-text-classes="gl-flex gl-w-full gl-items-center"
       class="topbar-search-button !gl-rounded-lg !gl-border-strong !gl-pl-3 !gl-pr-2 dark:!gl-bg-alpha-light-8"
       data-testid="super-topbar-search-button"
     >
@@ -111,7 +111,7 @@ export default {
         v-if="isAdmin"
         :href="sidebarData.admin_url"
         icon="admin"
-        class="!gl-rounded-lg"
+        class="topbar-admin-link !gl-rounded-lg"
         data-testid="topbar-admin-link"
       >
         {{ $options.i18n.adminArea }}

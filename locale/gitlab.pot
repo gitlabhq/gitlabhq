@@ -8352,7 +8352,7 @@ msgstr ""
 msgid "Apply this approval rule to all branches or a specific protected branch."
 msgstr ""
 
-msgid "Apply to all button"
+msgid "Apply to all"
 msgstr ""
 
 msgid "Applying"
@@ -27870,9 +27870,6 @@ msgstr ""
 msgid "File tree"
 msgstr ""
 
-msgid "File tree browser"
-msgstr ""
-
 msgid "File upload error."
 msgstr ""
 
@@ -32426,6 +32423,9 @@ msgid "Hide file browser"
 msgstr ""
 
 msgid "Hide file contents"
+msgstr ""
+
+msgid "Hide file tree browser"
 msgstr ""
 
 msgid "Hide group projects"
@@ -60735,6 +60735,9 @@ msgstr ""
 msgid "Show file contents"
 msgstr ""
 
+msgid "Show file tree browser"
+msgstr ""
+
 msgid "Show full blame"
 msgstr ""
 
@@ -70161,6 +70164,12 @@ msgstr ""
 msgid "VirtualRegistry|Caching period"
 msgstr ""
 
+msgid "VirtualRegistry|Clear all caches"
+msgstr ""
+
+msgid "VirtualRegistry|Clear all caches?"
+msgstr ""
+
 msgid "VirtualRegistry|Clear cache"
 msgstr ""
 
@@ -70203,7 +70212,10 @@ msgstr ""
 msgid "VirtualRegistry|Enter password"
 msgstr ""
 
-msgid "VirtualRegistry|Failed to clear upstream cache. Please try again."
+msgid "VirtualRegistry|Failed to clear registry cache. Try again."
+msgstr ""
+
+msgid "VirtualRegistry|Failed to clear upstream cache. Try again."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to delete cache entry."
@@ -70218,7 +70230,7 @@ msgstr ""
 msgid "VirtualRegistry|Failed to search cache entries."
 msgstr ""
 
-msgid "VirtualRegistry|Failed to update position of the upstream. Please try again."
+msgid "VirtualRegistry|Failed to update position of the upstream. Try again."
 msgstr ""
 
 msgid "VirtualRegistry|Get started with virtual registries"
@@ -70272,13 +70284,16 @@ msgstr ""
 msgid "VirtualRegistry|Please provide a valid URL."
 msgstr ""
 
-msgid "VirtualRegistry|Position of the upstream has been updated successfully"
+msgid "VirtualRegistry|Position of the upstream has been updated successfully."
+msgstr ""
+
+msgid "VirtualRegistry|Registry cache cleared successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Registry types"
 msgstr ""
 
-msgid "VirtualRegistry|Something went wrong while creating the upstream. Please try again."
+msgid "VirtualRegistry|Something went wrong while creating the upstream. Try again."
 msgstr ""
 
 msgid "VirtualRegistry|Test upstream"
@@ -70290,7 +70305,10 @@ msgstr ""
 msgid "VirtualRegistry|There is a problem with this cached upstream"
 msgstr ""
 
-msgid "VirtualRegistry|This will delete all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs may fail. Are you sure you want to continue?"
+msgid "VirtualRegistry|This will delete all cached packages for exclusive upstream registries in this virtual registry. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
+msgstr ""
+
+msgid "VirtualRegistry|This will delete all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs might fail. Are you sure you want to continue?"
 msgstr ""
 
 msgid "VirtualRegistry|Time in hours"
@@ -70302,10 +70320,10 @@ msgstr ""
 msgid "VirtualRegistry|Upstream URL"
 msgstr ""
 
-msgid "VirtualRegistry|Upstream cache cleared successfully"
+msgid "VirtualRegistry|Upstream cache cleared successfully."
 msgstr ""
 
-msgid "VirtualRegistry|Upstream created successfully"
+msgid "VirtualRegistry|Upstream created successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Upstreams"

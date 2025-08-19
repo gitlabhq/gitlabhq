@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -9,6 +10,7 @@ import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -20,6 +22,8 @@ import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdow
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useViewport } from '~/pinia/global_stores/viewport';
 
 export default {
   name: 'HeaderArea',
@@ -45,6 +49,7 @@ export default {
       import('ee_component/repository/components/lock_directory_button.vue'),
     HeaderLockIcon: () =>
       import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    FileTreeBrowserToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -124,6 +129,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
+    ...mapState(useViewport, ['isNarrowScreen']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -192,8 +199,22 @@ export default {
     showBlobControls() {
       return this.$route.params.path && this.$route.name === 'blobPathDecoded';
     },
+    showFileTreeBrowserToggle() {
+      return (
+        this.glFeatures.repositoryFileTreeBrowser &&
+        !this.isProjectOverview &&
+        !this.fileTreeBrowserVisible &&
+        !this.isNarrowScreen
+      );
+    },
+  },
+  mounted() {
+    if (this.glFeatures.repositoryFileTreeBrowser) {
+      this.initFileTreeVisibility();
+    }
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, ['initFileTreeVisibility']),
     onInput(selectedRef) {
       InternalEvents.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
@@ -221,7 +242,8 @@ export default {
       [glFeatures.repositoryFileTreeBrowser ? 'md:gl-flex' : 'sm:gl-flex']: isProjectOverview,
     }"
   >
-    <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-5">
+    <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-3">
+      <file-tree-browser-toggle v-if="showFileTreeBrowserToggle" />
       <ref-selector
         v-if="!isReadmeView"
         class="tree-ref-holder gl-max-w-26"

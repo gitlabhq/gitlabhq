@@ -1,4 +1,7 @@
+import Vue from 'vue';
 import { RouterLinkStub } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
@@ -14,6 +17,9 @@ import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useViewport } from '~/pinia/global_stores/viewport';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 
 const defaultMockRoute = {
   params: {
@@ -29,10 +35,15 @@ const defaultMockRoute = {
 
 const mockRootRef = 'root-ref';
 
+Vue.use(PiniaVuePlugin);
+
 describe('HeaderArea', () => {
   let wrapper;
+  let pinia;
+  let fileTreeBrowserStore;
 
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
+  const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
@@ -83,15 +94,75 @@ describe('HeaderArea', () => {
           },
         },
       },
+      pinia,
     });
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ stubActions: false });
+    useViewport();
+    fileTreeBrowserStore = useFileTreeBrowserVisibility();
     wrapper = createComponent();
   });
 
   it('renders the component', () => {
     expect(wrapper.exists()).toBe(true);
+  });
+
+  describe('File tree browser toggle', () => {
+    beforeEach(() => {
+      // Reset stores to default state for each test
+      const viewportStore = useViewport();
+      // For composition API stores, we need to directly modify the internal refs
+      viewportStore.updateIsNarrow(false);
+    });
+
+    describe('when repositoryFileTreeBrowser is enabled', () => {
+      it.each`
+        fileTreeVisible | isNarrowScreen | isProjectOverview | expectedToggleVisible
+        ${false}        | ${false}       | ${false}          | ${true}
+        ${true}         | ${false}       | ${false}          | ${false}
+        ${false}        | ${true}        | ${false}          | ${false}
+        ${false}        | ${false}       | ${true}           | ${false}
+      `(
+        'toggles file tree visibility',
+        ({ fileTreeVisible, isNarrowScreen, isProjectOverview, expectedToggleVisible }) => {
+          const viewportStore = useViewport();
+          fileTreeBrowserStore.setFileTreeVisibility(fileTreeVisible);
+          viewportStore.updateIsNarrow(isNarrowScreen);
+
+          const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
+          wrapper = createComponent({
+            route,
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+
+          expect(findFileTreeToggle().exists()).toBe(expectedToggleVisible);
+        },
+      );
+    });
+  });
+
+  describe('when repositoryFileTreeBrowser is disabled', () => {
+    it('does not render the toggle', () => {
+      const viewportStore = useViewport();
+      fileTreeBrowserStore.setFileTreeVisibility(true);
+      viewportStore.updateIsNarrow(false);
+
+      wrapper = createComponent({
+        provided: {
+          glFeatures: {
+            repositoryFileTreeBrowser: false,
+          },
+        },
+      });
+
+      expect(findFileTreeToggle().exists()).toBe(false);
+    });
   });
 
   describe('Ref selector', () => {

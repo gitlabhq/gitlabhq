@@ -31,7 +31,7 @@ module AntiAbuse
 
       validates :abuse_report, presence: true
 
-      scope :fresh, -> { order_created_asc.with_order_id_asc }
+      scope :order_created_at_id_asc, -> { order_created_asc.with_order_id_asc }
       scope :inc_relations_for_view, ->(_abuse_report = nil) do
         relations = [
           { author: :status }, :updated_by, :award_emoji

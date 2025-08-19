@@ -22,6 +22,27 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role:, internal_di
       group.add_developer(current_user)
     end
 
+    context 'with sort order' do
+      let(:finder_params_for_issuable) { { per_page: 2, sort: :created_desc } }
+
+      it 'returns discussions in descending order' do
+        create(:note, noteable: issuable, project: issuable.project, note: 'individual note')
+
+        discussion_note = create(:discussion_note_on_issue, noteable: issuable, project: issuable.project,
+          note: 'discussion note'
+        )
+        create(:note, discussion_id: discussion_note.discussion_id, noteable: issuable, project: issuable.project,
+          note: 'reply'
+        )
+
+        discussions = discussions_service.execute
+
+        expect(discussions.count).to eq(2)
+        expect(discussions.first.notes.map(&:note)).to match_array(['discussion note', 'reply'])
+        expect(discussions.second.notes.map(&:note)).to match_array(['individual note'])
+      end
+    end
+
     context 'with paginated results' do
       let(:finder_params_for_issuable) { { per_page: 2 } }
       let(:next_page_cursor) { { cursor: discussions_service.paginator.cursor_for_next_page } }

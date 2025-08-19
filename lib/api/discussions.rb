@@ -252,7 +252,7 @@ module API
           .with_discussion_ids(discussion_ids)
           .inc_relations_for_view(noteable)
           .includes(:noteable)
-          .fresh
+          .order_created_at_id_asc
 
         # Without RendersActions#prepare_notes_for_rendering,
         # Note#system_note_visible_for? will attempt to render

@@ -4,6 +4,7 @@ import micromatch from 'micromatch';
 import { createAlert } from '~/alert';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
 import { joinPaths } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
@@ -27,6 +28,7 @@ export default {
     RecycleScroller,
     FileRow,
     GlLoadingIcon,
+    FileTreeBrowserToggle,
     GlTooltip,
     Shortcut,
   },
@@ -281,9 +283,13 @@ export default {
 
 <template>
   <section aria-labelledby="tree-list-heading" class="gl-flex gl-h-full gl-flex-col">
-    <h3 id="tree-list-heading" class="gl-sr-only" :aria-label="__('File tree browser')">
-      {{ __('Files') }}
-    </h3>
+    <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
+      <file-tree-browser-toggle />
+      <h3 id="tree-list-heading" class="gl-heading-3 gl-mb-0">
+        {{ __('Files') }}
+      </h3>
+    </div>
+
     <div class="gl-relative gl-flex">
       <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
       <gl-form-input

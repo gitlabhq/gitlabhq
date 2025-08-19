@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
@@ -12,9 +13,11 @@ import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
 jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
@@ -25,6 +28,7 @@ const getQueryHandlerSuccess = jest.fn().mockResolvedValue(mockResponse);
 describe('Tree List', () => {
   let wrapper;
   let apolloProvider;
+  let pinia;
 
   const createComponent = async () => {
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
@@ -46,6 +50,7 @@ describe('Tree List', () => {
 
     wrapper = shallowMountExtended(TreeList, {
       apolloProvider,
+      pinia,
       propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
       mocks: { $route: { params: {}, $apollo: { query: jest.fn() } } },
       stubs: { RecycleScroller: recycleScrollerStub },
@@ -55,6 +60,8 @@ describe('Tree List', () => {
   };
 
   beforeEach(() => createComponent());
+
+  const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
 
   const findHeader = () => wrapper.find('h3');
   const findRecycleScroller = () => wrapper.findComponent(RecycleScroller);
@@ -77,6 +84,10 @@ describe('Tree List', () => {
 
   it('renders a title', () => {
     expect(findHeader().text()).toBe('Files');
+  });
+
+  it('renders file tree browser toggle', () => {
+    expect(findFileTreeToggle().exists()).toBe(true);
   });
 
   it('renders recycle-scroller with correct props', () => {

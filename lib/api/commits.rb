@@ -323,7 +323,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = commit.notes.with_api_entity_associations.fresh
+        notes = commit.notes.with_api_entity_associations.order_created_at_id_asc
 
         present paginate(notes), with: Entities::CommitNote
       end

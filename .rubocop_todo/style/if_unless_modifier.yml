@@ -453,7 +453,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/auth/ldap/adapter.rb'
     - 'lib/gitlab/auth/ldap/authentication.rb'
     - 'lib/gitlab/authorized_keys.rb'
-    - 'lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces.rb'
     - 'lib/gitlab/bullet/exclusions.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/changelog/config.rb'

@@ -44,6 +44,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
+    push_frontend_feature_flag(:repository_file_tree_browser, @project)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)

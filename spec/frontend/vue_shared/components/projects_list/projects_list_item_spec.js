@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
-import projects from 'test_fixtures/api/users/projects/get.json';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
@@ -8,13 +7,12 @@ import ProjectListItemActions from '~/vue_shared/components/projects_list/projec
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
 import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { ACTION_DELETE, ACTION_EDIT } from '~/vue_shared/components/list_actions/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
-  VISIBILITY_TYPE_ICON,
-  VISIBILITY_LEVEL_PRIVATE_STRING,
   PROJECT_VISIBILITY_TYPE,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_TYPE_ICON,
 } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
@@ -26,13 +24,14 @@ import {
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import {
-  renderDeleteSuccessToast,
   deleteParams,
+  renderDeleteSuccessToast,
 } from '~/vue_shared/components/projects_list/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
+import { projects } from './mock_data';
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
@@ -49,18 +48,7 @@ jest.mock('~/api/projects_api');
 describe('ProjectsListItem', () => {
   let wrapper;
 
-  const [{ permissions, ...mockProject }] = convertObjectPropsToCamelCase(projects, { deep: true });
-
-  const project = {
-    ...mockProject,
-    accessLevel: {
-      integerValue: permissions.projectAccess.accessLevel,
-    },
-    avatarUrl: 'avatar.jpg',
-    avatarLabel: mockProject.nameWithNamespace,
-    isForked: false,
-    relativeWebUrl: `/${mockProject.fullPath}`,
-  };
+  const [project] = projects;
 
   const defaultPropsData = {
     project,
@@ -123,7 +111,7 @@ describe('ProjectsListItem', () => {
     expect(avatarLabeled.attributes()).toMatchObject({
       'entity-id': project.id.toString(),
       'entity-name': project.nameWithNamespace,
-      src: defaultPropsData.project.avatarUrl,
+      src: project.avatarUrl,
       shape: 'rect',
     });
   });
@@ -458,15 +446,20 @@ describe('ProjectsListItem', () => {
   });
 
   describe('project with topics', () => {
-    it('renders topic badges component', () => {
-      createComponent();
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          project: { ...project, topics: ['javascript'] },
+        },
+      });
+    });
 
+    it('renders topic badges component', () => {
       expect(findTopicBadges().exists()).toBe(true);
     });
 
     describe('when topic badges component emits click event', () => {
       beforeEach(() => {
-        createComponent();
         findTopicBadges().vm.$emit('click');
       });
 

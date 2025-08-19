@@ -11,11 +11,11 @@ module Notes
 
     class_methods do
       def discussions(context_noteable = nil)
-        ::Discussion.build_collection(all.includes(parent_object_field).fresh, context_noteable)
+        ::Discussion.build_collection(all.includes(parent_object_field).order_created_at_id_asc, context_noteable)
       end
 
       def find_discussion(discussion_id)
-        notes = where(discussion_id: discussion_id).fresh.to_a
+        notes = where(discussion_id: discussion_id).order_created_at_id_asc.to_a
 
         return if notes.empty?
 

@@ -112,3 +112,5 @@ export const FILE_EXTENSION_MAPPING_HLJS = {
   '.tf': 'hcl',
   '.tfvars': 'hcl',
 };
+
+export const FILE_TREE_BROWSER_VISIBILITY = 'file_tree_browser_visibility';
