@@ -1,3 +1,4 @@
+@use "sass:map";
 @import './page_bundles/notes/diff_comments';
 @import './page_bundles/notes/image_comments';
 
@@ -24,7 +25,7 @@ $diff-file-header: 41px;
    z-index: $zindex-dropdown-menu;
   }
 
-    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+    @media (max-width: map.get($grid-breakpoints, sm)-1) {
       .file-header-content {
         width: 0;
         flex: 1;
@@ -35,7 +36,7 @@ $diff-file-header: 41px;
       }
     }
 
-    @media (min-width: map-get($grid-breakpoints, md)) {
+    @media (min-width: map.get($grid-breakpoints, md)) {
       position: sticky;
       top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       z-index: 120;
@@ -62,7 +63,7 @@ $diff-file-header: 41px;
     }
   }
 
-  @media (min-width: map-get($grid-breakpoints, md)) {
+  @media (min-width: map.get($grid-breakpoints, md)) {
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
       top: $calc-application-header-height;
@@ -831,7 +832,7 @@ table.code {
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, lg)-1) {
+@media (max-width: map.get($grid-breakpoints, lg)-1) {
   .diffs .files {
     flex-direction: column;
   }

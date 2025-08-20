@@ -1,7 +1,10 @@
+@use "sass:color";
+@use "sass:meta";
+@use "sass:string";
 @function encodecolor($string) {
-  @if type-of($string) == 'color' {
-    $hex: str-slice(ie-hex-str($string), 4);
-    $string: unquote('#{$hex}');
+  @if meta.type-of($string) == 'color' {
+    $hex: string.slice(color.ie-hex-str($string), 4);
+    $string: string.unquote('#{$hex}');
   }
   $string: '%23' + $string;
   @return $string;

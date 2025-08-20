@@ -1,3 +1,4 @@
+@use "sass:map";
 // ---
 // Scss to help with bootstrap 3 to 4 migration of bootstrap components
 // ---
@@ -34,7 +35,7 @@ input[type='file'] {
   }
 }
 
-@each $breakpoint in map-keys($grid-breakpoints) {
+@each $breakpoint in map.keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 

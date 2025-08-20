@@ -1,10 +1,12 @@
+@use "sass:map";
+
 .timeline {
   margin: 0;
   padding: 0;
   list-style: none;
 
   &::before {
-    @include notes-media('max', map-get($grid-breakpoints, sm)) {
+    @include notes-media('max', map.get($grid-breakpoints, sm)) {
       background: none;
     }
   }

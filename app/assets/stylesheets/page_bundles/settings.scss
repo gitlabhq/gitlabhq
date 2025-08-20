@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 @keyframes expandMaxHeight {
@@ -106,7 +107,7 @@
     animation: none;
   }
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media(max-width: map.get($grid-breakpoints, md)-1) {
     padding-right: 20px;
   }
 

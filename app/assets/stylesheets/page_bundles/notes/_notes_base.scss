@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .notes {
   display: block;
   list-style: none;
@@ -307,7 +309,7 @@
 }
 
 .note {
-  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
+  @include notes-media('max', map.get($grid-breakpoints, sm) - 1) {
     .note-header {
       .note-actions > :first-child {
         margin-left: 0;

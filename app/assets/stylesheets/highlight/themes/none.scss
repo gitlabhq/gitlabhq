@@ -1,3 +1,4 @@
+@use "sass:color";
 /*
 * None Syntax Colors
 */
@@ -124,13 +125,13 @@ $none-code-mark: #d3e3f4;
     .diff-line-num {
       &.old {
         a {
-          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
       &.new {
         a {
-          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 

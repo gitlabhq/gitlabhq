@@ -1,3 +1,5 @@
+@use "sass:color";
+@use "sass:map";
 /* https://github.com/aahan/pygments-github-style */
 
 @import './common';
@@ -113,13 +115,13 @@ $white-gc-bg: #eaf2f5;
 
     &.conflict_marker,
     &.conflict_our {
-      background-color: map-get($conflict-colors, 'white-header-head-neutral');
-      border-color: map-get($conflict-colors, 'white-header-head-neutral');
+      background-color: map.get($conflict-colors, 'white-header-head-neutral');
+      border-color: map.get($conflict-colors, 'white-header-head-neutral');
     }
 
     &.conflict_their {
-      background-color: map-get($conflict-colors, 'white-header-origin-neutral');
-      border-color: map-get($conflict-colors, 'white-header-origin-neutral');
+      background-color: map.get($conflict-colors, 'white-header-origin-neutral');
+      border-color: map.get($conflict-colors, 'white-header-origin-neutral');
     }
   }
 
@@ -184,7 +186,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-number-old;
 
         a {
-          color: scale-color($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -193,7 +195,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-number-new;
 
         a {
-          color: scale-color($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%);
         }
       }
 
@@ -232,7 +234,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-removed;
 
         &::before {
-          color: scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($line-number-old, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {
@@ -245,7 +247,7 @@ $white-gc-bg: #eaf2f5;
         background-color: $line-added;
 
         &::before {
-          color: scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
+          color: color.scale($line-number-new, $red: -30%, $green: -30%, $blue: -30%);
         }
 
         span.idiff {

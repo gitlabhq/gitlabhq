@@ -22,7 +22,7 @@ While any events could trigger an audit event, not all events should. In general
 - Are tracking information for product feature adoption.
 - Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/govern/compliance/audit-events/#what-is-not-planned-right-now).
 
-If you have any questions, reach out to `@gitlab-org/govern/compliance` to see if an audit event, or some other approach, may be best for your event.
+If you have any questions, reach out to `@gitlab-org/software-supply-chain-security/compliance` to see if an audit event, or some other approach, may be best for your event.
 
 ## Audit event schemas
 

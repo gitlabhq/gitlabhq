@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .build-page {
@@ -282,7 +283,7 @@
     @apply gl-transition-[width,left,right];
   }
 
-  @media (max-width: map-get($grid-breakpoints, lg)) {
+  @media (max-width: map.get($grid-breakpoints, lg)) {
     padding-left: 1rem;
   }
 }

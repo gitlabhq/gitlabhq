@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .branch-info {
@@ -46,7 +47,7 @@
   }
 
   .right-block {
-    @media (min-width: map-get($grid-breakpoints, md)) {
+    @media (min-width: map.get($grid-breakpoints, md)) {
       min-width: 200px;
     }
   }

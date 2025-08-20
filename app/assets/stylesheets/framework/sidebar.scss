@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .content-wrapper {
   width: 100%;
 
@@ -209,18 +211,18 @@
       position: absolute;
       top: $gl-padding;
       bottom: $gl-padding;
-      left: map-get($spacers, 2) - px-to-rem(1px);
+      left: map.get($spacers, 2) - px-to-rem(1px);
     }
 
     &-row {
-      margin-top: map-get($spacers, 3);
+      margin-top: map.get($spacers, 3);
 
       &:nth-child(1) {
         margin-top: 0;
       }
     }
 
-    $line-height: map-get($spacers, 4);
+    $line-height: map.get($spacers, 4);
 
     &-icon {
       height: $line-height;

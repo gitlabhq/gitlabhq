@@ -292,6 +292,16 @@ module QA
             unassign_security_policy_project(subgroup[:fullPath])
           end
         end
+
+        attempt = 0
+        wait_until(max_duration: 10, sleep_interval: 2, raise_on_failure: false) do
+          attempt += 1
+          logger.info("Waiting for security policy unassignment - attempt #{attempt}/5")
+
+          !has_security_policy_project?(resource) &&
+            projects_with_security_policy_projects(resource).blank? &&
+            subgroups_with_security_policy_projects(resource).blank?
+        end
       end
 
       private
