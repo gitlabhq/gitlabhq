@@ -4196,14 +4196,14 @@ deploystacks: [vultr, processing]
 
 Use `release` to create a [release](../../user/project/releases/_index.md).
 
-The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs),
+The release job must have access to the [`glab` CLI](https://gitlab.com/gitlab-org/cli),
 which must be in the `$PATH`.
 
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
-you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
+you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/cli:latest`
 
 If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
-[install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
+[install `glab` CLI](https://gitlab.com/gitlab-org/cli#installation) on the server where the runner is registered.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4223,7 +4223,7 @@ If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.h
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
@@ -4231,7 +4231,7 @@ release_job:
   release:
     tag_name: $CI_COMMIT_TAG
     name: 'Release $CI_COMMIT_TAG'
-    description: 'Release created using the release-cli.'
+    description: 'Release created using the CLI.'
 ```
 
 This example creates a release:
@@ -4312,12 +4312,6 @@ job:
 
 #### `release:tag_message`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
-
-{{< /history >}}
-
 If the tag does not exist, the newly created tag is annotated with the message specified by `tag_message`.
 If omitted, a lightweight tag is created.
 
@@ -4386,7 +4380,7 @@ job:
 
 **Additional details**:
 
-- The `description` is evaluated by the shell that runs `release-cli`.
+- The `description` is evaluated by the shell that runs `glab`.
   You can use CI/CD variables to define the description, but some shells
   [use different syntax](../variables/job_scripts.md)
   to reference variables. Similarly, some shells might require special characters
@@ -4435,8 +4429,6 @@ released_at: '2021-03-15T08:00:00Z'
 #### `release:assets:links`
 
 Use `release:assets:links` to include [asset links](../../user/project/releases/release_fields.md#release-assets) in the release.
-
-Requires `release-cli` version v0.4.0 or later.
 
 **Example of `release:assets:links`**:
 

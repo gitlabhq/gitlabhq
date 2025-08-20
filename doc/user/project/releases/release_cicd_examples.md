@@ -34,7 +34,7 @@ Key points in the following extract of an example `.gitlab-ci.yml` file:
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG                 # Run this job when a tag is created
   script:
@@ -57,7 +57,7 @@ Key points in the following extract of an example `.gitlab-ci.yml` file:
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG
       when: never                                  # Do not run this job when a tag is created manually
@@ -87,7 +87,7 @@ In this CI/CD example the release preparation is split into separate jobs for gr
   This metadata is [passed to the downstream job](../../../ci/variables/job_scripts.md#pass-an-environment-variable-to-another-job).
 - The `release_job` uses the content from the variables file to create a release, using the
   metadata passed to it in the variables file. This job must use the
-  `registry.gitlab.com/gitlab-org/release-cli:latest` image because it contains the release CLI.
+  `registry.gitlab.com/gitlab-org/cli:latest` image because it contains the `glab` CLI.
 
 ```yaml
 prepare_job:
@@ -105,7 +105,7 @@ prepare_job:
 
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   needs:
     - job: prepare_job
       artifacts: true
@@ -117,7 +117,7 @@ release_job:
     - echo "running release_job for $TAG"
   release:
     name: 'Release $TAG'
-    description: 'Created using the release-cli $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
+    description: 'Created using the CLI $EXTRA_DESCRIPTION'  # $EXTRA_DESCRIPTION and the $TAG
     tag_name: '$TAG'                                                 # variables must be defined elsewhere
     ref: '$CI_COMMIT_SHA'                                            # in the pipeline. For example, in the
     milestones:                                                      # prepare_job

@@ -9,7 +9,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import ExpandCollapseButton from './expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import CommitListItemActionButtons from './commit_list_item_action_buttons.vue';
 import CommitListItemDescription from './commit_list_item_description.vue';
 import CommitListItemOverflowMenu from './commit_list_item_overflow_menu.vue';

@@ -156,4 +156,17 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
       end
     end
   end
+
+  context 'with silent_mode enabled' do
+    before do
+      Gitlab::SilentMode.enable!
+    end
+
+    it 'does not raise error' do
+      result = ClickHouse::Client.execute("SELECT 1 AS value", :main)
+
+      # does not return data, just true if successful. Otherwise, error.
+      expect(result).to eq(true)
+    end
+  end
 end

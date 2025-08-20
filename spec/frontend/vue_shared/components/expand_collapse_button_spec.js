@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 
 describe('ExpandCollapseButton', () => {
   let wrapper;

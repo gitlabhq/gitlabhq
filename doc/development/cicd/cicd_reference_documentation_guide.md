@@ -83,7 +83,7 @@ or changes due to different GitLab versions. For example:
 **Supported values**:
 
 - A string with the long description.
-- The path to a file that contains the description. Introduced in [GitLab 13.7](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/67).
+- The path to a file that contains the description.
   - The file location must be relative to the project directory (`$CI_PROJECT_DIR`).
   - If the file is a symbolic link, it must be in the `$CI_PROJECT_DIR`.
   - The `./path/to/file` and filename can't contain spaces.

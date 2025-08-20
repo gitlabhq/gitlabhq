@@ -363,7 +363,7 @@ ensure-job-added:
 # create the release.
 create-release:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   script: echo "Creating release $CI_COMMIT_TAG"
   rules:
     - if: $CI_COMMIT_TAG
@@ -687,7 +687,7 @@ To publish a new version of the component to the catalog:
    ```yaml
    create-release:
      stage: release
-     image: registry.gitlab.com/gitlab-org/release-cli:latest
+     image: registry.gitlab.com/gitlab-org/cli:latest
      script: echo "Creating release $CI_COMMIT_TAG"
      rules:
        - if: $CI_COMMIT_TAG

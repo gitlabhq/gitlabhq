@@ -155,7 +155,7 @@ The following links show typical example configurations for creating a release u
 ### Use a custom SSL CA certificate authority
 
 You can use the `ADDITIONAL_CA_CERT_BUNDLE` CI/CD variable to configure a custom SSL CA certificate authority,
-which is used to verify the peer when the `release-cli` creates a release through the API using HTTPS with custom certificates.
+which is used to verify the peer when the `glab` CLI creates a release through the API using HTTPS with custom certificates.
 The `ADDITIONAL_CA_CERT_BUNDLE` value should contain the
 [text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
 or the `path/to/file` containing the certificate authority.
@@ -205,39 +205,25 @@ android-release:
 ### Release assets as Generic packages
 
 You can use [Generic packages](../../packages/generic_packages/_index.md) to host your release assets.
-For a complete example, see the [Release assets as Generic packages](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs/examples/release-assets-as-generic-package/)
-project.
 
 To create a release with packaged assets:
 
 1. From a CI/CD pipeline, build your package files.
-1. Upload the package files to the [generic package repository](../../packages/generic_packages/_index.md):
-
-   ```yaml
-   Upload Package:
-     stage: deploy
-   script:
-     - |
-       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
-        --upload-file path/to/your/file \
-        ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/${PACKAGE_NAME}/${VERSION}/filename
-   ```
-
-1. Create a release with the `release-cli` job:
+1. Create a release with the `glab` CLI job:
 
    ```yaml
    Create Release:
      stage: release
-     image: registry.gitlab.com/gitlab-org/release-cli:latest
+     image: registry.gitlab.com/gitlab-org/cli:latest
      rules:
        - if: $CI_COMMIT_TAG
      script:
        - |
-         release-cli create \
+         glab release create "$CI_COMMIT_TAG" \
          --name "Release ${VERSION}" \
-         --tag-name $CI_COMMIT_TAG \
-         --description "Your release notes here" \
-         --assets-link "{\"name\":\"Asset Name\",\"url\":\"${PACKAGE_REGISTRY_URL}/filename\"}"
+         --notes "Your release notes here" \
+         path/to/your/release-asset-file \
+         --use-package-registry
    ```
 
    For every asset you want to include, add an additional `--assets-link` link.
@@ -483,7 +469,7 @@ These metrics include:
 The Guided Exploration project [Utterly Automated Software and Artifact Versioning with GitVersion](https://gitlab.com/guided-explorations/devops-patterns/utterly-automated-versioning) demonstrates:
 
 - Using GitLab releases.
-- Using the GitLab `release-cli`.
+- Using the [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md).
 - Creating a generic package.
 - Linking the package to the release.
 - Using a tool called [GitVersion](https://gitversion.net/) to automatically determine and increment versions for complex repositories.

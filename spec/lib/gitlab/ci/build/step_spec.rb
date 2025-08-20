@@ -68,16 +68,6 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
       it 'returns glab command line' do
         expect(subject.script).to match_array([a_string_including("glab release create -R $CI_PROJECT_PATH")])
       end
-
-      context 'when the FF ci_glab_for_release is disabled' do
-        before do
-          stub_feature_flags(ci_glab_for_release: false)
-        end
-
-        it 'returns release-cli command line' do
-          expect(subject.script).to match_array([a_string_including("release-cli create --name")])
-        end
-      end
     end
 
     context 'when release is empty' do
@@ -100,20 +90,9 @@ RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integratio
         expect(subject.script).to match_array([a_string_including("--publish-to-catalog")])
       end
 
-      context 'when the FF ci_glab_for_release is disabled' do
-        before do
-          stub_feature_flags(ci_glab_for_release: false)
-        end
-
-        it 'returns release-cli script with catalog publish' do
-          expect(subject.script).to match_array([a_string_including("release-cli create")])
-          expect(subject.script).to match_array([a_string_including("--catalog-publish")])
-        end
-      end
-
       context 'when the FF ci_release_cli_catalog_publish_option is disabled' do
         before do
-          stub_feature_flags(ci_release_cli_catalog_publish_option: false, ci_glab_for_release: false)
+          stub_feature_flags(ci_release_cli_catalog_publish_option: false)
         end
 
         it 'returns the release-cli script with catalog publish' do

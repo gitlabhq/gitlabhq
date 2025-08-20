@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module WorkItems
-  module Glql
+module Search
+  module AdvancedFinders
     class WorkItemsFinder
       def initialize(current_user, context, resource_parent, params = {})
         @current_user = current_user
@@ -10,7 +10,7 @@ module WorkItems
         @params = params
       end
 
-      # Overwritten in ee/app/finders/ee/work_items/glql/work_items_finder.rb
+      # Overwritten in ee/lib/ee/search/advanced_finders/work_items_finder.rb
       def use_elasticsearch_finder?
         false
       end
@@ -18,4 +18,4 @@ module WorkItems
   end
 end
 
-WorkItems::Glql::WorkItemsFinder.prepend_mod
+Search::AdvancedFinders::WorkItemsFinder.prepend_mod

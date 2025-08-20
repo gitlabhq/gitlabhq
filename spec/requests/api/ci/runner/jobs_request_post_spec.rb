@@ -453,36 +453,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                     }
                   ])
               end
-
-              context 'when the FF ci_glab_for_release is disabled' do
-                before do
-                  stub_feature_flags(ci_glab_for_release: false)
-                end
-
-                it 'exposes release info' do
-                  request_job info: { features: { multi_build_steps: true } }
-
-                  expect(response).to have_gitlab_http_status(:created)
-                  expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-                  expect(json_response['steps']).to match_array(
-                    [
-                      {
-                        "name" => "script",
-                        "script" => ["make changelog | tee release_changelog.txt"],
-                        "timeout" => 3600,
-                        "when" => "on_success",
-                        "allow_failure" => false
-                      },
-                      {
-                        "name" => "release",
-                        "script" => [a_string_including("release-cli create --name ")],
-                        "timeout" => 3600,
-                        "when" => "on_success",
-                        "allow_failure" => false
-                      }
-                    ])
-                end
-              end
             end
 
             context 'when `multi_build_steps` is not passed by the runner' do

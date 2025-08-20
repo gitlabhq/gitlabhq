@@ -327,10 +327,10 @@ export const newWorkItemPath = ({ fullPath, isGroup = false, workItemType, query
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {
-  // The reference is replaced by work item fullpath in case the project and group are same.
+  // The full reference is replaced by IID reference in case the project and group are same.
   // e.g., gitlab-org/gitlab-test#45 will be shown as #45
-  if (new RegExp(`${workItemFullPath}#`, 'g').test(workitemReference)) {
-    return workitemReference.replace(new RegExp(`${workItemFullPath}`, 'g'), '');
+  if (workitemReference.startsWith(`${workItemFullPath}#`)) {
+    return workitemReference.replace(workItemFullPath, '');
   }
   return workitemReference;
 };

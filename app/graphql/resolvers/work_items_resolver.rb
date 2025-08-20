@@ -45,17 +45,18 @@ module Resolvers
     private
 
     def choose_finder(args)
-      if ::Feature.enabled?(:glql_es_integration, current_user)
-        glql_finder = glql_finder(args)
+      if ::Feature.enabled?(:glql_es_integration, current_user) ||
+          ::Feature.enabled?(:work_items_list_es_integration, current_user)
+        advanced_finder = advanced_finder(args)
 
-        return glql_finder if glql_finder.use_elasticsearch_finder?
+        return advanced_finder if advanced_finder.use_elasticsearch_finder?
       end
 
       finder(prepare_finder_params(args))
     end
 
-    def glql_finder(args)
-      ::WorkItems::Glql::WorkItemsFinder.new(current_user, context, resource_parent, args)
+    def advanced_finder(args)
+      ::Search::AdvancedFinders::WorkItemsFinder.new(current_user, context, resource_parent, args)
     end
 
     # When we search on a group level, this finder is being overwritten in

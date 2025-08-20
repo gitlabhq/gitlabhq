@@ -72,24 +72,16 @@ module Gitlab
         end
 
         def script
-          if use_glab_cli?
-            [script_with_glab_cli]
+          if runner_manager&.platform == 'windows'
+            [windows_script]
           else
-            [script_with_release_cli]
+            [unix_script]
           end
         end
 
         private
 
-        def script_with_glab_cli
-          if runner_manager&.platform == 'windows'
-            glab_windows_script
-          else
-            glab_unix_script
-          end
-        end
-
-        def glab_windows_script
+        def windows_script
           <<~POWERSHELL
           if (Get-Command glab -ErrorAction SilentlyContinue) {
             $$glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
@@ -119,7 +111,7 @@ module Gitlab
           POWERSHELL
         end
 
-        def glab_unix_script
+        def unix_script
           <<~BASH
           if command -v glab &> /dev/null; then
             if [ "$(printf "%s\\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
@@ -204,11 +196,6 @@ module Gitlab
           job.project.catalog_resource
         end
         strong_memoize_attr :catalog_publish?
-
-        def use_glab_cli?
-          ::Feature.enabled?(:ci_glab_for_release, job.project)
-        end
-        strong_memoize_attr :use_glab_cli?
 
         def ci_release_cli_catalog_publish_option?
           ::Feature.enabled?(:ci_release_cli_catalog_publish_option, job.project)

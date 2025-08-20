@@ -514,13 +514,13 @@ deploy-to-production:
     name: production
 ```
 
-To create a release instead, use the `release` keyword with the release-cli tool to create
+To create a release instead, use the `release` keyword with the `glab` CLI tool to create
 releases for Git tags:
 
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
@@ -528,7 +528,7 @@ release_job:
   release:
     tag_name: $CI_COMMIT_TAG
     name: 'Release $CI_COMMIT_TAG'
-    description: 'Release created using the release-cli.'
+    description: 'Release created using the CLI.'
 ```
 
 {{< /tab >}}

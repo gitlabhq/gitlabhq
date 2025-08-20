@@ -37,7 +37,6 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       release_cli_assets_links = "--assets-link \"#{assets_link1}\" --assets-link \"#{assets_link2}\""
 
       release_cli_command = 'release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"'
-      result_for_release_cli_without_catalog_publish = "#{release_cli_command} #{release_cli_assets_links}"
 
       glab_create_unix = 'glab release create -R $CI_PROJECT_PATH'
       glab_create_windows = 'glab release create -R $$env:CI_PROJECT_PATH'
@@ -95,10 +94,9 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       context 'on different scenarios' do
         using RSpec::Parameterized::TableSyntax
 
-        where(:cli_ff, :runner_platform, :result) do
-          false | 'irrelevant' | result_for_release_cli_without_catalog_publish
-          true  | 'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
-          true  | 'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
+        where(:runner_platform, :result) do
+          'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
+          'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
         end
 
         with_them do
@@ -110,10 +108,6 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
               runner: runner_manager.runner, runner_manager: runner_manager)
           end
 
-          before do
-            stub_feature_flags(ci_glab_for_release: cli_ff)
-          end
-
           it { is_expected.to eq([result]) }
         end
       end
@@ -123,7 +117,6 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         let_it_be(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
         let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
-        result_for_release_cli_with_catalog_publish = "#{result_for_release_cli_without_catalog_publish} --catalog-publish"
         unix_result_for_glab_or_release_cli_with_catalog_publish = <<~BASH
         if command -v glab &> /dev/null; then
           if [ "$(printf "%s\\n%s" "#{described_class::GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')" | sort -V | head -n1)" = "#{described_class::GLAB_REQUIRED_VERSION}" ]; then
@@ -174,13 +167,11 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         context 'on different scenarios' do
           using RSpec::Parameterized::TableSyntax
 
-          where(:cli_ff, :catalog_publish_ff, :runner_platform, :result) do
-            false | false | 'irrelevant' | result_for_release_cli_without_catalog_publish
-            false | true  | 'irrelevant' | result_for_release_cli_with_catalog_publish
-            true  | false | 'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
-            true  | true  | 'linux'      | unix_result_for_glab_or_release_cli_with_catalog_publish
-            true  | false | 'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
-            true  | true  | 'windows'    | windows_result_for_glab_or_release_cli_with_catalog_publish
+          where(:catalog_publish_ff, :runner_platform, :result) do
+            false | 'linux'      | unix_result_for_glab_or_release_cli_without_catalog_publish
+            true  | 'linux'      | unix_result_for_glab_or_release_cli_with_catalog_publish
+            false | 'windows'    | windows_result_for_glab_or_release_cli_without_catalog_publish
+            true  | 'windows'    | windows_result_for_glab_or_release_cli_with_catalog_publish
           end
 
           with_them do
@@ -193,7 +184,6 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
             end
 
             before do
-              stub_feature_flags(ci_glab_for_release: cli_ff)
               stub_feature_flags(ci_release_cli_catalog_publish_option: catalog_publish_ff)
             end
 
@@ -247,37 +237,6 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
 
         it 'generates the script' do
           expect(script).to match([a_string_including(result)])
-        end
-      end
-
-      context 'when the FF ci_glab_for_release is disabled' do
-        before do
-          stub_feature_flags(ci_glab_for_release: false)
-        end
-
-        where(:node_name, :node_value, :result) do
-          :name        | 'Release $CI_COMMIT_SHA'         | 'release-cli create --name "Release $CI_COMMIT_SHA"'
-          :description | 'Release-cli $EXTRA_DESCRIPTION' | 'release-cli create --description "Release-cli $EXTRA_DESCRIPTION"'
-          :tag_name    | 'release-$CI_COMMIT_SHA'         | 'release-cli create --tag-name "release-$CI_COMMIT_SHA"'
-          :tag_message | 'Annotated tag message'          | 'release-cli create --tag-message "Annotated tag message"'
-          :ref         | '$CI_COMMIT_SHA'                 | 'release-cli create --ref "$CI_COMMIT_SHA"'
-          :milestones  | %w[m1 m2 m3]                     | 'release-cli create --milestone "m1" --milestone "m2" --milestone "m3"'
-          :released_at | '2020-07-15T08:00:00Z'           | 'release-cli create --released-at "2020-07-15T08:00:00Z"'
-          :assets      | links                            | "release-cli create --assets-link #{links[:links][0].to_json.to_json}"
-        end
-
-        with_them do
-          let(:config) do
-            {
-              release: {
-                node_name => node_value
-              }
-            }
-          end
-
-          it 'generates the script' do
-            expect(script).to eq([result])
-          end
         end
       end
     end

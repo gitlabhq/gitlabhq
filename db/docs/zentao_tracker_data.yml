@@ -7,6 +7,6 @@ feature_categories:
 description: Data related to the ZenTao integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67938
 milestone: '14.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/558261
 table_size: small

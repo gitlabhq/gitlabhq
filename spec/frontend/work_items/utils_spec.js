@@ -32,6 +32,7 @@ import {
   formatUserForListbox,
   markdownPreviewPath,
   newWorkItemPath,
+  getDisplayReference,
   isReference,
   workItemRoadmapPath,
   saveToggleToLocalStorage,
@@ -394,6 +395,20 @@ describe('convertTypeEnumToName', () => {
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
   });
+});
+
+describe('getDisplayReference', () => {
+  it.each`
+    workItemFullPath             | workItemReference                           | result
+    ${'gitlab-org/project-path'} | ${'gitlab-org/project-path#101'}            | ${'#101'}
+    ${'gitlab-org/project-path'} | ${'other-root/gitlab-org/project-path#101'} | ${'other-root/gitlab-org/project-path#101'}
+    ${'gitlab-org'}              | ${'gitlab-org/project-path#101'}            | ${'gitlab-org/project-path#101'}
+  `(
+    'removes namespace from workItemReference if it matches workItemFullPath',
+    ({ workItemFullPath, workItemReference, result }) => {
+      expect(getDisplayReference(workItemFullPath, workItemReference)).toBe(result);
+    },
+  );
 });
 
 describe('isReference', () => {

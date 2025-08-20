@@ -1,7 +1,7 @@
 <script l>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 
 export default {
   name: 'CommitListItemActionButtons',

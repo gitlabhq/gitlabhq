@@ -8,7 +8,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
 import CommitListItemDescription from '~/projects/commits/components/commit_list_item_description.vue';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import { mockCommit } from './mock_data';
 
 describe('CommitListItem', () => {

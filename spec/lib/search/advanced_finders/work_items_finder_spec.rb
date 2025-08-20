@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Glql::WorkItemsFinder, feature_category: :markdown do
+RSpec.describe Search::AdvancedFinders::WorkItemsFinder, feature_category: :markdown do
   let_it_be(:resource_parent) { create(:group) }
   let(:current_user)     { create(:user) }
   let(:context)          { instance_double(GraphQL::Query::Context) }
