@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCard } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { mapActions, mapState } from 'pinia';
 import { useAccessTokens } from '../stores/access_tokens';
 

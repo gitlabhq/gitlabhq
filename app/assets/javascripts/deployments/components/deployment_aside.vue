@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import ShowMore from '~/vue_shared/components/show_more.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import { __, s__ } from '~/locale';

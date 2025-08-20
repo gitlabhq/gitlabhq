@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

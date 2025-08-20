@@ -8,7 +8,6 @@ import {
   getEndLineNumber,
   getLineClasses,
 } from '~/notes/components/multiline_comment_utils';
-import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import resolvedStatusMixin from '../mixins/resolved_status';
 
@@ -27,7 +26,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(useLegacyDiffs, ['getDiffFileByHash']),
     ...mapState(useNotes, ['getDiscussion']),
     iconName() {
       return this.isDiffDiscussion || this.draft.line_code ? 'doc-text' : 'comment';
@@ -57,6 +55,7 @@ export default {
 
       return __('Your new comment');
     },
+    // eslint-disable-next-line vue/no-unused-properties -- linePosition() was used prior to a feature flag removal and may be used again.
     linePosition() {
       if (this.position?.position_type === IMAGE_DIFF_POSITION_TYPE) {
         // eslint-disable-next-line @gitlab/require-i18n-strings

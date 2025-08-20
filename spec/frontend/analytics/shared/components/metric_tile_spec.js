@@ -1,4 +1,4 @@
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import MetricPopover from '~/analytics/shared/components/metric_popover.vue';

@@ -1,6 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
-import { sprintf } from '@gitlab/ui/dist/utils/i18n';
+import { sprintf } from '@gitlab/ui/src/utils/i18n';
 import { renderLeaveSuccessToast } from '~/vue_shared/components/groups_list/utils';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';

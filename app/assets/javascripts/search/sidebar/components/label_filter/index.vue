@@ -3,7 +3,7 @@ import { GlLabel, GlCollapsibleListbox, GlOutsideDirective as Outside } from '@g
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { difference, uniq } from 'lodash';
-import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
+import { rgbFromHex } from '@gitlab/ui/src/utils/utils';
 import { I18N } from '~/vue_shared/global_search/constants';
 import {
   FIRST_DROPDOWN_INDEX,

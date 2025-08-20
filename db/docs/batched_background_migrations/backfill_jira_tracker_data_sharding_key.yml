@@ -1,8 +1,10 @@
 ---
 migration_job_name: BackfillJiraTrackerDataShardingKey
 description: Sets sharding key (project_id/group_id/organization_id) on jira_tracker_data based on associated integration
+  Originally introduced by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194007
+  Re-ran to fix several leftover records.
 feature_category: integrations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194007
-milestone: '18.1'
-queued_migration_version: 20250610102350
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197199
+milestone: '18.4'
+queued_migration_version: 20250818084641
 finalized_by: # version of the migration that finalized this BBM

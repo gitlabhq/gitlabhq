@@ -2,7 +2,7 @@
  * @module common-utils
  */
 
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { isFunction, defer, escape, partial, toLower } from 'lodash';
 import Cookies from '~/lib/utils/cookies';

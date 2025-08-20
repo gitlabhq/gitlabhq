@@ -1,4 +1,4 @@
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { GlColumnChart } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';

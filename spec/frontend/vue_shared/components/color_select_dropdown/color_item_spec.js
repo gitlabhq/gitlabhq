@@ -1,4 +1,4 @@
-import { rgbFromHex } from '@gitlab/ui/dist/utils/utils';
+import { rgbFromHex } from '@gitlab/ui/src/utils/utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ColorItem from '~/vue_shared/components/color_select_dropdown/color_item.vue';
 import { color } from './mock_data';

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import PlaceholderUsersStats from '~/usage_quotas/import/components/placeholder_users_stats.vue';
 

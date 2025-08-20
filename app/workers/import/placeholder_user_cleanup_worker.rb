@@ -18,8 +18,7 @@ module Import
 
         delay = index * 1.second
 
-        Import::DeletePlaceholderUserWorker
-        .perform_in(delay, detail.placeholder_user_id, { type: 'placeholder_user' })
+        Import::DeletePlaceholderUserWorker.perform_in(delay, detail.placeholder_user_id)
       end
     end
 

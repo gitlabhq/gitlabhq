@@ -1,5 +1,5 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';

@@ -45,6 +45,52 @@ RSpec.describe AuditEventService, :with_license, feature_category: :audit_events
         )
       end
     end
+
+    context 'initialization logging' do
+      let(:entity) { project }
+      let(:details) { { action: :create, target_id: 123 } }
+
+      it 'logs initialization with all parameters' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: "AuditEventService initialized",
+          author_class: "User",
+          author_id: user.id,
+          entity_class: "Project",
+          entity_id: project.id,
+          save_type: :database_and_stream,
+          details: details
+        )
+
+        described_class.new(user, entity, details)
+      end
+
+      context 'with custom save type' do
+        it 'logs the custom save type' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              message: "AuditEventService initialized",
+              save_type: :stream
+            )
+          )
+
+          described_class.new(user, entity, details, :stream)
+        end
+      end
+
+      context 'with unauthenticated author' do
+        it 'logs with unauthenticated author class' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            hash_including(
+              message: "AuditEventService initialized",
+              author_id: -1,
+              author_class: "Gitlab::Audit::UnauthenticatedAuthor"
+            )
+          )
+
+          described_class.new("deploy-token", entity, details)
+        end
+      end
+    end
   end
 
   describe '#security_event' do

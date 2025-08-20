@@ -28466,6 +28466,7 @@ Types of scans enabled on a merge request.
 | <a id="enabledsecurityscanscoveragefuzzing"></a>`coverageFuzzing` | [`Boolean!`](#boolean) | `true` if there is a Coverage fuzzing scan in the pipeline. |
 | <a id="enabledsecurityscansdast"></a>`dast` | [`Boolean!`](#boolean) | `true` if there is a Dast scan in the pipeline. |
 | <a id="enabledsecurityscansdependencyscanning"></a>`dependencyScanning` | [`Boolean!`](#boolean) | `true` if there is a Dependency scanning scan in the pipeline. |
+| <a id="enabledsecurityscansready"></a>`ready` | [`Boolean!`](#boolean) | Returns `true` when report processing has been completed. |
 | <a id="enabledsecurityscanssast"></a>`sast` | [`Boolean!`](#boolean) | `true` if there is a Sast scan in the pipeline. |
 | <a id="enabledsecurityscanssecretdetection"></a>`secretDetection` | [`Boolean!`](#boolean) | `true` if there is a Secret detection scan in the pipeline. |
 

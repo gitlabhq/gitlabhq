@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { uniq, escape } from 'lodash';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';

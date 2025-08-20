@@ -1,5 +1,5 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -35,7 +35,7 @@ const MockResizeObserver = {
 
 Vue.directive('gl-resize-observer', MockResizeObserver);
 
-jest.mock('@gitlab/ui/dist/utils');
+jest.mock('@gitlab/ui/src/utils');
 
 describe('RunnerInstructionsModal component', () => {
   let wrapper;

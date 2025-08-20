@@ -1,5 +1,5 @@
 import { GlAlert } from '@gitlab/ui';
-import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { GlLineChart } from '@gitlab/ui/src/charts';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';

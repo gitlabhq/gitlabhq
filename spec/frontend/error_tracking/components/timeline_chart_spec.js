@@ -1,4 +1,4 @@
-import { GlChart } from '@gitlab/ui/dist/charts';
+import { GlChart } from '@gitlab/ui/src/charts';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import TimelineChart from '~/error_tracking/components/timeline_chart.vue';
 

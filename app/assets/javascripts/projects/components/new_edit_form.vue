@@ -1,6 +1,6 @@
 <script>
 import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { n__, s__, __ } from '~/locale';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY } from '~/vue_shared/components/markdown/constants';

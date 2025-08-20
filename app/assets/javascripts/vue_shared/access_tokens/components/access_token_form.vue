@@ -10,7 +10,7 @@ import {
   GlLink,
   GlSprintf,
 } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { mapActions, mapState } from 'pinia';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { toISODateFormat } from '~/lib/utils/datetime_utility';

@@ -1,5 +1,5 @@
 import { GlSkeletonLoader, GlLink } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelinesStats from '~/projects/pipelines/charts/components/pipelines_stats.vue';
 

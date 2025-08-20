@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';

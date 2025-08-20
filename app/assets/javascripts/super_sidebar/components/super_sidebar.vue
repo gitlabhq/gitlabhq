@@ -1,6 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';

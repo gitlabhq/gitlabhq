@@ -9,11 +9,10 @@ module Import
     feature_category :importers
     concurrency_limit -> { 20 }
 
-    def perform(source_user_or_placeholder_user_id, params = {})
-      placeholder_user = find_placeholder_user(source_user_or_placeholder_user_id, params.symbolize_keys)
+    def perform(placeholder_user_id, _params = {})
+      placeholder_user = find_placeholder_user(placeholder_user_id)
       return unless placeholder_user
 
-      placeholder_user_id = placeholder_user.id
       if placeholder_user_referenced?(placeholder_user_id)
         log_placeholder_user_not_deleted(placeholder_user_id)
         return
@@ -27,19 +26,11 @@ module Import
 
     private
 
-    def find_placeholder_user(id, params)
-      if params[:type].blank?
-        source_user = Import::SourceUser.find_by_id(id)
-        return if source_user.nil? || source_user.placeholder_user.nil?
-        return unless source_user.placeholder_user.placeholder?
+    def find_placeholder_user(id)
+      user = User.find_by_id(id)
+      return if user.nil? || !user.placeholder?
 
-        source_user.placeholder_user
-      else
-        user = User.find_by_id(id)
-        return if user.nil? || !user.placeholder?
-
-        user
-      end
+      user
     end
 
     def log_placeholder_user_not_deleted(placeholder_user_id)

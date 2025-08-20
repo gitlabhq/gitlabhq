@@ -10,6 +10,28 @@ To contribute translations at [`translate.gitlab.com`](https://translate.gitlab.
 you must create a Crowdin account. You may create a new account or use any of their supported
 sign-in services.
 
+## Contributor recognition and rewards
+
+GitLab recognizes and rewards translators on Crowdin for their contributions.
+The GitLab contributor platform has a [leaderboard](https://contributors.gitlab.com/leaderboard),
+[contributor level system](https://contributors.gitlab.com/docs/user-guide#contributor-levels),
+and [rewards store](https://rewards.gitlab.com).
+
+For your Crowdin contributions to be recognized by GitLab,
+your Crowdin username must be mapped to your GitLab username:
+
+- If you do not have a GitLab username, you can
+  [sign up for a free account](https://gitlab.com/users/sign_up).
+- Complete and submit [this form](https://docs.google.com/forms/d/15XDNFFLhbBJgB4U3u44yRwdiecRAe2ykNl0kRtPFkO0/edit?ts=68000e25)
+  to map your Crowdin username to your GitLab username.
+
+Crowdin translators earn points for the translations they submit.
+These points combine with any other contributions to GitLab (merge requests,
+issues, and community engagement) to help you level up and earn rewards credits.
+
+For more information about the contributor platform,
+see the [user guide](https://contributors.gitlab.com/docs/user-guide).
+
 ## Language selections
 
 GitLab is being translated into many languages. To select a language to contribute to:

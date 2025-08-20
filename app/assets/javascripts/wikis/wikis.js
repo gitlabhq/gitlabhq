@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import Tracking from '~/tracking';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';

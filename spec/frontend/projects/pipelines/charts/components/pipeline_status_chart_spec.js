@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
+import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelineStatusChart from '~/projects/pipelines/charts/components/pipeline_status_chart.vue';
 import { stubComponent } from 'helpers/stub_component';

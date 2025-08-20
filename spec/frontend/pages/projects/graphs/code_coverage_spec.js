@@ -1,5 +1,5 @@
 import { GlAlert, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 

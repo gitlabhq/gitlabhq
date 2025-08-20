@@ -1,6 +1,6 @@
 <script>
 import { GlSprintf, GlBadge, GlResizeObserverDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { __, s__, sprintf } from '~/locale';
 import { formatDate } from '~/lib/utils/datetime_utility';

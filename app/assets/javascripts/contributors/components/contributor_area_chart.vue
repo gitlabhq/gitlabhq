@@ -1,5 +1,5 @@
 <script>
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 

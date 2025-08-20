@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';

@@ -6,7 +6,7 @@ import {
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import { FAILED_STATUS } from '~/ci/constants';
 import { JOB_DROPDOWN } from '../constants';

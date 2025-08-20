@@ -1,5 +1,5 @@
 <script>
-import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { GlLineChart } from '@gitlab/ui/src/charts';
 import { GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { CREATE_EXPERIMENT_HELP_PATH } from '~/ml/experiment_tracking/routes/experiments/index/constants';

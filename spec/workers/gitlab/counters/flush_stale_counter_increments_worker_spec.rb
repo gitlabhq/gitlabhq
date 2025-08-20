@@ -90,21 +90,14 @@ RSpec.describe ::Gitlab::Counters::FlushStaleCounterIncrementsWorker, :saas, :cl
           expect(redis.get(redis_key).to_i).to eq(project_daily_statistic.id)
         end
 
-        # Test that the service is called multiple times (batching behavior)
-        # without running the full 100 iterations, and verify early termination
-        # when no more work is available
-
-        expect_next_instance_of(Gitlab::Counters::FlushStaleCounterIncrements) do |service|
-          expect(service).to receive(:execute)
-          .and_call_original
-        end.thrice
-
+        # We'll expect no change here since the worker will be removed.
         expect_initial_counts
         worker.perform_work
-        expect_flushed_counts
+        expect_initial_counts
 
         Gitlab::Redis::SharedState.with do |redis|
-          expect(redis.get(redis_key).to_i).to eq(1 + project_daily_statistic_three.id)
+          # We'll expect no change since the worker will be removed.
+          expect(redis.get(redis_key).to_i).to eq(project_daily_statistic.id)
         end
       end
 
@@ -112,12 +105,6 @@ RSpec.describe ::Gitlab::Counters::FlushStaleCounterIncrementsWorker, :saas, :cl
         expect(project_daily_statistic.fetch_count).to eq(5)
         expect(project_daily_statistic_two.fetch_count).to eq(0)
         expect(project_daily_statistic_three.fetch_count).to eq(10)
-      end
-
-      def expect_flushed_counts
-        expect(project_daily_statistic.reload.fetch_count).to eq(10)
-        expect(project_daily_statistic_two.reload.fetch_count).to eq(0)
-        expect(project_daily_statistic_three.reload.fetch_count).to eq(20)
       end
     end
   end

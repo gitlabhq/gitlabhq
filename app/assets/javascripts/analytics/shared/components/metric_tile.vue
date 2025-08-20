@@ -1,5 +1,5 @@
 <script>
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { countFloatingPointDigits } from '~/lib/utils/number_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { generateMetricLink } from '~/analytics/shared/utils';

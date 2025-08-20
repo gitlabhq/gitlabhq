@@ -1,4 +1,4 @@
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import RunnerSingleStat from '~/ci/runner/components/stat/runner_single_stat.vue';
 import RunnerCount from '~/ci/runner/components/stat/runner_count.vue';

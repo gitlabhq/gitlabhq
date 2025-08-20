@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';

@@ -1,5 +1,5 @@
 import { GlTableLite, GlBadge, GlEmptyState } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { mount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import DevopsScore from '~/analytics/devops_reports/components/devops_score.vue';

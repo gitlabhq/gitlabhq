@@ -376,9 +376,9 @@ export default [
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
             {
-              group: ['@gitlab/ui/src/*'],
+              group: ['@gitlab/ui/dist/*'],
               message:
-                'Avoid importing from @gitlab/ui/src. The build system uses aliases to import specific build variants of gitlab-ui modules, and consumer files should not override these aliases.',
+                'Avoid importing from `@gitlab/ui/dist`. Our build uses aliases to force importing gitlab-ui from source, using `/dist` has no effect.',
             },
           ],
         },
@@ -749,11 +749,7 @@ export default [
     },
 
     settings: {
-      'import/ignore': [
-        'k6',
-        'k6/',
-        'https://jslib.k6.io',
-      ],
+      'import/ignore': ['k6', 'k6/', 'https://jslib.k6.io'],
     },
 
     rules: {

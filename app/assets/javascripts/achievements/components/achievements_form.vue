@@ -8,7 +8,7 @@ import {
   GlFormFields,
   GlTruncate,
 } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { produce } from 'immer';
 import { get as getPropValueByPath } from 'lodash';
 import { MountingPortal } from 'portal-vue';

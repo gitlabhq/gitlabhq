@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormInput, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';

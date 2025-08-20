@@ -2,7 +2,7 @@
 import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions as mapVuexActions } from 'vuex';
-import { mapActions, mapState } from 'pinia';
+import { mapActions } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import * as types from '~/batch_comments/stores/modules/batch_comments/mutation_types';
@@ -45,7 +45,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(useBatchComments, ['isPublishing', 'isPublishingDraft']),
     draftCommands() {
       return this.draft.references.commands;
     },
@@ -63,7 +62,6 @@ export default {
     ...mapActions(useBatchComments, [
       'deleteDraft',
       'updateDraft',
-      'publishSingleDraft',
       'scrollToDraft',
       'toggleResolveDiscussion',
     ]),
@@ -73,9 +71,6 @@ export default {
     ...mapVuexActions(['setSelectedCommentPositionHover']),
     update(data) {
       this.updateDraft(data);
-    },
-    publishNow() {
-      this.publishSingleDraft(this.draft.id);
     },
     handleEditing() {
       this.setDraftEditing({ draftId: this.draft.id, isEditing: true });

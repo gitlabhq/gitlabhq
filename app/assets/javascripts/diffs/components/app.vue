@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';

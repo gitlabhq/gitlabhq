@@ -1,4 +1,4 @@
-import { GlColumnChart } from '@gitlab/ui/dist/charts';
+import { GlColumnChart } from '@gitlab/ui/src/charts';
 import Vue from 'vue';
 import { __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';

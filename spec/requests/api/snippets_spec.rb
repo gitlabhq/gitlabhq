@@ -246,6 +246,26 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
       end
     end
 
+    context 'when "optimized_snippet_search_query" is disabled' do
+      before do
+        stub_feature_flags(optimized_snippet_search_query: false)
+      end
+
+      it 'returns snippet json' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['title']).to eq(private_snippet.title)
+        expect(json_response['description']).to eq(private_snippet.description)
+        expect(json_response['file_name']).to eq(private_snippet.file_name_on_repo)
+        expect(json_response['files']).to eq(private_snippet.blobs.map { |blob| snippet_blob_file(blob) })
+        expect(json_response['visibility']).to eq(private_snippet.visibility)
+        expect(json_response['ssh_url_to_repo']).to eq(private_snippet.ssh_url_to_repo)
+        expect(json_response['http_url_to_repo']).to eq(private_snippet.http_url_to_repo)
+      end
+    end
+
     context 'with a non-existent snippet ID' do
       let(:snippet_id) { 0 }
 

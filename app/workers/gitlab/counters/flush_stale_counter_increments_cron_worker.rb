@@ -16,9 +16,7 @@ module Gitlab
       idempotent!
 
       def perform
-        return unless ::Gitlab.com_except_jh? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- we need to check on which instance this happens
-
-        FlushStaleCounterIncrementsWorker.perform_with_capacity
+        # noop - we'll remove this worker
       end
     end
   end

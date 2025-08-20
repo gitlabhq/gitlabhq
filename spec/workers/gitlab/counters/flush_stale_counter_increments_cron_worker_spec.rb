@@ -12,7 +12,9 @@ RSpec.describe ::Gitlab::Counters::FlushStaleCounterIncrementsCronWorker, featur
       end
 
       it 'calls FlushStaleCounterIncrementsWorker.perform_with_capacity' do
-        expect(::Gitlab::Counters::FlushStaleCounterIncrementsWorker).to receive(:perform_with_capacity)
+        # Since we are in the removal process of the worker, we'll use this not here
+        # to satisfy undercoverage
+        expect(::Gitlab::Counters::FlushStaleCounterIncrementsWorker).not_to receive(:perform_with_capacity)
         worker.perform
       end
     end

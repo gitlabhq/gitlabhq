@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { s__ } from '~/locale';
 import {
   formatPipelineCount,

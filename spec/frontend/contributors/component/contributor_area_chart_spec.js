@@ -1,4 +1,4 @@
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ContributorAreaChart from '~/contributors/components/contributor_area_chart.vue';

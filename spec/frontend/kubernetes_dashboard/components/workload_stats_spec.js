@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { nextTick } from 'vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import { mockPodStats } from '../graphql/mock_data';

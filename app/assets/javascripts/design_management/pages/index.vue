@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlAlert, GlFormCheckbox, GlLink, GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';

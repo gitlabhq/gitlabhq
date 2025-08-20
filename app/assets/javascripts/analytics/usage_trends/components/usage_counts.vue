@@ -1,6 +1,6 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { createAlert } from '~/alert';
 import { number } from '~/lib/utils/unit_format';
 import { __, s__ } from '~/locale';

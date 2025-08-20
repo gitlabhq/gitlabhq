@@ -1,5 +1,5 @@
 import { GlFormGroup, GlLoadingIcon } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -16,7 +16,7 @@ import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 
 Vue.use(VueApollo);
 jest.mock('~/ci/utils');
-jest.mock('@gitlab/ui/dist/utils', () => ({
+jest.mock('@gitlab/ui/src/utils', () => ({
   GlBreakpointInstance: {
     getBreakpointSize: jest.fn(),
   },

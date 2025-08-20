@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';

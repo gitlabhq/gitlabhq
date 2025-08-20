@@ -12,7 +12,7 @@ import { mockRunnerPlatforms, mockInstructions, mockInstructionsWindows } from '
 
 Vue.use(VueApollo);
 
-jest.mock('@gitlab/ui/dist/utils');
+jest.mock('@gitlab/ui/src/utils');
 
 const mockPlatforms = mockRunnerPlatforms.data.runnerPlatforms.nodes.map(
   ({ name, humanReadableName, architectures }) => ({

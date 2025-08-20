@@ -725,6 +725,11 @@
   }
 }
 
+.paneled-view .right-sidebar {
+  position: absolute;
+  top: 0;
+}
+
 .issuable-show-labels {
   .gl-label {
     margin-bottom: $gl-spacing-scale-2;

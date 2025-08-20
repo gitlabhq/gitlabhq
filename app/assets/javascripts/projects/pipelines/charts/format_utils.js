@@ -1,4 +1,4 @@
-import { engineeringNotation } from '@gitlab/ui/dist/utils/number_utils';
+import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
 import { formatNumber } from '~/locale';

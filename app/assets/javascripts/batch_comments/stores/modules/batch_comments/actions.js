@@ -72,15 +72,6 @@ export const fetchDrafts = ({ commit, getters, state, dispatch }) =>
       }),
     );
 
-export const publishSingleDraft = ({ commit, getters }, draftId) => {
-  commit(types.REQUEST_PUBLISH_DRAFT, draftId);
-
-  service
-    .publishDraft(getters.getNotesData.draftsPublishPath, draftId)
-    .then(() => commit(types.RECEIVE_PUBLISH_DRAFT_SUCCESS, draftId))
-    .catch(() => commit(types.RECEIVE_PUBLISH_DRAFT_ERROR, draftId));
-};
-
 export const publishReview = ({ commit, getters }, noteData = {}) => {
   commit(types.REQUEST_PUBLISH_REVIEW);
 

@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sidebarState } from '~/super_sidebar/constants';

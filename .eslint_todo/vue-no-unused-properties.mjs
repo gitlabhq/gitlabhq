@@ -3,8 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/batch_comments/components/draft_note.vue',
-    'app/assets/javascripts/batch_comments/components/preview_item.vue',
     'app/assets/javascripts/behaviors/components/json_table.vue',
     'app/assets/javascripts/behaviors/components/sandboxed_mermaid.vue',
     'app/assets/javascripts/behaviors/shortcuts/shortcut.vue',

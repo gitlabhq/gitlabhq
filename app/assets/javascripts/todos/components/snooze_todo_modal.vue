@@ -1,6 +1,6 @@
 <script>
 import { GlModal, GlForm, GlFormFields, GlFormDate } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { s__, __ } from '~/locale';
 import { isInPast, fallsBefore } from '~/lib/utils/datetime_utility';
 import Tracking from '~/tracking';

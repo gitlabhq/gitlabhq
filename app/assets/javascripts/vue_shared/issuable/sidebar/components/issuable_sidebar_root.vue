@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 

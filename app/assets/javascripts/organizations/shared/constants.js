@@ -1,4 +1,4 @@
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { s__, __ } from '~/locale';
 import {
   SORT_LABEL_NAME,

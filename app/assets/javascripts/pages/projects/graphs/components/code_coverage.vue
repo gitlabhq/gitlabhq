@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';

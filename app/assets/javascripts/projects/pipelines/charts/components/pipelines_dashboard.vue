@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import { GlColumnChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
+import { GlColumnChart, GlChartSeriesLabel } from '@gitlab/ui/src/charts';
 import { getDateInPast, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
 import CiCdAnalyticsCharts from '~/analytics/ci_cd/components/ci_cd_analytics_charts.vue';

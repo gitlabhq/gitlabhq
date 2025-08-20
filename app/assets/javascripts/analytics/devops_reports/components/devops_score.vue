@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTableLite, GlLink, GlEmptyState } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { sprintf, s__ } from '~/locale';
 import DevopsScoreCallout from './devops_score_callout.vue';
