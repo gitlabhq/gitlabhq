@@ -12,7 +12,7 @@ title: Upgrade a multi-node instance with downtime
 
 {{< /details >}}
 
-At a high level, the process is:
+The process to upgrade a multi-node instance with downtime is:
 
 1. Shut down the GitLab application.
 1. Upgrade your Consul servers.
@@ -21,6 +21,8 @@ At a high level, the process is:
    - If you use PostgreSQL or Redis from your cloud platform and upgrades are required,
      substitute the instructions for the Linux package with your cloud provider's instructions.
 1. Upgrade the GitLab application (Sidekiq, Puma) and start the application up.
+
+Before you begin an upgrade with downtime, [consider your downtime options](downtime_options.md).
 
 ## Stop writes to the database
 

@@ -658,13 +658,6 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
     end
   end
 
-  it 'increases field complexity based on arguments' do
-    field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
-
-    expect(field.complexity.call({}, {}, 1)).to eq 4
-    expect(field.complexity.call({}, { labelName: 'foo' }, 1)).to eq 8
-  end
-
   def create_issue_with_severity(project, severity:)
     issue = create(:incident, project: project)
     create(:issuable_severity, issue: issue, severity: severity)

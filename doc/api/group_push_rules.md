@@ -30,6 +30,8 @@ Supported attributes:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID of the group or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
+If push rules were never configured for the group, this endpoint returns `404 Not Found` with the message `{"message":"404 Not Found"}`.
+
 Example request:
 
 ```shell
@@ -38,27 +40,33 @@ curl \
   --url "https://gitlab.example.com/api/v4/groups/2/push_rule"
 ```
 
-Example response:
+Example response when push rules are configured with all settings disabled:
 
 ```json
 {
   "id": 1,
   "created_at": "2020-08-17T19:09:19.580Z",
-  "commit_committer_check": true,
-  "commit_committer_name_check": true,
-  "reject_unsigned_commits": false,
-  "reject_non_dco_commits": false,
   "commit_message_regex": "[a-zA-Z]",
   "commit_message_negative_regex": "[x+]",
   "branch_name_regex": "[a-z]",
-  "deny_delete_tag": true,
-  "member_check": true,
-  "prevent_secrets": true,
   "author_email_regex": "^[A-Za-z0-9.]+@gitlab.com$",
   "file_name_regex": "(exe)$",
-  "max_file_size": 100
+  "deny_delete_tag": false,
+  "member_check": false,
+  "prevent_secrets": false,
+  "max_file_size": 0,
+  "commit_committer_check": null,
+  "commit_committer_name_check": false,
+  "reject_unsigned_commits": null,
+  "reject_non_dco_commits": null
 }
 ```
+
+When disabled, some boolean attributes return `null` instead of `false`. For example:
+
+- `commit_committer_check`
+- `reject_unsigned_commits`
+- `reject_non_dco_commits`
 
 ## Add push rules to a group
 

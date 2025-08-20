@@ -77,6 +77,11 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
           expect(Ci::PipelineFinishedWorker).to receive(:perform_async).twice
           seeder.seed
         end
+
+        it 'asynchronously triggers BuildFinishedWorker for each build' do
+          expect(Ci::BuildFinishedWorker).to receive(:perform_async).twice
+          seeder.seed
+        end
       end
     end
 

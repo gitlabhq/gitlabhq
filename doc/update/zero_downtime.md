@@ -15,9 +15,11 @@ title: Upgrade a multi-node instance with zero downtime
 In this section we'll go through the core process of upgrading a multi-node GitLab environment by
 sequentially going through each as per the [upgrade order](downtime_options.md#upgrade-order) and load balancers / HA mechanisms handle each node going down accordingly.
 
+Before you begin an upgrade with zero downtime, [consider your downtime options](downtime_options.md).
+
 For the purposes of this guide we'll upgrade a [200 RPS or 10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
 
-### Consul, PostgreSQL, PgBouncer, and Redis
+## Consul, PostgreSQL, PgBouncer, and Redis
 
 The [Consul](../administration/consul.md), [PostgreSQL](../administration/postgresql/replication_and_failover.md),
 [PgBouncer](../administration/postgresql/pgbouncer.md), and [Redis](../administration/redis/replication_and_failover.md) components all follow the same underlying process to upgrading without downtime.
@@ -61,7 +63,7 @@ Run through the following steps sequentially on each component's node to perform
 
    {{< /tabs >}}
 
-### Gitaly
+## Gitaly
 
 [Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
@@ -100,7 +102,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-#### Gitaly Cluster (Praefect)
+### Gitaly Cluster (Praefect)
 
 For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
@@ -173,7 +175,7 @@ the **Praefect deploy node** in the following steps:
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-### Rails
+## Rails
 
 Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), Workhorse, and NGINX.
 
@@ -287,7 +289,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo gitlab-ctl restart
       ```
 
-### Sidekiq
+## Sidekiq
 
 [Sidekiq](../administration/sidekiq/_index.md) follows the same underlying process as others to upgrading without downtime.
 
@@ -328,7 +330,8 @@ all secondaries have been updated.
 
 {{< alert type="note" >}}
 
-The same [requirements and consideration](downtime_options.md#requirements-and-considerations) apply for upgrading a live GitLab environment with Geo.
+The same [requirements](downtime_options.md#requirements) and [considerations](downtime_options.md#considerations)
+apply for upgrading a live GitLab environment with Geo.
 
 {{< /alert >}}
 

@@ -102,9 +102,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
-      'merge_request_commits_metadata.project_id',
-      # The FK is being created
-      'approval_merge_request_rules_users.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/560322
+      'merge_request_commits_metadata.project_id'
     ]
   end
 

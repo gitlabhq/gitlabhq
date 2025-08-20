@@ -7,6 +7,8 @@ module Ci
     self.table_name = :ci_runner_taggings
     self.primary_key = :id
 
+    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
+
     query_constraints :runner_id, :runner_type
 
     before_validation :set_runner_type, on: :create, if: -> { runner_type.nil? && runner }

@@ -8363,6 +8363,8 @@ CREATE TABLE ai_catalog_items (
     name text NOT NULL,
     public boolean DEFAULT false NOT NULL,
     deleted_at timestamp with time zone,
+    latest_version_id bigint,
+    latest_released_version_id bigint,
     CONSTRAINT check_7e02a4805b CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_edddd6e1fe CHECK ((char_length(name) <= 255))
 );
@@ -35075,6 +35077,10 @@ CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_ite
 
 CREATE INDEX index_ai_catalog_items_on_item_type ON ai_catalog_items USING btree (item_type);
 
+CREATE INDEX index_ai_catalog_items_on_latest_released_version_id ON ai_catalog_items USING btree (latest_released_version_id);
+
+CREATE INDEX index_ai_catalog_items_on_latest_version_id ON ai_catalog_items USING btree (latest_version_id);
+
 CREATE INDEX index_ai_catalog_items_on_organization_id ON ai_catalog_items USING btree (organization_id);
 
 CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btree (project_id);
@@ -45646,6 +45652,9 @@ ALTER TABLE ONLY operations_user_lists
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_rails_0cea73eba5 FOREIGN KEY (child_work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_items
+    ADD CONSTRAINT fk_rails_0e921b434a FOREIGN KEY (latest_released_version_id) REFERENCES ai_catalog_item_versions(id);
+
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
     ADD CONSTRAINT fk_rails_0eb52fc617 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -46797,6 +46806,9 @@ ALTER TABLE ONLY group_repository_storage_moves
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_9851a00031 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_items
+    ADD CONSTRAINT fk_rails_98b8fff981 FOREIGN KEY (latest_version_id) REFERENCES ai_catalog_item_versions(id);
 
 ALTER TABLE ONLY board_project_recent_visits
     ADD CONSTRAINT fk_rails_98f8843922 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

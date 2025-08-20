@@ -51,6 +51,8 @@ The following third-party integrations have been tested by GitLab and are availa
 - [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
 - [Opencode](https://opencode.ai/docs/)
+- [Amazon Q](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html)
+- [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)
 
 ## Prerequisites
 
@@ -111,11 +113,19 @@ Prerequisites:
 
 Add the following CI/CD variables to your project's settings:
 
-- Your provider-specific API key:
-  - `ANTHROPIC_API_KEY` if you are using a Claude or Opencode integration.
-  - `OPENAI_API_KEY`if you are using an OpenAI Codex integration.
-- `GITLAB_TOKEN_<provider>`: The personal access token for the service account user.
-- `GITLAB_HOST`: The GitLab instance hostname. For example, `gitlab.com`.
+| Integration         | Environment Variable      | Definition |
+|---------------------|---------------------------|------------|
+| All                 | `GITLAB_TOKEN_<integration>`   | Personal access token for the service account user |
+| All                 | `GITLAB_HOST`                  | GitLab instance hostname (for example, `gitlab.com`) |
+| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key |
+| OpenAI Codex        | `OPENAI_API_KEY`               | OpenAI API key |
+| Amazon Q            | `AWS_ACCESS_KEY_ID`            | AWS access key associated with an IAM account |
+| Amazon Q            | `AWS_SECRET_ACCESS_KEY`        | Secret key associated with the AWS access key |
+| Amazon Q            | `AWS_REGION_NAME`              | AWS region name |
+| Amazon Q            | `AMAZON_Q_SIGV4`               | Amazon Q Sig V4 credentials |
+| Google Gemini CLI   | `GOOGLE_CREDENTIALS`           | JSON credentials file contents |
+| Google Gemini CLI   | `GOOGLE_CLOUD_PROJECT`         | Google Cloud project ID |
+| Google Gemini CLI   | `GOOGLE_CLOUD_LOCATION`        | Google Cloud project location |
 
 To add or update a variable in the project settings:
 
@@ -150,7 +160,7 @@ create a flow configuration file. For example, `.gitlab/duo/flows/claude.yaml`.
 
 You must create a different AI flow configuration file for each CLI agent.
 
-### Example flow configuation files
+### Example flow configuration files
 
 #### Anthropic Claude
 
@@ -169,7 +179,7 @@ commands:
   - git config --global user.name "Claude Code"
   - echo "Running claude"
   - |
-    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json --prompt "
+    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json --print "
     You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
@@ -282,16 +292,6 @@ commands:
   - echo "Configuring glab"
   - echo $GITLAB_HOST
   - echo "Creating opencode auth configuration"
-  - mkdir --parents ~/.local/share/opencode
-  - |
-    cat > ~/.local/share/opencode/auth.json << EOF
-    {
-      "anthropic": {
-        "type": "api",
-        "key": "$ANTHROPIC_API_KEY"
-      }
-    }
-    EOF
   - echo "Configuring git"
   - git config --global user.email "opencode@gitlab.com"
   - git config --global user.name "Opencode"
@@ -338,6 +338,156 @@ variables:
   - ANTHROPIC_API_KEY
   - GITLAB_TOKEN_OPENCODE
   - GITLAB_HOST
+```
+
+#### Amazon Q
+
+```yaml
+image: node:22-slim
+commands:
+  - echo "Installing glab"
+  - mkdir --parents ~/.aws/amazonq
+  - echo $MCP_CONFIG > ~/.aws/amazonq/mcp.json
+  - export GITLAB_TOKEN=$GITLAB_TOKEN_AMAZON_Q
+  - apt-get update --quiet && apt-get install --quiet --yes curl wget gpg git unzip && rm --recursive --force /var/lib/apt/lists/*
+  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
+  - apt-get install --yes glab
+  - echo "Installaing Python"
+  - curl --location --silent --show-error --fail "https://astral.sh/uv/install.sh" | sh
+  - export PATH="$HOME/.local/bin:$PATH"
+  - uv python install 3.12 --default
+  - TEMP_DIR=$(mktemp -d)
+  - cd "$TEMP_DIR"
+  - echo "Installing AWS cli"
+  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip"
+  - unzip -qq awscliv2.zip
+  - ./aws/install
+  - echo "Installing jq"
+  - apt-get install --yes jq
+  - echo "Installing q client"
+  - curl --proto '=https' --tlsv1.2 --silent --show-error --fail "https://desktop-release.q.us-east-1.amazonaws.com/latest/q-x86_64-linux.zip" --output "q.zip"
+  - unzip -qq q.zip
+  - ./q/install.sh --force --no-confirm
+  - cd -
+  - rm -rf "$TEMP_DIR"
+  - echo "Getting AWS access token"
+  - |
+    if SECRET_JSON=$(aws secretsmanager get-secret-value --secret-id "$AWS_SECRET_NAME" --region "$AWS_REGION_NAME" --query SecretString --output text 2>/dev/null); then
+        export AWS_ACCESS_KEY_ID=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_ACCESS_KEY_ID"' )
+        export AWS_SECRET_ACCESS_KEY=$(echo "$SECRET_JSON" | jq -r '."q-cli-access-token" | fromjson | ."AWS_SECRET_ACCESS_KEY"')
+        echo "Success to retrieve secret $AWS_SECRET_NAME"
+    else
+        echo "Failed to retrieve secret: $AWS_SECRET_NAME"
+        exit 1
+    fi
+  - echo "Configuring git"
+  - git config --global user.email "amazonq@gitlab.com"
+  - git config --global user.name "AmazonQ Code"
+  - git remote set-url origin https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git
+  - echo "Running q"
+  - |
+    AMAZON_Q_SIGV4=1 q chat --trust-all-tools --no-interactive --verbose "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    </important>
+    "
+  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - echo "Checking for git changes and pushing if any exist"
+  - |
+    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
+      echo "Git changes detected, adding and pushing..."
+      git add .
+      if git diff --cached --quiet; then
+        echo "No staged changes to commit"
+      else
+        echo "Committing changes to branch: $CI_WORKLOAD_REF"
+        git commit --message "Amazon Q Code changes"
+        echo "Pushing changes up to $CI_WORKLOAD_REF"
+        git push https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git $CI_WORKLOAD_REF
+        echo "Changes successfully pushed"
+      fi
+    else
+      echo "No git changes detected, skipping push"
+    fi
+variables:
+  - GITLAB_TOKEN_AMAZON_Q
+  - GITLAB_HOST
+  - AWS_SECRET_NAME
+  - AWS_REGION_NAME
+  - MCP_CONFIG
+```
+
+#### Google Gemini CLI
+
+```yaml
+image: node:22-slim
+commands:
+  - echo "Installing glab"
+  - export GITLAB_TOKEN=$GITLAB_TOKEN_GEMINI
+  - apt-get update --quiet && apt-get install --yes curl wget gpg git unzip && rm --recursive --force /var/lib/apt/lists/*
+  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
+  - apt-get install --yes glab
+  - echo "Installing gemini client"
+  - npm install --global @google/gemini-cli
+  - echo $GOOGLE_CREDENTIALS > /root/credentials.json
+  - echo "Configuring git"
+  - git config --global user.email "gemini@gitlab.com"
+  - git config --global user.name "Gemini"
+  - echo "Running gemini"
+  - |
+    GOOGLE_GENAI_USE_VERTEXAI=true GOOGLE_APPLICATION_CREDENTIALS=/root/credentials.json gemini --yolo --debug --prompt "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+
+    When generating the shell commands, avoid using $(), <(), or >(), so you don't raise: Error executing tool run_shell_command: Command substitution using $(), <(), or >() is not allowed for security reasons
+    </important>
+    "
+  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - echo "Checking for git changes and pushing if any exist"
+  - |
+    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
+      echo "Git changes detected, adding and pushing..."
+      git add .
+      if git diff --cached --quiet; then
+        echo "No staged changes to commit"
+      else
+        echo "Committing changes to branch: $CI_WORKLOAD_REF"
+        git commit --message "Gemini Code changes"
+        echo "Pushing changes up to $CI_WORKLOAD_REF"
+        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/gl-demo-ultimate-dev-ai-epic-17570/test-java-project.git $CI_WORKLOAD_REF
+        echo "Changes successfully pushed"
+      fi
+    else
+      echo "No git changes detected, skipping push"
+    fi
+variables:
+  - GITLAB_TOKEN_GEMINI
+  - GITLAB_HOST
+  - GOOGLE_CREDENTIALS
+  - GOOGLE_CLOUD_PROJECT
+  - GOOGLE_CLOUD_LOCATION
 ```
 
 ## Configure a flow trigger

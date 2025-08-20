@@ -34,28 +34,43 @@ Supported attributes:
 |:----------|:------------------|:---------|:------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
-Example response:
+If push rules were never configured for the project, this endpoint returns a response with value `null` instead of a `404` error.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/3/push_rule"
+```
+
+Example response when push rules are configured with all settings disabled:
 
 ```json
 {
   "id": 1,
   "project_id": 3,
+  "created_at": "2012-10-12T17:04:47Z",
   "commit_message_regex": "Fixes \\d+\\..*",
   "commit_message_negative_regex": "ssh\\:\\/\\/",
   "branch_name_regex": "",
   "deny_delete_tag": false,
-  "created_at": "2012-10-12T17:04:47Z",
   "member_check": false,
   "prevent_secrets": false,
   "author_email_regex": "",
   "file_name_regex": "",
-  "max_file_size": 5,
-  "commit_committer_check": false,
+  "max_file_size": 0,
+  "commit_committer_check": null,
   "commit_committer_name_check": false,
-  "reject_unsigned_commits": false,
-  "reject_non_dco_commits": false
+  "reject_unsigned_commits": null,
+  "reject_non_dco_commits": null
 }
 ```
+
+When disabled, some boolean attributes return `null` instead of `false`. For example:
+
+- `commit_committer_check`
+- `reject_unsigned_commits`
+- `reject_non_dco_commits`
 
 ## Add a project push rule
 

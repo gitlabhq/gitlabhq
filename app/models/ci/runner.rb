@@ -21,6 +21,7 @@ module Ci
     self.primary_key = :id
 
     ignore_column :token, remove_with: '18.5', remove_after: '2025-09-21'
+    ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-21'
 
     add_authentication_token_field :token,
       encrypted: :required,
@@ -154,7 +155,6 @@ module Ci
     scope :created_by_admins, -> { with_creator_id(User.admins.ids) }
 
     scope :with_creator_id, ->(value) { where(creator_id: value) }
-    scope :with_sharding_key, ->(value) { where(sharding_key_id: value) }
 
     scope :belonging_to_group_or_project_descendants, ->(group_id) {
       group_ids = Ci::NamespaceMirror.by_group_and_descendants(group_id).select(:namespace_id)
@@ -383,11 +383,6 @@ module Ci
 
       begin
         transaction do
-          if projects.id_in(sharding_key_id).empty? && !update_project_id
-            self.errors.add(:assign_to, 'Runner is orphaned and no fallback owner exists')
-            next false
-          end
-
           self.runner_projects << ::Ci::RunnerProject.new(project: project, runner: self)
           self.save!
         end
@@ -550,9 +545,6 @@ module Ci
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
         m.organization_id = organization_id
-
-        # Use a bogus sharding_key_id instead of copying a potentially NULL value from the runner
-        m.sharding_key_id = instance_type? ? nil : (sharding_key_id || -1)
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
@@ -591,20 +583,6 @@ module Ci
       project_ids = runner_projects.order(:id).pluck(:project_id)
       projects_added_to_runner_asc = Arel.sql("array_position(ARRAY[#{project_ids.join(',')}]::bigint[], id)")
       Project.order(projects_added_to_runner_asc).find_by_id(project_ids)
-    end
-
-    # Ensure we have a valid sharding_key_id. Logic is similar to the one used in
-    # Ci::Runners::UpdateProjectRunnersOwnerService when a project is deleted
-    def update_project_id
-      project_id = fallback_owner_project&.id
-
-      return if project_id.nil?
-
-      self.clear_memoization(:owner)
-      self.sharding_key_id = project_id
-
-      runner_managers.where(runner_type: :project_type).each_batch { |batch| batch.update_all(sharding_key_id: project_id) }
-      taggings.where(runner_type: :project_type).update_all(sharding_key_id: project_id)
     end
 
     def compute_token_expiration_instance

@@ -283,10 +283,6 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
           )
       end
 
-      it 'populates sharding_key_id correctly' do
-        expect(runner.sharding_key_id).to eq(group.id)
-      end
-
       it 'does not track runner creation with maintenance note' do
         expect { execute }.not_to trigger_internal_events('set_runner_maintenance_note')
       end
@@ -335,10 +331,6 @@ RSpec.describe ::Ci::Runners::CreateRunnerService, "#execute", feature_category:
 
       it_behaves_like 'it can create a runner'
       it_behaves_like 'runner creation transaction behavior'
-
-      it 'populates sharding_key_id correctly' do
-        expect(runner.sharding_key_id).to eq(project.id)
-      end
 
       context 'when maintenance note is specified' do
         let(:params) { { runner_type: 'project_type', scope: project, maintenance_note: 'a note' } }

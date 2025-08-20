@@ -98,7 +98,7 @@ module Gitlab
       end
 
       def version
-        Gitlab::Git::Version.git_version
+        Gitaly::Server.all.first.git_binary_version
       end
 
       def check_namespace!(*objects)

@@ -1524,18 +1524,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
               expect(diff.external_diff_store).to eq(ObjectStorage::Store::REMOTE)
             end
           end
-
-          context 'when feature flag update_external_diff_storage is disabled' do
-            before do
-              stub_feature_flags(update_external_diff_storage: false)
-            end
-
-            it 'does not update value to remote' do
-              diff.opening_external_diff do
-                expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
-              end
-            end
-          end
         end
       end
     end

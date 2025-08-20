@@ -367,11 +367,10 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 
 {{< alert type="note" >}}
 
-GitLab always pulls the workspace injector image (`gl-tools-injector`) and project cloner image
-(`gl-project-cloner`) from the GitLab registry (`registry.gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork/web-ide-injector`).
-These images cannot be overridden.
+GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
+This image cannot be overridden.
 
-If you use a private container registry for your other images, GitLab still needs to fetch these
+If you use a private container registry for your other images, GitLab fetches these
 specific images from the GitLab registry. This requirement may impact environments with strict network
 controls, such as offline environments.
 
