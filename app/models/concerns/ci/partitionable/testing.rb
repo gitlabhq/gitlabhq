@@ -25,6 +25,7 @@ module Ci
         Ci::JobDefinition
         Ci::JobDefinitionInstance
         Ci::JobInput
+        Ci::JobMessage
         Ci::JobVariable
         Ci::Pipeline
         Ci::PendingBuild

@@ -24,6 +24,22 @@ compliance standards.
 The [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project
 contains a library of JSON templates. Use these templates to quickly adopt predefined compliance frameworks.
 
+## CIS CSC compliance requirements
+
+CIS CSC are the Center for Internet Security Critical Security Controls.
+
+The following table lists the requirements supported by GitLab for CIS CSC v8.1 and the controls for the requirements.
+You can use the
+[`cis_csc_v8-1.json` template](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates/-/blob/main/cis_csc_v8-1.json?ref_type=heads)
+to create a compliance framework for this standard.
+
+| CIS CSC v8.1 requirement                                                          | Description                                                                                                                                                        | Supported controls |
+|:----------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| 6.7 Centralize Access Control                                                     | Centralize access control for all enterprise assets through a directory service or SSO provider, where supported.                                                  | <ul><li>Auth SSO enabled</li></ul> |
+| 7.5 Perform Automated Vulnerability Scans of Internal Enterprise Assets           | Perform automated vulnerability scans of internal enterprise assets on a quarterly, or more frequent, basis. Conduct both authenticated and unauthenticated scans. | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>DAST running</li><li>API security running</li><li>Fuzz testing running</li></ul> |
+| 7.6 Perform Automated Vulnerability Scans of Externally-Exposed Enterprise Assets | Perform automated vulnerability scans of externally-exposed enterprise assets. Perform scans on a monthly, or more frequent, basis.                                | <ul><li>DAST running</li><li>API security running</li><li>Fuzz testing running</li></ul> |
+| 16.12 Implement Code-Level Security Checks                                        | Apply static and dynamic analysis tools within the application lifecycle to verify that secure coding practices are being followed.                                | <ul><li>SAST running</li><li>DAST running</li><li>Secret detection running</li></ul> |
+
 ## FedRAMP compliance requirements
 
 FedRAMP (Federal Risk and Authorization Management Program) categorizes cloud services into three impact levels:

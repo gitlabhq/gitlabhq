@@ -87,6 +87,8 @@ import {
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_RELEASE,
   TOKEN_TITLE_RELEASE,
+  TOKEN_TYPE_PARENT,
+  TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -132,6 +134,8 @@ const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
 const CrmContactToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
+const WorkItemParentToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -667,6 +671,21 @@ export default {
         });
       }
 
+      if (this.showParentFilter) {
+        tokens.push({
+          type: TOKEN_TYPE_PARENT,
+          title: TOKEN_TITLE_PARENT,
+          icon: 'work-item-parent',
+          token: WorkItemParentToken,
+          fullPath: this.rootPageFullPath,
+          isProject: !this.isGroup,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-parent`,
+          operators: OPERATORS_IS_NOT,
+          unique: true,
+          idProperty: 'id',
+        });
+      }
+
       if (this.eeSearchTokens.length) {
         tokens.push(...this.eeSearchTokens);
       }
@@ -749,6 +768,9 @@ export default {
     },
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+    },
+    showParentFilter() {
+      return this.glFeatures.workItemsListParentFilter;
     },
   },
   watch: {

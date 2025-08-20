@@ -45,7 +45,7 @@ variables:
   SECURE_LOG_LEVEL: "debug"
 ```
 
-This indicates to all GitLab analyzers that they are to output **all** messages. For more details,
+This indicates to all GitLab analyzers that they are to output all messages. For more details,
 see [logging level](#logging-level).
 
 <!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, ensure to update the corresponding URL in the mentioned repository.
@@ -188,9 +188,9 @@ For more information, see [`rules`](../../ci/yaml/_index.md#rules).
 
 ### Pin your templates to the deprecated versions
 
-To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/_index.md#rules).
+To ensure the latest support, migrate to [`rules`](../../ci/yaml/_index.md#rules).
 
-If you're unable to immediately update your CI configuration, there are several workarounds that
+If you're unable to immediately update your CI/CD configuration, there are several workarounds that
 involve pinning to the previous template versions, for example:
 
   ```yaml

@@ -29,14 +29,14 @@ describe('migrateCSSUtils', () => {
 
   it('replaces Bootstrap utils with their Tailwind equivalent', () => {
     const input = 'visible flex-xl-nowrap';
-    const output = 'visible @xl/main:!gl-flex-nowrap';
+    const output = 'visible @xl/panel:!gl-flex-nowrap';
 
     expect(migrateCSSUtils(input)).toBe(output);
   });
 
   it('replaces Tailwind media query utils with their container query equivalent', () => {
     const input = '<div class="sm:gl-max-w-6/12 lg:gl-hidden">';
-    const output = '<div class="@sm/main:gl-max-w-6/12 @lg/main:gl-hidden">';
+    const output = '<div class="@sm/panel:gl-max-w-6/12 @lg/panel:gl-hidden">';
 
     expect(migrateCSSUtils(input)).toBe(output);
   });
@@ -61,14 +61,14 @@ describe('migrateCSSUtils', () => {
 describe('migrateMediaQueries', () => {
   it.each`
     input                                      | output
-    ${'@include media-breakpoint-up(md)'}      | ${'@include main-container-width-up(md)'}
-    ${'@include media-breakpoint-down(md)'}    | ${'@include main-container-width-down(lg)'}
-    ${'@include gl-media-breakpoint-up(md)'}   | ${'@include main-container-width-up(md)'}
-    ${'@include gl-media-breakpoint-down(md)'} | ${'@include main-container-width-down(md)'}
-    ${'@media (min-width: $breakpoint-md)'}    | ${'@include main-container-width-up(md)'}
-    ${'@media (max-width: $breakpoint-md)'}    | ${'@include main-container-width-down(md)'}
-    ${'@media (min-width: 420px)'}             | ${'@container main (width >= 420px)'}
-    ${'@media (max-width: 420px)'}             | ${'@container main (width <= 420px)'}
+    ${'@include media-breakpoint-up(md)'}      | ${'@include panel-container-width-up(md)'}
+    ${'@include media-breakpoint-down(md)'}    | ${'@include panel-container-width-down(lg)'}
+    ${'@include gl-media-breakpoint-up(md)'}   | ${'@include panel-container-width-up(md)'}
+    ${'@include gl-media-breakpoint-down(md)'} | ${'@include panel-container-width-down(md)'}
+    ${'@media (min-width: $breakpoint-md)'}    | ${'@include panel-container-width-up(md)'}
+    ${'@media (max-width: $breakpoint-md)'}    | ${'@include panel-container-width-down(md)'}
+    ${'@media (min-width: 420px)'}             | ${'@container panel (width >= 420px)'}
+    ${'@media (max-width: 420px)'}             | ${'@container panel (width <= 420px)'}
   `('rewrites $input to $output', ({ input, output }) => {
     expect(migrateMediaQueries(input)).toBe(output);
   });

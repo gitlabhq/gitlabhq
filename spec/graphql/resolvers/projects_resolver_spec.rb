@@ -118,7 +118,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
     context 'when user is logged in' do
       let(:current_user) { user }
-      let(:organization) { user.organizations.first }
+      let(:organization) { user.organization }
       let(:visible_projects) do
         [project, other_project, group_project, private_project, private_group_project, private_personal_project,
           project_marked_for_deletion, archived_project]

@@ -1506,7 +1506,11 @@ To enable step-up authentication for Admin Mode:
                      }
                    }
                  }
-               }
+               },
+               # Optional: Provide a custom documentation link for users who fail step-up authentication
+               # This link is displayed when step-up authentication fails, directing users to
+               # organization-specific authentication documentation.
+               documentation_link: 'https://internal.example.com/path/to/documentation'
              },
            }
          }
@@ -1519,6 +1523,48 @@ To enable step-up authentication for Admin Mode:
 Although OIDC is standardized, different Identity Providers (IdPs) might have unique requirements.
 The `params` setting allows a flexible hash to define necessary parameters for step-up authentication.
 These values can vary based on the requirements for each IdP.
+
+{{< /alert >}}
+
+### Configure custom documentation links for step-up authentication
+
+When step-up authentication fails, GitLab can display custom documentation links to help users understand
+the authentication requirements for your organization. This feature allows administrators to provide
+organization-specific guidance that directs users to internal documentation or help resources.
+
+To configure a custom documentation link:
+
+1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to add a `documentation_link` field to `step_up_auth => admin_mode`
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Corporate SSO',
+           # ... other provider configuration ...
+           step_up_auth: {
+             admin_mode: {
+               # ... id_token and params configuration ...
+               documentation_link: 'https://internal.example.com/path/to/documentation'
+             }
+           }
+         }
+   ```
+
+1. Save the configuration file and restart GitLab for the changes to take effect.
+
+When users fail step-up authentication, they see a helpful error message with links to the relevant
+documentation for the providers that failed. The links are displayed only for providers where the
+step-up authentication actually failed, making the guidance more relevant and actionable.
+
+{{< alert type="note" >}}
+
+Best practices for documentation links:
+
+- Use HTTPS URLs for security
+- Link to internal documentation that explains your organization's specific authentication requirements
+- Include information about how to enable MFA or other required authentication methods
 
 {{< /alert >}}
 
@@ -1559,7 +1605,9 @@ To configure step-up authentication for Admin Mode in GitLab using Keycloak:
                },
                params: {
                  claims: { id_token: { acr: { essential: true, values: ['gold'] } } }
-               }
+               },
+               # Optional: Add a custom documentation link for Keycloak-specific step-up authentication help
+               documentation_link: 'https://internal.example.com/path/to/documentation'
              },
            }
          }
@@ -1624,7 +1672,9 @@ To configure step-up authentication for Admin Mode in GitLab using Microsoft Ent
                    acrs: { essential: true, value: 'c20' }
                  }
                },
-             }
+             },
+             # Optional: Add a custom documentation link for Microsoft Entra ID step-up authentication
+             documentation_link: 'https://internal.example.com/path/to/documentation'
            },
          }
        }

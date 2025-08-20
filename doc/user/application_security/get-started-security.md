@@ -30,16 +30,16 @@ This process is part of a larger workflow:
 
 ## Step 1: Learn about scanning
 
-Secret Detection scans your repository to help prevent your secrets from being exposed.
+Secret detection scans your repository to help prevent your secrets from being exposed.
 It works with all programming languages.
 
-Dependency Scanning analyzes your application's dependencies for known vulnerabilities.
+Dependency scanning analyzes your application's dependencies for known vulnerabilities.
 It works with certain languages and package managers.
 
 For more information, see:
 
-- [Secret Detection](secret_detection/_index.md)
-- [Dependency Scanning](dependency_scanning/_index.md)
+- [Secret detection](secret_detection/_index.md)
+- [Dependency scanning](dependency_scanning/_index.md)
 
 ## Step 2: Choose a project to test
 
@@ -54,7 +54,7 @@ The project should:
 ## Step 3: Enable scanning
 
 To identify leaked secrets and vulnerable packages in the project,
-create a merge request that enables Secret Detection and Dependency Scanning.
+create a merge request that enables secret detection and dependency scanning.
 
 This merge request updates your `.gitlab-ci.yml` file, so that the scans
 run as part of your project's CI/CD pipeline.
@@ -71,10 +71,10 @@ even if the vulnerability already exists on the default branch.
 
 For more information, see:
 
-- [Enable Secret Detection](secret_detection/pipeline/_index.md#getting-started)
-- [Secret Detection settings](secret_detection/pipeline/configure.md)
-- [Enable Dependency Scanning](dependency_scanning/_index.md#getting-started)
-- [Dependency Scanning settings](dependency_scanning/_index.md#available-cicd-variables)
+- [Enable secret detection](secret_detection/pipeline/_index.md#getting-started)
+- [Secret detection settings](secret_detection/pipeline/configure.md)
+- [Enable dependency scanning](dependency_scanning/_index.md#getting-started)
+- [Dependency scanning settings](dependency_scanning/_index.md#available-cicd-variables)
 
 ## Step 4: Review scan results
 
@@ -92,7 +92,7 @@ For more information, see:
 
 - [View the vulnerability report](vulnerability_report/_index.md)
 - [View security findings in merge requests](detect/security_scanning_results.md)
-- [View the Security Dashboard](security_dashboard/_index.md)
+- [View the security dashboard](security_dashboard/_index.md)
 - [Labels](../project/labels.md)
 - [Issue boards](../project/issue_board.md)
 
@@ -114,7 +114,7 @@ For more information, see:
 ## Step 6: Limit new vulnerabilities
 
 To enforce required scan types and ensure separation of duties between security and engineering,
-use Scan Execution Policies.
+use scan execution policies.
 
 To limit new vulnerabilities from being merged into your default branch,
 create a merge request approval policy.
@@ -126,7 +126,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
 
 For more information, see:
 
-- [Scan Execution Policies](policies/scan_execution_policies.md)
+- [Scan execution policies](policies/scan_execution_policies.md)
 - [Merge request approval policy](policies/_index.md)
 
 ## Step 7: Continue scanning for new vulnerabilities
@@ -137,7 +137,7 @@ Over time, you want to ensure new vulnerabilities are not introduced.
   run regular dependency and container scans.
 - To scan container images in your production cluster for security vulnerabilities,
   enable operational container scanning.
-- Enable other scan types, like SAST, DAST, or Fuzz testing.
+- Enable other scan types, like SAST, DAST, or fuzz testing.
 - To allow for DAST and Web API fuzzing on ephemeral test environments,
   consider enabling review apps.
 

@@ -114,7 +114,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
           additional_info: additional_info_rejected_step_up_auth)
 
         expect(page).to have_current_path new_admin_session_path
-        expect(page).to have_content('Step-up auth not successful')
+        expect(page).to have_content('Step-up authentication failed.')
       end
 
       context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
@@ -143,7 +143,7 @@ RSpec.describe 'Step-up authentication', :with_current_organization, :js, featur
 
           wait_for_requests
           expect(page).to have_current_path new_admin_session_path
-          expect(page).to have_content('Step-up auth not successful')
+          expect(page).to have_content('Step-up authentication failed.')
 
           gitlab_enable_admin_mode_sign_in_via(provider_oidc, admin, extern_uid,
             additional_info: additional_info_success_step_up_auth)

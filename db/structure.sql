@@ -4806,6 +4806,17 @@ CREATE TABLE p_ci_job_inputs (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_job_messages (
+    id bigint NOT NULL,
+    job_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    severity smallint DEFAULT 0 NOT NULL,
+    content text,
+    CONSTRAINT check_6b838ff738 CHECK ((char_length(content) <= 10000))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_pipeline_variables (
     key character varying NOT NULL,
     value text,
@@ -8733,7 +8744,6 @@ CREATE TABLE alert_management_alerts (
     monitoring_tool text,
     hosts text[] DEFAULT '{}'::text[] NOT NULL,
     payload jsonb DEFAULT '{}'::jsonb NOT NULL,
-    prometheus_alert_id bigint,
     environment_id bigint,
     domain smallint DEFAULT 0,
     CONSTRAINT check_2df3e2fdc1 CHECK ((char_length(monitoring_tool) <= 100)),
@@ -19492,6 +19502,15 @@ CREATE SEQUENCE p_ci_job_inputs_id_seq
 
 ALTER SEQUENCE p_ci_job_inputs_id_seq OWNED BY p_ci_job_inputs.id;
 
+CREATE SEQUENCE p_ci_job_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_job_messages_id_seq OWNED BY p_ci_job_messages.id;
+
 CREATE SEQUENCE p_ci_workload_variable_inclusions_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -28711,6 +28730,8 @@ ALTER TABLE ONLY p_ci_job_definitions ALTER COLUMN id SET DEFAULT nextval('p_ci_
 
 ALTER TABLE ONLY p_ci_job_inputs ALTER COLUMN id SET DEFAULT nextval('p_ci_job_inputs_id_seq'::regclass);
 
+ALTER TABLE ONLY p_ci_job_messages ALTER COLUMN id SET DEFAULT nextval('p_ci_job_messages_id_seq'::regclass);
+
 ALTER TABLE ONLY p_ci_workload_variable_inclusions ALTER COLUMN id SET DEFAULT nextval('p_ci_workload_variable_inclusions_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_workloads ALTER COLUMN id SET DEFAULT nextval('p_ci_workloads_id_seq'::regclass);
@@ -31571,6 +31592,9 @@ ALTER TABLE ONLY p_ci_job_definitions
 
 ALTER TABLE ONLY p_ci_job_inputs
     ADD CONSTRAINT p_ci_job_inputs_pkey PRIMARY KEY (id, partition_id);
+
+ALTER TABLE ONLY p_ci_job_messages
+    ADD CONSTRAINT p_ci_job_messages_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_pipeline_variables
     ADD CONSTRAINT p_ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
@@ -35169,8 +35193,6 @@ CREATE INDEX index_alert_management_alerts_on_issue_id ON alert_management_alert
 
 CREATE UNIQUE INDEX index_alert_management_alerts_on_project_id_and_iid ON alert_management_alerts USING btree (project_id, iid);
 
-CREATE INDEX index_alert_management_alerts_on_prometheus_alert_id ON alert_management_alerts USING btree (prometheus_alert_id) WHERE (prometheus_alert_id IS NOT NULL);
-
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id ON alert_management_alert_user_mentions USING btree (alert_management_alert_id) WHERE (note_id IS NULL);
 
 CREATE UNIQUE INDEX index_alert_user_mentions_on_alert_id_and_note_id ON alert_management_alert_user_mentions USING btree (alert_management_alert_id, note_id);
@@ -37640,6 +37662,10 @@ CREATE UNIQUE INDEX index_p_ci_job_definitions_on_project_id_and_checksum ON ONL
 CREATE UNIQUE INDEX index_p_ci_job_inputs_on_job_id_and_name ON ONLY p_ci_job_inputs USING btree (job_id, name, partition_id);
 
 CREATE INDEX index_p_ci_job_inputs_on_project_id ON ONLY p_ci_job_inputs USING btree (project_id);
+
+CREATE INDEX index_p_ci_job_messages_on_job_id ON ONLY p_ci_job_messages USING btree (job_id);
+
+CREATE INDEX index_p_ci_job_messages_on_project_id ON ONLY p_ci_job_messages USING btree (project_id);
 
 CREATE INDEX index_p_ci_pipeline_variables_on_project_id ON ONLY p_ci_pipeline_variables USING btree (project_id);
 
@@ -46293,6 +46319,9 @@ ALTER TABLE ONLY protected_environment_deploy_access_levels
 
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_rails_5be1abfc25 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_job_messages
+    ADD CONSTRAINT fk_rails_5c18eceaae_p FOREIGN KEY (partition_id, job_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT fk_rails_5c2c3bc814 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

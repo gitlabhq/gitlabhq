@@ -149,14 +149,15 @@ module Gitlab
         { issue: ['Incident'], task: ['Issue'] }.with_indifferent_access
       end
 
-      def error_msg(reason, action: 'convert')
+      def error_msg(reason, action: 'convert', error_message: nil)
         message = {
           not_found: 'Provided type is not supported',
           forbidden: 'You have insufficient permissions',
           same_type: 'Types are the same'
         }.freeze
 
-        format(_("Failed to %{action} this work item: %{reason}."), { action: action, reason: message[reason] })
+        format(_("Failed to %{action} this work item: %{reason}."),
+          { action: action, reason: error_message || message[reason] })
       end
 
       def success_msg

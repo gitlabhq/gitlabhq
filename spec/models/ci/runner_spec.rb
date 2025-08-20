@@ -2442,6 +2442,18 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it { is_expected.not_to include(locked_project_runner) }
         it { is_expected.not_to include(instance_runner) }
       end
+
+      context 'with different organization' do
+        let_it_be(:other_org) { create(:organization) }
+        let_it_be(:other_org_group) { create(:group, organization: other_org) }
+        let_it_be(:other_org_project) { create(:project, organization: other_org, group: other_org_group) }
+        let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+        subject { described_class.assignable_for(other_project) }
+
+        it { is_expected.to include(unlocked_project_runner) }
+        it { is_expected.not_to include(other_org_runner) }
+      end
     end
 
     describe '.order_by' do

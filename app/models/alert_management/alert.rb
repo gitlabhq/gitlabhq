@@ -17,7 +17,7 @@ module AlertManagement
     include Referable
     include ::IncidentManagement::Escalatable
 
-    ignore_column :prometheus_alert_id, remove_with: '17.6', remove_after: '2024-10-12'
+    ignore_column :prometheus_alert_id, remove_with: '18.5', remove_after: '2025-10-05'
 
     belongs_to :project
     belongs_to :issue, optional: true

@@ -478,6 +478,7 @@ builds:
 - job_artifacts_repository_xray
 - job_definition
 - job_definition_instance
+- job_messages
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -510,6 +511,7 @@ bridges:
 - sourced_pipeline
 - deployment
 - job_environment
+- job_messages
 - resource_group
 - metadata
 - trigger

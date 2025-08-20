@@ -1138,6 +1138,10 @@ class Group < Namespace
       licensed_feature_available?(:work_item_status)
   end
 
+  def work_items_list_parent_filter_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_list_parent_filter, type: :beta)
+  end
+
   def markdown_placeholders_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:markdown_placeholders, type: :gitlab_com_derisk)
   end

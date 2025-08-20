@@ -114,7 +114,7 @@ RSpec.describe Mattermost::Session, type: :request do
           expect { subject.with_session {} }
             .to change { OauthAccessToken.find_by(resource_owner: user)&.organization_id }
             .from(nil)
-            .to(user.organizations.first.id)
+            .to(user.organization.id)
         end
       end
     end

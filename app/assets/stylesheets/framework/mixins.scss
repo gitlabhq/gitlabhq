@@ -463,17 +463,17 @@
   }
 }
 
-@mixin main-container-width-up($name) {
+@mixin panel-container-width-up($name) {
   $min: map.get($breakpoints, $name);
   @if $min == null {
     @error "#{$name} is not a valid breakpoint for this @container query.";
   }
-  @container main (width >= #{$min}) {
+  @container panel (width >= #{$min}) {
     @content;
   }
 }
 
-@mixin main-container-width-down($name) {
+@mixin panel-container-width-down($name) {
   $max: map.get($breakpoints, $name);
   @if ($max == null or $max == 0) {
     @error "#{$name} is not a valid breakpoint for this @media query.";
@@ -485,7 +485,7 @@
   // See https://bugs.webkit.org/show_bug.cgi?id=178261
   $breakpoint-max-range-precision: 0.02px;
 
-  @container main (width <= #{$max - $breakpoint-max-range-precision}) {
+  @container panel (width <= #{$max - $breakpoint-max-range-precision}) {
     @content;
   }
 }

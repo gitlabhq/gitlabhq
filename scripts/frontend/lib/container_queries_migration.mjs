@@ -57,7 +57,7 @@ const UTILS_REPLACEMENTS = [
   (content) => {
     return content.replace(
       /(?<prefix>[^@])(?<breakpoint>sm|md|lg|xl):gl-/g,
-      '$<prefix>@$<breakpoint>/main:gl-',
+      '$<prefix>@$<breakpoint>/panel:gl-',
     );
   },
 ];
@@ -66,7 +66,7 @@ const MEDIA_QUERIES_REPLACEMENTS = [
   (content) => {
     return content.replace(
       /@include media-breakpoint-up\((?<breakpoint>sm|md|lg|xl)\)/g,
-      '@include main-container-width-up($<breakpoint>)',
+      '@include panel-container-width-up($<breakpoint>)',
     );
   },
   /**
@@ -78,7 +78,7 @@ const MEDIA_QUERIES_REPLACEMENTS = [
     const replacer = (_match, breakpoint) => {
       const breakpointIndex = BREAKPOINTS.findIndex((value) => value === breakpoint);
       const nextBreakpoint = BREAKPOINTS?.[breakpointIndex + 1];
-      return `@include main-container-width-down(${nextBreakpoint})`;
+      return `@include panel-container-width-down(${nextBreakpoint})`;
     };
 
     return content.replace(
@@ -89,37 +89,37 @@ const MEDIA_QUERIES_REPLACEMENTS = [
   (content) => {
     return content.replace(
       /@include gl-media-breakpoint-up\((?<breakpoint>sm|md|lg|xl)\)/g,
-      '@include main-container-width-up($<breakpoint>)',
+      '@include panel-container-width-up($<breakpoint>)',
     );
   },
   (content) => {
     return content.replace(
       /@include gl-media-breakpoint-down\((?<breakpoint>sm|md|lg|xl)\)/g,
-      '@include main-container-width-down($<breakpoint>)',
+      '@include panel-container-width-down($<breakpoint>)',
     );
   },
   (content) => {
     return content.replace(
       /@media \(min-width: \$breakpoint-(?<breakpoint>sm|md|lg|xl)\)/g,
-      '@include main-container-width-up($<breakpoint>)',
+      '@include panel-container-width-up($<breakpoint>)',
     );
   },
   (content) => {
     return content.replace(
       /@media \(max-width: \$breakpoint-(?<breakpoint>sm|md|lg|xl)\)/g,
-      '@include main-container-width-down($<breakpoint>)',
+      '@include panel-container-width-down($<breakpoint>)',
     );
   },
   (content) => {
     return content.replace(
       /@media \(min-width: (?<width>\d+px)\)/g,
-      '@container main (width >= $<width>)',
+      '@container panel (width >= $<width>)',
     );
   },
   (content) => {
     return content.replace(
       /@media \(max-width: (?<width>\d+px)\)/g,
-      '@container main (width <= $<width>)',
+      '@container panel (width <= $<width>)',
     );
   },
   /**

@@ -186,6 +186,15 @@ module AuthHelper
       end
   end
 
+  def step_up_auth_documentation_link(flow)
+    link_url = flow.documentation_link
+
+    return unless link_url
+
+    provider_label = ::Gitlab::Auth::OAuth::Provider.label_for(flow.provider)
+    link_to(provider_label, link_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-link')
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 

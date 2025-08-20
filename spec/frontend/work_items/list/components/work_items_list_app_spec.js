@@ -50,6 +50,7 @@ import {
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
@@ -138,6 +139,7 @@ describeSkipVue3(skipReason, () => {
     additionalHandlers = [],
     canReadCrmOrganization = true,
     canReadCrmContact = true,
+    workItemsListParentFilter = false,
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -160,6 +162,7 @@ describeSkipVue3(skipReason, () => {
         glFeatures: {
           okrsMvc: true,
           workItemPlanningView,
+          workItemsListParentFilter,
         },
         canReadCrmOrganization,
         canReadCrmContact,
@@ -679,6 +682,52 @@ describeSkipVue3(skipReason, () => {
             expect.arrayContaining([
               expect.objectContaining({
                 type: TOKEN_TYPE_CONTACT,
+              }),
+            ]),
+          );
+        });
+      });
+    });
+
+    describe('Parent filter token', () => {
+      describe('when workItemsListParentFilter is true', () => {
+        beforeEach(async () => {
+          mountComponent({ workItemsListParentFilter: true, provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('configures parent token with correct properties', () => {
+          const parentToken = findIssuableList()
+            .props('searchTokens')
+            .find((token) => token.type === TOKEN_TYPE_PARENT);
+
+          expect(parentToken).toMatchObject({
+            fullPath: 'full/path',
+            isProject: true,
+            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-parent',
+            operators: [
+              { description: 'is', value: '=' },
+              { description: 'is not one of', value: '!=' },
+            ],
+          });
+        });
+      });
+
+      describe('when workItemsListParentFilter is false', () => {
+        beforeEach(async () => {
+          mountComponent({ workItemsListParentFilter: false, provide: { isGroup: false } });
+          await waitForPromises();
+        });
+
+        it('does not include parent token in available tokens', () => {
+          const tokens = findIssuableList()
+            .props('searchTokens')
+            .map((token) => token.type);
+
+          expect(tokens).not.toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                type: TOKEN_TYPE_PARENT,
               }),
             ]),
           );

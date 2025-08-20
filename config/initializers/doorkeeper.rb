@@ -101,7 +101,7 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   access_token_methods :from_access_token_param, :from_bearer_authorization, :from_bearer_param
 
-  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512', fallback: :plain
+  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Sha512Hash'
 
   hash_application_secrets using: '::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512', fallback: :plain
 

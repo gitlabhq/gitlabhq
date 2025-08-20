@@ -52,14 +52,14 @@ Prerequisites:
 To view the security inventory:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Security inventory**.
+1. Select **Secure** > **Security inventory**.
 1. Complete one of the following actions:
    - To view a group's subgroups, projects, and security assets, select the group.
    - To view a group or project's scanner coverage, search for the group or project.
 
 ## Related topics
 
-- [Security Dashboard](../security_dashboard/_index.md)
+- [Security dashboard](../security_dashboard/_index.md)
 - [Vulnerability reports](../vulnerability_report/_index.md)
 - GraphQL references:
   - [AnalyzerGroupStatusType](../../../api/graphql/reference/_index.md#analyzergroupstatustype) - Counts for each analyzer status in the group and subgroups.
@@ -73,4 +73,4 @@ When working with the security inventory, you might encounter the following issu
 
 ### Security inventory menu item missing
 
-Some users do not have the required permissions to access the **Security Inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer role or higher.
+Some users do not have the required permissions to access the **Security inventory** menu item. The menu item only displays for groups when the authenticated user has the Developer role or higher.

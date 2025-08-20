@@ -408,9 +408,9 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
       end
 
       context 'when Current.organization is not set' do
-        it 'uses user first organization' do
+        it 'uses user organization' do
           expect(snippet.organization_id)
-            .to eq(user.organizations.first.id)
+            .to eq(user.organization.id)
         end
       end
 

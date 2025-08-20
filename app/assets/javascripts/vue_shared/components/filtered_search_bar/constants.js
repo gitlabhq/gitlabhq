@@ -98,6 +98,7 @@ export const TOKEN_TITLE_STATE = __('State');
 export const TOKEN_TITLE_SUBSCRIBED = __('Subscribed');
 export const TOKEN_TITLE_JOB_KIND = s__('Job|Kind');
 export const TOKEN_TITLE_MESSAGE = __('Message');
+export const TOKEN_TITLE_PARENT = s__('WorkItem|Parent');
 
 export const TOKEN_TYPE_APPROVER = 'approver';
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
@@ -145,6 +146,7 @@ export const TOKEN_TYPE_STATE = 'state';
 export const TOKEN_TYPE_SUBSCRIBED = 'subscribed';
 export const TOKEN_TYPE_JOB_KIND = 'kind';
 export const TOKEN_TYPE_MESSAGE = 'message';
+export const TOKEN_TYPE_PARENT = 'parent';
 
 // Due to the i18n eslint rule we can't have a capitalized string even if it is a case-aware URL param
 /* eslint-disable @gitlab/require-i18n-strings */

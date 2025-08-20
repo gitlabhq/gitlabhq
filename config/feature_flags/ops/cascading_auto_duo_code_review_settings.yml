@@ -1,0 +1,10 @@
+---
+name: cascading_auto_duo_code_review_settings
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554070
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201399
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561363
+milestone: '18.3'
+group: group::code creation
+type: ops
+default_enabled: false

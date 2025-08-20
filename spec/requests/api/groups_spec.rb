@@ -125,9 +125,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:group, :public)
 
+        # Note: We allow 1 additional query for checking duo_enterprise add-on purchases
+        # This is needed for the auto_duo_code_review_enabled field
         expect do
           get api("/groups", user)
-        end.not_to exceed_all_query_limit(control)
+        end.not_to exceed_all_query_limit(control).with_threshold(1)
       end
     end
 

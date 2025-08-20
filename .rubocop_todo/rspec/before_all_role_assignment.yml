@@ -580,7 +580,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/security/orchestration/assign_service_spec.rb'
     - 'ee/spec/services/security/orchestration/create_bot_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/policy_commit_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/process_scan_result_policy_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/project_create_service_spec.rb'
     - 'ee/spec/services/status_page/mark_for_publication_service_spec.rb'
     - 'ee/spec/services/todos/destroy/confidential_epic_service_spec.rb'

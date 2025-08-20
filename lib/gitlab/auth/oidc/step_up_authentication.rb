@@ -105,6 +105,19 @@ module Gitlab
                       end
           end
 
+          # Returns step-up authentication flows that have failed
+          #
+          # @param session [Hash] the session hash containing authentication state
+          # @param scope [Symbol] the scope to check (default: :admin_mode)
+          # @return [Array<StepUpAuthenticationFlow>] list of failed authentication flows
+          def failed_step_up_auth_flows(session, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+            (step_up_auth_flows(session) || []).select do |flow|
+              flow.enabled_by_config? &&
+                flow.failed? &&
+                flow.scope.to_s == scope.to_s
+            end
+          end
+
           private
 
           def oauth_providers
@@ -161,6 +174,16 @@ module Gitlab
 
           def subset?(hash, subset_hash)
             hash.with_indifferent_access >= subset_hash.with_indifferent_access
+          end
+
+          def step_up_auth_flows(session)
+            omniauth_step_up_auth_session_data(session)
+              &.to_h
+              &.flat_map do |provider, step_up_auth_object|
+                step_up_auth_object.map do |step_up_auth_scope, _|
+                  build_flow(provider: provider, session: session, scope: step_up_auth_scope)
+                end
+              end
           end
         end
       end

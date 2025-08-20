@@ -226,6 +226,7 @@ module Ci
       exclude_runners = unscoped { project.runners.select(:id) }.to_sql
 
       where(locked: false)
+        .where(organization_id: project.organization_id)
         .where.not("ci_runners.id IN (#{exclude_runners})")
         .project_type
     end

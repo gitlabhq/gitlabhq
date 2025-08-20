@@ -329,7 +329,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
       it 'sets Current.organization' do
         set_current_organization(user: other_user)
 
-        expect(Current.organization).to eq(other_user.organizations.first)
+        expect(Current.organization).to eq(other_user.organization)
       end
     end
   end

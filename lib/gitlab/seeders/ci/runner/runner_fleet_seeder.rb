@@ -9,7 +9,6 @@ module Gitlab
           DEFAULT_PREFIX = 'rf-'
           DEFAULT_RUNNER_COUNT = 40
           DEFAULT_JOB_COUNT = DEFAULT_RUNNER_COUNT * 10
-          NO_ORGANIZATION_ERROR = "No organization found. Ensure user has an organization or pass an organization_id"
 
           TAG_LIST = %w[gitlab-org docker ruby 2gb mysql linux shared shell deploy hhvm windows build postgres ios stage
             android stz front back review-apps pc java scraper test kubernetes staging no-priority osx php nodejs
@@ -57,11 +56,9 @@ module Gitlab
             @user = User.find_by_username(username)
             @registration_prefix = options[:registration_prefix] || DEFAULT_PREFIX
             @runner_count = options[:runner_count] || DEFAULT_RUNNER_COUNT
-            @organization_id = options[:organization_id] || @user.organizations.first&.id
+            @organization_id = options[:organization_id] || @user.organization.id
             @groups = {}
             @projects = {}
-
-            raise NO_ORGANIZATION_ERROR unless @organization_id
           end
 
           # seed returns an array of hashes of projects to its assigned runners

@@ -242,7 +242,7 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
 
     context 'with no context for filter' do
       let!(:user) { create(:user) }
-      let!(:org_user_detail) { create(:organization_user_detail, user: user, organization: user.organizations.first) }
+      let!(:org_user_detail) { create(:organization_user_detail, user: user) }
 
       it 'supports mentioning user aliases from default organization' do
         expect(Organizations::Organization.count).to eq(1)

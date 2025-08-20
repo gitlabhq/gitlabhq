@@ -44501,6 +44501,8 @@ definitions:
         type: string
       lock_duo_features_enabled:
         type: string
+      auto_duo_code_review_enabled:
+        type: string
       web_based_commit_signing_enabled:
         type: string
     description: API_Entities_Group model
@@ -45059,6 +45061,9 @@ definitions:
         type: boolean
         description: Indicates if the GitLab Duo features enabled setting is enforced
           for all subgroups
+      auto_duo_code_review_enabled:
+        type: boolean
+        description: Enable automatic reviews by GitLab Duo on merge requests
       web_based_commit_signing_enabled:
         type: boolean
         description: Enable web based commit signing for this group
@@ -45179,6 +45184,8 @@ definitions:
       duo_features_enabled:
         type: string
       lock_duo_features_enabled:
+        type: string
+      auto_duo_code_review_enabled:
         type: string
       web_based_commit_signing_enabled:
         type: string

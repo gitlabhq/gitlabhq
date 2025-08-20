@@ -931,7 +931,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/security/scanned_resources_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/create_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/fetch_policy_approvers_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/process_scan_result_policy_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/scan_pipeline_service_spec.rb'
     - 'ee/spec/services/security/security_orchestration_policies/sync_opened_merge_requests_service_spec.rb'
     - 'ee/spec/services/security/token_revocation_service_spec.rb'

@@ -324,7 +324,7 @@ is needed, you'd need to write some custom styles.
 <!-- Good -->
 <gl-button class="my-button">Edit</gl-button>
 <style lang="scss">
-@include main-container-width-down(lg) {
+@include panel-container-width-down(lg) {
     .my-button {
         display: none;
     }
@@ -349,7 +349,7 @@ is needed, you'd need to write some custom styles.
 .class-name {
   display: block;
 
-  @include main-container-width-down(lg) {
+  @include panel-container-width-down(lg) {
     display: flex;
   }
 }
@@ -358,7 +358,7 @@ is needed, you'd need to write some custom styles.
 .class-name {
   display: flex;
 
-  @include main-container-width-up(lg) {
+  @include panel-container-width-up(lg) {
     display: block;
   }
 }
@@ -395,10 +395,10 @@ be moved to an explicit `class` attribute manually after running the script:
 
 ```haml
 # This breaks the HAML syntax:
-%p.@md/main:gl-mt-2
+%p.@md/panel:gl-mt-2
 
 # To fix it, move the util to an explicit `class` attibute:
-%p{ class: "@md/main:gl-mt-2" }
+%p{ class: "@md/panel:gl-mt-2" }
 ```
 
 To migrate a file, invoke the script with the files to migrate as its argument:

@@ -530,6 +530,10 @@ p_ci_job_inputs:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_job_messages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_pipelines:
   - table: merge_requests
     column: merge_request_id

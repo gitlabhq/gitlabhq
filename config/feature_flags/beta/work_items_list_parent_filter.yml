@@ -1,0 +1,10 @@
+---
+name: work_items_list_parent_filter
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/536876
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200693
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560366
+milestone: '18.3'
+group: group::product planning
+type: beta
+default_enabled: false

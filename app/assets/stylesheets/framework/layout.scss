@@ -35,6 +35,15 @@ html {
   padding-top: 0;
 }
 
+/* Hide all .paneled-view elements when the last .paneled-view contains .fullscreen */
+.paneled-view:has(~ .paneled-view .fullscreen) {
+  display: none;
+}
+
+.paneled-view:has(.fullscreen) {
+  flex-grow: 1;
+}
+
 .container {
   padding-top: 0;
   z-index: 5;
