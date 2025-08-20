@@ -2768,7 +2768,7 @@ For example, a conditional complexity method in a resolver:
 ```ruby
 def self.resolver_complexity(args, child_complexity:)
   complexity = super
-  complexity += 2 if args[:labelName]
+  complexity += 2 if args[:label_name]
 
   complexity
 end

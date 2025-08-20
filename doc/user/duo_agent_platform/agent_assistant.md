@@ -50,7 +50,7 @@ The following third-party integrations have been tested by GitLab and are availa
 
 - [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
-- [Opencode AI](https://opencode.ai/docs/)
+- [Opencode](https://opencode.ai/docs/)
 
 ## Prerequisites
 
@@ -78,7 +78,7 @@ If you are on GitLab Self-Managed or GitLab Dedicated, you must
 To integrate your CLI agent with a third-party AI model provider, you need an API key
 for that model provider:
 
-- For Anthropic Claude and Opencode AI, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
+- For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
 
 ## Create a service account
@@ -112,7 +112,7 @@ Prerequisites:
 Add the following CI/CD variables to your project's settings:
 
 - Your provider-specific API key:
-  - `ANTHROPIC_API_KEY` if you are using a Claude or Opencode AI integration.
+  - `ANTHROPIC_API_KEY` if you are using a Claude or Opencode integration.
   - `OPENAI_API_KEY`if you are using an OpenAI Codex integration.
 - `GITLAB_TOKEN_<provider>`: The personal access token for the service account user.
 - `GITLAB_HOST`: The GitLab instance hostname. For example, `gitlab.com`.
@@ -267,7 +267,7 @@ variables:
   - GITLAB_HOST
 ```
 
-#### Opencode AI
+#### Opencode
 
 ```yaml
 image: node:22-slim

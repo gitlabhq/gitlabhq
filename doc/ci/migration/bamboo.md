@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Migrating from Bamboo
+title: Migrate from Bamboo
 ---
 
 {{< details >}}
@@ -17,13 +17,13 @@ configurations exported from the Bamboo UI or stored in Spec repositories.
 
 ## Key migration considerations
 
-| Configuration aspect | Bamboo | GitLab CI/CD | Migration impact |
-|---------------------|---------|--------------|------------------|
-| Configuration files | Bamboo Specs (Java or YAML) | `.gitlab-ci.yml` file | Convert Specs to GitLab YAML syntax |
-| Variable syntax | `${bamboo.variableName}` | `$VARIABLE_NAME` | Update all variable references in scripts |
-| Execution environment | Agents (local or remote) | Runners with executors | Install and configure runners |
-| Artifact sharing | Named artifacts with subscriptions | Automatic inheritance between stages | Simplify artifact configuration |
-| Deployments | Separate deployment projects | Deployment jobs with environments | Combine build and deploy in single pipeline |
+| Configuration aspect  | Bamboo                             | GitLab CI/CD                         | Migration impact |
+| --------------------- | ---------------------------------- | ------------------------------------ | ---------------- |
+| Configuration files   | Bamboo Specs (Java or YAML)        | `.gitlab-ci.yml` file                | Convert Specs to GitLab YAML syntax |
+| Variable syntax       | `${bamboo.variableName}`           | `$VARIABLE_NAME`                     | Update all variable references in scripts |
+| Execution environment | Agents (local or remote)           | Runners with executors               | Install and configure runners |
+| Artifact sharing      | Named artifacts with subscriptions | Automatic inheritance between stages | Simplify artifact configuration |
+| Deployments           | Separate deployment projects       | Deployment jobs with environments    | Combine build and deploy in single pipeline |
 
 ## Configuration examples
 
@@ -447,7 +447,7 @@ In this example:
 In Bamboo, Git caches can be used to speed up builds. Git caches are configured in Bamboo
 administration settings and are stored either on the Bamboo server or remote agents.
 
-GitLab supports both Git caches and job cache. Caches are defined per job using the `cache` keyword:
+GitLab supports both Git caches and job cache. Caches are defined for each job using the `cache` keyword:
 
 ```yaml
 test-job:
@@ -566,9 +566,13 @@ though secrets stored in plain text are susceptible to accidental exposure.
 You should always store sensitive information in masked and protected variables,
 which mitigates some of the risk.
 
+{{< alert type="note" >}}
+
 Never store secrets as variables in your `.gitlab-ci.yml` file, which is public to all
 users with access to the project. Storing sensitive information in variables should
 only be done in the project, group, or instance settings.
+
+{{< /alert >}}
 
 ## Create a migration plan
 
