@@ -102,6 +102,10 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
   end
 
   context 'for new artifacts' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
 
@@ -181,13 +185,13 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         end
 
         context 'when the directory specified with `publish` is included in the artifacts' do
-          let(:options) { { publish: 'foo' } }
+          let(:options) { { pages: { publish: 'foo' } } }
 
           it 'creates pages_deployment and saves it in the metadata' do
             expect(service.execute[:status]).to eq(:success)
 
             deployment = project.pages_deployments.last
-            expect(deployment.root_directory).to eq(options[:publish])
+            expect(deployment.root_directory).to eq(options[:pages][:publish])
           end
         end
 

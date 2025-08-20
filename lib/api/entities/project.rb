@@ -94,6 +94,7 @@ module API
 
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }
+      expose(:show_diff_preview_in_email, documentation: { type: 'boolean' }) { |project, options| project.show_diff_preview_in_email? }
 
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }

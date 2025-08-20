@@ -99,6 +99,189 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
         end
       end
     end
+
+    describe 'config_options schema edge validation' do
+      context 'with invalid edge cases' do
+        it 'rejects non-string or object in services' do
+          metadata.config_options = {
+            script: ['echo "Hello"'],
+            services: [123]
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects wrong type for reports.junit' do
+          metadata.config_options = {
+            script: ['echo'],
+            artifacts: {
+              reports: {
+                junit: 123
+              }
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects missing coverage_format in coverage_report' do
+          metadata.config_options = {
+            script: ['echo'],
+            artifacts: {
+              reports: {
+                coverage_report: {
+                  path: 'coverage.xml'
+                }
+              }
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects invalid environment.action enum value' do
+          metadata.config_options = {
+            script: ['echo'],
+            environment: {
+              name: 'production',
+              action: 'launch'
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects retry object missing required keys' do
+          metadata.config_options = {
+            script: ['echo'],
+            retry: {
+              when: ['script_failure']
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects parallel.matrix missing required keys' do
+          metadata.config_options = {
+            script: ['echo'],
+            parallel: {
+              foo: 'bar'
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects bridge_needs missing required keys' do
+          metadata.config_options = {
+            script: ['echo'],
+            bridge_needs: {
+              artifacts: true
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects invalid image format' do
+          metadata.config_options = {
+            script: ['echo'],
+            image: { entrypoint: ['/bin/bash'] }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects artifacts when paths is not an array' do
+          metadata.config_options = {
+            script: ['echo'],
+            artifacts: {
+              paths: 'not-an-array'
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects allow_failure_criteria with wrong exit_codes type' do
+          metadata.config_options = {
+            script: ['echo'],
+            allow_failure_criteria: {
+              exit_codes: 'not-an-integer-or-array'
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+
+        it 'rejects invalid hooks' do
+          metadata.config_options = {
+            script: ['echo'],
+            hooks: {
+              pre_get_sources_script: 'not-an-array'
+            }
+          }
+          expect(metadata).to be_invalid
+        end
+      end
+
+      context 'when ci_validate_config_options feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_validate_config_options: false)
+        end
+
+        context 'with invalid edge cases' do
+          it 'does not validate when feature flag is disabled' do
+            metadata.config_options = {
+              script: ['echo "Hello"'],
+              services: [123]
+            }
+
+            expect(metadata).to be_valid
+            expect(metadata.errors[:config_options]).to be_empty
+          end
+
+          it 'accepts invalid artifacts structure' do
+            metadata.config_options = {
+              script: ['echo'],
+              artifacts: {
+                paths: 'not-an-array'
+              }
+            }
+
+            expect(metadata).to be_valid
+          end
+        end
+      end
+    end
+
+    describe '#validate_config_options_schema logging and error behavior' do
+      let(:invalid_options) do
+        {
+          script: ['echo'],
+          services: '123'
+        }
+      end
+
+      let(:valid_options) do
+        {
+          script: ['echo'],
+          services: [123]
+        }
+      end
+
+      context 'when ci_validate_config_options feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_validate_config_options: false)
+        end
+
+        it 'does not log warnings' do
+          metadata.config_options = valid_options
+
+          expect(Gitlab::AppJsonLogger).not_to receive(:warn)
+
+          expect(metadata).to be_valid
+        end
+
+        it 'does not raise errors in production' do
+          allow(Rails.env).to receive(:production?).and_return(true)
+          metadata.config_options = invalid_options
+
+          expect(metadata).to be_valid
+        end
+      end
+    end
   end
 
   context 'loose foreign key on ci_builds_metadata.project_id' do

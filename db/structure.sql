@@ -8932,7 +8932,8 @@ CREATE TABLE analytics_devops_adoption_segments (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     namespace_id bigint,
-    display_namespace_id bigint
+    display_namespace_id bigint,
+    CONSTRAINT check_fc420e89ee CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE analytics_devops_adoption_segments_id_seq
@@ -9969,7 +9970,8 @@ CREATE TABLE approval_merge_request_rules_users (
     id bigint NOT NULL,
     approval_merge_request_rule_id bigint NOT NULL,
     user_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_eca70345f1 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE approval_merge_request_rules_users_id_seq
@@ -30320,6 +30322,9 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE push_event_payloads
     ADD CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE ci_sources_pipelines
+    ADD CONSTRAINT check_5a76e457e6 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
@@ -30352,9 +30357,6 @@ ALTER TABLE sprints
 
 ALTER TABLE redirect_routes
     ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE approval_merge_request_rules_users
-    ADD CONSTRAINT check_eca70345f1 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE instance_type_ci_runners
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NULL)) NOT VALID;
@@ -35246,6 +35248,8 @@ CREATE INDEX index_approval_merge_request_rules_on_project_id ON approval_merge_
 CREATE UNIQUE INDEX index_approval_merge_request_rules_users_1 ON approval_merge_request_rules_users USING btree (approval_merge_request_rule_id, user_id);
 
 CREATE INDEX index_approval_merge_request_rules_users_2 ON approval_merge_request_rules_users USING btree (user_id);
+
+CREATE INDEX index_approval_merge_request_rules_users_on_project_id ON approval_merge_request_rules_users USING btree (project_id);
 
 CREATE INDEX index_approval_mr_rules_on_project_id_policy_rule_id_and_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id, id);
 
@@ -43691,6 +43695,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY approval_merge_request_rules_users
+    ADD CONSTRAINT fk_35e88790f5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_3654b61b03 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

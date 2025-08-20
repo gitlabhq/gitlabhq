@@ -1048,7 +1048,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             {
               cross_dependencies: [
                 {
-                  pipeline: pipeline.id,
+                  pipeline: pipeline.id.to_s,
                   job: job.name,
                   artifacts: true
                 }

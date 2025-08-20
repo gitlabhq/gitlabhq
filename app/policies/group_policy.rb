@@ -271,6 +271,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { developer }.policy do
     enable :create_custom_emoji
     enable :create_observability_access_request
+    enable :update_o11y_settings
+    enable :delete_o11y_settings
     enable :create_package
     enable :developer_access
     enable :admin_crm_organization

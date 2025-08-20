@@ -181,7 +181,6 @@ class Namespace < ApplicationRecord
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do
-    delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
     delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=
     delegate :allow_runner_registration_token, :allow_runner_registration_token=
     delegate :math_rendering_limits_enabled?, :lock_math_rendering_limits_enabled?
@@ -196,6 +195,7 @@ class Namespace < ApplicationRecord
     delegate :jwt_ci_cd_job_token_enabled?
 
     with_options allow_nil: true do
+      delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
       delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=
       delegate :default_branch_protection_defaults
       delegate :archived, :archived=

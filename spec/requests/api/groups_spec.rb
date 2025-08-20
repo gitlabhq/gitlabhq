@@ -713,6 +713,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['auto_devops_enabled']).to eq(group1.auto_devops_enabled)
         expect(json_response['emails_disabled']).to eq(group1.emails_disabled?)
         expect(json_response['emails_enabled']).to eq(group1.emails_enabled?)
+        expect(json_response['show_diff_preview_in_email']).to eq(group1.show_diff_preview_in_email?)
         expect(json_response['mentions_disabled']).to eq(group1.mentions_disabled)
         expect(json_response['project_creation_level']).to eq('maintainer')
         expect(json_response['subgroup_creation_level']).to eq('maintainer')
@@ -1134,6 +1135,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['auto_devops_enabled']).to eq(nil)
         expect(json_response['emails_disabled']).to eq(false)
         expect(json_response['emails_enabled']).to eq(true)
+        expect(json_response['show_diff_preview_in_email']).to eq(true)
         expect(json_response['mentions_disabled']).to eq(nil)
         expect(json_response['project_creation_level']).to eq("noone")
         expect(json_response['subgroup_creation_level']).to eq("maintainer")
@@ -1178,6 +1180,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
             expect(json_response['emails_enabled']).to eq(false)
           end
         end
+      end
+
+      it 'updates show_diff_preview_in_email?' do
+        put api("/groups/#{group1.id}", user1), params: { show_diff_preview_in_email: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['show_diff_preview_in_email']).to eq(false)
+        expect(group1.reload.show_diff_preview_in_email).to eq(false)
       end
 
       context 'when default_branch_protection_defaults set to No one' do

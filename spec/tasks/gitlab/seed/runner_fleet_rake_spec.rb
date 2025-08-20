@@ -12,6 +12,7 @@ RSpec.describe 'gitlab:seed:runner_fleet rake task', :silence_stdout, feature_ca
   end
 
   before do
+    stub_feature_flags(ci_validate_config_options: false)
     Rake.application.rake_require('tasks/gitlab/seed/runner_fleet')
 
     WebMock.stub_request(:get, runner_releases_url).to_return(

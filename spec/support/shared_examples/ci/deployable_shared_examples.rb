@@ -336,6 +336,7 @@ RSpec.shared_examples 'a deployable job' do
 
     context 'when options does not include url' do
       before do
+        stub_feature_flags(ci_validate_config_options: false)
         job.update!(options: { environment: { url: nil } })
         job.persisted_environment.update!(external_url: 'http://prd.example.com/$CI_JOB_NAME')
       end
@@ -374,6 +375,10 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe 'environment' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     describe '#has_environment_keyword?' do
       subject { job.has_environment_keyword? }
 

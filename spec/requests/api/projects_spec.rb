@@ -269,7 +269,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:projects) { user_projects }
       end
 
-      it_behaves_like 'projects response without N + 1 queries', 0 do
+      it_behaves_like 'projects response without N + 1 queries', 2 do
         let(:current_user) { user }
       end
 
@@ -2777,6 +2777,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
+        expect(json_response).to have_key('show_diff_preview_in_email')
       end
 
       it 'exposes all necessary attributes' do
@@ -4466,6 +4467,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['emails_enabled']).to eq(false)
+      end
+
+      it 'updates show_diff_preview_in_email?' do
+        project_param = { show_diff_preview_in_email: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['show_diff_preview_in_email']).to eq(false)
+        expect(project3.reload.show_diff_preview_in_email?).to eq(false)
       end
 
       it 'updates build_git_strategy' do

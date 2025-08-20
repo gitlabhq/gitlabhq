@@ -44415,6 +44415,8 @@ definitions:
         type: boolean
       emails_enabled:
         type: boolean
+      show_diff_preview_in_email:
+        type: boolean
       mentions_disabled:
         type: string
       lfs_enabled:
@@ -45092,6 +45094,8 @@ definitions:
         type: boolean
       emails_enabled:
         type: boolean
+      show_diff_preview_in_email:
+        type: boolean
       mentions_disabled:
         type: string
       lfs_enabled:
@@ -45423,6 +45427,8 @@ definitions:
       emails_disabled:
         type: boolean
       emails_enabled:
+        type: boolean
+      show_diff_preview_in_email:
         type: boolean
       shared_runners_enabled:
         type: boolean
@@ -61251,6 +61257,8 @@ definitions:
       emails_disabled:
         type: boolean
       emails_enabled:
+        type: boolean
+      show_diff_preview_in_email:
         type: boolean
       shared_runners_enabled:
         type: boolean

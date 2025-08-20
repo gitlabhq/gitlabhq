@@ -2778,6 +2778,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#has_exposed_artifacts?' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+      create(:ci_build, pipeline: pipeline) # Job without artifacts
+    end
+
     let(:pipeline) { create(:ci_pipeline, :success) }
     let(:options) { nil }
     let!(:job) do
@@ -2787,10 +2792,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     subject { pipeline.has_exposed_artifacts? }
-
-    before do
-      create(:ci_build, pipeline: pipeline) # Job without artifacts
-    end
 
     it { is_expected.to eq(false) }
 

@@ -24,6 +24,10 @@ RSpec.describe Environments::RecalculateAutoStopService, feature_category: :envi
       }
     end
 
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     subject(:recalculate) { service.execute }
 
     shared_examples 'recalculating auto stop at' do |can_reset_timer|

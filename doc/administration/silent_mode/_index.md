@@ -20,22 +20,32 @@ title: GitLab Silent Mode
 
 {{< /history >}}
 
-Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
+Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use.
 
-- Validating Geo site promotion. You have a secondary Geo site as part of your
-  [disaster recovery](../geo/disaster_recovery/_index.md) solution. You want to
-  regularly test promoting it to become a primary Geo site, as a best practice
-  to ensure your disaster recovery plan actually works. But you don't want to
-  actually perform an entire failover because the primary site lives in a region
-  which provides the lowest latency to your users. And you don't want to take
-  downtime during every regular test. So, you let the primary site remain up,
-  while you promote the secondary site. You start smoke testing the promoted
-  site. But, the promoted site starts emailing users, the push mirrors push
-  changes to external Git repositories, etc. This is where Silent Mode comes in.
-  You can enable it as part of site promotion, to avoid this issue.
-- Validating GitLab backups. You set up a testing instance to test that your
-  backups restore successfully. As part of the restore, you enable Silent Mode,
-  for example to avoid sending invalid emails to users.
+## When to use Silent Mode
+
+Silent Mode is designed for specific testing and validation scenarios and should not be used as a general-purpose feature for production environments.
+
+Silent Mode is designed for the following scenarios:
+
+- Testing Geo site promotion: When validating disaster recovery procedures by promoting a secondary Geo site while the primary site remains active.
+  - For example, you have a secondary Geo site as part of your
+    [disaster recovery](../geo/disaster_recovery/_index.md) solution. You want to
+    regularly test promoting it to become a primary Geo site, as a best practice
+    to ensure your disaster recovery plan actually works. But you don't want to
+    actually perform an entire failover because the primary site lives in a region
+    which provides the lowest latency to your users. And you don't want to take
+    downtime during every regular test. So, you let the primary site remain up,
+    while you promote the secondary site. You start smoke testing the promoted
+    site. But, the promoted site starts emailing users, the push mirrors push
+    changes to external Git repositories, etc. This is where Silent Mode comes in.
+    You can enable it as part of site promotion, to avoid this issue.
+- Validating GitLab backups: When testing backup restoration on a separate testing instance to ensure backups are functional. Silent Mode can be used to avoid sending invalid emails to users.
+- Staging environment testing: When you need to test GitLab functionality without triggering outbound communications that could affect users or external systems. Particularly if you seeded your staging environment with production data.
+
+Silent Mode is not designed for:
+
+- Production environments: Silent Mode intentionally [breaks many GitLab features](#behavior-of-gitlab-features-in-silent-mode). Silent Mode can cause unexpected errors, particularly in new features. Silent Mode must err on the side of caution by blocking new communications by default.
 
 ## Enable Silent Mode
 
@@ -114,7 +124,7 @@ Outbound communications from the following features are silenced by Silent Mode.
 | [Executable integrations](../../user/project/integrations/_index.md)       | The integrations are not executed.                                                                                                                                                                                                                      |
 | [Service Desk](../../user/project/service_desk/_index.md)                  | Incoming emails still raise issues, but the users who sent the emails to Service Desk are not notified of issue creation or comments on their issues.                                                                                                   |
 | Outbound emails                                                           | At the moment when an email should be sent by GitLab, it is instead dropped. It is not queued anywhere.                                                                                                                                                 |
-| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors. If a particular error is problematic for testing during Silent Mode, consult [GitLab Support](https://about.gitlab.com/support/). |
+| Outbound HTTP requests                                                    | Many HTTP requests are blocked where features are not blocked or skipped explicitly. These may produce errors with the class `SilentModeBlockedError`. If a particular error is problematic for testing during Silent Mode, consult [GitLab Support](https://about.gitlab.com/support/). In general, the caller should exit when Silent Mode is enabled, rather than attempt to make the HTTP request. Any exceptions must align with the [intended uses for Silent Mode](#when-to-use-silent-mode). |
 
 ### Outbound communications that are not silenced
 

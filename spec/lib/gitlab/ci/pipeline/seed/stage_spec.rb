@@ -125,6 +125,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_co
   end
 
   describe '#to_resource' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     it 'builds a valid stage object with all builds' do
       subject.to_resource.save!
 

@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Step, feature_category: :continuous_integration do
+  before do
+    stub_feature_flags(ci_validate_config_options: false)
+  end
+
   describe '#from_commands' do
     subject { described_class.from_commands(job) }
 

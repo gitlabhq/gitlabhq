@@ -27,6 +27,10 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
   end
 
   describe '#seed' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     context 'with job_count specified' do
       let(:job_count) { 20 }
 

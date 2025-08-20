@@ -19,9 +19,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      'analytics_devops_adoption_segments.namespace_id',
       *['badges.project_id', 'badges.group_id'],
-      'ci_sources_pipelines.project_id',
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *['todos.project_id', 'todos.group_id'],
       *uploads_and_partitions
@@ -104,7 +102,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
-      'merge_request_commits_metadata.project_id'
+      'merge_request_commits_metadata.project_id',
+      # The FK is being created
+      'approval_merge_request_rules_users.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/560322
     ]
   end
 
