@@ -2638,6 +2638,13 @@ class MergeRequest < ApplicationRecord
     total_commits_count >= DIFF_COMMITS_LIMIT
   end
 
+  def diffs_batch_cache_key
+    return unless diffs_batch_cache_with_max_age?
+    return latest_merge_request_diff&.patch_id_sha if cannot_be_merged?
+
+    merge_head_diff&.patch_id_sha
+  end
+
   private
 
   def target_branch_pipelines_for(sha:)

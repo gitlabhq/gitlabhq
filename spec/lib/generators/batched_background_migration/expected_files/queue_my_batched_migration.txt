@@ -9,7 +9,7 @@ class QueueMyBatchedMigration < Gitlab::Database::Migration[2.3]
   milestone '16.6'
 
   # Select the applicable gitlab schema for your batched background migration
-  restrict_gitlab_migration # gitlab_schema: :gitlab_main / :gitlab_ci / :gitlab_main_clusterwide / ...
+  restrict_gitlab_migration # gitlab_schema: :gitlab_main_org / :gitlab_ci / ...
 
   MIGRATION = "MyBatchedMigration"
   # BATCH_SIZE = 1000

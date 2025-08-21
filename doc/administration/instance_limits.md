@@ -672,7 +672,7 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 
 ### Limit the number of pipelines created by a pipeline schedule each day
 
-You can limit the number of pipelines that pipeline schedules can trigger per day.
+You can limit the number of pipelines that each individual pipeline schedule can trigger per day.
 
 Schedules that try to run pipelines more frequently than the limit are slowed to a maximum frequency.
 The frequency is calculated by dividing 1440 (the number minutes in a day) by the

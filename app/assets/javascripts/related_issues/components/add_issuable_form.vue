@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormRadioGroup, GlButton } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import {
   itemAddFailureTypesMap,
@@ -16,6 +17,9 @@ import RelatedIssuableInput from './related_issuable_input.vue';
 
 export default {
   name: 'AddIssuableForm',
+  directives: {
+    SafeHtml,
+  },
   components: {
     GlFormGroup,
     GlFormRadioGroup,
@@ -206,9 +210,7 @@ export default {
       @addIssuableFormBlur="onAddIssuableFormBlur"
       @addIssuableFormInput="onAddIssuableFormInput"
     />
-    <p v-if="hasError" class="gl-field-error">
-      {{ addRelatedErrorMessage }}
-    </p>
+    <p v-if="hasError" v-safe-html="addRelatedErrorMessage" class="gl-field-error"></p>
     <div class="gl-mt-5 gl-flex gl-gap-3">
       <gl-button
         ref="addButton"

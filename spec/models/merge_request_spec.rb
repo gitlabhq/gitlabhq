@@ -7403,4 +7403,54 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.invalidate_project_counter_caches
     end
   end
+
+  describe '#diffs_batch_cache_key' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    subject { merge_request.diffs_batch_cache_key }
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: false)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: true)
+      end
+
+      context 'when the merge request cannot be merged' do
+        before do
+          allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
+          # Ensure latest_merge_request_diff is the one we created
+          merge_request.reload
+        end
+
+        it 'returns the patch_id_sha of the latest_merge_request_diff' do
+          expect(subject).to eq(merge_request.latest_merge_request_diff.patch_id_sha)
+        end
+      end
+
+      context 'when the merge request can be merged' do
+        context 'and a merge_head_diff exists' do
+          let!(:merge_head_diff) { create(:merge_request_diff, :merge_head, merge_request: merge_request) }
+
+          it 'returns the patch_id_sha of the merge_head_diff' do
+            expect(subject).to eq(merge_head_diff.patch_id_sha)
+          end
+        end
+
+        context 'and a merge_head_diff does not exist' do
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
+      end
+    end
+  end
 end

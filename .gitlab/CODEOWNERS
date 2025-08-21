@@ -597,11 +597,9 @@ lib/gitlab/checks/
 /doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
-/doc/administration/compliance/ @eread
 /doc/administration/configure.md @axil @eread
 /doc/administration/consul.md @axil @eread
 /doc/administration/credentials_inventory.md @idurham
-/doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @lyspin
 /doc/administration/diff_limits.md @brendan777
@@ -628,7 +626,6 @@ lib/gitlab/checks/
 /doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @msedlakjakubowski
 /doc/administration/integration/plantuml.md @brendan777
-/doc/administration/internal_users.md @eread
 /doc/administration/invalidate_markdown_cache.md @msedlakjakubowski
 /doc/administration/issue_closing_pattern.md @aqualls
 /doc/administration/labels.md @msedlakjakubowski
@@ -701,7 +698,6 @@ lib/gitlab/checks/
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/security_and_compliance.md @rdickenson
-/doc/administration/settings/security_contact_information.md @eread
 /doc/administration/settings/slack_app.md @ashrafkhamis
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
@@ -723,7 +719,6 @@ lib/gitlab/checks/
 /doc/api/admin_sidekiq_queues.md @axil @eread
 /doc/api/appearance.md @idurham
 /doc/api/applications.md @idurham
-/doc/api/audit_events.md @eread
 /doc/api/avatar.md @idurham
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @brendan777
@@ -745,15 +740,11 @@ lib/gitlab/checks/
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
-/doc/api/external_controls.md @eread
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
 /doc/api/graphql/ai_impact_analytics.md @lciutacu
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
-/doc/api/graphql/audit_event_streaming_groups.md @eread
-/doc/api/graphql/audit_event_streaming_instances.md @eread
-/doc/api/graphql/audit_report.md @eread
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
 /doc/api/graphql/epic_work_items_api_migration_guide.md @msedlakjakubowski
@@ -848,7 +839,6 @@ lib/gitlab/checks/
 /doc/api/repository_files.md @brendan777
 /doc/api/repository_submodules.md @brendan777
 /doc/api/resource_iteration_events.md @msedlakjakubowski
-/doc/api/resource_label_events.md @eread
 /doc/api/resource_milestone_events.md @msedlakjakubowski
 /doc/api/resource_state_events.md @msedlakjakubowski
 /doc/api/resource_weight_events.md @msedlakjakubowski
@@ -993,7 +983,6 @@ lib/gitlab/checks/
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @msedlakjakubowski
 /doc/integration/mattermost/ @axil @eread
-/doc/integration/snowflake.md @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
 /doc/policy/ @axil @eread
@@ -1015,7 +1004,6 @@ lib/gitlab/checks/
 /doc/tutorials/ @gl-docsteam
 /doc/tutorials/boards_for_standups/ @msedlakjakubowski
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
-/doc/tutorials/compliance_pipeline/ @eread
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @rsarangadharan
 /doc/tutorials/container_scanning/ @rdickenson
 /doc/tutorials/convert_personal_namespace_to_group/ @z_painter
@@ -1067,8 +1055,7 @@ lib/gitlab/checks/
 /doc/user/application_security/vulnerability_archival/ @rlehmann1
 /doc/user/application_security/vulnerability_report/ @rlehmann1
 /doc/user/asciidoc.md @brendan777
-/doc/user/compliance/ @eread
-/doc/user/compliance/license_approval_policies.md @rlehmann1
+/doc/user/compliance/ @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/custom_roles/ @idurham
@@ -1174,7 +1161,6 @@ lib/gitlab/checks/
 /doc/user/project/project_topics.md @z_painter
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
-/doc/user/project/releases/ @eread
 /doc/user/project/remote_development/ @brendan777
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @scawood

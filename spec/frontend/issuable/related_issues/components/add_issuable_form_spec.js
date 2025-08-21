@@ -5,6 +5,7 @@ import AddIssuableForm from '~/related_issues/components/add_issuable_form.vue';
 import IssueToken from '~/related_issues/components/issue_token.vue';
 import RelatedIssuableInput from '~/related_issues/components/related_issuable_input.vue';
 import { linkedIssueTypesMap, PathIdSeparator } from '~/related_issues/constants';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const issuable1 = {
   id: 200,
@@ -39,6 +40,9 @@ describe('AddIssuableForm', () => {
       },
       stubs: {
         RelatedIssuableInput,
+      },
+      directives: {
+        SafeHtml,
       },
     });
   };
@@ -253,6 +257,22 @@ describe('AddIssuableForm', () => {
 
           expect(wrapper.find('.gl-field-error').exists()).toBe(true);
           expect(wrapper.find('.gl-field-error').text()).toContain(itemAddFailureMessage);
+        });
+
+        it('applies SafeHtml directive to error message element', () => {
+          const itemAddFailureMessage = 'Error with <em>emphasis</em> and &#39;quotes&#39;';
+          createComponent(
+            {
+              hasError: true,
+              itemAddFailureMessage,
+            },
+            mount,
+          );
+
+          const errorElement = wrapper.find('.gl-field-error');
+          expect(errorElement.html()).toContain('<em>emphasis</em>');
+          expect(errorElement.text()).toContain("'quotes'");
+          expect(errorElement.text()).not.toContain('&#39;');
         });
       });
     });
