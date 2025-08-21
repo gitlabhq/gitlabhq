@@ -101,6 +101,18 @@ RSpec.describe Projects::ArchiveService, feature_category: :groups_and_projects 
             service.execute
           end
 
+          context 'with feature flag destroy_fork_network_on_archive disabled' do
+            before do
+              stub_feature_flags(destroy_fork_network_on_archive: false)
+            end
+
+            it 'does not unlink fork' do
+              expect(unlink_fork_service).not_to receive(:execute)
+
+              service.execute
+            end
+          end
+
           it 'publishes a ProjectArchivedEvent' do
             expect { service.execute }.to publish_event(Projects::ProjectArchivedEvent)
               .with(

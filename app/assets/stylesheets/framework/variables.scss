@@ -419,9 +419,3 @@ $source-editor-hover-dark-text-color: $gl-color-neutral-900;
  - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
  */
 $enable-validation-icons: false;
-
-/*
-Enable GitLab UI CSS Feature Flag
-for GlButton migration from box-shadow to border.
-*/
-$feature-button-border: true;

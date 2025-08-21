@@ -36,6 +36,7 @@ Rails/StrongParams:
     - 'app/controllers/concerns/notes_actions.rb'
     - 'app/controllers/concerns/oauth_applications.rb'
     - 'app/controllers/concerns/page_limiter.rb'
+    - 'app/controllers/concerns/paginated_collection.rb'
     - 'app/controllers/concerns/params_backward_compatibility.rb'
     - 'app/controllers/concerns/preview_markdown.rb'
     - 'app/controllers/concerns/renders_blob.rb'

@@ -161,7 +161,7 @@ describe('packages_list_app', () => {
   });
 
   describe('empty state', () => {
-    const heading = () => findEmptyState().find('h1');
+    const heading = () => findEmptyState().find('h2');
 
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);

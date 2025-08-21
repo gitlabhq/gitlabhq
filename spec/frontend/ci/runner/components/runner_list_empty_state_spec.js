@@ -29,7 +29,7 @@ describe('RunnerListEmptyState', () => {
   const findRunnerInstructionsModal = () => wrapper.findComponent(RunnerInstructionsModal);
 
   const expectTitleToBe = (title) => {
-    expect(findEmptyState().find('h1').text()).toBe(title);
+    expect(findEmptyState().find('h2').text()).toBe(title);
   };
   const expectDescriptionToBe = (sentences) => {
     expect(findEmptyState().find('p').text()).toMatchInterpolatedText(sentences.join(' '));
