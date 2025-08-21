@@ -14,7 +14,6 @@ import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ConfirmActionModal from '~/vue_shared/components/confirm_action_modal.vue';
-import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
 import removeProjectCIJobTokenScopeMutation from '../graphql/mutations/remove_project_ci_job_token_scope.mutation.graphql';
 import updateCIJobTokenScopeMutation from '../graphql/mutations/update_ci_job_token_scope.mutation.graphql';
 import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.query.graphql';
@@ -105,7 +104,6 @@ export default {
   data() {
     return {
       jobTokenScopeEnabled: null,
-      targetProjectPath: '',
       projects: [],
       projectToRemove: null,
     };
@@ -155,32 +153,7 @@ export default {
         createAlert({ message: error.message });
       }
     },
-    async addProject() {
-      try {
-        const {
-          data: {
-            ciJobTokenScopeAddProject: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: addProjectCIJobTokenScopeMutation,
-          variables: {
-            input: {
-              projectPath: this.fullPath,
-              targetProjectPath: this.targetProjectPath,
-            },
-          },
-        });
 
-        if (errors.length) {
-          throw new Error(errors[0]);
-        }
-      } catch (error) {
-        createAlert({ message: error.message });
-      } finally {
-        this.clearTargetProjectPath();
-        this.getProjects();
-      }
-    },
     async removeProject() {
       const response = await this.$apollo.mutate({
         mutation: removeProjectCIJobTokenScopeMutation,
@@ -197,9 +170,7 @@ export default {
       this.getProjects();
       return Promise.resolve();
     },
-    clearTargetProjectPath() {
-      this.targetProjectPath = '';
-    },
+
     getProjects() {
       this.$apollo.queries.projects.refetch();
     },

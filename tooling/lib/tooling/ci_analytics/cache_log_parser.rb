@@ -12,12 +12,6 @@ module Tooling
         created: /Created cache/
       }.freeze
 
-      PACKAGE_REGISTRY_PATTERNS = {
-        package_not_found: /The archive was not found\. The server returned status 404\./,
-        package_downloaded: /The archive was found. The server returned status 200\./,
-        package_uploaded: /\{"message":"201 Created"\}/
-      }.freeze
-
       OPERATION_PATTERNS = {
         bundle_start: /Installing gems/,
         bundle_success: /Bundle complete!/,
@@ -30,14 +24,12 @@ module Tooling
       def self.extract_cache_events(log_content)
         events = []
         current_cache = {}
-        current_package_cache = {}
         operation_timings = {}
 
         log_content.each_line do |line|
           timestamp = extract_timestamp(line) || Time.now
 
           parse_cache_operations(line, timestamp, current_cache, events)
-          parse_package_registry_operations(line, timestamp, current_package_cache, events)
           parse_operations(line, timestamp, operation_timings)
         end
 
@@ -98,46 +90,6 @@ module Tooling
         end
       end
 
-      def self.parse_package_registry_operations(line, timestamp, current_package_cache, events)
-        case line
-        when PACKAGE_REGISTRY_PATTERNS[:package_downloaded]
-          handle_package_downloaded(timestamp, current_package_cache, events)
-        when PACKAGE_REGISTRY_PATTERNS[:package_not_found]
-          handle_package_not_found(timestamp, current_package_cache, events)
-        when PACKAGE_REGISTRY_PATTERNS[:package_uploaded]
-          handle_package_uploaded(timestamp, events)
-        end
-      end
-
-      def self.handle_package_downloaded(timestamp, current_package_cache, events)
-        return unless current_package_cache[:cache_key]
-
-        # Successfully fetched assets = cache hit
-        current_package_cache[:cache_result] = 'hit'
-        current_package_cache[:duration] = calculate_duration(current_package_cache[:started_at], timestamp)
-        events << current_package_cache.dup
-        current_package_cache.clear
-      end
-
-      def self.handle_package_not_found(timestamp, current_package_cache, events)
-        return unless current_package_cache[:cache_key]
-
-        current_package_cache[:cache_result] = 'miss'
-        current_package_cache[:duration] = calculate_duration(current_package_cache[:started_at], timestamp)
-        current_package_cache[:cache_size_bytes] = nil
-        events << current_package_cache.dup
-        current_package_cache.clear
-      end
-
-      def self.handle_package_uploaded(timestamp, events)
-        last_upload = events.reverse.find { |e| e[:cache_operation] == 'push' }
-        return unless last_upload
-
-        last_upload[:cache_result] = 'created'
-        last_upload[:duration] = calculate_duration(last_upload[:started_at], timestamp)
-        last_upload[:cache_size_bytes] = nil
-      end
-
       def self.parse_operations(line, timestamp, operation_timings)
         case line
         when OPERATION_PATTERNS[:bundle_start]
@@ -190,6 +142,7 @@ module Tooling
         when /node-modules/ then 'node-modules'
         when /go-pkg/ then 'go'
         when /assets/ then 'assets'
+        when /frontend-fixtures/ then 'frontend-fixtures'
         when /rubocop/ then 'rubocop'
         when /qa-ruby/ then 'qa-ruby-gems'
         when /helm/ then 'cng-helm'
@@ -226,10 +179,6 @@ module Tooling
 
       def self.extract_cache_size(line)
         extract_size_from_line(line, /(\d+(?:\.\d+)?)\s*([KM])B/i)
-      end
-
-      def self.extract_package_size(line)
-        extract_size_from_line(line, /(\d+(?:\.\d+)?)\s*([KM]B)/i)
       end
 
       def self.extract_size_from_line(line, unit_pattern)

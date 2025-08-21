@@ -25,7 +25,7 @@ import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
-import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
+import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/widgets/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
@@ -79,9 +79,11 @@ describe('MrWidgetOptions', () => {
       data: {
         project: {
           ...getStateQueryResponse.data.project,
+          mergeTrains: null,
           mergeRequest: {
             ...getStateQueryResponse.data.project.mergeRequest,
             mergeError: mrData.mergeError || null,
+            mergeTrainCar: null,
             detailedMergeStatus:
               mrData.detailedMergeStatus ||
               getStateQueryResponse.data.project.mergeRequest.detailedMergeStatus,
@@ -595,7 +597,17 @@ describe('MrWidgetOptions', () => {
 
           describe('normal polling behavior', () => {
             it('responds to the GraphQL query finishing', () => {
-              expect(mockSetGraphqlData).toHaveBeenCalledWith(queryResponse.data.project);
+              delete queryResponse.data.project.mergeTrains;
+              delete queryResponse.data.project.mergeRequest.mergeTrainCar;
+
+              expect(mockSetGraphqlData).toHaveBeenCalledWith(
+                expect.objectContaining({
+                  ...queryResponse.data.project,
+                  mergeRequest: expect.objectContaining({
+                    ...queryResponse.data.project.mergeRequest,
+                  }),
+                }),
+              );
               expect(mockCheckStatus).toHaveBeenCalled();
               expect(mockSetData).toHaveBeenCalledWith(data, undefined);
               expect(stateQueryHandler).toHaveBeenCalledTimes(1);

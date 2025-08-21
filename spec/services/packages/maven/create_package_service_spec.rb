@@ -35,6 +35,27 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
         )
       end
 
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates a new package with metadatum' do
+          expect(package).to be_valid.and have_attributes(
+            name: path,
+            version: version,
+            package_type: 'maven'
+          )
+
+          expect(package.maven_metadatum).to be_valid.and have_attributes(
+            path: path_with_version,
+            app_group: 'my.company.app',
+            app_name: app_name,
+            app_version: version
+          )
+        end
+      end
+
       it_behaves_like 'assigns the package creator'
     end
 

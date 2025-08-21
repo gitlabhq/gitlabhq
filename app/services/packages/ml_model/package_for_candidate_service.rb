@@ -10,6 +10,7 @@ module Packages
 
         package = find_or_create_package!(
           ::Packages::Package.package_types['ml_model'],
+          ::Packages::MlModel::Package,
           name: candidate.package_name,
           version: candidate.package_version
         )

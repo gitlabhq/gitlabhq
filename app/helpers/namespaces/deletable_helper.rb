@@ -2,6 +2,8 @@
 
 module Namespaces
   module DeletableHelper
+    include NamespaceHelper
+
     def permanent_deletion_date_formatted(container_or_date = Date.current, format: '%F')
       date =
         if container_or_date.respond_to?(:self_deletion_scheduled_deletion_created_on)
@@ -33,7 +35,7 @@ module Namespaces
         project: _('This project is being deleted. Repository and other project resources are read-only.')
       }
 
-      _message_for_namespace(namespace, messages)
+      message_for_namespace(namespace, messages)
     end
 
     def _deletion_scheduled_in_hierarchy_chain_message(namespace)
@@ -54,7 +56,7 @@ module Namespaces
       }
 
       safe_format(
-        _message_for_namespace(namespace, messages),
+        message_for_namespace(namespace, messages),
         date: tag.strong(date)
       )
     end
@@ -71,7 +73,7 @@ module Namespaces
       }
 
       safe_format(
-        _message_for_namespace(namespace, messages),
+        message_for_namespace(namespace, messages),
         date: tag.strong(date)
       )
     end
@@ -87,7 +89,7 @@ module Namespaces
       }
 
       safe_format(
-        _message_for_namespace(namespace, messages),
+        message_for_namespace(namespace, messages),
         deletion_adjourned_period: namespace.deletion_adjourned_period,
         date: tag.strong(permanent_deletion_date_formatted)
       )
@@ -106,7 +108,7 @@ module Namespaces
       }
 
       safe_format(
-        _message_for_namespace(namespace, messages),
+        message_for_namespace(namespace, messages),
         date: tag.strong(permanent_deletion_date_formatted(namespace)),
         strongOpen: '<strong>'.html_safe,
         strongClose: '</strong>'.html_safe
@@ -161,7 +163,7 @@ module Namespaces
         project: _('Restore project')
       }
 
-      _message_for_namespace(namespace, messages)
+      message_for_namespace(namespace, messages)
     end
 
     def restore_namespace_path(namespace)
@@ -170,7 +172,7 @@ module Namespaces
         project: ->(namespace) { namespace_project_restore_path(namespace.parent, namespace) }
       }
 
-      _message_for_namespace(namespace, paths)[namespace]
+      message_for_namespace(namespace, paths)[namespace]
     end
 
     def restore_namespace_scheduled_for_deletion_message(namespace)
@@ -182,21 +184,9 @@ module Namespaces
       }
 
       safe_format(
-        _message_for_namespace(namespace, messages),
+        message_for_namespace(namespace, messages),
         date: tag.strong(permanent_deletion_date_formatted(namespace))
       )
-    end
-
-    def _message_for_namespace(namespace, messages)
-      # In case `namespace` is a Presenter instance, we match on the model name instead of class name.
-      case namespace.model_name.name
-      when 'Group'
-        messages[:group]
-      when 'Project', 'Namespaces::ProjectNamespace'
-        messages[:project]
-      else
-        raise "Unsupported namespace type: #{namespace.class.name}"
-      end
     end
 
     def _permanently_delete_group_message(group)

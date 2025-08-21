@@ -39,6 +39,22 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
           .and change { Packages::Npm::Metadatum.count }.by(1)
       end
 
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates a package' do
+          expect(::Packages::Npm::ProcessPackageFileWorker).to receive(:perform_async).once
+
+          expect { subject }
+            .to change { Packages::Package.count }.by(1)
+            .and change { Packages::Npm::Package.count }.by(1)
+            .and change { Packages::Tag.count }.by(1)
+            .and change { Packages::Npm::Metadatum.count }.by(1)
+        end
+      end
+
       it_behaves_like 'assigns the package creator'
 
       it 'returns a valid package' do

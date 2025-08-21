@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issue move to another project', feature_category: :team_planning do
+RSpec.describe 'issue move to another project', :js, feature_category: :team_planning do
+  include ListboxHelpers
+
   # Ensure support bot user is created so creation doesn't count towards query limit
   # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
   let_it_be(:support_bot) { Users::Internal.support_bot }
@@ -16,6 +18,7 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
   end
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 
@@ -45,11 +48,12 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
       visit issue_path(issue)
     end
 
-    it 'moving issue to another project', :js do
-      click_button _('Move issue')
-      wait_for_requests
-      all('.gl-new-dropdown-item')[0].click
-      click_button _('Move')
+    it 'moving issue to another project' do
+      click_button 'More actions', match: :first
+      click_button 'Move'
+      click_button 'Select project'
+      send_keys :down, :enter
+      click_button 'Move'
 
       expect(page).to have_content("Text with #{cross_reference}#{mr.to_reference}")
       expect(page).to have_content("moved from #{cross_reference}#{issue.to_reference}")
@@ -57,36 +61,19 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
       expect(page).to have_current_path(%r{#{project_path(new_project)}})
     end
 
-    it 'searching project dropdown', :js do
+    it 'searching project dropdown' do
       new_project_search.add_reporter(user)
 
-      click_button _('Move issue')
-      wait_for_requests
+      click_button 'More actions', match: :first
+      click_button 'Move'
+      click_button 'Select project'
 
-      page.within '.js-issuable-move-block' do
-        fill_in(_('Search project'), with: new_project_search.name)
+      expect_listbox_item(new_project.name)
 
-        expect(page).to have_content(new_project_search.name)
-        expect(page).not_to have_content(new_project.name)
-      end
-    end
+      send_keys new_project_search.name
 
-    context 'user does not have permission to move the issue to a project', :js do
-      let!(:private_project) { create(:project, :private) }
-      let(:another_project) { create(:project) }
-
-      before do
-        another_project.add_guest(user)
-      end
-
-      it 'browsing projects in projects select' do
-        click_button _('Move issue')
-        wait_for_requests
-
-        page.within '.js-issuable-move-block' do
-          expect(page).to have_content new_project.full_name
-        end
-      end
+      expect_listbox_item(new_project_search.name)
+      expect_no_listbox_item(new_project.name)
     end
 
     context 'issue has been already moved' do
@@ -95,13 +82,15 @@ RSpec.describe 'issue move to another project', feature_category: :team_planning
         create(:issue, project: old_project, author: user, moved_to: new_issue)
       end
 
-      it 'user wants to move issue that has already been moved' do
-        expect(page).to have_no_selector('#move_to_project_id')
+      it 'there is no option to move the already-moved issue' do
+        click_button 'More actions', match: :first
+
+        expect(page).not_to have_button('Move')
       end
     end
   end
 
-  context 'service desk issue moved to a project with service desk disabled', :saas, :js do
+  context 'service desk issue moved to a project with service desk disabled', :saas do
     let(:project_title) { 'service desk disabled project' }
     let(:warning_selector) { '.js-alert-moved-from-service-desk-warning' }
     let(:namespace) { create(:namespace) }

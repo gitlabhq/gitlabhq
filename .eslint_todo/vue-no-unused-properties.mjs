@@ -101,8 +101,6 @@ export default {
     'app/assets/javascripts/sidebar/components/status/status_dropdown.vue',
     'app/assets/javascripts/sidebar/components/subscriptions/subscriptions.vue',
     'app/assets/javascripts/tags/components/delete_tag_modal.vue',
-    'app/assets/javascripts/token_access/components/outbound_token_access.vue',
-    'app/assets/javascripts/token_access/components/token_permissions.vue',
     'app/assets/javascripts/user_lists/components/user_lists.vue',
     'app/assets/javascripts/wikis/components/wiki_content.vue',
     'app/assets/javascripts/wikis/components/wiki_form.vue',

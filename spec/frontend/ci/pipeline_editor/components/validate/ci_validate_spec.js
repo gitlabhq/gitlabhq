@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlAlert, GlDisclosureDropdown, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlLoadingIcon, GlPopover } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -10,6 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import CiLintResults from '~/ci/pipeline_editor/components/lint/ci_lint_results.vue';
+import BranchSelector from '~/ci/pipeline_editor/components/shared/branch_selector.vue';
 import CiValidate, { i18n } from '~/ci/pipeline_editor/components/validate/ci_validate.vue';
 import ValidatePipelinePopover from '~/ci/pipeline_editor/components/popovers/validate_pipeline_popover.vue';
 import getBlobContent from '~/ci/pipeline_editor/graphql/queries/blob_content.query.graphql';
@@ -78,10 +79,9 @@ describe('Pipeline Editor Validate Tab', () => {
   const findHelpIcon = () => wrapper.findComponent(HelpIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findPipelineSource = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findBranchSelector = () => wrapper.findComponent(BranchSelector);
   const findPopover = () => wrapper.findComponent(GlPopover);
   const findCiLintResults = () => wrapper.findComponent(CiLintResults);
-  const findResultsCta = () => wrapper.findByTestId('resimulate-pipeline-button');
 
   beforeEach(() => {
     mockBlobContentData = jest.fn();
@@ -107,10 +107,11 @@ describe('Pipeline Editor Validate Tab', () => {
       await createComponent({ stubs: { GlPopover, ValidatePipelinePopover } });
     });
 
-    it('renders disabled pipeline source dropdown', () => {
-      expect(findPipelineSource().exists()).toBe(true);
-      expect(findPipelineSource().attributes('toggletext')).toBe(i18n.pipelineSourceDefault);
-      expect(findPipelineSource().props('disabled')).toBe(true);
+    it('renders branch selector with the correct props', () => {
+      expect(findBranchSelector().props()).toMatchObject({
+        dropdownHeader: 'Select branch',
+        currentBranchName: mockDefaultBranch,
+      });
     });
 
     it('renders enabled CTA without tooltip', async () => {
@@ -175,6 +176,23 @@ describe('Pipeline Editor Validate Tab', () => {
       });
     });
 
+    describe('when another branch is selected', () => {
+      const newBranch = 'new-branch';
+      it('calls ciLint mutation with the selected branch', async () => {
+        findBranchSelector().vm.$emit('select-branch', newBranch);
+        findCta().vm.$emit('click');
+
+        await waitForPromises();
+
+        expect(mockCiLintData).toHaveBeenCalledWith({
+          projectPath: defaultProvide.projectFullPath,
+          content: mockCiYml,
+          ref: newBranch,
+          dryRun: true,
+        });
+      });
+    });
+
     describe('when results are successful', () => {
       beforeEach(async () => {
         mockCiLintData.mockResolvedValue(mockCiLintMutationResponse);
@@ -190,9 +208,12 @@ describe('Pipeline Editor Validate Tab', () => {
         expect(findAlert().attributes('title')).toBe(i18n.successAlertTitle);
       });
 
-      it('does not render content change status or CTA for results page', () => {
+      it('does not render content change status', () => {
         expect(findContentChangeStatus().exists()).toBe(false);
-        expect(findResultsCta().exists()).toBe(false);
+      });
+
+      it('renders CTA for results page', () => {
+        expect(findCta().exists()).toBe(true);
       });
 
       it('renders CI lint results with correct props', () => {
@@ -256,7 +277,7 @@ describe('Pipeline Editor Validate Tab', () => {
       } = pipelineEditorTrackingOptions;
 
       await wrapper.setProps({ ciFileContent: 'new yaml content' });
-      findResultsCta().vm.$emit('click');
+      findCta().vm.$emit('click');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, resimulatePipeline, { label });
     });
@@ -264,14 +285,17 @@ describe('Pipeline Editor Validate Tab', () => {
     it('renders content change status', async () => {
       await wrapper.setProps({ ciFileContent: 'new yaml content' });
 
-      expect(findContentChangeStatus().exists()).toBe(true);
-      expect(findResultsCta().exists()).toBe(true);
+      expect(findContentChangeStatus().props('variant')).toBe('warning');
+      expect(findContentChangeStatus().text()).toBe(
+        'Configuration content has changed. Re-run validation for updated results.',
+      );
+      expect(findCta().exists()).toBe(true);
     });
 
     it('calls mutation with new content', async () => {
       const newContent = 'new yaml content';
       await wrapper.setProps({ ciFileContent: newContent });
-      findResultsCta().vm.$emit('click');
+      findCta().vm.$emit('click');
 
       await waitForPromises();
 

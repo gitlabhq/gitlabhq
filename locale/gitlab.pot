@@ -46776,16 +46776,7 @@ msgstr ""
 msgid "PipelineEditor|Editor accessibility guide"
 msgstr ""
 
-msgid "PipelineEditor|Git push event to the default branch"
-msgstr ""
-
 msgid "PipelineEditor|Lint CI/CD sample"
-msgstr ""
-
-msgid "PipelineEditor|Other pipeline sources are not available yet."
-msgstr ""
-
-msgid "PipelineEditor|Pipeline Source"
 msgstr ""
 
 msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies."
@@ -46794,7 +46785,13 @@ msgstr ""
 msgid "PipelineEditor|Pipeline behavior will be simulated including the %{codeStart}rules%{codeEnd} %{codeStart}only%{codeEnd} %{codeStart}except%{codeEnd} and %{codeStart}needs%{codeEnd} job dependencies. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "PipelineEditor|Pipeline run source"
+msgstr ""
+
 msgid "PipelineEditor|Pipeline simulation completed with errors"
+msgstr ""
+
+msgid "PipelineEditor|Select branch"
 msgstr ""
 
 msgid "PipelineEditor|Simulated a %{codeStart}git push%{codeEnd} event for a default branch. %{codeStart}Rules%{codeEnd}, %{codeStart}only%{codeEnd}, %{codeStart}except%{codeEnd}, and %{codeStart}needs%{codeEnd} job dependencies logic have been evaluated. %{linkStart}Learn more%{linkEnd}"
@@ -64476,6 +64473,12 @@ msgstr ""
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
+msgid "The parent group is archived. This group and its data are %{strong_open}read-only%{strong_close}."
+msgstr ""
+
+msgid "The parent group is archived. This project and its data are %{strong_open}read-only%{strong_close}."
+msgstr ""
+
 msgid "The password for your GitLab account on %{gitlab_url} has successfully been changed."
 msgstr ""
 
@@ -65337,6 +65340,9 @@ msgstr ""
 msgid "This group has no inactive access tokens."
 msgstr ""
 
+msgid "This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}."
+msgstr ""
+
 msgid "This group is linked to a subscription"
 msgstr ""
 
@@ -65386,9 +65392,6 @@ msgid "This is a private email address %{helpIcon} generated just for you. Anyon
 msgstr ""
 
 msgid "This is a security log of authentication events involving your account."
-msgstr ""
-
-msgid "This is an archived project. Repository and other project resources are read-only."
 msgstr ""
 
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
@@ -65670,6 +65673,9 @@ msgid "This project is archived and cannot be commented on."
 msgstr ""
 
 msgid "This project is archived and read-only. To resume pull mirroring, unarchive the project."
+msgstr ""
+
+msgid "This project is archived. Its data is %{strong_open}read-only%{strong_close}."
 msgstr ""
 
 msgid "This project is being deleted. Repository and other project resources are read-only."
@@ -72955,6 +72961,9 @@ msgid "WorkItem|Select destination"
 msgstr ""
 
 msgid "WorkItem|Select parent"
+msgstr ""
+
+msgid "WorkItem|Select project"
 msgstr ""
 
 msgid "WorkItem|Select template"

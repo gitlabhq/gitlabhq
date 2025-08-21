@@ -4,6 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import getStateQuery from 'ee_else_ce/vue_merge_request_widget/queries/get_state.query.graphql';
 import { stateToComponentMap as classState } from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
@@ -42,7 +43,6 @@ import {
 } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
-import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';

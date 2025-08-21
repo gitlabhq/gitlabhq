@@ -1451,7 +1451,6 @@ RSpec/BeEq:
     - 'spec/workers/namespaces/process_outdated_namespace_descendants_cron_worker_spec.rb'
     - 'spec/workers/pages_domain_removal_cron_worker_spec.rb'
     - 'spec/workers/projects/import_export/create_relation_exports_worker_spec.rb'
-    - 'spec/workers/projects/import_export/parallel_project_export_worker_spec.rb'
     - 'spec/workers/projects/import_export/relation_export_worker_spec.rb'
     - 'spec/workers/projects/import_export/wait_relation_exports_worker_spec.rb'
     - 'spec/workers/projects/inactive_projects_deletion_cron_worker_spec.rb'

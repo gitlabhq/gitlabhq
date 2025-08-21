@@ -47,7 +47,7 @@ module Packages
       end
 
       def created_package
-        find_or_create_package!(:pypi)
+        find_or_create_package!(:pypi, ::Packages::Pypi::Package)
       end
       strong_memoize_attr :created_package
 

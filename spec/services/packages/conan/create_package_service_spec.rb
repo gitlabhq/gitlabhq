@@ -32,6 +32,21 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
         expect(package.conan_metadatum.package_username).to eq(params[:package_username])
         expect(package.conan_metadatum.package_channel).to eq(params[:package_channel])
       end
+
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates a new package' do
+          expect(package).to be_valid
+          expect(package.name).to eq(params[:package_name])
+          expect(package.version).to eq(params[:package_version])
+          expect(package.package_type).to eq('conan')
+          expect(package.conan_metadatum.package_username).to eq(params[:package_username])
+          expect(package.conan_metadatum.package_channel).to eq(params[:package_channel])
+        end
+      end
     end
 
     shared_examples 'returning an error service response and not creating conan package' do |message:, reason:|

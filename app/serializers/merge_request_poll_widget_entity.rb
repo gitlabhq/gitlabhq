@@ -28,12 +28,9 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     merge_request.mergeable?
   end
 
-  expose :default_merge_commit_message_with_description do |merge_request|
-    if Feature.enabled?(:disable_widget_responses, merge_request.target_project)
-      ''
-    else
-      merge_request.default_merge_commit_message(include_description: true)
-    end
+  expose :default_merge_commit_message_with_description do |_|
+    # Deprecated: This value was unused
+    ''
   end
 
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|

@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Projects > Settings > User archives a project', :js, feature_category: :groups_and_projects do
+  include SafeFormatHelper
+  include ActionView::Helpers::TagHelper
+
   let_it_be(:user) { create(:user) }
 
   let_it_be_with_reload(:group) { create(:group, owners: [user]) }
@@ -36,8 +39,8 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
       it 'cannot archive project' do
         expect(page).to have_content('Archive project')
 
-        click_link('Archive')
-        click_button('Archive project')
+        click_link _('Archive')
+        click_button _('Archive project')
 
         expect(project.reload.archived?).to be(false)
       end
@@ -54,7 +57,10 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         click_button s_('GroupProjectArchiveSettings|Archive')
 
         expect(page).to have_current_path(project_path(project))
-        expect(page).to have_content('This is an archived project.')
+        expect(page.body).to include(safe_format(
+          _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
 
       context 'when `archive_group` flag is disabled' do
@@ -67,10 +73,14 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         it 'can archive project' do
           expect(page).to have_content('Archive project')
 
-          click_link('Archive')
-          click_button('Archive project')
+          click_link _('Archive')
+          click_button _('Archive project')
 
-          expect(page).to have_content('This is an archived project.')
+          expect(page).to have_current_path(project_path(project))
+          expect(page.body).to include(safe_format(
+            _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
+            tag_pair(tag.strong, :strong_open, :strong_close)
+          ))
         end
       end
     end
@@ -88,7 +98,10 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         click_button s_('GroupProjectUnarchiveSettings|Unarchive')
 
         expect(page).to have_current_path(project_path(project))
-        expect(page).not_to have_content('This is an archived project.')
+        expect(page.body).not_to include(safe_format(
+          _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
 
       context 'when `archive_group` flag is disabled' do
@@ -101,9 +114,14 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
         it 'can unarchive project' do
           expect(page).to have_content('Unarchive project')
 
-          click_link('Unarchive')
+          click_link _('Unarchive')
+          click_button _('Unarchive project')
 
-          expect(page).not_to have_content('This is an archived project.')
+          expect(page).to have_current_path(project_path(project))
+          expect(page.body).not_to include(safe_format(
+            _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
+            tag_pair(tag.strong, :strong_open, :strong_close)
+          ))
         end
       end
     end

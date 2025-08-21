@@ -116,50 +116,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     end
   end
 
-  describe '.parse_package_registry_operations' do
-    let(:current_cache) { {} }
-    let(:events) { [] }
-    let(:timestamp) { Time.parse('2025-07-25T13:35:12.734729Z') }
-
-    it 'handles package not found pattern' do
-      line = "The archive was not found. The server returned status 404."
-      current_cache[:cache_key] = 'test-package'
-
-      described_class.parse_package_registry_operations(line, timestamp, current_cache, events)
-
-      expect(events.size).to eq(1)
-      expect(events.first[:cache_result]).to eq('miss')
-    end
-  end
-
-  describe '.handle_package_downloaded' do
-    let(:timestamp) { Time.now }
-    let(:events) { [] }
-
-    it 'processes successful package download as hit' do
-      current_cache = {
-        cache_key: 'test-package',
-        started_at: timestamp - 10
-      }
-
-      described_class.handle_package_downloaded(timestamp, current_cache, events)
-
-      expect(events.size).to eq(1)
-      expect(events.first[:cache_key]).to eq('test-package')
-      expect(events.first[:cache_result]).to eq('hit')
-      expect(current_cache).to be_empty
-    end
-
-    it 'returns early when no cache key' do
-      current_cache = {}
-
-      result = described_class.handle_package_downloaded(timestamp, current_cache, events)
-
-      expect(result).to be_nil
-      expect(events).to be_empty
-    end
-  end
-
   describe '.infer_cache_type' do
     it 'identifies ruby-gems cache' do
       result = described_class.infer_cache_type('ruby-gems-debian-bookworm-ruby-3.3.8')
@@ -319,28 +275,6 @@ RSpec.describe Tooling::CiAnalytics::CacheLogParser, feature_category: :tooling 
     it 'returns nil for unrecognized format' do
       line = 'No size information here'
       expect(described_class.extract_cache_size(line)).to be_nil
-    end
-  end
-
-  describe '.extract_package_size' do
-    it 'extracts size in bytes' do
-      line = "Package size: 1024 bytes"
-      expect(described_class.extract_package_size(line)).to eq(1024)
-    end
-
-    it 'extracts size in KB' do
-      line = "Package size: 5.2 KB"
-      expect(described_class.extract_package_size(line)).to eq(5324)
-    end
-
-    it 'extracts size in MB' do
-      line = "Package size: 10.5 MB"
-      expect(described_class.extract_package_size(line)).to eq(11010048)
-    end
-
-    it 'returns nil for unrecognized format' do
-      line = "No size information here"
-      expect(described_class.extract_package_size(line)).to be_nil
     end
   end
 

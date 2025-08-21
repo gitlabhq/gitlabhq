@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
+RSpec.describe 'Issue Sidebar', :js, feature_category: :team_planning do
+  include ListboxHelpers
   include MobileHelpers
   include Features::InviteMembersModalHelpers
 
@@ -17,6 +18,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   let_it_be(:mock_date) { Date.today.at_beginning_of_month + 2.days }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
   end
 
@@ -25,7 +27,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
       sign_in(user)
     end
 
-    context 'when concerning the assignee', :js do
+    context 'for assignee widget' do
       let(:user2) { create(:user) }
       let(:issue2) { create(:issue, project: project, author: user2) }
 
@@ -36,58 +38,24 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
       context 'when user is a developer' do
         before do
           project.add_developer(user)
-          visit_issue(project, issue2)
+          visit project_issue_path(project, issue2)
         end
 
-        it 'shows author in assignee dropdown' do
-          open_assignees_dropdown
+        it 'shows author in assignee dropdown and when filtering assignee dropdown, and assigns yourself' do
+          within_testid('work-item-assignees') do
+            click_button 'Edit'
 
-          page.within '.dropdown-menu-user' do
-            expect(page).to have_content(user2.name)
+            expect_listbox_item(user2.name)
+
+            send_keys user2.name
+
+            expect_listbox_item(user2.name)
+
+            send_keys :escape
+            click_button 'assign yourself'
+
+            expect(page).to have_link(user.name)
           end
-        end
-
-        it 'shows author when filtering assignee dropdown' do
-          open_assignees_dropdown
-
-          page.within '.dropdown-menu-user' do
-            find_by_testid('user-search-input').set(user2.name)
-
-            wait_for_requests
-
-            expect(page).to have_content(user2.name)
-          end
-        end
-
-        it 'assigns yourself' do
-          click_button 'assign yourself'
-          wait_for_requests
-
-          page.within '.assignee' do
-            expect(page).to have_content(user.name)
-          end
-        end
-
-        it 'keeps your filtered term after filtering and dismissing the dropdown' do
-          open_assignees_dropdown
-
-          find_by_testid('user-search-input').set(user2.name)
-          wait_for_requests
-
-          page.within '.dropdown-menu-user' do
-            expect(page).not_to have_content 'Unassigned'
-          end
-
-          find('.participants').click
-          wait_for_requests
-
-          open_assignees_dropdown
-
-          page.within('.assignee') do
-            expect(page.all('[data-testid="unselected-participant"]').length).to eq(1)
-          end
-
-          expect(find_by_testid('user-search-input').value).to eq(user2.name)
         end
       end
     end
@@ -95,43 +63,56 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
     context 'as an allowed user' do
       before do
         project.add_developer(user)
-        visit_issue(project, issue)
+        visit project_issue_path(project, issue)
       end
 
-      context 'for sidebar', :js do
-        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
-        it 'changes size when the screen size is smaller' do
-          # Resize the window
-          resize_screen_sm
-          # Make sure the sidebar is collapsed
-          find(sidebar_selector)
-          expect(page).to have_css(sidebar_selector)
-          # Once is collapsed let's open the sidebard and reload
-          open_issue_sidebar
-          refresh
-          find(sidebar_selector)
-          expect(page).to have_css(sidebar_selector)
-          # Restore the window size as it was including the sidebar
-          restore_window_size
-          open_issue_sidebar
+      context 'for milestone widget' do
+        let_it_be(:milestone_expired) do
+          create(:milestone, project: project, title: 'Foo - expired', due_date: 5.days.ago)
         end
 
-        it 'passes axe automated accessibility testing', :js do
-          resize_screen_sm
-          open_issue_sidebar
-          refresh
-          find(sidebar_selector)
-          expect(page).to be_axe_clean.within(sidebar_selector)
+        let_it_be(:milestone_no_duedate) do
+          create(:milestone, project: project, title: 'Foo - No due date')
+        end
+
+        let_it_be(:milestone1) do
+          create(:milestone, project: project, title: 'Milestone-1', due_date: 20.days.from_now)
+        end
+
+        let_it_be(:milestone2) do
+          create(:milestone, project: project, title: 'Milestone-2', due_date: 15.days.from_now)
+        end
+
+        let_it_be(:milestone3) do
+          create(:milestone, project: project, title: 'Milestone-3', due_date: 10.days.from_now)
+        end
+
+        it 'shows milestones list in the dropdown, with soonest due at the top and expired at the bottom' do
+          within_testid('work-item-milestone') do
+            click_button 'Edit'
+
+            expect_listbox_items(['Milestone-3', 'Milestone-2', 'Milestone-1', 'Foo - No due date',
+              'Foo - expired (expired)'])
+          end
+        end
+
+        it 'adds and removes a milestone' do
+          within_testid('work-item-milestone') do
+            click_button 'Edit'
+            select_listbox_item(milestone1.title)
+
+            expect(page).to have_link(milestone1.title)
+
+            click_button 'Edit'
+            click_button 'Clear'
+
+            expect(page).to have_text('None')
+            expect(page).not_to have_link(milestone1.title)
+          end
         end
       end
 
-      context 'for editing issue milestone', :js do
-        it_behaves_like 'milestone sidebar widget'
-      end
-
-      context 'for editing issue due date', :js do
-        it_behaves_like 'date sidebar widget'
-
+      context 'for dates widget' do
         it 'ensures the due date is persisted after a reload', :sidekiq_inline do
           # Issues with empty dates sources were not persisting the due date on edit
           # https://gitlab.com/gitlab-org/gitlab/-/issues/517311
@@ -141,34 +122,94 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
           wait_for_all_requests
 
-          within_testid("sidebar-due-date") do
-            button = find_button('Edit')
-            scroll_to(button)
-            button.click
-
-            execute_script('document.querySelector(".issuable-sidebar")?.scrollBy(0, 50)')
-
+          within_testid('work-item-due-dates') do
+            click_button 'Edit'
+            find_field('Due').click
+          end
+          within('.pika-lendar') do
             click_button new_date.day.to_s
+          end
+          within_testid('work-item-due-dates') do
+            click_button 'Apply'
 
-            wait_for_all_requests
-
-            expect(find_by_testid("sidebar-date-value")).to have_content new_date.strftime('%b %-d, %Y')
+            expect(page).to have_text(new_date.strftime('%b %-d, %Y'))
           end
 
-          visit_issue(project, issue)
-          wait_for_all_requests
+          visit project_issue_path(project, issue)
 
-          within_testid("sidebar-due-date") do
-            expect(find_by_testid("sidebar-date-value")).to have_content new_date.strftime('%b %-d, %Y')
+          within_testid('work-item-due-dates') do
+            expect(page).to have_text(new_date.strftime('%b %-d, %Y'))
           end
         end
       end
 
-      context 'for editing issue labels', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448822' do
-        it_behaves_like 'labels sidebar widget'
+      context 'for labels widget' do
+        let_it_be(:development) { create(:group_label, group: group, name: 'Development') }
+        let_it_be(:stretch) { create(:label, project: project, name: 'Stretch') }
+        let_it_be(:xss_label) do
+          create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;')
+        end
+
+        it 'shows labels list in the dropdown' do
+          within_testid('work-item-labels') do
+            click_button 'Edit'
+
+            expect_listbox_item('<script>alert("xss");</script>')
+            expect_listbox_item('Development')
+            expect_listbox_item('Label')
+            expect_listbox_item('Stretch')
+          end
+        end
+
+        it 'adds and removes a label' do
+          within_testid('work-item-labels') do
+            click_button 'Edit'
+            select_listbox_item(stretch.name)
+            click_button 'Apply'
+
+            expect(page).to have_link(stretch.name)
+
+            click_button 'Edit'
+            click_button 'Clear'
+
+            expect(page).to have_text('None')
+            expect(page).not_to have_link(stretch.name)
+          end
+        end
+
+        it 'creates new label' do
+          within_testid('work-item-labels') do
+            click_button 'Edit'
+            click_button 'Create project label'
+
+            expect(page).to have_text 'Create label'
+
+            fill_in 'Label name', with: 'wontfix'
+            click_link 'Magenta-pink'
+            click_button 'Create'
+
+            expect_listbox_item('wontfix')
+
+            click_button 'Apply'
+
+            expect(page).to have_link('wontfix')
+          end
+        end
+
+        it 'shows error message if creating a label with existing title' do
+          within_testid('work-item-labels') do
+            click_button 'Edit'
+            click_button 'Create project label'
+            fill_in 'Label name', with: stretch.title
+            click_link 'Magenta-pink'
+            click_button 'Create'
+
+            expect(page).to have_css '.gl-alert', text: 'Title has already been taken'
+          end
+        end
       end
 
-      context 'for escalation status', :js do
+      context 'for escalation status' do
         it 'is not available for default issue type' do
           expect(page).not_to have_selector('.block.escalation-status')
         end
@@ -178,42 +219,20 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
     context 'as a guest' do
       before do
         project.add_guest(user)
-        visit_issue(project, issue)
+        visit project_issue_path(project, issue)
       end
 
-      it 'does not have a option to edit labels' do
-        expect(page).not_to have_selector('.block.labels .js-sidebar-dropdown-toggle')
-      end
-    end
-  end
-
-  context 'when not signed in' do
-    context 'for sidebar', :js do
-      before do
-        visit_issue(project, issue)
-      end
-
-      it 'does not find issue email' do
-        expect(page).not_to have_selector('[data-testid="copy-forward-email"]')
+      it 'does not have a option to edit widgets' do
+        within_testid('work-item-overview-right-sidebar') do
+          expect(page).not_to have_selector('.block.labels .js-sidebar-dropdown-toggle')
+        end
       end
     end
-  end
-
-  def visit_issue(project, issue)
-    visit project_issue_path(project, issue)
-
-    wait_for_requests
-  end
-
-  def open_issue_sidebar
-    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').click
-    find('aside.right-sidebar.right-sidebar-expanded')
   end
 
   def open_assignees_dropdown
-    page.within('.assignee') do
+    within_testid('work-item-assignees') do
       click_button('Edit')
-      wait_for_requests
     end
   end
 end

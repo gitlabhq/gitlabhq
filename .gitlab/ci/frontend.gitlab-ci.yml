@@ -25,8 +25,8 @@
   needs:
     - cache:assets-hash
   script:
-    - run_with_custom_exit_code scripts/compile_assets
-    - run_with_custom_exit_code scripts/build_assets_image
+    - scripts/compile_assets
+    - scripts/build_assets_image
 
 compile-production-assets:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}-node-${NODE_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-lfs-${LFS_VERSION}-yarn-${YARN_VERSION}-graphicsmagick-${GRAPHICSMAGICK_VERSION}-docker-${DOCKER_VERSION}
@@ -106,48 +106,22 @@ gdk:compile-test-assets:
     - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
 
-retrieve-frontend-fixtures:
-  variables:
-    SETUP_DB: "false"
-  extends:
-    - .default-retry
-    - .frontend:rules:default-frontend-jobs
-  stage: prepare
-  needs: []
-  script:
-    - source scripts/utils.sh
-    - source scripts/gitlab_component_helpers.sh
-    - |
-      function retrieve_frontend_fixtures() {
-        install_gitlab_gem
-        export_fixtures_sha_for_download
-
-        if check_fixtures_download; then
-          download_and_extract_fixtures
-        fi
-      }
-
-      run_with_custom_exit_code retrieve_frontend_fixtures
-
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - tmp/tests/frontend/
-
 # Download fixtures only when a merge request contains changes to only JS files
 # and fixtures are present in the package registry.
 .frontend-fixtures-base:
   extends:
     - .default-retry
     - .default-before_script
-    - .ruby-cache
+    - .base-script
+    - .fixtures-ruby-cache
     - .repo-from-artifacts
+    - .cache-analytics
   stage: fixtures
   needs:
-    - "setup-test-env"
-    - "retrieve-tests-metadata"
-    - "retrieve-frontend-fixtures"
-    - "compile-test-assets"
+    - setup-test-env
+    - retrieve-tests-metadata
+    - compile-test-assets
+    - cache:fixture-hash
     # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
     - !reference [.repo-from-artifacts, needs]
   variables:
@@ -155,14 +129,6 @@ retrieve-frontend-fixtures:
     # for the `frontend fixture RSpec files` that will be added to the Crystalball mapping in `update-tests-metadata`.
     # More information in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003.
     WEBPACK_VENDOR_DLL: "true"
-  script:
-    - source scripts/gitlab_component_helpers.sh
-    - |
-      if check_fixtures_reuse; then
-        echoinfo "INFO: Reusing frontend fixtures from 'retrieve-frontend-fixtures'."
-        exit 0
-      fi
-    - !reference [.base-script, script]
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -171,7 +137,7 @@ retrieve-frontend-fixtures:
       - crystalball/
       - knapsack/
       - log/*.log
-      - tmp/tests/frontend/
+      - tmp/tests/frontend/**/*
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.
@@ -182,7 +148,7 @@ rspec-all frontend_fixture:
     - .frontend:rules:frontend_fixture
   script:
     - !reference [.frontend-fixtures-base, script]
-    - run_with_custom_exit_code rspec_parallelized_job "--tag ~click_house"
+    - rspec_parallelized_job "--tag ~click_house"
   parallel: 7
 
 rspec-all frontend_fixture clickhouse:
@@ -193,34 +159,25 @@ rspec-all frontend_fixture clickhouse:
   script:
     - !reference [.clickhouse-setup, script]
     - !reference [.frontend-fixtures-base, script]
-    - run_with_custom_exit_code rspec_parallelized_job "--tag click_house"
+    - rspec_parallelized_job "--tag click_house"
 
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.
+# This job simply aggregates fixtures from artifacts and creates cache
 upload-frontend-fixtures:
-  variables:
-    SETUP_DB: "false"
   extends:
+    - .with-alpine-image
     - .default-retry
-    - .default-before_script
-    - .repo-from-artifacts
-    - .frontend:rules:upload-frontend-fixtures
+    - .fixtures-cache
+    - .caching:rules:update-frontend-fixtures
   stage: fixtures
   needs:
-    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.repo-from-artifacts, needs]
+    - job: cache:fixture-hash
     - !reference [.with-fixtures-needs, needs]
+  variables:
+    GIT_STRATEGY: none
   script:
-    - source scripts/gitlab_component_helpers.sh
-    - export_fixtures_sha_for_upload
-    - |
-      function upload_frontend_fixtures() {
-        fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
-        create_fixtures_package
-        upload_fixtures_package
-      }
-
-      run_with_custom_exit_code upload_frontend_fixtures
+    - echo "Pushing frontend fixtures cache"
 
 graphql-schema-dump:
   variables:
@@ -235,7 +192,7 @@ graphql-schema-dump:
     - job: cache:ruby-gems
       optional: true
   script:
-    - run_with_custom_exit_code bundle exec rake gitlab:graphql:schema:dump
+    - bundle exec rake gitlab:graphql:schema:dump
   artifacts:
     expire_in: 30 days
     name: graphql-schema
@@ -255,8 +212,7 @@ upload-graphql-schema-dump:
     - .with-graphql-schema-dump-needs
   script:
     - source scripts/gitlab_component_helpers.sh
-    - run_with_custom_exit_code create_and_upload_graphql_schema_package
-
+    - create_and_upload_graphql_schema_package
 
 .frontend-test-base:
   extends:
@@ -334,7 +290,7 @@ jest:
       junit: junit_jest.xml
   parallel: 11
   script:
-    - run_with_custom_exit_code scripts/frontend/jest_ci.js
+    - scripts/frontend/jest_ci.js
 
 jest-with-fixtures:
   extends:
@@ -348,7 +304,7 @@ jest-with-fixtures:
     - !reference [.with-fixtures-needs, needs]
   parallel: 2
   script:
-    - run_with_custom_exit_code scripts/frontend/jest_ci.js --fixtures
+    - scripts/frontend/jest_ci.js --fixtures
 
 jest vue3:
   extends:
@@ -388,7 +344,7 @@ jest vue3 mr:
       - junit_jest.xml
   parallel: 6
   script:
-    - run_with_custom_exit_code scripts/frontend/jest_ci.js --vue3
+    - scripts/frontend/jest_ci.js --vue3
   allow_failure: false
 
 jest-with-fixtures vue3 mr:
@@ -408,7 +364,7 @@ jest-with-fixtures vue3 mr:
       - junit_jest.xml
   parallel: 1
   script:
-    - run_with_custom_exit_code scripts/frontend/jest_ci.js --vue3 --fixtures
+    - scripts/frontend/jest_ci.js --vue3 --fixtures
 
 jest predictive:
   extends:
@@ -419,13 +375,9 @@ jest predictive:
     - "detect-tests"
   script:
     - |
-      function jest_predictive() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          scripts/frontend/jest_ci.js --predictive
-        fi
-      }
-
-      run_with_custom_exit_code jest_predictive
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        scripts/frontend/jest_ci.js --predictive
+      fi
 
   parallel: 4
 
@@ -438,13 +390,9 @@ jest-with-fixtures predictive:
     - "detect-tests"
   script:
     - |
-      function jest_with_fixtures_predictive() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          scripts/frontend/jest_ci.js --predictive --fixtures
-        fi
-      }
-
-      run_with_custom_exit_code jest_with_fixtures_predictive
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        scripts/frontend/jest_ci.js --predictive --fixtures
+      fi
 
 jest vue3 predictive:
   extends:
@@ -455,13 +403,9 @@ jest vue3 predictive:
     - "detect-tests"
   script:
     - |
-      function jest_vue3_predictive() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          scripts/frontend/jest_ci.js --vue3 --predictive
-        fi
-      }
-
-      run_with_custom_exit_code jest_vue3_predictive
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        scripts/frontend/jest_ci.js --vue3 --predictive
+      fi
 
 jest-with-fixtures vue3 predictive:
   extends:
@@ -472,13 +416,9 @@ jest-with-fixtures vue3 predictive:
     - "detect-tests"
   script:
     - |
-      function jest_with_fixtures_vue3_predictive() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
-        fi
-      }
-
-      run_with_custom_exit_code jest_with_fixtures_vue3_predictive
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        scripts/frontend/jest_ci.js --vue3 --predictive --fixtures;
+      fi
   allow_failure: false
 
 jest vue3 check quarantined predictive:
@@ -490,13 +430,9 @@ jest vue3 check quarantined predictive:
     - "detect-tests"
   script:
     - |
-      function jest_vue_check_quarantined_predictive() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          ./scripts/frontend/check_jest_vue3_quarantine.js
-        fi
-      }
-
-      run_with_custom_exit_code jest_vue_check_quarantined_predictive
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        ./scripts/frontend/check_jest_vue3_quarantine.js
+      fi
   parallel: 4
   artifacts:
     name: quarantined_tests_output
@@ -520,13 +456,9 @@ jest vue3 check quarantined:
   parallel: 4
   script:
     - |
-      function jest_vue3_check_quarantined() {
-        if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
-          ./scripts/frontend/check_jest_vue3_quarantine.js --all
-        fi
-      }
-
-      run_with_custom_exit_code jest_vue3_check_quarantined
+      if [[ -s "$GLCI_PREDICTIVE_CHANGED_FILES_PATH" ]] || [[ -s "$GLCI_PREDICTIVE_MATCHING_JS_FILES_PATH" ]]; then
+        ./scripts/frontend/check_jest_vue3_quarantine.js --all
+      fi
 
 jest-with-fixtures vue3 check quarantined:
   extends:
@@ -541,7 +473,7 @@ jest-integration:
     - .repo-from-artifacts
     - .frontend:rules:jest-integration
   script:
-    - run_with_custom_exit_code yarn jest:integration --ci
+    - yarn jest:integration --ci
   needs:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
@@ -593,7 +525,7 @@ jest-linters:
     - .frontend:rules:jest-linters
   needs: []
   script:
-    - run_with_custom_exit_code yarn jest:eslint --ci
+    - yarn jest:eslint --ci
 
 coverage-frontend:
   extends:

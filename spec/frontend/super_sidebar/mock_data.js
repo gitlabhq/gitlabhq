@@ -204,6 +204,10 @@ export const sidebarData = {
     },
   ],
   track_visits_path: '/-/track_visits',
+  sign_in_visible: true,
+  sign_in_path: '/sign_in',
+  allow_signup: true,
+  new_user_registration_path: '/sign_up',
 };
 
 export const loggedOutSidebarData = {

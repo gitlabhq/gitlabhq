@@ -1343,10 +1343,18 @@
   dependencies:
     "@floating-ui/utils" "^0.2.10"
 
-"@floating-ui/dom@1.7.3", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.7.3":
+"@floating-ui/dom@1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.3.tgz#6174ac3409e6a064bbdf1f4bb07188ee9461f8cf"
   integrity sha512-uZA413QEpNuhtb3/iIKoYMSK07keHPYeXF02Zhd6e213j+d1NamLix/mCLxBUDW/Gx52sPH2m+chlUsyaBs/Ag==
+  dependencies:
+    "@floating-ui/core" "^1.7.3"
+    "@floating-ui/utils" "^0.2.10"
+
+"@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.4.tgz#ee667549998745c9c3e3e84683b909c31d6c9a77"
+  integrity sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==
   dependencies:
     "@floating-ui/core" "^1.7.3"
     "@floating-ui/utils" "^0.2.10"
@@ -1454,10 +1462,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.144.0.tgz#d2d559602679783f86107930505561f1f7f345f3"
   integrity sha512-FmXRifh62epT36a+4XPSKBbzl0N7IEWxcSMu1RPuzXw9DXsmyQWgSz3J5ESNE7NlgBdN7rvA/V1a1sNrPYhy7Q==
 
-"@gitlab/ui@118.1.2":
-  version "118.1.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-118.1.2.tgz#28741236a08401df244f4e8c80bb6006dd904d54"
-  integrity sha512-wmYvYimSjtV0y6gsiR1/X8NouJrZyeUBGVi4ManBgWqitQfDi7quMXklmfSVoGPbP3B4H71TAGMLCIf1E9lhJQ==
+"@gitlab/ui@119.0.0":
+  version "119.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-119.0.0.tgz#1a408a152755cb69913f976bd79686695c350fff"
+  integrity sha512-+kYby+3AaTC8UhQ5vnyNSfFilNZU7jMSuauN73mR1FMIr36tjpC1sQ1NKGS1nl+GgiNkeONe3UWsT1xjHCa7ng==
   dependencies:
     "@floating-ui/dom" "1.7.3"
     echarts "^5.6.0"

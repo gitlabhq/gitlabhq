@@ -36,14 +36,8 @@ static-analysis:
       optional: true
   parallel: 2
   script:
-    - |
-      function static_analysis() {
-        yarn_install_script
-        fail_on_warnings scripts/static-analysis
-      }
-
-      run_with_custom_exit_code static_analysis
-
+    - yarn_install_script
+    - fail_on_warnings scripts/static-analysis
 
 static-verification-with-database:
   extends:
@@ -82,32 +76,23 @@ generate-apollo-graphql-schema:
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
 
 eslint-changed-files:
   extends:
     - .eslint-base
     - .frontend:rules:eslint-changed-files
   script:
-    - |
-      function eslint_script() {
-        yarn_install_script
-        ./tooling/ci/changed_files.rb eslint
-      }
-
-      run_with_custom_exit_code eslint_script
+    - ./tooling/ci/changed_files.rb eslint
 
 eslint:
   extends:
     - .eslint-base
     - .frontend:rules:eslint-default
   script:
-    - |
-      function eslint_script() {
-        yarn_install_script
-        yarn run lint:eslint:all --format gitlab
-      }
-
-      run_with_custom_exit_code eslint_script
+    - yarn run lint:eslint:all --format gitlab
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
@@ -120,13 +105,8 @@ eslint-docs:
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
-    - |
-      function eslint_docs_script() {
-        yarn_install_script
-        scripts/frontend/lint_docs_links.mjs
-      }
-
-      run_with_custom_exit_code eslint_docs_script
+    - yarn_install_script
+    - scripts/frontend/lint_docs_links.mjs
 
 haml-lint:
   extends:

@@ -34,6 +34,26 @@ RSpec.describe Packages::MlModel::FindOrCreatePackageService, feature_category: 
         end
       end
 
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates the model' do
+          expect { subject }.to change { ::Packages::MlModel::Package.for_projects(project).count }.by(1)
+
+          package = ::Packages::MlModel::Package.for_projects(project).last
+
+          aggregate_failures do
+            expect(package.creator).to eq(user)
+            expect(package.package_type).to eq('ml_model')
+            expect(package.name).to eq('mymodel')
+            expect(package.version).to eq('0.0.1')
+            expect(package.build_infos.count).to eq(0)
+          end
+        end
+      end
+
       context 'when build is provided' do
         let(:params) { base_params.merge(build: ci_build) }
 

@@ -42,7 +42,7 @@ module SidebarsHelper
     super_sidebar_logged_in_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
   end
 
-  def super_sidebar_logged_out_context(panel:, panel_type:)
+  def super_sidebar_shared_context(panel:, panel_type:)
     super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
       compare_plans_url: compare_plans_url,
@@ -60,8 +60,21 @@ module SidebarsHelper
     })
   end
 
+  def super_sidebar_logged_out_context(panel:, panel_type:)
+    sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
+
+    return sidebar_context unless ::Feature.enabled?(:global_topbar, current_user)
+
+    sidebar_context.merge({
+      sign_in_visible: header_link?(:sign_in).to_s,
+      allow_signup: allow_signup?.to_s,
+      new_user_registration_path: new_user_registration_path,
+      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes')
+    })
+  end
+
   def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:)
-    super_sidebar_logged_out_context(panel: panel, panel_type: panel_type).merge({
+    super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       is_logged_in: true,
       is_admin: user.can_admin_all_resources?,
       name: user.name,

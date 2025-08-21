@@ -104,7 +104,7 @@ export default Node.create({
     const { editor } = this;
     const { assetResolver } = this.options;
     const referenceInputRegex =
-      /(?:^|[\s([{])([\w/]*([#!&%$@~]|\[vulnerability:)[\w./-]*\w(\+?s?\]?))(?:\s|\n|[.,:;!?()[\]{}])/m;
+      /(?:^|[\s([{])([\w/]*([#!&%$@~]|\[vulnerability:)[\w./-]*\w(\+?s?\]?))(?:[.,:;!?()[\]{}]?[\s\n])/m;
     const referenceTypes = {
       '#': 'issue',
       '!': 'merge_request',

@@ -1,13 +1,9 @@
-#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_car_index.fragment.graphql"
-#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_car_count.fragment.graphql"
-
 query getState($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id
     archived
     onlyAllowMergeIfPipelineSucceeds
     allowMergeOnSkippedPipeline
-    ...MergeTrainCarCount
     mergeRequest(iid: $iid) {
       id
       autoMergeEnabled
@@ -25,7 +21,6 @@ query getState($projectPath: ID!, $iid: String!) {
         canMerge
       }
       draft
-      ...MergeTrainCarIndex
     }
   }
 }

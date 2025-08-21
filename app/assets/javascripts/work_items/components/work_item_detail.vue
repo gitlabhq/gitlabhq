@@ -555,7 +555,7 @@ export default {
         canReportSpam: this.canReportSpam,
         canUpdate: this.canUpdate,
         canUpdateMetadata: this.canUpdateMetadata,
-        canMove: this.canMove,
+        canMove: this.canMove && !this.workItem.movedToWorkItemUrl,
         isConfidential: this.workItem.confidential,
         isDiscussionLocked: this.isDiscussionLocked,
         isParentConfidential: this.parentWorkItemConfidentiality,

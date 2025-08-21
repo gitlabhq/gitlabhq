@@ -33,6 +33,23 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
         **expected_attributes
       )
     end
+
+    context 'when packages_create_package_service_refactor is disabled' do
+      before do
+        stub_feature_flags(packages_create_package_service_refactor: false)
+      end
+
+      it 'creates package' do
+        response
+
+        expect(::Packages::Generic::Package.for_projects(project).last).to have_attributes(
+          name: 'mypackage',
+          version: '0.0.1',
+          last_build_info: nil,
+          **expected_attributes
+        )
+      end
+    end
   end
 
   describe '#execute' do

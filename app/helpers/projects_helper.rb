@@ -582,12 +582,6 @@ module ProjectsHelper
     project.persisted? && !project.self_deletion_scheduled? && can?(current_user, :archive_project, project)
   end
 
-  def show_archived_project_banner?(project)
-    return false unless project
-
-    project.persisted? && project.self_or_ancestors_archived?
-  end
-
   def show_inactive_project_deletion_banner?(project)
     return false unless project
     return false unless delete_inactive_projects?

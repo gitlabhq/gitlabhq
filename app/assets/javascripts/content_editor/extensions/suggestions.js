@@ -15,6 +15,8 @@ import Code from './code';
 const CODE_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name, Code.name];
 
 function expandRangeToIncludeText(range, text, tiptapEditor) {
+  if (!text) return range;
+
   const { state } = tiptapEditor;
   const { from, to: originalTo } = range;
   const maxTo = Math.min(from + text.length, state.doc.content.size);

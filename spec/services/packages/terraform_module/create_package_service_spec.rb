@@ -31,6 +31,19 @@ RSpec.describe Packages::TerraformModule::CreatePackageService, feature_category
         expect { subject }.to change { ::Packages::TerraformModule::Package.count }.by(1)
           .and change { ::Packages::TerraformModule::Metadatum.count }.by(1)
       end
+
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates a package and its metadatum' do
+          expect(::Packages::TerraformModule::ProcessPackageFileWorker).to receive(:perform_async).once
+
+          expect { subject }.to change { ::Packages::TerraformModule::Package.count }.by(1)
+            .and change { ::Packages::TerraformModule::Metadatum.count }.by(1)
+        end
+      end
     end
 
     shared_examples 'duplicate package error' do

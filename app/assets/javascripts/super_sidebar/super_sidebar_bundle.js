@@ -221,6 +221,7 @@ export const initSuperTopbar = async ({
   contextSwitcherLinks,
   isImpersonating,
   isGroup,
+  isSaas,
 }) => {
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
@@ -231,7 +232,6 @@ export const initSuperTopbar = async ({
     provide: {
       rootPath,
       isImpersonating,
-
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
@@ -249,6 +249,7 @@ export const initSuperTopbar = async ({
         sidebarData.work_items?.work_item_planning_view_enabled,
       ),
       isGroup,
+      isSaas: parseBoolean(isSaas),
     },
     store: createStore({
       searchPath,

@@ -53,13 +53,8 @@ docs-lint markdown:
           - severity: 'blocker'
       EOF
     - source ./scripts/utils.sh
-    - |
-      function docs_lint_markdown() {
-        install_gitlab_gem
-        scripts/lint-doc.sh
-      }
-
-      run_with_custom_exit_code docs_lint_markdown
+    - install_gitlab_gem
+    - scripts/lint-doc.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -78,13 +73,8 @@ docs-lint mermaid:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_lint_markdown() {
-        yarn_install_script
-        scripts/lint/check_mermaid.mjs
-      }
-
-      run_with_custom_exit_code docs_lint_markdown
+    - yarn_install_script
+    - scripts/lint/check_mermaid.mjs
 
 docs code_quality:
   extends:
@@ -158,7 +148,7 @@ docs-lint links:
   before_script:
     - source scripts/utils.sh
   script:
-    - run_with_custom_exit_code lychee --offline --no-progress --include-fragments doc
+    - lychee --offline --no-progress --include-fragments doc
 
 docs-lint deprecations-and-removals:
   variables:
@@ -173,13 +163,8 @@ docs-lint deprecations-and-removals:
     - job: cache:ruby-gems
       optional: true
   script:
-    - |
-      function docs_lint_deprecations_and_removals() {
-        bundle exec rake gitlab:docs:check_deprecations
-        bundle exec rake gitlab:docs:check_windows
-      }
-
-      run_with_custom_exit_code docs_lint_deprecations_and_removals
+    - bundle exec rake gitlab:docs:check_deprecations
+    - bundle exec rake gitlab:docs:check_windows
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -190,8 +175,7 @@ docs-lint redirects:
   needs: []
   before_script:
     - source scripts/utils.sh
-  script:
-    - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb
+  script: ./scripts/lint-docs-redirects.rb
 
 docs-i18n-lint markdown:
   extends:
@@ -202,13 +186,8 @@ docs-i18n-lint markdown:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_i18n_lint_markdown() {
-        install_gitlab_gem
-        scripts/i18n_lint_doc.sh
-      }
-
-      run_with_custom_exit_code docs_i18n_lint_markdown
+    - install_gitlab_gem
+    - scripts/i18n_lint_doc.sh
 
 # Verify localized documentation files have corresponding English versions
 docs-i18n-lint paths:
@@ -220,10 +199,5 @@ docs-i18n-lint paths:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_i18n_verify_paths() {
-        install_gitlab_gem
-        scripts/i18n_verify_paths.sh
-      }
-
-      run_with_custom_exit_code docs_i18n_verify_paths
+    - install_gitlab_gem
+    - scripts/i18n_verify_paths.sh

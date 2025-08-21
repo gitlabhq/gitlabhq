@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Edit group settings', :with_current_organization, feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
   include Features::WebIdeSpecHelpers
+  include SafeFormatHelper
+  include ActionView::Helpers::TagHelper
 
   let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be_with_reload(:group) { create(:group, path: 'foo', owners: [user]) }
@@ -351,7 +353,10 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         click_button s_('GroupProjectUnarchiveSettings|Unarchive')
 
         expect(page).to have_current_path(group_path(subgroup))
-        expect(subgroup.reload.archived).to be(false)
+        expect(page.body).not_to include(safe_format(
+          _('This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
 
       it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'
@@ -379,7 +384,10 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         click_button s_('GroupProjectArchiveSettings|Archive')
 
         expect(page).to have_current_path(group_path(subgroup))
-        expect(subgroup.reload.archived).to be(true)
+        expect(page.body).to include(safe_format(
+          _('This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
 
       it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'

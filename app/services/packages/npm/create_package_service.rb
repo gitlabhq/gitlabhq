@@ -45,7 +45,7 @@ module Packages
       end
 
       def create_npm_package!
-        package = create_package!(:npm, name: name, version: version, status: :processing)
+        package = create_package!(:npm, ::Packages::Npm::Package, name: name, version: version, status: :processing)
 
         package_file = ::Packages::CreatePackageFileService.new(package, file_params).execute
         ::Packages::CreateDependencyService.new(package, package_dependencies).execute

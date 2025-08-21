@@ -6,6 +6,7 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
 import UserCounts from './user_counts.vue';
+import PromoMenu from './promo_menu.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     CreateMenu,
     UserCounts,
     UserMenu,
+    PromoMenu,
     OrganizationSwitcher: () =>
       import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
     SearchModal: () =>
@@ -36,6 +38,7 @@ export default {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
   },
+  inject: ['isSaas'],
   props: {
     sidebarData: {
       type: Object,
@@ -74,6 +77,8 @@ export default {
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>
+
+        <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
       </div>
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" />
@@ -97,33 +102,54 @@ export default {
       </gl-button>
 
       <div class="gl-flex gl-justify-end gl-gap-3">
-        <create-menu
-          v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
-          class="gl-hidden lg:gl-block"
-          :groups="sidebarData.create_new_menu_groups"
-        />
-        <div
-          class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
-        ></div>
+        <template v-if="isLoggedIn">
+          <create-menu
+            v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
+            class="gl-hidden lg:gl-block"
+            :groups="sidebarData.create_new_menu_groups"
+          />
+          <div
+            class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
+          ></div>
 
-        <user-counts
-          v-if="isLoggedIn"
-          :sidebar-data="sidebarData"
-          class="gl-hidden md:gl-flex"
-          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
-        />
+          <user-counts
+            v-if="isLoggedIn"
+            :sidebar-data="sidebarData"
+            class="gl-hidden md:gl-flex"
+            counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
+          />
 
-        <gl-button
-          v-if="isAdmin"
-          :href="sidebarData.admin_url"
-          icon="admin"
-          class="topbar-admin-link gl-hidden !gl-rounded-lg xl:gl-flex"
-          data-testid="topbar-admin-link"
-        >
-          {{ $options.i18n.adminArea }}
-        </gl-button>
+          <gl-button
+            v-if="isAdmin"
+            :href="sidebarData.admin_url"
+            icon="admin"
+            class="topbar-admin-link gl-hidden !gl-rounded-lg xl:gl-flex"
+            data-testid="topbar-admin-link"
+          >
+            {{ $options.i18n.adminArea }}
+          </gl-button>
 
-        <user-menu v-if="isLoggedIn" :data="sidebarData" />
+          <user-menu :data="sidebarData" />
+        </template>
+        <template v-else>
+          <gl-button
+            v-if="sidebarData.sign_in_visible"
+            :href="sidebarData.sign_in_path"
+            class="!gl-rounded-lg"
+            data-testid="topbar-signin-button"
+          >
+            {{ __('Sign in') }}
+          </gl-button>
+          <gl-button
+            v-if="sidebarData.allow_signup"
+            :href="sidebarData.new_user_registration_path"
+            variant="confirm"
+            class="topbar-signup-button !gl-rounded-lg"
+            data-testid="topbar-signup-button"
+          >
+            {{ isSaas ? __('Get free trial') : __('Register') }}
+          </gl-button>
+        </template>
       </div>
     </div>
 

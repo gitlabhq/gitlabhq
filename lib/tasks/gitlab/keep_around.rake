@@ -20,7 +20,7 @@ namespace :gitlab do
           ["refs/#{::Repository::REF_KEEP_AROUND}/"],
           dynamic_timeout: ::Gitlab::GitalyClient.long_timeout
         ).each do |ref|
-          csv << ['keep', ref.target]
+          csv << ['keep', ref.target, '']
         end
 
         add_pipeline_shas(project, csv)
@@ -35,11 +35,11 @@ namespace :gitlab do
     def add_pipeline_shas(project, csv)
       logger.info "Checking pipeline shas..."
       project.all_pipelines.select(:id, :sha, :before_sha).find_each do |pipeline|
-        add_match(csv, pipeline.sha)
+        add_match(csv, pipeline.sha, ::Ci::Pipeline.name)
         # before_sha has a project fallback to produce a blank sha. For this
         # purpose we would prefer not to load project so we are loading the
         # attribute directly.
-        add_match(csv, pipeline.read_attribute(:before_sha))
+        add_match(csv, pipeline.read_attribute(:before_sha), ::Ci::Pipeline.name)
       end
     end
 
@@ -47,7 +47,7 @@ namespace :gitlab do
       logger.info "Checking merge request shas..."
       merge_requests = MergeRequest.of_projects(project).select(:id, :merge_commit_sha)
       merge_requests.find_each do |merge_request|
-        add_match(csv, merge_request.merge_commit_sha)
+        add_match(csv, merge_request.merge_commit_sha, MergeRequest.name)
       end
     end
 
@@ -58,8 +58,8 @@ namespace :gitlab do
           batch.select(:id, :start_commit_sha, :head_commit_sha, :diff_type).each do |diff|
             next if diff.merge_head?
 
-            add_match(csv, diff.start_commit_sha)
-            add_match(csv, diff.head_commit_sha)
+            add_match(csv, diff.start_commit_sha, MergeRequestDiff.name)
+            add_match(csv, diff.head_commit_sha, MergeRequestDiff.name)
           end
         end
       end
@@ -70,20 +70,20 @@ namespace :gitlab do
       logger.warn "System notes will not be included."
       Note.where(project: project).where('NOT system').each_batch(of: 1000) do |b|
         b.where.not(commit_id: nil).select(:commit_id).each do |note|
-          add_match(csv, note.commit_id)
+          add_match(csv, note.commit_id, Note.name)
         end
         b.where(type: DiffNote).select(:type, :position, :original_position).each do |note|
           note.shas.each do |sha|
-            add_match(csv, sha)
+            add_match(csv, sha, DiffNote.name)
           end
         end
       end
     end
 
-    def add_match(csv, sha)
+    def add_match(csv, sha, source)
       return if !sha.present? || Gitlab::Git.blank_ref?(sha)
 
-      csv << ['usage', sha]
+      csv << ['usage', sha, source]
     end
 
     def create_csv
@@ -95,7 +95,7 @@ namespace :gitlab do
       end
 
       File.open(filename, "w") do |file|
-        yield CSV.new(file, headers: %w[operation commit_id], write_headers: true)
+        yield CSV.new(file, headers: %w[operation commit_id source], write_headers: true)
       end
     end
 

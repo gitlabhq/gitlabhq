@@ -487,6 +487,27 @@ to access images in another project. Project access tokens are scoped to one pro
 and therefore cannot access images in other projects. You must use [a different token type](../security/tokens/_index.md)
 with wider scope.
 
+#### Random or intermittent `Failed to pull image` errors
+
+You might experience intermittent `Failed to pull image` errors in your CI/CD jobs.
+
+This issue can occur when users have different permissions to access images, combined with how runners cache those images.
+Bot users are commonly affected because they often have different permissions than other project members.
+
+For example, your pipeline images might be hosted in a container registry in a different project.
+If all users can access both projects, this is not a problem. However, if a user (like a bot user)
+cannot access the project hosting the images, they can get `Failed to pull image` errors.
+
+The error becomes intermittent when the runner successfully fetches and caches the image
+for a user with permission to access the image. This runner now has the image available
+and does not need to access the other project to fetch the image. All users, including users
+without access to the other project, can run CI/CD jobs with this image. However, if the runner
+has never fetched and cached the image, users without permission to access the image project
+get the `Failed to pull image` error.
+
+To resolve this issue, make sure all users that run pipelines, including bot users,
+can access the project that hosts the pulled images.
+
 ### `Something went wrong on our end` message or `500` error when running a pipeline
 
 You might receive the following pipeline errors:

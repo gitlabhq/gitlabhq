@@ -38,6 +38,23 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
           expect(created_package.composer_json.to_json).to eq json
         end
 
+        context 'when packages_create_package_service_refactor is disabled' do
+          before do
+            stub_feature_flags(packages_create_package_service_refactor: false)
+          end
+
+          it 'creates the package' do
+            expect { subject }
+              .to change { ::Packages::Composer::Package.count }.by(1)
+              .and change { Packages::Composer::Metadatum.count }.by(1)
+
+            expect(created_package.name).to eq package_name
+            expect(created_package.version).to eq 'dev-master'
+            expect(created_package.target_sha).to eq branch.target
+            expect(created_package.composer_json.to_json).to eq json
+          end
+        end
+
         it_behaves_like 'assigns the package creator' do
           let(:package) { created_package }
         end

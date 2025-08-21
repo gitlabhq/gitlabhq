@@ -85,6 +85,7 @@ describe('~/vue_merge_request_widget/components/checks/draft.vue', () => {
           title: TEST_MR_TITLE,
           iid: TEST_MR_IID,
           targetProjectFullPath: TEST_PROJECT_PATH,
+          targetBranch: 'master',
         },
         check: {
           identifier: 'draft_status',
@@ -144,11 +145,13 @@ describe('~/vue_merge_request_widget/components/checks/draft.vue', () => {
       });
 
       it('calls mutation spy', () => {
-        expect(removeDraftMutationSpy).toHaveBeenCalledWith({
-          draft: false,
-          iid: TEST_MR_IID,
-          projectPath: TEST_PROJECT_PATH,
-        });
+        expect(removeDraftMutationSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            draft: false,
+            iid: TEST_MR_IID,
+            projectPath: TEST_PROJECT_PATH,
+          }),
+        );
       });
 
       it('does not create alert', () => {

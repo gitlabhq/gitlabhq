@@ -7,6 +7,7 @@ import OrganizationSwitcher from '~/super_sidebar/components/organization_switch
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
+import PromoMenu from '~/super_sidebar/components/promo_menu.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
 import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
@@ -19,6 +20,8 @@ describe('SuperTopbar', () => {
   const SearchModalStub = stubComponent(SearchModal);
 
   const findAdminLink = () => wrapper.findByTestId('topbar-admin-link');
+  const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
+  const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findNextBadge = () => wrapper.findComponent(GlBadge);
@@ -27,6 +30,7 @@ describe('SuperTopbar', () => {
   const findSearchModal = () => wrapper.findComponent(SearchModal);
   const findUserCounts = () => wrapper.findComponent(UserCounts);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
+  const findPromoMenu = () => wrapper.findComponent(PromoMenu);
 
   const createComponent = (props = {}, provideOverrides = {}) => {
     wrapper = shallowMountExtended(SuperTopbar, {
@@ -35,6 +39,7 @@ describe('SuperTopbar', () => {
         ...props,
       },
       provide: {
+        isSaas: false,
         ...provideOverrides,
       },
       stubs: {
@@ -162,6 +167,108 @@ describe('SuperTopbar', () => {
         it('does not render', () => {
           createComponent();
           expect(findAdminLink().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('Promo menu', () => {
+      it('renders when user is logged out', () => {
+        createComponent({
+          sidebarData: {
+            ...mockSidebarData,
+            is_logged_in: false,
+          },
+        });
+
+        expect(findPromoMenu().exists()).toBe(true);
+      });
+
+      it('does not render when user is logged in', () => {
+        createComponent();
+
+        expect(findPromoMenu().exists()).toBe(false);
+      });
+    });
+
+    describe('Signin button', () => {
+      describe('when user is logged out', () => {
+        it('does not render when signin is not visible', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: false,
+              sign_in_visible: false,
+            },
+          });
+          expect(findSigninButton().exists()).toBe(false);
+        });
+
+        it('renders', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: false,
+            },
+          });
+          expect(findSigninButton().attributes('href')).toBe(mockSidebarData.sign_in_path);
+        });
+      });
+
+      describe('when user is logged in', () => {
+        it('does not render', () => {
+          createComponent();
+          expect(findSigninButton().exists()).toBe(false);
+        });
+      });
+    });
+
+    describe('Signup button', () => {
+      describe('when user is logged out', () => {
+        it('does not render when signup is not allowed', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: false,
+              allow_signup: false,
+            },
+          });
+          expect(findSignupButton().exists()).toBe(false);
+        });
+
+        it('renders register when not in SaaS mode', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              is_logged_in: false,
+            },
+          });
+          expect(findSignupButton().text()).toBe('Register');
+          expect(findSignupButton().attributes('href')).toBe(
+            mockSidebarData.new_user_registration_path,
+          );
+        });
+
+        it('renders free trial when in Saas Mode', () => {
+          createComponent(
+            {
+              sidebarData: {
+                ...mockSidebarData,
+                is_logged_in: false,
+              },
+            },
+            { isSaas: true },
+          );
+          expect(findSignupButton().text()).toBe('Get free trial');
+          expect(findSignupButton().attributes('href')).toBe(
+            mockSidebarData.new_user_registration_path,
+          );
+        });
+      });
+
+      describe('when user is logged in', () => {
+        it('does not render', () => {
+          createComponent();
+          expect(findSignupButton().exists()).toBe(false);
         });
       });
     });

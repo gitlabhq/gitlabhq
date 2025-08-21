@@ -49,6 +49,23 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       expect(created_package.package_files.size).to eq 1
       expect(created_package.package_files.first).to have_attributes(expected_package_file_attrs)
     end
+
+    context 'when packages_create_package_service_refactor is disabled' do
+      before do
+        stub_feature_flags(packages_create_package_service_refactor: false)
+      end
+
+      it 'creates the package' do
+        expect { subject }.to change { Packages::Package.pypi.count }.by(1)
+                          .and change { Packages::PackageFile.count }.by(1)
+                          .and change { Packages::Pypi::Metadatum.count }.by(1)
+
+        expect(created_package).to have_attributes(expected_package_attrs)
+        expect(created_package.pypi_metadatum).to have_attributes(expected_pypi_metadata)
+        expect(created_package.package_files.size).to eq 1
+        expect(created_package.package_files.first).to have_attributes(expected_package_file_attrs)
+      end
+    end
   end
 
   shared_examples 'an error response while not creating a pypi package' do |message:, reason:|

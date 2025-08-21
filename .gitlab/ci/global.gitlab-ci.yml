@@ -8,15 +8,9 @@
       - scheduler_failure
       - stuck_or_timeout_failure
       - unknown_failure
+    # See https://docs.gitlab.com/ee/development/pipelines/internals.html#custom-exit-codes
     exit_codes:
-      # https://docs.gitlab.com/ee/development/pipelines/internals.html#custom-exit-codes
-      - 110  # network connection error
-      - 111  # low free disk space
-      - 160  # failed to upload/download job artifact
-      - 162  # gitaly spawn failed
-      - 164  # Redis cluster error
-      - 165  # segmentation fault
-      - 166  # EEXIST: file already exists
+      - 201  # low free disk space
 
 .default-utils-before_script:
   before_script:
@@ -203,6 +197,13 @@
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
 
+.fixtures-cache-key: &fixtures-cache-key
+  key: frontend-fixtures-${BUILD_OS}-${OS_VERSION}-${NODE_VERSION}-${GLCI_FIXTURES_HASH}
+  paths:
+    - tmp/tests/frontend/**/*
+  policy: pull
+  unprotect: true
+
 # E2E related gem caching
 .qa-bundler-variables: &qa-bundler-variables
   BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
@@ -306,6 +307,16 @@
   cache:
     - *node-modules-cache
     - *storybook-node-modules-cache-pull-push
+
+.fixtures-ruby-cache:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *fixtures-cache-key
+
+.fixtures-cache:
+  cache:
+    - <<: *fixtures-cache-key
+      policy: push
 
 .redis-services:
   services:

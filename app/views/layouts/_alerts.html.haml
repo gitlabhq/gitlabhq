@@ -6,7 +6,7 @@
   = dispensable_render_if_exists "layouts/header/account_notification"
   = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
   = dispensable_render "shared/projects/inactive_project_deletion_alert"
-  = dispensable_render "shared/projects/archived_alert"
+  = dispensable_render "shared/groups_projects/self_or_ancestor_archived_notice", context: context
   = dispensable_render "layouts/header/read_only_banner"
   = dispensable_render "layouts/header/registration_enabled_callout"
   = dispensable_render "layouts/header/openssl_callout"

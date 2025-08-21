@@ -581,7 +581,7 @@ rspec:coverage:
     - job: rspec:artifact-collector ee remainder
       optional: true
   script:
-    - run_with_custom_exit_code bundle exec scripts/merge-simplecov
+    - bundle exec scripts/merge-simplecov
     - |
       if [ -e coverage/coverage.xml ]; then
         echo "coverage.xml size before stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"

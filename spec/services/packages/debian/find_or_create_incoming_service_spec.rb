@@ -22,6 +22,22 @@ RSpec.describe Packages::Debian::FindOrCreateIncomingService, feature_category: 
         expect(package.incoming?).to be_truthy
       end
 
+      context 'when packages_create_package_service_refactor is disabled' do
+        before do
+          stub_feature_flags(packages_create_package_service_refactor: false)
+        end
+
+        it 'creates a new package', :aggregate_failures do
+          expect(package).to be_valid
+          expect(package.project_id).to eq(project.id)
+          expect(package.creator_id).to eq(user.id)
+          expect(package.name).to eq('incoming')
+          expect(package.version).to be_nil
+          expect(package.package_type).to eq('debian')
+          expect(package.incoming?).to be_truthy
+        end
+      end
+
       it_behaves_like 'assigns the package creator'
     end
 

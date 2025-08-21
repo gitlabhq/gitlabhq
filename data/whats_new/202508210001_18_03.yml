@@ -1,0 +1,208 @@
+- name: Duo Agent Platform in Visual Studio (Beta)
+  description: |
+    We are excited to announce the public beta release of the Duo Agent Platform for Visual Studio! With this release, Visual Studio users can now access Duo Agent Platform's advanced AI-powered capabilities directly within their IDE.
+
+    The Duo Agent Platform brings two powerful features to your workflow:
+
+    - **Agentic chat**: Quickly accomplish conversational tasks such as creating and editing files, searching your codebase with pattern matching and grep, and getting instant answers about your code—all without leaving Visual Studio.
+    - **Agent flows**: Tackle larger, more complex tasks with comprehensive planning and implementation support. Agent flows help you turn high-level ideas into architecture and code, leveraging GitLab resources like issues, merge requests, commits, CI/CD pipelines, and security vulnerabilities.
+
+    Both features offer intelligent search across documentation, code patterns, and project information, empowering you to move seamlessly from quick edits to in-depth project analysis.
+
+    Try the Duo Agent Platform beta in Visual Studio today and experience a new level of productivity and AI assistance in your development workflow.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/duo_agent_platform/
+  image_url: https://img.youtube.com/vi/Pdjf5HxQUBQ/hqdefault.jpg
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Embedded views (powered by GLQL)
+  description: |
+    This release introduces embedded views, powered by GLQL, to general availability. Create and embed dynamic, queryable views of GitLab data directly where your work lives: in wiki pages, epic descriptions, issue comments, and merge requests.
+
+    Previously available as an experiment and beta feature, embedded views now provide a stable foundation for teams to track work progress without navigating between multiple locations. Query issues, merge requests, epics, and other work items using familiar syntax, then display the results as tables or lists with customizable fields and filtering.
+
+    Embedded views transform static documentation into living dashboards that stay current with your project data, helping teams maintain context and improve collaboration across their workflows.
+
+    We welcome your feedback as we continue to enhance embedded views. Please share your thoughts and suggestions in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509792).
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/glql/#embedded-views
+  image_url: https://img.youtube.com/vi/DG_DL5r2GCM/hqdefault.jpg
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Migration by direct transfer
+  description: |
+    Migration by direct transfer is now generally available. To migrate GitLab groups and projects between GitLab instances by direct transfer, you can use the GitLab UI or the [REST API](https://docs.gitlab.com/ee/api/bulk_imports.html).
+
+    Compared to [migration by uploading an export file](https://docs.gitlab.com/ee/user/project/settings/import_export.html#migrate-projects-by-uploading-an-export-file), direct transfer:
+
+    - Works more reliably with large projects.
+    - Supports migrations with a larger version gap between the source and destination instances.
+    - Offers better insights into the migration process and results.
+
+    On GitLab.com, migration by direct transfer is enabled by default. On GitLab Self-Managed and GitLab Dedicated, an administrator must [enable the feature](https://docs.gitlab.com/ee/administration/settings/import_and_export_settings.html#enable-migration-of-groups-and-projects-by-direct-transfer).
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/import/index.html
+  image_url: https://about.gitlab.com/images/18_3/migration_history.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Fine-grained permissions for CI/CD job tokens
+  description: |
+    Pipeline security just got more flexible. Job tokens are ephemeral credentials that provide access to resources in pipelines. Until now, these tokens inherited full permissions from the user, often resulting in unnecessarily broad access capabilities.
+
+    With our new fine-grained permissions for job tokens feature, you can now precisely control which specific resources a job token can access within your projects. This allows you to implement the principle of least privilege in your CI/CD workflows, granting only the minimal access necessary for jobs to complete their tasks when accessing your projects with the CI/CD job token.
+
+    We're actively working to add [additional fine-grained permissions](https://gitlab.com/groups/gitlab-org/-/epics/6310) to reduce reliance on long-lived tokens in pipelines.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/jobs/fine_grained_permissions/
+  image_url: https://about.gitlab.com/images/18_3/sscs_authz_fine_grained_job_tokens.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Code Review available on GitLab Duo Self-Hosted (Beta)
+  description: |
+    You can now use GitLab Duo Code Review on GitLab Duo Self-Hosted. This feature is in beta on GitLab Duo Self-Hosted, with support for Mistral, Meta Llama, Anthropic Claude, and OpenAI GPT model families.
+
+    Use Code Review on GitLab Duo Self-Hosted to accelerate your development process without compromising on data sovereignty. When Code Review reviews your merge requests, it identifies potential bugs and suggests improvements for you to apply directly. Use Code Review to iterate on and improve your changes before you ask a human to review.
+
+    Provide feedback on Code Review in [issue 517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#gitlab-duo-in-merge-requests
+  image_url: https://about.gitlab.com/images/18_3/Self_Hosted_Code_Review-min.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Customize instructions for GitLab Duo Code Review
+  description: |
+    Enforce consistent code review standards across your projects with custom instructions for GitLab Duo Code Review. Define specific review criteria for different file types by using glob patterns, ensuring language-specific conventions are applied where they matter most.
+
+    With custom instructions, you can:
+
+    - Describe your team's code review standards
+    - Use glob patterns to define file-specific instructions
+    - Observe clearly labeled feedback that references your custom instructions
+
+    Simply create a [.gitlab/duo/mr-review-instructions.yaml file](https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#customize-instructions-for-gitlab-duo-code-review) in your repository with your custom instructions. GitLab Duo will automatically incorporate these instructions into its reviews, citing the specific instruction group when providing feedback.
+
+    Help us improve this feature by sharing your thoughts and suggestions in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#customize-instructions-for-gitlab-duo-code-review
+  image_url: https://about.gitlab.com/images/18_3/DCR-Instructions.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Bring your own models to GitLab Duo Self-Hosted (Beta)
+  description: |
+    GitLab Duo Self-Hosted now enables you to bring your own model to use with GitLab Duo features. This feature is in beta, and available to all GitLab Self-Managed customers with GitLab Duo Enterprise. Instance administrators can configure any compatible model for use with a supported GitLab Duo feature.
+
+    This feature makes GitLab Duo Self-Hosted more flexible, but GitLab cannot guarantee that all GitLab Duo features will work with every compatible model. Instance administrators are responsible for validating the compatibility and performance of their chosen model. GitLab does not provide technical support for issues specific to your chosen model or platform.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements/#bring-your-own-compatible-model
+  image_url: https://about.gitlab.com/images/18_3/SH_compatible_models.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Hybrid model selection on GitLab Duo Self-Hosted (Beta)
+  description: |
+    You can now use a mix of GitLab AI vendor models and privately configured self-hosted models on GitLab Duo Self-Hosted. This feature is in beta and available on GitLab Self-Managed to all GitLab Duo Enterprise customers.
+
+    With hybrid models on GitLab Duo Self-Hosted, GitLab Self-Managed instance administrators can now choose between a self-hosted model and self-hosted AI gateway, or a GitLab AI vendor model and the GitLab-hosted AI gateway, on a feature-by-feature basis. This enables administrators to balance their security and scalability requirements. To provide feedback on hybrid model selection, see [issue 561048](https://gitlab.com/gitlab-org/gitlab/-/issues/561048).
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: false
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/administration/gitlab_duo_self_hosted/#decide-on-your-configuration-type
+  image_url: https://about.gitlab.com/images/18_3/SH_Hybrid.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Surfacing violations of compliance framework controls (Beta)
+  description: |
+    Previously, the compliance violations report provided a high-level view of merge request activity for all projects in a group. The report focused on compliance violations related to separation of duty concerns, such as:
+
+    - Detecting when an author of a merge request approved their own merge request.
+    - When a merge request was merged with fewer than two approvals.
+
+    However, user feedback revealed that users found violation classifications confusing and difficult to understand, due to not aligning well with actual compliance use cases.
+
+    GitLab 18.3 significantly enhances the violations report. It now expands beyond separation of duty to include violations of compliance controls and requirements in compliance frameworks. Each custom compliance framework control has an associated audit event that provides detailed context about violations: who committed the violation, when it occurred, and how to fix it. This includes the user's name and IP address, plus actionable remediation suggestions.
+
+    These improvements give compliance managers more powerful and relevant context to ensure their organization adheres to specific compliance frameworks while providing reassurance that non-compliance can be effectively identified, rectified, and prevented.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/compliance/compliance_center/compliance_violations_report/
+  image_url: https://about.gitlab.com/images/18_3/compliance_link_violations_to_framework_controls.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: New Web IDE source control operations
+  description: |
+    We're excited to announce additional source control functionalities in the Web IDE. You can manage your Git workflow more efficiently without leaving your browser. In the **Source Control** panel, you can now:
+
+    - Create and delete branches.
+    - Create a branch from any existing branch as your base.
+    - Amend your last commit for quick fixes.
+    - Force push changes directly from the interface.
+
+    These enhancements bring Git operations right to your fingertips. For information about the functionalities available to you, see [Use source control](https://docs.gitlab.com/user/project/web_ide/#use-source-control).
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/project/web_ide/#use-source-control
+  image_url: https://about.gitlab.com/images/18_3/webide-source-control.gif
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: AWS Secrets Manager support for GitLab CI/CD
+  description: |
+    Secrets stored in AWS Secrets Manager can now be easily retrieved and used in CI/CD jobs. Our new integration with AWS simplifies the process of interacting with AWS Secrets Manager through GitLab CI/CD, helping our AWS customers streamline build and deploy processes!
+
+    Thank you to [Markus Siebert](https://gitlab.com/m-s-db) and [Henry Sachs](https://gitlab.com/DerAstronaut) who helped build this feature through [GitLab's Co-Create program](https://about.gitlab.com/community/co-create/)!
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/secrets/aws_secrets_manager/
+  image_url: https://about.gitlab.com/images/18_3/AWS_image.png
+  published_at: 2025-08-21
+  release: 18.3
+
+- name: Custom admin role now in GA
+  description: |
+    The custom admin role brings granular permissions to the Admin area for GitLab Self-Managed and GitLab Dedicated instances. Instead of granting full access, administrators can now create specialized roles that access only the specific functions needed by users. This feature helps organizations implement the principle of least privilege for administrative functions, reduce security risks from overprivileged access, and improve operational efficiency.
+
+    If you have questions, want to share your implementation experience, or would like to engage directly with our team about potential improvements, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509376).
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: false
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/user/custom_roles/
+  image_url: https://about.gitlab.com/images/18_3/sscs_authz_custom_admin_role.png
+  published_at: 2025-08-21
+  release: 18.3

@@ -21,17 +21,6 @@ RSpec.describe MergeRequestPollWidgetEntity, feature_category: :merge_trains do
     it 'returns empty string' do
       expect(subject[:default_merge_commit_message_with_description]).to eq('')
     end
-
-    context 'when "disable_widget_responses" is disabled' do
-      before do
-        stub_feature_flags(disable_widget_responses: false)
-      end
-
-      it 'has default_merge_commit_message_with_description' do
-        expect(subject[:default_merge_commit_message_with_description])
-          .to eq(resource.default_merge_commit_message(include_description: true))
-      end
-    end
   end
 
   it { is_expected.to include(ff_only_enabled: false) }

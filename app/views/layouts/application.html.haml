@@ -15,7 +15,7 @@
     = render 'peek/bar'
     = header_message
 
-    - if current_user && Feature.enabled?(:global_topbar, current_user)
+    - if Feature.enabled?(:global_topbar, current_user)
       %header.super-topbar.js-super-topbar
     - elsif !current_user
       = render partial: "layouts/header/super_sidebar_logged_out"

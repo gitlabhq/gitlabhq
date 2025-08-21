@@ -568,61 +568,27 @@ describe('UserMenu component', () => {
   describe('Admin item', () => {
     const findAdminLinkItem = () => wrapper.findByTestId('admin-link');
 
-    describe('when FF `globalTopbar` is disabled', () => {
-      it('should not render when `isAdmin` is `false`', () => {
+    it.each`
+      globalTopbar | isAdmin  | isRendered
+      ${false}     | ${false} | ${false}
+      ${false}     | ${true}  | ${false}
+      ${true}      | ${false} | ${false}
+      ${true}      | ${true}  | ${true}
+    `(
+      'admin link item rendered is $isRendered when global top bar feature flag is $globalTopbar and isAdmin is $isAdmin',
+      ({ globalTopbar, isAdmin, isRendered }) => {
         createWrapper(
           {
             admin_mode: {
-              user_is_admin: false,
+              user_is_admin: isAdmin,
             },
           },
           {},
-          { glFeatures: { globalTopbar: false } },
+          { glFeatures: { globalTopbar } },
         );
-        expect(findAdminLinkItem().exists()).toBe(false);
-      });
-
-      it('should not render when `isAdmin` is `true`', () => {
-        createWrapper(
-          {
-            admin_mode: {
-              user_is_admin: true,
-            },
-          },
-          {},
-          { glFeatures: { globalTopbar: false } },
-        );
-        expect(findAdminLinkItem().exists()).toBe(false);
-      });
-    });
-
-    describe('when FF `globalTopbar` is enabled', () => {
-      it('should not render when `isAdmin` is `false`', () => {
-        createWrapper(
-          {
-            admin_mode: {
-              user_is_admin: false,
-            },
-          },
-          {},
-          { glFeatures: { globalTopbar: true } },
-        );
-        expect(findAdminLinkItem().exists()).toBe(false);
-      });
-
-      it('should render when `isAdmin` is `true`', () => {
-        createWrapper(
-          {
-            admin_mode: {
-              user_is_admin: true,
-            },
-          },
-          {},
-          { glFeatures: { globalTopbar: true } },
-        );
-        expect(findAdminLinkItem().exists()).toBe(true);
-      });
-    });
+        expect(findAdminLinkItem().exists()).toBe(isRendered);
+      },
+    );
   });
 
   describe('Admin Mode items', () => {
