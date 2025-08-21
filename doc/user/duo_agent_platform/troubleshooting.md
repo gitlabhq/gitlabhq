@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting the software development flow
+title: Troubleshooting flows
 ---
 
 {{< details >}}
@@ -141,6 +141,19 @@ To determine the namespace your project is in, [look at the URL](../namespace/_i
 
 If necessary, you can
 [transfer your project to a group namespace](../../tutorials/move_personal_project_to_group/_index.md#move-your-project-to-a-group).
+
+## Flows not visible in the UI
+
+If you are trying to run a flow but it's not visible in the GitLab UI:
+
+1. Ensure you have at least Developer role in the project.
+1. Ensure GitLab Duo is [turned on for your group or project](../gitlab_duo/turn_on_off.md).
+1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
+1. Ensure **Allow flow execution** is turned on for your project:
+   1. Go to your project's **Settings** > **General**.
+   1. Expand the **GitLab Duo** section.
+   1. Verify that the **Allow flow execution** is turned on.
+   1. Select **Save changes**.
 
 ## Still having issues?
 

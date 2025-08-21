@@ -4,9 +4,13 @@ import {
   renderLeaveSuccessToast,
   renderRestoreSuccessToast,
   availableGraphQLGroupActions,
+  renderArchiveSuccessToast,
+  renderUnarchiveSuccessToast,
 } from '~/vue_shared/components/groups_list/utils';
 import {
   ACTION_EDIT,
+  ACTION_ARCHIVE,
+  ACTION_UNARCHIVE,
   ACTION_RESTORE,
   ACTION_DELETE,
   ACTION_LEAVE,
@@ -35,18 +39,22 @@ const MOCK_GROUP_PENDING_DELETION = {
 
 describe('availableGraphQLGroupActions', () => {
   describe.each`
-    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | availableActions
-    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${[]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT, ACTION_LEAVE]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${[]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${[]}
+    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
+    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT, ACTION_LEAVE]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_ARCHIVE]}
+    ${{ archiveGroup: true }}                                    | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_UNARCHIVE]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
+    ${{ archiveGroup: false }}                                   | ${false}          | ${false}                 | ${false}                | ${true}  | ${[]}
   `(
     'availableGraphQLGroupActions',
     ({
@@ -55,14 +63,16 @@ describe('availableGraphQLGroupActions', () => {
       isSelfDeletionInProgress,
       isSelfDeletionScheduled,
       availableActions,
+      archived,
     }) => {
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, and isSelfDeletionScheduled is ${isSelfDeletionScheduled} then availableActions = [${availableActions}] and is sorted correctly`, () => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
           availableGraphQLGroupActions({
             userPermissions,
             markedForDeletion,
             isSelfDeletionInProgress,
             isSelfDeletionScheduled,
+            archived,
           }),
         ).toStrictEqual(availableActions);
       });
@@ -102,6 +112,26 @@ describe('renderRestoreSuccessToast', () => {
 
     expect(toast).toHaveBeenCalledWith(
       `Group '${MOCK_GROUP.fullName}' has been successfully restored.`,
+    );
+  });
+});
+
+describe('renderArchiveSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderArchiveSuccessToast(MOCK_GROUP);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Group '${MOCK_GROUP.fullName}' has been successfully archived.`,
+    );
+  });
+});
+
+describe('renderUnarchiveSuccessToast', () => {
+  it('calls toast correctly', () => {
+    renderUnarchiveSuccessToast(MOCK_GROUP);
+
+    expect(toast).toHaveBeenCalledWith(
+      `Group '${MOCK_GROUP.fullName}' has been successfully unarchived.`,
     );
   });
 });

@@ -641,6 +641,74 @@ Exit code 128 during repository creation means Git encountered a fatal error whi
 
 When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../../administration/repository_checks.md#run-a-check-using-the-command-line).
 
+### Error: `gitmodulesUrl: disallowed submodule url`
+
+Some project repositories consistently fail to sync with the error
+`Error syncing repository: 13:creating repository: cloning repository: exit status 128`. However,
+for some repositories, the specific error message in the Gitaly logs is different: `gitmodulesUrl: disallowed submodule url`.
+This failure happens when repositories contain invalid submodule URLs in their `.gitmodules` files.
+
+The problem is in the repository's commit history. Submodule URLs in `.gitmodules` files contain
+invalid formats, using `:` instead of `/` in the path:
+
+- Invalid: `https://example.gitlab.com:group/project.git`
+- Valid: `https://example.gitlab.com/group/project.git`
+
+This issue is known in GitLab 17.0 and later, and is a result of more strict repository consistency
+checks. This new behavior results from a change in Git itself, where this check was added. It is not
+specific to GitLab Geo or Gitaly. For more information, see
+[issue 468560](https://gitlab.com/gitlab-org/gitlab/-/issues/468560).
+
+#### Workaround
+
+{{< alert type="note" >}}
+
+If the problematic repositories are part of a fork network, this blob removal method might not work as blobs
+contained in object pools cannot be removed this way.
+
+{{< /alert >}}
+
+You should remove the problematic blobs from the repository:
+
+1. Back up the projects before proceeding, using
+   the [project export option](../../../../user/project/settings/import_export.md).
+
+1. Identify the problematic blob IDs using one of these methods:
+
+   - Use `git fsck`: Clone the repository, then run `git fsck` to confirm the issue:
+
+     ```shell
+     git clone https://example.gitlab.com/group/project.git
+     cd project
+     git fsck
+     ```
+
+     The output shows the problematic blob:
+
+     ```plaintext
+     Checking object directories: 100% (256/256), done.
+     error in blob <SHA>: gitmodulesUrl: disallowed submodule url: https://example.gitlab.com:group/project.git
+     Checking objects: 100% (12/12), done.
+     ```
+
+   - Check the Gitaly logs. Look for error messages containing `gitmodulesUrl`
+     to find the specific blob SHA.
+
+1. Remove the offending blobs using the process documented in the
+   [repository size management guide](../../../../user/project/repository/repository_size.md#remove-blobs).
+
+1. After removing the blobs, check the `.gitmodules` files in your current branch for
+   invalid URLs. Edit the files to change URLs from
+   `https://example.gitlab.com:group/project.git` (with a colon) to `https://example.gitlab.com/group/project.git`
+   (with a slash) and commit the changes.
+
+{{< alert type="warning" >}}
+
+After the fix, all developers working on the affected projects must remove their current local copies
+and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
+
+{{< /alert >}}
+
 ### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
 
 If Git fetch fails at exactly three hours while syncing a Git repository:

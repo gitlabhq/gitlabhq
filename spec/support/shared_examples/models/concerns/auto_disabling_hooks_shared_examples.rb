@@ -351,29 +351,6 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
         end
       end
     end
-
-    # TODO Remove as part of https://gitlab.com/gitlab-org/gitlab/-/issues/525446
-    context 'when hook has no disabled_until set and exceeds TEMPORARILY_DISABLED_FAILURE_THRESHOLD (legacy state)' do
-      before do
-        hook.update!(recent_failures: WebHooks::AutoDisabling::TEMPORARILY_DISABLED_FAILURE_THRESHOLD + 1)
-      end
-
-      it 'is permanently disabled' do
-        expect(hook).to be_permanently_disabled
-        expect(hook).not_to be_temporarily_disabled
-      end
-
-      context 'when the flag is disabled' do
-        before do
-          stub_feature_flags(auto_disabling_web_hooks: false)
-        end
-
-        it 'is not disabled at all' do
-          expect(hook).not_to be_permanently_disabled
-          expect(hook).not_to be_temporarily_disabled
-        end
-      end
-    end
   end
 
   describe '#alert_status' do

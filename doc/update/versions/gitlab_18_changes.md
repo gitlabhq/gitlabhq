@@ -50,11 +50,18 @@ For additional information for Helm chart installations, see
 
 - The [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/545533) that caused `rake gitlab:geo:check` to incorrectly report a failure when installing a Geo secondary site has been fixed in 18.3.0.
 
+## 18.2.0
+
+### Geo installations 18.2.0
+
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.2.2 or later.
+
 ## 18.1.0
 
 ### Geo installations 18.1.0
 
 - GitLab version 18.1.0 has a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.1.1 or later.
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.1.4.
 
 ## 18.0.0
 
@@ -82,6 +89,7 @@ For additional information for Helm chart installations, see
   | 18.0                    |  18.0.0 - 18.0.1        | 18.0.2   |
 
 - GitLab versions 18.0 through 18.0.2 have a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.0.6.
 
 ### PRNG is not seeded error on Docker installations
 

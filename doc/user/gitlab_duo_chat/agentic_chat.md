@@ -23,9 +23,10 @@ title: GitLab Duo Chat (Agentic)
 - GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
-- GitLab Duo Chat (Agentic) changed to beta in GitLab 18.2.
+- Changed to beta in GitLab 18.2.
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
 - Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 
 {{< /history >}}
 
@@ -82,7 +83,7 @@ Prerequisites:
 
 {{< /details >}}
 
-To use Agentic Chat in the GitLab UI:
+To use Chat in the GitLab UI:
 
 1. Go to a project in a group that meets the prerequisites.
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.

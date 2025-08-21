@@ -24,7 +24,8 @@ title: GitLab Duo Chat (Classic)
 - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Updated naming to GitLab Duo Chat (Classic) in 18.3.
+- Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 
 {{< /history >}}
 

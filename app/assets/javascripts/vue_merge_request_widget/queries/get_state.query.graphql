@@ -11,17 +11,13 @@ query getState($projectPath: ID!, $iid: String!) {
     mergeRequest(iid: $iid) {
       id
       autoMergeEnabled
-      availableAutoMergeStrategies
       commitCount
       conflicts
       detailedMergeStatus
       diffHeadSha
       mergeAfter
       mergeError
-      mergeStatus
       mergeable
-      mergeableDiscussionsState
-      shouldBeRebased
       sourceBranchExists
       state
       targetBranchExists

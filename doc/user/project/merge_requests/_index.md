@@ -465,6 +465,7 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 
 ## Related topics
 
+- [Protect your repository](../repository/repository_protection.md)
 - [Create a merge request](creating_merge_requests.md)
 - [Review a merge request](reviews/_index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)

@@ -17,9 +17,17 @@ title: Flows
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3.
+- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled by default.
+- Additional flags are required for individual flows.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 A flow is a combination of one or more agents working together to solve a complex problem.
 
@@ -41,6 +49,16 @@ The following flows are available:
 
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
+
+## Turn on flows for your project
+
+In the GitLab UI, you must give flows the ability to run in your project.
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings** > **General**.
+1. Expand the **GitLab Duo** section.
+1. Turn on the **Allow flow execution** toggle.
+1. Select **Save changes**.
 
 ## Monitor running flows in the GitLab UI
 

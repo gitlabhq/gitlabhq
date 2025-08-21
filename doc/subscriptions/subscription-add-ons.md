@@ -16,6 +16,7 @@ title: GitLab Duo add-ons
 {{< history >}}
 
 - Changed to include GitLab Duo Core add-on in GitLab 18.0.
+- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -35,9 +36,9 @@ GitLab Duo Core is included automatically if you have:
 - GitLab 18.0 or later.
 - A Premium or Ultimate subscription.
 
-If you are a new customer in GitLab 18.0 or later, IDE features are automatically turned on and no further action is needed.
+If you are an existing customer from GitLab 17.11 or earlier, you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
 
-If you are a pre-existing customer from GitLab 17.11 or earlier, you must [turn on IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo in your IDEs. No further action is needed.
+If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
 
 Users assigned the following roles have access to GitLab Duo Core:
 

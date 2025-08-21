@@ -35,16 +35,17 @@ You can also turn GitLab Duo Core (a subset of GitLab Duo features) on or off.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
 - GitLab availability settings, and group, subgroup, and project controls [added](https://gitlab.com/gitlab-org/gitlab/-/issues/551895) in GitLab 18.2.
+- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
 
 {{< /history >}}
 
-If you have [GitLab Duo Core](../../subscriptions/subscription-add-ons.md#gitlab-duo-core),
-which is included with Premium and Ultimate subscriptions, GitLab Duo Chat and
-Code Suggestions are available in your IDEs, and are turned on by default.
+[GitLab Duo Core](feature_summary.md) is included with Premium and Ultimate subscriptions.
+
+- If you are an existing customer from GitLab 17.11 or earlier, you must turn on Web or IDE features to start using GitLab Duo Core.
+- If you are a new customer in GitLab 18.0 or later, GitLab Core is automatically turned on and no further action is needed.
 
 If you were an existing user with a Premium or Ultimate subscription before May 15, 2025,
-when you upgrade to GitLab 18.0 or later, you have access to Chat and Code Suggestions in your IDEs,
-but are turned off by default. However, you can turn them on.
+when you upgrade to GitLab 18.0 or later, you must turn on GitLab Duo Core.
 
 ### On GitLab.com
 
@@ -60,7 +61,7 @@ To change GitLab Duo Core availability:
 1. Select **Settings > GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.
@@ -81,7 +82,7 @@ To change GitLab Duo Core availability:
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
-1. Under **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
    If you selected **Always off** for GitLab Duo availability, you cannot access
    this setting.
 1. Select **Save changes**.

@@ -3486,7 +3486,7 @@ msgstr ""
 msgid "AccessTokens|No access tokens"
 msgstr ""
 
-msgid "AccessTokens|Not eligible to rotate token with access level higher than the user"
+msgid "AccessTokens|Not eligible to rotate tokens with permissions not held by the user"
 msgstr ""
 
 msgid "AccessTokens|Personal access tokens"
@@ -7382,6 +7382,9 @@ msgstr ""
 msgid "An error occured while parsing comment temperature. Please try again."
 msgstr ""
 
+msgid "An error occurred archiving this group. Please refresh the page to try again."
+msgstr ""
+
 msgid "An error occurred creating the blob"
 msgstr ""
 
@@ -7419,6 +7422,9 @@ msgid "An error occurred previewing the blob"
 msgstr ""
 
 msgid "An error occurred restoring this group. Please refresh the page to try again."
+msgstr ""
+
+msgid "An error occurred unarchiving this group. Please refresh the page to try again."
 msgstr ""
 
 msgid "An error occurred when trying to display this embedded view:"
@@ -31022,7 +31028,13 @@ msgstr ""
 msgid "Group '%{group_name}' could not be updated."
 msgstr ""
 
+msgid "Group '%{group_name}' has been successfully archived."
+msgstr ""
+
 msgid "Group '%{group_name}' has been successfully restored."
+msgstr ""
+
+msgid "Group '%{group_name}' has been successfully unarchived."
 msgstr ""
 
 msgid "Group '%{group_name}' is being deleted."
@@ -43771,6 +43783,9 @@ msgstr ""
 msgid "Observability|Authentication failed"
 msgstr ""
 
+msgid "Observability|Authentication failed. Please refresh the page."
+msgstr ""
+
 msgid "Observability|Beta Release"
 msgstr ""
 
@@ -43930,6 +43945,9 @@ msgstr ""
 msgid "Observability|Length must be a positive integer"
 msgstr ""
 
+msgid "Observability|Loading metrics..."
+msgstr ""
+
 msgid "Observability|Message validation failed"
 msgstr ""
 
@@ -43946,9 +43964,6 @@ msgid "Observability|O11y Service Settings"
 msgstr ""
 
 msgid "Observability|Observability Access Requested"
-msgstr ""
-
-msgid "Observability|Observability Dashboard"
 msgstr ""
 
 msgid "Observability|Observability Service Configuration"

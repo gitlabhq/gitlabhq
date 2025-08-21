@@ -6,7 +6,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
     let(:token) { create(:resource_access_token, resource: project) }
     let(:current_user) { create(:user) }
     let(:project) { create(:project, group: create(:group)) }
-    let(:error_message) { 'Not eligible to rotate token with access level higher than the user' }
+    let(:error_message) { 'Not eligible to rotate tokens with permissions not held by the user' }
 
     subject(:response) { described_class.new(current_user, token, project).execute }
 

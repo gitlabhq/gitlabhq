@@ -16,6 +16,7 @@ fragment Group on Group {
   createdAt
   updatedAt
   userPermissions {
+    archiveGroup
     canLeave
     removeGroup
     viewEditPage

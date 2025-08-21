@@ -140,9 +140,12 @@ Dangerfile
 /tooling/
 /spec/tooling/
 /scripts/
+/spec/scripts/
 /scripts/**/*.rb @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
 /scripts/**/*.js @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
+/scripts/release_environment/ @gl-dx/tooling-maintainers @gitlab-org/delivery
+/spec/scripts/release_environment/ @gl-dx/tooling-maintainers @gitlab-org/delivery
 /scripts/remote_development/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
 /scripts/review_apps/seed-dast-test-data.sh @gl-dx/tooling-maintainers @dappelt @ngeorge1
 /.dockerignore

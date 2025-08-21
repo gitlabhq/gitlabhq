@@ -6,6 +6,8 @@ import {
   ACTION_DELETE_IMMEDIATELY,
   ACTION_LEAVE,
   ACTION_RESTORE,
+  ACTION_ARCHIVE,
+  ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 
 export const availableGraphQLGroupActions = ({
@@ -13,6 +15,7 @@ export const availableGraphQLGroupActions = ({
   markedForDeletion,
   isSelfDeletionInProgress,
   isSelfDeletionScheduled,
+  archived,
 }) => {
   // No actions available when group deletion is in progress
   if (isSelfDeletionInProgress) {
@@ -23,6 +26,10 @@ export const availableGraphQLGroupActions = ({
 
   if (userPermissions.viewEditPage) {
     baseActions.push(ACTION_EDIT);
+  }
+
+  if (userPermissions.archiveGroup) {
+    baseActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
   }
 
   if (userPermissions.removeGroup && isSelfDeletionScheduled) {
@@ -77,6 +84,22 @@ export const renderLeaveSuccessToast = (group) => {
 export const renderRestoreSuccessToast = (group) => {
   toast(
     sprintf(__("Group '%{group_name}' has been successfully restored."), {
+      group_name: group.fullName,
+    }),
+  );
+};
+
+export const renderArchiveSuccessToast = (group) => {
+  toast(
+    sprintf(__("Group '%{group_name}' has been successfully archived."), {
+      group_name: group.fullName,
+    }),
+  );
+};
+
+export const renderUnarchiveSuccessToast = (group) => {
+  toast(
+    sprintf(__("Group '%{group_name}' has been successfully unarchived."), {
       group_name: group.fullName,
     }),
   );

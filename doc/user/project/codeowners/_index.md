@@ -141,5 +141,6 @@ For more information, see [`CODEOWNERS` syntax](reference.md) and [Advanced `COD
 
 - [`CODEOWNERS` syntax](reference.md)
 - [Advanced `CODEOWNERS` configuration](advanced.md)
-- [Protected branches](../repository/branches/protected.md)
 - [Troubleshooting Code Owners](troubleshooting.md)
+- [Protect your repository](../repository/repository_protection.md)
+- [Protected branches](../repository/branches/protected.md)

@@ -40,11 +40,12 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
     end
 
     context 'when mutation succeeds' do
-      let(:service_response) { instance_double('ServiceResponse', payload: new_pipeline) }
+      let(:service_response) { ServiceResponse.success(payload: new_pipeline) }
       let(:new_pipeline) { instance_double('Ci::Pipeline', persisted?: true) }
 
       it do
         expect(Ci::CreatePipelineService).to receive_message_chain(:new, :execute).and_return(service_response)
+        expect(service_response).to receive(:error?).and_call_original
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['pipelineSchedule']['id']).to include(pipeline_schedule.id.to_s)

@@ -193,7 +193,6 @@ export default class MergeRequestStore {
     this.allowMergeOnSkippedPipeline = project.allowMergeOnSkippedPipeline;
 
     this.autoMergeEnabled = mergeRequest.autoMergeEnabled;
-    this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
     this.canMerge = mergeRequest.userPermissions.canMerge;
 
     this.commitsCount = mergeRequest.commitCount;
@@ -201,13 +200,10 @@ export default class MergeRequestStore {
       mergeRequest.detailedMergeStatus !== 'NOT_OPEN' &&
       (!mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists);
     this.hasConflicts = mergeRequest.conflicts;
-    this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;
     this.mergeError = mergeRequest.mergeError;
-    this.mergeStatus = mergeRequest.mergeStatus;
     this.mergeAfter = mergeRequest.mergeAfter;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
-    this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
     this.detailedMergeStatus = mergeRequest.detailedMergeStatus;

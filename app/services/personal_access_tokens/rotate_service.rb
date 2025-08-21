@@ -43,7 +43,7 @@ module PersonalAccessTokens
 
     def create_access_token
       unless valid_access_level?
-        return error_response(s_('AccessTokens|Not eligible to rotate token with access level higher than the user'))
+        return error_response(s_('AccessTokens|Not eligible to rotate tokens with permissions not held by the user'))
       end
 
       new_token = target_user.personal_access_tokens.create(create_token_params)

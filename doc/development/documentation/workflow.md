@@ -38,20 +38,25 @@ to make the shorter pipeline run, you must follow these guidelines when naming y
 | Starting with `docs-` | `docs-update-api-issues`     |
 | Ending in `-docs`     | `123-update-api-issues-docs` |
 
-Additionally, changes to these files in the `gitlab` project automatically trigger a long pipeline
+Changes to these files in the `gitlab` project automatically trigger a long pipeline
 because some code tests use these files as examples:
 
 - `doc/_index.md`
 - `doc/api/settings.md`
 
 When you edit these pages, the long pipeline appears the same as in a code MR,
-but you do not need any additional approvals. If the `pre-merge-checks` job fails on merge with a
-`Expected latest pipeline (link) to be a tier-3 pipeline!` message, add the `~"pipeline::tier-3"`
-label to the MR and run a new pipeline.
+but you do not need any additional approvals. For more information on long pipelines,
+see [pipelines for the GitLab project](../pipelines/_index.md).
 
-If your merge requests include any code changes, long pipelines are run for them.
+If the `pre-merge-checks` job fails with messages about `tier-3` pipelines or predictive pipelines,
+follow these steps:
 
-For more information on long pipelines, see [pipelines for the GitLab project](../pipelines/_index.md).
+1. Add the `~"pipeline::tier-3"` and `~"pipeline:mr-approved"` labels to the MR.
+1. Run a new pipeline.
+1. Set the MR to auto-merge while the pipeline is running.
+
+To avoid running long pipelines while working on an MR, you can push a commit without triggering a pipeline. For more information, see
+[skip a pipeline](../../ci/pipelines/_index.md#skip-a-pipeline).
 
 ## Moving content
 

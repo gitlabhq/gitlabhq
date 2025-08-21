@@ -35,8 +35,7 @@ For more information, see:
 
 ## Step 2: Try GitLab Duo Chat in the UI
 
-If your organization has either the GitLab Duo Pro or Enterprise add-on,
-you can try using Chat in the GitLab UI.
+Now, try using Chat in the GitLab UI.
 
 Go to a project and in the upper-right corner, a button named **GitLab Duo Chat** should be displayed.
 If this button is available, it means everything is configured properly.

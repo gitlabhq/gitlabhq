@@ -647,7 +647,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context "when token has owner access level" do
-          let(:error_message) { 'Not eligible to rotate token with access level higher than the user' }
+          let(:error_message) { 'Not eligible to rotate tokens with permissions not held by the user' }
 
           before do
             resource.add_owner(project_bot)

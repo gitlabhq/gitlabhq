@@ -19,6 +19,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   isSelfDeletionInProgress: group.is_self_deletion_in_progress,
   isSelfDeletionScheduled: group.is_self_deletion_scheduled,
   userPermissions: {
+    archiveGroup: group.can_archive,
     canLeave: group.can_leave,
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
