@@ -783,6 +783,10 @@ $scroll-scrim-height: 2.25rem;
   }
 }
 
+.gl-dark .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
+  @apply gl-bg-alpha-light-8;
+}
+
 html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
   background-color: var(--gl-color-alpha-dark-4);
   @apply gl-border-default;

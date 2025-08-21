@@ -24024,6 +24024,7 @@ Represents an epic on an issue board.
 | <a id="boardepicuserpreferences"></a>`userPreferences` | [`BoardEpicUserPreferences`](#boardepicuserpreferences) | User preferences for the epic on the issue board. |
 | <a id="boardepicwebpath"></a>`webPath` | [`String!`](#string) | Web path of the epic. |
 | <a id="boardepicweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the epic. |
+| <a id="boardepicworkitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | ID of the corresponding work item for a legacy epic. |
 
 #### Fields with arguments
 
@@ -28606,6 +28607,7 @@ Represents an epic.
 | <a id="epicuserpermissions"></a>`userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource. |
 | <a id="epicwebpath"></a>`webPath` | [`String!`](#string) | Web path of the epic. |
 | <a id="epicweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the epic. |
+| <a id="epicworkitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | ID of the corresponding work item for a legacy epic. |
 
 #### Fields with arguments
 
@@ -31225,6 +31227,26 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupsecuritypolicyprojectsuggestionsonlylinked"></a>`onlyLinked` | [`Boolean`](#boolean) | Whether to suggest only projects already linked as security policy projects. |
 | <a id="groupsecuritypolicyprojectsuggestionssearch"></a>`search` | [`String!`](#string) | Search query for projects' full paths. |
+
+##### `Group.sharedProjects`
+
+List of shared projects this group was invited to.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsharedprojectsactive"></a>`active` | [`Boolean`](#boolean) | Filters by projects that are not archived and not marked for deletion. |
+| <a id="groupsharedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="groupsharedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="groupsharedprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
+| <a id="groupsharedprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 
 ##### `Group.standardRole`
 

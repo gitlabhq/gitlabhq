@@ -104,23 +104,12 @@ cache:workhorse-hash:
 #=================================
 # Frontend assets
 #=================================
-# calculate asset hash so it can be used in cache key name
 cache:assets-hash:
   extends:
     - .cache-pull-push-base
-    - .with-ci-node-image
-    - .ruby-node-cache
-  needs:
-    - job: cache:ruby-gems
-      optional: true
-    - job: cache:node-modules
-      optional: true
-  before_script:
-    - source scripts/utils.sh
-    - bundle_install_script
-    - yarn_install_script
+    - .with-alpine-ruby-image
   script:
-    - echo "GLCI_GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum)" > build.env
+    - echo "GLCI_GITLAB_ASSETS_HASH=$(ruby scripts/lib/assets_sha.rb)" > build.env
     - echo "Calculated assets checksum - $(cat build.env)"
   artifacts:
     reports:

@@ -230,7 +230,7 @@ module Users
       user_organization = if @organization && organization_users_internal_enabled?
                             @organization
                           else
-                            Organizations::Organization.first
+                            first_organization
                           end
 
       user.assign_personal_namespace(user_organization)

@@ -34,6 +34,7 @@ export default {
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
+    adminArea: s__('Navigation|Admin'),
     enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
     leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
     stopImpersonating: __('Stop impersonating'),
@@ -80,9 +81,17 @@ export default {
     toggleText() {
       return sprintf(__('%{user} user’s menu'), { user: this.data.name });
     },
+    isAdmin() {
+      return this.data?.admin_mode?.user_is_admin;
+    },
+    adminLinkItem() {
+      return {
+        text: this.$options.i18n.adminArea,
+        href: this.data.admin_url,
+      };
+    },
     statusItem() {
       const { busy, customized } = this.data.status;
-
       const statusLabel =
         busy || customized ? this.$options.i18n.editStatus : this.$options.i18n.setStatus;
 
@@ -391,6 +400,13 @@ export default {
         <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item" />
 
         <gl-disclosure-dropdown-item
+          v-if="superTopbarEnabled && isAdmin"
+          :item="adminLinkItem"
+          class="xl:gl-hidden"
+          data-testid="admin-link"
+        />
+
+        <gl-disclosure-dropdown-item
           v-if="addBuyPipelineMinutesMenuItem"
           ref="buyPipelineMinutesNotificationCallout"
           :item="buyPipelineMinutesItem"
@@ -409,12 +425,6 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="data.gitlab_com_but_not_canary"
-          :item="gitlabNextItem"
-          data-testid="gitlab-next-item"
-        />
-
-        <gl-disclosure-dropdown-item
           v-if="showEnterAdminModeItem"
           :item="enterAdminModeItem"
           data-testid="enter-admin-mode-item"
@@ -424,6 +434,10 @@ export default {
           :item="leaveAdminModeItem"
           data-testid="leave-admin-mode-item"
         />
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
+        <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item" />
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group

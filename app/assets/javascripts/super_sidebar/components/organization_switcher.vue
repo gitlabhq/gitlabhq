@@ -173,7 +173,11 @@ export default {
           :entity-name="currentOrganization.name"
           :src="currentOrganization.avatar_url"
         />
-        <span class="gl-grow">{{ currentOrganization.name }}</span>
+        <span
+          class="gl-grow"
+          :class="{ 'gl-max-w-10 gl-truncate sm:gl-max-w-15': superTopbarEnabled }"
+          >{{ currentOrganization.name }}</span
+        >
         <gl-icon class="gl-button-icon gl-new-dropdown-chevron" name="chevron-down" />
       </button>
     </template>

@@ -18,12 +18,6 @@ export default {
       default: 2,
     },
   },
-  mounted() {
-    // We have to manually add the classes after the component is mounted
-    // because GlSkeletonLoader does not inherit attributes.
-    // https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2939
-    this.$refs.loadingStateListItem?.children?.[1]?.classList.add('gl-hidden', 'sm:gl-block');
-  },
 };
 </script>
 
@@ -39,6 +33,7 @@ export default {
       :lines="rightLinesCount"
       :width="100"
       :equal-width-lines="true"
+      class="gl-hidden sm:gl-block"
       data-testid="loading-state-list-item-right-skeleton"
     />
   </div>

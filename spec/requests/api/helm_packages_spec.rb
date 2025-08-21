@@ -121,6 +121,50 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
           api_request
         end
       end
+
+      context 'when file is stored in object storage' do
+        let(:channel) { 'test' }
+        let(:metadata_cache) { create(:helm_metadata_cache, :object_storage, project: project, channel: channel) }
+
+        context 'when direct download enabled' do
+          before do
+            stub_object_storage_uploader(
+              config: Gitlab.config.packages.object_store,
+              uploader: Packages::Helm::MetadataCacheUploader,
+              proxy_download: false
+            )
+          end
+
+          it 'returns redirect to object storage URL' do
+            expect(metadata_cache.file.file_storage?).to be_falsey
+            expect(metadata_cache.file.direct_download_enabled?).to be_truthy
+
+            api_request
+
+            expect(response).to have_gitlab_http_status(:redirect)
+            expect(response.headers).to include('Location')
+          end
+        end
+
+        context 'when direct download disabled' do
+          before do
+            stub_object_storage_uploader(
+              config: Gitlab.config.packages.object_store,
+              uploader: Packages::Helm::MetadataCacheUploader,
+              proxy_download: true
+            )
+          end
+
+          it 'returns with Workhorse-Send-Data header' do
+            expect(metadata_cache.file.file_storage?).to be_falsey
+
+            api_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response.headers).to include('Gitlab-Workhorse-Send-Data')
+          end
+        end
+      end
     end
   end
 

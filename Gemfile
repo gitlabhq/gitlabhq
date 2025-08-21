@@ -383,7 +383,7 @@ gem 'terser', '1.0.2', feature_category: :shared
 
 gem 'click_house-client', '0.3.5', feature_category: :database
 gem 'addressable', '~> 2.8', feature_category: :shared
-gem 'gon', '~> 6.4.0', feature_category: :shared
+gem 'gon', '~> 6.5.0', feature_category: :shared
 gem 'request_store', '~> 1.7.0', feature_category: :shared
 gem 'base32', '~> 0.3.0', feature_category: :shared
 gem 'gitlab-license', '~> 2.6', feature_category: :shared

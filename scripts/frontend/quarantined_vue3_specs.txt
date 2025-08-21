@@ -38,7 +38,6 @@ spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
-spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js

@@ -28,6 +28,12 @@ If a user is not a member of a private group, a `GET` request on that group resu
 
 If epics feature is not available a `403` status code is returned.
 
+## Legacy Epic IDs and WorkItem IDs
+
+The legacy Epic ID is not the same as the WorkItem ID. Only the `iid` matches. However, to retrieve the corresponding WorkItem ID for an epic, we expose `work_item_id` as part of the response.
+
+This ID can be used for the WorkItem GraphQL API, e.g. the `work_item_id` would be the Global ID `gid://gitlab/WorkItem/123` on the WorkItem GraphQL API.
+
 ## Epic issues API
 
 The [epic issues API](epic_issues.md) allows you to interact with issues associated with an epic.
@@ -108,6 +114,7 @@ Example response:
 [
   {
   "id": 29,
+  "work_item_id": 1032,
   "iid": 4,
   "group_id": 7,
   "parent_id": 23,
@@ -158,6 +165,7 @@ Example response:
   },
   {
   "id": 50,
+  "work_item_id": 1035,
   "iid": 35,
   "group_id": 17,
   "parent_id": 19,
@@ -234,6 +242,7 @@ Example response:
 ```json
 {
   "id": 30,
+  "work_item_id": 1099,
   "iid": 5,
   "group_id": 7,
   "parent_id": null,
@@ -328,6 +337,7 @@ Example response:
 ```json
 {
   "id": 33,
+  "work_item_id": 1020,
   "iid": 6,
   "group_id": 7,
   "parent_id": 29,
@@ -418,6 +428,7 @@ Example response:
 ```json
 {
   "id": 33,
+  "work_item_id": 1019,
   "iid": 6,
   "group_id": 7,
   "parent_id": 29,

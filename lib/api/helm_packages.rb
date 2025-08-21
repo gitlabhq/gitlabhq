@@ -21,6 +21,9 @@ module API
     content_type :yaml, 'text/yaml'
 
     formatter :yaml, ->(object, _) do
+      # Handle cases where present_carrierwave_file! returns a string as the response body
+      return object if object.is_a?(String)
+
       yaml_content = object.serializable_hash.stringify_keys.to_yaml
 
       yaml_content.gsub(Gitlab::Regex.helm_index_app_version_quote_regex, '\1"\2"')

@@ -50,7 +50,7 @@ The following third-party integrations have been tested by GitLab and are availa
 
 - [Anthropic Claude](https://docs.anthropic.com/en/docs/claude-code/overview)
 - [OpenAI Codex](https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started)
-- [Opencode](https://opencode.ai/docs/)
+- [Opencode](https://opencode.ai/docs/gitlab/)
 - [Amazon Q](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/command-line.html)
 - [Google Gemini CLI](https://github.com/google-gemini/gemini-cli)
 

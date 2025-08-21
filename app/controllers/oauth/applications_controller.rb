@@ -26,7 +26,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def show; end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params).execute(request)
+    @application = Applications::CreateService.new(current_user, request, application_params).execute
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])

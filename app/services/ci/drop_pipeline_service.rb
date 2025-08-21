@@ -2,8 +2,6 @@
 
 module Ci
   class DropPipelineService
-    PRELOADED_RELATIONS = [:project, :pipeline, :metadata, :job_definition, :deployment, :taggings].freeze
-
     # execute service asynchronously for each cancelable pipeline
     def execute_async_for_all(pipelines, failure_reason, context_user)
       pipelines.cancelable.select(:id).find_in_batches do |pipelines_batch|
@@ -30,7 +28,14 @@ module Ci
     private
 
     def preload_associations_for_drop(commit_status_batch)
-      Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(PRELOADED_RELATIONS)
+      Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(preloaded_relations)
+    end
+
+    # overridden in EE
+    def preloaded_relations
+      [:project, :pipeline, :metadata, :job_definition, :deployment, :taggings]
     end
   end
 end
+
+Ci::DropPipelineService.prepend_mod

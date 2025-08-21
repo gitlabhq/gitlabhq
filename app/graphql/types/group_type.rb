@@ -246,6 +246,11 @@ module Types
       null: false,
       description: 'Count of direct descendant groups of the group.'
 
+    field :shared_projects, Types::ProjectType.connection_type,
+      null: true,
+      description: 'List of shared projects this group was invited to.',
+      resolver: Resolvers::Projects::SharedProjectsResolver
+
     field :group_members_count,
       GraphQL::Types::Int,
       null: false,

@@ -90,17 +90,6 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
           plain_secret)
       end
 
-      it 'finds token stored with SHA512 strategy' do
-        sha512_hash = Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(plain_secret)
-        sha512_token.update_column(:token, sha512_hash)
-
-        result = described_class.find_by_fallback_token(:token, plain_secret)
-
-        expect(result).to eq(sha512_token)
-        expect(described_class).to have_received(:upgrade_fallback_value).with(sha512_token, :token,
-          plain_secret)
-      end
-
       it 'finds token stored with Plain strategy when PBKDF2 fails' do
         # Create a different plain secret that won't match any PBKDF2 token
         different_secret = 'different_plain_token_xyz'
@@ -127,8 +116,8 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
 
       it 'upgrade legacy plain text tokens' do
         described_class.find_by_fallback_token(:token, plain_token.plaintext_token)
-        sha512_hash = Gitlab::DoorkeeperSecretStoring::Sha512Hash.transform_secret(plain_token.plaintext_token)
-        expect(plain_token.reload.token).to eq(sha512_hash)
+        pbkdf2_hash = Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plain_token.plaintext_token)
+        expect(plain_token.reload.token).to eq(pbkdf2_hash)
       end
 
       it 'returns nil when no strategy finds a match' do

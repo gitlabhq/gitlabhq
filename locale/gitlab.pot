@@ -59142,6 +59142,9 @@ msgstr ""
 msgid "SecurityReports|Create issue"
 msgstr ""
 
+msgid "SecurityReports|Critical risk"
+msgstr ""
+
 msgid "SecurityReports|Detected in external sources such as running containers and URLs. These vulnerabilities are not necessarily associated with your GitLab project."
 msgstr ""
 
@@ -59244,6 +59247,9 @@ msgstr ""
 msgid "SecurityReports|Has merge request"
 msgstr ""
 
+msgid "SecurityReports|High risk"
+msgstr ""
+
 msgid "SecurityReports|Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -59277,6 +59283,9 @@ msgstr ""
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
+msgid "SecurityReports|Low risk"
+msgstr ""
+
 msgid "SecurityReports|Manage and track vulnerabilities identified in projects within your group. Vulnerabilities in projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
@@ -59287,6 +59296,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your selec
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"
+msgstr ""
+
+msgid "SecurityReports|Medium risk"
 msgstr ""
 
 msgid "SecurityReports|Merge Request"

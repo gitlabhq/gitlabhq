@@ -7,25 +7,25 @@ RSpec.describe ::Applications::CreateService, feature_category: :system_access d
 
   let(:user) { create(:user) }
 
-  subject(:service) { described_class.new(user, params) }
+  subject(:service) { described_class.new(user, test_request, params) }
 
   context 'when scopes are present' do
     let(:params) { attributes_for(:application, scopes: ['read_user']) }
 
-    it { expect { subject.execute(test_request) }.to change { Authn::OauthApplication.count }.by(1) }
+    it { expect { subject.execute }.to change { Authn::OauthApplication.count }.by(1) }
 
     it 'leaves ROPC enabled' do
-      expect(service.execute(test_request).ropc_enabled?).to be_truthy
+      expect(service.execute.ropc_enabled?).to be_truthy
     end
   end
 
   context 'when scopes are missing' do
     let(:params) { attributes_for(:application) }
 
-    it { expect { subject.execute(test_request) }.not_to change { Authn::OauthApplication.count } }
+    it { expect { subject.execute }.not_to change { Authn::OauthApplication.count } }
 
     it 'includes blank scopes error message' do
-      application = subject.execute(test_request)
+      application = subject.execute
 
       expect(application.errors.full_messages).to include "Scopes can't be blank"
     end

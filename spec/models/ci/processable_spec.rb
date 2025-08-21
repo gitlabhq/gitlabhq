@@ -109,7 +109,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            metadata runner_manager_build runner_manager runner_session trace_chunks
            upstream_pipeline_id upstream_pipeline_partition_id
            artifacts_file artifacts_metadata artifacts_size commands
-           resource resource_group_id processed security_scans author
+           resource resource_group_id processed security_scans security_report_artifacts author
            pipeline_id report_results pending_state pages_deployments
            queuing_entry runtime_metadata trace_metadata
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build

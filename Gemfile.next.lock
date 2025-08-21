@@ -819,7 +819,7 @@ GEM
       zeitwerk (>= 2, < 3)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    gon (6.4.0)
+    gon (6.5.0)
       actionpack (>= 3.0.20)
       i18n (>= 0.7)
       multi_json
@@ -2183,7 +2183,7 @@ DEPENDENCIES
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.2.0)
   gitlab_quality-test_tooling (~> 2.19.0)
-  gon (~> 6.4.0)
+  gon (~> 6.5.0)
   google-apis-androidpublisher_v3 (~> 0.84.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
   google-apis-cloudresourcemanager_v1 (~> 0.31.0)

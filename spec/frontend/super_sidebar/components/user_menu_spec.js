@@ -565,6 +565,66 @@ describe('UserMenu component', () => {
     });
   });
 
+  describe('Admin item', () => {
+    const findAdminLinkItem = () => wrapper.findByTestId('admin-link');
+
+    describe('when FF `globalTopbar` is disabled', () => {
+      it('should not render when `isAdmin` is `false`', () => {
+        createWrapper(
+          {
+            admin_mode: {
+              user_is_admin: false,
+            },
+          },
+          {},
+          { glFeatures: { globalTopbar: false } },
+        );
+        expect(findAdminLinkItem().exists()).toBe(false);
+      });
+
+      it('should not render when `isAdmin` is `true`', () => {
+        createWrapper(
+          {
+            admin_mode: {
+              user_is_admin: true,
+            },
+          },
+          {},
+          { glFeatures: { globalTopbar: false } },
+        );
+        expect(findAdminLinkItem().exists()).toBe(false);
+      });
+    });
+
+    describe('when FF `globalTopbar` is enabled', () => {
+      it('should not render when `isAdmin` is `false`', () => {
+        createWrapper(
+          {
+            admin_mode: {
+              user_is_admin: false,
+            },
+          },
+          {},
+          { glFeatures: { globalTopbar: true } },
+        );
+        expect(findAdminLinkItem().exists()).toBe(false);
+      });
+
+      it('should render when `isAdmin` is `true`', () => {
+        createWrapper(
+          {
+            admin_mode: {
+              user_is_admin: true,
+            },
+          },
+          {},
+          { glFeatures: { globalTopbar: true } },
+        );
+        expect(findAdminLinkItem().exists()).toBe(true);
+      });
+    });
+  });
+
   describe('Admin Mode items', () => {
     const findEnterAdminModeItem = () => wrapper.findByTestId('enter-admin-mode-item');
     const findLeaveAdminModeItem = () => wrapper.findByTestId('leave-admin-mode-item');

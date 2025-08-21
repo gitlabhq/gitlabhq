@@ -5161,6 +5161,24 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#debug_mode?' do
     subject { build.debug_mode? }
 
+    shared_examples 'when p_ci_builds.debug_trace_enabled is not nil' do
+      context 'when p_ci_builds.debug_trace_enabled is true' do
+        before do
+          build.update!(debug_trace_enabled: true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when p_ci_builds.debug_trace_enabled is false' do
+        before do
+          build.update!(debug_trace_enabled: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
     context 'when CI_DEBUG_TRACE=true is in variables' do
       ['true', 1, 'y'].each do |value|
         it 'reflects instance variables' do
@@ -5255,6 +5273,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to eq true }
+
+      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
     end
 
     context 'when metadata has debug_trace_enabled false' do
@@ -5263,6 +5283,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to eq false }
+
+      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
     end
 
     context 'when metadata does not exist but job is not degenerated' do
@@ -5274,6 +5296,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to eq false }
+
+      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
     end
 
     context 'when job is degenerated' do
@@ -5282,6 +5306,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it { is_expected.to eq true }
+
+      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
     end
   end
 
