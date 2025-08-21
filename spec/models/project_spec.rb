@@ -9601,14 +9601,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#work_item_status_feature_available?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it "return false" do
-      expect(group_project.work_item_status_feature_available?).to be false
-    end
-  end
-
   describe 'serialization' do
     let(:object) { build(:project) }
 

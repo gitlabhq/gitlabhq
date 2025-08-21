@@ -2,7 +2,7 @@
 
 class ReRequeueBackfillProjectsRedirectRoutesNamespaceId < Gitlab::Database::Migration[2.3]
   milestone '18.3'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillProjectsRedirectRoutesNamespaceId"
   DELAY_INTERVAL = 2.minutes

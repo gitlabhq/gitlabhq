@@ -16,11 +16,7 @@ module Ci
     condition(:runner_available) do
       runner = @subject.is_a?(Ci::RunnerPresenter) ? @subject.__getobj__ : @subject
 
-      # TODO: use User#ci_available_project_runners once the optimize_ci_owned_project_runners_query FF is removed
-      # (https://gitlab.com/gitlab-org/gitlab/-/issues/551320)
-      # force load this so it doesn't load with runner.id for every
-      # runner to check if a user can access them, causing N+1
-      @user.ci_available_runners.load.include?(runner)
+      available_project_runners.include?(runner)
     end
 
     condition(:creator) do
@@ -152,6 +148,12 @@ module Ci
     rule { ~admin & locked }.prevent :assign_runner
 
     rule { is_instance_runner & ~can_admin_runner }.prevent :read_runner_sensitive_data
+
+    private
+
+    def available_project_runners
+      @available_project_runners ||= @user.ci_available_project_runners.load
+    end
   end
 end
 

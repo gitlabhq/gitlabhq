@@ -7,7 +7,7 @@ feature_categories:
 description: Tracks the relationship between commit SHAs and merge requests for gitlab generated references such as train references.
 introduced_by_url:
 milestone: '18.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

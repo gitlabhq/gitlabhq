@@ -20,7 +20,7 @@ RSpec.describe ReRequeueBackfillProjectsRedirectRoutesNamespaceId, feature_categ
           batch_size: described_class::BATCH_SIZE,
           max_batch_size: described_class::MAX_BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: []
         )
       }

@@ -84,7 +84,7 @@ For the [Cells](../cells) project, GitLab will rely on organizations. A cell wil
 
 All tables with the following [`gitlab_schema`](../cells/_index.md#available-cells--organization-schemas) are considered organization level:
 
-- `gitlab_main_cell`
+- `gitlab_main_org`
 - `gitlab_ci`
 - `gitlab_sec`
 - `gitlab_main_user`

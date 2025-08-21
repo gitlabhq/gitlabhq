@@ -7,7 +7,7 @@ feature_categories:
 description: "(Deprecated) A Kubernetes namespace in a GitLab managed Kubernetes cluster"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/e3ca493876ab71ed29817a0af436fc563f564bbe
 milestone: '11.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 desired_sharding_key:
   sharding_project_id:
     awaiting_backfill_on_parent: true

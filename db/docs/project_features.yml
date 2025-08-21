@@ -8,7 +8,7 @@ description: Stores access levels for project features like wikis, issues, repos
   containers, ect.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5606
 milestone: '8.12'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: medium

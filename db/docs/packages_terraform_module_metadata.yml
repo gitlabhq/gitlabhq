@@ -7,7 +7,7 @@ feature_categories:
 description: Terraform Module package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141914
 milestone: '16.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

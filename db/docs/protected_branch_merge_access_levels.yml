@@ -7,7 +7,7 @@ feature_categories:
 description: Stores merge access settings for protected branches
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5081
 milestone: '8.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   protected_branch_project_id: projects
   protected_branch_namespace_id: namespaces

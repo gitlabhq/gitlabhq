@@ -934,7 +934,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
 
     context 'when include_compatible: true' do
       it 'finds the migration with compatible gitlab_schema matching the given configuration parameters' do
-        actual = described_class.for_configuration(:gitlab_main_cell, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
+        actual = described_class.for_configuration(:gitlab_main_org, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
 
         expect(actual).to contain_exactly(migration)
       end
@@ -979,7 +979,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
         )
 
         expect(
-          described_class.find_for_configuration(:gitlab_main_cell, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
+          described_class.find_for_configuration(:gitlab_main_org, 'MyJobClass', :projects, :id, [[:id], [:id_convert_to_bigint]], include_compatible: true)
         ).to eq(migration)
       end
     end

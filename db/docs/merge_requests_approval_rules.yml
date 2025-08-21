@@ -7,7 +7,7 @@ feature_categories:
 description: Main table that stores information about approval rules v2.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179839
 milestone: '17.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
   project_id: projects

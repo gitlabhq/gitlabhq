@@ -22,7 +22,7 @@ RSpec.describe RequeueBackfillMilestoneReleasesProjectId, feature_category: :rel
           batch_size: described_class::GITLAB_OPTIMIZED_BATCH_SIZE,
           batch_class_name: 'LooseIndexScanBatchingStrategy',
           sub_batch_size: described_class::GITLAB_OPTIMIZED_SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: expected_job_args
         )
       }

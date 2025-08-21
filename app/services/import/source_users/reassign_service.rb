@@ -34,7 +34,7 @@ module Import
           return ServiceResponse.error(payload: import_source_user, message: import_source_user.errors.full_messages)
         end
 
-        if bypass_confirmation?
+        if skip_reassignment_confirmation?
           Import::ReassignPlaceholderUserRecordsWorker.perform_async(import_source_user.id)
           track_reassignment_event('reassign_placeholder_user_without_confirmation')
         else
@@ -53,7 +53,7 @@ module Import
         import_source_user.reassign_to_user = assignee_user
         import_source_user.reassigned_by_user = current_user
 
-        return import_source_user.reassign_without_confirmation if bypass_confirmation?
+        return import_source_user.reassign_without_confirmation if skip_reassignment_confirmation?
 
         import_source_user.reassign
       end
@@ -87,11 +87,11 @@ module Import
       end
 
       def invalid_assignee_message
-        if admin_bypass_confirmation? && allow_mapping_to_admins?
+        if admin_skip_reassignment_confirmation? && allow_mapping_to_admins?
           s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
         elsif allow_mapping_to_admins?
           s_('UserMapping|You can assign active users with regular, auditor, or administrator access only.')
-        elsif admin_bypass_confirmation?
+        elsif admin_skip_reassignment_confirmation?
           s_('UserMapping|You can assign users with regular or auditor access only.')
         else
           s_('UserMapping|You can assign active users with regular or auditor access only.')
@@ -101,7 +101,7 @@ module Import
       def valid_assignee?
         assignee_user.present? &&
           assignee_user.human? &&
-          (admin_bypass_confirmation? || assignee_user.active?) &&
+          (admin_skip_reassignment_confirmation? || assignee_user.active?) &&
           # rubocop:disable Cop/UserAdmin -- This should not be affected by admin mode.
           # We just want to know whether the user CAN have admin privileges or not.
           (allow_mapping_to_admins? || !assignee_user.admin?)
@@ -112,19 +112,19 @@ module Import
         ::Gitlab::CurrentSettings.allow_contribution_mapping_to_admins?
       end
 
-      def bypass_confirmation?
-        admin_bypass_confirmation? || enterprise_bypass_confirmation?
+      def skip_reassignment_confirmation?
+        admin_skip_reassignment_confirmation? || enterprise_skip_reassignment_confirmation?
       end
 
-      def admin_bypass_confirmation?
+      def admin_skip_reassignment_confirmation?
         Import::UserMapping::AdminBypassAuthorizer.new(current_user).allowed?
       end
-      strong_memoize_attr :admin_bypass_confirmation?
+      strong_memoize_attr :admin_skip_reassignment_confirmation?
 
       # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
       # :nocov:
       # Overridden in EE
-      def enterprise_bypass_confirmation?
+      def enterprise_skip_reassignment_confirmation?
         false
       end
       # :nocov:

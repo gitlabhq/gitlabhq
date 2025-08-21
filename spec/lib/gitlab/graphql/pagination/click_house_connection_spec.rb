@@ -53,6 +53,14 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
       expect(connection.has_next_page).to be_truthy
     end
 
+    context 'when clickhouse connection is not passed via context' do
+      let(:context_values) { {} }
+
+      it 'falls back to the main DB' do
+        expect(ids).to eq(expected_order.first(3))
+      end
+    end
+
     context 'when the first argument is given' do
       let(:arguments) { { first: 2 } }
 

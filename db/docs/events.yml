@@ -14,7 +14,7 @@ feature_categories:
 description: Stores events created by users interacting with various product features
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a847501fd2ffc1c4becc7d0d352d80168d9b3568
 milestone: '2.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   group_id: namespaces

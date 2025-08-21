@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillIssueTrackerDataShardingKey, migration: :gitlab_main_cell, feature_category: :integrations do
+RSpec.describe QueueBackfillIssueTrackerDataShardingKey, migration: :gitlab_main_org, feature_category: :integrations do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -14,7 +14,7 @@ RSpec.describe QueueBackfillIssueTrackerDataShardingKey, migration: :gitlab_main
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           table_name: :issue_tracker_data,
           column_name: :id,
           batch_size: described_class::BATCH_SIZE,

@@ -14,7 +14,7 @@ module WorkItems
 
       def set_parent(issuable, work_item)
         link = WorkItems::ParentLink.for_work_item(work_item)
-        previous_parents.add(link.work_item_parent) if link.work_item_parent
+        previous_parents.add(link.work_item_parent) if link.work_item_parent && issuable != link.work_item_parent
         link.work_item_parent = issuable
         link
       end
@@ -51,7 +51,15 @@ module WorkItems
           })
         end
 
+        # If there are no previous parents, this means the parent didn't change
+        # and we don't need to publish an event for the new parent
         return if events.blank?
+
+        events << WorkItems::WorkItemUpdatedEvent.new(data: {
+          id: issuable.id,
+          namespace_id: issuable.namespace_id,
+          updated_widgets: ['hierarchy_widget']
+        })
 
         issuable.run_after_commit_or_now do
           Gitlab::EventStore.publish_group(events)

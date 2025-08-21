@@ -7,7 +7,7 @@ feature_categories:
 description: Stores schedule executions for pipeline execution schedule policies
 introduced_by_url:
 milestone: '17.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

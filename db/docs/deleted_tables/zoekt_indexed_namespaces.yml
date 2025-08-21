@@ -8,7 +8,7 @@ description: Describes a namespace that is configured to use a specific Zoekt sh
   for code search
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049
 milestone: '15.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 allow_cross_joins:
 - gitlab_main_clusterwide
 allow_cross_transactions:

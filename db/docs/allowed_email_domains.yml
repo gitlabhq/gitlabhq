@@ -8,7 +8,7 @@ description: Stores email domains for group, only members with email from those 
   can be added to the group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14800
 milestone: '12.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

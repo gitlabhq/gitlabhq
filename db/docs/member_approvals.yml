@@ -8,7 +8,7 @@ description: Stores approval requests for Member promotions along with old and n
   access_levels
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140073
 milestone: '16.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   member_namespace_id: namespaces
 table_size: small

@@ -8,7 +8,7 @@ description: Keeps track of counters scoped to a certain context, e.g. a project
   counter for issues.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17580
 milestone: '10.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

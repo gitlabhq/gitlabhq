@@ -62,7 +62,18 @@ export default {
     },
     currentUser: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
+    },
+    customSearchUsersProcessor: {
+      type: Function,
+      required: false,
+      default: null,
+    },
+    customSearchUsersQuery: {
+      type: Object,
+      required: false,
+      default: null,
     },
     issuableType: {
       type: String,
@@ -122,7 +133,7 @@ export default {
     },
     searchUsers: {
       query() {
-        return userSearchQueries[this.issuableType].query;
+        return this.customSearchUsersQuery || userSearchQueries[this.issuableType].query;
       },
       variables() {
         return this.searchUsersVariables;
@@ -131,6 +142,9 @@ export default {
         return !this.isEditing;
       },
       update(data) {
+        if (this.customSearchUsersProcessor !== null) {
+          return this.customSearchUsersProcessor(data);
+        }
         return (
           data.workspace?.users
             .filter((user) => user)

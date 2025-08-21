@@ -7,7 +7,7 @@ feature_categories:
 description: Used to map imported membership data to real users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/477845
 milestone: '17.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

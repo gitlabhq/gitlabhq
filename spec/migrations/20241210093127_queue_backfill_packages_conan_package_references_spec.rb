@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillPackagesConanPackageReferences, migration: :gitlab_main_cell, feature_category: :package_registry do
+RSpec.describe QueueBackfillPackagesConanPackageReferences, migration: :gitlab_main_org, feature_category: :package_registry do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -14,7 +14,7 @@ RSpec.describe QueueBackfillPackagesConanPackageReferences, migration: :gitlab_m
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           table_name: :packages_conan_file_metadata,
           column_name: :id,
           interval: described_class::DELAY_INTERVAL,

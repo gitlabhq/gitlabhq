@@ -1,0 +1,10 @@
+---
+name: gpg_commit_delegate_to_signature
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/19260
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200870
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560641
+milestone: '18.4'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

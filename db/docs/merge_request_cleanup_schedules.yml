@@ -7,7 +7,7 @@ feature_categories:
 description: Store refs cleanup schedules for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46758
 milestone: '13.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 desired_sharding_key:
   project_id:
     references: projects

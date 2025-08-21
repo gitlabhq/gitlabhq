@@ -93,7 +93,7 @@ RSpec.describe Tooling::Danger::GitlabSchemaValidationSuggestion, feature_catego
         "+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8589b4e137f50293952923bb07e2814257d7784d",
         "+milestone: '7.7'",
         "-gitlab_schema: gitlab_main_clusterwide",
-        "+gitlab_schema: gitlab_main_cell"
+        "+gitlab_schema: gitlab_main_org"
       ]
     end
 

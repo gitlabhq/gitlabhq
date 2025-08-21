@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
               batch_class_name: 'MyBatchClass',
               batch_size: 100,
               sub_batch_size: 10,
-              gitlab_schema: :gitlab_main_cell)
+              gitlab_schema: :gitlab_main_org)
           end.not_to change { Gitlab::Database::BackgroundMigration::BatchedMigration.count }
         end
       end
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
       context 'when different but compatible gitlab_schema' do
         before do
-          allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_cell)
+          allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_org)
         end
 
         it 'finalizes the migration' do
@@ -452,7 +452,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
       context 'with different but compatible gitlab_schema' do
         before do
-          allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_cell)
+          allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_org)
         end
 
         it 'deletes it' do
@@ -585,7 +585,7 @@ RSpec.describe Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers, 
 
     context 'when different but compatible gitlab_schema' do
       before do
-        allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_cell)
+        allow(migration).to receive(:gitlab_schema_from_context).and_return(:gitlab_main_org)
       end
 
       it 'does not raise error when migration exists and is marked as finished' do

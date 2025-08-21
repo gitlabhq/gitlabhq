@@ -2,7 +2,7 @@
 
 class SetInternalBotsToHavePrivateProfiles < Gitlab::Database::Migration[2.2]
   milestone '17.2'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   # NOTE: There are some other internal users defined else where, but we'd like to
   # just focus on bots that are defined in Users::Internal

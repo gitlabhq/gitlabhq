@@ -2566,10 +2566,10 @@ msgstr ""
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
 msgstr ""
 
-msgid "AICatalog|Project ID"
+msgid "AICatalog|Project"
 msgstr ""
 
-msgid "AICatalog|Project ID is required."
+msgid "AICatalog|Project is required."
 msgstr ""
 
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
@@ -3555,9 +3555,6 @@ msgstr ""
 msgid "AccessTokens|The token was revoked successfully."
 msgstr ""
 
-msgid "AccessTokens|They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
-msgstr ""
-
 msgid "AccessTokens|Token already revoked"
 msgstr ""
 
@@ -3586,12 +3583,6 @@ msgid "AccessTokens|Use Demonstrating Proof of Possession (DPoP)"
 msgstr ""
 
 msgid "AccessTokens|View token usage information"
-msgstr ""
-
-msgid "AccessTokens|You can also use personal access tokens to authenticate against Git over HTTP."
-msgstr ""
-
-msgid "AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API."
 msgstr ""
 
 msgid "AccessTokens|You can generate a personal access token for each application you use that needs access to the GitLab API. You can also use personal access tokens to authenticate against Git over HTTP. They are the only accepted password when you have Two-Factor Authentication (2FA) enabled."
@@ -3751,9 +3742,6 @@ msgid "Active"
 msgstr ""
 
 msgid "Active group access tokens"
-msgstr ""
-
-msgid "Active personal access tokens"
 msgstr ""
 
 msgid "Active pipeline trigger tokens"
@@ -37341,6 +37329,9 @@ msgstr ""
 msgid "Large File Storage"
 msgstr ""
 
+msgid "Large table corruption checks skipped. Manual checking recommended."
+msgstr ""
+
 msgid "Last %d day"
 msgid_plural "Last %d days"
 msgstr[0] ""
@@ -61074,6 +61065,9 @@ msgstr ""
 msgid "Size Limits"
 msgstr ""
 
+msgid "Size limit"
+msgstr ""
+
 msgid "Size limit per repository (MiB)"
 msgstr ""
 
@@ -61087,6 +61081,9 @@ msgid "Skipped"
 msgstr ""
 
 msgid "Skipped deployment to"
+msgstr ""
+
+msgid "Skipped indexes"
 msgstr ""
 
 msgid "Slack logo"
@@ -62213,9 +62210,6 @@ msgstr ""
 msgid "Status checks must pass."
 msgstr ""
 
-msgid "Status feature not available"
-msgstr ""
-
 msgid "Status list requires either a system defined status or custom status"
 msgstr ""
 
@@ -63249,6 +63243,9 @@ msgid "Table"
 msgstr ""
 
 msgid "Table of contents"
+msgstr ""
+
+msgid "Table size"
 msgstr ""
 
 msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not supported in Markdown and will be converted to HTML."
@@ -66876,6 +66873,9 @@ msgstr ""
 msgid "Token"
 msgstr ""
 
+msgid "Token '%{name}' expires today"
+msgstr ""
+
 msgid "Token name"
 msgstr ""
 
@@ -70207,9 +70207,6 @@ msgid "VirtualRegistry|%{hours} hour cache"
 msgid_plural "VirtualRegistry|%{hours} hours cache"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "VirtualRegistry|%{size} storage used"
-msgstr ""
 
 msgid "VirtualRegistry|Add upstream"
 msgstr ""
@@ -77073,9 +77070,6 @@ msgid "per user/month"
 msgstr ""
 
 msgid "personal access token"
-msgstr ""
-
-msgid "personal access tokens"
 msgstr ""
 
 msgid "pipelineEditorWalkthrough|Let's do this!"

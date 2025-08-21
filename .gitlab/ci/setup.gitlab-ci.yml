@@ -11,7 +11,7 @@ backup gems:
       optional: true
   variables:
     BUNDLE_WITHOUT: ""
-    BUNDLE_WITH: "production:development:test"
+    BUNDLE_WITH: "development:test"
     SETUP_DB: "false"
   script:
     - echo -e "\e[0Ksection_start:`date +%s`:bundle-package[collapsed=true]\r\e[0KPackaging gems"

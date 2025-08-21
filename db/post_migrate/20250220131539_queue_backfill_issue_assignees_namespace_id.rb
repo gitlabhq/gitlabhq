@@ -2,7 +2,7 @@
 
 class QueueBackfillIssueAssigneesNamespaceId < Gitlab::Database::Migration[2.2]
   milestone '17.10'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillIssueAssigneesNamespaceId"
   STRATEGY = 'PrimaryKeyBatchingStrategy'
@@ -19,7 +19,7 @@ class QueueBackfillIssueAssigneesNamespaceId < Gitlab::Database::Migration[2.2]
     max_order ||= 0
 
     Gitlab::Database::BackgroundMigration::BatchedMigration.create!(
-      gitlab_schema: :gitlab_main_cell,
+      gitlab_schema: :gitlab_main_org,
       job_class_name: MIGRATION,
       job_arguments: [
         :namespace_id,

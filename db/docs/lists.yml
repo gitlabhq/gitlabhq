@@ -7,7 +7,7 @@ feature_categories:
 description: Configuration of a single list on an issue board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/611dab2e522e5e59cf09cd459a31686e65616863
 milestone: '8.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
   project_id: projects

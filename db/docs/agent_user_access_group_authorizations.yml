@@ -8,7 +8,7 @@ description: Configuration for a group that is authorized to use a particular cl
   agent through user_access keyword
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116901
 milestone: '15.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

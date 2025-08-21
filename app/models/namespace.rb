@@ -256,8 +256,8 @@ class Namespace < ApplicationRecord
       .where(project_statistics[:namespace_id].eq(arel_table[:id]))
       .lateral(subquery.name)
 
-    model.select(arel_table[Arel.star], subquery[Arel.star])
-         .from([arel.as(arel_table.name), statistics])
+    select(arel_table[Arel.star], subquery[Arel.star])
+      .joins(", #{statistics.to_sql}")
   end
 
   scope :with_jira_installation, ->(installation_id) do

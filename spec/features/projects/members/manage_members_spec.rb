@@ -35,7 +35,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     expect(all_rows[3]).to have_content(project_developer.name)
   end
 
-  it 'show user once if member of both group and project', :aggregate_failures do
+  it 'show user once if member of both group and project', :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/560628' do
     group.add_reporter(project_maintainer)
 
     visit_members_page

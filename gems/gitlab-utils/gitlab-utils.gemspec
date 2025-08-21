@@ -23,8 +23,12 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "addressable", "~> 2.8"
   spec.add_runtime_dependency "rake", "~> 13.0"
 
+  spec.add_development_dependency 'base64', '~> 0.2.0'
+  spec.add_development_dependency 'benchmark', '~> 0.4.0'
+  spec.add_development_dependency 'bigdecimal', '~> 3.2.2'
   spec.add_development_dependency "factory_bot_rails", "~> 6.2.0"
   spec.add_development_dependency "gitlab-styles", "~> 10.1.0"
+  spec.add_development_dependency 'mutex_m', '~> 0.3'
   spec.add_development_dependency "rspec", "~> 3.12"
   spec.add_development_dependency "rspec-benchmark", "~> 0.6.0"
   spec.add_development_dependency "rspec-parameterized", "~> 1.0"

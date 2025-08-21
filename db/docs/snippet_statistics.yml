@@ -8,7 +8,7 @@ description: Stores the repository size, commit count, and file count regarding 
   snippet repository.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35026
 milestone: '13.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   snippet_project_id: projects

@@ -8,7 +8,7 @@ description: Relates a Project/Namespace and Security Orchestration Policy Proje
   where Security Policies are stored in the repository as a YAML file.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53743
 milestone: '13.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

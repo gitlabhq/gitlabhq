@@ -130,9 +130,7 @@ export default {
       ].includes(true);
     },
     showStatusDropdown() {
-      return (
-        this.hasStatusFeature && !this.isEpicsList && this.glFeatures.workItemStatusFeatureFlag
-      );
+      return this.hasStatusFeature && !this.isEpicsList;
     },
     workItemTypeIds() {
       return [...new Set(this.checkedItems.map((item) => item.workItemType.id))];

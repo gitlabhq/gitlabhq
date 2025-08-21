@@ -7,7 +7,7 @@ feature_categories:
 description: Store user mentions for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: medium
 sharding_key:
   project_id: projects

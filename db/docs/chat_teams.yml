@@ -8,7 +8,7 @@ feature_categories:
 description: Stores mappings from external chat teams to GitLab groups.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8746
 milestone: '9.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

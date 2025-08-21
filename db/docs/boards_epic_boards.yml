@@ -8,7 +8,7 @@ description: Configuration information for epic boards, including default scope 
   visibility of open and closed lists
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48658
 milestone: '13.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

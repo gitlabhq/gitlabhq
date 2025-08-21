@@ -7,7 +7,7 @@ feature_categories:
 description: Stores settings per project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/a2a7ad291f64a5db74c1bc21fb556e6e8862d0f3
 milestone: '10.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

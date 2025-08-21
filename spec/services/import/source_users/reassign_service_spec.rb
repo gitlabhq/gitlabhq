@@ -76,9 +76,92 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
     end
 
-    context 'when the reassigned by and reassigning user are valid' do
-      it_behaves_like 'a success response'
+    shared_examples 'normal reassignment responses for assignee types' do |assignee_error:, skip_admin: false|
+      context 'when assignee user is active and not an admin' do
+        it_behaves_like 'a success response'
+      end
+
+      context 'when assignee user does not exist' do
+        let(:assignee_user) { nil }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is not a human' do
+        let(:assignee_user) { create(:user, :bot) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is blocked' do
+        let(:assignee_user) { create(:user, :blocked) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is banned' do
+        let(:assignee_user) { create(:user, :banned) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is deactivated' do
+        let(:assignee_user) { create(:user, :deactivated) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is an admin', unless: skip_admin do
+        let(:assignee_user) { create(:user, :admin) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
     end
+
+    shared_examples 'bypassed reassignment responses for assignee types' do |assignee_error:, skip_admin: false|
+      context 'when assignee user is active and not an admin' do
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'when assignee user does not exist' do
+        let(:assignee_user) { nil }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is not a human' do
+        let(:assignee_user) { create(:user, :bot) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+
+      context 'when assignee user is blocked' do
+        let(:assignee_user) { create(:user, :blocked) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'when assignee user is banned' do
+        let(:assignee_user) { create(:user, :banned) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'when assignee user is deactivated' do
+        let(:assignee_user) { create(:user, :deactivated) }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'when assignee user is an admin', unless: skip_admin do
+        let(:assignee_user) { create(:user, :admin) }
+
+        it_behaves_like 'an error response', 'invalid assignee', error: assignee_error
+      end
+    end
+
+    it_behaves_like 'normal reassignment responses for assignee types',
+      assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
 
     context 'when current user does not have permission' do
       let(:current_user) { create(:user) }
@@ -97,67 +180,23 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         error: 'Import source user has an invalid status for this operation'
     end
 
-    context 'when assignee user does not exist' do
-      let(:assignee_user) { nil }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
-    context 'when assignee user is not a human' do
-      let(:assignee_user) { create(:user, :bot) }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
-    context 'when assignee user is blocked' do
-      let(:assignee_user) { create(:user, :blocked) }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
-    context 'when assignee user is banned' do
-      let(:assignee_user) { create(:user, :banned) }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
-    context 'when assignee user is deactivated' do
-      let(:assignee_user) { create(:user, :deactivated) }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
-    context 'when assignee user is an admin' do
-      let(:assignee_user) { create(:user, :admin) }
-
-      it_behaves_like 'an error response', 'invalid assignee',
-        error: s_('UserMapping|You can assign active users with regular or auditor access only.')
-    end
-
     context 'when allow_contribution_mapping_to_admins setting is enabled' do
       before do
         stub_application_setting(allow_contribution_mapping_to_admins: true)
       end
 
-      context 'and the assignee user is inactive' do
-        let(:assignee_user) { create(:user, :deactivated) }
+      it_behaves_like 'normal reassignment responses for assignee types',
+        assignee_error: s_(
+          'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+        ), skip_admin: true do
+        context 'and the assignee user is an admin' do
+          let(:assignee_user) { create(:user, :admin) }
 
-        it_behaves_like 'an error response', 'invalid assignee',
-          error: s_('UserMapping|You can assign active users with regular, auditor, or administrator access only.')
+          it_behaves_like 'a success response'
+        end
       end
 
-      context 'and the assignee user is an admin' do
-        let(:assignee_user) { create(:user, :admin) }
-
-        it_behaves_like 'a success response'
-      end
-
-      context 'and the current user is an admin with bypass placeholder confirmation enabled', :enable_admin_mode do
+      context 'and admin bypass placeholder confirmation is enabled', :enable_admin_mode do
         let_it_be(:current_user) { create(:user, :admin) }
 
         before do
@@ -165,22 +204,51 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
           stub_config_setting(impersonation_enabled: true)
         end
 
-        context 'and the assignee user is an admin' do
-          let(:assignee_user) { create(:user, :admin) }
+        it_behaves_like 'bypassed reassignment responses for assignee types',
+          assignee_error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.'),
+          skip_admin: true do
+          context 'and the assignee user is an admin' do
+            let(:assignee_user) { create(:user, :admin) }
 
-          it_behaves_like 'a success response that bypasses user confirmation'
+            it_behaves_like 'a success response that bypasses user confirmation'
+          end
         end
 
-        context 'and assignee user is not a human' do
-          let(:assignee_user) { create(:user, :bot) }
+        context 'and the current user is not an admin' do
+          let_it_be(:current_user) { user }
 
-          it_behaves_like 'an error response', 'invalid assignee',
-            error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.')
+          it_behaves_like 'normal reassignment responses for assignee types',
+            assignee_error: s_(
+              'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+            ), skip_admin: true do
+            context 'and the assignee user is an admin' do
+              let(:assignee_user) { create(:user, :admin) }
+
+              it_behaves_like 'a success response'
+            end
+          end
+        end
+
+        context 'and user impersonation is not enabled' do
+          before do
+            stub_config_setting(impersonation_enabled: false)
+          end
+
+          it_behaves_like 'normal reassignment responses for assignee types',
+            assignee_error: s_(
+              'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+            ), skip_admin: true do
+            context 'and the assignee user is an admin' do
+              let(:assignee_user) { create(:user, :admin) }
+
+              it_behaves_like 'a success response'
+            end
+          end
         end
       end
     end
 
-    context 'when the current user is an admin with bypass placeholder confirmation enabled', :enable_admin_mode do
+    context 'when admin bypass placeholder confirmation is enabled', :enable_admin_mode do
       let_it_be(:current_user) { create(:user, :admin) }
 
       before do
@@ -188,40 +256,23 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         stub_config_setting(impersonation_enabled: true)
       end
 
-      context 'when the assignee user is an active human user' do
-        it_behaves_like 'a success response that bypasses user confirmation'
+      it_behaves_like 'bypassed reassignment responses for assignee types',
+        assignee_error: s_('UserMapping|You can assign users with regular or auditor access only.')
+
+      context 'and the current user is not an admin' do
+        let_it_be(:current_user) { user }
+
+        it_behaves_like 'normal reassignment responses for assignee types',
+          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
       end
 
-      context 'and the assignee user is blocked' do
-        let(:assignee_user) { create(:user, :blocked) }
+      context 'and user impersonation is not enabled' do
+        before do
+          stub_config_setting(impersonation_enabled: false)
+        end
 
-        it_behaves_like 'a success response that bypasses user confirmation'
-      end
-
-      context 'and the assignee user is banned' do
-        let(:assignee_user) { create(:user, :banned) }
-
-        it_behaves_like 'a success response that bypasses user confirmation'
-      end
-
-      context 'and the assignee user is deactivated' do
-        let(:assignee_user) { create(:user, :deactivated) }
-
-        it_behaves_like 'a success response that bypasses user confirmation'
-      end
-
-      context 'and the assignee user is an admin' do
-        let(:assignee_user) { create(:user, :admin) }
-
-        it_behaves_like 'an error response', 'invalid assignee',
-          error: s_('UserMapping|You can assign users with regular or auditor access only.')
-      end
-
-      context 'and the assignee user is not human' do
-        let(:assignee_user) { create(:user, :bot) }
-
-        it_behaves_like 'an error response', 'invalid assignee',
-          error: s_('UserMapping|You can assign users with regular or auditor access only.')
+        it_behaves_like 'normal reassignment responses for assignee types',
+          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
       end
     end
 

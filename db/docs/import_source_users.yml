@@ -8,7 +8,7 @@ description: Used to map imported user contributions to internal placeholder use
   or real users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147488
 milestone: '17.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

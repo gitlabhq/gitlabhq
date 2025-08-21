@@ -48,7 +48,6 @@ stages:
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_WITHOUT: development
   before_script:
     - cd qa && bundle install
 

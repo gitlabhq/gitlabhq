@@ -9,7 +9,7 @@ description: The Message-ID of the original email that resulted in the creation 
   an issue
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71749
 milestone: '14.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

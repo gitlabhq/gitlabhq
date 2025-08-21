@@ -7,7 +7,7 @@ feature_categories:
 description: Namespace and group-level settings for the package registry
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50104
 milestone: '13.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

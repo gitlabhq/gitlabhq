@@ -5,7 +5,7 @@ class FinalizeHkBackfillIncidentManagementTimelineEventTagLinksProjectI < Gitlab
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     ensure_batched_background_migration_is_finished(

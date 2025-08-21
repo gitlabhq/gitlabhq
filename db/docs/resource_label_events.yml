@@ -8,6 +8,6 @@ description: Records the addition and removal of labels from resources that can 
   labelled; such as issues, MRs and epics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6697
 milestone: '11.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514594
 table_size: over_limit

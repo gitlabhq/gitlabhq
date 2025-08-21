@@ -81,6 +81,32 @@ To resolve this issue:
 1. Add the `wss://` prefix to your `TF_VAR_kas_address` variable. For example: `wss://kas.gitlab.com`.
 1. Update your configuration and redeploy the agent.
 
+## Error: `ImagePullBackOff` when starting workspace in offline environment
+
+When you create a workspace in an offline environment, you might see this error:
+
+```plaintext
+workspace-example-abc123-def456   0/1   Init:ImagePullBackOff   0
+```
+
+This error occurs when the workspace cannot pull init container images from `registry.gitlab.com`.
+In offline environments, the init container image is hardcoded and cannot be overridden from your devfile.
+
+{{< alert type="warning" >}}
+
+The following workaround is unsupported and temporary. Use at your own risk until
+[issue 509983](https://gitlab.com/gitlab-org/gitlab/-/issues/509983) provides a supported solution.
+
+{{< /alert >}}
+
+The workaround is:
+
+1. Deploy a [Kubernetes mutating webhook](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/) to modify init container image references.
+1. Ensure you have cluster administrator privileges to create, update, or delete
+   the `MutatingWebhookConfiguration`.
+
+For an example implementation, see [A Simple Kubernetes Admission Webhook](https://slack.engineering/simple-kubernetes-webhook/).
+
 ## Error: `redirect URI included is not valid`
 
 When accessing a workspace, you might encounter an OAuth error about an invalid redirect URI.

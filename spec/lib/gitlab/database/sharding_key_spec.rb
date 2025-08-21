@@ -429,7 +429,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       Tables: #{tables_with_sharding_keys_not_in_sharding_key_required_schema.join(',')}
       have a sharding key defined, but does not have a sharding-key-required schema assigned.
       Tables with sharding keys should have a schema where `require_sharding_key` is enabled
-      like `gitlab_main_cell` or `gitlab_ci`.
+      like `gitlab_main_org` or `gitlab_ci`.
       Please change the `gitlab_schema` of these tables accordingly.
     ERROR
   end

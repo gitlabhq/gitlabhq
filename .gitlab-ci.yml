@@ -218,7 +218,7 @@ variables:
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
   RAILS_ENV: "test"
   NODE_ENV: "test"
-  BUNDLE_WITHOUT: "production:development"
+  BUNDLE_WITHOUT: "development"
   BUNDLE_INSTALL_FLAGS: "--jobs=$(nproc) --retry=3"
   BUNDLE_FROZEN: "true"
   BUNDLE_GEMFILE: Gemfile

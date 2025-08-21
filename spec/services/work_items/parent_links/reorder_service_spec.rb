@@ -114,6 +114,10 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
           let(:params) { base_param.merge({ adjacent_work_item: last_adjacent, relative_position: 'BEFORE' }) }
 
           it_behaves_like 'updates hierarchy order without notes'
+
+          it 'does not publish WorkItemUpdated event' do
+            expect { reorder }.not_to publish_event(WorkItems::WorkItemUpdatedEvent)
+          end
         end
 
         context 'when moving after adjacent work item' do
@@ -158,9 +162,10 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
         end
 
         context 'when previous parent was in place' do
-          before do
-            create(:parent_link, work_item: work_item,
-              work_item_parent: create(:work_item, :objective, project: project))
+          let_it_be(:previous_parent) { create(:work_item, :objective, project: project) }
+
+          before_all do
+            create(:parent_link, work_item: work_item, work_item_parent: previous_parent)
           end
 
           context 'when moving before adjacent work item' do
@@ -168,6 +173,22 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
 
             it_behaves_like 'updates hierarchy order and creates notes' do
               let(:call_counter) { 2 }
+            end
+
+            it 'publishes WorkItemUpdated event for both old and new parents' do
+              expect { reorder }.to publish_event(WorkItems::WorkItemUpdatedEvent)
+                .with({
+                  id: previous_parent.id,
+                  namespace_id: previous_parent.namespace_id,
+                  updated_widgets: ["hierarchy_widget"]
+                }).and(
+                  publish_event(WorkItems::WorkItemUpdatedEvent)
+                    .with({
+                      id: parent.id,
+                      namespace_id: parent.namespace_id,
+                      updated_widgets: ["hierarchy_widget"]
+                    })
+                )
             end
           end
 

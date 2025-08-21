@@ -14,7 +14,7 @@ RSpec.describe QueueMigrateAiCodeSuggestionEvents, feature_category: :value_stre
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           table_name: :ai_code_suggestion_events,
           column_name: :id,
           batch_size: described_class::BATCH_SIZE,

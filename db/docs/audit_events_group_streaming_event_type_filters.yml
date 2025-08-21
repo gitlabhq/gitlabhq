@@ -8,7 +8,7 @@ description: Stores audit event type filters for external audit event destinatio
   configurations of top-level groups.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141739
 milestone: '16.10'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

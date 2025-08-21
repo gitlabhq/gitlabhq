@@ -8,7 +8,7 @@ description: Also called iterations, timeboxes to which issues can be assigned. 
   to plan and track work.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30125
 milestone: '13.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

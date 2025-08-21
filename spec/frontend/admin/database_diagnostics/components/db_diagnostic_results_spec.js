@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DbDiagnosticResults from '~/admin/database_diagnostics/components/db_diagnostic_results.vue';
 import DbCollationMismatches from '~/admin/database_diagnostics/components/db_collation_mismatches.vue';
 import DbCorruptedIndexes from '~/admin/database_diagnostics/components/db_corrupted_indexes.vue';
+import DbSkippedIndexes from '~/admin/database_diagnostics/components/db_skipped_indexes.vue';
 import { collationMismatchResults } from '../mock_data';
 
 describe('DbDiagnosticResults component', () => {
@@ -35,6 +36,12 @@ describe('DbDiagnosticResults component', () => {
   it('passes correct props to DbCorruptedIndexes', () => {
     expect(wrapper.findComponent(DbCorruptedIndexes).props('corruptedIndexes')).toBe(
       defaultProps.dbDiagnosticResult.corrupted_indexes,
+    );
+  });
+
+  it('passes correct props to DbSkippedIndexes', () => {
+    expect(wrapper.findComponent(DbSkippedIndexes).props('skippedIndexes')).toBe(
+      defaultProps.dbDiagnosticResult.skipped_indexes,
     );
   });
 

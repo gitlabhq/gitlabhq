@@ -8,7 +8,7 @@ description: Store information about the changes made within a git push for a me
   request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c983e8eb3d9cac01090b8657735544f71f891576
 milestone: '6.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: over_limit

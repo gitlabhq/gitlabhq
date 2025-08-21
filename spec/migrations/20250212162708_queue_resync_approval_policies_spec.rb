@@ -14,7 +14,7 @@ RSpec.describe QueueResyncApprovalPolicies, feature_category: :security_policy_m
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           table_name: :security_policies,
           column_name: :id,
           interval: described_class::DELAY_INTERVAL,

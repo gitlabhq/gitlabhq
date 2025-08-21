@@ -7,7 +7,7 @@ feature_categories:
 description: Stores the compliance requirements for a compliance management framework
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161382
 milestone: '17.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

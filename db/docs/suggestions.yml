@@ -7,6 +7,6 @@ feature_categories:
 description: Storing code suggestions within notes
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8656
 milestone: '11.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550696
 table_size: small

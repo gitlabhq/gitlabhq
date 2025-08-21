@@ -8,7 +8,7 @@ description: Represents the join between an Issue and an Observability metric st
   in Gitlab Observability Backend.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160713
 milestone: '17.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

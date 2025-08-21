@@ -7,7 +7,7 @@ feature_categories:
 description: Checkpoint writes for Duo Workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178271
 milestone: '17.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

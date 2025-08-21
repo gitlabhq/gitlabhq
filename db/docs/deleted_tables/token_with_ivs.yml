@@ -6,7 +6,7 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/37b80b4048190c2e1a35ec399e4aeb35d511090e
 milestone: '13.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/322592 # scheduled for removal
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157650
 removed_in_milestone: '17.5'

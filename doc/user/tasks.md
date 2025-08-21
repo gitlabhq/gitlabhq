@@ -316,15 +316,9 @@ To reorder them, drag them around.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/521286) in GitLab 18.4. Feature flag `work_item_status_feature_flag` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 <!-- Turn off the future tense test because of "won't do". -->
 <!-- vale gitlab_base.FutureTense = NO -->

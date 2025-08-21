@@ -8,7 +8,7 @@ description: Used to store the configuration details of a bulk import of groups 
   projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
 table_size: small

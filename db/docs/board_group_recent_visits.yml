@@ -8,7 +8,7 @@ description: The last group issue board visited by a user, used to redirect them
   the default boards page
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/7aeab58f4861144fcc1d334907cb1b465c645001
 milestone: '11.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

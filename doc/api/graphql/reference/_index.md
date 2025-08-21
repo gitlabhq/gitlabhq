@@ -13640,14 +13640,13 @@ Input type: `WorkItemBulkUpdateInput`
 | <a id="mutationworkitembulkupdateassigneeswidget"></a>`assigneesWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitembulkupdateconfidential"></a>`confidential` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
-| <a id="mutationworkitembulkupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitembulkupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project or group (Premium and Ultimate only) containing the work items that will be updated. User paths are not supported. |
 | <a id="mutationworkitembulkupdatehealthstatuswidget"></a>`healthStatusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatehierarchywidget"></a>`hierarchyWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationworkitembulkupdateiterationwidget"></a>`iterationWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitembulkupdatemilestonewidget"></a>`milestoneWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
-| <a id="mutationworkitembulkupdateparentid"></a>`parentId` {{< icon name="warning-solid" >}} | [`WorkItemsParentID`](#workitemsparentid) | **Deprecated**: Use full_path instead. Deprecated in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatestateevent"></a>`stateEvent` {{< icon name="warning-solid" >}} | [`WorkItemStateEvent`](#workitemstateevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitembulkupdatesubscriptionevent"></a>`subscriptionEvent` {{< icon name="warning-solid" >}} | [`WorkItemSubscriptionEvent`](#workitemsubscriptionevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
@@ -51004,12 +51003,6 @@ An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
 While we transition from Issues into Work Items this type will temporarily support
 `IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
-
-### `WorkItemsParentID`
-
-A `WorkItemsParentID` is a global ID. It is encoded as a string.
-
-An example `WorkItemsParentID` is: `"gid://gitlab/WorkItems::Parent/1"`.
 
 ### `WorkItemsRelatedWorkItemLinkID`
 

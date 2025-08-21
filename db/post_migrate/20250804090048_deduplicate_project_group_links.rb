@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class DeduplicateProjectGroupLinks < Gitlab::Database::Migration[2.3]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   milestone '18.3'
 
   def up

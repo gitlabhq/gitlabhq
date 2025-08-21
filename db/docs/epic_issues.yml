@@ -7,7 +7,7 @@ feature_categories:
 description: The relationships between Epics and Issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3302
 milestone: '10.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   namespace_id: namespaces

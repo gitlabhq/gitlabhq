@@ -9,7 +9,7 @@ description: When a project is first forked, a row is created in this table. Als
   can send merge reqeusts to each other.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3098
 milestone: '10.1'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
 table_size: small

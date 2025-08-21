@@ -313,6 +313,35 @@ Prerequisites:
    indicating that the existing content will be overridden.
 1. Select **Apply template**.
 
+## Wiki page subscriptions
+
+The wiki page subscriptions feature allows you to receive notifications when changes are made to wiki pages you're interested in.
+This feature can enhance collaboration by keeping team members informed about updates to important documentation.
+
+You can subscribe to specific wiki pages to receive notifications when someone:
+
+- Adds a comment to the page
+- Replies to a comment
+
+### Subscribe to a wiki page
+
+1. Open the wiki page you want to follow.
+1. In the top-right corner, next to the **Edit**, select the bell icon ({{< icon name="notifications" >}}).
+1. Select the bell icon ({{< icon name="notifications-off" >}}) again to unsubscribe.
+
+When you change your subscription status, GitLab shows a confirmation message:
+
+- If subscribed, `Notifications turned on`
+- If unsubscribed, `Notifications turned off`
+
+### Subscription permissions
+
+Any user with access to view a wiki page can subscribe to it. Your subscription status is personal and doesn't affect other users.
+
+### Notification settings
+
+Notifications follow your project notification settings. They are delivered through your configured notification channels.
+
 ## View history of a wiki page
 
 The changes of a wiki page over time are recorded in the wiki's Git repository.

@@ -2,7 +2,7 @@
 
 class QueueBackfillSecurityOrchestrationPolicyRuleSchedulesNamespaceId < Gitlab::Database::Migration[2.2]
   milestone '17.4'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillSecurityOrchestrationPolicyRuleSchedulesNamespaceId"
   DELAY_INTERVAL = 2.minutes

@@ -3,7 +3,7 @@
 class BackfillSecurityPolicySettingsOrganizationId < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
   milestone '18.2'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   DEFAULT_ORG_ID = 1
 

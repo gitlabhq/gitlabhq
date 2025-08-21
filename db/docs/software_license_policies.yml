@@ -8,7 +8,7 @@ description: Allows user to approve or deny the use certain software licenses in
   project.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
 milestone: '11.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

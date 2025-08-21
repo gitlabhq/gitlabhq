@@ -7,6 +7,6 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cf6b622686eacffa46aba5c8ed6419dc877a6b58
 milestone: '7.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454158
 table_size: small

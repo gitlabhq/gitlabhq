@@ -37,7 +37,7 @@ RSpec.describe 'no new tables using gitlab_main_clusterwide schema', feature_cat
       which is no longer allowed starting from GitLab #{milestone_cutoff}.
 
       Please use one of the following schemas instead:
-        - `gitlab_main_cell`
+        - `gitlab_main_org`
         - `gitlab_main_cell_local`
         - `gitlab_main_user`
 

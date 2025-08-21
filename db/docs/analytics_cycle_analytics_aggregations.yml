@@ -8,7 +8,7 @@ description: Stores Value Stream Analytics aggregation related metadata for top-
   groups.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79942
 milestone: '14.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

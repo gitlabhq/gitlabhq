@@ -5868,14 +5868,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'project member'
-
-        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-          before do
-            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-          end
-
-          it_behaves_like 'project member'
-        end
       end
 
       context 'when user is member of non-owner project' do
@@ -5886,14 +5878,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'project member'
-
-        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-          before do
-            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-          end
-
-          it_behaves_like 'project member'
-        end
       end
 
       context 'when group member accesses project runner' do
@@ -5910,63 +5894,6 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           it_behaves_like 'project member'
-        end
-      end
-    end
-
-    context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-      before do
-        stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-      end
-
-      it 'returns results from project_members, group_members and group_runners methods' do
-        expect(user).to receive_messages(
-          ci_available_project_runners_from_project_members: [],
-          ci_available_project_runners_from_group_members: [],
-          ci_available_group_runners: []
-        )
-        expect(user).not_to receive(:ci_available_project_runners)
-
-        ci_available_runners
-      end
-
-      context 'with a project runner owned by inaccessible project' do
-        let_it_be(:project) { create(:project, owners: user) }
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-        let_it_be(:another_project) { create(:project) }
-        let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
-
-        it 'returns runner shared from inaccessible project' do
-          is_expected.to contain_exactly(runner, another_project_runner)
-        end
-      end
-    end
-
-    context 'feature flag behavior' do
-      let(:ff_user) { user }
-
-      before do
-        stub_feature_flags(optimize_ci_owned_project_runners_query: ff_user)
-      end
-
-      it 'respects feature flag scoped to user' do
-        expect(user).to receive(:ci_available_project_runners).and_return([])
-        expect(user).to receive(:ci_available_group_runners).and_return([])
-        expect(user).not_to receive(:ci_available_project_runners_from_project_members)
-        expect(user).not_to receive(:ci_available_project_runners_from_group_members)
-
-        ci_available_runners
-      end
-
-      context 'when feature flag is only enabled for other user' do
-        let(:ff_user) { build(:user, id: 1) }
-
-        it 'uses old behavior' do
-          expect(user).to receive(:ci_available_project_runners_from_project_members).and_return([])
-          expect(user).to receive(:ci_available_project_runners_from_group_members).and_return([])
-          expect(user).to receive(:ci_available_group_runners).and_return([])
-
-          ci_available_runners
         end
       end
     end

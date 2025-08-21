@@ -7,7 +7,7 @@ feature_categories:
 description: Possible values for select / multi-select custom fields
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167591
 milestone: '17.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

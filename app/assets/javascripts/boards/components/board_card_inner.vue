@@ -200,7 +200,7 @@ export default {
       return this.item?.status?.id !== this.list?.status?.id;
     },
     showStatus() {
-      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag && this.isNotListStatus;
+      return this.hasStatus && this.isNotListStatus;
     },
     hasStatus() {
       return Boolean(this.item.status);

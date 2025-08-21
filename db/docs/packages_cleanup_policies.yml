@@ -7,7 +7,7 @@ feature_categories:
 description: Cleanup policy parameters for packages.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85918
 milestone: '15.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

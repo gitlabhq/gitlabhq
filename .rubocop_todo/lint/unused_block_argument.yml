@@ -58,7 +58,6 @@ Lint/UnusedBlockArgument:
     - 'app/serializers/merge_request_widget_entity.rb'
     - 'app/serializers/note_entity.rb'
     - 'app/serializers/paginated_diff_entity.rb'
-    - 'app/serializers/personal_access_token_entity.rb'
     - 'app/serializers/test_suite_entity.rb'
     - 'app/serializers/user_preference_entity.rb'
     - 'app/services/authorized_project_update/find_records_due_for_refresh_service.rb'

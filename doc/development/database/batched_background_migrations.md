@@ -318,7 +318,7 @@ the migration that was used to enqueue it. Pay careful attention to:
 - The job arguments: Needs to exactly match or it will not find the queued migration
 - The `gitlab_schema`: Needs to exactly match or it will not find the queued
   migration. Even if the `gitlab_schema` of the table has changed from
-  `gitlab_main` to `gitlab_main_cell` in the meantime you must finalize it
+  `gitlab_main` to `gitlab_main_org` in the meantime you must finalize it
   with `gitlab_main` if that's what was used when queueing the batched
   background migration.
 

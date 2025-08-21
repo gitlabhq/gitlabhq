@@ -9,7 +9,7 @@ description: A rule associated to a protected environment that allows a user, gr
   for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82800
 milestone: '14.10'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   protected_environment_project_id: projects
   protected_environment_group_id: namespaces

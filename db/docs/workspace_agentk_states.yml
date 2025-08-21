@@ -8,7 +8,7 @@ description: Stores desired configuration for a workspace when used in conjuncti
   with agentk
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190027
 milestone: '18.1'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

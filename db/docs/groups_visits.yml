@@ -8,7 +8,7 @@ description: Tracks group visits so we can suggest groups that are recently and 
   visited.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123554
 milestone: '16.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   entity_id: namespaces
 table_size: small

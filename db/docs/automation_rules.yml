@@ -5,7 +5,7 @@ feature_categories:
 -
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111021
 milestone: '15.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

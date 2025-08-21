@@ -7,7 +7,7 @@ feature_categories:
 description: Stores monthly snapshots of DORA4 performance scores per project.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115689
 milestone: '15.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

@@ -7,7 +7,7 @@ feature_categories:
 description: Holds information about Design Management Repositories
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111555
 milestone: '15.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   namespace_id: namespaces

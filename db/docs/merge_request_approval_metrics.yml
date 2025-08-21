@@ -8,7 +8,7 @@ description: Stores approval metrics for merge requests, including the last appr
   timestamp
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175989#note_2265557609
 milestone: '17.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   target_project_id: projects
 table_size: small

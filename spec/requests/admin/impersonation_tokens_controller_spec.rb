@@ -57,7 +57,8 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
   end
 
   describe '#create', :with_current_organization do
-    it_behaves_like '#create access token' do
+    # Replace to `it_behaves_like 'create access token'` once we migrate the legacy UI to use initSharedAccessTokenApp.
+    it_behaves_like 'create access token - legacy' do
       let(:url) { admin_user_impersonation_tokens_path(user_id: user.username) }
       let(:token_attributes) { attributes_for(:personal_access_token, impersonation: true) }
     end

@@ -151,9 +151,7 @@ export default {
       return findStatusWidget(this.childItem)?.status?.name;
     },
     showState() {
-      return this.glFeatures.workItemStatusFeatureFlag
-        ? !this.workItemStatus || !this.isChildItemOpen
-        : true;
+      return !this.workItemStatus || !this.isChildItemOpen;
     },
     displayReference() {
       return getDisplayReference(this.workItemFullPath, this.childItem.reference);

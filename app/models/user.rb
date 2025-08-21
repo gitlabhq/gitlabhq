@@ -2101,16 +2101,25 @@ class User < ApplicationRecord
   # (group runners assigned to groups where the user has owner access to
   # and project runners assigned to projects the user has maintainer access to)
   def ci_available_runners
-    @ci_available_runners ||=
-      if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
-        Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
-      else
-        Ci::Runner.from_union([
-          ci_available_project_runners_from_project_members,
-          ci_available_project_runners_from_group_members,
-          ci_available_group_runners
-        ])
-      end
+    Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
+  end
+  strong_memoize_attr :ci_available_runners
+
+  def ci_available_project_runners
+    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
+
+    # track the size of project_ids to optimise this query further in future
+    track_ci_available_project_runners_query(project_ids.size)
+
+    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
+
+    projects_with_runners = Set.new
+
+    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
+      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
+    end
+
+    Ci::Runner.belonging_to_project(projects_with_runners)
   end
 
   def notification_email_for(notification_group)
@@ -2900,49 +2909,6 @@ class User < ApplicationRecord
     return unless ::Gitlab::Auth::Ldap::Config.enabled? && ldap_blocked?
 
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
-  end
-
-  def ci_available_project_runners_from_project_members
-    project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
-
-    Ci::Runner.belonging_to_project(project_ids)
-  end
-
-  def ci_available_project_runners_from_group_members
-    cte_namespace_ids = Gitlab::SQL::CTE.new(
-      :cte_namespace_ids,
-      ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER).select(:namespace_id)
-    )
-
-    cte_project_ids = Gitlab::SQL::CTE.new(
-      :cte_project_ids,
-      Ci::ProjectMirror
-        .select(:project_id)
-        .where('ci_project_mirrors.namespace_id IN (SELECT namespace_id FROM cte_namespace_ids)')
-    )
-
-    Ci::Runner
-      .with(cte_namespace_ids.to_arel)
-      .with(cte_project_ids.to_arel)
-      .joins(:runner_projects)
-      .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
-  end
-
-  def ci_available_project_runners
-    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
-
-    # track the size of project_ids to optimise this query further in future
-    track_ci_available_project_runners_query(project_ids.size)
-
-    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
-
-    projects_with_runners = Set.new
-
-    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
-      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
-    end
-
-    Ci::Runner.belonging_to_project(projects_with_runners)
   end
 
   def track_ci_available_project_runners_query(size_of_project_ids)

@@ -476,8 +476,6 @@ Style/InlineDisableAnnotation:
     - 'app/serializers/merge_request_poll_cached_widget_entity.rb'
     - 'app/serializers/merge_request_poll_widget_entity.rb'
     - 'app/serializers/merge_request_widget_entity.rb'
-    - 'app/serializers/personal_access_token_entity.rb'
-    - 'app/serializers/personal_access_token_serializer.rb'
     - 'app/serializers/pipeline_serializer.rb'
     - 'app/serializers/profile/event_entity.rb'
     - 'app/serializers/project_access_token_entity.rb'

@@ -607,9 +607,6 @@ export default {
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
     },
-    showWorkItemStatus() {
-      return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
-    },
     inputNamespacePath() {
       if (this.workItemPlanningViewEnabled) {
         return this.selectedNamespacePath;
@@ -1144,7 +1141,7 @@ export default {
             >
               <template v-if="canSetNewWorkItemMetadata">
                 <work-item-status
-                  v-if="showWorkItemStatus"
+                  v-if="workItemStatus"
                   class="work-item-attributes-item"
                   :can-update="canUpdate"
                   :full-path="selectedProjectFullPath"

@@ -7,7 +7,7 @@ feature_categories:
 description: Npm package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73639
 milestone: '14.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

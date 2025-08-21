@@ -7,7 +7,7 @@ feature_categories:
 description: Persists the relation between compliance_frameworks and security_orchestration_policy_configurations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135291
 milestone: '16.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

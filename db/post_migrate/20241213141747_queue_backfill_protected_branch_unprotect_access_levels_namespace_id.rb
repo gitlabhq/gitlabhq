@@ -2,7 +2,7 @@
 
 class QueueBackfillProtectedBranchUnprotectAccessLevelsNamespaceId < Gitlab::Database::Migration[2.2]
   milestone '17.8'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillProtectedBranchUnprotectAccessLevelsProtectedBranchNamespaceId"
   DELAY_INTERVAL = 2.minutes

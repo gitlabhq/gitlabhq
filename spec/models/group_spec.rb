@@ -4367,12 +4367,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_item_status_feature_available?' do
-    subject { group.work_item_status_feature_available? }
-
-    it { is_expected.to be false }
-  end
-
   describe '#supports_group_work_items?' do
     let(:group) { build(:group) }
 

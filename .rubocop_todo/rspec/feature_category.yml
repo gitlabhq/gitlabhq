@@ -3554,8 +3554,6 @@ RSpec/FeatureCategory:
     - 'spec/serializers/move_to_project_serializer_spec.rb'
     - 'spec/serializers/namespace_basic_entity_spec.rb'
     - 'spec/serializers/namespace_serializer_spec.rb'
-    - 'spec/serializers/personal_access_token_entity_spec.rb'
-    - 'spec/serializers/personal_access_token_serializer_spec.rb'
     - 'spec/serializers/project_access_token_entity_spec.rb'
     - 'spec/serializers/project_access_token_serializer_spec.rb'
     - 'spec/serializers/project_mirror_serializer_spec.rb'

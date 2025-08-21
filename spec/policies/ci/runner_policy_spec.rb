@@ -65,7 +65,7 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
         it { expect_allowed :update_runner }
 
         context 'when user is maintainer in an unrelated group' do
-          let_it_be(:maintainers_group_maintainer) { create(:user) }
+          let_it_be_with_refind(:maintainers_group_maintainer) { create(:user) }
           let_it_be_with_reload(:maintainers_group) do
             create(:group, name: 'maintainers', path: 'maintainers', maintainers: maintainers_group_maintainer)
           end
@@ -88,7 +88,7 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
             context 'and target project is other project' do
               let(:project_invited_to) { other_project }
 
-              it { expect_disallowed :update_runner }
+              it { expect_allowed :update_runner }
             end
           end
         end
@@ -119,7 +119,7 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
 
         context 'when access is provided by group invitation' do
           let_it_be(:invited_group) { create(:group) }
-          let_it_be(:user) { create(:user, owner_of: invited_group) }
+          let_it_be_with_refind(:user) { create(:user, owner_of: invited_group) }
 
           it { expect_disallowed :update_runner }
 

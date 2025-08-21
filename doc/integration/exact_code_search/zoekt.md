@@ -558,12 +558,7 @@ In a [Rails console session](../../administration/operations/rails_console.md#st
   Search::Zoekt::Index.all.pluck(:state, :namespace_id)
   ```
 
-To index a namespace manually, run this command:
-
-```ruby
-namespace = Namespace.find_by_full_path('<top-level-group-to-index>')
-Search::Zoekt::EnabledNamespace.find_or_create_by(namespace: namespace)
-```
+To index a namespace manually, see [set up indexing](https://docs.gitlab.com/charts/charts/gitlab/gitlab-zoekt/#configure-zoekt-in-gitlab).
 
 ### Error: `SilentModeBlockedError`
 

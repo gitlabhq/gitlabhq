@@ -194,7 +194,7 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
   end
 end
 
-RSpec.shared_examples '#create access token' do
+RSpec.shared_examples 'create access token - legacy' do
   let(:url) { {} }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:token_attributes) { attributes_for(:personal_access_token) }
@@ -222,6 +222,38 @@ RSpec.shared_examples '#create access token' do
 
       parsed_body = Gitlab::Json.parse(response.body)
       expect(parsed_body['new_token']).to be_blank
+      expect(parsed_body['errors']).not_to be_blank
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+end
+
+RSpec.shared_examples 'create access token' do
+  let(:url) { {} }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:token_attributes) { attributes_for(:personal_access_token) }
+
+  before do
+    sign_in(admin)
+  end
+
+  context "when POST is successful" do
+    it "renders JSON with a new token" do
+      post url, params: { personal_access_token: token_attributes }
+
+      parsed_body = Gitlab::Json.parse(response.body)
+      expect(parsed_body['token']).not_to be_blank
+      expect(parsed_body['errors']).to be_blank
+      expect(response).to have_gitlab_http_status(:success)
+    end
+  end
+
+  context "when POST is unsuccessful" do
+    it "renders JSON with an error" do
+      post url, params: { personal_access_token: token_attributes.merge(scopes: []) }
+
+      parsed_body = Gitlab::Json.parse(response.body)
+      expect(parsed_body['token']).to be_blank
       expect(parsed_body['errors']).not_to be_blank
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end

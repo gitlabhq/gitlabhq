@@ -1,9 +1,0 @@
----
-name: work_item_status_feature_flag
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/5099
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182225
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521286
-milestone: '18.2'
-group: group::project management
-type: beta
-default_enabled: true

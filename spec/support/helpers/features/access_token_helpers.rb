@@ -2,7 +2,7 @@
 
 module Features
   module AccessTokenHelpers
-    # Remove after migrate_user_access_tokens_ui feature flag removal
+    # Remove when we migrate the legacy UI to use initSharedAccessTokenApp
     def active_access_tokens
       find_by_testid('active-tokens')
     end
@@ -14,7 +14,7 @@ module Features
       end
     end
 
-    # Keep after migrate_user_access_tokens_ui feature flag removal
+    # Keep when we migrate the legacy UI to use initSharedAccessTokenApp
     def new_access_token
       find_by_testid('created-access-token-field').value
     end

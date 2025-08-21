@@ -57,7 +57,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
-    push_frontend_feature_flag(:work_item_status_feature_flag, project&.root_ancestor)
     push_frontend_feature_flag(:hide_incident_management_features, project)
     push_force_frontend_feature_flag(:work_items_list_parent_filter,
       project&.work_items_list_parent_filter_feature_flag_enabled?)

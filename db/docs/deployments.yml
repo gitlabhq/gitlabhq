@@ -8,7 +8,7 @@ description: Stores metadata related to a deployment CI Build, including user, e
   status, and SHA. See https://docs.gitlab.com/ee/ci/environments/ for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/907c0e6796b69f9577c147dd489cf55748c749ac
 milestone: '8.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 schema_inconsistencies:

@@ -7,7 +7,7 @@ feature_categories:
 description: Security policies scheduled to run based on cadence defined in the policy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59842
 milestone: '13.12'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

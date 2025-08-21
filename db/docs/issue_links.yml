@@ -8,7 +8,7 @@ feature_categories:
 description: Links two issues by relationship type, which can be related or blocking
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1719
 milestone: '9.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   namespace_id: namespaces

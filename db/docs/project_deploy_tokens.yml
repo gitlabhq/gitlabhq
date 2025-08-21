@@ -7,7 +7,7 @@ feature_categories:
 description: https://docs.gitlab.com/ee/user/project/deploy_tokens/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/8315861c9a50675b4f4f4ca536f0da90f27994f3
 milestone: '10.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

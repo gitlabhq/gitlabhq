@@ -3,7 +3,7 @@
 class RequeueBackfillJiraTrackerDataShardingKey < Gitlab::Database::Migration[2.3]
   milestone '18.4'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillJiraTrackerDataShardingKey"
   BATCH_SIZE = 1000

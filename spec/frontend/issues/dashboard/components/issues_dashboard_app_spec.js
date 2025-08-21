@@ -75,7 +75,6 @@ describe('IssuesDashboardApp component', () => {
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
     rssPath: 'rss/path',
-    isStatusFeatureEnabledOnInstance: true,
   };
 
   let defaultQueryResponse = issuesQueryResponse;

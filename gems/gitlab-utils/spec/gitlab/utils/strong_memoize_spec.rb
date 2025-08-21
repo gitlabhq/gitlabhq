@@ -307,7 +307,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize, feature_category: :shared do
       subject { klass.strong_memoize_attr(:nonexistent_method) }
 
       it 'fails when strong-memoizing a nonexistent method' do
-        expect { subject }.to raise_error(NameError, /undefined method `nonexistent_method' for class/)
+        expect { subject }.to raise_error(NameError, /undefined method ['`]nonexistent_method['`] for class/)
       end
     end
 

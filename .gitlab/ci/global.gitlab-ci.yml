@@ -208,7 +208,6 @@
   BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
   BUNDLE_SILENCE_ROOT_WARNING: "true"
   BUNDLE_PATH: vendor
-  BUNDLE_WITHOUT: development
 
 .qa-ruby-gems-cache: &qa-ruby-gems-cache
   key:

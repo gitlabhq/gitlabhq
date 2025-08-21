@@ -188,7 +188,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables,
         it_behaves_like 'locks writes on table', Gitlab::Database.database_base_models[:ci]
       end
 
-      context 'for creating a gitlab_main_cell table' do
+      context 'for creating a gitlab_main_org table' do
         let(:table_name) { gitlab_main_cell_table_name }
 
         it_behaves_like 'does not lock writes on table', Gitlab::Database.database_base_models[:main]

@@ -69,7 +69,6 @@ setup-test-env-fips:
     - .with-ruby-slim-image
   variables:
     BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml
-    BUNDLE_ONLY: "coverage"
   before_script:
     - source scripts/utils.sh
     - bundle_install_script
@@ -588,6 +587,9 @@ rspec:coverage:
         echo "coverage.xml size before stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"
         sed -i -E 's/^ +//' coverage/coverage.xml
         echo "coverage.xml size after stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"
+
+        # Split into many coverage files, or copy the main coverage file as a fallback.
+        bundle exec ruby scripts/cobertura_splitter.rb coverage/coverage.xml || cp coverage/coverage.xml coverage/coverage-0.xml
       else
         echo "Warning: coverage/coverage.xml not found, skipping whitespace stripping"
       fi
@@ -602,7 +604,7 @@ rspec:coverage:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: coverage/coverage.xml
+        path: coverage/coverage-*.xml
 
 rspec:undercoverage:
   extends:

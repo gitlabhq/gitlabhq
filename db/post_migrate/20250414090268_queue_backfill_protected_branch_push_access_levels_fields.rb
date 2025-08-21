@@ -2,7 +2,7 @@
 
 class QueueBackfillProtectedBranchPushAccessLevelsFields < Gitlab::Database::Migration[2.2]
   milestone '18.0'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillProtectedBranchPushAccessLevelsFields"
   DELAY_INTERVAL = 2.minutes

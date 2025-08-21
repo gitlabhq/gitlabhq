@@ -7,6 +7,6 @@ feature_categories:
 description: Version metadata for items in the AI catalog
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195792
 milestone: "18.2"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations

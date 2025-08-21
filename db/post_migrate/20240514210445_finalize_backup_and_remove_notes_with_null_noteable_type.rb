@@ -4,7 +4,7 @@ class FinalizeBackupAndRemoveNotesWithNullNoteableType < Gitlab::Database::Migra
   MIGRATION = 'BackupAndRemoveNotesWithNullNoteableType'
 
   disable_ddl_transaction!
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   milestone '17.1'
 
   def up

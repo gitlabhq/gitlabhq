@@ -7,7 +7,7 @@ feature_categories:
 description: Stores paths to repository blobs locked by users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/684e9d1b5979e11d2edae11a3028a696bfcdedf8
 milestone: '8.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

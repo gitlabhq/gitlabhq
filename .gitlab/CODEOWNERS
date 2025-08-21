@@ -1316,8 +1316,6 @@ lib/gitlab/checks/
 /app/serializers/group_access_token_serializer.rb
 /app/serializers/impersonation_access_token_entity.rb
 /app/serializers/impersonation_access_token_serializer.rb
-/app/serializers/personal_access_token_entity.rb
-/app/serializers/personal_access_token_serializer.rb
 /app/serializers/project_access_token_entity.rb
 /app/serializers/project_access_token_serializer.rb
 /app/services/access_token_validation_service.rb

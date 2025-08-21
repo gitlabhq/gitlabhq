@@ -30,6 +30,16 @@ export const collationMismatchResults = {
           needs_deduplication: true,
         },
       ],
+      skipped_indexes: [
+        {
+          index_name: 'index_merge_requests_on_target_project_id',
+          table_name: 'merge_requests',
+          table_size_bytes: 2147483648,
+          index_size_bytes: 214748364,
+          table_size_threshold: 1073741824,
+          reason: 'table_size_exceeds_threshold',
+        },
+      ],
     },
     ci: {
       collation_mismatches: [],

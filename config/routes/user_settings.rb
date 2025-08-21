@@ -15,10 +15,6 @@ namespace :user_settings do
   end
   resources :personal_access_tokens, only: [:index, :create] do
     put :toggle_dpop, on: :collection
-    member do
-      put :revoke
-      put :rotate
-    end
   end
   resources :gpg_keys, only: [:index, :create, :destroy] do
     member do

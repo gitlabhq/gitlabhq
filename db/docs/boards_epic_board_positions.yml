@@ -8,7 +8,7 @@ description: Relates epics to epic boards by position, unique to each combinatio
   of epic and board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48120
 milestone: '13.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   group_id: namespaces

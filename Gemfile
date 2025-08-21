@@ -472,6 +472,7 @@ gem 'warning', '~> 1.5.0', feature_category: :shared
 group :development do
   gem 'lefthook', '~> 1.12.0', require: false, feature_category: :tooling
   gem 'rubocop', feature_category: :tooling
+  gem 'debug', '~> 1.11.0', feature_category: :shared
 
   gem 'solargraph', '~> 0.54.0', require: false, feature_category: :shared
   gem 'solargraph-rspec', '~> 0.5.1', require: false, feature_category: :shared

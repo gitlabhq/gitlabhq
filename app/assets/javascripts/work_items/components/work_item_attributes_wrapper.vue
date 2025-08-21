@@ -211,9 +211,6 @@ export default {
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
     },
-    showWorkItemStatus() {
-      return this.glFeatures.workItemStatusFeatureFlag && this.workItemStatus;
-    },
   },
   methods: {
     isWidgetPresent(type, workItem = this.workItem) {
@@ -237,7 +234,7 @@ export default {
 <template>
   <div class="work-item-attributes-wrapper work-item-sidebar-container">
     <work-item-status
-      v-if="showWorkItemStatus"
+      v-if="workItemStatus"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"
       :work-item-id="workItem.id"

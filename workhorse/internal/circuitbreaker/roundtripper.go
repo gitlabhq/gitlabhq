@@ -90,6 +90,7 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 
 		resp.Header.Set("Retry-After", r.timeout.String())
 
+		log.WithFields(log.Fields{"userKey": userKey}).Info("gobreaker: request denied - circuit breaker open")
 		return resp, nil
 	}
 

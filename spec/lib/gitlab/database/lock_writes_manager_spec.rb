@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
           allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
           allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(
             non_existent_table
-          ).and_return(:gitlab_main_cell)
+          ).and_return(:gitlab_main_org)
         end
 
         it 'tries to lock the table anyways, and logs the failure' do
@@ -197,7 +197,7 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
           allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
           allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(
             non_existent_table
-          ).and_return(:gitlab_main_cell)
+          ).and_return(:gitlab_main_org)
         end
 
         it 'skips locking table' do
@@ -253,7 +253,7 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
 
       # In tests if we don't add the fake table to the gitlab schema then our test only schema checks will fail.
       allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
-      allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(test_table).and_return(:gitlab_main_cell)
+      allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(test_table).and_return(:gitlab_main_org)
 
       # Locking the table without the considering the value of dry_run
       described_class.new(

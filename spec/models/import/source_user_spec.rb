@@ -236,6 +236,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         it 'allows the transition' do
           expect(source_user.reassign_without_confirmation).to be(true)
         end
+
+        it 'changes to reassignment_in_progress' do
+          expect { source_user.reassign_without_confirmation }.to change { source_user.status }.from(0).to(2)
+        end
       end
 
       context 'and admins bypass placeholder user confirmation is not allowed' do
@@ -247,6 +251,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
         it 'does not allow the transition' do
           expect(source_user.reassign_without_confirmation).to be(false)
+        end
+
+        it 'does not change to reassignment_in_progress' do
+          expect { source_user.reassign_without_confirmation }.not_to change { source_user.status }.from(0)
         end
       end
     end
