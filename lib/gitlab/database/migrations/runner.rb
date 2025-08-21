@@ -22,10 +22,6 @@ module Gitlab
             end
           end
 
-          def background_migrations
-            TestBackgroundRunner.new(result_dir: BASE_RESULT_DIR.join('background_migrations'))
-          end
-
           def batched_background_migrations(for_database:, legacy_mode: false)
             runner = nil
 

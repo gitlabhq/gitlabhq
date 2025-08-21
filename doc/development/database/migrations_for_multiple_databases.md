@@ -41,7 +41,7 @@ As such DDL migrations **CANNOT**:
 
 1. Read or modify data in any form, via SQL statements or ActiveRecord models.
 1. Update column values (for example, `update_column_in_batches`).
-1. Schedule background migrations (for example, `queue_background_migration_jobs_by_range_at_intervals`).
+1. Schedule background migrations (for example, `queue_batched_background_migration`).
 1. Read the state of feature flags since they are stored in `main:` (a `features` and `feature_gates`).
 1. Read application settings (as settings are stored in `main:`).
 
@@ -111,7 +111,7 @@ The DML migrations are all migrations that:
 1. Create, update or delete data via ActiveRecord models (for example, `User.create!(...)`).
 1. Create, update or delete data via SQL statements (for example, `DELETE FROM projects WHERE id=1`).
 1. Update columns in batches (for example, `update_column_in_batches(:projects, :archived, true)`).
-1. Schedule background migrations (for example, `queue_background_migration_jobs_by_range_at_intervals`).
+1. Schedule background migrations (for example, `queue_batched_background_migration`).
 1. Access application settings (for example, `ApplicationSetting.last` if run for `main:` database).
 1. Read and modify feature flags if run for the `main:` database.
 

@@ -87,7 +87,7 @@ To select a default namespace:
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
-1. From the **Default GitLab Duo group** dropdown list, select the namespace to set as your default.
+1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
 
 ## Troubleshooting

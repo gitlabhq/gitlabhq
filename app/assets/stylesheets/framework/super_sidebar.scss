@@ -788,37 +788,129 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   @apply gl-border-default;
 }
 
-.with-header #super-sidebar-search-modal {
-  padding-top: 0;
-  background: transparent;
-  transition: none !important;
-
-  .modal-dialog {
+.with-header {
+  // Quick search overlay
+  #super-sidebar-search-modal {
+    padding-top: 0;
+    background: transparent;
     transition: none !important;
+
+    .modal-dialog {
+      transition: none !important;
+    }
   }
-}
 
-.with-header .global-search-modal .modal-content {
-  border-radius: 0.75rem !important;
+  // Quick search overlay search input
+  .global-search-modal .modal-content {
+    border-radius: 0.75rem !important;
 
-  .gl-search-box-by-type-input-borderless {
-    @apply gl-rounded-lg;
+    .gl-search-box-by-type-input-borderless {
+      @apply gl-rounded-lg;
+    }
   }
-}
 
-.with-header .panels-container {
-  position: relative;
-  flex-grow: 1;
-  display: flex;
-  gap: .5rem;
-  height: calc(100vh - #{$calc-application-bars-height});
-  padding-block-end: .5rem;
-  padding-inline-end: .5rem;
-}
+  // Panel container
+  .panels-container {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    gap: .5rem;
+    height: calc(100vh - #{$calc-application-bars-height});
+    padding-block-end: .5rem;
+    padding-inline-end: .5rem;
+  }
 
-.with-header .paneled-view {
-  position: relative;
-  padding: 0;
-  overflow-y: auto;
-  @apply gl-rounded-[1rem];
+  // Panel
+  .paneled-view {
+    position: relative;
+    padding: 0;
+    overflow-y: auto;
+    transform: translate(0, 0);
+    @apply gl-rounded-[1rem];
+
+    // Breadcrumb
+    .top-bar-fixed {
+      box-shadow: none;
+      border-bottom: 1px solid var(--super-sidebar-bg);
+    }
+
+    // Work item drawer
+    .work-item-drawer {
+      @apply gl-pt-0;
+    }
+
+    .work-item-drawer [data-testid="work-item-detail"] > div,
+    [data-testid="work-item-router-view"] > [data-testid="work-item-detail"] > div {
+      // «Hack» for nested sticky elements to work
+      // Needed so the nested element can be sticky to the
+      // parent panel container
+      // Once refactored and moved up in hierarchy this can be removed.
+      display: ruby;
+    }
+
+    // Work item drawer header
+    .work-item-drawer-header {
+      z-index: $top-bar-z-index;
+      position: sticky !important;
+      top: 0;
+      border-bottom: 1px solid var(--super-sidebar-bg);
+      @apply gl-py-4 gl-bg-default;
+    }
+
+    // Issue sticky header
+    .issue-sticky-header:not(.merge-request-sticky-header) {
+      position: sticky;
+      width: calc(100% + #{$gl-spacing-scale-6 * 2});
+      @apply -gl-mx-6;
+    }
+
+    .merge-request-sticky-header {
+      position: sticky;
+      width: 100%;
+      @apply gl-bg-default;
+
+      .issue-sticky-header-text {
+        padding-inline: 0;
+      }
+    }
+
+    // MR file change header
+    .diff-file .file-title, .diff-file .file-title-flex-parent {
+      @media (min-width: map-get($grid-breakpoints, md)) {
+        top: calc(#{$header-height} + #{$mr-sticky-header-height} - 1px);
+      }
+    }
+
+    // Sticky headers below top bar
+    .issue-sticky-header:not(.merge-request-sticky-header),
+    .merge-request-sticky-header,
+    .settings-sticky-header {
+      top: calc(#{$top-bar-height} + 1px);
+    }
+
+    // Sticky flash alert
+    .flash-container:has(.gl-alert) {
+      top: auto;
+    }
+  }
+
+  // Fixes for Firefox as it doesn't support (container-type: scroll-state)
+  // see https://caniuse.com/?search=scroll-state
+  .gl-browser-firefox .paneled-view {
+    .merge-request-sticky-header-wrapper {
+      // «Hack» for nested sticky elements to work
+      // Needed so the nested element can be sticky to the
+      // parent panel container
+      // Once refactored and moved up in hierarchy this can be removed.
+      display: ruby;
+    }
+
+    .merge-request-details {
+      margin-top: -#{$mr-sticky-header-height}; // Height of sticky header
+    }
+
+    .merge-request-sticky-header:not(.issue-sticky-header) {
+      position: static;
+    }
+  }
 }

@@ -332,7 +332,7 @@ To delete a branch rule:
 
 ## Related topics
 
-- [Protect your repository](../repository_protection.md)
+- [Protect your repository](../protect.md)
 - [Default branch](default.md)
 - [Protected branches](protected.md)
 - [Branching strategies](strategies/_index.md)

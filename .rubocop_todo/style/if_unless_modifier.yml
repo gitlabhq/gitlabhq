@@ -509,7 +509,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/migration_helpers/cascading_namespace_settings.rb'
     - 'lib/gitlab/database/migration_helpers/v2.rb'
-    - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
     - 'lib/gitlab/database/migrations/batched_background_migration_helpers.rb'
     - 'lib/gitlab/database/partitioning/detached_partition_dropper.rb'
     - 'lib/gitlab/database/partitioning/time_partition.rb'

@@ -865,7 +865,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 
 ## Related topics
 
-- [Protect your repository](project/repository/repository_protection.md)
+- [Protect your repository](project/repository/protect.md)
 - [Custom roles](custom_roles/_index.md)
 - [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)

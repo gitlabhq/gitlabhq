@@ -292,7 +292,6 @@ RSpec/ReceiveMessages:
     - 'spec/lib/gitlab/database/migration_helpers/wraparound_autovacuum_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/wraparound_vacuum_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers_spec.rb'
-    - 'spec/lib/gitlab/database/migrations/background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/constraints_helpers_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb'

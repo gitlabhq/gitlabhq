@@ -277,7 +277,6 @@ Lint/UnusedBlockArgument:
     - 'spec/lib/gitlab/ci/status/composite_spec.rb'
     - 'spec/lib/gitlab/cleanup/orphan_job_artifact_files_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers/restrict_gitlab_schema_spec.rb'
-    - 'spec/lib/gitlab/database/migrations/test_background_runner_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/detached_partition_dropper_spec.rb'
     - 'spec/lib/gitlab/git_access_wiki_spec.rb'
     - 'spec/lib/gitlab/health_checks/simple_check_shared.rb'

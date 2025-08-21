@@ -384,37 +384,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
             }
           }
         },
-        "does schedule background migrations on gitlab_main" => {
-          migration: ->(klass) do
-            def up
-              queue_background_migration_jobs_by_range_at_intervals(
-                define_batchable_model('vulnerability_occurrences'),
-                'RemoveDuplicateVulnerabilitiesFindings',
-                2.minutes.to_i,
-                batch_size: 5_000
-              )
-            end
-
-            def down
-              # no-op
-            end
-          end,
-          query_matcher: /FROM "vulnerability_occurrences"/,
-          expected: {
-            no_gitlab_schema: {
-              main: :dml_not_allowed,
-              ci: :dml_not_allowed
-            },
-            gitlab_schema_gitlab_shared: {
-              main: :runtime_error,
-              ci: :runtime_error
-            },
-            gitlab_schema_gitlab_main: {
-              main: :dml_access_denied,
-              ci: :skipped
-            }
-          }
-        },
         "does support prepare_async_index" => {
           migration: ->(klass) do
             def up

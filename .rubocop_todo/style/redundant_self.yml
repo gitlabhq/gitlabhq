@@ -248,7 +248,6 @@ Style/RedundantSelf:
     - 'lib/gitlab/database/load_balancing/service_discovery.rb'
     - 'lib/gitlab/database/loose_foreign_keys.rb'
     - 'lib/gitlab/database/migration_helpers/restrict_gitlab_schema.rb'
-    - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
     - 'lib/gitlab/database/query_analyzers/base.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
     - 'lib/gitlab/database/query_analyzers/restrict_allowed_schemas.rb'

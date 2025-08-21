@@ -46681,6 +46681,7 @@ Type of custom field.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="customfieldtypedate"></a>`DATE` | Date field type. |
 | <a id="customfieldtypemulti_select"></a>`MULTI_SELECT` | Multi select field type. |
 | <a id="customfieldtypenumber"></a>`NUMBER` | Number field type. |
 | <a id="customfieldtypesingle_select"></a>`SINGLE_SELECT` | Single select field type. |

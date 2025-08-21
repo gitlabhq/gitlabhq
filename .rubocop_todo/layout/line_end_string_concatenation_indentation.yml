@@ -397,7 +397,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'rubocop/cop/inject_enterprise_edition_module.rb'
     - 'rubocop/cop/migration/add_limit_to_text_columns.rb'
     - 'rubocop/cop/migration/avoid_finalize_background_migration.rb'
-    - 'rubocop/cop/migration/background_migrations.rb'
     - 'rubocop/cop/migration/change_column_null_on_high_traffic_table.rb'
     - 'rubocop/cop/migration/prevent_index_creation.rb'
     - 'rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction.rb'

@@ -195,8 +195,6 @@ expect('MigrationClass').to be_scheduled_migration_with_multiple_args('foo', [1,
 
 Verifies that a Sidekiq job was queued with the expected delay, class, and arguments.
 
-This can also be used with `queue_background_migration_jobs_by_range_at_intervals` and related helpers.
-
 ```ruby
 # Migration
 BackgroundMigrationWorker.perform_in(delay, 'MigrationClass', args)

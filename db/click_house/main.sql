@@ -1274,7 +1274,7 @@ CREATE MATERIALIZED VIEW code_suggestion_events_daily_mv TO code_suggestion_even
     `namespace_path` String,
     `user_id` UInt64,
     `date` Date,
-    `event` UInt8,
+    `event` UInt16,
     `language` LowCardinality(String),
     `suggestions_size_sum` UInt64,
     `occurrences` UInt8
@@ -1284,10 +1284,11 @@ AS SELECT
     user_id,
     toDate(timestamp) AS date,
     event,
-    language,
-    suggestion_size AS suggestions_size_sum,
+    toLowCardinality(JSONExtractString(extras, 'language')) AS language,
+    JSONExtractUInt(extras, 'suggestion_size') AS suggestions_size_sum,
     1 AS occurrences
-FROM code_suggestion_events;
+FROM ai_usage_events
+WHERE event IN (1, 2, 3, 4, 5);
 
 CREATE MATERIALIZED VIEW contributions_mv TO contributions
 (
@@ -1342,7 +1343,7 @@ CREATE MATERIALIZED VIEW duo_chat_events_daily_mv TO duo_chat_events_daily
     `namespace_path` String,
     `user_id` UInt64,
     `date` Date,
-    `event` UInt8,
+    `event` UInt16,
     `occurrences` UInt8
 )
 AS SELECT
@@ -1351,7 +1352,8 @@ AS SELECT
     toDate(timestamp) AS date,
     event,
     1 AS occurrences
-FROM duo_chat_events;
+FROM ai_usage_events
+WHERE event = 6;
 
 CREATE MATERIALIZED VIEW event_authors_mv TO event_authors
 (

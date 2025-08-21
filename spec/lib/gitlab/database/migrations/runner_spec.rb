@@ -185,18 +185,6 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
       end
     end
 
-    describe '.background_migrations' do
-      it 'is a TestBackgroundRunner' do
-        expect(described_class.background_migrations).to be_a(Gitlab::Database::Migrations::TestBackgroundRunner)
-      end
-
-      it 'is configured with a result dir of /background_migrations' do
-        runner = described_class.background_migrations
-
-        expect(runner.result_dir).to eq(described_class::BASE_RESULT_DIR.join('background_migrations'))
-      end
-    end
-
     describe '.batched_background_migrations' do
       it 'is a TestBatchedBackgroundRunner' do
         expect(described_class.batched_background_migrations(for_database: database)).to be_a(Gitlab::Database::Migrations::TestBatchedBackgroundRunner)

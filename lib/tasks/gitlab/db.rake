@@ -511,13 +511,6 @@ namespace :gitlab do
         end
       end
 
-      desc 'Sample traditional background migrations with instrumentation'
-      task :sample_background_migrations, [:duration_s] => [:environment] do |_t, args|
-        duration = args[:duration_s]&.to_i&.seconds || 30.minutes # Default of 30 minutes
-
-        Gitlab::Database::Migrations::Runner.background_migrations.run_jobs(for_duration: duration)
-      end
-
       namespace :sample_batched_background_migrations do
         all_databases.each do |db|
           desc "Sample batched background migrations on #{db} with instrumentation"

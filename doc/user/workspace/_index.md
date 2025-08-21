@@ -214,17 +214,24 @@ You can specify the base image, dependencies, and other settings.
 
 The `container` component type supports the following schema properties only:
 
-| Property          | Description                                                                                                                    |
-|----------------   | -------------------------------------------------------------------------------------------------------------------------------|
-| `image`           | Name of the container image to use for the workspace.                                                                          |
-| `memoryRequest`   | Minimum amount of memory the container can use.                                                                                |
-| `memoryLimit`     | Maximum amount of memory the container can use.                                                                                |
-| `cpuRequest`      | Minimum amount of CPU the container can use.                                                                                   |
-| `cpuLimit`        | Maximum amount of CPU the container can use.                                                                                   |
-| `env`             | Environment variables to use in the container. Names must not start with `gl-`.                                                |
-| `endpoints`       | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
-| `volumeMounts`    | Storage volume to mount in the container.                                                                                      |
-| `overrideCommand` | Override the container entrypoint with a keep-alive command. Defaults vary by component type.                                  |
+| Property             | Description |
+|----------------------|-------------|
+| `image` <sup>1</sup> | Name of the container image to use for the workspace. |
+| `memoryRequest`      | Minimum amount of memory the container can use. |
+| `memoryLimit`        | Maximum amount of memory the container can use. |
+| `cpuRequest`         | Minimum amount of CPU the container can use. |
+| `cpuLimit`           | Maximum amount of CPU the container can use. |
+| `env`                | Environment variables to use in the container. Names must not start with `gl-`. |
+| `endpoints`          | Port mappings to expose from the container. Names must not start with `gl-`. |
+| `volumeMounts`       | Storage volume to mount in the container. |
+| `overrideCommand`    | Override the container entrypoint with a keep-alive command. Defaults vary by component type. |
+
+**Footnotes**:
+
+1. When you create custom container images for the `image` property, you should use the
+   [workspace base image](#workspace-base-image) as your foundation.
+   It includes critical configurations for SSH access, user permissions, and workspace
+   compatibility. For more information, see [Create a custom workspace image](create_image.md).
 
 #### `overrideCommand` attribute
 
@@ -375,6 +382,45 @@ specific images from the GitLab registry. This requirement may impact environmen
 controls, such as offline environments.
 
 {{< /alert >}}
+
+## Workspace base image
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/983) in GitLab 18.3.
+
+{{< /history >}}
+
+GitLab provides a [workspace base image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base)
+(`registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base`)
+that serves as the foundation for all workspace environments. It is designed to support workspace
+requirements and includes:
+
+- A stable Linux operating system foundation.
+- Pre-configured user with appropriate permissions for workspace operations.
+- Essential development tools and system libraries.
+- Version management for programming languages and tools.
+- SSH server configuration for remote access.
+- Security configurations for arbitrary user ID support.
+
+### Extend the base image
+
+You can create custom workspace images based on the workspace base image. For example:
+
+```dockerfile
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base
+
+# Install additional tools
+RUN sudo apt-get update && sudo apt-get install -y \
+    your-additional-package \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+# Install specific language versions
+RUN mise install python@3.11 && mise use python@3.11
+```
+
+For detailed instructions on creating custom images, see
+[Create a custom workspace image](create_image.md).
 
 ## Workspace add-ons
 

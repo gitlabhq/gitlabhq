@@ -410,7 +410,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/database/load_balancing/sidekiq_server_middleware_spec.rb'
     - 'spec/lib/gitlab/database/load_balancing_spec.rb'
     - 'spec/lib/gitlab/database/migration_helpers_spec.rb'
-    - 'spec/lib/gitlab/database/migrations/background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/instrumentation_spec.rb'
     - 'spec/lib/gitlab/database/migrations/lock_retry_mixin_spec.rb'
     - 'spec/lib/gitlab/database/migrations/observers/query_statistics_spec.rb'
