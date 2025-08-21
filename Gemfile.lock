@@ -2229,7 +2229,6 @@ DEPENDENCIES
   httparty (~> 0.23.0)
   i18n_data (~> 0.13.1)
   icalendar (~> 2.10.1)
-  influxdb-client (~> 3.1)
   invisible_captcha (~> 2.3.0)
   io-event (~> 1.12)
   ipaddress (~> 0.8.3)

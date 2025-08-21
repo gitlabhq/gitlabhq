@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'gitlab/cells/topology_service'
-
 module Gitlab
   module TopologyServiceClient
     class BaseService

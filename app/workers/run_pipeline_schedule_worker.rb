@@ -44,8 +44,9 @@ class RunPipelineScheduleWorker
     end
 
     if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable,
-      schedule.project) && !schedule_owner_still_available?(schedule)
+      user) && schedule_owner_not_available?(schedule)
       log_error(schedule_id, "Pipeline schedule owner is no longer available to schedule the pipeline")
+      notify_project_owner_and_deactivate_schedule(schedule)
       return false
     end
 
@@ -82,15 +83,13 @@ class RunPipelineScheduleWorker
     schedule.schedule_next_run!
   end
 
-  def schedule_owner_still_available?(schedule)
-    return true if schedule.owner&.can?(:create_pipeline, schedule.project)
-
-    notify_project_owner(schedule)
-    false
+  def schedule_owner_not_available?(schedule)
+    !schedule.owner&.can?(:create_pipeline, schedule.project)
   end
 
-  def notify_project_owner(schedule)
+  def notify_project_owner_and_deactivate_schedule(schedule)
     NotificationService.new.pipeline_schedule_owner_unavailable(schedule)
+    schedule.deactivate!
   end
 
   def error(schedule, error)

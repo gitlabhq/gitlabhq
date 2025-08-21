@@ -1,6 +1,6 @@
 - add_to_breadcrumbs _("Environments"), project_environments_path(@project)
 - breadcrumb_title @environment.name
-- page_title _("Environments")
+- page_title format(_('Environment %{environment_name}'), environment_name: @environment.name)
 - add_page_specific_style 'page_bundles/xterm'
 - add_page_specific_style 'page_bundles/environments'
 - add_page_specific_style 'page_bundles/ci_status'

@@ -506,7 +506,6 @@ RSpec/ReceiveMessages:
     - 'spec/tooling/danger/sidekiq_queues_spec.rb'
     - 'spec/tooling/danger/stable_branch_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/predictive_tests_helper_spec.rb'
-    - 'spec/tooling/lib/tooling/job_metrics_spec.rb'
     - 'spec/views/admin/dashboard/index.html.haml_spec.rb'
     - 'spec/views/admin/groups/_form.html.haml_spec.rb'
     - 'spec/views/admin/sessions/new.html.haml_spec.rb'

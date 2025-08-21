@@ -3124,7 +3124,6 @@ RSpec/NamedSubject:
     - 'spec/tooling/lib/tooling/helm3_client_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/file_handler_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/predictive_tests_helper_spec.rb'
-    - 'spec/tooling/lib/tooling/job_metrics_spec.rb'
     - 'spec/tooling/lib/tooling/kubernetes_client_spec.rb'
     - 'spec/tooling/lib/tooling/mappings/graphql_base_type_mappings_spec.rb'
     - 'spec/tooling/lib/tooling/mappings/js_to_system_specs_mappings_spec.rb'

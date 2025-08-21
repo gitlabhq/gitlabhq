@@ -1821,6 +1821,33 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         member.touch
       end
+
+      context 'when new access changes DEVELOPER or greater to less than DEVELOPER' do
+        before do
+          member.update_attribute(:access_level, Member::DEVELOPER)
+        end
+
+        it 'checks for member owned pipeline_schedules' do
+          stub_feature_flags(notify_pipeline_schedule_owner_unavailable: true)
+
+          expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
+            .with(member.user.id, member.source)
+
+          member.update_attribute(:access_level, Member::REPORTER)
+        end
+
+        context 'when feature flag disabled' do
+          before do
+            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
+          end
+
+          it 'does not check for member owned pipeline_schedules when feature flag disabled' do
+            expect(member).not_to receive(:notify_unavailable_owned_pipeline_schedules)
+
+            member.update_attribute(:access_level, Member::REPORTER)
+          end
+        end
+      end
     end
 
     context 'when expiration is changed' do
@@ -1971,6 +1998,36 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         })
 
       member.update!(access_level: Gitlab::Access::GUEST)
+    end
+  end
+
+  context 'when after destroy notify_unavailable_owned_pipeline_schedules' do
+    let_it_be(:project) { create(:project) }
+    let(:member) { create(:project_member, source: project) }
+
+    before do
+      member.update_attribute(:access_level, Member::DEVELOPER)
+    end
+
+    it 'checks for member owned pipeline_schedules' do
+      stub_feature_flags(notify_pipeline_schedule_owner_unavailable: true)
+
+      expect(member).to receive(:notify_unavailable_owned_pipeline_schedules)
+        .with(member.user.id, member.source)
+
+      member.destroy!
+    end
+
+    context 'when feature flag disabled' do
+      before do
+        stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
+      end
+
+      it 'does not check for member owned pipeline_schedules when feature flag disabled' do
+        expect(member).not_to receive(:notify_unavailable_owned_pipeline_schedules)
+
+        member.destroy!
+      end
     end
   end
 

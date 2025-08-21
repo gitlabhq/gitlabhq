@@ -27,7 +27,6 @@ include:
     - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn"  # Do not use 'bundle exec' here
     - export RSPEC_SKIPPED_TESTS_REPORT_PATH="rspec/skipped_tests-${CI_JOB_ID}.txt"
     - export RSPEC_RETRIED_TESTS_REPORT_PATH="rspec/retried_tests-${CI_JOB_ID}.txt"
-    - tooling/bin/create_job_metrics_file || true
 
 .no-redis-cluster:
   variables:
@@ -211,7 +210,6 @@ include:
         echoinfo "Not reporting test files close to timing out because \$ALLOW_KNAPSACK_REPORT_CREATE_ISSUES != 'true' or KNAPSACK_REPORT_ISSUES_PROJECT_TOKEN is not set"
       fi
       section_end "knapsack-report-issues"
-    - tooling/bin/push_job_metrics || true
     - scripts/minify-simplecov-resultsets.rb
 
 .base-artifacts:

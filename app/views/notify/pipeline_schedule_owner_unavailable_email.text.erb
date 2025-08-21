@@ -1,4 +1,4 @@
-<%= s_('PipelineSchedules|The owner of the pipeline schedule "%{schedule_description}" no longer has permission. Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule.'
+<%= s_('PipelineSchedules|The owner of the pipeline schedule "%{schedule_description}" no longer has permission. The schedule is deactivated and cannot run. Take ownership and reactivate the schedule to resume pipeline runs.'
   ) % [schedule_description: @schedule.description] %>
 
 <%= s_('PipelineSchedules|View pipeline schedule') %>: <%= project_pipeline_schedule_url(@schedule.project, @schedule) %>

@@ -171,6 +171,7 @@ gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
 # Cells
 gem 'gitlab-topology-service-client', '~> 0.1',
   path: 'vendor/gems/gitlab-topology-service-client',
+  require: 'gitlab/cells/topology_service',
   feature_category: :cell
 
 # Duo Workflow
@@ -527,9 +528,6 @@ group :development, :test do
   # Benchmarking & profiling
   gem 'benchmark-ips', '~> 2.14.0', require: false, feature_category: :shared
   gem 'benchmark-memory', '~> 0.1', require: false, feature_category: :shared
-
-  # Profiling data from CI/CD pipelines
-  gem 'influxdb-client', '~> 3.1', require: false, feature_category: :tooling
 
   gem 'knapsack', '~> 4.0.0', feature_category: :tooling
   gem 'gitlab-crystalball', '~> 1.1.0', require: false, feature_category: :tooling

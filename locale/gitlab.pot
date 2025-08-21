@@ -24060,7 +24060,16 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
+msgid "DuoAgentPlatform|Action"
+msgstr ""
+
 msgid "DuoAgentPlatform|Activity"
+msgstr ""
+
+msgid "DuoAgentPlatform|Agent reasoning"
+msgstr ""
+
+msgid "DuoAgentPlatform|Agent required human input"
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project."
@@ -24093,7 +24102,16 @@ msgstr ""
 msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
+msgid "DuoAgentPlatform|Session triggered"
+msgstr ""
+
+msgid "DuoAgentPlatform|User messaged agent"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Action"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Actions"
@@ -24114,6 +24132,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Automate"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Concise"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Config Path"
 msgstr ""
 
@@ -24129,10 +24150,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|Create a new flow trigger."
 msgstr ""
 
+msgid "DuoAgentsPlatform|Create commit"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Create file"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Create flow trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Create flow triggers to automatically run pipelines when specified events occur in your project."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Create merge request"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Default"
@@ -24147,7 +24177,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|Description"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Detail level"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Do not assign the service account a role in your project with higher permissions than the users of that service account."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Edit file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Edit flow trigger"
@@ -24198,7 +24234,22 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow triggers"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Full"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Get issue"
+msgstr ""
+
 msgid "DuoAgentsPlatform|ID"
+msgstr ""
+
+msgid "DuoAgentsPlatform|List comments"
+msgstr ""
+
+msgid "DuoAgentsPlatform|List directory"
+msgstr ""
+
+msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
@@ -24228,9 +24279,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|No logs available yet."
 msgstr ""
 
-msgid "DuoAgentsPlatform|Output"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Owner"
 msgstr ""
 
@@ -24243,7 +24291,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Read file"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Save changes"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Search"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Search files"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Search issues"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a flow"
@@ -24283,6 +24343,9 @@ msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Updated"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Write file"
 msgstr ""
 
 msgid "DuoAgentsPlatform|⚠️ Create a unique service account for each project."
@@ -25637,6 +25700,9 @@ msgstr ""
 msgid "Environment"
 msgstr ""
 
+msgid "Environment %{environment_name}"
+msgstr ""
+
 msgid "Environment scope"
 msgstr ""
 
@@ -25884,6 +25950,9 @@ msgid "Environments|Stop %{environmentName}"
 msgstr ""
 
 msgid "Environments|Stop environment"
+msgstr ""
+
+msgid "Environments|Stop environment %{environmentName}"
 msgstr ""
 
 msgid "Environments|Stop environments that have not been updated since the specified date:"
@@ -46986,10 +47055,13 @@ msgstr ""
 msgid "PipelineSchedules|Target"
 msgstr ""
 
-msgid "PipelineSchedules|The owner of the pipeline schedule \"%{schedule_description}\" no longer has permission. Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule."
+msgid "PipelineSchedules|The owner of the pipeline schedule \"%{schedule_description}\" no longer has permission. The schedule is deactivated and cannot run. Take ownership and reactivate the schedule to resume pipeline runs."
 msgstr ""
 
 msgid "PipelineSchedules|The owner of the pipeline schedule %{schedule_link} no longer has permission."
+msgstr ""
+
+msgid "PipelineSchedules|The schedule is deactivated and cannot run. Take ownership and reactivate the schedule to resume pipeline runs."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem deleting the pipeline schedule."
@@ -47005,9 +47077,6 @@ msgid "PipelineSchedules|There was a problem taking ownership of the pipeline sc
 msgstr ""
 
 msgid "PipelineSchedules|View pipeline schedule"
-msgstr ""
-
-msgid "PipelineSchedules|Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule."
 msgstr ""
 
 msgid "PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an existing schedule."

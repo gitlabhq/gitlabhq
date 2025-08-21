@@ -2315,7 +2315,6 @@ Style/InlineDisableAnnotation:
     - 'spec/tooling/lib/tooling/find_changes_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/file_handler_spec.rb'
     - 'spec/tooling/lib/tooling/helpers/predictive_tests_helper_spec.rb'
-    - 'spec/tooling/lib/tooling/job_metrics_spec.rb'
     - 'spec/uploaders/file_uploader_spec.rb'
     - 'spec/uploaders/object_storage_spec.rb'
     - 'spec/views/groups/group_members/index.html.haml_spec.rb'
@@ -2334,5 +2333,4 @@ Style/InlineDisableAnnotation:
     - 'tooling/lib/tooling/find_changes.rb'
     - 'tooling/lib/tooling/gettext_extractor.rb'
     - 'tooling/lib/tooling/helm3_client.rb'
-    - 'tooling/lib/tooling/job_metrics.rb'
     - 'tooling/lib/tooling/kubernetes_client.rb'

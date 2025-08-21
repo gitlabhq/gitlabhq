@@ -343,11 +343,13 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
         end
       end
 
-      it 'sends an email notification to the project owner and maintainers' do
+      it 'sends an email notification to the project owner and maintainers and deactivates the pipeline' do
         expect(NotificationService).to receive_message_chain(:new, :pipeline_schedule_owner_unavailable)
            .with(pipeline_schedule)
 
         worker.perform(pipeline_schedule.id, maintainer.id)
+
+        expect(pipeline_schedule.reload.active).to be false
       end
 
       it 'sends an email to correct recipients' do
@@ -372,11 +374,13 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
           stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
         end
 
-        it 'does not sent an email notification to the project owner and maintainers' do
+        it 'does not sent an email notification or deactivate the pipeline schedule' do
           expect(NotificationService).not_to receive(:pipeline_schedule_owner_unavailable)
           expect(Gitlab::AppLogger).not_to receive(:error)
 
           worker.perform(pipeline_schedule.id, maintainer.id)
+
+          expect(pipeline_schedule.reload.active).to be true
         end
       end
     end

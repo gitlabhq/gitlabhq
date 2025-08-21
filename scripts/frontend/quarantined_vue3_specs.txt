@@ -32,11 +32,9 @@ spec/frontend/issuable/related_issues/components/related_issues_root_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
 spec/frontend/issues/show/components/app_spec.js
-spec/frontend/issues/show/components/fields/description_spec.js
 spec/frontend/jira_import/components/jira_import_form_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
-spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
