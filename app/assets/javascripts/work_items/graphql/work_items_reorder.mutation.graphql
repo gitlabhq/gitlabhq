@@ -1,0 +1,10 @@
+mutation workItemsReorder($input: workItemsReorderInput!) {
+  workItemsReorder(input: $input) {
+    workItem {
+      id
+      iid
+      title
+    }
+    errors
+  }
+}

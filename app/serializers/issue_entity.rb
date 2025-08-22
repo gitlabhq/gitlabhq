@@ -81,10 +81,10 @@ class IssueEntity < IssuableEntity
   end
 
   expose :is_project_archived do |issue|
-    issue.project.archived?
+    issue.project.self_or_ancestors_archived?
   end
 
-  expose :archived_project_docs_path, if: ->(issue) { issue.project.archived? } do |issue|
+  expose :archived_project_docs_path, if: ->(issue) { issue.project.self_or_ancestors_archived? } do |issue|
     help_page_path('user/project/working_with_projects.md', anchor: 'delete-a-project')
   end
 

@@ -995,8 +995,6 @@
   - 1
 - - security_recreate_orchestration_configuration
   - 1
-- - security_refresh_compliance_framework_security_policies
-  - 1
 - - security_refresh_project_policies
   - 1
 - - security_scan_execution_policies_create_pipeline

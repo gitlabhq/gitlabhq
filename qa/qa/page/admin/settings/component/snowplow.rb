@@ -8,23 +8,25 @@ module QA
           class Snowplow < Page::Base
             include QA::Page::Settings::Common
 
-            view 'app/views/admin/application_settings/_snowplow.html.haml' do
-              element 'snowplow-settings-content'
+            view 'app/views/admin/application_settings/metrics_and_profiling.html.haml' do
+              element 'product-usage-data-settings-content'
+            end
+
+            view 'app/views/admin/application_settings/_product_usage_data.html.haml' do
               element 'snowplow-enabled-checkbox'
-              element 'save-changes-button'
             end
 
             def enable_snowplow_tracking
-              expand_content('snowplow-settings-content') do
+              expand_content('product-usage-data-settings-content') do
                 check_snowplow_enabled_checkbox
-                click_save_changes_button
+                click_button('Save changes')
               end
             end
 
             def disable_snowplow_tracking
-              expand_content('snowplow-settings-content') do
+              expand_content('product-usage-data-settings-content') do
                 uncheck_snowplow_enabled_checkbox
-                click_save_changes_button
+                click_button('Save changes')
               end
             end
 
@@ -36,10 +38,6 @@ module QA
 
             def uncheck_snowplow_enabled_checkbox
               uncheck_element('snowplow-enabled-checkbox', true)
-            end
-
-            def click_save_changes_button
-              click_element 'save-changes-button'
             end
           end
         end

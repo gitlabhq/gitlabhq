@@ -17,6 +17,8 @@ title: GitLab Duo add-ons
 
 - Changed to include GitLab Duo Core add-on in GitLab 18.0.
 - GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
+- [Added ability to disable seat assignment emails on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/557290)
+  in GitLab 18.4.
 
 {{< /history >}}
 
@@ -168,6 +170,9 @@ Prerequisites:
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.
+
+- To disable this email, set the `sm_duo_seat_assignment_email` feature flag to `false`.
+  This flag is enabled by default.
 
 After you assign seats,
 [ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md).

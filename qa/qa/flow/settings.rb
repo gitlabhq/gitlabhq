@@ -8,7 +8,7 @@ module QA
       def disable_snowplow
         Flow::Login.while_signed_in_as_admin do
           QA::Page::Main::Menu.perform(&:go_to_admin_area)
-          QA::Page::Admin::Menu.perform(&:go_to_general_settings)
+          QA::Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
           QA::Page::Admin::Settings::Component::Snowplow.perform(&:disable_snowplow_tracking)
         end
       end
@@ -16,7 +16,7 @@ module QA
       def enable_snowplow
         Flow::Login.while_signed_in_as_admin do
           QA::Page::Main::Menu.perform(&:go_to_admin_area)
-          QA::Page::Admin::Menu.perform(&:go_to_general_settings)
+          QA::Page::Admin::Menu.perform(&:go_to_metrics_and_profiling_settings)
           QA::Page::Admin::Settings::Component::Snowplow.perform(&:enable_snowplow_tracking)
         end
       end

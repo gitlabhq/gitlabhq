@@ -659,7 +659,6 @@
 - spec/lib/gitlab/database/partitioning/list/convert_table_spec.rb
 - spec/lib/gitlab/database/partitioning/monthly_strategy_spec.rb
 - spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb
-- spec/lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table_spec.rb
 - spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb
 - spec/lib/gitlab/database/reflection_spec.rb
 - spec/lib/gitlab/database/transaction/observer_spec.rb

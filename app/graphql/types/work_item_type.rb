@@ -106,7 +106,7 @@ module Types
 
     field :archived, GraphQL::Types::Boolean, null: false,
       scopes: [:api, :read_api, :ai_workflows],
-      description: 'Whether the work item belongs to an archived project. Always false for group level work items.',
+      description: 'Whether the work item belongs to an archived project or group.',
       experiment: { milestone: '16.5' }
 
     field :comment_templates_paths, [Types::WorkItems::CommentTemplatePathType], null: false,
@@ -142,9 +142,7 @@ module Types
     end
 
     def archived
-      return false if object.project.blank?
-
-      object.project.archived?
+      object.resource_parent.self_or_ancestors_archived?
     end
 
     def show_plan_upgrade_promotion

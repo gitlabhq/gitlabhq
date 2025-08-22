@@ -363,6 +363,10 @@ function assets_image_tag() {
   else
     echo -n "${CI_COMMIT_SHA}"
   fi
+
+  if [[ "$VUE_VERSION" = "3" ]]; then
+    echo -n '-vue3'
+  fi
 }
 
 function setup_gcloud() {

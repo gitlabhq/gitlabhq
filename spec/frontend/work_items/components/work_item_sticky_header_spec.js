@@ -27,6 +27,7 @@ describe('WorkItemStickyHeader', () => {
     promotedToEpicUrl = null,
     slots = {},
     isDrawer = false,
+    isStickyHeaderShowing = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemStickyHeader, {
       propsData: {
@@ -40,7 +41,7 @@ describe('WorkItemStickyHeader', () => {
           duplicatedToWorkItemUrl,
           promotedToEpicUrl,
         }).data.workItem,
-        isStickyHeaderShowing: true,
+        isStickyHeaderShowing,
         updateInProgress: false,
         showWorkItemCurrentUserTodos: true,
         currentUserTodos: [],
@@ -175,6 +176,52 @@ describe('WorkItemStickyHeader', () => {
       Object.entries(workItemAttributes).forEach(([prop, url]) => {
         expect(stateBadgeProps[prop]).toBe(url);
       });
+    });
+  });
+
+  describe('sticky header height', () => {
+    beforeEach(() => {
+      // Ensure a clean slate for the CSS variable
+      document.documentElement.style.removeProperty('--work-item-sticky-header-height');
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('sets the CSS variable with the measured height', async () => {
+      createComponent();
+
+      const stickyHeaderEl = findStickyHeader().element;
+      jest.spyOn(stickyHeaderEl, 'offsetHeight', 'get').mockReturnValue(64);
+
+      wrapper.vm.syncStickyHeaderHeight();
+      await nextTick();
+
+      expect(
+        document.documentElement.style.getPropertyValue('--work-item-sticky-header-height').trim(),
+      ).toBe('64px');
+    });
+
+    it('invokes on mount when sticky header is shown initially', async () => {
+      const spy = jest.spyOn(WorkItemStickyHeader.methods, 'syncStickyHeaderHeight');
+      createComponent({ isStickyHeaderShowing: true });
+
+      await nextTick();
+      await nextTick();
+
+      expect(spy).toHaveBeenCalled();
+    });
+
+    it('invokes when isStickyHeaderShowing toggles from false to true', async () => {
+      createComponent({ isStickyHeaderShowing: false });
+      const spy = jest.spyOn(wrapper.vm, 'syncStickyHeaderHeight');
+
+      await wrapper.setProps({ isStickyHeaderShowing: true });
+      await nextTick();
+      await nextTick();
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 

@@ -17,7 +17,10 @@ module WorkItems
           namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]
         }] },
         widgets: { work_item_type: :enabled_widget_definitions },
-        archived: :project
+        archived: {
+          namespace: :namespace_settings_with_ancestors_inherited_settings,
+          project: { namespace: :namespace_settings_with_ancestors_inherited_settings }
+        }
       }
     end
 

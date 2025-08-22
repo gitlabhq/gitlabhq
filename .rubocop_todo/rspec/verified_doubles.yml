@@ -418,7 +418,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/database/partitioning/partition_manager_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/partition_monitoring_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_spec.rb'
     - 'spec/lib/gitlab/database/postgresql_database_tasks/load_schema_versions_mixin_spec.rb'

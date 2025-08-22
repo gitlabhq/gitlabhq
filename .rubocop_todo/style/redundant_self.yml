@@ -243,7 +243,6 @@ Style/RedundantSelf:
     - 'lib/gitlab/database.rb'
     - 'lib/gitlab/database/background_migration/batched_job.rb'
     - 'lib/gitlab/database/background_migration/batched_migration.rb'
-    - 'lib/gitlab/database/background_migration_job.rb'
     - 'lib/gitlab/database/gitlab_schema.rb'
     - 'lib/gitlab/database/load_balancing/service_discovery.rb'
     - 'lib/gitlab/database/loose_foreign_keys.rb'

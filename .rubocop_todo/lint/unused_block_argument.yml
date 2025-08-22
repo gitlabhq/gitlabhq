@@ -52,7 +52,6 @@ Lint/UnusedBlockArgument:
     - 'app/serializers/integrations/event_entity.rb'
     - 'app/serializers/issue_entity.rb'
     - 'app/serializers/merge_request_diff_entity.rb'
-    - 'app/serializers/merge_request_noteable_entity.rb'
     - 'app/serializers/merge_request_poll_widget_entity.rb'
     - 'app/serializers/merge_request_user_entity.rb'
     - 'app/serializers/merge_request_widget_entity.rb'

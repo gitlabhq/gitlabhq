@@ -2013,7 +2013,6 @@ Layout/LineLength:
     - 'lib/gitlab/database/partitioning/partition_monitoring.rb'
     - 'lib/gitlab/database/partitioning/replace_table.rb'
     - 'lib/gitlab/database/partitioning/time_partition.rb'
-    - 'lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table.rb'
     - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'
     - 'lib/gitlab/database/postgres_hll/batch_distinct_counter.rb'
     - 'lib/gitlab/database/postgres_hll/buckets.rb'

@@ -42,7 +42,6 @@ Rails/TimeZone:
     - 'spec/lib/gitlab/ci/cron_parser_spec.rb'
     - 'spec/lib/gitlab/cycle_analytics/stage_summary_spec.rb'
     - 'spec/lib/gitlab/data_builder/note_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration_job_spec.rb'
     - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/discussions_diff/file_collection_spec.rb'
     - 'spec/lib/gitlab/external_authorization/access_spec.rb'

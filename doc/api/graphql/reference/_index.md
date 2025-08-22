@@ -44647,7 +44647,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemarchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project. Always false for group level work items. |
+| <a id="workitemarchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project or group. |
 | <a id="workitemauthor"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | **Introduced** in GitLab 15.9. **Status**: Experiment. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitemcommenttemplatespaths"></a>`commentTemplatesPaths` | [`[CommentTemplatePathType!]!`](#commenttemplatepathtype) | Paths of the comment templates. |

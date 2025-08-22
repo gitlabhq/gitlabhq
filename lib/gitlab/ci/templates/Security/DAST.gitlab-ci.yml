@@ -16,10 +16,10 @@
 #   - deploy
 #   - dast
 #
-# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast/browser/
 #
 # Configure DAST with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/).
-# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/#available-variables
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast/browser/configuration/variables/
 
 variables:
   DAST_VERSION: 6

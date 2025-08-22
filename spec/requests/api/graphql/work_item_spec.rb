@@ -27,6 +27,21 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
     end
   end
 
+  context 'when project group is archived' do
+    before do
+      group.update!(archived: true)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the correct value in the archived field' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'iid' => work_item.iid.to_s,
+        'archived' => true
+      )
+    end
+  end
+
   context "for showPlanUpgradePromotion field" do
     context "when the namespace is in a free plan" do
       before do

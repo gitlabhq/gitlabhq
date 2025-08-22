@@ -682,7 +682,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
       %w[000000 201912 202001 202002].map { |suffix| "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{parent_table}_#{suffix}" }.unshift(parent_table)
     end
 
-    let(:migration_class) { 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable' }
+    let(:migration_class) { 'Gitlab::Database::BackgroundMigration::BackfillPartitionedTable' }
 
     context 'when the table is not allowed' do
       let(:source_table) { :_test_this_table_is_not_allowed }
@@ -782,7 +782,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         let(:migration_class) { 'TestBackfillPartitionedTable' }
         let!(:migration_klass) do
           Gitlab::BackgroundMigration.const_set(
-            migration_class, ::Class.new(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable))
+            migration_class, ::Class.new(Gitlab::BackgroundMigration::BackfillPartitionedTable))
         end
 
         it 'enqueues jobs to copy each batch of data' do
@@ -854,7 +854,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
         let!(:migration_klass) do
           Gitlab::BackgroundMigration.const_set(
             migration_class,
-            ::Class.new(Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable))
+            ::Class.new(Gitlab::BackgroundMigration::BackfillPartitionedTable))
         end
 
         it 'deletes those pertaining to the given table and migration class' do

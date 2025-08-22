@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '#perform' do
+RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '#perform', feature_category: :database do
   subject(:perform) { described_class.new(connection: connection, metrics: metrics_tracker).perform(job_record) }
 
   let(:connection) { Gitlab::Database.database_base_models[:main].connection }
@@ -151,18 +151,5 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationWrapper, '
 
     error = StandardError.new
     it_behaves_like('an error is raised', Gitlab::Database::BackgroundMigration::SubBatchTimeoutError.new(error), error)
-  end
-
-  context 'when the batched background migration does not inherit from BatchedMigrationJob' do
-    let(:job_class) { Class.new }
-    let(:job_instance) { job_class.new }
-
-    it 'runs the job with the correct arguments' do
-      expect(job_class).to receive(:new).with(no_args).and_return(job_instance)
-      expect(Gitlab::ApplicationContext).to receive(:push).with(feature_category: :database)
-      expect(job_instance).to receive(:perform).with(1, 10, 'events', 'id', 1, pause_ms, 'id', 'other_id')
-
-      perform
-    end
   end
 end

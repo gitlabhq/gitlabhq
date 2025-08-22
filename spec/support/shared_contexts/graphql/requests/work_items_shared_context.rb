@@ -23,7 +23,7 @@ end
 RSpec.shared_context 'with work item request context' do
   include GraphqlHelpers
 
-  let_it_be(:group) { create(:group) }
+  let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, :repository, :private, group: group) }
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:guest) { create(:user, guest_of: group) }

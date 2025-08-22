@@ -11,3 +11,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35913
 milestone: '13.2'
 gitlab_schema: gitlab_shared
 table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202025
+removed_in_milestone: '18.4'

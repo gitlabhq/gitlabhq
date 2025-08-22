@@ -23,7 +23,12 @@ import {
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
+import {
+  CREATED_DESC,
+  UPDATED_DESC,
+  urlSortParams,
+  RELATIVE_POSITION_ASC,
+} from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -73,6 +78,7 @@ import {
   WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
+import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
@@ -331,6 +337,7 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Due date' }),
           expect.objectContaining({ title: 'Popularity' }),
           expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Manual' }),
           expect.objectContaining({ title: 'Title' }),
           expect.objectContaining({ title: 'Start date' }),
           expect.objectContaining({ title: 'Health' }),
@@ -360,6 +367,7 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Due date' }),
           expect.objectContaining({ title: 'Popularity' }),
           expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Manual' }),
           expect.objectContaining({ title: 'Title' }),
           expect.objectContaining({ title: 'Start date' }),
         ]);
@@ -367,7 +375,7 @@ describeSkipVue3(skipReason, () => {
     });
 
     describe('when epics list', () => {
-      it('does not render "Priority", "Label priority", and "Weight" sort options', async () => {
+      it('does not render "Priority", "Label priority", "Manual" and "Weight" sort options', async () => {
         mountComponent({
           provide: {
             hasBlockedIssuesFeature: true,
@@ -1600,6 +1608,57 @@ describeSkipVue3(skipReason, () => {
 
       expect(defaultQueryHandler).not.toHaveBeenCalled();
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when "reorder" event is emitted by IssuableList', () => {
+    beforeEach(async () => {
+      mountComponent({
+        provide: { initialSort: RELATIVE_POSITION_ASC },
+      });
+      await waitForPromises();
+    });
+
+    describe('when successful', () => {
+      describe.each`
+        description                        | oldIndex | newIndex | expectedMoveBeforeId                                                   | expectedMoveAfterId
+        ${'first item to second position'} | ${0}     | ${1}     | ${workItemsQueryResponseCombined.data.namespace.workItems.nodes[1].id} | ${null}
+        ${'second item to first position'} | ${1}     | ${0}     | ${null}                                                                | ${workItemsQueryResponseCombined.data.namespace.workItems.nodes[0].id}
+      `(
+        'when moving $description',
+        ({ oldIndex, newIndex, expectedMoveBeforeId, expectedMoveAfterId }) => {
+          it('calls workItemsReorder mutation with correct parameters', async () => {
+            const reorderMutationSpy = jest.fn().mockResolvedValue({
+              data: {
+                workItemsReorder: {
+                  workItem: workItemsQueryResponseCombined.data.namespace.workItems.nodes[oldIndex],
+                  errors: [],
+                },
+              },
+            });
+
+            mountComponent({
+              provide: { initialSort: RELATIVE_POSITION_ASC },
+              additionalHandlers: [[workItemsReorderMutation, reorderMutationSpy]],
+            });
+            await waitForPromises();
+
+            findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
+            await waitForPromises();
+
+            const expectedInput = {
+              id: workItemsQueryResponseCombined.data.namespace.workItems.nodes[oldIndex].id,
+            };
+
+            if (expectedMoveBeforeId) expectedInput.moveBeforeId = expectedMoveBeforeId;
+            if (expectedMoveAfterId) expectedInput.moveAfterId = expectedMoveAfterId;
+
+            expect(reorderMutationSpy).toHaveBeenCalledWith({
+              input: expectedInput,
+            });
+          });
+        },
+      );
     });
   });
 });

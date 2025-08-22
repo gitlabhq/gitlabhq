@@ -10723,25 +10723,6 @@ CREATE TABLE aws_roles (
     CONSTRAINT check_57adedab55 CHECK ((char_length(region) <= 255))
 );
 
-CREATE TABLE background_migration_jobs (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    status smallint DEFAULT 0 NOT NULL,
-    class_name text NOT NULL,
-    arguments jsonb NOT NULL,
-    CONSTRAINT check_b0de0a5852 CHECK ((char_length(class_name) <= 200))
-);
-
-CREATE SEQUENCE background_migration_jobs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE background_migration_jobs_id_seq OWNED BY background_migration_jobs.id;
-
 CREATE TABLE badges (
     id bigint NOT NULL,
     link_url character varying NOT NULL,
@@ -28055,8 +28036,6 @@ ALTER TABLE ONLY automation_rules ALTER COLUMN id SET DEFAULT nextval('automatio
 
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
 
-ALTER TABLE ONLY background_migration_jobs ALTER COLUMN id SET DEFAULT nextval('background_migration_jobs_id_seq'::regclass);
-
 ALTER TABLE ONLY badges ALTER COLUMN id SET DEFAULT nextval('badges_id_seq'::regclass);
 
 ALTER TABLE ONLY batched_background_migration_job_transition_logs ALTER COLUMN id SET DEFAULT nextval('batched_background_migration_job_transition_logs_id_seq'::regclass);
@@ -30232,9 +30211,6 @@ ALTER TABLE ONLY award_emoji
 
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE ONLY background_migration_jobs
-    ADD CONSTRAINT background_migration_jobs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY badges
     ADD CONSTRAINT badges_pkey PRIMARY KEY (id);
@@ -35394,12 +35370,6 @@ CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji
 CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree (role_external_id);
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
-
-CREATE INDEX index_background_migration_jobs_for_partitioning_migrations ON background_migration_jobs USING btree (((arguments ->> 2))) WHERE (class_name = 'Gitlab::Database::PartitioningMigrationHelpers::BackfillPartitionedTable'::text);
-
-CREATE INDEX index_background_migration_jobs_on_class_name_and_arguments ON background_migration_jobs USING btree (class_name, arguments);
-
-CREATE INDEX index_background_migration_jobs_on_class_name_and_status_and_id ON background_migration_jobs USING btree (class_name, status, id);
 
 CREATE INDEX index_badges_on_group_id ON badges USING btree (group_id);
 

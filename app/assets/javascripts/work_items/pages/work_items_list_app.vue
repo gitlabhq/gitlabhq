@@ -37,6 +37,7 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   urlSortParams,
+  RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -117,6 +118,7 @@ import {
   METADATA_KEYS,
 } from '../constants';
 import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
+import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -705,7 +707,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasManualSort: false,
+        hasManualSort: !this.isEpicsList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,
@@ -771,6 +773,9 @@ export default {
     },
     showParentFilter() {
       return this.glFeatures.workItemsListParentFilter;
+    },
+    isManualOrdering() {
+      return this.sortKey === RELATIVE_POSITION_ASC;
     },
   },
   watch: {
@@ -1099,6 +1104,90 @@ export default {
           return [];
         });
     },
+    handleReorder({ newIndex, oldIndex }) {
+      if (newIndex === oldIndex) return Promise.resolve();
+
+      const workItemToMove = this.workItems[oldIndex];
+
+      const remainingItems = this.workItems.filter((_, index) => index !== oldIndex);
+
+      let moveBeforeId = null;
+      let moveAfterId = null;
+
+      if (newIndex === 0) {
+        // Moving to beginning
+        moveBeforeId = null;
+        moveAfterId = remainingItems[0]?.id || null;
+      } else if (newIndex >= remainingItems.length) {
+        // Moving to end
+        moveAfterId = null;
+        moveBeforeId = remainingItems[remainingItems.length - 1]?.id || null;
+      } else {
+        // Moving between items
+        moveAfterId = remainingItems[newIndex - 1]?.id || null;
+        moveBeforeId = remainingItems[newIndex]?.id || null;
+      }
+
+      const input = { id: workItemToMove.id };
+      if (moveBeforeId) input.moveBeforeId = moveBeforeId;
+      if (moveAfterId) input.moveAfterId = moveAfterId;
+
+      return this.$apollo
+        .mutate({
+          mutation: workItemsReorderMutation,
+          variables: { input },
+          update: (cache) => {
+            this.updateWorkItemsCache(cache, oldIndex, newIndex);
+          },
+        })
+        .then(({ data }) => {
+          if (data?.workItemsReorder?.errors?.length > 0) {
+            throw new Error(data.workItemsReorder.errors.join(', '));
+          }
+          return data;
+        })
+        .catch((error) => {
+          this.error = s__('WorkItem|An error occurred while reordering work items.');
+          Sentry.captureException(error);
+          throw error;
+        });
+    },
+
+    updateWorkItemsCache(cache, oldIndex, newIndex) {
+      cache.updateQuery(
+        {
+          query: this.$apollo.queries.workItemsFull.options.query,
+          variables: this.queryVariables,
+        },
+        (existingData) => {
+          if (!existingData?.namespace?.workItems?.nodes) {
+            return existingData;
+          }
+
+          const workItems = [...existingData.namespace.workItems.nodes];
+
+          if (oldIndex >= 0 && oldIndex < workItems.length) {
+            const [movedItem] = workItems.splice(oldIndex, 1);
+            if (movedItem) {
+              workItems.splice(newIndex, 0, movedItem);
+            }
+          }
+
+          const newData = {
+            ...existingData,
+            namespace: {
+              ...existingData.namespace,
+              workItems: {
+                ...existingData.namespace.workItems,
+                nodes: workItems,
+              },
+            },
+          };
+
+          return newData;
+        },
+      );
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1136,6 +1225,7 @@ export default {
         :initial-sort-by="sortKey"
         :issuables="workItems"
         :issuables-loading="isLoading"
+        :is-manual-ordering="isManualOrdering"
         :show-bulk-edit-sidebar="showBulkEditSidebar"
         namespace="work-items"
         :full-path="rootPageFullPath"
@@ -1161,6 +1251,7 @@ export default {
         @previous-page="handlePreviousPage"
         @sort="handleSort"
         @select-issuable="handleToggle"
+        @reorder="handleReorder"
       >
         <template #user-preference>
           <work-item-user-preferences
@@ -1196,6 +1287,7 @@ export default {
               :preselected-work-item-type="preselectedWorkItemType"
               @workItemCreated="refetchItems"
             />
+            <work-item-list-actions />
           </div>
         </template>
 

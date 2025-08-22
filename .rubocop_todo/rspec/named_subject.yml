@@ -1784,7 +1784,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/database/partitioning/partition_manager_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/partition_monitoring_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/time_partition_spec.rb'
-    - 'spec/lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/index_helpers_spec.rb'
     - 'spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb'
     - 'spec/lib/gitlab/database/pg_class_spec.rb'

@@ -114,6 +114,9 @@
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
+.if-merge-request-labels-run-rspec-vue3: &if-merge-request-labels-run-rspec-vue3
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-rspec-vue3/'
+
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
@@ -2397,6 +2400,10 @@
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
     - <<: *if-default-refs
       changes: *backend-patterns
+
+.rails:rules:ee-and-foss-system vue3:
+  rules:
+    - <<: *if-merge-request-labels-run-rspec-vue3
 
 .rails:rules:ee-and-foss-system:
   rules:

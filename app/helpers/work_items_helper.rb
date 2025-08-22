@@ -11,6 +11,8 @@ module WorkItemsHelper
       if resource_parent.is_a?(Project)
         data[:releases_path] = project_releases_path(resource_parent, format: :json)
         data[:project_import_jira_path] = project_import_jira_path(resource_parent)
+        data[:rss_path] = project_work_items_path(resource_parent, format: :atom)
+        data[:calendar_path] = project_work_items_path(resource_parent, format: :ics)
       end
     end
   end

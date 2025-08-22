@@ -1755,7 +1755,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/database.rb'
     - 'lib/gitlab/database/background_migration/batched_migration.rb'
     - 'lib/gitlab/database/background_migration/batched_migration_wrapper.rb'
-    - 'lib/gitlab/database/background_migration_job.rb'
     - 'lib/gitlab/database/batch_average_counter.rb'
     - 'lib/gitlab/database/batch_counter.rb'
     - 'lib/gitlab/database/consistency_checker.rb'
