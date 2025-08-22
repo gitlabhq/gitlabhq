@@ -8,9 +8,9 @@ title: CLI agents
 {{< details >}}
 
 - Tier: Ultimate
+- Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
-- Add-on: GitLab Duo Enterprise
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}

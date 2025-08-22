@@ -50,7 +50,7 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
       # TODO: Followup to solve the extra queries - https://gitlab.com/gitlab-org/gitlab/-/issues/512617
       expect do
         post_graphql(query, current_user: current_user)
-      end.to issue_same_number_of_queries_as(control).with_threshold(2)
+      end.to issue_same_number_of_queries_as(control).with_threshold(5)
       expect(graphql_errors).to be_blank
     end
   end

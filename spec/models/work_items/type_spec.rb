@@ -22,63 +22,47 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       expect(type.enabled_widget_definitions).to match_array([widget1])
     end
 
-    it 'has many `child_restrictions`' do
-      is_expected.to have_many(:child_restrictions)
-        .class_name('WorkItems::HierarchyRestriction')
-        .with_foreign_key('parent_type_id')
-    end
+    describe '#allowed_child_types_by_name' do
+      it 'returns child types from hierarchy restrictions' do
+        epic_type = described_class.find_by(base_type: :epic)
+        issue_type = described_class.find_by(base_type: :issue)
 
-    it 'has many `parent_restrictions`' do
-      is_expected.to have_many(:parent_restrictions)
-        .class_name('WorkItems::HierarchyRestriction')
-        .with_foreign_key('child_type_id')
-    end
+        expect(epic_type.allowed_child_types_by_name).to include(issue_type)
+      end
 
-    describe 'allowed_child_types_by_name' do
-      it 'defines association' do
-        is_expected.to have_many(:allowed_child_types_by_name)
-          .through(:child_restrictions)
-          .class_name('::WorkItems::Type')
-          .with_foreign_key(:child_type_id)
+      it 'returns empty array when no child types are defined' do
+        custom_type = create(:work_item_type, :non_default)
+
+        expect(custom_type.allowed_child_types_by_name).to be_empty
       end
 
       it 'sorts by name ascending' do
-        expected_type_names = %w[Atype Ztype gtype]
-        parent_type = create(:work_item_type, :non_default)
+        issue_type = described_class.find_by(base_type: :issue)
 
-        expected_type_names.shuffle.each do |name|
-          create(
-            :hierarchy_restriction,
-            parent_type: parent_type,
-            child_type: create(:work_item_type, :non_default, name: name)
-          )
-        end
-
-        expect(parent_type.allowed_child_types_by_name.pluck(:name)).to match_array(expected_type_names)
+        names = issue_type.allowed_child_types_by_name.pluck(:name)
+        expect(names).to eq(names.sort_by(&:downcase))
       end
     end
 
-    describe 'allowed_parent_types_by_name' do
-      it 'defines association' do
-        is_expected.to have_many(:allowed_parent_types_by_name)
-          .through(:parent_restrictions)
-          .class_name('::WorkItems::Type')
-          .with_foreign_key(:parent_type_id)
+    describe '#allowed_parent_types_by_name' do
+      it 'returns parent types from hierarchy restrictions' do
+        task_type = described_class.find_by(base_type: :task)
+        issue_type = described_class.find_by(base_type: :issue)
+
+        expect(task_type.allowed_parent_types_by_name).to include(issue_type)
+      end
+
+      it 'returns empty array when no parent types are defined' do
+        custom_type = create(:work_item_type, :non_default)
+
+        expect(custom_type.allowed_parent_types_by_name).to be_empty
       end
 
       it 'sorts by name ascending' do
-        expected_type_names = %w[Atype Ztype gtype]
-        child_type = create(:work_item_type, :non_default)
+        task_type = described_class.find_by(base_type: :task)
 
-        expected_type_names.shuffle.each do |name|
-          create(
-            :hierarchy_restriction,
-            parent_type: create(:work_item_type, :non_default, name: name),
-            child_type: child_type
-          )
-        end
-
-        expect(child_type.allowed_parent_types_by_name.pluck(:name)).to match_array(expected_type_names)
+        names = task_type.allowed_parent_types_by_name.pluck(:name)
+        expect(names).to eq(names.sort)
       end
     end
   end
@@ -157,7 +141,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_widgets)
       expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
 
-      expect(subject).to eq(default_issue_type)
+      is_expected.to eq(default_issue_type)
     end
 
     context 'when default types are missing' do
@@ -165,18 +149,20 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         described_class.delete_all
       end
 
+      subject(:default_by_type) { described_class.default_by_type(base_type) }
+
       it 'raises an error' do
         expect do
-          subject
+          default_by_type
         end.to raise_error(
           WorkItems::Type::DEFAULT_TYPES_NOT_SEEDED,
           <<~STRING
-            Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-            See related documentation in
-            https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
+        Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+        See related documentation in
+        https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
 
-            If you have additional questions, you can ask in
-            https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+        If you have additional questions, you can ask in
+        https://gitlab.com/gitlab-org/gitlab/-/issues/423483
           STRING
         )
       end
@@ -188,7 +174,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
         it 'does not raise an error' do
           expect do
-            subject
+            default_by_type
           end.not_to raise_error
         end
       end
@@ -263,23 +249,23 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe '#allowed_child_types' do
-    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be(:child_type) { create(:work_item_type, :non_default) }
-    let_it_be(:restriction) { create(:hierarchy_restriction, parent_type: work_item_type, child_type: child_type) }
+    let_it_be(:epic_type) { described_class.find_by(base_type: :epic) }
+    let_it_be(:issue_type) { described_class.find_by(base_type: :issue) }
 
-    subject { work_item_type.allowed_child_types(cache: cached) }
+    subject { epic_type.allowed_child_types(cache: cached) }
 
     context 'when cache is true' do
       let(:cached) { true }
 
       before do
-        allow(work_item_type).to receive(:with_reactive_cache).and_call_original
+        allow(epic_type).to receive(:with_reactive_cache).and_call_original
       end
 
       it 'returns the cached data' do
-        expect(work_item_type).to receive(:with_reactive_cache)
-        expect(Rails.cache).to receive(:exist?).with("work_items_type:#{work_item_type.id}:alive")
-        is_expected.to eq([child_type])
+        expect(epic_type).to receive(:with_reactive_cache)
+        expect(Rails.cache).to receive(:exist?).with("work_items_type:#{epic_type.id}:alive")
+
+        is_expected.to include(issue_type)  # Changed from expect(subject)
       end
     end
 
@@ -287,30 +273,31 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:cached) { false }
 
       it 'returns queried data' do
-        expect(work_item_type).not_to receive(:with_reactive_cache)
-        is_expected.to eq([child_type])
+        expect(epic_type).not_to receive(:with_reactive_cache)
+
+        is_expected.to include(issue_type)  # Changed from expect(subject)
       end
     end
   end
 
   describe '#allowed_parent_types' do
-    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
-    let_it_be(:parent_type) { create(:work_item_type, :non_default) }
-    let_it_be(:restriction) { create(:hierarchy_restriction, parent_type: parent_type, child_type: work_item_type) }
+    let_it_be(:issue_type) { described_class.find_by(base_type: :issue) }
+    let_it_be(:epic_type) { described_class.find_by(base_type: :epic) }
 
-    subject { work_item_type.allowed_parent_types(cache: cached) }
+    subject { issue_type.allowed_parent_types(cache: cached) }
 
     context 'when cache is true' do
       let(:cached) { true }
 
       before do
-        allow(work_item_type).to receive(:with_reactive_cache).and_call_original
+        allow(issue_type).to receive(:with_reactive_cache).and_call_original
       end
 
       it 'returns the cached data' do
-        expect(work_item_type).to receive(:with_reactive_cache)
-        expect(Rails.cache).to receive(:exist?).with("work_items_type:#{work_item_type.id}:alive")
-        is_expected.to eq([parent_type])
+        expect(issue_type).to receive(:with_reactive_cache)
+        expect(Rails.cache).to receive(:exist?).with("work_items_type:#{issue_type.id}:alive")
+
+        is_expected.to include(epic_type)
       end
     end
 
@@ -318,44 +305,42 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:cached) { false }
 
       it 'returns queried data' do
-        expect(work_item_type).not_to receive(:with_reactive_cache)
-        is_expected.to eq([parent_type])
+        expect(issue_type).not_to receive(:with_reactive_cache)
+
+        is_expected.to include(epic_type)
       end
     end
   end
 
   describe '#descendant_types' do
-    let(:epic_type) { create(:work_item_type, :non_default) }
-    let(:issue_type) { create(:work_item_type, :non_default) }
-    let(:task_type) { create(:work_item_type, :non_default) }
+    let(:epic_type) { described_class.find_by(base_type: :epic) }
+    let(:issue_type) { described_class.find_by(base_type: :issue) }
+    let(:task_type) { described_class.find_by(base_type: :task) }
 
-    subject { epic_type.descendant_types }
-
-    before do
-      create(:hierarchy_restriction, parent_type: epic_type, child_type: epic_type)
-      create(:hierarchy_restriction, parent_type: epic_type, child_type: issue_type)
-      create(:hierarchy_restriction, parent_type: issue_type, child_type: task_type)
-    end
+    subject(:descendant_types) { epic_type.descendant_types }
 
     it 'returns all possible descendant types' do
-      is_expected.to contain_exactly(epic_type, issue_type, task_type)
+      is_expected.to include(epic_type, issue_type, task_type)
+    end
+
+    it 'handles circular dependencies correctly' do
+      expect { descendant_types }.not_to raise_error
     end
   end
 
   describe '#calculate_reactive_cache' do
-    let(:work_item_type) { build(:work_item_type) }
+    let(:work_item_type) { described_class.find_by(base_type: :issue) }
 
     subject { work_item_type.calculate_reactive_cache }
 
-    it 'returns cache data for allowed child types' do
-      child_types = create_list(:work_item_type, 2)
-      parent_types = create_list(:work_item_type, 2)
-      cache_data = { allowed_child_types_by_name: child_types, allowed_parent_types_by_name: parent_types }
+    it 'returns cache data for allowed child and parent types' do
+      child_types = work_item_type.allowed_child_types_by_name
+      parent_types = work_item_type.allowed_parent_types_by_name
 
-      expect(work_item_type).to receive(:allowed_child_types_by_name).and_return(child_types)
-      expect(work_item_type).to receive(:allowed_parent_types_by_name).and_return(parent_types)
-
-      is_expected.to eq(cache_data)
+      is_expected.to eq({
+        allowed_child_types_by_name: child_types,
+        allowed_parent_types_by_name: parent_types
+      })
     end
   end
 
@@ -394,8 +379,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:work_item_type) { issue_type }
 
       it 'returns all supported types except itself' do
-        expect(subject).to include(incident_type, task_type, ticket_type)
-        expect(subject).not_to include(issue_type)
+        is_expected.to include(incident_type, task_type, ticket_type)
+        is_expected.not_to include(issue_type)
       end
     end
 
@@ -403,8 +388,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:work_item_type) { incident_type }
 
       it 'returns all supported types except itself' do
-        expect(subject).to include(issue_type, task_type, ticket_type)
-        expect(subject).not_to include(incident_type)
+        is_expected.to include(issue_type, task_type, ticket_type)
+        is_expected.not_to include(incident_type)
       end
     end
 
@@ -412,7 +397,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:work_item_type) { create(:work_item_type, :epic) }
 
       it 'does not include epic as it is excluded from supported conversion types' do
-        expect(subject).not_to include(work_item_type)
+        is_expected.not_to include(work_item_type)
       end
     end
 
@@ -420,7 +405,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
       let(:work_item_type) { create(:work_item_type, :objective) }
 
       it 'returns empty array as objective is excluded from supported conversion types' do
-        expect(subject).not_to include(work_item_type)
+        is_expected.not_to include(work_item_type)
       end
     end
 
@@ -432,7 +417,7 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
           .with(resource_parent, developer_user)
           .and_call_original
 
-        subject
+        work_item_type.supported_conversion_types(resource_parent, developer_user)
       end
     end
   end

@@ -1477,6 +1477,7 @@
     - if: '$ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -1510,6 +1511,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
@@ -1535,6 +1537,7 @@
     - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes: *frontend-predictive-patterns
@@ -1550,6 +1553,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes:
@@ -1573,6 +1577,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
@@ -1608,6 +1613,7 @@
     - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes: *frontend-predictive-patterns
@@ -1655,6 +1661,7 @@
       when: manual
       allow_failure: true
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
       when: manual
       allow_failure: true
     - <<: *if-merge-request
@@ -3133,6 +3140,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *backend-patterns
     - <<: *if-default-branch-schedule-weekly
@@ -3256,6 +3264,7 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request

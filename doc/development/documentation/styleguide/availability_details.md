@@ -13,7 +13,7 @@ Product availability details provide information about a feature.
 - If they apply to a specific section, place the details under the applicable
   section titles.
 
-Availability details include the tier, offering, status, and history.
+Availability details include the tier, add-on (if applicable), offering, status, and history.
 
 The Markdown for availability details should look like the following:
 
@@ -24,6 +24,7 @@ title: 'Topic title'
 {{</* details */>}}
 
 - Tier: Free, Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
 
@@ -39,7 +40,32 @@ title: 'Topic title'
 
 ## Available options
 
-Use the following text for the tier, offering, add-on, status, and version history.
+Use the following text for the tier, add-on, offering, status, and version history.
+
+### Tier
+
+For tier, choose one:
+
+- `Free, Premium, Ultimate`
+- `Premium, Ultimate`
+- `Ultimate`
+
+{{< alert type="note" >}}
+
+GitLab Dedicated always includes an Ultimate subscription.
+
+{{< /alert >}}
+
+### Add-ons
+
+For add-ons, the possibilities are:
+
+```markdown
+- Add-on: GitLab Duo Pro
+- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo with Amazon Q
+```
 
 ### Offering
 
@@ -62,31 +88,6 @@ If you have reviewed a page and it specifically doesn't apply to GitLab Dedicate
 [assign metadata](../metadata.md#indicate-gitlab-dedicated-support).
 
 {{< /alert >}}
-
-### Tier
-
-For tier, choose one:
-
-- `Free, Premium, Ultimate`
-- `Premium, Ultimate`
-- `Ultimate`
-
-{{< alert type="note" >}}
-
-GitLab Dedicated always includes an Ultimate subscription.
-
-{{< /alert >}}
-
-#### Add-ons
-
-For add-ons, the possibilities are:
-
-```markdown
-- Add-on: GitLab Duo Pro
-- Add-on: GitLab Duo Enterprise
-- Add-on: GitLab Duo Pro or Enterprise
-- Add-on: GitLab Duo with Amazon Q
-```
 
 ### Status
 

@@ -25,9 +25,6 @@ class Namespace < ApplicationRecord
   extend Gitlab::Utils::Override
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
-  ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
-
-  ignore_column :emails_disabled, remove_with: '18.1', remove_after: '2025-05-20'
 
   columns_changing_default :organization_id
 
