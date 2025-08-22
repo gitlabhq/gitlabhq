@@ -1,0 +1,10 @@
+---
+name: anthropic_proxy_new_tokens_path
+description: Use CloudConnector::Tokens for Anthropic Proxy, replacing a legacy implementation.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561289
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201598
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561289
+milestone: '18.3'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

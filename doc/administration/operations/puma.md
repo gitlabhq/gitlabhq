@@ -53,6 +53,12 @@ too often (once or more per minute).
 
 A higher value of `1200` or more could be beneficial if the server has free memory.
 
+## Plan the database connections
+
+Before increasing Puma workers or threads, consider the database connection impact on your PostgreSQL `max_connections` setting.
+
+For detailed connection planning and calculations, see the [Tune PostgreSQL](../postgresql/tune.md) page.
+
 ### Monitor worker restarts
 
 GitLab emits log events if workers are restarted due to high memory use.
@@ -190,7 +196,7 @@ steps below:
 {{< alert type="note" >}}
 
 In addition to the Unix socket, Puma also listens over HTTP on port 8080 for
-providing metrics to be scraped by Prometheus. It is not currently possible to
+providing metrics to be scraped by Prometheus. It is not possible to
 make Prometheus scrape them over HTTPS, and support for it is being discussed
 [in this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6811).
 Hence, it is not technically possible to turn off this HTTP listener without
@@ -284,7 +290,7 @@ consumption. Most Rails application requests usually include a proportion of I/O
 During I/O wait time, MRI Ruby releases the GVL to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
 
-When switching to Puma, any Unicorn server configuration will not carry over
+When switching to Puma, any Unicorn server configuration does not carry over
 automatically, due to differences between the two application servers.
 
 To switch from Unicorn to Puma:
@@ -368,7 +374,7 @@ downtime. Otherwise, skip to the next section.
    thread apply all bt
    ```
 
-1. Once you're done debugging with `gdb`, be sure to detach from the process and exit:
+1. After you're done debugging with `gdb`, be sure to detach from the process and exit:
 
    ```plaintext
    detach

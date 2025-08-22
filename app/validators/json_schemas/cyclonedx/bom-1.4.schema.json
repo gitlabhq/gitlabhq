@@ -1246,7 +1246,8 @@
           "description": "If SPDX does not define the license used, this field may be used to provide the license name",
           "examples": [
             "Acme Software License"
-          ]
+          ],
+          "maxLength": 255
         },
         "text": {
           "title": "License text",

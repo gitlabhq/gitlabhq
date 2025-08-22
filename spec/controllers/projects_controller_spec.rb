@@ -1543,17 +1543,38 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     it 'uses gitaly pagination' do
-      expected_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
+      branch_params = ActionController::Parameters.new(ref: '123456', per_page: 100, sort: 'updated_desc').permit!
+      tag_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
 
-      expect_next_instance_of(BranchesFinder, project.repository, expected_params) do |finder|
+      expect_next_instance_of(BranchesFinder, project.repository, branch_params) do |finder|
         expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
       end
 
-      expect_next_instance_of(TagsFinder, project.repository, expected_params) do |finder|
+      expect_next_instance_of(TagsFinder, project.repository, tag_params) do |finder|
         expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
       end
 
       get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+    end
+
+    it 'defaults to updated_desc sorting for branches when no sort parameter provided' do
+      branch_params = ActionController::Parameters.new(per_page: 100, sort: 'updated_desc').permit!
+
+      expect_next_instance_of(BranchesFinder, project.repository, branch_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      get :refs, params: { namespace_id: project.namespace, id: project }
+    end
+
+    it 'honors explicit sort parameter for branches' do
+      explicit_params = ActionController::Parameters.new(per_page: 100, sort: 'name').permit!
+
+      expect_next_instance_of(BranchesFinder, project.repository, explicit_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      get :refs, params: { namespace_id: project.namespace, id: project, sort: 'name' }
     end
 
     context 'when gitaly is unavailable' do

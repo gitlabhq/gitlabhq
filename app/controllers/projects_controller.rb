@@ -355,7 +355,11 @@ class ProjectsController < Projects::ApplicationController
     options = {}
 
     if find_branches
-      branches = BranchesFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
+      # Set default sort to 'updated_desc' for branches if no sort specified
+      branch_params = refs_params.merge(per_page: REFS_LIMIT)
+      branch_params[:sort] = 'updated_desc' if branch_params[:sort].blank?
+
+      branches = BranchesFinder.new(@repository, branch_params)
                    .execute(gitaly_pagination: true)
                    .take(REFS_LIMIT)
                    .map(&:name)

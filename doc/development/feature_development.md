@@ -38,6 +38,7 @@ Consult these topics for information on contributing to specific GitLab features
   possible
 - [Guidelines for reusing abstractions](reusing_abstractions.md)
 - [Ruby 3 gotchas](ruby3_gotchas.md)
+- [Development Considerations and Caveats](rollbacks.md)
 
 ### Rails Framework related
 

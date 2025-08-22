@@ -243,19 +243,7 @@ Listed below are the most relevant ones and their defaults on a Linux package in
   This is the "backend" pool in PgBouncer: connections from PgBouncer to the database.
 
 The ideal number for `default_pool_size` must be enough to handle all provisioned services that need to access
-the database. Each of the listed services below use the following formula to define database pool size:
-
-- `puma` : `max_threads + headroom` (default `14`)
-  - `max_threads` is configured via: `gitlab['puma']['max_threads']` (default: `4`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
-- `sidekiq` : `max_concurrency + 1 + headroom` (default: `31`)
-  - `max_concurrency` is configured via: `sidekiq['max_concurrency']` (default: `20`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
-- `geo-logcursor`: `1+headroom` (default: `11`)
-  - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
-
-To calculate the `default_pool_size`, multiply the number of instances of `puma`, `sidekiq` and `geo-logcursor` by the
-number of connections each can consume as per listed previously. The total is the suggested `default_pool_size`.
+the database. For detailed guidance on calculating the required pool size, see [Tune PostgreSQL](tune.md).
 
 If you are using more than one PgBouncer with an internal Load Balancer, you may be able to divide the
 `default_pool_size` by the number of instances to guarantee an evenly distributed load between them.

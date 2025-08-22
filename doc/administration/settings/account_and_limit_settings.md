@@ -662,6 +662,13 @@ By default, new users can create top-level groups. GitLab administrators can pre
 1. Expand **Account and limit**.
 1. Clear the **Allow new users to create top-level groups** checkbox.
 
+{{< alert type="note" >}}
+
+This setting applies only to users added after you turn off the setting. Existing users
+can still create top-level groups.
+
+{{< /alert >}}
+
 ## Prevent non-members from creating projects and groups
 
 {{< history >}}
