@@ -62,7 +62,7 @@ module Gitlab
             query = model
             # Performance optimization
             # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190206
-            query = query.with_token_present if model == Ci::Build
+            query = query.with_token_present if model == ::Ci::Build
 
             query.in_batches do |batch| # rubocop:disable Cop/InBatches -- We can't skip callbacks in `each_batch`.
               batch.each do |entry|
