@@ -23740,7 +23740,8 @@ CREATE TABLE security_policy_settings (
     id bigint NOT NULL,
     csp_namespace_id bigint,
     singleton boolean DEFAULT true NOT NULL,
-    organization_id bigint NOT NULL
+    organization_id bigint NOT NULL,
+    csp_namespace_locked_until timestamp with time zone
 );
 
 COMMENT ON COLUMN security_policy_settings.singleton IS 'Always true, used for singleton enforcement';
@@ -27263,7 +27264,8 @@ CREATE TABLE zentao_tracker_data (
     project_id bigint,
     group_id bigint,
     organization_id bigint,
-    CONSTRAINT check_500f588095 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
+    CONSTRAINT check_500f588095 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1)),
+    CONSTRAINT check_fcff5b4d60 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE zentao_tracker_data_id_seq
@@ -34267,66 +34269,6 @@ CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xi
 
 CREATE UNIQUE INDEX group_type_ci_runner_machines_runner_id_runner_type_system__idx ON group_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
 
-CREATE UNIQUE INDEX index_ci_runners_on_token_encrypted_and_runner_type ON ONLY ci_runners USING btree (token_encrypted, runner_type);
-
-CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812_token_encrypted_runner_type_idx ON group_type_ci_runners USING btree (token_encrypted, runner_type);
-
-CREATE INDEX index_ci_runners_on_active_and_id ON ONLY ci_runners USING btree (active, id);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_active_id_idx ON group_type_ci_runners USING btree (active, id);
-
-CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ONLY ci_runners USING btree (contacted_at, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx ON group_type_ci_runners USING btree (contacted_at, id DESC);
-
-CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ONLY ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON group_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ONLY ci_runners USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON group_type_ci_runners USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ONLY ci_runners USING btree (created_at, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx ON group_type_ci_runners USING btree (created_at, id DESC);
-
-CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ONLY ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx1 ON group_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ONLY ci_runners USING btree (created_at DESC, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_created_at_id_idx2 ON group_type_ci_runners USING btree (created_at DESC, id DESC);
-
-CREATE INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ON ONLY ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_creator_id_idx ON group_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
-
-CREATE INDEX index_ci_runners_on_description_trigram ON ONLY ci_runners USING gin (description gin_trgm_ops);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_description_idx ON group_type_ci_runners USING gin (description gin_trgm_ops);
-
-CREATE INDEX index_ci_runners_on_locked ON ONLY ci_runners USING btree (locked);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_locked_idx ON group_type_ci_runners USING btree (locked);
-
-CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ONLY ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_sharding_key_id_idx ON group_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ONLY ci_runners USING btree (token_expires_at, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON group_type_ci_runners USING btree (token_expires_at, id DESC);
-
-CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ONLY ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE INDEX group_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON group_type_ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE UNIQUE INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ON ONLY ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
-CREATE UNIQUE INDEX group_type_ci_runners_e59bb2812d_token_runner_type_idx ON group_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
 CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
@@ -34529,6 +34471,30 @@ CREATE INDEX idx_group_audit_events_on_group_id_author_created_at_id ON ONLY gro
 
 CREATE INDEX idx_group_audit_events_on_project_created_at_id ON ONLY group_audit_events USING btree (group_id, created_at, id);
 
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ONLY ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive ON group_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX index_ci_runners_on_locked ON ONLY ci_runners USING btree (locked);
+
+CREATE INDEX idx_group_type_ci_runners_on_locked ON group_type_ci_runners USING btree (locked);
+
+CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ONLY ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
+CREATE INDEX idx_group_type_ci_runners_on_sharding_key_id_when_not_null ON group_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
+CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ONLY ci_runners USING btree (token_expires_at, id DESC);
+
+CREATE INDEX idx_group_type_ci_runners_on_token_expires_at_and_id_desc ON group_type_ci_runners USING btree (token_expires_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ONLY ci_runners USING btree (token_expires_at DESC, id DESC);
+
+CREATE INDEX idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc ON group_type_ci_runners USING btree (token_expires_at DESC, id DESC);
+
+CREATE UNIQUE INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ON ONLY ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_group_type_ci_runners_on_token_runner_type_when_not_null ON group_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
+
 CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
 
 CREATE INDEX idx_hosted_runner_usage_on_namespace_billing_month ON ci_gitlab_hosted_runner_monthly_usages USING btree (root_namespace_id, billing_month);
@@ -34564,6 +34530,26 @@ CREATE INDEX idx_instance_audit_events_on_author_id_created_at_id ON ONLY instan
 CREATE UNIQUE INDEX idx_instance_external_audit_event_destination_id_key_uniq ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id, key);
 
 CREATE UNIQUE INDEX idx_instance_runner_usage_unique ON ci_instance_runner_monthly_usages USING btree (runner_id, billing_month, root_namespace_id, project_id);
+
+CREATE INDEX index_ci_runners_on_active_and_id ON ONLY ci_runners USING btree (active, id);
+
+CREATE INDEX idx_instance_type_ci_runners_on_active_and_id ON instance_type_ci_runners USING btree (active, id);
+
+CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ONLY ci_runners USING btree (contacted_at, id DESC);
+
+CREATE INDEX idx_instance_type_ci_runners_on_contacted_at_and_id_desc ON instance_type_ci_runners USING btree (contacted_at, id DESC);
+
+CREATE INDEX idx_instance_type_ci_runners_on_contacted_at_id_where_inactive ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX idx_instance_type_ci_runners_on_sharding_key_id_when_not_null ON instance_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
+CREATE UNIQUE INDEX index_ci_runners_on_token_encrypted_and_runner_type ON ONLY ci_runners USING btree (token_encrypted, runner_type);
+
+CREATE UNIQUE INDEX idx_instance_type_ci_runners_on_token_encrypted_and_runner_type ON instance_type_ci_runners USING btree (token_encrypted, runner_type);
+
+CREATE INDEX idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc ON instance_type_ci_runners USING btree (token_expires_at DESC, id DESC);
+
+CREATE UNIQUE INDEX idx_instance_type_ci_runners_on_token_runner_type_when_not_null ON instance_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
 CREATE INDEX idx_issues_on_project_id_and_created_at_and_id_and_state_id ON issues USING btree (project_id, created_at, id, state_id);
 
@@ -34750,6 +34736,34 @@ CREATE INDEX idx_project_namespace_id_from_namespace_path_timestamp_and_id ON ON
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
 
 CREATE INDEX idx_project_requirement_statuses_on_framework_id ON project_requirement_compliance_statuses USING btree (compliance_framework_id);
+
+CREATE INDEX idx_project_type_ci_runners_on_active_and_id ON project_type_ci_runners USING btree (active, id);
+
+CREATE INDEX idx_project_type_ci_runners_on_contacted_at_and_id_desc ON project_type_ci_runners USING btree (contacted_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ON ONLY ci_runners USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX idx_project_type_ci_runners_on_contacted_at_desc_and_id_desc ON project_type_ci_runners USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX idx_project_type_ci_runners_on_contacted_at_id_where_inactive ON project_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX index_ci_runners_on_created_at_and_id_where_inactive ON ONLY ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX idx_project_type_ci_runners_on_created_at_and_id_where_inactive ON project_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ONLY ci_runners USING btree (created_at DESC, id DESC);
+
+CREATE INDEX idx_project_type_ci_runners_on_created_at_desc_and_id_desc ON project_type_ci_runners USING btree (created_at DESC, id DESC);
+
+CREATE INDEX idx_project_type_ci_runners_on_sharding_key_id_when_not_null ON project_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_project_type_ci_runners_on_token_encrypted_and_runner_type ON project_type_ci_runners USING btree (token_encrypted, runner_type);
+
+CREATE INDEX idx_project_type_ci_runners_on_token_expires_at_and_id_desc ON project_type_ci_runners USING btree (token_expires_at, id DESC);
+
+CREATE INDEX idx_project_type_ci_runners_on_token_expires_at_desc_id_desc ON project_type_ci_runners USING btree (token_expires_at DESC, id DESC);
+
+CREATE UNIQUE INDEX idx_project_type_ci_runners_on_token_runner_type_when_not_null ON project_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
 CREATE INDEX idx_projects_api_created_at_id_for_archived ON projects USING btree (created_at, id) WHERE ((archived = true) AND (pending_delete = false) AND (hidden = false));
 
@@ -34949,21 +34963,13 @@ CREATE INDEX index_ci_runner_machines_on_ip_address ON ONLY ci_runner_machines U
 
 CREATE INDEX index_053d12f7ee ON project_type_ci_runner_machines USING btree (ip_address);
 
-CREATE INDEX index_ci_runners_on_organization_id ON ONLY ci_runners USING btree (organization_id);
-
-CREATE INDEX index_11eb9d1747 ON project_type_ci_runners USING btree (organization_id);
-
 CREATE INDEX index_ci_runner_machines_on_organization_id ON ONLY ci_runner_machines USING btree (organization_id);
 
 CREATE INDEX index_8cc4cbb7d2 ON group_type_ci_runner_machines USING btree (organization_id);
 
 CREATE INDEX index_8f3cd552cd ON ci_runner_taggings_instance_type USING btree (organization_id);
 
-CREATE INDEX index_92f173730f ON instance_type_ci_runners USING btree (organization_id);
-
 CREATE INDEX index_934f0e59cf ON ci_runner_taggings_project_type USING btree (organization_id);
-
-CREATE INDEX index_a3343eff0d ON group_type_ci_runners USING btree (organization_id);
 
 CREATE INDEX index_aa3b4fe8c6 ON group_type_ci_runner_machines USING btree (executor_type);
 
@@ -35720,6 +35726,14 @@ CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON 
 CREATE INDEX index_ci_runner_projects_on_project_id ON ci_runner_projects USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_runner_versions_on_unique_status_and_version ON ci_runner_versions USING btree (status, version);
+
+CREATE INDEX index_ci_runners_on_created_at_and_id_desc ON ONLY ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ON ONLY ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+
+CREATE INDEX index_ci_runners_on_description_trigram ON ONLY ci_runners USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_ci_runners_on_organization_id ON ONLY ci_runners USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
 
@@ -36547,6 +36561,26 @@ CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_nam
 
 CREATE INDEX index_group_stages_on_stage_event_hash_id ON analytics_cycle_analytics_group_stages USING btree (stage_event_hash_id);
 
+CREATE INDEX index_group_type_ci_runners_on_active_and_id ON group_type_ci_runners USING btree (active, id);
+
+CREATE INDEX index_group_type_ci_runners_on_contacted_at_and_id_desc ON group_type_ci_runners USING btree (contacted_at, id DESC);
+
+CREATE INDEX index_group_type_ci_runners_on_contacted_at_desc_and_id_desc ON group_type_ci_runners USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX index_group_type_ci_runners_on_created_at_and_id_desc ON group_type_ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_group_type_ci_runners_on_created_at_and_id_where_inactive ON group_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX index_group_type_ci_runners_on_created_at_desc_and_id_desc ON group_type_ci_runners USING btree (created_at DESC, id DESC);
+
+CREATE INDEX index_group_type_ci_runners_on_creator_id_where_not_null ON group_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+
+CREATE INDEX index_group_type_ci_runners_on_description_trigram ON group_type_ci_runners USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_group_type_ci_runners_on_organization_id ON group_type_ci_runners USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_group_type_ci_runners_on_token_encrypted_and_runner_type ON group_type_ci_runners USING btree (token_encrypted, runner_type);
+
 CREATE UNIQUE INDEX index_group_user_callouts_feature ON user_group_callouts USING btree (user_id, feature_name, group_id);
 
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
@@ -36688,6 +36722,24 @@ CREATE UNIQUE INDEX index_index_statuses_on_project_id ON index_statuses USING b
 CREATE INDEX index_insights_on_namespace_id ON insights USING btree (namespace_id);
 
 CREATE INDEX index_insights_on_project_id ON insights USING btree (project_id);
+
+CREATE INDEX index_instance_type_ci_runners_on_contacted_at_desc_and_id_desc ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX index_instance_type_ci_runners_on_created_at_and_id_desc ON instance_type_ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_instance_type_ci_runners_on_created_at_desc_and_id_desc ON instance_type_ci_runners USING btree (created_at DESC, id DESC);
+
+CREATE INDEX index_instance_type_ci_runners_on_created_at_id_where_inactive ON instance_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
+
+CREATE INDEX index_instance_type_ci_runners_on_creator_id_where_not_null ON instance_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+
+CREATE INDEX index_instance_type_ci_runners_on_description_trigram ON instance_type_ci_runners USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_instance_type_ci_runners_on_locked ON instance_type_ci_runners USING btree (locked);
+
+CREATE INDEX index_instance_type_ci_runners_on_organization_id ON instance_type_ci_runners USING btree (organization_id);
+
+CREATE INDEX index_instance_type_ci_runners_on_token_expires_at_and_id_desc ON instance_type_ci_runners USING btree (token_expires_at, id DESC);
 
 CREATE INDEX index_integrations_on_inherit_from_id ON integrations USING btree (inherit_from_id);
 
@@ -38155,6 +38207,16 @@ CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_t
 
 CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (topic_id);
 
+CREATE INDEX index_project_type_ci_runners_on_created_at_and_id_desc ON project_type_ci_runners USING btree (created_at, id DESC);
+
+CREATE INDEX index_project_type_ci_runners_on_creator_id_where_not_null ON project_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
+
+CREATE INDEX index_project_type_ci_runners_on_description_trigram ON project_type_ci_runners USING gin (description gin_trgm_ops);
+
+CREATE INDEX index_project_type_ci_runners_on_locked ON project_type_ci_runners USING btree (locked);
+
+CREATE INDEX index_project_type_ci_runners_on_organization_id ON project_type_ci_runners USING btree (organization_id);
+
 CREATE UNIQUE INDEX index_project_user_callouts_feature ON user_project_callouts USING btree (user_id, feature_name, project_id);
 
 CREATE UNIQUE INDEX index_project_wiki_repositories_on_project_id ON project_wiki_repositories USING btree (project_id);
@@ -39591,36 +39653,6 @@ CREATE INDEX instance_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON 
 
 CREATE INDEX instance_type_ci_runner_machines_687967fa8a_version_idx ON instance_type_ci_runner_machines USING btree (version);
 
-CREATE INDEX instance_type_ci_runners_e59bb2812d_active_id_idx ON instance_type_ci_runners USING btree (active, id);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx ON instance_type_ci_runners USING btree (contacted_at, id DESC);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx ON instance_type_ci_runners USING btree (created_at, id DESC);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx1 ON instance_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_created_at_id_idx2 ON instance_type_ci_runners USING btree (created_at DESC, id DESC);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_creator_id_idx ON instance_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_description_idx ON instance_type_ci_runners USING gin (description gin_trgm_ops);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_locked_idx ON instance_type_ci_runners USING btree (locked);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_sharding_key_id_idx ON instance_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON instance_type_ci_runners USING btree (token_expires_at, id DESC);
-
-CREATE INDEX instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON instance_type_ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2812d_token_runner_type_idx ON instance_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
-CREATE UNIQUE INDEX instance_type_ci_runners_e59bb2_token_encrypted_runner_type_idx ON instance_type_ci_runners USING btree (token_encrypted, runner_type);
-
 CREATE INDEX issuable_metric_image_uploads_checksum_idx ON issuable_metric_image_uploads USING btree (checksum);
 
 CREATE INDEX issuable_metric_image_uploads_model_id_model_type_uploader__idx ON issuable_metric_image_uploads USING btree (model_id, model_type, uploader, created_at);
@@ -39918,36 +39950,6 @@ CREATE INDEX project_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON p
 CREATE INDEX project_type_ci_runner_machines_687967fa8a_version_idx ON project_type_ci_runner_machines USING btree (version);
 
 CREATE INDEX project_type_ci_runner_machines_substring_version_runner_id_idx ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_active_id_idx ON project_type_ci_runners USING btree (active, id);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx ON project_type_ci_runners USING btree (contacted_at, id DESC);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx1 ON project_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_contacted_at_id_idx2 ON project_type_ci_runners USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx ON project_type_ci_runners USING btree (created_at, id DESC);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx1 ON project_type_ci_runners USING btree (created_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_created_at_id_idx2 ON project_type_ci_runners USING btree (created_at DESC, id DESC);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_creator_id_idx ON project_type_ci_runners USING btree (creator_id) WHERE (creator_id IS NOT NULL);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_description_idx ON project_type_ci_runners USING gin (description gin_trgm_ops);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_locked_idx ON project_type_ci_runners USING btree (locked);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_sharding_key_id_idx ON project_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx ON project_type_ci_runners USING btree (token_expires_at, id DESC);
-
-CREATE INDEX project_type_ci_runners_e59bb2812d_token_expires_at_id_idx1 ON project_type_ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE UNIQUE INDEX project_type_ci_runners_e59bb2812d_token_runner_type_idx ON project_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
-CREATE UNIQUE INDEX project_type_ci_runners_e59bb28_token_encrypted_runner_type_idx ON project_type_ci_runners USING btree (token_encrypted, runner_type);
 
 CREATE INDEX project_uploads_checksum_idx ON project_uploads USING btree (checksum);
 
@@ -42135,37 +42137,55 @@ ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION group_type_ci_runner_machin
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION group_type_ci_runner_machines_runner_id_runner_type_system__idx;
 
-ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION group_type_ci_runners_e59bb2812_token_encrypted_runner_type_idx;
-
-ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION group_type_ci_runners_e59bb2812d_active_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION group_type_ci_runners_e59bb2812d_contacted_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_contacted_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_created_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION group_type_ci_runners_e59bb2812d_created_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_created_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION group_type_ci_runners_e59bb2812d_creator_id_idx;
-
-ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION group_type_ci_runners_e59bb2812d_description_idx;
-
-ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION group_type_ci_runners_e59bb2812d_locked_idx;
-
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION group_type_ci_runners_e59bb2812d_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_expires_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION group_type_ci_runners_e59bb2812d_token_runner_type_idx;
-
 ALTER INDEX ci_runners_pkey ATTACH PARTITION group_type_ci_runners_pkey;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION idx_group_type_ci_runners_on_locked;
+
+ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_group_type_ci_runners_on_sharding_key_id_when_not_null;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_group_type_ci_runners_on_token_runner_type_when_not_null;
+
+ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION idx_instance_type_ci_runners_on_active_and_id;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION idx_instance_type_ci_runners_on_contacted_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_instance_type_ci_runners_on_contacted_at_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_instance_type_ci_runners_on_sharding_key_id_when_not_null;
+
+ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION idx_instance_type_ci_runners_on_token_encrypted_and_runner_type;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc;
+
+ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_instance_type_ci_runners_on_token_runner_type_when_not_null;
+
+ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION idx_project_type_ci_runners_on_active_and_id;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_contacted_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_contacted_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_project_type_ci_runners_on_contacted_at_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION idx_project_type_ci_runners_on_created_at_and_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_created_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_project_type_ci_runners_on_sharding_key_id_when_not_null;
+
+ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION idx_project_type_ci_runners_on_token_encrypted_and_runner_type;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_token_expires_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_token_expires_at_desc_id_desc;
+
+ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_project_type_ci_runners_on_token_runner_type_when_not_null;
 
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION import_export_upload_uploads_checksum_idx;
 
@@ -42191,17 +42211,11 @@ ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_0
 
 ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_053d12f7ee;
 
-ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_11eb9d1747;
-
 ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_8cc4cbb7d2;
 
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_8f3cd552cd;
 
-ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_92f173730f;
-
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_934f0e59cf;
-
-ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_a3343eff0d;
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
 
@@ -42214,6 +42228,54 @@ ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_e
 ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_ee7c87e634;
 
 ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_f4903d2246;
+
+ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION index_group_type_ci_runners_on_active_and_id;
+
+ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION index_group_type_ci_runners_on_contacted_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION index_group_type_ci_runners_on_contacted_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION index_group_type_ci_runners_on_created_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION index_group_type_ci_runners_on_created_at_and_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION index_group_type_ci_runners_on_created_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION index_group_type_ci_runners_on_creator_id_where_not_null;
+
+ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION index_group_type_ci_runners_on_description_trigram;
+
+ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_group_type_ci_runners_on_organization_id;
+
+ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION index_group_type_ci_runners_on_token_encrypted_and_runner_type;
+
+ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_contacted_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_created_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_created_at_desc_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION index_instance_type_ci_runners_on_created_at_id_where_inactive;
+
+ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION index_instance_type_ci_runners_on_creator_id_where_not_null;
+
+ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION index_instance_type_ci_runners_on_description_trigram;
+
+ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION index_instance_type_ci_runners_on_locked;
+
+ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_instance_type_ci_runners_on_organization_id;
+
+ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_token_expires_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION index_project_type_ci_runners_on_created_at_and_id_desc;
+
+ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION index_project_type_ci_runners_on_creator_id_where_not_null;
+
+ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION index_project_type_ci_runners_on_description_trigram;
+
+ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION index_project_type_ci_runners_on_locked;
+
+ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_project_type_ci_runners_on_organization_id;
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION instance_type_ci_runner_machi_runner_id_runner_type_system__idx;
 
@@ -42232,36 +42294,6 @@ ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PAR
 ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_version_idx;
 
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION instance_type_ci_runner_machines_pkey;
-
-ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION instance_type_ci_runners_e59bb2812d_active_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION instance_type_ci_runners_e59bb2812d_contacted_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_contacted_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_created_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION instance_type_ci_runners_e59bb2812d_created_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_created_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION instance_type_ci_runners_e59bb2812d_creator_id_idx;
-
-ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION instance_type_ci_runners_e59bb2812d_description_idx;
-
-ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION instance_type_ci_runners_e59bb2812d_locked_idx;
-
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION instance_type_ci_runners_e59bb2812d_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION instance_type_ci_runners_e59bb2812d_token_expires_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION instance_type_ci_runners_e59bb2812d_token_runner_type_idx;
-
-ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION instance_type_ci_runners_e59bb2_token_encrypted_runner_type_idx;
 
 ALTER INDEX ci_runners_pkey ATTACH PARTITION instance_type_ci_runners_pkey;
 
@@ -42390,36 +42422,6 @@ ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION project_type_ci
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION project_type_ci_runner_machines_pkey;
 
 ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION project_type_ci_runner_machines_substring_version_runner_id_idx;
-
-ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION project_type_ci_runners_e59bb2812d_active_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION project_type_ci_runners_e59bb2812d_contacted_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_contacted_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_created_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION project_type_ci_runners_e59bb2812d_created_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_created_at_id_idx2;
-
-ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION project_type_ci_runners_e59bb2812d_creator_id_idx;
-
-ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION project_type_ci_runners_e59bb2812d_description_idx;
-
-ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION project_type_ci_runners_e59bb2812d_locked_idx;
-
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION project_type_ci_runners_e59bb2812d_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_token_expires_at_id_idx;
-
-ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION project_type_ci_runners_e59bb2812d_token_expires_at_id_idx1;
-
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION project_type_ci_runners_e59bb2812d_token_runner_type_idx;
-
-ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION project_type_ci_runners_e59bb28_token_encrypted_runner_type_idx;
 
 ALTER INDEX ci_runners_pkey ATTACH PARTITION project_type_ci_runners_pkey;
 

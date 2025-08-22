@@ -6242,6 +6242,18 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#free_or_trial_owned_group_ids' do
+    let(:user) { build_stubbed(:user) }
+    let(:group_ids) { [1, 2, 3] }
+
+    it 'returns ids of user owned group with free or trial plan' do
+      allow(user).to receive_message_chain(:owned_groups, :free_or_trial, :ids)
+          .and_return(group_ids)
+
+      expect(user.free_or_trial_owned_group_ids).to eq(group_ids)
+    end
+  end
+
   shared_examples 'organization owner' do
     let!(:org_user) { create(:organization_user, organization: organization, user: user, access_level: access_level) }
 

@@ -79,7 +79,6 @@ export default {
       error: null,
       showWorkItemsToAddInvalidMessage: false,
       isSubmitting: false,
-      searchInProgress: false,
       maxWorkItems: MAX_WORK_ITEMS,
     };
   },
@@ -103,9 +102,6 @@ export default {
   methods: {
     async linkWorkItem() {
       try {
-        if (this.searchInProgress) {
-          return;
-        }
         this.isSubmitting = true;
         const {
           data: {
@@ -215,7 +211,6 @@ export default {
         :full-path="workItemFullPath"
         :is-group="isGroup"
         :max-selection-limit="maxWorkItems"
-        @searching="searchInProgress = $event"
       />
       <div v-if="errorMessage" class="gl-mb-2 gl-text-danger">
         {{ s__('WorkItem|Only 10 items can be added at a time.') }}

@@ -37,6 +37,8 @@ class Admin::UsersController < Admin::ApplicationController
   def projects
     @personal_projects = user.personal_projects.includes(:topics)
     @joined_projects = user.projects.joined(@user).includes(:topics)
+    @user_groups = user.groups.or(user.minimal_access_groups)
+    @user_group_members = user.group_members.or(user.minimal_access_group_members)
   end
 
   def keys

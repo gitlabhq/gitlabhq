@@ -1281,6 +1281,49 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
 
+  describe '#create_labels' do
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project_organization) { project.organization }
+    let_it_be(:organization1) { create(:organization) }
+
+    before_all do
+      create(:admin_label, organization: project_organization, title: 'project_org_1')
+      create(:admin_label, organization: project_organization, title: 'project_org_2')
+      create(:admin_label, organization: organization1, title: 'org1_1')
+      create(:admin_label, organization: organization1, title: 'org1_2')
+    end
+
+    it 'creates all label templates scoped to the project\'s organization' do
+      expect do
+        project.create_labels
+      end.to change { Label.count }.by(2)
+
+      expect(project.reload.labels.pluck(:title)).to contain_exactly(
+        'project_org_1',
+        'project_org_2'
+      )
+    end
+
+    context 'when template_labels_scoped_by_org feature flag is disabled' do
+      before do
+        stub_feature_flags(template_labels_scoped_by_org: false)
+      end
+
+      it 'creates all label templates from all organizations' do
+        expect do
+          project.create_labels
+        end.to change { Label.count }.by(4)
+
+        expect(project.reload.labels.pluck(:title)).to contain_exactly(
+          'project_org_1',
+          'project_org_2',
+          'org1_1',
+          'org1_2'
+        )
+      end
+    end
+  end
+
   describe '#notification_group' do
     it 'is expected to be an alias' do
       expect(build(:project).method(:notification_group).original_name).to eq(:group)

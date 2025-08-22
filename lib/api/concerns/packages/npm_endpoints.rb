@@ -58,14 +58,6 @@ module API
               message = "400 Bad request - #{reason}"
               render_structured_api_error!({ message: message, error: reason }, 400)
             end
-
-            def tags_finder_options
-              if Feature.enabled?(:packages_tags_finder_use_packages_class, project)
-                { packages_class: ::Packages::Npm::Package }
-              else
-                { package_type: :npm }
-              end
-            end
           end
 
           params do
@@ -172,7 +164,7 @@ module API
                 authorize_destroy_package!(project)
 
                 package_tag = ::Packages::TagsFinder
-                  .new(project, package_name, tags_finder_options)
+                  .new(project, package_name, ::Packages::Npm::Package)
                   .find_by_name(tag)
 
                 not_found!('Package tag') unless package_tag

@@ -19,7 +19,8 @@ export default {
     deleteLabel: __('Delete'),
     editLabel: __('Edit'),
     editAriaLabel: (name) => sprintf(__('Edit %{name}'), { name }),
-    toggleLabel: __('Feature flag status'),
+    statusAriaLabel: (name) => sprintf(__('%{name} feature flag status'), { name }),
+    deleteAriaLabel: (name) => sprintf(__('Delete %{name}'), { name }),
   },
   components: {
     GlBadge,
@@ -143,7 +144,7 @@ export default {
         <gl-toggle
           v-if="item.update_path"
           :value="item.active"
-          :label="$options.i18n.toggleLabel"
+          :label="$options.i18n.statusAriaLabel(item.name)"
           label-position="hidden"
           data-testid="feature-flag-status-toggle"
           data-track-action="click_button"
@@ -213,7 +214,7 @@ export default {
               variant="danger"
               icon="remove"
               :disabled="!canDeleteFlag(item)"
-              :aria-label="$options.i18n.deleteLabel"
+              :aria-label="$options.i18n.deleteAriaLabel(item.name)"
               @click="setDeleteModalData(item)"
             />
           </template>
@@ -241,7 +242,7 @@ export default {
               variant="danger"
               icon="remove"
               :disabled="!canDeleteFlag(item)"
-              :aria-label="$options.i18n.deleteLabel"
+              :aria-label="$options.i18n.deleteAriaLabel(item.name)"
               @click="setDeleteModalData(item)"
             />
           </template>

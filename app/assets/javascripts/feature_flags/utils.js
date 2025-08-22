@@ -41,7 +41,7 @@ const badgeTextByType = {
   },
   [ROLLOUT_STRATEGY_GITLAB_USER_LIST]: {
     name: s__('FeatureFlags|User List'),
-    parameters: ({ user_list: { name } }) => name,
+    parameters: (data) => data?.user_list?.name || '',
   },
 };
 

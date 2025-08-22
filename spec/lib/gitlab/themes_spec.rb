@@ -10,13 +10,16 @@ RSpec.describe Gitlab::Themes, :lib do
       expect(css).to include('ui-indigo')
       expect(css).to include('ui-gray')
       expect(css).to include('ui-blue')
+      expect(css).to include('ui-green')
+      expect(css).to include('ui-red')
+      expect(css).to include('ui-neutral')
     end
   end
 
   describe '.by_id' do
     it 'returns a Theme by its ID' do
       expect(described_class.by_id(1).name).to eq 'Indigo'
-      expect(described_class.by_id(3).name).to eq 'Neutral'
+      expect(described_class.by_id(3).name).to eq 'Default'
     end
   end
 
@@ -50,7 +53,7 @@ RSpec.describe Gitlab::Themes, :lib do
   end
 
   describe '.valid_ids' do
-    it 'returns array of available_themes ids with DEPRECATED_DARK_THEME_ID' do
+    it 'returns array of available_themes ids with DEPRECATED_THEME_IDS' do
       expect(described_class.valid_ids).to match_array [1, 6, 4, 7, 5, 8, 9, 10, 2, 3, 11]
     end
   end

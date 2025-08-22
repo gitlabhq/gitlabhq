@@ -2,7 +2,7 @@
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title _("Groups and projects"), @user.name, _("Users")
-- show_empty_state = !@user.groups.any? && !@personal_projects.present? && !@joined_projects.present?
+- show_empty_state = !@user_groups.any? && !@personal_projects.present? && !@joined_projects.present?
 
 = render 'admin/users/head'
 
@@ -10,19 +10,20 @@
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
     title: _('No groups or projects found'))
 - else
-  - if @user.groups.any?
+  - if @user_groups.any?
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
       - c.with_header do
         %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
           = _('Groups')
       - c.with_body do
         %ul.gl-list-none.gl-p-0.gl-m-0
-          - @user.group_members.includes(:source).find_each do |group_member|
+          - @user_group_members.includes(:source).find_each do |group_member|
             - group = group_member.group
             %li.group_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-items-baseline.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
               %strong= link_to group.name, admin_group_path(group)
-              &ndash; access to
-              #{pluralize(group.projects.count, 'project')}
+              - if group_member.access_level != Gitlab::Access::MINIMAL_ACCESS
+                &nbsp;&ndash; access to
+                #{pluralize(group.projects.count, 'project')}
               %span.light.gl-ml-auto= group_member.human_access
               = render_if_exists 'admin/users/custom_role_badge', member: group_member, css_class: 'gl-ml-3'
               - unless group_member.owner?

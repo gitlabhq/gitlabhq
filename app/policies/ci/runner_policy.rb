@@ -73,6 +73,7 @@ module Ci
 
     condition(:maintainer_in_owner_scope) do
       # Check if user is a maintainer+ in the scope owning the runner
+      # doc/ci/runners/runners_scope.md#project-runner-ownership
       can?(:maintainer_access, @subject.owner)
     end
 
@@ -90,6 +91,40 @@ module Ci
 
     rule { anonymous }.prevent_all
 
+    rule { admin | can_admin_runner }.policy do
+      enable :read_builds
+      enable :read_runner
+
+      enable :assign_runner # doc/ci/runners/runners_scope.md#project-runner-ownership
+      enable :update_runner
+      enable :delete_runner
+    end
+
+    rule { is_instance_runner }.policy do
+      # Any authenticated user can read instance runner information
+      enable :read_runner
+    end
+
+    # doc/ci/runners/runners_scope.md#view-group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
+      enable :read_runner
+    end
+
+    rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
+      enable :read_runner
+    end
+
+    # doc/ci/runners/runners_scope.md#project-runners
+    # doc/user/permissions.md#cicd
+    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
+      enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_owner_scope }.policy do
+      enable :update_runner
+    end
+
     # NOTE: The `is_project_runner & belongs_to_multiple_projects & ` part is an optimization to avoid the
     # `runner_available` condition, which is much more expensive than the `can_admin_runner` one.
     # We can do this because:
@@ -104,36 +139,6 @@ module Ci
       enable :read_runner
 
       enable :assign_runner
-      enable :update_runner
-    end
-
-    rule { admin | can_admin_runner }.policy do
-      enable :read_builds
-      enable :read_runner
-
-      enable :assign_runner
-      enable :update_runner
-      enable :delete_runner
-    end
-
-    rule { is_instance_runner }.policy do
-      # Any authenticated user can read instance runner information
-      enable :read_runner
-    end
-
-    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
-      enable :read_runner
-    end
-
-    rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
-      enable :read_runner
-    end
-
-    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
-      enable :read_runner
-    end
-
-    rule { is_project_runner & maintainer_in_owner_scope }.policy do
       enable :update_runner
     end
 

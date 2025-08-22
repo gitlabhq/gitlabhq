@@ -393,15 +393,12 @@ describe('WorkItemActions component', () => {
       },
     );
 
-    it('emits `toggleWorkItemConfidentiality` event when clicked', async () => {
+    it('emits `toggleWorkItemConfidentiality` event when clicked', () => {
       createComponent();
 
       findConfidentialityToggleButton().vm.$emit('action');
 
       expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
-
-      await nextTick();
-      expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
     });
 
     it('does not render when canUpdateMetadata is false', () => {

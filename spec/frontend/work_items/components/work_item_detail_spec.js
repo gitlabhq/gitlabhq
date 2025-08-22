@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import toast from '~/vue_shared/plugins/global_toast';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -56,6 +57,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/work_items/components/design_management/cache_updates');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('WorkItemDetail component', () => {
   let wrapper;
@@ -396,6 +398,9 @@ describe('WorkItemDetail component', () => {
 
       findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
       await waitForPromises();
+
+      await nextTick();
+      expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
 
       expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
       expect(mutationHandler).toHaveBeenCalledWith({

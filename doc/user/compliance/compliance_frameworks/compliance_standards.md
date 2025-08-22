@@ -40,6 +40,24 @@ to create a compliance framework for this standard.
 | 7.6 Perform Automated Vulnerability Scans of Externally-Exposed Enterprise Assets | Perform automated vulnerability scans of externally-exposed enterprise assets. Perform scans on a monthly, or more frequent, basis.                                | <ul><li>DAST running</li><li>API security running</li><li>Fuzz testing running</li></ul> |
 | 16.12 Implement Code-Level Security Checks                                        | Apply static and dynamic analysis tools within the application lifecycle to verify that secure coding practices are being followed.                                | <ul><li>SAST running</li><li>DAST running</li><li>Secret detection running</li></ul> |
 
+## CSA CCM compliance requirements
+
+CSA CCM is the Cloud Security Alliance (CSA) Cloud Controls Matrix (CCM).
+
+The following table lists the requirements supported by GitLab for CSA CCM v4 and the controls for the requirements.
+You can use the
+[`csa_ccm_v4.json` template](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates/-/blob/main/csa_ccm_v4.json?ref_type=heads)
+to create a compliance framework for this standard.
+
+| CSA CCM v4 requirement                  | Description                                                                                                                                                                                                                      | Supported controls |
+|:----------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| CCC-02 Quality Testing                  | Follow a defined quality change control, approval and testing process with established baselines, testing, and release standards.                                                                                                | <ul><li>Default branch protected</li><li>Code quality running</li></ul> |
+| CCC-04 Unauthorized Change Protection   | Restrict the unauthorized addition, removal, update, and management of organization assets.                                                                                                                                      | <ul><li>Default branch protected</li></ul> |
+| IAM-04 Separation of Duties             | Employ the separation of duties principle when implementing information system access.                                                                                                                                           | <ul><li>At least two approvals</li><li>Author approved merge request is forbidden</li><li>Committers approved merge request is forbidden</li><li>Merge requests approval rules prevent editing</li></ul> |
+| IAM-15 Passwords Management             | Define, implement and evaluate processes, procedures and technical measures for the secure management of passwords.                                                                                                              | <ul><li>Secret detection running</li></ul> |
+| TVM-05 External Library Vulnerabilities | Define, implement and evaluate processes, procedures and technical measures to identify updates for applications which use third party or open source libraries according to the organization's vulnerability management policy. | <ul><li>Container scanning running</li></ul> |
+| TVM-07 Vulnerability Identification     | Define, implement and evaluate processes, procedures and technical measures for the detection of vulnerabilities on organizationally managed assets at least monthly.                                                            | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li><li>Fuzz testing running</li></ul> |
+
 ## FedRAMP compliance requirements
 
 FedRAMP (Federal Risk and Authorization Management Program) categorizes cloud services into three impact levels:

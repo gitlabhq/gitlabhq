@@ -946,6 +946,102 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true).count
 Geo::ProjectRegistry.where(last_repository_check_failed: true)
 ```
 
+## Hard delete a repository from Gitaly Cluster and resync
+
+{{< alert type="warning" >}}
+
+This procedure is risky, and heavy-handed. Use it as a last resort only when other
+troubleshooting methods have failed. This procedure causes temporary data loss until the
+repository is resynced.
+
+{{< /alert >}}
+
+This procedure deletes the repository from the secondary site's Gitaly cluster, and re-syncs it.
+You should consider using it only if you understand the risks, and if these conditions are all true:
+
+- `git clone` is working for a repository on the primary site.
+- `p.replicator.sync_repository` (where `p` is a project model instance) logs a Gitaly error on a secondary site.
+- Standard troubleshooting has not resolved the issue.
+
+Prerequisites:
+
+- Ensure you have administrative access to both the secondary site's Rails console and Praefect nodes.
+- Verify that the repository is accessible and working correctly on the primary site.
+- Have a backup plan in case you must reverse this procedure.
+
+To do this:
+
+1. Sign in to the Rails console in the secondary site.
+1. Instantiate a project model, and save it to a variable `p`, using one of these options:
+
+   - If you know the affected project ID (for example, `60087`):
+
+     ```ruby
+     p = Project.find(60087)
+     ```
+
+   - If you know the affected project path in GitLab (for example, `my-group/my-project`):
+
+     ```ruby
+     p = Project.find_by_full_path('my-group/my-project')
+     ```
+
+1. Output the project Git repository's virtual storage, and note it for later:
+
+   ```ruby
+   p.repository.storage
+   ```
+
+   Example output:
+
+   ```ruby
+   irb(main):002:0> p.repository.storage
+   => "default"
+   ```
+
+1. Output the project Git repository's relative path, and note it for later:
+
+   ```ruby
+   p.repository.disk_path + '.git'
+   ```
+
+   Example output:
+
+   ```ruby
+   irb(main):003:0> p.repository.disk_path + '.git'
+   => "@hashed/66/b2/66b2fc8562b3432399acc2d0108fcd2782b32bd31d59226c7a03a20b32c76ee8.git"
+   ```
+
+1. SSH into a Praefect node in the secondary site.
+1. Follow the procedure to
+   [Manually remove repositories from Gitaly Cluster](../../../gitaly/praefect/recovery.md#manually-remove-repositories),
+   using the virtual storage and relative path you noted in the previous steps.
+
+   The Git repository on the secondary site is now deleted.
+
+1. In the Rails console, before you resync, set a correlation ID. This ID helps you search all logs
+   related to the commands you run in this session:
+
+   ```ruby
+   Gitlab::ApplicationContext.push({})
+   ```
+
+   Example output:
+
+   ```ruby
+   [2] pry(main)> Gitlab::ApplicationContext.push({})
+   => #<Labkit::Context:0x0000000122aa4060 @data={"correlation_id"=>"53da64ae800bd4794a2b61ab1c80b028"}>
+   ```
+
+1. Sync the project Git repository:
+
+   ```ruby
+   p.replicator.sync_repository
+   ```
+
+The Git repository should now be resynced from the primary site to the secondary site. Monitor the sync
+process through the Geo admin interface, or by checking the repository's sync status in the Rails console.
+
 ## Resetting Geo **secondary** site replication
 
 If you get a **secondary** site in a broken state and want to reset the replication state,

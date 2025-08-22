@@ -332,6 +332,96 @@ kubectl wait pod \
 
 When your pods are up and running, you can set up your IP ingresses and DNS records.
 
+## Connect to a GitLab instance or model endpoint with a self-signed SSL certificate
+
+If your GitLab instance or model endpoint is configured with a self-signed certificate, you must add your root certificate authority (CA) certificate to the AI gateway's certificate bundle.
+
+To do this, you can either:
+
+- Pass the root CA certificate to the AI gateway, so authentication succeeds.
+- Add the root CA certificate to the AI gateway container's CA bundle.
+
+### Pass the root CA certificate to the AI gateway
+
+To pass the root CA certificate to the AI gateway and make sure that authentication succeeds, set the `REQUESTS_CA_BUNDLE` environment variable. Because GitLab uses [Certifi](https://pypi.org/project/certifi/) for the base trusted CA list, you configure a custom CA bundle as follows:
+
+1. Download the Certifi `cacert.pem` file:
+
+   ```shell
+   curl "https://raw.githubusercontent.com/certifi/python-certifi/2024.07.04/certifi/cacert.pem" --output cacert.pem
+   ```
+
+1. Append your self-signed root CA certificate to the file. For example, if you used `mkcert` to create your certificate:
+
+   ```shell
+   cat "$(mkcert -CAROOT)/rootCA.pem" >> path/to/your/cacert.pem
+   ```
+
+1. Set `REQUESTS_CA_BUNDLE` to the path of your `cacert.pem` file. For example, in GDK, add the following to your `$GDK_ROOT/env.runit`:
+
+   ```shell
+   export REQUESTS_CA_BUNDLE=/path/to/your/cacert.pem
+   ```
+
+### Add the root CA certificate to the AI gateway container’s CA bundle
+
+To allow the AI Gateway to trust a GitLab Self-Managed instance's certificate that is signed by a custom CA, add the root CA certificate to the AI gateway container’s CA bundle.
+
+This method does not allow for changes made to the root CA bundle in later versions of the chart.
+
+To do this for a Helm chart deployment of the AI gateway:
+
+1. Append the custom root CA certificate to a local file:
+
+   ```shell
+   cat customCA-root.crt >> ca-certificates.crt
+   ```
+
+1. Copy the `/etc/ssl/certs/ca-certificates.crt` bundle file from the AI gateway container to the local file:
+
+   ```shell
+   kubectl cp -n gitlab ai-gateway-55d697ff9d-j9pc6:/etc/ssl/certs/ca-certificates.crt ca-certificates.crt.
+   ```
+
+1. Create a new secret from the local file:
+
+   ```shell
+   kubectl create secret generic ca-certificates -n gitlab --from-file=cacertificates.crt=ca-certificates.crt
+   ```
+
+1. Use the secret in the chat `values.yml` to define a `volume` and `volumeMount`. This creates the `/tmp/ca-certificates.crt` file in the container:
+
+   ```shell
+   volumes:
+     - name: cacerts
+       secret:
+         secretName: ca-certificates
+         optional: false
+
+   volumeMounts:
+     - name: cacerts
+       mountPath: "/tmp"
+       readOnly: true
+   ```
+
+1. Set the `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` environment variables to point to the mounted file:
+
+   ```shell
+   extraEnvironmentVariables:
+     - name: REQUESTS_CA_BUNDLE
+       value: /tmp/ca-certificates.crt
+     - name: SSL_CERT_FILE
+       value: /tmp/ca-certificates.crt
+   ```
+
+1. Redeploy the chart.
+
+[Issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3) exists to support this natively in the Helm chart.
+
+#### For a Docker deployment
+
+For a Docker deployment, use the same method. The only difference is that, to mount the local file in the container, use `--volume /root/ca-certificates.crt:/tmp/ca-certificates.crt`.
+
 ## Upgrade the AI gateway Docker image
 
 To upgrade the AI gateway, download the newest Docker image tag.
@@ -535,8 +625,6 @@ This configuration ensures the AI gateway can properly cache HuggingFace models 
 ### Self-signed certificate error
 
 A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI gateway
-when the gateway tries to connect to a GitLab instance using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate:
+when the AI gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
 
-- The use of custom CA certificates in the Helm chart configuration when deploying the AI gateway is not supported. For more information, see [issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3). Use the [workaround](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3#workaround) detailed in this issue.
-
-- The use of a self-signed certificate by the GitLab instance is not supported. For more information, see [issue 799](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/799).
+To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).

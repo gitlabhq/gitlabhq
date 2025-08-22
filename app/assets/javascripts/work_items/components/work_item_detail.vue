@@ -16,6 +16,7 @@ import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -602,6 +603,11 @@ export default {
     agentInvokePath() {
       return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
+    confidentialityToggledText() {
+      return this.workItem.confidential
+        ? s__('WorkItem|Confidentiality turned on.')
+        : s__('WorkItem|Confidentiality turned off.');
+    },
   },
   watch: {
     'workItem.id': {
@@ -672,6 +678,7 @@ export default {
             this.$emit('workItemUpdated', {
               confidential: workItem?.confidential,
             });
+            toast(this.confidentialityToggledText);
           },
         )
         .catch((error) => {

@@ -636,6 +636,21 @@ msgstr ""
 msgid "%{author} has created a merge request that you can approve."
 msgstr ""
 
+msgid "%{bStart}Customers are not affected:%{bEnd} we never log customer usage of Duo Chat (unless specifically requested by the customer)"
+msgstr ""
+
+msgid "%{bStart}Privacy safeguards:%{bEnd} Your name and user ID are not logged as structured fields"
+msgstr ""
+
+msgid "%{bStart}Purpose:%{bEnd} This data helps us improve Duo Chat and will never be used for performance evaluation. Note: The in-app feedback form states 'GitLab team members cannot see the AI content.' This does not apply for team members' interactions with the chat."
+msgstr ""
+
+msgid "%{bStart}What's logged:%{bEnd} Your questions, contexts (files, issues, MRs, etc.), and Duo's responses"
+msgstr ""
+
+msgid "%{bStart}Which interfaces are affected:%{bEnd} usage of Duo Chat in Web and IDEs as well as Duo Agentic Chat in Web and IDEs"
+msgstr ""
+
 msgid "%{board_target} not found"
 msgstr ""
 
@@ -1181,6 +1196,9 @@ msgid "%{name} (Busy)"
 msgstr ""
 
 msgid "%{name} checked"
+msgstr ""
+
+msgid "%{name} feature flag status"
 msgstr ""
 
 msgid "%{name} is already being used for another emoji"
@@ -10276,10 +10294,40 @@ msgstr ""
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
+msgid "Billings|$29 per user/month"
+msgstr ""
+
+msgid "Billings|10,000 compute minutes per month"
+msgstr ""
+
+msgid "Billings|400 compute minutes per month"
+msgstr ""
+
+msgid "Billings|5 licensed users"
+msgstr ""
+
+msgid "Billings|AI Chat in the IDE"
+msgstr ""
+
+msgid "Billings|AI Code Suggestions in the IDE"
+msgstr ""
+
+msgid "Billings|At the end of the trial, your subscription changes to Free. Upgrade to Premium to keep using advanced features."
+msgstr ""
+
+msgid "Billings|Billing"
+msgstr ""
+
 msgid "Billings|Credit card has exceeded the daily verification limit. Use a different card or try again later."
 msgstr ""
 
 msgid "Billings|Error validating card details"
+msgstr ""
+
+msgid "Billings|Everything from Free, plus:"
+msgstr ""
+
+msgid "Billings|Features included:"
 msgstr ""
 
 msgid "Billings|Free groups are limited to %{number} seats."
@@ -10291,6 +10339,9 @@ msgstr ""
 msgid "Billings|Free tier and trial groups can invite a maximum of 20 members per day."
 msgstr ""
 
+msgid "Billings|Group"
+msgstr ""
+
 msgid "Billings|Groups in the Free tier are limited to %d seat"
 msgid_plural "Billings|Groups in the Free tier are limited to %d seats"
 msgstr[0] ""
@@ -10299,7 +10350,19 @@ msgstr[1] ""
 msgid "Billings|In a seat"
 msgstr ""
 
+msgid "Billings|Manage billing"
+msgstr ""
+
 msgid "Billings|Open source Plan Seats used"
+msgstr ""
+
+msgid "Billings|Premium"
+msgstr ""
+
+msgid "Billings|Priority Support"
+msgstr ""
+
+msgid "Billings|Release Controls"
 msgstr ""
 
 msgid "Billings|Seats in use / Seats available"
@@ -10308,7 +10371,40 @@ msgstr ""
 msgid "Billings|Seats in use / Seats in subscription"
 msgstr ""
 
+msgid "Billings|See all features and compare plans"
+msgstr ""
+
+msgid "Billings|Select group"
+msgstr ""
+
+msgid "Billings|Source Code Management & CI/CD"
+msgstr ""
+
+msgid "Billings|Team Project Management"
+msgstr ""
+
+msgid "Billings|Unlimited licensed users"
+msgstr ""
+
+msgid "Billings|Upgrade to Premium"
+msgstr ""
+
+msgid "Billings|Upgrade to Premium to improve your experience and access new advanced AI features."
+msgstr ""
+
+msgid "Billings|View subscription details and manage billing for your %{linkStart}groups%{linkEnd}."
+msgstr ""
+
 msgid "Billings|You have unlimited seat count."
+msgstr ""
+
+msgid "Billings|Your group is on a trial of Ultimate + GitLab Duo Enterprise"
+msgstr ""
+
+msgid "Billings|Your group is on the Free plan"
+msgstr ""
+
+msgid "Billings|Your trial includes all the benefits of Ultimate, plus access to advanced AI features."
 msgstr ""
 
 msgid "Billing|%d user has been successfully assigned a seat."
@@ -16369,6 +16465,9 @@ msgid "ComplianceReport|Have questions or thoughts on the new improvements? %{li
 msgstr ""
 
 msgid "ComplianceReport|However, there is still a configured compliance pipeline that must be removed. Otherwise, the compliance pipeline will continue to take precedence over the new pipeline execution policy."
+msgstr ""
+
+msgid "ComplianceReport|Invalid control"
 msgstr ""
 
 msgid "ComplianceReport|Less than 2 approvers"
@@ -29621,6 +29720,9 @@ msgstr ""
 msgid "GitLab Team"
 msgstr ""
 
+msgid "GitLab Team Member Notice: Chat Logging Active"
+msgstr ""
+
 msgid "GitLab University"
 msgstr ""
 
@@ -41883,6 +41985,9 @@ msgstr ""
 msgid "NavigationTheme|Blue"
 msgstr ""
 
+msgid "NavigationTheme|Default"
+msgstr ""
+
 msgid "NavigationTheme|Gray"
 msgstr ""
 
@@ -41890,21 +41995,6 @@ msgid "NavigationTheme|Green"
 msgstr ""
 
 msgid "NavigationTheme|Indigo"
-msgstr ""
-
-msgid "NavigationTheme|Light Blue"
-msgstr ""
-
-msgid "NavigationTheme|Light Green"
-msgstr ""
-
-msgid "NavigationTheme|Light Indigo"
-msgstr ""
-
-msgid "NavigationTheme|Light Red"
-msgstr ""
-
-msgid "NavigationTheme|Neutral"
 msgstr ""
 
 msgid "NavigationTheme|Red"
@@ -53189,6 +53279,9 @@ msgstr ""
 msgid "Removing the bypass will cause the merge request to be blocked if any reviews have requested changes."
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
 msgid "Render diagrams in your documents using PlantUML."
 msgstr ""
 
@@ -58716,6 +58809,9 @@ msgstr ""
 msgid "SecurityOrchestration|This project"
 msgstr ""
 
+msgid "SecurityOrchestration|This setting will be locked for 10 minutes after making changes to prevent further performance issues."
+msgstr ""
+
 msgid "SecurityOrchestration|This view only shows scan results for the agent %{agent}. You can view scan results for all agents in the %{linkStart}Operational Vulnerabilities tab of the vulnerability report%{linkEnd}."
 msgstr ""
 
@@ -61735,6 +61831,9 @@ msgid "Something went wrong while updating assignees"
 msgstr ""
 
 msgid "Something went wrong while updating the modal."
+msgstr ""
+
+msgid "Something went wrong while updating the name"
 msgstr ""
 
 msgid "Something went wrong while updating your list settings"
@@ -72518,6 +72617,9 @@ msgstr ""
 msgid "WorkItem|Change appearance for all issues, epics, and tasks"
 msgstr ""
 
+msgid "WorkItem|Change lifecycle"
+msgstr ""
+
 msgid "WorkItem|Change type"
 msgstr ""
 
@@ -72787,6 +72889,12 @@ msgstr ""
 msgid "WorkItem|Lavender"
 msgstr ""
 
+msgid "WorkItem|Lifecycle name"
+msgstr ""
+
+msgid "WorkItem|Lifecycle name cannot be empty"
+msgstr ""
+
 msgid "WorkItem|Lifecycles"
 msgstr ""
 
@@ -72948,6 +73056,9 @@ msgstr ""
 msgid "WorkItem|None"
 msgstr ""
 
+msgid "WorkItem|Not in use"
+msgstr ""
+
 msgid "WorkItem|Notifications"
 msgstr ""
 
@@ -73014,6 +73125,9 @@ msgstr ""
 msgid "WorkItem|Remove"
 msgstr ""
 
+msgid "WorkItem|Remove lifecycle"
+msgstr ""
+
 msgid "WorkItem|Remove status"
 msgstr ""
 
@@ -73078,6 +73192,9 @@ msgid "WorkItem|Select template"
 msgstr ""
 
 msgid "WorkItem|Select type"
+msgstr ""
+
+msgid "WorkItem|Select type to change"
 msgstr ""
 
 msgid "WorkItem|Select types"
@@ -76468,6 +76585,9 @@ msgid "load it anyway"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"
+msgstr ""
+
+msgid "locked until %{timestamp}"
 msgstr ""
 
 msgid "main"

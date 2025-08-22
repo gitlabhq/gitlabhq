@@ -167,12 +167,12 @@ module Gitlab
               end
             end
 
-            { # use only the first 5 runners to assign CI jobs
+            { # use only 5 runners to assign CI jobs
               project_1_1_1_1:
-                ((instance_runners + project_1_1_1_1_runners).map(&:id) + group_1_1_1_runners.map(&:id)).first(5),
-              project_1_1_2_1: (instance_runners + project_1_1_2_1_runners).map(&:id).first(5),
+                ((instance_runners + project_1_1_1_1_runners).map(&:id) + group_1_1_1_runners.map(&:id)).sample(5),
+              project_1_1_2_1: (instance_runners + project_1_1_2_1_runners).map(&:id).sample(5),
               project_2_1_1:
-                ((instance_runners + project_2_1_1_runners).map(&:id) + group_2_1_runners.map(&:id)).first(5)
+                ((instance_runners + project_2_1_1_runners).map(&:id) + group_2_1_runners.map(&:id)).sample(5)
             }
           end
 

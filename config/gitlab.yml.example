@@ -133,11 +133,7 @@ production: &base
     ##   3 - Neutral
     ##   4 - Blue
     ##   5 - Green
-    ##   6 - Light Indigo
-    ##   7 - Light Blue
-    ##   8 - Light Green
     ##   9 - Red
-    ##   10 - Light Red
     # default_theme: 1 # default: 1
     ## Default color mode ID
     ##   1 - Light

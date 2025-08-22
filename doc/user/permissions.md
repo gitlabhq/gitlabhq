@@ -98,6 +98,7 @@ Group permissions for [CI/CD](../ci/_index.md) features including runners, varia
 
 | Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+| View instance runner                  |   ✓   |    ✓    |     ✓    |    ✓      |     ✓      |   ✓   |
 | View group runners                    |       |         |          |           |     ✓      |   ✓   |
 | Manage group-level Kubernetes cluster |       |         |          |           |     ✓      |   ✓   |
 | Manage group runners                  |       |         |          |           |            |   ✓   |
@@ -347,6 +348,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 
 | Action                                                                                                      | Non-member | Guest | Planner | Reporter | Developer | Maintainer |
 | ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: |
+| View instance runner                                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View existing artifacts <sup>1</sup>                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View list of jobs <sup>2</sup>                                                                              |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View artifacts <sup>3</sup>                                                                                 |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
@@ -372,6 +374,9 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |     ✓     |     ✓      |
 | Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |     ✓     |     ✓      |
 | Use pipeline editor                                                                                         |            |       |         |          |     ✓     |     ✓      |
+| View project runners <sup>9</sup>                                                                           |            |       |         |          |           |     ✓      |
+| Manage project runners <sup>9</sup>                                                                         |            |       |         |          |           |     ✓      |
+| Delete project runners <sup>10</sup>                                                                        |            |       |         |          |           |     ✓      |
 | Manage [agents for Kubernetes](clusters/agent/_index.md)                                                    |            |       |         |          |           |     ✓      |
 | Manage CI/CD settings                                                                                       |            |       |         |          |           |     ✓      |
 | Manage job triggers                                                                                         |            |       |         |          |           |     ✓      |
@@ -379,7 +384,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage project protected environments                                                                       |            |       |         |          |           |     ✓      |
 | Manage project [Secure Files](../api/secure_files.md)                                                       |            |       |         |          |           |     ✓      |
 | Manage [Terraform](infrastructure/_index.md) state                                                          |            |       |         |          |           |     ✓      |
-| Add project runners to project                                                                              |            |       |         |          |           |     ✓      |
+| Add project runners to project <sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
 | Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
 
@@ -402,6 +407,9 @@ Project Owners can perform any listed action, and can delete pipelines:
 6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
 7. Developers: Only if the job was triggered by the user and runs for a non-protected branch.
 8. Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
+9. Maintainers: Must have the Maintainer role for a project associated with the runner.
+10. Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).
+11. Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.
 
 <!-- markdownlint-enable MD029 -->
 

@@ -9,8 +9,14 @@ module Gitlab
     # Theme ID used when no `default_theme` configuration setting is provided.
     APPLICATION_DEFAULT = 3
 
-    # Theme ID previously used for dark mode theme
-    DEPRECATED_DARK_THEME_ID = 11
+    # Theme IDs previously used
+    DEPRECATED_THEME_IDS = [
+      6, # Light indigo
+      7, # Light blue
+      8, # Light green
+      10, # Light red
+      11 # Dark mode theme
+    ].freeze
 
     # Struct class representing a single Theme
     Theme = Struct.new(:id, :name, :css_class, :primary_color)
@@ -18,16 +24,12 @@ module Gitlab
     # All available Themes
     def available_themes
       [
+        Theme.new(3, s_('NavigationTheme|Default'), 'ui-neutral', '#ececef'),
         Theme.new(1, s_('NavigationTheme|Indigo'), 'ui-indigo', '#222261'),
-        Theme.new(6, s_('NavigationTheme|Light Indigo'), 'ui-light-indigo', '#41419f'),
         Theme.new(4, s_('NavigationTheme|Blue'), 'ui-blue', '#0b2640'),
-        Theme.new(7, s_('NavigationTheme|Light Blue'), 'ui-light-blue', '#145aa1'),
         Theme.new(5, s_('NavigationTheme|Green'), 'ui-green', '#0e4328'),
-        Theme.new(8, s_('NavigationTheme|Light Green'), 'ui-light-green', '#1b653f'),
         Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', '#580d02'),
-        Theme.new(10, s_('NavigationTheme|Light Red'), 'ui-light-red', '#a02e1c'),
-        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#28272d'),
-        Theme.new(3, s_('NavigationTheme|Neutral'), 'ui-neutral', '#ececef')
+        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#28272d')
       ]
     end
 
@@ -39,6 +41,20 @@ module Gitlab
       available_themes.collect(&:css_class).uniq.join(' ')
     end
 
+    # Maps deprecated light themes to their default counterpart
+    def map_deprecated_themes
+      {
+        # Light indigo to indigo
+        6 => 1,
+        # Light blue to blue
+        7 => 4,
+        # Light green to green
+        8 => 5,
+        # Light red to red
+        10 => 9
+      }
+    end
+
     # Get a Theme by its ID
     #
     # If the ID is invalid, returns the default Theme.
@@ -47,7 +63,10 @@ module Gitlab
     #
     # Returns a Theme
     def by_id(id)
-      available_themes.detect { |t| t.id == id } || default
+      # Map deprecated IDs to new values
+      mapped_id = map_deprecated_themes[id] || id
+
+      available_themes.detect { |t| t.id == mapped_id } || default
     end
 
     # Returns the number of defined Themes
@@ -83,7 +102,7 @@ module Gitlab
     end
 
     def self.valid_ids
-      available_themes.map(&:id) + [DEPRECATED_DARK_THEME_ID]
+      available_themes.map(&:id) + DEPRECATED_THEME_IDS
     end
 
     private

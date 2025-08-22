@@ -55,6 +55,21 @@ Two connectivity options are available:
 
 For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificates).
 
+##### Private connectivity for webhooks and integrations
+
+If your webhooks and integrations need to connect to services that are not accessible from the public internet,
+you can use AWS PrivateLink for private connectivity. Because GitLab Dedicated is a SaaS service,
+it cannot directly connect to local IP addresses in your network.
+
+To set up private connectivity for your internal services:
+
+1. Assign hostnames to your internal services.
+1. Configure your Private Hosted Zone (PHZ) records to route to these hostnames through outbound private links.
+1. Plan for the 10-endpoint limit on outbound private links.
+
+If you need to connect to more than 10 endpoints, implement a reverse proxy or TLS passthrough on your infrastructure.
+This approach routes multiple services through fewer private link connections.
+
 #### Data encryption
 
 Data is encrypted at rest and in transit using the latest encryption standards.
@@ -268,11 +283,8 @@ its own [release schedule](maintenance.md) for version deployments.
 | Feature                      | Description                                                     | Impact                                                                 |
 | ---------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Custom domains               | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
-| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites must be accessed over public internet.                     |
+| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites are accessible over the public internet only. You can configure IP allowlists to restrict access to specific IP addresses. |
 | Namespaces in URL path       | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options.                                      |
-| Let's Encrypt integration    | Automatic SSL certificate provisioning for Pages sites.         | Must manage SSL certificates manually.                                 |
-| Reduced authentication scope | Fine-grained access controls for Pages sites.                   | Less flexible authentication options.                                  |
-| Running Pages behind a proxy | Deploy Pages sites behind reverse proxy configurations.         | Limited deployment architecture options.                               |
 
 ### Operational features
 
@@ -295,10 +307,9 @@ The following features require direct server access and cannot be configured:
 
 {{< alert type="note" >}}
 
-Access to the underlying infrastructure is only available to GitLab team members.
-Due to the server-side configuration, there is a security concern with running arbitrary code on services,
-and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md)
-or [webhooks](../../user/project/integrations/webhooks.md) instead.
+Server-side Git hooks are not supported for security and performance reasons.
+Instead, use [push rules](../../user/project/repository/push_rules.md) to enforce repository policies
+or [webhooks](../../user/project/integrations/webhooks.md) to trigger external actions on Git events.
 
 {{< /alert >}}
 

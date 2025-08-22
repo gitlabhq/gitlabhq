@@ -274,6 +274,7 @@ export default {
         snippets: this.enableAutocomplete,
         vulnerabilities: this.enableAutocomplete,
         contacts: this.enableAutocomplete,
+        statuses: this.enableAutocomplete,
       },
       true,
       this.autocompleteDataSources,

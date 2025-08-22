@@ -1984,6 +1984,17 @@ To create a set of cards, follow this example:
 {{</* /cards */>}}
 ```
 
+Additionally, cards support external URLs with optional descriptions.
+Use the following syntax:
+
+```markdown
+{{</* cards */>}}
+
+- [External page title](https://example.com "Optional Description")
+
+{{</* /cards */>}}
+```
+
 Cards render only on the GitLab documentation site (`https://docs.gitlab.com`).
 In the GitLab product help, a set of cards appears as an unordered list of links.
 

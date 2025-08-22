@@ -2649,6 +2649,10 @@ class User < ApplicationRecord
     admin?
   end
 
+  def free_or_trial_owned_group_ids
+    @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
+  end
+
   protected
 
   # override, from Devise::Validatable

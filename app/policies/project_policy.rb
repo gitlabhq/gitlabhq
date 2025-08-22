@@ -701,12 +701,6 @@ class ProjectPolicy < BasePolicy
     enable :update_freeze_period
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
-    enable :register_project_runners
-    enable :create_runners
-    enable :admin_runners
-    enable :read_runners
-    enable :read_runners_registration_token
-    enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_project_aws
     enable :admin_secure_files
@@ -725,6 +719,15 @@ class ProjectPolicy < BasePolicy
     enable :create_branch_rule
     enable :admin_protected_branch
     enable :admin_protected_environments
+
+    # doc/ci/runners/runners_scope.md#project-runners
+    # doc/user/permissions.md#cicd
+    enable :create_runners
+    enable :admin_runners
+    enable :read_runners
+    enable :read_runners_registration_token
+    enable :register_project_runners
+    enable :update_runners_registration_token
   end
 
   rule { can?(:manage_protected_tags) }.policy do

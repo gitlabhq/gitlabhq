@@ -1340,7 +1340,7 @@ delete unreferenced layers and (optionally) untagged manifests.
 To start the garbage collector, run the following `gitlab-ctl` command:
 
 ```shell
-`registry-garbage-collect`
+sudo gitlab-ctl registry-garbage-collect
 ```
 
 The time required to perform garbage collection is proportional to the container registry data size.

@@ -320,8 +320,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_upload
     enable :import_projects
     enable :read_deploy_token
-    enable :read_runners
     enable :update_cluster
+
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :read_runners
   end
 
   rule { owner }.policy do
@@ -333,29 +336,32 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_package
     enable :admin_protected_environments
-    enable :admin_runners
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control
     enable :change_visibility_level
     enable :create_deploy_token
-    enable :create_runners
     enable :create_subgroup
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing
     enable :manage_merge_request_settings
     enable :read_billing
-    enable :read_runners
-    enable :read_runners_registration_token
     enable :read_usage_quotas
-    enable :register_group_runners
     enable :remove_group
     enable :set_emails_disabled
     enable :set_note_created_at
     enable :set_show_diff_preview_in_email
     enable :update_default_branch_protection
     enable :update_git_access_protocol
+
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :admin_runners
+    enable :create_runners
+    enable :read_runners
+    enable :read_runners_registration_token
+    enable :register_group_runners
     enable :update_runners_registration_token
   end
 

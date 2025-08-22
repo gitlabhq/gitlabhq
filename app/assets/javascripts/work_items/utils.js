@@ -260,6 +260,7 @@ export const autocompleteDataSources = ({
       isGroup,
       workItemTypeId,
     }),
+    statuses: true, // Include `statuses` as a property so GLFM autocompletion is enabled
     ...fetchedPaths,
   };
 

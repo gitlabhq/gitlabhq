@@ -56,7 +56,7 @@ $command-palette-spacing: px-to-rem(14px);
 
     --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-light-16);
     --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-light-24);
-    --super-sidebar-nav-item-current-bg: var(--gl-color-alpha-light-8);
+    --super-sidebar-nav-item-current-bg: rgb(from var(--super-sidebar-accent-color-fg) r g b / 15%);
 
     --super-sidebar-hr-mix-blend-mode: color-dodge;
   }
@@ -80,133 +80,65 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-indigo {
   @include super-sidebar-theme(
-    $background: var(--gl-color-theme-indigo-50),
-    $accent-color-fg: var(--gl-color-theme-indigo-800),
-    $accent-color-bg: var(--gl-color-theme-indigo-100),
+    $background: var(--gl-color-purple-50),
+    $accent-color-fg: var(--gl-color-purple-800),
+    $accent-color-bg: var(--gl-color-purple-100),
   );
 
   &.gl-dark {
     @include super-sidebar-theme(
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-indigo-200),
+      $accent-color-fg: var(--gl-color-purple-200),
       $accent-color-bg: var(--gl-background-color-subtle),
-    );
-  }
-}
-
-.ui-light-indigo {
-  @include super-sidebar-theme(
-    $background: var(--gl-color-theme-indigo-50),
-    $accent-color-fg: var(--gl-color-theme-indigo-800),
-    $accent-color-bg: var(--gl-color-theme-indigo-100),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-indigo-100),
-      $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-theme-indigo-200),
     );
   }
 }
 
 .ui-blue {
   @include super-sidebar-theme(
-    $background: var(--gl-color-theme-blue-10),
-    $accent-color-fg: var(--gl-color-theme-blue-900),
-    $accent-color-bg: var(--gl-color-theme-blue-50),
+    $background: var(--gl-color-blue-50),
+    $accent-color-fg: var(--gl-color-blue-900),
+    $accent-color-bg: var(--gl-color-blue-100),
   );
 
   &.gl-dark {
     @include super-sidebar-theme(
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-blue-100),
+      $accent-color-fg: var(--gl-color-blue-100),
       $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-theme-blue-200),
-    );
-  }
-}
-
-.ui-light-blue {
-  @include super-sidebar-theme(
-    $background: var(--gl-color-theme-light-blue-10),
-    $accent-color-fg: var(--gl-color-theme-light-blue-900),
-    $accent-color-bg: var(--gl-color-theme-light-blue-100),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-light-blue-100),
-      $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-theme-blue-200),
+      $accent-color-badge: var(--gl-color-blue-200),
     );
   }
 }
 
 .ui-green {
   @include super-sidebar-theme(
-    $background: var(--gl-color-theme-green-50),
-    $accent-color-fg: var(--gl-color-theme-green-900),
-    $accent-color-bg: var(--gl-color-theme-green-100),
+    $background: var(--gl-color-green-50),
+    $accent-color-fg: var(--gl-color-green-900),
+    $accent-color-bg: var(--gl-color-green-100),
   );
 
   &.gl-dark {
     @include super-sidebar-theme(
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-green-200),
+      $accent-color-fg: var(--gl-color-green-200),
       $accent-color-bg: var(--gl-background-color-subtle),
-    );
-  }
-}
-
-.ui-light-green {
-  @include super-sidebar-theme(
-    $background: var(--gl-color-theme-green-10),
-    $accent-color-fg: var(--gl-color-theme-green-900),
-    $accent-color-bg: var(--gl-color-theme-green-50),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-green-200),
-      $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-theme-green-200),
     );
   }
 }
 
 .ui-red {
   @include super-sidebar-theme(
-    $background: var(--gl-color-theme-red-50),
-    $accent-color-fg: var(--gl-color-theme-red-800),
-    $accent-color-bg: var(--gl-color-theme-red-100),
+    $background: var(--gl-color-red-50),
+    $accent-color-fg: var(--gl-color-red-800),
+    $accent-color-bg: var(--gl-color-red-100),
   );
 
   &.gl-dark {
     @include super-sidebar-theme(
       $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-red-200),
+      $accent-color-fg: var(--gl-color-red-200),
       $accent-color-bg: var(--gl-background-color-subtle),
-    );
-  }
-}
-
-.ui-light-red {
-  @include super-sidebar-theme(
-    $background: var(--gl-color-theme-light-red-50),
-    $accent-color-fg: var(--gl-color-theme-light-red-800),
-    $accent-color-bg: var(--gl-color-theme-light-red-100),
-  );
-
-  &.gl-dark {
-    @include super-sidebar-theme(
-      $background: var(--gl-background-color-subtle),
-      $accent-color-fg: var(--gl-color-theme-light-red-200),
-      $accent-color-bg: var(--gl-background-color-subtle),
-      $accent-color-badge: var(--gl-color-theme-light-red-200),
     );
   }
 }
