@@ -15,6 +15,11 @@ RSpec.describe Gitlab::Database::SchemaCleaner do
     expect(subject).not_to include('COMMENT ON EXTENSION')
   end
 
+  it 'removes CVE-2025-8714 commands' do
+    expect(subject).not_to include('\restrict y3wouDIYP3FMwyd8IGypIuseLnvvBg5K9lzspwH03FEuizx9xcZzUByeEjJdABC')
+    expect(subject).not_to include('\unrestrict y3wouDIYP3FMwyd8IGypIuseLnvvBg5K9lzspwH03FEuizx9xcZzUByeEjJdABC')
+  end
+
   it 'no assumption about public being the default schema' do
     expect(subject).not_to match(/public\.\w+/)
   end

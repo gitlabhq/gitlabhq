@@ -75,6 +75,11 @@ export default {
       hasError: false,
     };
   },
+  computed: {
+    todoTrackingContext() {
+      return { source: 'personal_homepage' };
+    },
+  },
   apollo: {
     todos: {
       query: getTodosQuery,
@@ -165,6 +170,7 @@ export default {
           :key="todo.id"
           class="first:gl-rounded-t-lg hover:!gl-bg-strong"
           :todo="todo"
+          :tracking-additional="todoTrackingContext"
           @change="$apollo.queries.todos.refetch()"
         />
       </ol>

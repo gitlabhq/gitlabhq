@@ -17,70 +17,124 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
     it { is_expected.to validate_presence_of(:work_item_parent) }
     it { is_expected.to validate_uniqueness_of(:work_item) }
 
-    describe 'hierarchy validations' do
+    describe 'hierarchy' do
       let_it_be(:issue) { create(:work_item, project: project) }
+      let_it_be(:incident) { build(:work_item, :incident, project: project) }
       let_it_be(:task1) { create(:work_item, :task, project: project) }
       let_it_be(:task2) { build(:work_item, :task, project: project) }
 
-      describe '#validate_hierarchy_restrictions' do
-        it 'prevents invalid parent-child type combinations' do
-          task = create(:work_item, :task, project: project)
-          issue = create(:work_item, :issue, project: project)
-          link = build(:parent_link, work_item_parent: task, work_item: issue)
-
-          expect(link).not_to be_valid
-          expect(link.errors[:work_item]).to include("it's not allowed to add this type of parent item")
-        end
+      it 'is valid if issue parent has task child' do
+        expect(build(:parent_link, work_item: task1, work_item_parent: issue)).to be_valid
       end
 
-      describe '#validate_depth' do
-        it_behaves_like 'validates hierarchy depth', :epic, 7
-        it_behaves_like 'validates hierarchy depth', :objective, 9
+      it 'is valid if incident parent has task child' do
+        expect(build(:parent_link, work_item: task1, work_item_parent: incident)).to be_valid
+      end
 
-        context 'with cross-type hierarchies (objective to key_result)' do
-          let_it_be(:objective1) { create(:work_item, :objective, project: project) }
-          let_it_be(:key_result) { create(:work_item, :key_result, project: project) }
-          let_it_be(:objective3) { create(:work_item, :objective, project: project) }
+      context 'when assigning to various parent types' do
+        using RSpec::Parameterized::TableSyntax
 
-          it 'validates maximum depth of 1 for key_results under objectives' do
-            create(:parent_link, work_item_parent: objective1, work_item: key_result)
+        where(:parent_type_sym, :child_type_sym, :is_valid) do
+          :issue      | :task       | true
+          :incident   | :task       | true
+          :task       | :issue      | false
+          :issue      | :issue      | false
+          :objective  | :objective  | true
+          :objective  | :key_result | true
+          :key_result | :objective  | false
+          :key_result | :key_result | false
+          :objective  | :issue      | false
+          :task       | :objective  | false
+        end
 
-            key_result2 = create(:work_item, :key_result, project: project)
-            link = build(:parent_link, work_item_parent: key_result, work_item: key_result2)
+        with_them do
+          it 'validates if child can be added to the parent' do
+            parent_type = WorkItems::Type.default_by_type(parent_type_sym)
+            child_type = WorkItems::Type.default_by_type(child_type_sym)
+            parent = build(:work_item, work_item_type: parent_type, project: project)
+            child = build(:work_item, work_item_type: child_type, project: project)
+            link = build(:parent_link, work_item: child, work_item_parent: parent)
 
-            expect(link).not_to be_valid
+            expect(link.valid?).to eq(is_valid)
           end
         end
       end
 
-      describe '#validate_cyclic_reference' do
-        let_it_be(:epic_a) { create(:work_item, :epic, project: project) }
-        let_it_be(:epic_b) { create(:work_item, :epic, project: project) }
-        let_it_be(:epic_c) { create(:work_item, :epic, project: project) }
+      context 'with nested ancestors' do
+        let_it_be(:type1) { create(:work_item_type, :non_default) }
+        let_it_be(:type2) { create(:work_item_type, :non_default) }
+        let_it_be(:item1) { create(:work_item, work_item_type: type1, project: project) }
+        let_it_be(:item2) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item3) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item4) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
+        let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type1) }
 
-        before do
-          # Create a chain: epic_a -> epic_b -> epic_c
-          create(:parent_link, work_item_parent: epic_a, work_item: epic_b)
-          create(:parent_link, work_item_parent: epic_b, work_item: epic_c)
+        let_it_be(:hierarchy_restriction3) do
+          create(:hierarchy_restriction, parent_type: type2, child_type: type2, maximum_depth: 2)
         end
 
-        it 'is not valid if parent and child are same' do
-          link = build(:parent_link, work_item_parent: epic_a, work_item: epic_a)
+        let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
+        let_it_be(:link2) { create(:parent_link, work_item_parent: item3, work_item: item4) }
 
-          expect(link).not_to be_valid
-          expect(link.errors[:work_item]).to include('is not allowed to point to itself')
+        describe '#validate_depth' do
+          it 'is valid if depth is in limit' do
+            link = build(:parent_link, work_item_parent: item1, work_item: item3)
+
+            expect(link).to be_valid
+          end
+
+          it 'is not valid when maximum depth is reached' do
+            link = build(:parent_link, work_item_parent: item2, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include('reached maximum depth')
+          end
         end
 
-        it 'is not valid if child is already in ancestors' do
-          # epic_c is a descendant of epic_a, so epic_a cannot be a child of epic_c
-          link = build(:parent_link, work_item_parent: epic_c, work_item: epic_a)
+        describe '#validate_cyclic_reference' do
+          it 'is not valid if parent and child are same' do
+            link1.work_item_parent = item2
 
-          expect(link).not_to be_valid
-          expect(link.errors[:work_item]).to include("it's already present in this item's hierarchy")
+            expect(link1).not_to be_valid
+            expect(link1.errors[:work_item]).to include('is not allowed to point to itself')
+          end
+
+          it 'is not valid if child is already in ancestors' do
+            link = build(:parent_link, work_item_parent: item4, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include("it's already present in this item's hierarchy")
+          end
         end
       end
 
-      describe '#validate_max_children' do
+      context 'when assigning parent from different project' do
+        let_it_be(:cross_project_issue) { create(:work_item, project: create(:project)) }
+
+        let(:restriction) do
+          WorkItems::HierarchyRestriction
+            .find_by_parent_type_id_and_child_type_id(cross_project_issue.work_item_type_id, task1.work_item_type_id)
+        end
+
+        it 'is valid when cross-hierarchy is enabled' do
+          restriction.update!(cross_hierarchy_enabled: true)
+          link = build(:parent_link, work_item_parent: cross_project_issue, work_item: task1)
+
+          expect(link).to be_valid
+          expect(link.errors).to be_empty
+        end
+
+        it 'is not valid when cross-hierarchy is not enabled' do
+          restriction.update!(cross_hierarchy_enabled: false)
+          link = build(:parent_link, work_item_parent: cross_project_issue, work_item: task1)
+
+          expect(link).not_to be_valid
+          expect(link.errors[:work_item_parent]).to include('parent must be in the same project or group as child.')
+        end
+      end
+
+      context 'when parent already has maximum number of links' do
         let_it_be(:link1) { create(:parent_link, work_item_parent: issue, work_item: task1) }
 
         before do
@@ -114,7 +168,7 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
       end
 
-      describe '#check_existing_related_link' do
+      context 'when parent is already linked' do
         shared_examples 'invalid link' do |link_factory|
           let_it_be(:parent_link) { build(:parent_link, work_item_parent: issue, work_item: task1) }
           let(:error_msg) { 'cannot assign a linked work item as a parent' }
@@ -174,7 +228,7 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         it_behaves_like 'invalid link', :issue_link
       end
 
-      describe '#validate_confidentiality' do
+      context 'when setting confidentiality' do
         using RSpec::Parameterized::TableSyntax
 
         where(:confidential_parent, :confidential_child, :valid) do

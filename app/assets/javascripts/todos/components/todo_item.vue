@@ -31,6 +31,11 @@ export default {
       required: false,
       default: false,
     },
+    trackingAdditional: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     isHiddenBySaml() {
@@ -49,6 +54,9 @@ export default {
     },
     trackingLabel() {
       return this.todo.targetType ?? 'UNKNOWN';
+    },
+    trackingAdditionalData() {
+      return this.trackingAdditional ? JSON.stringify(this.trackingAdditional) : null;
     },
   },
 };
@@ -71,6 +79,7 @@ export default {
       :data-event-tracking="$options.TRACK_ACTION"
       :data-event-label="trackingLabel"
       :data-event-property="todo.action"
+      :data-event-additional="trackingAdditionalData"
       class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-nowrap gl-justify-between gl-gap-3 gl-gap-y-3 !gl-text-default !gl-no-underline sm:gl-flex-row sm:gl-items-center"
     >
       <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />

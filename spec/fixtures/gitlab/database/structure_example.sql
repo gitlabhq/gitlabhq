@@ -1,3 +1,4 @@
+\restrict y3wouDIYP3FMwyd8IGypIuseLnvvBg5K9lzspwH03FEuizx9xcZzUByeEjJdABC
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -8,6 +9,7 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+\unrestrict y3wouDIYP3FMwyd8IGypIuseLnvvBg5K9lzspwH03FEuizx9xcZzUByeEjJdABC
 
 --
 -- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: -

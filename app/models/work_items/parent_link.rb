@@ -74,10 +74,8 @@ module WorkItems
     def validate_hierarchy_restrictions
       return unless work_item && work_item_parent
 
-      restriction = ::WorkItems::SystemDefined::HierarchyRestriction.find_by(
-        parent_type_id: work_item_parent.work_item_type_id,
-        child_type_id: work_item.work_item_type_id
-      )
+      restriction = ::WorkItems::HierarchyRestriction
+        .find_by_parent_type_id_and_child_type_id(work_item_parent.work_item_type_id, work_item.work_item_type_id)
 
       if restriction.nil?
         errors.add :work_item, _("it's not allowed to add this type of parent item")
@@ -85,6 +83,14 @@ module WorkItems
       end
 
       validate_depth(restriction.maximum_depth)
+      validate_cross_hierarchy(restriction.cross_hierarchy_enabled)
+    end
+
+    def validate_cross_hierarchy(cross_hierarchy_enabled)
+      return if cross_hierarchy_enabled
+      return if work_item.resource_parent == work_item_parent.resource_parent
+
+      errors.add :work_item_parent, _('parent must be in the same project or group as child.')
     end
 
     def validate_depth(depth)

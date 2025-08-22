@@ -64,6 +64,16 @@ module WorkItems
     has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
       inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'
+    has_many :child_restrictions, class_name: 'WorkItems::HierarchyRestriction', foreign_key: :parent_type_id,
+      inverse_of: :parent_type
+    has_many :parent_restrictions, class_name: 'WorkItems::HierarchyRestriction', foreign_key: :child_type_id,
+      inverse_of: :child_type
+    has_many :allowed_child_types_by_name, -> { order_by_name_asc },
+      through: :child_restrictions, class_name: 'WorkItems::Type',
+      foreign_key: :child_type_id, source: :child_type
+    has_many :allowed_parent_types_by_name, -> { order_by_name_asc },
+      through: :parent_restrictions, class_name: 'WorkItems::Type',
+      foreign_key: :parent_type_id, source: :parent_type
     has_many :user_preferences,
       class_name: 'WorkItems::UserPreference',
       inverse_of: :work_item_type
@@ -134,21 +144,6 @@ module WorkItems
 
     def default_issue?
       name == WorkItems::Type::TYPE_NAMES[:issue]
-    end
-
-    def allowed_child_types_by_name
-      child_type_ids = WorkItems::SystemDefined::HierarchyRestriction
-        .where(parent_type_id: id)
-        .map(&:child_type_id)
-
-      WorkItems::Type.where(id: child_type_ids).order_by_name_asc
-    end
-
-    def allowed_parent_types_by_name
-      parent_type_ids = WorkItems::SystemDefined::HierarchyRestriction
-        .where(child_type_id: id)
-        .map(&:parent_type_id)
-      WorkItems::Type.where(id: parent_type_ids).order_by_name_asc
     end
 
     def calculate_reactive_cache

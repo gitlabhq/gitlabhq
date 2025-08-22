@@ -4,50 +4,46 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::WorkItems::WorkItemHierarchy, feature_category: :portfolio_management do
   let_it_be(:project) { create(:project) }
-
-  let_it_be(:epic1) { create(:work_item, :epic, project: project) }
-  let_it_be(:epic2) { create(:work_item, :epic, project: project) }
-  let_it_be(:epic3) { create(:work_item, :epic, project: project) }
-  let_it_be(:issue1) { create(:work_item, :issue, project: project) }
-  let_it_be(:task1) { create(:work_item, :task, project: project) }
-
-  let_it_be(:ignored_epic) { create(:work_item, :epic, project: project) }
-  let_it_be(:ignored_issue) { create(:work_item, :issue, project: project) }
-
-  # Create hierarchy: epic1 -> epic2 -> epic3 -> issue1 -> task1
-  let_it_be(:link1) { create(:parent_link, work_item_parent: epic1, work_item: epic2) }
-  let_it_be(:link2) { create(:parent_link, work_item_parent: epic2, work_item: epic3) }
-  let_it_be(:link3) { create(:parent_link, work_item_parent: epic3, work_item: issue1) }
-  let_it_be(:link4) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
+  let_it_be(:type1) { create(:work_item_type, :non_default) }
+  let_it_be(:type2) { create(:work_item_type, :non_default) }
+  let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
+  let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type2) }
+  let_it_be(:hierarchy_restriction3) { create(:hierarchy_restriction, parent_type: type2, child_type: type1) }
+  let_it_be(:item1) { create(:work_item, work_item_type: type1, project: project) }
+  let_it_be(:item2) { create(:work_item, work_item_type: type2, project: project) }
+  let_it_be(:item3) { create(:work_item, work_item_type: type2, project: project) }
+  let_it_be(:item4) { create(:work_item, work_item_type: type1, project: project) }
+  let_it_be(:ignored1) { create(:work_item, work_item_type: type1, project: project) }
+  let_it_be(:ignored2) { create(:work_item, work_item_type: type2, project: project) }
+  let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
+  let_it_be(:link2) { create(:parent_link, work_item_parent: item2, work_item: item3) }
+  let_it_be(:link3) { create(:parent_link, work_item_parent: item3, work_item: item4) }
 
   let(:options) { {} }
 
   describe '#base_and_ancestors' do
-    subject { described_class.new(::WorkItem.where(id: issue1.id), options: options) }
+    subject { described_class.new(::WorkItem.where(id: item3.id), options: options) }
 
     it 'includes the base and its ancestors' do
       relation = subject.base_and_ancestors
 
-      expect(relation).to match_array([issue1, epic3, epic2, epic1])
+      expect(relation).to eq([item3, item2, item1])
     end
 
     context 'when same_type option is used' do
-      # Use epic3 as subject since it has same-type ancestors
-      subject { described_class.new(::WorkItem.where(id: epic3.id), options: options) }
-
       let(:options) { { same_type: true } }
 
-      it 'includes the base and its ancestors of the same type' do
+      it 'includes the base and its ancestors' do
         relation = subject.base_and_ancestors
 
-        expect(relation).to match_array([epic3, epic2, epic1])
+        expect(relation).to eq([item3, item2])
       end
     end
 
     it 'can find ancestors upto a certain level' do
-      relation = subject.base_and_ancestors(upto: epic2)
+      relation = subject.base_and_ancestors(upto: item1)
 
-      expect(relation).to match_array([issue1, epic3])
+      expect(relation).to eq([item3, item2])
     end
 
     describe 'hierarchy_order option' do
@@ -59,7 +55,7 @@ RSpec.describe Gitlab::WorkItems::WorkItemHierarchy, feature_category: :portfoli
         let(:hierarchy_order) { :asc }
 
         it 'orders by child to ancestor' do
-          expect(relation).to match_array([issue1, epic3, epic2, epic1])
+          expect(relation).to eq([item3, item2, item1])
         end
       end
 
@@ -67,28 +63,28 @@ RSpec.describe Gitlab::WorkItems::WorkItemHierarchy, feature_category: :portfoli
         let(:hierarchy_order) { :desc }
 
         it 'orders by ancestor to child' do
-          expect(relation).to match_array([epic1, epic2, epic3, issue1])
+          expect(relation).to eq([item1, item2, item3])
         end
       end
     end
   end
 
   describe '#base_and_descendants' do
-    subject { described_class.new(::WorkItem.where(id: epic2.id), options: options) }
+    subject { described_class.new(::WorkItem.where(id: item2.id), options: options) }
 
     it 'includes the base and its descendants' do
       relation = subject.base_and_descendants
 
-      expect(relation).to match_array([epic2, epic3, issue1, task1])
+      expect(relation).to eq([item2, item3, item4])
     end
 
     context 'when same_type option is used' do
       let(:options) { { same_type: true } }
 
-      it 'includes the base and its descendants of the same type' do
+      it 'includes the base and its ancestors' do
         relation = subject.base_and_descendants
 
-        expect(relation).to match_array([epic2, epic3])
+        expect(relation).to eq([item2, item3])
       end
     end
 
@@ -99,47 +95,13 @@ RSpec.describe Gitlab::WorkItems::WorkItemHierarchy, feature_category: :portfoli
 
       it 'includes depth in the results' do
         object_depths = {
-          epic2.id => 1,
-          epic3.id => 2,
-          issue1.id => 3,
-          task1.id => 4
+          item2.id => 1,
+          item3.id => 2,
+          item4.id => 3
         }
 
         relation.each do |object|
           expect(object.depth).to eq(object_depths[object.id])
-        end
-      end
-    end
-  end
-
-  describe 'with objective hierarchy' do
-    let_it_be(:objective1) { create(:work_item, :objective, project: project) }
-    let_it_be(:objective2) { create(:work_item, :objective, project: project) }
-    let_it_be(:objective3) { create(:work_item, :objective, project: project) }
-    let_it_be(:key_result) { create(:work_item, :key_result, project: project) }
-
-    let_it_be(:obj_link1) { create(:parent_link, work_item_parent: objective1, work_item: objective2) }
-    let_it_be(:obj_link2) { create(:parent_link, work_item_parent: objective2, work_item: objective3) }
-    let_it_be(:obj_link3) { create(:parent_link, work_item_parent: objective3, work_item: key_result) }
-
-    describe '#base_and_ancestors for objectives' do
-      subject { described_class.new(::WorkItem.where(id: key_result.id), options: options) }
-
-      it 'includes key result and all objective ancestors' do
-        relation = subject.base_and_ancestors
-
-        expect(relation).to match_array([key_result, objective3, objective2, objective1])
-      end
-
-      context 'when same_type option is used' do
-        subject { described_class.new(::WorkItem.where(id: objective3.id), options: options) }
-
-        let(:options) { { same_type: true } }
-
-        it 'includes only objectives' do
-          relation = subject.base_and_ancestors
-
-          expect(relation).to match_array([objective3, objective2, objective1])
         end
       end
     end
