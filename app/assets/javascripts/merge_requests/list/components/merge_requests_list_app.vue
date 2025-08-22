@@ -290,6 +290,7 @@ export default {
           recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-author`,
           preloadedUsers,
           multiselect: false,
+          unique: true,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,

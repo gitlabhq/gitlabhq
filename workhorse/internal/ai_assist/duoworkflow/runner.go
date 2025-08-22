@@ -2,6 +2,7 @@ package duoworkflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -41,7 +42,29 @@ type runner struct {
 	originalReq *http.Request
 	conn        websocketConn
 	wf          workflowStream
+	client      *Client
 	sendMu      sync.Mutex
+}
+
+func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
+	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize client: %v", err)
+	}
+
+	wf, err := client.ExecuteWorkflow(r.Context())
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize stream: %v", err)
+	}
+
+	return &runner{
+		rails:       rails,
+		token:       cfg.Headers["x-gitlab-oauth-token"],
+		originalReq: r,
+		conn:        conn,
+		wf:          wf,
+		client:      client,
+	}, nil
 }
 
 func (r *runner) Execute(ctx context.Context) error {
@@ -76,6 +99,13 @@ func (r *runner) Execute(ctx context.Context) error {
 	}()
 
 	return <-errCh
+}
+
+func (r *runner) Close() error {
+	r.sendMu.Lock()
+	defer r.sendMu.Unlock()
+
+	return errors.Join(r.wf.CloseSend(), r.client.Close())
 }
 
 func (r *runner) handleWebSocketMessage() error {
@@ -137,10 +167,4 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
-}
-
-func (r *runner) threadSafeCloseSend() error {
-	r.sendMu.Lock()
-	defer r.sendMu.Unlock()
-	return r.wf.CloseSend()
 }

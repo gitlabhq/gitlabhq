@@ -30,25 +30,20 @@ export default {
 <template>
   <section v-if="hasSkippedIndexes" data-testid="skipped-indexes-section">
     <div class="gl-mb-4 gl-flex gl-items-center gl-gap-3">
-      <gl-icon name="information-o" variant="info" data-testid="skipped-indexes-icon" />
+      <gl-icon name="information-o" variant="info" />
       <h3 class="gl-m-0 gl-text-lg">
         {{ __('Skipped indexes') }}
       </h3>
-      <gl-badge variant="info" data-testid="skipped-count-badge">
+      <gl-badge variant="info">
         {{ skippedIndexes.length }}
       </gl-badge>
     </div>
 
-    <gl-alert variant="info" :dismissible="false" data-testid="skipped-indexes-alert">
+    <gl-alert variant="info" :dismissible="false">
       {{ __('Large table corruption checks skipped. Manual checking recommended.') }}
     </gl-alert>
 
-    <gl-table-lite
-      :items="skippedIndexes"
-      :fields="$options.skippedIndexesFields"
-      class="gl-mt-3"
-      data-testid="skipped-indexes-table"
-    >
+    <gl-table-lite :items="skippedIndexes" :fields="$options.skippedIndexesFields" class="gl-mt-3">
       <template #cell(table_size)="{ item }">
         <number-to-human-size :value="item.table_size_bytes" />
       </template>

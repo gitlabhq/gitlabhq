@@ -5817,6 +5817,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    context 'when the build has inputs' do
+      it 'clones job inputs' do
+        build = create(:ci_build, pipeline: pipeline)
+        create(:ci_job_input, job: build, name: 'test_input', value: { 'key' => 'value' }, project: project)
+
+        new_build = build.clone(current_user: user)
+
+        new_build.save!
+
+        expect(new_build.inputs.count).to eq(build.inputs.count)
+        expect(new_build.inputs.first.name).to eq('test_input')
+        expect(new_build.inputs.first.value).to eq({ 'key' => 'value' })
+      end
+    end
+
     context 'when given new job variables' do
       context 'when the cloned build has an action' do
         it 'applies the new job variables' do

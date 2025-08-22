@@ -4,6 +4,7 @@ module Gitlab
   module Git
     class Tag < Ref
       extend Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       delegate :id, to: :@raw_tag
 
@@ -97,21 +98,26 @@ module Gitlab
       end
 
       def signature
+        signed_tag&.signature
+      end
+
+      def signed_tag
         return unless has_signature?
 
         case signature_type
         when :PGP
           return unless Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
 
-          Gpg::Tag.new(@repository, self).signature
+          Gpg::Tag.new(@repository, self)
         when :X509
-          X509::Tag.new(@repository, self).signature
+          X509::Tag.new(@repository, self)
         when :SSH
           return unless Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
 
-          Ssh::Tag.new(@repository, self).signature
+          Ssh::Tag.new(@repository, self)
         end
       end
+      strong_memoize_attr :signed_tag
 
       def cache_key
         "tag:" + Digest::SHA1.hexdigest([name, message, target, target_commit&.sha].join)

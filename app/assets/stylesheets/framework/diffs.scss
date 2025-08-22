@@ -414,11 +414,11 @@ table.code {
   border-radius: 0 0 $gl-border-radius-large $gl-border-radius-large;
 
   .diff-td.highlight-top {
-    box-shadow: inset 0 -1px var(--highlight-border-color, $blue-300);
+    box-shadow: inset 0 1px var(--highlight-border-color, $blue-300);
   }
 
   .diff-td.highlight-bottom {
-    box-shadow: inset 0 1px var(--highlight-border-color, $blue-300);
+    box-shadow: inset 0 -1px var(--highlight-border-color, $blue-300);
   }
 
   .diff-td.highlight-top.highlight-bottom {

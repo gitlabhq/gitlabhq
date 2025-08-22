@@ -89,36 +89,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
 
         subject
       end
-
-      context 'when allow_push_repository_for_job_token is also disabled' do
-        before do
-          stub_feature_flags(allow_push_repository_for_job_token: false)
-        end
-
-        it 'enqueues a PostReceive worker job without gitaly_context' do
-          expect(PostReceive).to receive(:perform_async)
-            .with(gl_repository, identifier, changes, {
-              'secret_push_protection' => { 'skip_all' => true }
-            })
-
-          subject
-        end
-      end
-    end
-
-    context 'when allow_push_repository_for_job_token feature flag is disabled' do
-      before do
-        stub_feature_flags(allow_push_repository_for_job_token: false)
-      end
-
-      it 'enqueues a PostReceiveWorker worker job without gitaly_context' do
-        expect(Repositories::PostReceiveWorker).to receive(:perform_async)
-          .with(gl_repository, identifier, changes, {
-            'secret_push_protection' => { 'skip_all' => true }
-          })
-
-        subject
-      end
     end
 
     context 'when gitaly_context includes skip-ci' do
@@ -134,22 +104,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
         subject
       end
 
-      context 'when allow_push_repository_for_job_token is disabled' do
-        before do
-          stub_feature_flags(allow_push_repository_for_job_token: false)
-        end
-
-        it 'adds ci.skip to push options for PostReceiveWorker without gitaly_context' do
-          expect(Repositories::PostReceiveWorker).to receive(:perform_async)
-            .with(gl_repository, identifier, changes, {
-              'secret_push_protection' => { 'skip_all' => true },
-              'ci' => { 'skip' => true }
-            })
-
-          subject
-        end
-      end
-
       context 'when push_options are not present' do
         let(:push_options) { nil }
 
@@ -160,21 +114,6 @@ RSpec.describe PostReceiveService, feature_category: :team_planning do
             }, { 'gitaly_context' => gitaly_context })
 
           subject
-        end
-
-        context 'when allow_push_repository_for_job_token is disabled' do
-          before do
-            stub_feature_flags(allow_push_repository_for_job_token: false)
-          end
-
-          it 'only includes ci.skip in push options for PostReceiveWorker without gitaly_context' do
-            expect(Repositories::PostReceiveWorker).to receive(:perform_async)
-              .with(gl_repository, identifier, changes, {
-                'ci' => { 'skip' => true }
-              })
-
-            subject
-          end
         end
       end
     end

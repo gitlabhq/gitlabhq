@@ -411,6 +411,11 @@ members:
   - table: users
     column: user_id
     on_delete: async_delete
+merge_request_diff_commits:
+  - table: merge_request_diffs
+    column: merge_request_diff_id
+    on_delete: async_delete
+    worker_class: 'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
 merge_request_metrics:
   - table: p_ci_pipelines
     column: pipeline_id

@@ -343,24 +343,10 @@ You can also modify this setting with the [GraphQL](../../api/graphql/reference/
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags/_index.md) named `allow_push_repository_for_job_token`. Disabled by default.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.3
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.4. Feature flag `allow_push_repository_for_job_token` removed.
+
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Pushing to the project repository by authenticating with a CI/CD job token is still in development
-and not yet optimized for performance. If you enable this feature for testing, you must
-thoroughly test and implement validation measures to prevent infinite loops of "push" pipelines
-triggering more pipelines.
-
-{{< /alert >}}
 
 You can allow Git push requests to your project repository that are authenticated
 with a CI/CD job token. When enabled, access is allowed only for the tokens generated

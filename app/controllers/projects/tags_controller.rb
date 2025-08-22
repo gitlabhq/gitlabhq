@@ -25,12 +25,15 @@ class Projects::TagsController < Projects::ApplicationController
       @tags = TagsFinder.new(@repository, tags_params).execute
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
+
+      # Instantiate signed tags so signatures can be batch loaded
+      @tags.each(&:signed_tag)
+
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
       @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
       @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
-
     rescue Gitlab::Git::CommandError => e
       @tags = []
       @releases = []

@@ -115,39 +115,6 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Chain::Limit::RateLimit, :freeze_time, :c
       end
     end
 
-    context 'when ci_enforce_throttle_pipelines_creation is disabled' do
-      before do
-        stub_feature_flags(ci_enforce_throttle_pipelines_creation: false)
-      end
-
-      it 'does not break the chain' do
-        perform
-
-        expect(step.break?).to be_falsey
-      end
-
-      it 'does not invalidate the pipeline' do
-        perform
-
-        expect(pipeline.errors).to be_empty
-      end
-
-      it 'creates a log entry' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(
-          a_hash_including(
-            class: described_class.name,
-            project_id: project.id,
-            subscription_plan: project.actual_plan_name,
-            commit_sha: command.sha,
-            throttled: false,
-            throttle_override: false
-          )
-        )
-
-        perform
-      end
-    end
-
     context 'when ci_enforce_throttle_pipelines_creation_override is enabled' do
       before do
         stub_feature_flags(ci_enforce_throttle_pipelines_creation_override: true)

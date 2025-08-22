@@ -131,12 +131,6 @@ RSpec.describe OauthAccessToken, feature_category: :system_access do
     end
   end
 
-  describe '.matching_token_for' do
-    it 'does not find existing tokens' do
-      expect(described_class.matching_token_for(app_one, token.resource_owner, token.scopes)).to be_nil
-    end
-  end
-
   describe '#expires_in' do
     context 'when token has expires_in value set' do
       it 'uses the expires_in value' do

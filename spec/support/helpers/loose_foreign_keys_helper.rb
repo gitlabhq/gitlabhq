@@ -13,10 +13,14 @@ module LooseForeignKeysHelper
     end
   end
 
-  def process_loose_foreign_key_deletions(record:)
-    LooseForeignKeys::ProcessDeletedRecordsService.new(
+  def process_loose_foreign_key_deletions(record:, worker_class: nil)
+    service_params = {
       connection: record.connection,
       modification_tracker: SpecModificationTracker.new
-    ).execute
+    }
+
+    service_params[:worker_class] = worker_class if worker_class
+
+    LooseForeignKeys::ProcessDeletedRecordsService.new(**service_params).execute
   end
 end

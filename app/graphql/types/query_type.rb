@@ -11,6 +11,11 @@ module Types
       super + [:ai_workflows]
     end
 
+    field :admin_projects, Types::Projects::ProjectInterface.connection_type,
+      null: true,
+      experiment: { milestone: '18.4' },
+      resolver: Resolvers::ProjectsResolver,
+      description: "Find projects visible to the current admin."
     field :board_list, ::Types::BoardListType,
       null: true,
       resolver: Resolvers::BoardListResolver

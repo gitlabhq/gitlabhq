@@ -267,11 +267,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:push_repository_for_job_token_allowed) do
-    if ::Feature.enabled?(:allow_push_repository_for_job_token, @subject)
-      @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
-    else
-      false
-    end
+    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
   end
 
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }

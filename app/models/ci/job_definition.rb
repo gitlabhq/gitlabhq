@@ -30,5 +30,8 @@ module Ci
     # rubocop:enable Database/JsonbSizeLimit
 
     attribute :config, ::Gitlab::Database::Type::SymbolizedJsonb.new
+
+    scope :for_project, ->(project_id) { where(project_id: project_id) }
+    scope :for_checksum, ->(checksum) { where(checksum: checksum) }
   end
 end

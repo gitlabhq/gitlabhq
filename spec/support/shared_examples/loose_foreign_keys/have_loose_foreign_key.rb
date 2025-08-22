@@ -5,6 +5,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
   let(:factory_name) { nil }
   let(:factory_attributes) { {} }
+  let(:worker_class) { nil }
   let(:table_name) { described_class.table_name }
   let(:connection) { described_class.connection }
   let(:fully_qualified_table_name) { "#{connection.current_schema}.#{table_name}" }
@@ -55,7 +56,7 @@ RSpec.shared_examples 'it has loose foreign keys' do
 
     expect { model.delete }.to change { deleted_records.count }.by(1)
 
-    process_loose_foreign_key_deletions(record: model)
+    process_loose_foreign_key_deletions(record: model, worker_class: worker_class)
 
     expect(deleted_records.where(primary_key_value: model_id).status_pending.count).to eq(0)
     expect(deleted_records.where(primary_key_value: model_id).status_processed.count).to eq(1)

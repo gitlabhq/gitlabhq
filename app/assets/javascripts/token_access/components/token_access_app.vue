@@ -1,6 +1,5 @@
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TokenPermissions from './token_permissions.vue';
 import InboundTokenAccess from './inbound_token_access.vue';
 import AuthLog from './auth_log.vue';
@@ -12,7 +11,6 @@ export default {
     InboundTokenAccess,
     TokenPermissions,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       isVisible: false,
@@ -30,7 +28,7 @@ export default {
     <template v-if="isVisible">
       <inbound-token-access />
       <auth-log />
-      <token-permissions v-if="glFeatures.allowPushRepositoryForJobToken" class="gl-mt-5" />
+      <token-permissions class="gl-mt-5" />
     </template>
   </gl-intersection-observer>
 </template>

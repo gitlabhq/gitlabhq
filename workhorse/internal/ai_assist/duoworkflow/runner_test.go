@@ -88,6 +88,45 @@ func (m *mockWorkflowStream) CloseSend() error {
 	return nil
 }
 
+func Test_newRunner(t *testing.T) {
+	server := setupTestServer(t)
+	mockConn := &mockWebSocketConn{}
+
+	apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", api.ResponseContentType)
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer apiServer.Close()
+
+	apiURL, err := url.Parse(apiServer.URL)
+	require.NoError(t, err)
+
+	apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+	req := httptest.NewRequest("GET", "/duo", nil)
+	cfg := &api.DuoWorkflow{
+		ServiceURI: server.Addr,
+		Headers: map[string]string{
+			"Authorization":        "Bearer test-token",
+			"x-gitlab-oauth-token": "oauth-token-123",
+		},
+		Secure: false,
+	}
+
+	runner, err := newRunner(mockConn, apiClient, req, cfg)
+
+	require.NoError(t, err)
+	require.NotNil(t, runner)
+	require.Equal(t, "oauth-token-123", runner.token)
+	require.Equal(t, req, runner.originalReq)
+	require.Equal(t, mockConn, runner.conn)
+	require.NotNil(t, runner.wf)
+	require.NotNil(t, runner.client)
+	require.Equal(t, apiClient, runner.rails)
+
+	runner.Close()
+}
+
 func TestRunner_Execute(t *testing.T) {
 	tests := []struct {
 		name            string
@@ -423,7 +462,7 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				require.Len(t, mockWf.sendEvents, 1, "Expected one workflow event to be sent")
 
 				response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse.Response
-				require.Equal(t, `[{"id": 123, "name": "test-project"}]`, response)
+				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, response)
 			} else {
 				require.Empty(t, mockWf.sendEvents)
 			}

@@ -207,4 +207,5 @@ Doorkeeper.configure do
   end
 
   application_class "Authn::OauthApplication"
+  access_token_class "OauthAccessToken"
 end

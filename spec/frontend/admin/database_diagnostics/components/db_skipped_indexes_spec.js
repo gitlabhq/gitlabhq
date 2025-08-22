@@ -1,3 +1,4 @@
+import { GlAlert, GlIcon, GlBadge, GlTableLite } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DbSkippedIndexes from '~/admin/database_diagnostics/components/db_skipped_indexes.vue';
 import { collationMismatchResults } from '../mock_data';
@@ -17,10 +18,10 @@ describe('DbSkippedIndexes component', () => {
     });
   };
 
-  const findIcon = () => wrapper.findByTestId('skipped-indexes-icon');
-  const findAlert = () => wrapper.findByTestId('skipped-indexes-alert');
-  const findTable = () => wrapper.findByTestId('skipped-indexes-table');
-  const findSkippedCountBadge = () => wrapper.findByTestId('skipped-count-badge');
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findTable = () => wrapper.findComponent(GlTableLite);
+  const findSkippedCountBadge = () => wrapper.findComponent(GlBadge);
   const findSection = () => wrapper.findByTestId('skipped-indexes-section');
 
   describe('when indexes are skipped', () => {

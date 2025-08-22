@@ -197,5 +197,5 @@ Invalid policy-created rules:
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)
 - [Instance approval rules](../../../../administration/merge_requests_approvals.md) for GitLab Self-Managed instances
-- [Enable approval permissions for users with the Reporter role](rules.md#enable-approval-permissions-for-users-with-the-reporter-role)
+- [Enable approval permissions for users with the Planner or Reporter role](rules.md#enable-approval-permissions-for-additional-users)
 - [Edit or override merge request approval rules](rules.md#edit-or-override-merge-request-approval-rules)

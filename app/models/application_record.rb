@@ -162,4 +162,8 @@ class ApplicationRecord < ActiveRecord::Base
   def to_ability_name
     model_name.element
   end
+
+  def deleted_from_database?
+    !self.class.exists?(id)
+  end
 end

@@ -138,6 +138,7 @@ module Ci
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
+    accepts_nested_attributes_for :inputs
 
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
@@ -257,7 +258,7 @@ module Ci
           description tag_list protected needs_attributes
           job_variables_attributes resource_group scheduling_type
           timeout timeout_source debug_trace_enabled
-          ci_stage partition_id id_tokens interruptible execution_config_id].freeze
+          ci_stage partition_id id_tokens interruptible execution_config_id inputs_attributes].freeze
       end
 
       def supported_keyset_orderings
@@ -1135,6 +1136,14 @@ module Ci
           variable.attributes.except('id', 'job_id', 'encrypted_value', 'encrypted_value_iv').tap do |attrs|
             attrs[:value] = variable.value
           end
+        end
+      end
+    end
+
+    def inputs_attributes
+      strong_memoize(:inputs_attributes) do
+        inputs.map do |input|
+          input.attributes.except('id', 'job_id', 'created_at', 'updated_at')
         end
       end
     end

@@ -65,7 +65,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 		require.Equal(t, "req-123", result.GetActionResponse().RequestID)
-		require.Equal(t, `{"id": 123, "name": "test-project"}`, result.GetActionResponse().GetHttpResponse().Body)
+		require.JSONEq(t, `{"id": 123, "name": "test-project"}`, result.GetActionResponse().GetHttpResponse().Body)
 		require.Equal(t, int32(201), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 
@@ -112,7 +112,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 		require.Equal(t, "req-456", result.GetActionResponse().RequestID)
-		require.Equal(t, `[{"id": 123, "name": "test-project"}]`, result.GetActionResponse().GetHttpResponse().Body)
+		require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, result.GetActionResponse().GetHttpResponse().Body)
 		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 
@@ -195,7 +195,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 		require.Equal(t, int32(500), result.GetActionResponse().GetHttpResponse().StatusCode)
-		require.Equal(t, `{"error": "internal server error"}`, result.GetActionResponse().GetHttpResponse().Body)
+		require.JSONEq(t, `{"error": "internal server error"}`, result.GetActionResponse().GetHttpResponse().Body)
 	})
 
 	t.Run("invalid request URL", func(t *testing.T) {

@@ -4171,27 +4171,22 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     let(:policy) { :build_push_code }
 
-    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed, :ff_disabled) do
-      :maintainer | :public   | true  | true  | true  | false
-      :owner      | :public   | true  | true  | true  | false
-      :maintainer | :private  | true  | true  | true  | false
-      :developer  | :public   | true  | true  | true  | false
-      :reporter   | :public   | true  | true  | false | false
-      :planner    | :public   | true  | true  | false | false
-      :planner    | :private  | true  | true  | false | false
-      :planner    | :internal | true  | true  | false | false
-      :guest      | :public   | true  | true  | false | false
-      :guest      | :private  | true  | true  | false | false
-      :guest      | :internal | true  | true  | false | false
-      :anonymous  | :public   | true  | true  | false | false
-      :maintainer | :public   | false | true  | false | false
-      :maintainer | :public   | true  | false | false | false
-      :maintainer | :public   | false | false | false | false
-      :maintainer | :public   | true  | true  | false | true
-      :owner      | :public   | true  | true  | false | true
-      :maintainer | :private  | true  | true  | false | true
-      :developer  | :public   | true  | true  | false | true
-      :reporter   | :public   | true  | true  | false | true
+    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed) do
+      :maintainer | :public   | true  | true  | true
+      :owner      | :public   | true  | true  | true
+      :maintainer | :private  | true  | true  | true
+      :developer  | :public   | true  | true  | true
+      :reporter   | :public   | true  | true  | false
+      :planner    | :public   | true  | true  | false
+      :planner    | :private  | true  | true  | false
+      :planner    | :internal | true  | true  | false
+      :guest      | :public   | true  | true  | false
+      :guest      | :private  | true  | true  | false
+      :guest      | :internal | true  | true  | false
+      :anonymous  | :public   | true  | true  | false
+      :maintainer | :public   | false | true  | false
+      :maintainer | :public   | true  | false | false
+      :maintainer | :public   | false | false | false
     end
 
     with_them do
@@ -4205,8 +4200,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:scope_project) { private_project }
 
       before do
-        stub_feature_flags(allow_push_repository_for_job_token: false) if ff_disabled
-
         project.add_guest(guest)
         project.add_planner(planner)
         project.add_reporter(reporter)

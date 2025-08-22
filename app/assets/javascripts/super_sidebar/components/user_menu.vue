@@ -1,6 +1,7 @@
 <script>
 import {
   GlAvatar,
+  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -42,6 +43,7 @@ export default {
   },
   components: {
     GlAvatar,
+    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -90,13 +92,13 @@ export default {
         href: this.data.admin_url,
       };
     },
-    statusItem() {
+    statusLabel() {
       const { busy, customized } = this.data.status;
-      const statusLabel =
-        busy || customized ? this.$options.i18n.editStatus : this.$options.i18n.setStatus;
-
+      return busy || customized ? this.$options.i18n.editStatus : this.$options.i18n.setStatus;
+    },
+    statusItem() {
       return {
-        text: statusLabel,
+        text: this.statusLabel,
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_status',
@@ -182,19 +184,15 @@ export default {
         },
       };
     },
-    signOutGroup() {
+    signOutItem() {
       return {
-        items: [
-          {
-            text: this.$options.i18n.signOut,
-            href: this.data.sign_out_link,
-            extraAttrs: {
-              'data-method': 'post',
-              'data-testid': 'sign-out-link',
-              class: 'sign-out-link',
-            },
-          },
-        ],
+        text: this.$options.i18n.signOut,
+        href: this.data.sign_out_link,
+        extraAttrs: {
+          'data-method': 'post',
+          'data-testid': 'sign-out-link',
+          class: 'sign-out-link',
+        },
       };
     },
     statusModalData() {
@@ -382,7 +380,12 @@ export default {
           :item="statusItem"
           data-testid="status-item"
           @action="openStatusModal"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="slight-smile" variant="subtle" class="gl-mr-2" />
+            <span>{{ statusLabel }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="showTrialItem"
@@ -395,16 +398,31 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item" />
+        <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item">
+          <template #list-item>
+            <gl-icon name="profile" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.editProfile }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item" />
+        <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item">
+          <template #list-item>
+            <gl-icon name="preferences" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.preferences }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="superTopbarEnabled && isAdmin"
           :item="adminLinkItem"
           class="xl:gl-hidden"
           data-testid="admin-link"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="admin" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.adminArea }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="addBuyPipelineMinutesMenuItem"
@@ -428,25 +446,46 @@ export default {
           v-if="showEnterAdminModeItem"
           :item="enterAdminModeItem"
           data-testid="enter-admin-mode-item"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="lock" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.enterAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="showLeaveAdminModeItem"
           :item="leaveAdminModeItem"
           data-testid="leave-admin-mode-item"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="lock-open" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.leaveAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
-        <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item" />
+        <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item">
+          <template #list-item>
+            <gl-icon name="trigger-source" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.gitlabNext }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group
         v-if="data.can_sign_out"
         bordered
-        :group="signOutGroup"
         data-testid="sign-out-group"
         @action="trackSignOut"
-      />
+      >
+        <gl-disclosure-dropdown-item :item="signOutItem">
+          <template #list-item>
+            <gl-icon name="power" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.signOut }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
     <set-status-modal
       v-if="setStatusModalReady"

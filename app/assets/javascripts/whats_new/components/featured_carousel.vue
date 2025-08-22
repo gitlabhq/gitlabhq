@@ -109,6 +109,7 @@ export default {
             :button-link="$options.GITLAB_DUO_PRO_CARD_URL"
             data-testid="duo-core-feature-card"
             tracking-event="click_learn_more_in_duo_core_featured_update_card"
+            variant="red"
           />
         </div>
       </div>

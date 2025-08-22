@@ -88,13 +88,8 @@ class PostReceiveService
 
     worker_params = { 'gitaly_context' => params[:gitaly_context] }
 
-    if Feature.enabled?(:allow_push_repository_for_job_token, project)
-      worker.perform_async(params[:gl_repository], params[:identifier],
-        params[:changes], push_options.as_json, worker_params)
-    else
-      worker.perform_async(params[:gl_repository], params[:identifier],
-        params[:changes], push_options.as_json)
-    end
+    worker.perform_async(params[:gl_repository], params[:identifier],
+      params[:changes], push_options.as_json, worker_params)
   end
 
   def add_user_repository_messages(response)

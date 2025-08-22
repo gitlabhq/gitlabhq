@@ -199,12 +199,6 @@ describe('JiraImportForm', () => {
         expect(getTable().findAll('tbody tr')).toHaveLength(2);
       });
 
-      it('shows correct information in each cell', () => {
-        wrapper = mountComponent({ mountFunction: mount });
-
-        expect(getTable().element).toMatchSnapshot();
-      });
-
       describe('when there is no Jira->GitLab user mapping', () => {
         it('shows the logged in user in the dropdown', () => {
           wrapper = mountComponent({
