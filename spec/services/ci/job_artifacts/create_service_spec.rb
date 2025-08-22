@@ -252,20 +252,6 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
             expect(new_artifact.exposed_as).to eq('test')
             expect(new_artifact.exposed_paths).to match_array(['path1', 'test/path2'])
           end
-
-          context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-            before do
-              stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-            end
-
-            it 'creates a new metadata job artifact without exposed_* columns populated' do
-              expect { execute }.to change { Ci::JobArtifact.where(file_type: :metadata).count }.by(1)
-
-              new_artifact = job.job_artifacts.last
-              expect(new_artifact.exposed_as).to eq(nil)
-              expect(new_artifact.exposed_paths).to eq(nil)
-            end
-          end
         end
 
         context 'when expire_in params is set to a specific value' do

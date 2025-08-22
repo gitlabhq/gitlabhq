@@ -33,8 +33,7 @@ module Ci
       def self.any_with_exposed_artifacts?
         found_exposed_artifacts = false
 
-        # TODO: Remove :project preload when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is removed
-        includes(:project, :job_definition).each_batch do |batch|
+        includes(:job_definition).each_batch do |batch|
           # We only load what we need for `has_exposed_artifacts?`
           records = batch.select(:id, :partition_id, :project_id, :options).to_a
 
@@ -131,19 +130,11 @@ module Ci
     end
 
     def artifacts_exposed_as
-      if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
-        job_artifacts_metadata&.exposed_as || options.dig(:artifacts, :expose_as)
-      else
-        options.dig(:artifacts, :expose_as)
-      end
+      job_artifacts_metadata&.exposed_as || options.dig(:artifacts, :expose_as)
     end
 
     def artifacts_exposed_paths
-      if Feature.enabled?(:ci_use_job_artifacts_table_for_exposed_artifacts, project)
-        job_artifacts_metadata&.exposed_paths || options.dig(:artifacts, :paths)
-      else
-        options.dig(:artifacts, :paths)
-      end
+      job_artifacts_metadata&.exposed_paths || options.dig(:artifacts, :paths)
     end
 
     private

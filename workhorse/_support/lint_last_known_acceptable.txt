@@ -76,7 +76,6 @@ cmd/gitlab-workhorse/gitaly_test.go:707:16: QF1008: could remove embedded field 
 cmd/gitlab-workhorse/gitaly_test.go:752:16: QF1008: could remove embedded field "WaitGroup" from selector (staticcheck)
 internal/bodylimit/bodylimit_test.go:606:4: QF1003: could use tagged switch on tt.expectedCode (staticcheck)
 internal/git/archive_cleaner.go:61:2: QF1002: could use tagged switch on s.path (staticcheck)
-internal/git/info-refs.go:31:5: QF1001: could apply De Morgan's law (staticcheck)
 internal/git/io.go:115:7: QF1008: could remove embedded field "busyReader" from selector (staticcheck)
 internal/httprs/httprs_test.go:89:4: QF1012: Use fmt.Fprintf(...) instead of WriteString(fmt.Sprintf(...)) (staticcheck)
 internal/imageresizer/image_resizer.go:199:76: QF1008: could remove embedded field "Config" from selector (staticcheck)

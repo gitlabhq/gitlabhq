@@ -232,18 +232,4 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       end
     end
   end
-
-  context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-    before do
-      stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-    end
-
-    it_behaves_like '#for_pipeline' do
-      def create_job_with_artifacts(options)
-        create(:ci_build, pipeline: pipeline, options: options).tap do |job|
-          create(:ci_job_artifact, :metadata, job: job)
-        end
-      end
-    end
-  end
 end

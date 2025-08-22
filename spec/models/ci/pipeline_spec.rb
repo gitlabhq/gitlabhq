@@ -2830,24 +2830,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'reads from job_artifacts_metadata' do
           is_expected.to eq(true)
         end
-
-        context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-          before do
-            stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-          end
-
-          it { is_expected.to eq(false) }
-        end
-      end
-
-      context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-        before do
-          stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-        end
-
-        it 'reads from job options' do
-          is_expected.to eq(true)
-        end
       end
     end
   end

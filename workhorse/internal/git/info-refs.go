@@ -28,7 +28,7 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 
 	rpc := getService(r)
 
-	if !(rpc == "git-upload-pack" || rpc == "git-receive-pack") {
+	if rpc != "git-upload-pack" && rpc != "git-receive-pack" {
 		// The 'dumb' Git HTTP protocol is not supported
 		http.Error(responseWriter, "Not Found", 404)
 		return
