@@ -99,7 +99,7 @@ module Projects
       end
 
       def scan_types
-        ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types
+        Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types
       end
 
       def project_settings

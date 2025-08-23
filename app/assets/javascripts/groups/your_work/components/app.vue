@@ -1,6 +1,5 @@
 <script>
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
-import { PAGINATION_TYPE_OFFSET } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -27,7 +26,6 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
-  PAGINATION_TYPE_OFFSET,
   tabCountsQuery: groupCountsQuery,
   name: 'YourWorkGroupsApp',
   components: { TabsWithList },
@@ -54,6 +52,5 @@ export default {
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
     :should-update-active-tab-count-from-tab-query="false"
-    :pagination-type="$options.PAGINATION_TYPE_OFFSET"
   />
 </template>

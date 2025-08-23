@@ -204,6 +204,10 @@ module VerifiesWithEmail
     return false unless Feature.enabled?(:email_based_mfa, user)
 
     password_based_login? &&
+      # Skip on first log in (which occurs for most during account
+      # creation), to avoid double email verification with
+      # Devise::Confirmable
+      user.last_sign_in_at.present? &&
       user.email_otp_required_after.present? &&
       user.email_otp_required_after <= Time.zone.now
   end

@@ -60,10 +60,15 @@ module Ci
           subject.success! unless subject.has_strategy?
           ServiceResponse.success(payload: pipeline)
         else
-          message = pipeline.errors.full_messages
-          subject.options[:downstream_errors] = message
+          messages = pipeline.errors.full_messages
+          if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
+            subject.options[:downstream_errors] = messages
+          end
+
           subject.drop!(:downstream_pipeline_creation_failed)
-          ServiceResponse.error(payload: pipeline, message: message)
+
+          create_downstream_error_messages(subject, messages)
+          ServiceResponse.error(payload: pipeline, message: messages)
         end
       end
     rescue StateMachines::InvalidTransition => e
@@ -74,6 +79,15 @@ module Ci
         bridge_id: bridge.id,
         downstream_pipeline_id: pipeline.id)
       ServiceResponse.error(payload: pipeline, message: e.message)
+    end
+
+    def create_downstream_error_messages(bridge, messages)
+      return if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
+
+      messages.each do |message|
+        attributes = { content: message, project_id: bridge.project_id }
+        bridge.job_messages.error.create!(attributes)
+      end
     end
 
     def ensure_preconditions!(target_ref)

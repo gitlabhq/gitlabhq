@@ -107,7 +107,7 @@ Interactions with GitLab Duo can help to improve the suggestions and feedback as
 Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
 There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
 
-### Automatic reviews from GitLab Duo
+### Automatic reviews from GitLab Duo for a project
 
 {{< history >}}
 
@@ -131,6 +131,54 @@ To enable `@GitLabDuo` to automatically review merge requests:
 1. Select **Settings > Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
+
+### Automatic reviews from GitLab Duo for groups and applications
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+Use group or application settings to enable automatic reviews for multiple projects.
+
+Prerequisites:
+
+- To enable automatic reviews for groups, you must have the Owner role for the group.
+- To enable automatic reviews for all projects, you must be an administrator.
+
+To enable automatic reviews for groups:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Merge requests** section.
+1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
+1. Select **Save changes**.
+
+To enable automatic reviews for all projects:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
+1. Select **Save changes**.
+
+Settings cascade from application to group to project. More specific settings override broader ones.
 
 ### Customize instructions for GitLab Duo Code Review
 

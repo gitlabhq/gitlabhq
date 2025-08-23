@@ -318,7 +318,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
     end
 
     def licensed_scan_types
-      ::Security::SecurityJobsFinder.allowed_job_types + ::Security::LicenseComplianceJobsFinder.allowed_job_types - [:cluster_image_scanning]
+      Enums::Security.analyzer_types.keys + ::Security::LicenseComplianceJobsFinder.allowed_job_types - [:cluster_image_scanning]
     end
   end
 end

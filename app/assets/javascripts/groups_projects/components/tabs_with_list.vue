@@ -27,8 +27,6 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
   QUERY_PARAM_PAGE,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
@@ -135,13 +133,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    paginationType: {
-      type: String,
-      required: true,
-      validator(value) {
-        return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
-      },
     },
     userPreferencesSortKey: {
       type: String,
@@ -575,7 +566,6 @@ export default {
         :timestamp-type="timestampType"
         :filtered-search-term-key="filteredSearchTermKey"
         :event-tracking="eventTracking"
-        :pagination-type="paginationType"
         @keyset-page-change="onKeysetPageChange"
         @offset-page-change="onOffsetPageChange"
         @refetch="onRefetch"

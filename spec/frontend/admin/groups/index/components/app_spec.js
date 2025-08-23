@@ -1,13 +1,12 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import adminGroupsGraphQlResponse from 'test_fixtures/graphql/admin/groups.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import AdminGroupsApp from '~/admin/groups/index/components/app.vue';
 import { createRouter } from '~/admin/groups/index/index';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
-import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   SORT_OPTIONS,
@@ -80,7 +79,6 @@ describe('AdminGroupsApp', () => {
       },
       initialSort: '',
       shouldUpdateActiveTabCountFromTabQuery: true,
-      paginationType: PAGINATION_TYPE_KEYSET,
       tabCountsQuery: adminGroupCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
       firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
@@ -107,6 +105,30 @@ describe('AdminGroupsApp', () => {
     expect(wrapper.findByRole('link', { name: expectedGroup.fullName }).attributes('href')).toBe(
       `/gitlab/admin/groups/${expectedGroup.fullPath}`,
     );
+  });
+
+  it('uses keyset pagination', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [
+          adminGroupsQuery,
+          jest.fn().mockResolvedValue({
+            data: {
+              groups: {
+                ...adminGroupsGraphQlResponse.data.groups,
+                nodes: adminGroupsGraphQlResponse.data.groups.nodes,
+                pageInfo: { ...adminGroupsGraphQlResponse.data.groups.pageInfo, hasNextPage: true },
+              },
+            },
+          }),
+        ],
+      ],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
   });
 
   describe('when there are no groups', () => {

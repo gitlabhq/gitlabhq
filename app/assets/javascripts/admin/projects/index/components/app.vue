@@ -5,7 +5,6 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
-  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -42,7 +41,6 @@ export default {
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
   },
   tabCountsQuery: projectCountsQuery,
-  PAGINATION_TYPE_KEYSET,
   name: 'AdminProjectsApp',
   components: {
     TabsWithList,
@@ -71,6 +69,5 @@ export default {
     :programming-languages="programmingLanguages"
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
-    :pagination-type="$options.PAGINATION_TYPE_KEYSET"
   />
 </template>

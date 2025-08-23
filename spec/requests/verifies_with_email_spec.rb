@@ -469,8 +469,14 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           it_behaves_like 'two factor prompt or successful login'
         end
 
-        context 'when email_otp_required_after is in the past' do
-          let(:user) { create(:user, email_otp_required_after: 1.day.ago) }
+        context 'when email_otp_required_after is in the past and they have completed their first sign in' do
+          let(:last_sign_in) { 1.day.ago }
+          let(:user) do
+            create(:user,
+              last_sign_in_at: last_sign_in,
+              email_otp_required_after: 1.day.ago
+            )
+          end
 
           context 'when an old IP address is seen' do
             before do
@@ -481,6 +487,19 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
 
             it_behaves_like 'sends verification instructions for email OTP'
             it_behaves_like 'prompt for email verification'
+          end
+
+          # During the signup flow, Devise:Confirmable will send users
+          # a link to click. They then need to sign in again. We don't
+          # want them to have to go to their emails a second time.
+          context 'when it is their first sign in' do
+            let(:last_sign_in) { nil }
+
+            before do
+              perform_enqueued_jobs { sign_in }
+            end
+
+            it_behaves_like 'two factor prompt or successful login'
           end
 
           context 'when a new IP address is seen' do

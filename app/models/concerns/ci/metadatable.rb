@@ -137,6 +137,13 @@ module Ci
       job_artifacts_metadata&.exposed_paths || options.dig(:artifacts, :paths)
     end
 
+    def downstream_errors
+      return options[:downstream_errors] if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
+
+      error_job_messages.map(&:content).presence || options[:downstream_errors]
+    end
+    strong_memoize_attr :downstream_errors
+
     private
 
     def read_metadata_attribute(legacy_key, metadata_key, job_definition_key, default_value = nil)

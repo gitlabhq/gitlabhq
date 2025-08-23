@@ -7,6 +7,7 @@ import {
   SORT_LABEL_CREATED,
   SORT_LABEL_UPDATED,
   SORT_LABEL_STORAGE_SIZE,
+  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
@@ -33,6 +34,7 @@ const baseTab = {
   emptyStateComponent: ResourceListsEmptyState,
   query: adminGroupsQuery,
   queryPath: 'groups',
+  paginationType: PAGINATION_TYPE_KEYSET,
 };
 
 export const ACTIVE_TAB = {

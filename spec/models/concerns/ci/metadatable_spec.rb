@@ -26,4 +26,40 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       it { is_expected.to eq(expected_timeout) }
     end
   end
+
+  describe '#downstream_errors' do
+    let_it_be_with_refind(:processable) { create(:ci_processable) }
+
+    subject(:downstream_errors) { processable.downstream_errors }
+
+    context 'when only job_messages are present' do
+      before do
+        create(:ci_job_message, job: processable, content: 'job message error')
+      end
+
+      it { is_expected.to eq(['job message error']) }
+    end
+
+    context 'when only metadata downstream errors are present' do
+      before do
+        allow(processable)
+          .to receive(:options)
+          .and_return({ downstream_errors: ['options error'] })
+      end
+
+      it { is_expected.to eq(['options error']) }
+    end
+
+    context 'when both are present' do
+      before do
+        create(:ci_job_message, job: processable, content: 'job message error')
+
+        allow(processable)
+          .to receive(:options)
+          .and_return({ downstream_errors: ['options error'] })
+      end
+
+      it { is_expected.to eq(['job message error']) }
+    end
+  end
 end

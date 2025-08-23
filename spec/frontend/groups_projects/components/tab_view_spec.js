@@ -30,8 +30,6 @@ import { MEMBER_TAB as MEMBER_TAB_GROUPS } from '~/groups/your_work/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
@@ -79,7 +77,6 @@ describe('TabView', () => {
       clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
       clickTopic: 'click_topic_on_your_work_projects',
     },
-    paginationType: PAGINATION_TYPE_KEYSET,
   };
 
   const createComponent = ({
@@ -500,7 +497,7 @@ describe('TabView', () => {
   });
 
   describe('offset pagination', () => {
-    const propsData = { tab: MEMBER_TAB_GROUPS, paginationType: PAGINATION_TYPE_OFFSET };
+    const propsData = { tab: MEMBER_TAB_GROUPS };
 
     describe('when there is one page', () => {
       beforeEach(async () => {

@@ -25,8 +25,8 @@ title: GitLab Duo Chat (Agentic)
 - JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
 - Changed to beta in GitLab 18.2.
 - Visual Studio for Windows [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/issues/245) in GitLab 18.3.
-- Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
+- Feature flags `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198487) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -63,7 +63,7 @@ For an overview, see [GitLab Duo Chat (Agentic)](https://youtu.be/uG9-QLAJrrg?si
 
 You can use GitLab Duo Chat in:
 
-- If you have GitLab Duo Pro or Enterprise, the GitLab UI.
+- The GitLab UI.
 - VS Code.
 - A JetBrains IDE.
 - Visual Studio for Windows.
@@ -76,12 +76,6 @@ Prerequisites:
 - You have [turned on beta and experimental features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your GitLab instance or group.
 
 ### Use GitLab Duo Chat in the GitLab UI
-
-{{< details >}}
-
-- Add-on: GitLab Duo Pro or Enterprise
-
-{{< /details >}}
 
 To use Chat in the GitLab UI:
 

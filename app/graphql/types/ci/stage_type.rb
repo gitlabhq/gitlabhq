@@ -63,7 +63,10 @@ module Types
       def jobs_for_pipeline(pipeline, stage_ids, include_needs)
         jobs = pipeline.statuses.latest.where(stage_id: stage_ids)
 
-        preloaded_relations = [:project, :metadata, :job_definition, :job_artifacts, :downstream_pipeline]
+        preloaded_relations = [
+          :project, :metadata, :job_definition, :job_artifacts,
+          :downstream_pipeline, :error_job_messages
+        ]
         preloaded_relations << :needs if include_needs
 
         Preloaders::CommitStatusPreloader.new(jobs).execute(preloaded_relations)

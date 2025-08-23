@@ -2,6 +2,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { GlPagination } from '@gitlab/ui';
 import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
 import YourWorkGroupsApp from '~/groups/your_work/components/app.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
@@ -23,7 +24,6 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import { PAGINATION_TYPE_OFFSET } from '~/groups_projects/constants';
 import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
@@ -65,7 +65,6 @@ describe('YourWorkGroupsApp', () => {
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
   });
 
   afterEach(() => {
@@ -74,6 +73,7 @@ describe('YourWorkGroupsApp', () => {
   });
 
   it('renders TabsWithList component and passes correct props', async () => {
+    mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
     await createComponent();
 
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
@@ -96,13 +96,13 @@ describe('YourWorkGroupsApp', () => {
       tabCountsQuery: groupCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
       shouldUpdateActiveTabCountFromTabQuery: false,
-      paginationType: PAGINATION_TYPE_OFFSET,
       userPreferencesSortKey: null,
     });
   });
 
   it('renders relative URL that supports relative_url_root', async () => {
     window.gon = { relative_url_root: '/gitlab' };
+    mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
 
     await createComponent({ mountFn: mountExtended });
     await waitForPromises();
@@ -115,6 +115,7 @@ describe('YourWorkGroupsApp', () => {
   });
 
   it('correctly renders `Edit` action', async () => {
+    mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
     await createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
@@ -124,5 +125,20 @@ describe('YourWorkGroupsApp', () => {
     expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
       dashboardGroupsResponse[1].edit_path,
     );
+  });
+
+  it('uses offset pagination', async () => {
+    mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse, {
+      'X-PER-PAGE': 20,
+      'X-PAGE': 1,
+      'X-TOTAL': 25,
+      'X-TOTAL-PAGES': 2,
+      'X-NEXT-PAGE': 2,
+      'X-PREV-PAGE': null,
+    });
+    await createComponent({ mountFn: mountExtended });
+    await waitForPromises();
+
+    expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
   });
 });

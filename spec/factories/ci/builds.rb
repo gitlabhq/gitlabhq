@@ -603,6 +603,14 @@ FactoryBot.define do
       end
     end
 
+    trait :sbom_dependency_scanning do
+      options do
+        {
+          artifacts: { reports: { cyclonedx: 'gl-sbom-report.cdx.json' } }
+        }
+      end
+    end
+
     trait :container_scanning do
       options do
         {

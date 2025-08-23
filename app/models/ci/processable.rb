@@ -38,6 +38,13 @@ module Ci
       inverse_of: :job,
       partition_foreign_key: :partition_id
 
+    has_many :error_job_messages,
+      ->(build) { in_partition(build).error.order(:id) },
+      class_name: 'Ci::JobMessage',
+      foreign_key: :job_id,
+      inverse_of: :job,
+      partition_foreign_key: :partition_id
+
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs

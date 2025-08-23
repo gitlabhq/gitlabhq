@@ -479,6 +479,7 @@ builds:
 - job_definition
 - job_definition_instance
 - job_messages
+- error_job_messages
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -513,6 +514,7 @@ bridges:
 - deployment
 - job_environment
 - job_messages
+- error_job_messages
 - resource_group
 - metadata
 - trigger

@@ -77,13 +77,6 @@ export default {
         return {};
       },
     },
-    paginationType: {
-      type: String,
-      required: true,
-      validator(value) {
-        return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
-      },
-    },
   },
   data() {
     return {
@@ -135,6 +128,9 @@ export default {
     },
     pageInfo() {
       return this.items.pageInfo || {};
+    },
+    paginationType() {
+      return this.tab.paginationType;
     },
     keysetPagination() {
       if (!this.startCursor && !this.endCursor) {

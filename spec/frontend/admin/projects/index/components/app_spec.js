@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { GlKeysetPagination } from '@gitlab/ui';
 import adminProjectsGraphQlResponse from 'test_fixtures/graphql/admin/projects.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
@@ -12,7 +13,6 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
-  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -95,7 +95,6 @@ describe('AdminProjectsApp', () => {
       programmingLanguages: defaultPropsData.programmingLanguages,
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
-      paginationType: PAGINATION_TYPE_KEYSET,
     });
   });
 
@@ -119,5 +118,32 @@ describe('AdminProjectsApp', () => {
     expect(
       wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
     ).toBe(`/gitlab/admin/projects/${expectedProject.fullPath}`);
+  });
+
+  it('uses keyset pagination', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [
+          adminProjectsQuery,
+          jest.fn().mockResolvedValue({
+            data: {
+              projects: {
+                ...adminProjectsGraphQlResponse.data.projects,
+                nodes: adminProjectsGraphQlResponse.data.projects.nodes,
+                pageInfo: {
+                  ...adminProjectsGraphQlResponse.data.projects.pageInfo,
+                  hasNextPage: true,
+                },
+              },
+            },
+          }),
+        ],
+      ],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
   });
 });

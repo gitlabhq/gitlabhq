@@ -13,7 +13,7 @@
 module Security
   class SecurityJobsFinder < JobsFinder
     def self.allowed_job_types
-      Enums::Security.analyzer_types.keys
+      Enums::Security.analyzer_types.keys + [:cyclonedx]
     end
   end
 end

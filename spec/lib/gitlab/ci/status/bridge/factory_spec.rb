@@ -62,7 +62,9 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     context 'failed with downstream_pipeline_creation_failed' do
       before do
-        bridge.options = { downstream_errors: [sanitize_message(Ci::Pipeline.rules_failure_message), 'other error'] }
+        create(:ci_job_message, job: bridge, content: sanitize_message(Ci::Pipeline.rules_failure_message))
+        create(:ci_job_message, job: bridge, content: 'other error')
+
         bridge.failure_reason = 'downstream_pipeline_creation_failed'
       end
 

@@ -89,6 +89,7 @@ module Ci
       preload(
         :metadata,
         :job_definition,
+        :error_job_messages,
         user: [:followers, :followees],
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]

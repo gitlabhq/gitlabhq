@@ -25,8 +25,6 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_DESC,
   SORT_DIRECTION_ASC,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '~/groups_projects/constants';
@@ -99,7 +97,6 @@ const defaultPropsData = {
   },
   tabCountsQuery: projectCountsQuery,
   tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
-  paginationType: PAGINATION_TYPE_KEYSET,
 };
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -811,12 +808,7 @@ describe('TabsWithList', () => {
 
   describe('when offset page is changed', () => {
     beforeEach(async () => {
-      await createComponent({
-        route: defaultRoute,
-        propsData: {
-          paginationType: PAGINATION_TYPE_OFFSET,
-        },
-      });
+      await createComponent();
 
       findTabView().vm.$emit('offset-page-change', 2);
 

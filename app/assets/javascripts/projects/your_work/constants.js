@@ -5,6 +5,7 @@ import ResourceListsEmptyState, {
   TYPES,
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatProjects } from '~/projects/your_work/utils';
+import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
 
@@ -14,6 +15,7 @@ const transformSortToUpperCase = (variables) => ({
 });
 
 const baseTab = {
+  paginationType: PAGINATION_TYPE_KEYSET,
   listComponent: ProjectsList,
   listComponentProps: {
     listItemClass: 'gl-px-5',
