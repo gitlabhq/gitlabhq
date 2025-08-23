@@ -102,7 +102,7 @@ cache:workhorse-hash:
       dotenv: build.env
 
 #=================================
-# Frontend
+# Frontend assets
 #=================================
 cache:assets-hash:
   extends:
@@ -111,31 +111,6 @@ cache:assets-hash:
   script:
     - echo "GLCI_GITLAB_ASSETS_HASH=$(ruby scripts/lib/assets_sha.rb)" > build.env
     - echo "Calculated assets checksum - $(cat build.env)"
-  artifacts:
-    reports:
-      dotenv: build.env
-
-cache:fixture-hash:
-  extends:
-    - .cache-pull-push-base
-    - .with-alpine-image
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - |
-      if [ "${CI_MERGE_REQUEST_DIFF_BASE_SHA}" != "" ]; then
-        export GLCI_FIXTURES_HASH=${CI_MERGE_REQUEST_DIFF_BASE_SHA}
-        echo "Using mr diff base sha as cache hash"
-      elif [ "${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}" != "" ]; then
-        export GLCI_FIXTURES_HASH=${CI_MERGE_REQUEST_TARGET_BRANCH_SHA}
-        echo "Using target branch sha as cache hash"
-      else
-        export GLCI_FIXTURES_HASH=${CI_COMMIT_SHA}
-        echo "Using ci commit sha as cache hash"
-      fi
-    - |
-      echo "GLCI_FIXTURES_HASH=${GLCI_FIXTURES_HASH}" > build.env
-      echo "Calculated fixtures cache checksum - $(cat build.env)"
   artifacts:
     reports:
       dotenv: build.env

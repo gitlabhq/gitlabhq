@@ -1246,13 +1246,6 @@
       when: never
     - !reference [.caching:rules:update-cache, rules]
 
-.caching:rules:update-frontend-fixtures:
-  rules:
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *code-backstage-patterns
-
 ######################
 # CI Templates Rules #
 ######################
@@ -1566,6 +1559,28 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+
+.frontend:rules:upload-frontend-fixtures:
+  rules:
+    # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
+    - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
+      when: never
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-default-branch-schedule-weekly
+      when: never
+    - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - ".gitlab/ci/frontend.gitlab-ci.yml"
+        - "scripts/gitlab_component_helpers.sh"
+      when: manual
+      allow_failure: true
 
 .frontend:rules:jest:
   rules:
