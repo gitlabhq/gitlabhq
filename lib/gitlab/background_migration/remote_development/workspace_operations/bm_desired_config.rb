@@ -22,6 +22,7 @@ module Gitlab
             detail_errors: true,
             size_limit: 64.kilobytes
           }
+          validate :desired_config_validator
 
           # @param [BmDesiredConfig] other
           # @return [Boolean]
@@ -43,6 +44,12 @@ module Gitlab
             # the difference https://github.com/liufengyun/hashdiff/issues/43#issuecomment-485497196
             # noinspection RubyMismatchedArgumentType -- hashdiff also supports arrays
             Hashdiff.diff(desired_config_array, other.desired_config_array, use_lcs: false)
+          end
+
+          # @return [Object]
+          def desired_config_validator
+            validator = BmDesiredConfigArrayValidator.new(attributes: [:desired_config_array])
+            validator.validate_each(self, :desired_config_array, desired_config_array)
           end
 
           # @return [Array]
