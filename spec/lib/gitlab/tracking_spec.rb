@@ -217,6 +217,56 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
 
         it_behaves_like 'delegates to destination', Gitlab::Tracking::Destinations::SnowplowMicro, :event
       end
+
+      context 'with the experiment logger' do
+        let(:context) { [] }
+
+        subject(:event) { described_class.event('category', :some_action, context: context) }
+
+        context 'when track_struct_event_logger is enabled' do
+          context 'when context include experiment string' do
+            let(:context) { ['__experiment_context__'] }
+
+            it 'calls the GitLab logger' do
+              expect(Gitlab::AppLogger).to receive(:info).twice
+
+              event
+            end
+          end
+
+          context 'when context does not include experiment string' do
+            it 'does not call the GitLab logger' do
+              expect(Gitlab::AppLogger).not_to receive(:info)
+
+              event
+            end
+          end
+        end
+
+        context 'when track_struct_event_logger is disabled' do
+          before do
+            stub_feature_flags(track_struct_event_logger: false)
+          end
+
+          context 'when context include experiment string' do
+            let(:context) { ['__experiment_context__'] }
+
+            it 'does not call the GitLab logger' do
+              expect(Gitlab::AppLogger).not_to receive(:info)
+
+              event
+            end
+          end
+
+          context 'when context does not include experiment string' do
+            it 'does not call the GitLab logger' do
+              expect(Gitlab::AppLogger).not_to receive(:info)
+
+              event
+            end
+          end
+        end
+      end
     end
   end
 

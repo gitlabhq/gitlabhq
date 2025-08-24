@@ -55,8 +55,21 @@ module Gitlab
       private
 
       def track_struct_event(destination, category, action, label:, property:, value:, contexts:)
-        destination
+        log_experiment = Feature.enabled?(:track_struct_event_logger, Feature.current_request) &&
+          contexts.to_s.include?('experiment')
+
+        if log_experiment
+          Gitlab::AppLogger.info(
+            "[EXPERIMENT_DEBUG] called track_struct_event with: destination - #{destination.class}, category - #{category}, action - #{action}, label - #{label}, property - #{property}, value - #{value}"
+          )
+        end
+
+        result = destination
           .event(category, action, label: label, property: property, value: value, context: contexts)
+
+        Gitlab::AppLogger.info('[EXPERIMENT_DEBUG] successfully send event') if log_experiment
+
+        result
       rescue StandardError => error
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(error, snowplow_category: category, snowplow_action: action)
       end
