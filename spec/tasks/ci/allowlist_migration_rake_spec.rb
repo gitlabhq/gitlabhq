@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'ci:job_tokens:allowlist rake tasks', feature_category: :secrets_management do
   let(:task_class) { ::Ci::JobToken::AllowlistMigrationTask }
-  let(:user) { ::Users::Internal.admin_bot }
+  let(:user) { create(:user, :admin_bot) }
 
   before do
     Rake.application.rake_require('tasks/ci/allowlist_migration')

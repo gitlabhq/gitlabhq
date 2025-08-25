@@ -66,7 +66,7 @@ RSpec.describe BasePolicy do
     end
 
     context 'with the admin bot user' do
-      let(:current_user) { ::Users::Internal.admin_bot }
+      let(:current_user) { create(:user, :admin_bot) }
 
       it { is_expected.to be_allowed(ability) }
     end

@@ -228,10 +228,11 @@ The `container` component type supports the following schema properties only:
 
 **Footnotes**:
 
-1. When you create custom container images for the `image` property, you should use the
+1. When you create custom container images for the `image` property, you can use the
    [workspace base image](#workspace-base-image) as your foundation.
    It includes critical configurations for SSH access, user permissions, and workspace
-   compatibility. For more information, see [Create a custom workspace image](create_image.md).
+   compatibility. If you choose not to use the base image, ensure your custom image meets
+   all workspace requirements.
 
 #### `overrideCommand` attribute
 
@@ -391,10 +392,12 @@ controls, such as offline environments.
 
 {{< /history >}}
 
-GitLab provides a [workspace base image](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base)
+GitLab provides a workspace base image
 (`registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base`)
-that serves as the foundation for all workspace environments. It is designed to support workspace
-requirements and includes:
+that serves as the foundation for all workspace environments. To understand its configuration, view the
+[source Dockerfile](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base).
+
+The base image includes:
 
 - A stable Linux operating system foundation.
 - Pre-configured user with appropriate permissions for workspace operations.
@@ -402,6 +405,11 @@ requirements and includes:
 - Version management for programming languages and tools.
 - SSH server configuration for remote access.
 - Security configurations for arbitrary user ID support.
+
+If you prefer not to use the workspace base image, you can create a custom workspace
+image. To ensure GitLab can properly initialize and connect to your custom image, copy the
+necessary configuration commands from the [base image Dockerfile](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base)
+into your own Dockerfile.
 
 ### Extend the base image
 

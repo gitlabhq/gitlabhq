@@ -24,7 +24,7 @@ module ResourceAccessTokens
       User.project_bot.where('"users"."id" > ?', cursor || 0).each_batch(of: BATCH_SIZE) do |relation|
         project_bot_users_whose_all_tokens_became_inactive_before_cut_off_date_or_without_tokens =
           relation
-            .select(:id, :username)
+            .select(:id, :username, :organization_id)
             .where(
               'NOT EXISTS (?)',
               PersonalAccessToken
@@ -57,6 +57,7 @@ module ResourceAccessTokens
       DeleteUserWorker.bulk_perform_async_with_contexts(
         users,
         arguments_proc: ->(user) {
+                          admin_bot_id = admin_bot_id_for_organization_id(user.organization_id)
                           [
                             admin_bot_id, user.id,
                             { skip_authorization: true, reason_for_deletion: "No active token assigned" }
@@ -66,9 +67,9 @@ module ResourceAccessTokens
       )
     end
 
-    def admin_bot_id
-      Users::Internal.admin_bot.id
+    def admin_bot_id_for_organization_id(organization_id)
+      @admin_bots ||= {}
+      @admin_bots[organization_id] ||= Users::Internal.for_organization(organization_id).admin_bot.id
     end
-    strong_memoize_attr :admin_bot_id
   end
 end

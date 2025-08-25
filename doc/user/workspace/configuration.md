@@ -266,13 +266,15 @@ When you connect to `gitlab-workspaces-proxy` through the TCP load balancer,
 
 ### Update your workspace container image
 
-If your workspace image is based on the [workspace base image](_index.md#workspace-base-image),
-SSH support is already configured and ready to use.
+You can update your custom workspace images in two ways.
 
-You should use the workspace base image as your custom image base.
+If your workspace image is based on the [workspace base image](_index.md#workspace-base-image),
+SSH support is already configured and ready to use. This approach ensures your image has all
+necessary workspace configurations.
 For detailed instructions, see [Create a custom workspace image](create_image.md).
 
-If you're not using the workspace base image, configure SSH support manually in your runtime images:
+If you prefer not to use the workspace base image, you can build from your own base image. If you do
+this, configure SSH support manually in your runtime images:
 
 1. Install [`sshd`](https://man.openbsd.org/sshd.8) in your runtime images.
 1. Create a user named `gitlab-workspaces` to allow access to your container without a password.

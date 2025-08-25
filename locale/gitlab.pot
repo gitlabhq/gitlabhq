@@ -32613,6 +32613,9 @@ msgstr ""
 msgid "Hi %{username},"
 msgstr ""
 
+msgid "Hi, %{name}"
+msgstr ""
+
 msgid "Hidden"
 msgstr ""
 
@@ -71841,9 +71844,6 @@ msgid "Weight - %{maxIssueWeight}"
 msgstr ""
 
 msgid "Weight conflict warning"
-msgstr ""
-
-msgid "Welcome %{name},"
 msgstr ""
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."

@@ -30,7 +30,7 @@ module Projects
     end
 
     def restore_project
-      admin_bot = ::Users::Internal.admin_bot
+      admin_bot = ::Users::Internal.for_organization(project.organization_id).admin_bot
       Gitlab::Auth::CurrentUserMode.optionally_run_in_admin_mode(admin_bot) do
         ::Projects::RestoreService.new(project, admin_bot).execute
       end

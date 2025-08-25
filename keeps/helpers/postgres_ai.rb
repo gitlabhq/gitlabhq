@@ -34,12 +34,6 @@ module Keeps
       def fetch_postgres_table_size(table_name)
         query = <<~SQL
           SELECT
-            identifier,
-            schema_name,
-            table_name,
-            total_size,
-            table_size,
-            index_size,
             size_in_bytes,
             CASE
               WHEN size_in_bytes < 10 * 1024^3 THEN 'small'

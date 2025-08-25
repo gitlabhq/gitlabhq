@@ -22,9 +22,6 @@ module Projects
       return unless ::Gitlab::CurrentSettings.delete_inactive_projects?
 
       @start_time ||= ::Gitlab::Metrics::System.monotonic_time
-      admin_bot = ::Users::Internal.admin_bot
-
-      return unless admin_bot
 
       notified_inactive_projects = Gitlab::DormantProjectsDeletionWarningTracker.notified_projects
 
@@ -39,15 +36,17 @@ module Projects
             raise TimeoutError
           end
 
-          with_context(project: project, user: admin_bot) do
+          organization_admin_bot = admin_bot_for_organization_id(project.organization_id)
+
+          with_context(project: project, user: organization_admin_bot) do
             deletion_warning_email_sent_on = notified_inactive_projects["project:#{project.id}"]
 
             if deletion_warning_email_sent_on.blank?
               send_notification(project)
-              log_audit_event(project, admin_bot)
+              log_audit_event(project, organization_admin_bot)
             elsif grace_period_is_over?(deletion_warning_email_sent_on)
               Gitlab::DormantProjectsDeletionWarningTracker.new(project.id).reset
-              delete_project(project, admin_bot)
+              delete_project(project, organization_admin_bot)
             end
           end
         end
@@ -110,6 +109,11 @@ module Projects
 
     def with_redis(&block)
       Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
+    end
+
+    def admin_bot_for_organization_id(organization_id)
+      @admin_bots ||= {}
+      @admin_bots[organization_id] ||= Users::Internal.for_organization(organization_id).admin_bot
     end
   end
 end

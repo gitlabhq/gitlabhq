@@ -239,6 +239,14 @@ In this case, the owners of the group and top-level namespace receive in-app and
 You can work with your account and support teams to manage your usage.
 The 500 GiB fixed project limit is in place to ensure overall platform stability.
 
+{{< alert type="note" >}}
+
+These limits are fixed per project. Purchasing additional storage does not increase the maximum limit for
+a single project. It only expands your overall available storage. For example, buying 1 TB of storage will
+not cause one project to exceed its 500 GiB ceiling.
+
+{{< /alert >}}
+
 ## Expired storage
 
 Expired storage can exist on a subscription when storage is mistakenly not de-provisioned at the end of your subscription period.

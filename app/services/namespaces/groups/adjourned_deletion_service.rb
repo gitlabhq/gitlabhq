@@ -29,7 +29,7 @@ module Namespaces
       end
 
       def restore_group
-        admin_bot = ::Users::Internal.admin_bot
+        admin_bot = ::Users::Internal.for_organization(group.organization_id).admin_bot
         Gitlab::Auth::CurrentUserMode.optionally_run_in_admin_mode(admin_bot) do
           ::Groups::RestoreService.new(group, admin_bot).execute
         end

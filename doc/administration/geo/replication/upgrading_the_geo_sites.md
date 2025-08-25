@@ -37,7 +37,8 @@ Upgrading Geo sites involves performing:
 {{< alert type="note" >}}
 
 These general upgrade steps require downtime in a multi-node setup.
-If you want to avoid downtime, consider using [zero-downtime upgrades](../../../update/zero_downtime.md#multi-node--ha-deployment-with-geo).
+If you want to avoid downtime, consider using
+[zero-downtime upgrades](../../../update/zero_downtime.md#upgrade-multi-node-geo-instances).
 
 {{< /alert >}}
 

@@ -250,6 +250,30 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     end
   end
 
+  context 'when organization_id is passed instead of organization' do
+    let_it_be(:organization_id) { organization.id }
+
+    subject(:get_admin_bot) { described_class.for_organization(organization_id).admin_bot }
+
+    context 'and bot exists' do
+      let_it_be(:admin_bot) { create(:user, :admin_bot, organization: organization) }
+
+      it 'does not load full organization' do
+        expect(::Organizations::Organization).not_to receive(:find_by_id)
+
+        expect(get_admin_bot).to eq(admin_bot)
+      end
+    end
+
+    context 'and bot does not yet exist' do
+      it 'loads full organization to create new user' do
+        expect(::Organizations::Organization).to receive(:find_by_id).and_call_original
+
+        expect(get_admin_bot).to be_admin_bot
+      end
+    end
+  end
+
   context 'when organization is not used' do
     it 'creates user in first organization' do
       bot = described_class.support_bot

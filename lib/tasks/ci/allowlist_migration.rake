@@ -15,7 +15,7 @@ namespace :ci do
         task = ::Ci::JobToken::AllowlistMigrationTask.new(only_ids: only_ids,
           exclude_ids: exclude_ids,
           preview: preview,
-          user: ::Users::Internal.admin_bot,
+          user: ::Users::Internal.for_organization(::Organizations::Organization.first).admin_bot,
           concurrency: concurrency.to_i)
 
         task.execute

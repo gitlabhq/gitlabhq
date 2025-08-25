@@ -36,13 +36,14 @@ RSpec.describe Projects::InactiveProjectsDeletionCronWorker, feature_category: :
   describe "#perform" do
     subject(:worker) { described_class.new }
 
-    let_it_be(:admin_bot) { ::Users::Internal.admin_bot }
     let_it_be(:non_admin_user) { create(:user) }
     let_it_be(:new_blank_project) do
       create_project_with_statistics.tap do |project|
         project.update!(last_activity_at: Time.current)
       end
     end
+
+    let_it_be(:admin_bot) { ::Users::Internal.for_organization(new_blank_project.organization).admin_bot }
 
     let_it_be(:inactive_blank_project) do
       create_project_with_statistics.tap do |project|

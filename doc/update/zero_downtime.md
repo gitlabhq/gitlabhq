@@ -12,19 +12,107 @@ title: Upgrade a multi-node instance with zero downtime
 
 {{< /details >}}
 
-In this section we'll go through the core process of upgrading a multi-node GitLab environment by
-sequentially going through each as per the [upgrade order](downtime_options.md#upgrade-order) and load balancers / HA mechanisms handle each node going down accordingly.
+The process of upgrading a multi-node GitLab environment with zero downtime involves sequentially going through each node
+as per the [upgrade order](#upgrade-order). Load balancers and HA mechanisms handle each node going down accordingly.
 
 Before you begin an upgrade with zero downtime, [consider your downtime options](downtime_options.md).
 
-For the purposes of this guide we'll upgrade a [200 RPS or 10,000 Reference Architecture](../administration/reference_architectures/10k_users.md) built with the Linux package.
+## Before you start
 
-## Consul, PostgreSQL, PgBouncer, and Redis
+Achieving zero downtime as part of an upgrade is notably difficult for any distributed application. The documentation
+has been tested as given against our HA [reference architectures](../administration/reference_architectures/_index.md)
+and resulted in effectively no observable downtime. But be aware your mileage may vary dependent on the specific system
+makeup.
+
+For additional confidence, some customers have found success with further techniques such as manually draining nodes by
+using specific load balancer or infrastructure capabilities. These techniques depend greatly on the underlying
+infrastructure capabilities.
+
+For any additional information reach out to your GitLab representative or the
+[Support team](https://about.gitlab.com/support/).
+
+### Requirements
+
+The zero-downtime upgrade process requires a multi-node GitLab environment built with the Linux package that has load
+balancing and available HA mechanisms configured as follows:
+
+- External load balancer configured for GitLab application nodes with health checks enabled against the
+  [readiness](../administration/monitoring/health_check.md#readiness) (`/-/readiness`) endpoint.
+- Internal load balancer configured for any PgBouncer and Praefect components with TCP health checks enabled.
+- HA mechanisms configured for the Consul, Postgres, and Redis components if present.
+  - Any of these components that are not deployed in a HA fashion must upgraded separately with downtime.
+  - For databases, the [Linux package only supports HA for the main GitLab database](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+    For any other databases, such as the [Praefect database](#upgrade-gitaly-cluster-praefect-nodes), a third party
+    database solution is required to achieve HA and subsequently to avoid downtime.
+
+For zero-downtime upgrades, you must:
+
+- Upgrade **one minor release at a time**. So from `16.1` to `16.2`, not to `16.3`. If you skip releases, database
+  modifications might be run in the wrong sequence
+  [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
+- Use post-deployment migrations.
+
+### Considerations
+
+When considering a zero-downtime upgrade, be aware that:
+
+- Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not
+  the latest. For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You
+  should verify the version-specific upgrade notes relevant to your [upgrade path](upgrade_paths.md) and be
+  aware of any required upgrade stops:
+  - [GitLab 17 upgrade notes](versions/gitlab_17_changes.md)
+  - [GitLab 16 upgrade notes](versions/gitlab_16_changes.md)
+  - [GitLab 15 upgrade notes](versions/gitlab_15_changes.md)
+- Some releases may include background migrations. These migrations are performed in the background by Sidekiq and are
+  often used for migrating data. Background migrations are only added in the monthly releases.
+  - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require
+    downtime (if the previous conditions are met), you must wait for background migrations to complete between each major
+    or minor release upgrade.
+  - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can
+    process jobs in the `background_migration` queue. To see the size of this queue,
+    [check for background migrations before upgrading](background_migrations.md).
+- Zero-downtime upgrades can be performed for [Gitaly](#upgrade-gitaly-nodes) because of a graceful reload mechanism.
+  The [Gitaly Cluster (Praefect)](#upgrade-gitaly-cluster-praefect-nodes) component can also be directly upgraded without
+  downtime. However, the Linux package does not offer HA or zero downtime support for the Praefect database. A third-party
+  database solution is required to avoid downtime.
+- [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster)
+  are a separate process and not covered by zero-downtime upgrades. Smaller upgrades are covered.
+- Zero-downtime upgrades are supported for the noted GitLab components you've deployed with the Linux package. If you've
+  deployed select components through a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP
+  Memorystore, upgrades for those services must be performed separately as per their standard processes.
+- As a general guideline, the larger amount of data you have, the more time is needed for the upgrade to complete. In
+  testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
+
+### Upgrade order
+
+You should take a back-to-front approach for the order of what components to upgrade with zero downtime:
+
+1. Stateful backends
+1. Backend dependents
+1. Frontends
+
+Though you can change the order of deployment, you should deploy the components running GitLab application code
+(for example, Rails and Sidekiq) together. If possible, upgrade the supporting infrastructure separately because these
+components do not have dependencies on changes introduced in a version upgrade for a major release.
+
+You should upgrade GitLab components in the following order:
+
+1. Consul
+1. PostgreSQL
+1. PgBouncer
+1. Redis
+1. Gitaly
+1. Praefect
+1. Rails
+1. Sidekiq
+
+## Upgrade Consul, PostgreSQL, PgBouncer, and Redis nodes
 
 The [Consul](../administration/consul.md), [PostgreSQL](../administration/postgresql/replication_and_failover.md),
-[PgBouncer](../administration/postgresql/pgbouncer.md), and [Redis](../administration/redis/replication_and_failover.md) components all follow the same underlying process to upgrading without downtime.
+[PgBouncer](../administration/postgresql/pgbouncer.md), and [Redis](../administration/redis/replication_and_failover.md)
+components all follow the same underlying process to upgrading without downtime.
 
-Run through the following steps sequentially on each component's node to perform the upgrade:
+On each component's node to perform the upgrade:
 
 1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
@@ -33,7 +121,6 @@ Run through the following steps sequentially on each component's node to perform
    ```
 
 1. [Upgrade the GitLab package](package/_index.md#upgrade-to-a-specific-version).
-
 1. Reconfigure and restart to get the latest code in place:
 
    ```shell
@@ -63,7 +150,7 @@ Run through the following steps sequentially on each component's node to perform
 
    {{< /tabs >}}
 
-## Gitaly
+## Upgrade Gitaly nodes
 
 [Gitaly](../administration/gitaly/_index.md) follows the same core process when it comes to upgrading but with a key difference
 that the Gitaly process itself is not restarted as it has a built-in process to gracefully reload
@@ -102,7 +189,7 @@ This process applies to both Gitaly Sharded and Cluster setups. Run through the 
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-### Gitaly Cluster (Praefect)
+### Upgrade Gitaly Cluster (Praefect) nodes
 
 For Gitaly Cluster (Praefect) setups, you must deploy and upgrade Praefect in a similar way by using a graceful reload.
 
@@ -175,7 +262,7 @@ the **Praefect deploy node** in the following steps:
    sudo gitlab-ctl restart consul node-exporter logrotate
    ```
 
-## Rails
+## Upgrade GitLab application (Rails) nodes
 
 Rails as a webserver consists primarily of [Puma](../administration/operations/puma.md), Workhorse, and NGINX.
 
@@ -289,7 +376,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo gitlab-ctl restart
       ```
 
-## Sidekiq
+## Upgrade Sidekiq nodes
 
 [Sidekiq](../administration/sidekiq/_index.md) follows the same underlying process as others to upgrading without downtime.
 
@@ -310,7 +397,7 @@ Run through the following steps sequentially on each component node to perform t
    sudo gitlab-ctl restart
    ```
 
-## Multi-node / HA deployment with Geo
+## Upgrade multi-node Geo instances
 
 {{< details >}}
 
@@ -330,8 +417,8 @@ all secondaries have been updated.
 
 {{< alert type="note" >}}
 
-The same [requirements](downtime_options.md#requirements) and [considerations](downtime_options.md#considerations)
-apply for upgrading a live GitLab environment with Geo.
+The same [requirements](#requirements) and [considerations](#considerations) apply for upgrading a live GitLab environment with
+Geo.
 
 {{< /alert >}}
 

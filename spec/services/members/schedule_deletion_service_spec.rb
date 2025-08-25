@@ -81,7 +81,7 @@ RSpec.describe Members::ScheduleDeletionService, feature_category: :seat_cost_ma
     end
 
     context 'when the user is an admin bot', :enable_admin_mode do
-      let_it_be(:scheduled_by) { Users::Internal.admin_bot }
+      let_it_be(:scheduled_by) { create(:user, :admin_bot) }
 
       it 'creates a deletion schedule' do
         result = service.execute

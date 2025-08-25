@@ -144,47 +144,49 @@ export default {
     />
     <div v-if="isTextFile" class="diff-content">
       <table class="code js-syntax-highlight code-syntax-highlight-theme">
-        <template v-if="!isFileDiscussion">
-          <template v-if="hasTruncatedDiffLines">
-            <tr
-              v-for="line in discussion.truncated_diff_lines"
-              v-once
-              :key="line.line_code"
-              class="line_holder"
-            >
-              <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
-              <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
-              <td
-                v-safe-html="trimChar(line.rich_text)"
-                :class="line.type"
-                class="line_content"
-              ></td>
+        <tbody>
+          <template v-if="!isFileDiscussion">
+            <template v-if="hasTruncatedDiffLines">
+              <tr
+                v-for="line in discussion.truncated_diff_lines"
+                v-once
+                :key="line.line_code"
+                class="line_holder"
+              >
+                <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
+                <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
+                <td
+                  v-safe-html="trimChar(line.rich_text)"
+                  :class="line.type"
+                  class="line_content"
+                ></td>
+              </tr>
+            </template>
+            <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
+              <td class="old_line diff-line-num"></td>
+              <td class="new_line diff-line-num"></td>
+              <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
+                {{ __('Unable to load the diff') }}
+                <gl-button
+                  class="js-toggle-lazy-diff-retry-button gl-font-regular"
+                  @click="fetchDiff"
+                >
+                  {{ __('Try again') }}
+                </gl-button>
+              </td>
+              <td v-else class="line_content js-success-lazy-load">
+                <span></span>
+                <gl-skeleton-loader />
+                <span></span>
+              </td>
             </tr>
           </template>
-          <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
-            <td class="old_line diff-line-num"></td>
-            <td class="new_line diff-line-num"></td>
-            <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
-              {{ __('Unable to load the diff') }}
-              <gl-button
-                class="js-toggle-lazy-diff-retry-button gl-font-regular"
-                @click="fetchDiff"
-              >
-                {{ __('Try again') }}
-              </gl-button>
-            </td>
-            <td v-else class="line_content js-success-lazy-load">
-              <span></span>
-              <gl-skeleton-loader />
-              <span></span>
+          <tr class="notes_holder">
+            <td :class="{ '!gl-border-t-0': isFileDiscussion }" class="notes-content" colspan="3">
+              <slot></slot>
             </td>
           </tr>
-        </template>
-        <tr class="notes_holder">
-          <td :class="{ '!gl-border-t-0': isFileDiscussion }" class="notes-content" colspan="3">
-            <slot></slot>
-          </td>
-        </tr>
+        </tbody>
       </table>
     </div>
     <div v-else class="diff-content">

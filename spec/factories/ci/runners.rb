@@ -156,7 +156,7 @@ FactoryBot.define do
     end
 
     trait :hosted_runner do
-      creator { Users::Internal.admin_bot }
+      creator { Users::Internal.for_organization(organization_id).admin_bot }
     end
   end
 end
