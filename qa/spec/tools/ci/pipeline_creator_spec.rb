@@ -36,8 +36,23 @@ module QA
       let(:scenario_examples) { {} }
       let(:noop_reason) { "no-op run, pipeline:skip-e2e label detected" }
 
+      let(:omnibus_noop_pipeline) do
+        <<~YML
+          spec:
+            inputs:
+              pipeline-type:
+                type: string
+                default: external
+          ---
+          #{noop_pipeline}
+        YML
+      end
+
       before do
-        allow(File).to receive(:write).with(/test-on-(gdk|cng|omnibus|omnibus-nightly)-pipeline.yml/, noop_pipeline)
+        allow(File).to receive(:write)
+          .with(/test-on-(gdk|cng|omnibus-nightly)-pipeline.yml/, noop_pipeline)
+        allow(File).to receive(:write)
+          .with(/test-on-omnibus-pipeline.yml/, omnibus_noop_pipeline)
       end
 
       it "creates a noop pipeline with skip message" do
