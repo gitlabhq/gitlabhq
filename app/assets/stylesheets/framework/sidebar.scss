@@ -102,7 +102,9 @@
 }
 
 .right-sidebar {
-  @apply gl-border-l;
+  &:where(.right-sidebar-expanded) {
+    @apply gl-border-l;
+  }
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {

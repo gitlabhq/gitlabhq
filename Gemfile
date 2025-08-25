@@ -733,7 +733,11 @@ gem 'CFPropertyList', '~> 3.0.0', feature_category: :mobile_devops
 gem 'app_store_connect', feature_category: :mobile_devops
 
 # For phone verification
-gem 'telesignenterprise', '~> 2.2', feature_category: :insider_threat
+gem 'telesignenterprise', '~> 2.6', feature_category: :insider_threat
+
+# NOTE: In Ruby 3.4 base64 was moved out of the stdlib
+# This gem was added while upgrading `telesignenterprise` to 2.6.0 to ensure compatibility with Ruby 3.4
+gem "base64", "~> 0.2.0", feature_category: :shared
 
 # BufferedIO patch
 gem 'net-protocol', '~> 0.2.2', feature_category: :shared
