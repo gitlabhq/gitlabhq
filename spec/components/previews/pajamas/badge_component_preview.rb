@@ -12,7 +12,7 @@ module Pajamas
     # @param href url
     # @param text text
     # @param variant select {{ Pajamas::BadgeComponent::VARIANT_OPTIONS }}
-    def default(icon: :tanuki, icon_only: false, href: nil, text: "Tanuki", variant: :muted)
+    def default(icon: :tanuki, icon_only: false, href: nil, text: "Tanuki", variant: :neutral)
       render Pajamas::BadgeComponent.new(
         text,
         icon: icon,

@@ -127,7 +127,7 @@ export default {
             :stage-name="stageName"
             hide-tooltip
           />
-          <gl-badge variant="muted">
+          <gl-badge variant="neutral">
             {{ group.size }}
           </gl-badge>
         </div>

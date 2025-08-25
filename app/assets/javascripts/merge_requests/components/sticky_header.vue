@@ -257,7 +257,7 @@ export default {
             >
               <gl-link :href="tab[2]" :data-action="tab[0]" class="!gl-py-4" @click="visitTab">
                 {{ tab[1] }}
-                <gl-badge variant="muted">
+                <gl-badge variant="neutral">
                   <template v-if="index === 0 && discussionCounter !== 0">
                     {{ discussionCounter }}
                   </template>

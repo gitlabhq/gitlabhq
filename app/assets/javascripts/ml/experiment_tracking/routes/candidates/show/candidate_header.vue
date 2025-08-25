@@ -49,7 +49,7 @@ export default {
   statusVariants: {
     running: 'success',
     scheduled: 'info',
-    finished: 'muted',
+    finished: 'neutral',
     failed: 'warning',
     killed: 'danger',
   },

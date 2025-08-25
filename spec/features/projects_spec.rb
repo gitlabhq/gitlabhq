@@ -351,7 +351,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
         wait_for_requests
 
         expect(page).not_to have_selector '.js-loading-signature-badge'
-        expect(page).to have_selector '.gl-badge.badge-muted'
+        expect(page).to have_selector '.gl-badge.badge-neutral'
       end
     end
 
@@ -379,7 +379,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
           wait_for_requests
 
           expect(page).not_to have_selector '.gl-badge.js-loading-signature-badge'
-          expect(page).to have_selector '.gl-badge.badge-muted'
+          expect(page).to have_selector '.gl-badge.badge-neutral'
         end
       end
     end

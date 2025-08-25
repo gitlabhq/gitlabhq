@@ -99,7 +99,6 @@ Style/SuperArguments:
     - 'ee/app/services/ee/users/destroy_service.rb'
     - 'ee/app/services/gitlab_subscriptions/user_add_on_assignments/base_create_service.rb'
     - 'ee/app/services/jira/requests/issues/list_service.rb'
-    - 'ee/app/services/vulnerabilities/starboard_vulnerability_create_service.rb'
     - 'ee/app/workers/geo/bulk_mark_pending_batch_worker.rb'
     - 'ee/app/workers/geo/bulk_mark_verification_pending_batch_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'

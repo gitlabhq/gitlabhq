@@ -149,7 +149,7 @@ describe('CommitListItem', () => {
         const tagBadge = findTagBadge();
         expect(tagBadge.props()).toMatchObject({
           icon: 'tag',
-          variant: 'muted',
+          variant: 'neutral',
         });
         expect(tagBadge.text()).toBe(mockCommit.tag.name);
       });

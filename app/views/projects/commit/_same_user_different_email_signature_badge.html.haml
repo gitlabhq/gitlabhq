@@ -1,5 +1,5 @@
 - title = _('GPG key mismatch')
 - description = _('This commit was signed with a verified signature, but the committer email is not associated with the GPG Key.')
-- locals = { signature: signature, title: title, description: description, label: _('Unverified'), variant: 'muted' }
+- locals = { signature: signature, title: title, description: description, label: _('Unverified'), variant: 'neutral' }
 
 = render partial: 'projects/commit/signature_badge', locals: locals

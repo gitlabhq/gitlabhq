@@ -1,7 +1,7 @@
 ARG MISE_DATA_DIR=/home/gdk/.local/share/mise
 ARG GDK_DIR=/home/gdk/gitlab-development-kit
 
-ARG GDK_SHA=ee1e28c9048d9adba0c575b78adf868eeb70e26f
+ARG GDK_SHA=5eaaeced17b6aeaebd487212b408b145904f084b
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 

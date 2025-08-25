@@ -87,6 +87,7 @@ export default {
           :unit="statistic.unit || ''"
           :should-animate="true"
           use-delimiters
+          variant="neutral"
         />
         <gl-link
           v-if="shouldDisplayLink(statistic)"

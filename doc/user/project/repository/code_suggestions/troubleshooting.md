@@ -83,9 +83,9 @@ For non-Code Suggestions troubleshooting for VS Code, see [Troubleshooting the G
 
 If you are on GitLab Self-Managed, ensure that Code Suggestions for the [GitLab Web IDE](../../web_ide/_index.md) is enabled. The same settings apply to VS Code as local IDE.
 
-1. On the left sidebar, select **Extensions > GitLab Workflow**.
+1. On the left sidebar, select **Extensions** > **GitLab Workflow**.
 1. Select **Settings** ({{< icon name="settings" >}}), and then select **Extension Settings**.
-1. In **GitLab > Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
+1. In **GitLab** > **Duo Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 
 #### View Code Suggestions logs
@@ -94,7 +94,7 @@ If Code Suggestions are enabled for the IDE, but suggestions are still not displ
 
 1. In your IDE, in the GitLab Workflow **Extension Settings**, enable **GitLab: Debug**.
    - For Web IDE, you must have the [marketplace extensions](../../web_ide/_index.md#manage-extensions) enabled.
-1. On the top menu, select **View > Output** to open the bottom panel, then either:
+1. On the top menu, select **View** > **Output** to open the bottom panel, then either:
    - In the command palette, select `GitLab: Show Extension Logs`.
    - In the bottom panel, on the right, select the dropdown list to filter the logs. Select **GitLab Workflow**.
 1. In the GitLab Workflow **Extension Settings**, clear and re-select the **GitLab Duo Code Suggestions** checkbox.
@@ -109,7 +109,7 @@ If you prefer to see code generation results only when they are complete, you ca
 Disabling streaming means that code generation requests might be perceived
 as taking longer to resolve. To disable streaming:
 
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
    ![The icons on the top right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
@@ -161,7 +161,7 @@ For non-Code Suggestions troubleshooting for JetBrains IDEs, see [JetBrains trou
 
 ### Suggestions not displayed in JetBrains IDEs
 
-1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
+1. From the **Tools** > **GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
 1. Verify that your JetBrains IDE natively supports the language of the file you are
    working on. Go to **Settings** > **Languages & Frameworks** to see the full list of
    languages and frameworks supported by your JetBrains IDE.
@@ -177,7 +177,7 @@ This error occurs when the provided connection instance URL and authentication t
 GitLab Language Server process are invalid. To re-enable Code Suggestions:
 
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
 1. Under **Connection**, select **Verify setup**.
 1. Update your **Connection** details as needed.
 1. Select **Verify setup**, and confirm that authentication succeeds.
@@ -224,8 +224,8 @@ To fix this problem, install the IntelliCode component:
 ### Suggestions not displayed in Microsoft Visual Studio
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension#setup).
-1. From the **Tools > Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
-1. In **View > Output**, open the extension log. Change the dropdown list to **GitLab Extension** as the log filter.
+1. From the **Tools** > **Options** menu, find the **GitLab** option. Ensure **Log Level** is set to **Debug**.
+1. In **View** > **Output**, open the extension log. Change the dropdown list to **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:
 
 ```shell

@@ -13,7 +13,11 @@ module API
       '/projects/:id/merge_requests/:noteable_id/discussions',
       '/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id',
       '/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes',
-      '/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id'
+      '/projects/:id/merge_requests/:noteable_id/discussions/:discussion_id/notes/:note_id',
+      '/projects/:id/issues/:noteable_id/discussions',
+      '/projects/:id/issues/:noteable_id/discussions/:discussion_id',
+      '/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes',
+      '/projects/:id/issues/:noteable_id/discussions/:discussion_id/notes/:note_id'
     ]
 
     Helpers::DiscussionsHelpers.feature_category_per_noteable_type.each do |noteable_type, feature_category|

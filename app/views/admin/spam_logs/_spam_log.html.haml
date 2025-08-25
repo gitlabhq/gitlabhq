@@ -16,11 +16,11 @@
         = _('Source IP:')
         = spam_log.source_ip
       .md:gl-whitespace-nowrap.gl-mt-2
-        = render Pajamas::BadgeComponent.new(moderation_status(user), variant: :muted)
+        = render Pajamas::BadgeComponent.new(moderation_status(user), variant: :neutral)
         - if spam_log.via_api?
-          = render Pajamas::BadgeComponent.new(_('API'), variant: :muted)
+          = render Pajamas::BadgeComponent.new(_('API'), variant: :neutral)
         - if spam_log.recaptcha_verified?
-          = render Pajamas::BadgeComponent.new(_('Recaptcha verified'), variant: :muted)
+          = render Pajamas::BadgeComponent.new(_('Recaptcha verified'), variant: :neutral)
   %td{ data: { label: _('Type') } }
     = spam_log.noteable_type
   %td{ data: { label: _('Details') } }

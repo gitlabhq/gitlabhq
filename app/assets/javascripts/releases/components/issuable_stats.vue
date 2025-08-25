@@ -57,7 +57,7 @@ export default {
   <div class="gl-mb-5 gl-mr-6 gl-flex gl-shrink-0 gl-flex-col">
     <span class="gl-mb-2">
       {{ label }}
-      <gl-badge variant="muted">{{ total }}</gl-badge>
+      <gl-badge variant="neutral">{{ total }}</gl-badge>
     </span>
     <div class="gl-flex">
       <span class="gl-whitespace-pre-wrap" data-testid="open-stat">

@@ -87,7 +87,7 @@ export default {
       v-if="moreTagsDisplay"
       v-gl-tooltip
       data-testid="moreBadge"
-      variant="muted"
+      variant="neutral"
       :title="moreTagsTooltip"
       class="gl-ml-2 gl-hidden md:gl-flex"
       ><gl-sprintf :message="__('+%{tags} more')">
@@ -100,7 +100,7 @@ export default {
     <gl-badge
       v-if="moreTagsDisplay && hideLabel"
       data-testid="moreBadge"
-      variant="muted"
+      variant="neutral"
       class="gl-ml-2 md:gl-hidden"
       >{{ tagsDisplay }}</gl-badge
     >

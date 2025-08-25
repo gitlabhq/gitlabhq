@@ -135,12 +135,12 @@ module UsersHelper
     [].tap do |badges|
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
-      badges << { text: s_('AdminUsers|Bot'), variant: 'muted' } if user.bot?
+      badges << { text: s_('AdminUsers|Bot'), variant: 'neutral' } if user.bot?
       badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
-      badges << { text: s_('AdminUsers|External'), variant: 'muted' } if user.external?
-      badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
+      badges << { text: s_('AdminUsers|External'), variant: 'neutral' } if user.external?
+      badges << { text: s_("AdminUsers|It's you!"), variant: 'neutral' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?
-      badges << { text: s_("UserMapping|Placeholder"), variant: 'muted' } if user.placeholder?
+      badges << { text: s_("UserMapping|Placeholder"), variant: 'neutral' } if user.placeholder?
       badges << { text: s_('AdminUsers|LDAP'), variant: 'info' } if user.ldap_user?
     end
   end

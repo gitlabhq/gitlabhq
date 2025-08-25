@@ -151,7 +151,7 @@ To change open files being used as context:
 
 {{< tab title="Visual Studio Code" >}}
 
-1. On the top bar, go to **Code > Settings > Extensions**.
+1. On the top bar, go to **Code** > **Settings** > **Extensions**.
 1. Search for GitLab Workflow in the list, and select the gear icon.
 1. Select **Settings**.
 1. In your **User** settings, search for `open tabs`.

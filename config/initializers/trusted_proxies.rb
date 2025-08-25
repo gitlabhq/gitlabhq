@@ -16,7 +16,7 @@ module Rack
 end
 
 # Trust custom proxies from config.
-trusted_proxies = Array(Gitlab.config.gitlab.trusted_proxies).map do |proxy|
+trusted_proxies = Array(Gitlab.config.gitlab.trusted_proxies).filter_map do |proxy|
   IPAddr.new(proxy)
 rescue IPAddr::InvalidAddressError
 end

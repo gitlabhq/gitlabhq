@@ -72,8 +72,8 @@ describe('assignedToYouBadge', () => {
 describe('waitingForAssigneeBadge', () => {
   it.each`
     reviewState            | data
-    ${'REQUESTED_CHANGES'} | ${{ icon: 'status-alert', text: 'You requested changes', iconOpticallyAligned: true, variant: 'muted' }}
-    ${'REVIEWED'}          | ${{ icon: 'comment-lines', text: 'You commented', variant: 'muted' }}
+    ${'REQUESTED_CHANGES'} | ${{ icon: 'status-alert', text: 'You requested changes', iconOpticallyAligned: true, variant: 'neutral' }}
+    ${'REVIEWED'}          | ${{ icon: 'comment-lines', text: 'You commented', variant: 'neutral' }}
   `('returns $data when reviewState is $reviewState', ({ reviewState, data }) => {
     expect(
       waitingForAssigneeBadge({
@@ -91,8 +91,8 @@ describe('approvalBadge', () => {
   describe('when approvalsLeft is more than 0', () => {
     it.each`
       approvalsLeft | data
-      ${1}          | ${{ icon: 'hourglass', text: '1 approval required', variant: 'muted' }}
-      ${2}          | ${{ icon: 'hourglass', text: '2 approvals required', variant: 'muted' }}
+      ${1}          | ${{ icon: 'hourglass', text: '1 approval required', variant: 'neutral' }}
+      ${2}          | ${{ icon: 'hourglass', text: '2 approvals required', variant: 'neutral' }}
     `('returns $data when approvalsLeft $approvalsLeft', ({ approvalsLeft, data }) => {
       expect(
         approvalBadge({
@@ -132,8 +132,8 @@ describe('approvalBadge', () => {
   describe('when using approved by current user', () => {
     it.each`
       approved | data
-      ${true}  | ${{ icon: 'check-circle-filled', text: 'Approved', variant: 'muted', iconOpticallyAligned: true }}
-      ${false} | ${{ icon: 'hourglass', text: 'Waiting for approval', variant: 'muted' }}
+      ${true}  | ${{ icon: 'check-circle-filled', text: 'Approved', variant: 'neutral', iconOpticallyAligned: true }}
+      ${false} | ${{ icon: 'hourglass', text: 'Waiting for approval', variant: 'neutral' }}
     `('returns $data when approved is $approved', ({ approved, data }) => {
       expect(
         approvalBadge({

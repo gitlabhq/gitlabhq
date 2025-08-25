@@ -50,8 +50,8 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
     });
 
     it('renders the status badge with correct variant', () => {
-      expect(findBadge().props('variant')).toBe('muted');
-      expect(findBadge().text()).toContain('SUCCESS');
+      expect(findBadge().props('variant')).toBe('neutral');
+      expect(findBadge().text()).toContain('finished');
     });
 
     it('renders the status icon', () => {
@@ -76,7 +76,7 @@ describe('ml/experiment_tracking/routes/candidates/show/candidate_header.vue', (
     const testCases = [
       { status: 'running', variant: 'success' },
       { status: 'scheduled', variant: 'info' },
-      { status: 'finished', variant: 'muted' },
+      { status: 'finished', variant: 'neutral' },
       { status: 'failed', variant: 'warning' },
       { status: 'killed', variant: 'danger' },
     ];

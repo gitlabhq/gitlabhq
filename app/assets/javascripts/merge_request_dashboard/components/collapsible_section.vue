@@ -135,7 +135,7 @@ export default {
       <template #actions>
         <gl-badge
           v-if="!open && newMergeRequests.length"
-          :variant="activeList ? 'success' : 'muted'"
+          :variant="activeList ? 'success' : 'neutral'"
           class="gl-font-bold"
         >
           {{ newMergeRequestsBadgeText }}

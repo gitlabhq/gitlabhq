@@ -91,7 +91,7 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
           "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
-          "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
+          "badges" => [{ "text" => "It's you!", "variant" => 'neutral' }],
           "id" => organization_owner.to_global_id.to_s,
           "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }

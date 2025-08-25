@@ -59,7 +59,7 @@ VS Code and JetBrains IDEs:
 
 - In JetBrains:
   1. On the top bar, select the main menu, then select **Settings**.
-  1. On the left sidebar, select **Tools > GitLab Duo**.
+  1. On the left sidebar, select **Tools** > **GitLab Duo**.
   1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
 
 ## View debugging logs in VS Code
@@ -106,7 +106,7 @@ You might have a Git repository but it's not properly connected to GitLab.
 
 1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
 1. On the **Source Control** label, right-click and select **Repositories**.
-1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote > Add Remote**.
+1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote** > **Add Remote**.
 1. Enter your GitLab project URL.
 1. Select the newly added remote as your upstream.
 

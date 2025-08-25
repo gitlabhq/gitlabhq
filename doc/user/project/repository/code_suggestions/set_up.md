@@ -51,7 +51,7 @@ To confirm, open your IDE and verify if Code Suggestions works.
 
 To verify that Code Suggestions is turned on in VS Code:
 
-1. In VS Code, go to **Settings > Extensions > GitLab Workflow**.
+1. In VS Code, go to **Settings** > **Extensions** > **GitLab Workflow**.
 1. Select **Manage** ({{< icon name="settings" >}}).
 1. Ensure that **GitLab › Duo Code Suggestions: Enabled** is selected.
 1. Optional. For **GitLab › Duo Code Suggestions: Enabled Supported Languages**,
@@ -64,7 +64,7 @@ To verify that Code Suggestions is turned on in Visual Studio:
 
 1. In Visual Studio, on the bottom status bar, point to the GitLab icon.
 1. When Code Suggestions is enabled, the icon tooltip shows `GitLab code suggestions are enabled.`
-1. If Code Suggestions are not enabled, on the top bar select **Extensions > GitLab > Toggle Code Suggestions** to enable it.
+1. If Code Suggestions are not enabled, on the top bar select **Extensions** > **GitLab** > **Toggle Code Suggestions** to enable it.
 
 ### JetBrains IDEs
 
@@ -105,7 +105,7 @@ If your IDE detects a non-trusted SSL certificate:
 To review certificates you've already accepted:
 
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > Server Certificates**.
+1. On the left sidebar, select **Tools** > **Server Certificates**.
 1. Select [**Server Certificates**](https://www.jetbrains.com/help/idea/settings-tools-server-certificates.html).
 1. Select a certificate to view it.
 
@@ -162,8 +162,8 @@ You cannot turn off code generation and code completion separately.
 
 To turn off Code Suggestions in VS Code:
 
-1. Go to **Code > Settings > Extensions**.
-1. Select **Manage** ({{< icon name="settings" >}}) **> Settings**.
+1. Go to **Code** > **Settings** > **Extensions**.
+1. Select **Manage** ({{< icon name="settings" >}}) > **Settings**.
 1. Clear the **GitLab Duo Code Suggestions** checkbox.
 
 Instead, you can [set `gitlab.duoCodeSuggestions.enabled` to `false` in the VS Code `settings.json` file](../../../../editor_extensions/visual_studio_code/settings.md#extension-settings).

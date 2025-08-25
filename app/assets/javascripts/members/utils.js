@@ -29,7 +29,7 @@ export const generateBadges = ({ member, isCurrentUser, canManageMembers }) => [
   {
     show: member.user?.isBot,
     text: I18N_USER_BOT,
-    variant: 'muted',
+    variant: 'neutral',
   },
   {
     show: member.user?.twoFactorEnabled && (canManageMembers || isCurrentUser),

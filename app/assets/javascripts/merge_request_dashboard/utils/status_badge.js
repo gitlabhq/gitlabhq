@@ -53,13 +53,13 @@ export function waitingForAssigneeBadge({ currentUserAsReviewer }) {
     return {
       icon: 'status-alert',
       text: __('You requested changes'),
-      variant: 'muted',
+      variant: 'neutral',
       iconOpticallyAligned: true,
     };
   }
 
   if (currentUserAsReviewer?.mergeRequestInteraction.reviewState === 'REVIEWED') {
-    return { icon: 'comment-lines', text: __('You commented'), variant: 'muted' };
+    return { icon: 'comment-lines', text: __('You commented'), variant: 'neutral' };
   }
 
   return null;
@@ -81,7 +81,7 @@ export function approvalBadge({ mergeRequest, currentUserId }) {
         '%d approvals required',
         mergeRequest.approvalsLeft || reviewersNotApproved.length,
       ),
-      variant: 'muted',
+      variant: 'neutral',
     };
   }
 
@@ -92,12 +92,12 @@ export function approvalBadge({ mergeRequest, currentUserId }) {
     return {
       icon: 'check-circle-filled',
       text: __('Approved'),
-      variant: 'muted',
+      variant: 'neutral',
       iconOpticallyAligned: true,
     };
   }
 
-  return { icon: 'hourglass', text: __('Waiting for approval'), variant: 'muted' };
+  return { icon: 'hourglass', text: __('Waiting for approval'), variant: 'neutral' };
 }
 
 export function mergedBadge({ mergeRequest }) {

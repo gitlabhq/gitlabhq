@@ -55,7 +55,7 @@ export default {
           props: {
             skip: this.statusCountSkip(STATUS_OFFLINE),
             variables: { ...this.variables, status: STATUS_OFFLINE },
-            variant: 'muted',
+            variant: 'neutral',
             title: I18N_STATUS_OFFLINE,
             metaIcon: 'status-waiting',
           },

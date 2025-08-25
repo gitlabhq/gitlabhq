@@ -56,7 +56,7 @@ Before using a GitLab Duo feature with MCP, you must:
 To turn MCP on or off for your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **Model Context Protocol**, select or clear the
    **Turn on Model Context Protocol (MCP) support** checkbox.

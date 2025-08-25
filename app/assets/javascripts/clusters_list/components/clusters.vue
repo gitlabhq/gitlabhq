@@ -322,7 +322,7 @@ export default {
       </template>
 
       <template #cell(cluster_type)="{ value }">
-        <gl-badge variant="muted">
+        <gl-badge variant="neutral">
           {{ value }}
         </gl-badge>
       </template>

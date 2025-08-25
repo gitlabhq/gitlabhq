@@ -11269,6 +11269,51 @@ Input type: `SecretPermissionUpdateInput`
 | <a id="mutationsecretpermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecretpermissionupdatesecretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
 
+### `Mutation.securityCategoryCreate`
+
+Input type: `SecurityCategoryCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorycreatedescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="mutationsecuritycategorycreatemultipleselection"></a>`multipleSelection` | [`Boolean`](#boolean) | Whether multiple attributes can be selected. |
+| <a id="mutationsecuritycategorycreatename"></a>`name` | [`String!`](#string) | Name of the security category. |
+| <a id="mutationsecuritycategorycreatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the category namespace. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecuritycategorycreatesecuritycategory"></a>`securityCategory` | [`SecurityCategory`](#securitycategory) | Created security category. |
+
+### `Mutation.securityCategoryUpdate`
+
+Input type: `SecurityCategoryUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategoryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategoryupdatedescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="mutationsecuritycategoryupdateid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecuritycategoryupdatename"></a>`name` | [`String`](#string) | Name of the security category. |
+| <a id="mutationsecuritycategoryupdatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the category namespace. |
+| <a id="mutationsecuritycategoryupdatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategoryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategoryupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecuritycategoryupdatesecuritycategory"></a>`securityCategory` | [`SecurityCategory`](#securitycategory) | Updated security category. |
+
 ### `Mutation.securityFindingCreateIssue`
 
 Input type: `SecurityFindingCreateIssueInput`
@@ -41782,6 +41827,37 @@ Representation of a secrets permission.
 | <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 | <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
 
+### `SecurityAttribute`
+
+A security attribute.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributecolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
+| <a id="securityattributedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
+| <a id="securityattributeeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security attribute. |
+| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="securityattributename"></a>`name` | [`String!`](#string) | Name of the security attribute. |
+| <a id="securityattributesecuritycategory"></a>`securityCategory` | [`SecurityCategory!`](#securitycategory) | Security category the attribute belongs to. |
+
+### `SecurityCategory`
+
+A security category.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitycategorydescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="securitycategoryeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security category. |
+| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category. |
+| <a id="securitycategorymultipleselection"></a>`multipleSelection` | [`Boolean!`](#boolean) | Whether multiple attributes can be selected. |
+| <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
+| <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |
+| <a id="securitycategorytemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. |
+
 ### `SecurityMetrics`
 
 Represents security metrics.
@@ -48854,6 +48930,27 @@ Type of search.
 | <a id="searchtypebasic"></a>`BASIC` | Basic search. |
 | <a id="searchtypezoekt"></a>`ZOEKT` | Exact code search. |
 
+### `SecurityCategoryEditableState`
+
+Editable state for security categories and attributes.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitycategoryeditablestateeditable"></a>`EDITABLE` | Editable state. |
+| <a id="securitycategoryeditablestateeditable_attributes"></a>`EDITABLE_ATTRIBUTES` | Editable attributes state. |
+| <a id="securitycategoryeditablestatelocked"></a>`LOCKED` | Locked state. |
+
+### `SecurityCategoryTemplateType`
+
+Template type for predefined security categories.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitycategorytemplatetypeapplication"></a>`APPLICATION` | Application category. |
+| <a id="securitycategorytemplatetypebusiness_impact"></a>`BUSINESS_IMPACT` | Business impact category. |
+| <a id="securitycategorytemplatetypebusiness_unit"></a>`BUSINESS_UNIT` | Business unit category. |
+| <a id="securitycategorytemplatetypeexposure"></a>`EXPOSURE` | Exposure category. |
+
 ### `SecurityPolicyRelationType`
 
 | Value | Description |
@@ -50979,6 +51076,18 @@ An example `SbomComponentVersionID` is: `"gid://gitlab/Sbom::ComponentVersion/1"
 A `SbomOccurrenceID` is a global ID. It is encoded as a string.
 
 An example `SbomOccurrenceID` is: `"gid://gitlab/Sbom::Occurrence/1"`.
+
+### `SecurityAttributeID`
+
+A `SecurityAttributeID` is a global ID. It is encoded as a string.
+
+An example `SecurityAttributeID` is: `"gid://gitlab/Security::Attribute/1"`.
+
+### `SecurityCategoryID`
+
+A `SecurityCategoryID` is a global ID. It is encoded as a string.
+
+An example `SecurityCategoryID` is: `"gid://gitlab/Security::Category/1"`.
 
 ### `SecurityOrchestrationPolicyConfigurationID`
 

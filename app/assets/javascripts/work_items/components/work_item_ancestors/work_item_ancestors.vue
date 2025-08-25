@@ -110,7 +110,7 @@ export default {
       >
         <template #title>
           <div>
-            <gl-badge variant="muted">{{ $options.i18n.ancestorLabel }}</gl-badge>
+            <gl-badge variant="neutral">{{ $options.i18n.ancestorLabel }}</gl-badge>
             <div class="gl-pt-3">
               {{ item.title }}
             </div>

@@ -21,7 +21,7 @@ export const newCandidate = (withModel = true) => ({
     pathToArtifact: 'path_to_artifact/packages/12',
     experimentName: 'The Experiment',
     pathToExperiment: 'path/to/experiment',
-    status: 'SUCCESS',
+    status: 'finished',
     path: 'path_to_candidate',
     ciJob: {
       name: 'test',

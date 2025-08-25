@@ -21,7 +21,7 @@ module Pajamas
       meta_text: nil,
       meta_icon: nil,
       text_color: nil,
-      variant: :muted
+      variant: :neutral
     )
       @title = title
       @title_tag = title_tag
@@ -32,7 +32,7 @@ module Pajamas
       @meta_text = meta_text
       @meta_icon = meta_icon
       @text_color = text_color
-      @variant = filter_attribute(variant.to_sym, Pajamas::BadgeComponent::VARIANT_OPTIONS, default: :muted)
+      @variant = filter_attribute(variant.to_sym, Pajamas::BadgeComponent::VARIANT_OPTIONS, default: :neutral)
     end
 
     renders_one :title

@@ -132,7 +132,7 @@ describe('DevopsScore', () => {
               const badge = findUsageCol().findComponent(GlBadge);
 
               expect(badge.exists()).toBe(true);
-              expect(badge.props('variant')).toBe('muted');
+              expect(badge.props('variant')).toBe('neutral');
               expect(badge.text()).toBe('Low');
             });
           });

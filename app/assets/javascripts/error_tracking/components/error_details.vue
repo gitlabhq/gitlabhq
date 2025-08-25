@@ -385,7 +385,7 @@ export default {
           <gl-badge v-if="error.tags.level" :variant="errorSeverityVariant" class="gl-mr-3">
             {{ errorLevel }}
           </gl-badge>
-          <gl-badge v-if="error.tags.logger" variant="muted">{{ error.tags.logger }} </gl-badge>
+          <gl-badge v-if="error.tags.logger" variant="neutral">{{ error.tags.logger }} </gl-badge>
         </template>
 
         <error-details-info :error="error" />

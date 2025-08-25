@@ -514,7 +514,7 @@ describe('tags list row', () => {
 
       it('shows the signed badge with the expected settings', () => {
         expect(findSignedBadge().text()).toBe('Signed');
-        expect(findSignedBadge().props('variant')).toBe('muted');
+        expect(findSignedBadge().props('variant')).toBe('neutral');
       });
 
       it('shows the signed badge tooltip', () => {

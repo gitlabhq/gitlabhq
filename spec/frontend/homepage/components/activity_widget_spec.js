@@ -118,7 +118,7 @@ describe('ActivityWidget', () => {
     expect(localTimeAgo).toHaveBeenCalledWith(timestampEls);
   });
 
-  it('populates the activity feed seletor with the correct options', () => {
+  it('populates the activity feed selector with the correct options', () => {
     createWrapper();
 
     expect(findActivityFeedSelector().props('items')).toEqual([

@@ -140,7 +140,7 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 
 1. Open the Web IDE:
    1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
-   1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
+   1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
@@ -191,7 +191,7 @@ To open GitLab Duo Chat in the editor window, use any of these methods:
 - From a keyboard shortcut:
   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
   - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
-- In the currently open file in your IDE, right-click and select **GitLab Duo Chat > Open Quick Chat**.
+- In the currently open file in your IDE, right-click and select **GitLab Duo Chat** > **Open Quick Chat**.
   Select some code to provide additional context.
 - Open the Command Palette, then select **GitLab Duo Chat: Open Quick Chat**.
 
@@ -271,7 +271,7 @@ To open GitLab Duo Chat in a chat window, use any of these methods:
 - From a highlighted code issue:
   1. Right-click and select **Show Context Actions**.
   1. Select **Fix with Duo**.
-- With a keyboard or mouse shortcut for a GitLab Duo action, which you can set in **Settings > Keymap**.
+- With a keyboard or mouse shortcut for a GitLab Duo action, which you can set in **Settings** > **Keymap**.
 
 After GitLab Duo Chat opens:
 
@@ -296,7 +296,7 @@ To open GitLab Duo Chat in the editor window, use any of these methods:
   - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
 - In an open file in your IDE, select some code,
   then, in the floating toolbar, select **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- Right-click and select **GitLab Duo Chat > Open Quick Chat**.
+- Right-click and select **GitLab Duo Chat** > **Open Quick Chat**.
 
 After Quick Chat opens:
 

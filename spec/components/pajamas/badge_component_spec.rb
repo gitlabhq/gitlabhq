@@ -81,7 +81,7 @@ RSpec.describe Pajamas::BadgeComponent, type: :component do
     end
 
     describe "variant" do
-      where(:variant) { [:muted, :neutral, :info, :success, :warning, :danger] }
+      where(:variant) { [:neutral, :info, :success, :warning, :danger] }
 
       with_them do
         let(:options) { { variant: variant } }
@@ -95,7 +95,7 @@ RSpec.describe Pajamas::BadgeComponent, type: :component do
         let(:options) { { variant: :foo } }
 
         it "adds the default variant class" do
-          expect(page).to have_css ".gl-badge.badge-muted"
+          expect(page).to have_css ".gl-badge.badge-neutral"
         end
       end
     end

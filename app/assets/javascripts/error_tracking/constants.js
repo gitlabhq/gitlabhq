@@ -13,7 +13,7 @@ export const severityLevelVariant = {
   [severityLevel.ERROR]: 'neutral',
   [severityLevel.WARNING]: 'warning',
   [severityLevel.INFO]: 'info',
-  [severityLevel.DEBUG]: 'muted',
+  [severityLevel.DEBUG]: 'neutral',
 };
 
 export const errorStatus = {

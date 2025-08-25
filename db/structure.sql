@@ -35950,38 +35950,6 @@ CREATE UNIQUE INDEX finding_link_name_url_idx ON vulnerability_finding_links USI
 
 CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING btree (vulnerability_occurrence_id, url) WHERE (name IS NULL);
 
-CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ONLY ci_runner_machines USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX group_type_ci_runner_machines_687967fa8a_contacted_at_id_idx ON group_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX index_ci_runner_machines_on_created_at_and_id_desc ON ONLY ci_runner_machines USING btree (created_at, id DESC);
-
-CREATE INDEX group_type_ci_runner_machines_687967fa8a_created_at_id_idx ON group_type_ci_runner_machines USING btree (created_at, id DESC);
-
-CREATE INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ON ONLY ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX group_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON group_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX index_ci_runner_machines_on_version ON ONLY ci_runner_machines USING btree (version);
-
-CREATE INDEX group_type_ci_runner_machines_687967fa8a_version_idx ON group_type_ci_runner_machines USING btree (version);
-
-CREATE INDEX index_ci_runner_machines_on_major_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
-
-CREATE INDEX group_type_ci_runner_machines_6_substring_version_runner_id_idx ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
-
-CREATE INDEX index_ci_runner_machines_on_minor_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
-
-CREATE INDEX group_type_ci_runner_machines__substring_version_runner_id_idx1 ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
-
-CREATE INDEX index_ci_runner_machines_on_patch_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
-
-CREATE INDEX group_type_ci_runner_machines__substring_version_runner_id_idx2 ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
-
-CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ON ONLY ci_runner_machines USING btree (runner_id, runner_type, system_xid);
-
-CREATE UNIQUE INDEX group_type_ci_runner_machines_runner_id_runner_type_system__idx ON group_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
-
 CREATE UNIQUE INDEX i_affected_packages_unique_for_upsert ON pm_affected_packages USING btree (pm_advisory_id, purl_type, package_name, distro_version);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
@@ -36184,6 +36152,18 @@ CREATE INDEX idx_group_audit_events_on_group_id_author_created_at_id ON ONLY gro
 
 CREATE INDEX idx_group_audit_events_on_project_created_at_id ON ONLY group_audit_events USING btree (group_id, created_at, id);
 
+CREATE INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ON ONLY ci_runner_machines USING btree (contacted_at DESC, id DESC);
+
+CREATE INDEX idx_group_type_ci_runner_machines_on_contacted_at_desc_id_desc ON group_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
+
+CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ON ONLY ci_runner_machines USING btree (runner_id, runner_type, system_xid);
+
+CREATE UNIQUE INDEX idx_group_type_ci_runner_machines_on_runner_id_type_system_xid ON group_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
+
+CREATE INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ON ONLY ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
+CREATE INDEX idx_group_type_ci_runner_machines_on_sharding_key_when_not_null ON group_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
 CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ONLY ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
 CREATE INDEX idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive ON group_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
@@ -36232,6 +36212,8 @@ CREATE INDEX idx_incident_management_pending_issue_esc_on_namespace_id ON ONLY i
 
 CREATE INDEX idx_incident_management_timeline_event_tag_links_on_project_id ON incident_management_timeline_event_tag_links USING btree (project_id);
 
+CREATE INDEX idx_inst_type_ci_runner_machines_on_sharding_key_when_not_null ON instance_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
+
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
@@ -36243,6 +36225,10 @@ CREATE INDEX idx_instance_audit_events_on_author_id_created_at_id ON ONLY instan
 CREATE UNIQUE INDEX idx_instance_external_audit_event_destination_id_key_uniq ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id, key);
 
 CREATE UNIQUE INDEX idx_instance_runner_usage_unique ON ci_instance_runner_monthly_usages USING btree (runner_id, billing_month, root_namespace_id, project_id);
+
+CREATE INDEX index_ci_runner_machines_on_created_at_and_id_desc ON ONLY ci_runner_machines USING btree (created_at, id DESC);
+
+CREATE INDEX idx_instance_type_ci_runner_machines_on_created_at_and_id_desc ON instance_type_ci_runner_machines USING btree (created_at, id DESC);
 
 CREATE INDEX index_ci_runners_on_active_and_id ON ONLY ci_runners USING btree (active, id);
 
@@ -36425,6 +36411,8 @@ CREATE UNIQUE INDEX idx_proj_comp_viol_issues_on_viol_id_issue_id ON project_com
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_cloud_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_cloud_last_sync_at, project_id) WHERE (jira_dvcs_cloud_last_sync_at IS NOT NULL);
 
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_server_last_sync_at, project_id) WHERE (jira_dvcs_server_last_sync_at IS NOT NULL);
+
+CREATE INDEX idx_proj_type_ci_runner_machines_on_sharding_key_when_not_null ON project_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project_audit_events USING btree (author_id, created_at, id);
 
@@ -36664,27 +36652,13 @@ CREATE INDEX import_export_upload_uploads_uploaded_by_user_id_idx ON import_expo
 
 CREATE INDEX import_export_upload_uploads_uploader_path_idx ON import_export_upload_uploads USING btree (uploader, path);
 
-CREATE INDEX index_ci_runner_machines_on_executor_type ON ONLY ci_runner_machines USING btree (executor_type);
-
-CREATE INDEX index_012094097c ON instance_type_ci_runner_machines USING btree (executor_type);
-
 CREATE INDEX index_ci_runner_taggings_on_organization_id ON ONLY ci_runner_taggings USING btree (organization_id);
 
 CREATE INDEX index_03bce7b65b ON ci_runner_taggings_group_type USING btree (organization_id);
 
-CREATE INDEX index_ci_runner_machines_on_ip_address ON ONLY ci_runner_machines USING btree (ip_address);
-
-CREATE INDEX index_053d12f7ee ON project_type_ci_runner_machines USING btree (ip_address);
-
-CREATE INDEX index_ci_runner_machines_on_organization_id ON ONLY ci_runner_machines USING btree (organization_id);
-
-CREATE INDEX index_8cc4cbb7d2 ON group_type_ci_runner_machines USING btree (organization_id);
-
 CREATE INDEX index_8f3cd552cd ON ci_runner_taggings_instance_type USING btree (organization_id);
 
 CREATE INDEX index_934f0e59cf ON ci_runner_taggings_project_type USING btree (organization_id);
-
-CREATE INDEX index_aa3b4fe8c6 ON group_type_ci_runner_machines USING btree (executor_type);
 
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
 
@@ -37438,6 +37412,20 @@ CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (proje
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
 
+CREATE INDEX index_ci_runner_machines_on_executor_type ON ONLY ci_runner_machines USING btree (executor_type);
+
+CREATE INDEX index_ci_runner_machines_on_ip_address ON ONLY ci_runner_machines USING btree (ip_address);
+
+CREATE INDEX index_ci_runner_machines_on_major_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_ci_runner_machines_on_minor_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_ci_runner_machines_on_organization_id ON ONLY ci_runner_machines USING btree (organization_id);
+
+CREATE INDEX index_ci_runner_machines_on_patch_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
+
+CREATE INDEX index_ci_runner_machines_on_version ON ONLY ci_runner_machines USING btree (version);
+
 CREATE INDEX index_ci_runner_namespaces_on_namespace_id ON ci_runner_namespaces USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_ci_runner_namespaces_on_runner_id_and_namespace_id ON ci_runner_namespaces USING btree (runner_id, namespace_id);
@@ -37671,10 +37659,6 @@ CREATE INDEX index_customer_relations_contacts_on_organization_id ON customer_re
 CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group ON customer_relations_contacts USING btree (group_id, lower(email), id);
 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (organization_id, hash_sha256);
-
-CREATE INDEX index_d2746151f0 ON instance_type_ci_runner_machines USING btree (ip_address);
-
-CREATE INDEX index_d58435d85e ON project_type_ci_runner_machines USING btree (executor_type);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
@@ -37948,8 +37932,6 @@ CREATE INDEX index_duo_workflows_workloads_on_workflow_id ON duo_workflows_workl
 
 CREATE INDEX index_duo_workflows_workloads_on_workload_id ON duo_workflows_workloads USING btree (workload_id);
 
-CREATE INDEX index_e4459c2bb7 ON project_type_ci_runner_machines USING btree (organization_id);
-
 CREATE INDEX index_early_access_program_tracking_events_on_category ON early_access_program_tracking_events USING btree (category);
 
 CREATE INDEX index_early_access_program_tracking_events_on_event_label ON early_access_program_tracking_events USING btree (event_label);
@@ -37957,8 +37939,6 @@ CREATE INDEX index_early_access_program_tracking_events_on_event_label ON early_
 CREATE INDEX index_early_access_program_tracking_events_on_event_name ON early_access_program_tracking_events USING btree (event_name);
 
 CREATE INDEX index_early_access_program_tracking_events_on_user_id ON early_access_program_tracking_events USING btree (user_id);
-
-CREATE INDEX index_ee7c87e634 ON group_type_ci_runner_machines USING btree (ip_address);
 
 CREATE UNIQUE INDEX index_elastic_index_settings_on_alias_name ON elastic_index_settings USING btree (alias_name);
 
@@ -38120,8 +38100,6 @@ CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON exte
 
 CREATE INDEX index_external_status_checks_protected_branches_on_project_id ON external_status_checks_protected_branches USING btree (project_id);
 
-CREATE INDEX index_f4903d2246 ON instance_type_ci_runner_machines USING btree (organization_id);
-
 CREATE UNIQUE INDEX index_feature_flags_clients_on_project_id_and_token_encrypted ON operations_feature_flags_clients USING btree (project_id, token_encrypted);
 
 CREATE UNIQUE INDEX index_feature_gates_on_feature_key_and_key_and_value ON feature_gates USING btree (feature_key, key, value);
@@ -38279,6 +38257,22 @@ CREATE INDEX index_group_ssh_certificates_on_namespace_id ON group_ssh_certifica
 CREATE UNIQUE INDEX index_group_stages_on_group_id_group_value_stream_id_and_name ON analytics_cycle_analytics_group_stages USING btree (group_id, group_value_stream_id, name);
 
 CREATE INDEX index_group_stages_on_stage_event_hash_id ON analytics_cycle_analytics_group_stages USING btree (stage_event_hash_id);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_created_at_and_id_desc ON group_type_ci_runner_machines USING btree (created_at, id DESC);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_executor_type ON group_type_ci_runner_machines USING btree (executor_type);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_ip_address ON group_type_ci_runner_machines USING btree (ip_address);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_major_version ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_minor_version ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_organization_id ON group_type_ci_runner_machines USING btree (organization_id);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_patch_version ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
+
+CREATE INDEX index_group_type_ci_runner_machines_on_version ON group_type_ci_runner_machines USING btree (version);
 
 CREATE INDEX index_group_type_ci_runners_on_active_and_id ON group_type_ci_runners USING btree (active, id);
 
@@ -38441,6 +38435,24 @@ CREATE UNIQUE INDEX index_index_statuses_on_project_id ON index_statuses USING b
 CREATE INDEX index_insights_on_namespace_id ON insights USING btree (namespace_id);
 
 CREATE INDEX index_insights_on_project_id ON insights USING btree (project_id);
+
+CREATE INDEX index_inst_type_ci_runner_machines_on_contacted_at_desc_id_desc ON instance_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
+
+CREATE UNIQUE INDEX index_inst_type_ci_runner_machines_on_runner_id_type_system_xid ON instance_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_executor_type ON instance_type_ci_runner_machines USING btree (executor_type);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_ip_address ON instance_type_ci_runner_machines USING btree (ip_address);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_major_version ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_minor_version ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_organization_id ON instance_type_ci_runner_machines USING btree (organization_id);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_patch_version ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
+
+CREATE INDEX index_instance_type_ci_runner_machines_on_version ON instance_type_ci_runner_machines USING btree (version);
 
 CREATE INDEX index_instance_type_ci_runners_on_contacted_at_desc_and_id_desc ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC);
 
@@ -39772,6 +39784,10 @@ CREATE INDEX index_postgres_reindex_queued_actions_on_state ON postgres_reindex_
 
 CREATE UNIQUE INDEX index_programming_languages_on_name ON programming_languages USING btree (name);
 
+CREATE INDEX index_proj_type_ci_runner_machines_on_contacted_at_desc_id_desc ON project_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
+
+CREATE UNIQUE INDEX index_proj_type_ci_runner_machines_on_runner_id_type_system_xid ON project_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
+
 CREATE INDEX index_project_access_tokens_on_project_id ON project_access_tokens USING btree (project_id);
 
 CREATE UNIQUE INDEX index_project_aliases_on_name ON project_aliases USING btree (name);
@@ -39925,6 +39941,22 @@ CREATE INDEX index_project_to_security_attributes_on_security_attribute_id ON pr
 CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_topics USING btree (project_id, topic_id);
 
 CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (topic_id);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_created_at_and_id_desc ON project_type_ci_runner_machines USING btree (created_at, id DESC);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_executor_type ON project_type_ci_runner_machines USING btree (executor_type);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_ip_address ON project_type_ci_runner_machines USING btree (ip_address);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_major_version ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_minor_version ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_organization_id ON project_type_ci_runner_machines USING btree (organization_id);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_patch_version ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
+
+CREATE INDEX index_project_type_ci_runner_machines_on_version ON project_type_ci_runner_machines USING btree (version);
 
 CREATE INDEX index_project_type_ci_runners_on_created_at_and_id_desc ON project_type_ci_runners USING btree (created_at, id DESC);
 
@@ -41356,22 +41388,6 @@ CREATE INDEX index_zoom_meetings_on_issue_status ON zoom_meetings USING btree (i
 
 CREATE INDEX index_zoom_meetings_on_project_id ON zoom_meetings USING btree (project_id);
 
-CREATE UNIQUE INDEX instance_type_ci_runner_machi_runner_id_runner_type_system__idx ON instance_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
-
-CREATE INDEX instance_type_ci_runner_machin_substring_version_runner_id_idx1 ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
-
-CREATE INDEX instance_type_ci_runner_machin_substring_version_runner_id_idx2 ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
-
-CREATE INDEX instance_type_ci_runner_machine_substring_version_runner_id_idx ON instance_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
-
-CREATE INDEX instance_type_ci_runner_machines_687967fa8a_contacted_at_id_idx ON instance_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX instance_type_ci_runner_machines_687967fa8a_created_at_id_idx ON instance_type_ci_runner_machines USING btree (created_at, id DESC);
-
-CREATE INDEX instance_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON instance_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX instance_type_ci_runner_machines_687967fa8a_version_idx ON instance_type_ci_runner_machines USING btree (version);
-
 CREATE INDEX issuable_metric_image_uploads_checksum_idx ON issuable_metric_image_uploads USING btree (checksum);
 
 CREATE INDEX issuable_metric_image_uploads_model_id_model_type_uploader__idx ON issuable_metric_image_uploads USING btree (model_id, model_type, uploader, created_at);
@@ -41653,22 +41669,6 @@ CREATE INDEX project_topic_uploads_store_idx ON project_topic_uploads USING btre
 CREATE INDEX project_topic_uploads_uploaded_by_user_id_idx ON project_topic_uploads USING btree (uploaded_by_user_id);
 
 CREATE INDEX project_topic_uploads_uploader_path_idx ON project_topic_uploads USING btree (uploader, path);
-
-CREATE UNIQUE INDEX project_type_ci_runner_machin_runner_id_runner_type_system__idx ON project_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
-
-CREATE INDEX project_type_ci_runner_machine_substring_version_runner_id_idx1 ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
-
-CREATE INDEX project_type_ci_runner_machine_substring_version_runner_id_idx2 ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
-
-CREATE INDEX project_type_ci_runner_machines_687967fa8a_contacted_at_id_idx ON project_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
-
-CREATE INDEX project_type_ci_runner_machines_687967fa8a_created_at_id_idx ON project_type_ci_runner_machines USING btree (created_at, id DESC);
-
-CREATE INDEX project_type_ci_runner_machines_687967fa8a_sharding_key_id_idx ON project_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX project_type_ci_runner_machines_687967fa8a_version_idx ON project_type_ci_runner_machines USING btree (version);
-
-CREATE INDEX project_type_ci_runner_machines_substring_version_runner_id_idx ON project_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
 
 CREATE INDEX project_uploads_checksum_idx ON project_uploads USING btree (checksum);
 
@@ -44476,25 +44476,15 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION des
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION design_management_action_uploads_uploader_path_idx;
 
-ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION group_type_ci_runner_machines_687967fa8a_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION group_type_ci_runner_machines_687967fa8a_created_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION group_type_ci_runner_machines_687967fa8a_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION group_type_ci_runner_machines_687967fa8a_version_idx;
-
-ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION group_type_ci_runner_machines_6_substring_version_runner_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx1;
-
-ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx2;
-
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION group_type_ci_runner_machines_pkey;
 
-ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION group_type_ci_runner_machines_runner_id_runner_type_system__idx;
-
 ALTER INDEX ci_runners_pkey ATTACH PARTITION group_type_ci_runners_pkey;
+
+ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION idx_group_type_ci_runner_machines_on_contacted_at_desc_id_desc;
+
+ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION idx_group_type_ci_runner_machines_on_runner_id_type_system_xid;
+
+ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_group_type_ci_runner_machines_on_sharding_key_when_not_null;
 
 ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive;
 
@@ -44507,6 +44497,10 @@ ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION id
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_group_type_ci_runners_on_token_runner_type_when_not_null;
+
+ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_inst_type_ci_runner_machines_on_sharding_key_when_not_null;
+
+ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION idx_instance_type_ci_runner_machines_on_created_at_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION idx_instance_type_ci_runners_on_active_and_id;
 
@@ -44521,6 +44515,8 @@ ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc;
 
 ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_instance_type_ci_runners_on_token_runner_type_when_not_null;
+
+ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_proj_type_ci_runner_machines_on_sharding_key_when_not_null;
 
 ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION idx_project_type_ci_runners_on_active_and_id;
 
@@ -44562,29 +44558,27 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION imp
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION import_export_upload_uploads_uploader_path_idx;
 
-ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_012094097c;
-
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_03bce7b65b;
-
-ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_053d12f7ee;
-
-ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_8cc4cbb7d2;
 
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_8f3cd552cd;
 
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_934f0e59cf;
 
-ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
+ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION index_group_type_ci_runner_machines_on_created_at_and_id_desc;
 
-ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_d2746151f0;
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_group_type_ci_runner_machines_on_executor_type;
 
-ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_d58435d85e;
+ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_group_type_ci_runner_machines_on_ip_address;
 
-ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_e4459c2bb7;
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION index_group_type_ci_runner_machines_on_major_version;
 
-ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_ee7c87e634;
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION index_group_type_ci_runner_machines_on_minor_version;
 
-ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_f4903d2246;
+ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_group_type_ci_runner_machines_on_organization_id;
+
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION index_group_type_ci_runner_machines_on_patch_version;
+
+ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION index_group_type_ci_runner_machines_on_version;
 
 ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION index_group_type_ci_runners_on_active_and_id;
 
@@ -44606,6 +44600,24 @@ ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_group_typ
 
 ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION index_group_type_ci_runners_on_token_encrypted_and_runner_type;
 
+ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION index_inst_type_ci_runner_machines_on_contacted_at_desc_id_desc;
+
+ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION index_inst_type_ci_runner_machines_on_runner_id_type_system_xid;
+
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_instance_type_ci_runner_machines_on_executor_type;
+
+ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_instance_type_ci_runner_machines_on_ip_address;
+
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION index_instance_type_ci_runner_machines_on_major_version;
+
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION index_instance_type_ci_runner_machines_on_minor_version;
+
+ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_instance_type_ci_runner_machines_on_organization_id;
+
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION index_instance_type_ci_runner_machines_on_patch_version;
+
+ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION index_instance_type_ci_runner_machines_on_version;
+
 ALTER INDEX index_ci_runners_on_contacted_at_desc_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_contacted_at_desc_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_created_at_and_id_desc;
@@ -44624,6 +44636,26 @@ ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_instance_
 
 ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION index_instance_type_ci_runners_on_token_expires_at_and_id_desc;
 
+ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION index_proj_type_ci_runner_machines_on_contacted_at_desc_id_desc;
+
+ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION index_proj_type_ci_runner_machines_on_runner_id_type_system_xid;
+
+ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION index_project_type_ci_runner_machines_on_created_at_and_id_desc;
+
+ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_project_type_ci_runner_machines_on_executor_type;
+
+ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_project_type_ci_runner_machines_on_ip_address;
+
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION index_project_type_ci_runner_machines_on_major_version;
+
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION index_project_type_ci_runner_machines_on_minor_version;
+
+ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_project_type_ci_runner_machines_on_organization_id;
+
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION index_project_type_ci_runner_machines_on_patch_version;
+
+ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION index_project_type_ci_runner_machines_on_version;
+
 ALTER INDEX index_ci_runners_on_created_at_and_id_desc ATTACH PARTITION index_project_type_ci_runners_on_created_at_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_creator_id_where_creator_id_not_null ATTACH PARTITION index_project_type_ci_runners_on_creator_id_where_not_null;
@@ -44633,22 +44665,6 @@ ALTER INDEX index_ci_runners_on_description_trigram ATTACH PARTITION index_proje
 ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION index_project_type_ci_runners_on_locked;
 
 ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_project_type_ci_runners_on_organization_id;
-
-ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION instance_type_ci_runner_machi_runner_id_runner_type_system__idx;
-
-ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx1;
-
-ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx2;
-
-ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION instance_type_ci_runner_machine_substring_version_runner_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_created_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_version_idx;
 
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION instance_type_ci_runner_machines_pkey;
 
@@ -44762,23 +44778,7 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION pro
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION project_topic_uploads_uploader_path_idx;
 
-ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION project_type_ci_runner_machin_runner_id_runner_type_system__idx;
-
-ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx1;
-
-ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx2;
-
-ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION project_type_ci_runner_machines_687967fa8a_contacted_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION project_type_ci_runner_machines_687967fa8a_created_at_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION project_type_ci_runner_machines_687967fa8a_sharding_key_id_idx;
-
-ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION project_type_ci_runner_machines_687967fa8a_version_idx;
-
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION project_type_ci_runner_machines_pkey;
-
-ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION project_type_ci_runner_machines_substring_version_runner_id_idx;
 
 ALTER INDEX ci_runners_pkey ATTACH PARTITION project_type_ci_runners_pkey;
 

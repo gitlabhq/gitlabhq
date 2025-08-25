@@ -58,7 +58,7 @@ Prerequisites:
 To change GitLab Duo Core availability:
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
 1. Under **GitLab Duo Core**, select or clear the **Turn on Web and IDE features** checkbox.
@@ -106,7 +106,7 @@ Prerequisites:
 To change GitLab Duo availability for the top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
 1. Select **Save changes**.
@@ -122,7 +122,7 @@ Prerequisites:
 To change GitLab Duo availability for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
 1. Select **Save changes**.
@@ -138,7 +138,7 @@ Prerequisites:
 To change GitLab Duo availability for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
 1. Select **Save changes**.
@@ -173,7 +173,7 @@ Prerequisites:
 To change GitLab Duo availability for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
 1. Select **Save changes**.
@@ -189,7 +189,7 @@ Prerequisites:
 To change GitLab Duo availability for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
 1. Select **Save changes**.
@@ -236,7 +236,7 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Under **GitLab Duo** section, select **Change configuration**.
 1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
@@ -249,7 +249,7 @@ In GitLab 17.3 and earlier, follow these instructions to
 turn on GitLab Duo experimental and beta features for your group on GitLab.com.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta GitLab Duo features** checkbox.
 1. Select **Save changes**.
@@ -284,7 +284,7 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Expand **Change configuration**.
 1. Under **Feature Preview**, select **Use experiment and beta GitLab Duo features**.
 1. Select **Save changes**.

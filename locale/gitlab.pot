@@ -7994,6 +7994,9 @@ msgstr ""
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr ""
 
+msgid "Analytics|You have insufficient %{linkStart}permissions%{linkEnd} to view this panel."
+msgstr ""
+
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 

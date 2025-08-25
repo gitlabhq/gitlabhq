@@ -156,13 +156,46 @@ export default {
       v-safe-html="activityFeedHtml"
       data-testid="events-list"
       class="gl-list-none gl-p-0"
+      :class="{ 'user-activity-feed': filter === null }"
     ></ul>
     <a :href="activityPath">{{ __('All activity') }}</a>
   </visibility-change-detector>
 </template>
 
 <style scoped>
-::v-deep .event-item {
-  padding-bottom: 0;
+::v-deep .user-activity-feed .system-note-image {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--gl-background-color-strong);
+}
+
+::v-deep .user-activity-feed .system-note-image svg {
+  width: 14px;
+  height: 14px;
+}
+
+::v-deep .user-activity-feed .user-profile-activity:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  left: 10px;
+  top: 20px;
+  height: calc(100% - 32px);
+  background-color: var(--gl-background-color-strong);
+  height: 100%;
+}
+
+::v-deep .user-activity-feed .user-profile-activity:last-child::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  left: 10px;
+  top: 10px;
+  background-color: var(--gl-background-color-strong);
+  bottom: 9px;
 }
 </style>

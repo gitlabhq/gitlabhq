@@ -38,7 +38,7 @@ export default {
   <gl-badge
     v-if="shouldShowBadge"
     v-gl-tooltip="tooltip"
-    variant="muted"
+    variant="neutral"
     icon="container-image"
     v-bind="$attrs"
   >

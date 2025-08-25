@@ -15,7 +15,7 @@
     %ul.label-links.gl-m-0.gl-mt-1.gl-p-0.gl-whitespace-nowrap.gl-flex.gl-gap-5
       - if label.lock_on_merge
         %li.gl-inline-flex.gl-self-start.gl-mt-1
-          = render Pajamas::BadgeComponent.new(_('Lock on merge'), icon: 'lock', variant: :muted)
+          = render Pajamas::BadgeComponent.new(_('Lock on merge'), icon: 'lock', variant: :neutral)
       - if show_label_issues_link
         %li.gl-inline-flex
           = link_to_label(label) { _('Issues') }

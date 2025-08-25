@@ -65,7 +65,7 @@ In the GitLab UI, you must give flows the ability to run in your project.
 To view flows that are running for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Automate > Sessions**.
+1. Select **Automate** > **Sessions**.
 
 ## View flow history in the IDEs
 

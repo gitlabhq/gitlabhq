@@ -524,8 +524,8 @@ curl --header "Private-Token: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 
 # Download a specific version (serial) of a state
-curl --request DELETE --header "Private-Token: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<your_serial>"
+curl --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
 {{< /tab >}}

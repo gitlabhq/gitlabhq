@@ -9,7 +9,7 @@
       = link_to group.full_name, group, class: 'group-name'
 
       - if access&.nonzero?
-        = render Pajamas::BadgeComponent.new(Gitlab::Access.human_access(access), variant: 'muted')
+        = render Pajamas::BadgeComponent.new(Gitlab::Access.human_access(access), variant: 'neutral')
 
     - if group.description.present?
       .description

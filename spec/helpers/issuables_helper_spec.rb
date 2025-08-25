@@ -116,13 +116,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         it 'returns navigation with badges' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
-            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
+            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-neutral gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
           expect(helper.issuables_state_counter_text(:issues, :closed, true))
-            .to eq('<span>Closed</span> <span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
+            .to eq('<span>Closed</span> <span class="gl-badge badge badge-pill badge-neutral gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
-            .to eq('<span>Merged</span> <span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
+            .to eq('<span>Merged</span> <span class="gl-badge badge badge-pill badge-neutral gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
-            .to eq('<span>All</span> <span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
+            .to eq('<span>All</span> <span class="gl-badge badge badge-pill badge-neutral gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">42</span></span>')
         end
       end
 
@@ -154,7 +154,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         it 'returns truncated count' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
-            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">1.1k</span></span>')
+            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-neutral gl-tab-counter-badge gl-hidden sm:gl-inline-flex"><span class="gl-badge-content">1.1k</span></span>')
         end
       end
     end

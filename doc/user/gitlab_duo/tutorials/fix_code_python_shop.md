@@ -71,7 +71,7 @@ Depending on your subscription add-on, you can use Chat in the GitLab UI, the We
 
 1. Open the Web IDE:
    1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
-   1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
+   1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of these methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.

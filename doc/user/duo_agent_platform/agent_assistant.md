@@ -130,7 +130,7 @@ Add the following CI/CD variables to your project's settings:
 To add or update a variable in the project settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and complete the fields:
    - **Type**: Select **Variable (default)**.
@@ -512,7 +512,7 @@ action that the user takes to trigger the CLI agent.
      For example `.gitlab/duo/flows/claude.yml`.
 1. Select **Create flow trigger**.
 
-You have created the flow trigger. Check that it appears in **Automate > Flow triggers**.
+You have created the flow trigger. Check that it appears in **Automate** > **Flow triggers**.
 
 You can now mention the CLI agent by its service account username in a comment to accomplish
 a task. The CLI agent then tries to accomplish that task, using the flow trigger defined by the user.

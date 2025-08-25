@@ -18,7 +18,7 @@ export default {
       );
     },
     badgeVariant() {
-      return this.isResolved ? 'success' : 'muted';
+      return this.isResolved ? 'success' : 'neutral';
     },
     tooltipTitle() {
       if (this.isResolved) {

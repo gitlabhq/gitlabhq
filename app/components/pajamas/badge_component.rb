@@ -2,7 +2,7 @@
 
 module Pajamas
   class BadgeComponent < Pajamas::Component
-    VARIANT_OPTIONS = [:muted, :neutral, :info, :success, :warning, :danger, :tier].freeze
+    VARIANT_OPTIONS = [:neutral, :info, :success, :warning, :danger, :tier].freeze
 
     def initialize(
       text = nil,
@@ -10,7 +10,7 @@ module Pajamas
       icon_classes: [],
       icon_only: false,
       href: nil,
-      variant: :muted,
+      variant: :neutral,
       **html_options
     )
       @text = text.presence
@@ -18,7 +18,7 @@ module Pajamas
       @icon_classes = Array.wrap(icon_classes)
       @icon_only = @icon && icon_only
       @href = href.presence
-      @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :muted)
+      @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :neutral)
       @html_options = html_options
     end
 

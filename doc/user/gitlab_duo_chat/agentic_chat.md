@@ -92,7 +92,7 @@ Prerequisites:
 
 Turn on GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
-1. In VS Code, go to **Settings > Settings**.
+1. In VS Code, go to **Settings** > **Settings**.
 1. Search for `agent platform`.
 1. Under **Gitlab › Duo Agent Platform: Enabled**, select the
    **Enable GitLab Duo Agent Platform** checkbox.
@@ -114,7 +114,7 @@ Prerequisites:
 
 Turn on GitLab Duo Chat:
 
-1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
+1. In your JetBrains IDE, go to **Settings** > **Tools** > **GitLab Duo**.
 1. Under **GitLab Duo Agent Platform (Beta)**, select the **Enable GitLab Duo Agent Platform** checkbox.
 1. Restart your IDE if prompted.
 
@@ -133,13 +133,13 @@ Prerequisites:
 
 Turn on GitLab Duo Chat:
 
-1. In Visual Studio, go to **Tools > Options > GitLab**.
+1. In Visual Studio, go to **Tools** > **Options** > **GitLab**.
 1. Under **GitLab**, select **General**.
 1. For **Enable Agentic Duo Chat (experimental)**, select **True**, and then **OK**.
 
 Then, to use GitLab Duo Chat:
 
-1. Select **Extensions > GitLab > Open Agentic Chat**.
+1. Select **Extensions** > **GitLab** > **Open Agentic Chat**.
 1. In the message box, enter your question and press **Enter**.
 
 ### View the chat history

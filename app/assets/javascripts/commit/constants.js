@@ -24,7 +24,7 @@ export const signatureTypes = {
 };
 
 const UNVERIFIED_CONFIG = {
-  variant: 'muted',
+  variant: 'neutral',
   label: __('Unverified'),
   title: __('Unverified signature'),
   description: __('This commit was signed with an unverified signature.'),
@@ -72,13 +72,13 @@ export const statusConfig = {
     ...UNVERIFIED_CONFIG,
   },
   [verificationStatuses.OTHER_USER]: {
-    variant: 'muted',
+    variant: 'neutral',
     label: __('Unverified'),
     title: __("Different user's signature"),
     description: __('This commit was signed with an unverified signature.'),
   },
   [verificationStatuses.SAME_USER_DIFFERENT_EMAIL]: {
-    variant: 'muted',
+    variant: 'neutral',
     label: __('Unverified'),
     title: __('GPG key mismatch'),
     description: __(
@@ -86,13 +86,13 @@ export const statusConfig = {
     ),
   },
   [verificationStatuses.MULTIPLE_SIGNATURES]: {
-    variant: 'muted',
+    variant: 'neutral',
     label: __('Unverified'),
     title: __('Multiple signatures'),
     description: __('This commit was signed with multiple signatures.'),
   },
   [verificationStatuses.REVOKED_KEY]: {
-    variant: 'muted',
+    variant: 'neutral',
     label: __('Unverified'),
     title: s__('CommitSignature|Unverified signature'),
     description: s__('CommitSignature|This commit was signed with a key that was revoked.'),

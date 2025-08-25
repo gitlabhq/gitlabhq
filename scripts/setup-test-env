@@ -50,6 +50,7 @@ Gitlab.ee do
   require_relative '../ee/lib/gitlab/elastic/indexer'
   require_relative '../lib/gitlab/utils/override'
   require_relative '../ee/spec/support/helpers/secrets_management/openbao_test_setup'
+  require_relative '../ee/spec/support/search/zoekt_process_manager'
 end
 
 require_relative '../spec/support/helpers/test_env'

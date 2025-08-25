@@ -107,7 +107,7 @@ These visualizations help you understand whether the key DevSecOps metrics impro
 
 - Lifecycle metrics
 - DORA metrics (Ultimate only)
-- Security metrics (Ultimate only)
+- Security metrics (Ultimate only, at least the **Developer** role)
 
 In each comparison panel, you can:
 

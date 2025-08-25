@@ -51,7 +51,7 @@ For more details, see [Switch GitLab accounts in VS Code](_index.md#switch-gitla
 
 To connect to your GitLab repository from VS Code:
 
-1. In VS Code, on the top menu, select **Terminal > New Terminal**.
+1. In VS Code, on the top menu, select **Terminal** > **New Terminal**.
 1. Clone your repository: `git clone <repository>`.
 1. Change to the directory where your repository was cloned and check out your branch: `git checkout <branch_name>`.
 1. Ensure your project is selected:
@@ -68,7 +68,7 @@ To connect to your GitLab repository from VS Code:
 
    1. On the left sidebar, select **Source Control** ({{< icon name="branch" >}}).
    1. On the **Source Control** label, right-click and select **Repositories**.
-   1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote > Add Remote**.
+   1. Next to your repository, select the ellipsis ({{< icon name=ellipsis_h >}}), then **Remote** > **Add Remote**.
    1. Select **Add remote from GitLab**.
    1. Choose a remote.
 
@@ -79,14 +79,14 @@ The extension shows information in the VS Code status bar if both:
 
 ## Configure the extension
 
-To configure settings, go to **Settings > Extensions > GitLab Workflow**.
+To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
 
 By default, Code Suggestions and GitLab Duo Chat are enabled, so if you have
 the GitLab Duo add-on and a seat assigned, you should have access.
 
 ### Code security
 
-To configure the code security settings, go to **Settings > Extensions > GitLab Workflow > Code Security**.
+To configure the code security settings, go to **Settings** > **Extensions** > **GitLab Workflow** > **Code Security**.
 
 - To enable SAST scanning of the active file, select the **Enable Real-time SAST scan** checkbox.
 - Optional. To enable SAST scanning of the active file when you save it, select the
@@ -99,6 +99,6 @@ GitLab publishes pre-release builds of the extension to the VS Code Extension Ma
 To install a pre-release build:
 
 1. Open VS Code.
-1. Under **Extensions > GitLab Workflow**, select **Switch to Pre-release Version**.
+1. Under **Extensions** > **GitLab Workflow**, select **Switch to Pre-release Version**.
 1. Select **Restart Extensions**.
    1. Alternatively **Reload Window** to refresh any outdated webviews after updating.

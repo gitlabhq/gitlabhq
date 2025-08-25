@@ -135,7 +135,7 @@ export default {
                   {{ commit.shortId }}
                 </span>
                 <div class="gl-flex gl-flex-row-reverse gl-items-center gl-gap-3 sm:gl-flex-row">
-                  <gl-badge v-if="commit.tag" icon="tag" variant="muted" class="gl-h-6">{{
+                  <gl-badge v-if="commit.tag" icon="tag" variant="neutral" class="gl-h-6">{{
                     commit.tag.name
                   }}</gl-badge>
                   <signature-badge

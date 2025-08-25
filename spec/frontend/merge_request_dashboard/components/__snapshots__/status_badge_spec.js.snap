@@ -7,7 +7,7 @@ exports[`Merge request status badge component renders badge 1`] = `
   iconsize="md"
   tag="span"
   target="_self"
-  variant="muted"
+  variant="neutral"
 >
   You commented
 </gl-badge-stub>
@@ -21,7 +21,7 @@ exports[`Merge request status badge component renders badge when currentUser is 
   iconsize="md"
   tag="span"
   target="_self"
-  variant="muted"
+  variant="neutral"
 >
   You requested changes
 </gl-badge-stub>

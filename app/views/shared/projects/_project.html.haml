@@ -56,7 +56,7 @@
         - if !explore_projects_tab? && access&.nonzero?
           -# haml-lint:disable UnnecessaryStringOutput
           = ' ' # prevent haml from eating the space between elements
-          = render Pajamas::BadgeComponent.new(localized_project_human_access(access), variant: 'muted', data: { testid: 'user-access-role' })
+          = render Pajamas::BadgeComponent.new(localized_project_human_access(access), variant: 'neutral', data: { testid: 'user-access-role' })
 
         - if !explore_projects_tab?
           = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: '!gl-ml-2'

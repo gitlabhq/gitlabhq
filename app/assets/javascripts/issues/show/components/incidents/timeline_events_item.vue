@@ -88,7 +88,7 @@ export default {
             </template>
           </gl-sprintf>
         </h3>
-        <gl-badge v-for="tag in eventTags" :key="tag.key" variant="muted" icon="tag">
+        <gl-badge v-for="tag in eventTags" :key="tag.key" variant="neutral" icon="tag">
           {{ tag.name }}
         </gl-badge>
       </div>
