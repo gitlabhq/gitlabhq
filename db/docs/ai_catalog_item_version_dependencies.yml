@@ -1,0 +1,12 @@
+---
+table_name: ai_catalog_item_version_dependencies
+classes:
+- Ai::Catalog::ItemVersionDependency
+feature_categories:
+- workflow_catalog
+description: Used to keep track of Ai::Catalog::ItemVersion dependencies
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201585
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations

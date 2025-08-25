@@ -219,23 +219,6 @@ rspec system pg16:
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
 
-rspec system pg16 vue3:
-  extends:
-    - rspec system pg16
-    - .rails:rules:ee-and-foss-system vue3
-  needs:
-    # Same as needs of "rspec system pg16" with
-    # "compile-test-assets vue3" instead of "compile-test-assets"
-    - job: clone-gitlab-repo
-      optional: true
-    - job: "setup-test-env"
-    - job: "retrieve-tests-metadata"
-    - job: "compile-test-assets vue3"
-    - job: "detect-tests"
-      optional: true
-    - job: "db:setup pg16"
-      optional: true
-
 rspec system pg16 single-redis:
   extends:
     - rspec system pg16

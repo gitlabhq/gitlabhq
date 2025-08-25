@@ -8348,6 +8348,22 @@ CREATE SEQUENCE ai_catalog_item_consumers_id_seq
 
 ALTER SEQUENCE ai_catalog_item_consumers_id_seq OWNED BY ai_catalog_item_consumers.id;
 
+CREATE TABLE ai_catalog_item_version_dependencies (
+    id bigint NOT NULL,
+    ai_catalog_item_version_id bigint NOT NULL,
+    dependency_id bigint NOT NULL,
+    organization_id bigint NOT NULL
+);
+
+CREATE SEQUENCE ai_catalog_item_version_dependencies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_item_version_dependencies_id_seq OWNED BY ai_catalog_item_version_dependencies.id;
+
 CREATE TABLE ai_catalog_item_versions (
     id bigint NOT NULL,
     release_date timestamp with time zone,
@@ -27892,6 +27908,8 @@ ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq
 
 ALTER TABLE ONLY ai_catalog_item_consumers ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_consumers_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_catalog_item_version_dependencies ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_version_dependencies_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
@@ -29958,6 +29976,9 @@ ALTER TABLE ONLY ai_agents
 
 ALTER TABLE ONLY ai_catalog_item_consumers
     ADD CONSTRAINT ai_catalog_item_consumers_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_item_version_dependencies
+    ADD CONSTRAINT ai_catalog_item_version_dependencies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_catalog_item_versions
     ADD CONSTRAINT ai_catalog_item_versions_pkey PRIMARY KEY (id);
@@ -35100,6 +35121,12 @@ CREATE INDEX index_ai_catalog_item_consumers_on_group_id ON ai_catalog_item_cons
 CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_item_consumers USING btree (organization_id);
 
 CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
+
+CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_catalog_item_version_dependencies USING btree (dependency_id);
+
+CREATE INDEX index_ai_catalog_item_version_dependencies_on_item_version_id ON ai_catalog_item_version_dependencies USING btree (ai_catalog_item_version_id);
+
+CREATE INDEX index_ai_catalog_item_version_dependencies_on_organization_id ON ai_catalog_item_version_dependencies USING btree (organization_id);
 
 CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_item_versions USING btree (organization_id);
 
@@ -43182,6 +43209,9 @@ ALTER TABLE ONLY work_item_transitions
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_version_dependencies
+    ADD CONSTRAINT fk_029f3e2875 FOREIGN KEY (dependency_id) REFERENCES ai_catalog_items(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY cluster_agent_url_configurations
     ADD CONSTRAINT fk_02c2a4f060 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -43422,6 +43452,9 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_version_dependencies
+    ADD CONSTRAINT fk_16622d5b1a FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_16ddb573de FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
@@ -43535,6 +43568,9 @@ ALTER TABLE ONLY alert_management_alerts
 
 ALTER TABLE ONLY design_management_designs
     ADD CONSTRAINT fk_239cd63678 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_item_version_dependencies
+    ADD CONSTRAINT fk_23bfd87ce3 FOREIGN KEY (ai_catalog_item_version_id) REFERENCES ai_catalog_item_versions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT fk_23e0e92313 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

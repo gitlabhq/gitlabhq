@@ -79,11 +79,6 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
-compile-test-assets vue3:
-  extends:
-    - compile-test-assets
-    - .vue3
-
 build-vite-prod:
   extends:
     - .production

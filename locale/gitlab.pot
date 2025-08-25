@@ -636,21 +636,6 @@ msgstr ""
 msgid "%{author} has created a merge request that you can approve."
 msgstr ""
 
-msgid "%{bStart}Customers are not affected:%{bEnd} we never log customer usage of Duo Chat (unless specifically requested by the customer)"
-msgstr ""
-
-msgid "%{bStart}Privacy safeguards:%{bEnd} Your name and user ID are not logged as structured fields"
-msgstr ""
-
-msgid "%{bStart}Purpose:%{bEnd} This data helps us improve Duo Chat and will never be used for performance evaluation. Note: The in-app feedback form states 'GitLab team members cannot see the AI content.' This does not apply for team members' interactions with the chat."
-msgstr ""
-
-msgid "%{bStart}What's logged:%{bEnd} Your questions, contexts (files, issues, MRs, etc.), and Duo's responses"
-msgstr ""
-
-msgid "%{bStart}Which interfaces are affected:%{bEnd} usage of Duo Chat in Web and IDEs as well as Duo Agentic Chat in Web and IDEs"
-msgstr ""
-
 msgid "%{board_target} not found"
 msgstr ""
 
@@ -6265,6 +6250,9 @@ msgstr ""
 msgid "AiPowered|Enroll in the Early Access Program"
 msgstr ""
 
+msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoint is used for GitLab Duo Agent Platform requests. %{br} The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\"."
+msgstr ""
+
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
 msgstr ""
 
@@ -6353,6 +6341,9 @@ msgid "AiPowered|Local AI Gateway URL"
 msgstr ""
 
 msgid "AiPowered|Local AI gateway URL"
+msgstr ""
+
+msgid "AiPowered|Local Duo Agent Platform Service URL"
 msgstr ""
 
 msgid "AiPowered|Lock tooltip icon"
@@ -29724,9 +29715,6 @@ msgid "GitLab Support Bot"
 msgstr ""
 
 msgid "GitLab Team"
-msgstr ""
-
-msgid "GitLab Team Member Notice: Chat Logging Active"
 msgstr ""
 
 msgid "GitLab University"

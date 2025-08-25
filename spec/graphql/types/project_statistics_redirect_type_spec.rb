@@ -15,11 +15,9 @@ RSpec.describe GitlabSchema.types['ProjectStatisticsRedirect'], feature_category
   end
 
   describe 'fields with :ai_workflows scope' do
-    %w[repository].each do |field_name|
-      it "includes :ai_workflows scope for the #{field_name} field" do
-        field = described_class.fields[field_name]
-        expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
-      end
+    it "includes :ai_workflows scope for the 'repository' field" do
+      field = described_class.fields['repository']
+      expect(field.instance_variable_get(:@scopes)).to include(:ai_workflows)
     end
   end
 end
