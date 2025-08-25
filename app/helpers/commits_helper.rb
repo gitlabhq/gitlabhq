@@ -89,13 +89,6 @@ module CommitsHelper
     gl_badge_tag(text, { variant: :info, icon: 'branch' }, { href: url, class: 'gl-font-monospace gl-mb-1' })
   end
 
-  # Returns the sorted alphabetically links to branches, separated by a comma
-  def commit_branches_links(project, branches)
-    branches.sort.map do |branch|
-      commit_branch_link(project_ref_path(project, branch), branch)
-    end.join(' ').html_safe
-  end
-
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     gl_badge_tag(text, { variant: :info, icon: 'tag' }, { href: url, class: 'gl-font-monospace' })

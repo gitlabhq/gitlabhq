@@ -46,12 +46,21 @@ module Projects
 
       unless last_page
         next_path = refs_filtered_path(
-          page_token: refs.last.name,
+          page_token: next_page_token(refs.last.name),
           sort: params[:sort]
         )
       end
 
       [refs, previous_path, next_path]
+    end
+
+    def next_page_token(name)
+      case ref_type
+      when :branches
+        "#{Gitlab::Git::BRANCH_REF_PREFIX}#{name}"
+      when :tags
+        "#{Gitlab::Git::TAG_REF_PREFIX}#{name}"
+      end
     end
 
     def refs_filtered_path(options = {})

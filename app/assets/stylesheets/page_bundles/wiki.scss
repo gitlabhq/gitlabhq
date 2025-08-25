@@ -185,3 +185,29 @@ ul.wiki-pages-list.content-list {
     border: 0;
   }
 }
+
+.paneled-view .wiki-overview {
+  @include media-breakpoint-up(lg) {
+    $overview-gap-width: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: $overview-gap-width;
+
+    .right-sidebar {
+      position: sticky;
+      top: $top-bar-height;
+      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem);
+    }
+  }
+}
+
+.paneled-view.content-wrapper:has(.wiki-page-header),
+.paneled-view.content-wrapper:has(.wiki-page-details) {
+  .container-limited.project-highlight-puc {
+    max-width: 100%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    padding-right: 0 !important;
+  }
+}

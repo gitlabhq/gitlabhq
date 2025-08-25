@@ -11,7 +11,7 @@ import {
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_feature_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { setError } from '../graphql/cache_updates';
 
 export default {

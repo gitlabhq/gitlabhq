@@ -14,7 +14,8 @@ title: Int range partitioning
 ## Description
 
 Int range partitioning is a technique for dividing a large table into smaller,
-more manageable chunks based on an integer column.
+more manageable chunks based on an integer column. Such that each partition
+contains a range of integers.
 This can be particularly useful for tables with large numbers of rows,
 as it can significantly improve query performance, reduce storage requirements, and simplify maintenance tasks.
 For this type of partitioning to work well, most queries must access data in a
@@ -71,11 +72,86 @@ greater than or equal to `1` and less than `20`.
 
 Now, if we look at the previous example query again, the database can
 use the `WHERE` to recognize that all matching rows are in the
-`merge_request_diff_files_1` partition. Rather than searching all of the data
-in all of the partitions. In a large table, this can
+`merge_request_diff_files_1` partition. Rather than searching all the data
+in all the partitions. In a large table, this can
 dramatically reduce the amount of data the database needs to access.
 
-## Example
+## Creating a new partitioned table
+
+Because this is a new table, this can be done in 1 MR.
+
+## ActiveRecord model modification
+
+In your ActiveRecord model, add a `partitioned_by` call similar to the example below. This is necessary to give instructions
+for the `PartitionManager` to know how to create partitions dynamically.
+
+```ruby
+  PARTITION_SIZE = 2_000_000
+  partitioned_by :namespace_id, strategy: :int_range, partition_size: PARTITION_SIZE
+```
+
+The partition size can be decided based on the anticipated growth of the table.
+
+Do not forget to register your model on the partition manager, in the file `config/initializers/postgres_partitioning.rb`.
+
+## Add the database migration
+
+In the database migration that creates the table, we may also need to create the initial partitions, especially
+if we are partitioning the table by a foreign key that references an existing table.
+
+In this example, we are referencing the `namespaces` table. You need to adapt it to the referenced table. See
+the implementation of method `create_partitions` in this sample database migration:
+
+```ruby
+class AddKnowledgeGraphEnabledNamespaces < Gitlab::Database::Migration[2.3]
+  include Gitlab::Database::PartitioningMigrationHelpers
+
+  disable_ddl_transaction!
+  milestone "fill_the_current_milestone"
+
+  TABLE_NAME = :p_knowledge_graph_enabled_namespaces
+  PARTITION_SIZE = 2_000_000
+  MIN_ID = Namespace.connection
+    .select_value("select min_value from pg_sequences where sequencename = 'namespaces_id_seq'") || 1
+
+  def up
+    with_lock_retries do
+      create_table TABLE_NAME,
+        options: 'PARTITION BY RANGE (namespace_id)',
+        primary_key: [:id, :namespace_id], if_not_exists: true do |t|
+        t.bigserial :id, null: false
+        t.bigint :namespace_id, null: false
+        t.timestamps_with_timezone null: false
+        t.integer :state, null: false, default: 0, limit: 2, index: true
+        t.index :namespace_id, unique: true
+      end
+    end
+
+    create_partitions
+  end
+
+  def down
+    drop_table TABLE_NAME
+  end
+
+  private
+
+  def create_partitions
+    max_id = Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
+      Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+        define_batchable_model('namespaces', connection: connection).maximum(:id) || MIN_ID
+      end
+    end
+
+    create_int_range_partitions(TABLE_NAME, PARTITION_SIZE, MIN_ID, max_id)
+  end
+end
+```
+
+It's worth noting that we cannot assume that tables sequences start from `1`, that is because
+in Cells, each Cell will dedicate a range of sequences for the database tables.
+
+## Converting an existing table into a partitioned table
 
 ### Step 1: Creating the partitioned copy (Release N)
 

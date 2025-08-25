@@ -215,7 +215,7 @@ InitializerConnections.raise_if_new_database_connection do
         end
       end
 
-      resources :sent_notifications, only: [], constraints: { id: /[A-Za-z0-9\-_]{32,78}/ } do
+      resources :sent_notifications, only: [], constraints: { id: /[A-Za-z0-9\-_]{1,32}/ } do
         member do
           match :unsubscribe, via: [:get, :post]
         end

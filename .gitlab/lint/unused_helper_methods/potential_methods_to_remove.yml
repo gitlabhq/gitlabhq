@@ -69,8 +69,6 @@ sidebar_tracking_attributes_by_object:
   file: app/helpers/sidebars_helper.rb
 scope_avatar_classes:
   file: app/helpers/sidebars_helper.rb
-commit_branches_links:
-  file: app/helpers/commits_helper.rb
 commit_tags_links:
   file: app/helpers/commits_helper.rb
 sort_title_stars:

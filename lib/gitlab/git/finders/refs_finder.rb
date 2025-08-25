@@ -19,11 +19,12 @@ module Gitlab
           # **/* allows to match any level of nesting
           pattern = [prefix, "**/*", search, "*"].compact.join
 
-          repository.list_refs(
+          raw_refs = repository.list_refs(
             [pattern],
             sort_by: sort_by,
             pagination_params: pagination_params
           )
+          raw_refs.map { |ref| Ref.new(repository, ref.name, ref.target, nil) }
         rescue ArgumentError => e
           raise Gitlab::Git::InvalidPageToken, "Invalid page token: #{page_token}" if e.message.include?('page token')
 

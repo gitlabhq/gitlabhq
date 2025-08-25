@@ -817,6 +817,40 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
       }
     }
 
+    // MR sidebar
+    .work-item-attributes-wrapper,
+    .issuable-sidebar.is-merge-request .issuable-context-form {
+      @include media-breakpoint-up(lg) {
+        top: calc(#{$header-height} + #{$mr-sticky-header-height} - 1px);
+      }
+    }
+
+    // Issue sidebar
+    @include media-breakpoint-up(md) {
+      .work-item-attributes-wrapper {
+        top: calc(#{$header-height} + #{$work-item-sticky-header-height});
+      }
+    }
+
+    // Project sidebar
+    @include media-breakpoint-up(lg) {
+      .project-page-indicator:not(.hidden) + .project-page-layout .project-page-sidebar {
+        top: calc(#{$header-height} + #{$gl-spacing-scale-4});
+      }
+    }
+
+    // User profile sidebar
+    @include media-breakpoint-up(lg) {
+      .user-profile .profile-header {
+        top: $header-height;
+      }
+    }
+
+    // Sidebar fallback
+    .right-sidebar {
+      top: 0;
+    }
+
     // Sticky headers below top bar
     .issue-sticky-header:not(.merge-request-sticky-header),
     .merge-request-sticky-header,

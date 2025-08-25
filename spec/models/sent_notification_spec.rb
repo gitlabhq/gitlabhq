@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe SentNotification, :request_store, feature_category: :shared do
+  include SentNotificationHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
@@ -125,7 +127,14 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
 
     subject { described_class.for(reply_key) }
 
+    context 'when reply_key is not a string' do
+      let(:reply_key) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
     context 'when reply key uses old format' do
+      let_it_be(:sent_notification) { create(:sent_notification, :legacy_reply_key, project: project) }
       let(:reply_key) { sent_notification.reply_key }
 
       it { is_expected.to eq(sent_notification) }
@@ -140,10 +149,9 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
     end
 
     context 'when reply key uses partitioned table format' do
-      let(:reply_key) do
-        # TODO: This can be simplified to calling partitioned_reply_key when the FF is removed
-        microseconds = (sent_notification.created_at.to_r * 1_000_000).to_i
-        "i_#{sent_notification.id}-k_#{sent_notification.reply_key}-t_#{microseconds}"
+      let_it_be(:sent_notification) { create_sent_notification(project: project) }
+      let_it_be(:reply_key) do
+        sent_notification.partitioned_reply_key
       end
 
       it { is_expected.to eq(sent_notification) }
@@ -153,7 +161,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
           stub_feature_flags(sent_notifications_partitioned_reply_key: false)
         end
 
-        it { is_expected.to be_nil }
+        it { is_expected.to eq(sent_notification) }
       end
     end
   end
@@ -205,6 +213,14 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
         expect(subject.in_reply_to_discussion_id).to eq(note.discussion_id)
       end
     end
+  end
+
+  describe '#partitioned_reply_key' do
+    let_it_be(:sent_notification) { create(:sent_notification, project: project) }
+
+    subject { sent_notification.partitioned_reply_key }
+
+    it { is_expected.to eq(sent_notification.reply_key) }
   end
 
   describe '#unsubscribable?' do
@@ -440,6 +456,19 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
         new_note = subject.create_reply('Test')
         expect(new_note.in_reply_to?(note)).to be_truthy
         expect(new_note.discussion_id).to eq(note.discussion_id)
+      end
+    end
+  end
+
+  describe '#noteable' do
+    context 'when finding a commit fails' do
+      let!(:commit) { project.commit }
+      let!(:sent_notification) { described_class.record(commit, user) }
+
+      it 'returns nil' do
+        allow(project).to receive(:commit).and_raise(StandardError)
+
+        expect(sent_notification.noteable).to be_nil
       end
     end
   end

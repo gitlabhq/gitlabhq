@@ -1,8 +1,6 @@
-- branch_name = Gitlab::Git.ref_name(matching_branch.name, types: 'branch')
-
 %tr
   %td
-    = link_to branch_name, project_ref_path(@project, branch_name), class: 'ref-name'
+    = link_to branch_name, project_ref_path(@project, branch_name, ref_type: 'heads'), class: 'ref-name'
 
     - if @project.root_ref?(branch_name)
       = gl_badge_tag s_('ProtectedBranch|default'), { variant: :info }, { class: 'gl-ml-2' }

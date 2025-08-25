@@ -138,7 +138,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'with an issue id, issue path and unsubscribe url placeholders' do
-      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(SentNotification.last) }
+      let(:expected_unsubscribe_url) { unsubscribe_sent_notification_url(PartitionedSentNotification.last) }
       let(:template_content) do
         'thank you, **your new issue:** %{ISSUE_ID}, path: %{ISSUE_PATH}' \
           '[Unsubscribe](%{UNSUBSCRIBE_URL})'
@@ -287,7 +287,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'generates Reply-To address from custom email' do
       reply_address = subject.reply_to.first
-      notification = SentNotification.last
+      notification = PartitionedSentNotification.last
       expected_reply_address = service_desk_setting.custom_email.sub('@', "+#{notification.partitioned_reply_key}@")
 
       expect(reply_address).to eq(expected_reply_address)

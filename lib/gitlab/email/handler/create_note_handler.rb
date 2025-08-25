@@ -12,11 +12,13 @@ module Gitlab
       class CreateNoteHandler < BaseHandler
         include ReplyProcessing
 
+        HANDLER_REGEX = /\A#{::SentNotification::FULL_REPLY_KEY_REGEX}\z/
+
         delegate :project, to: :sent_notification, allow_nil: true
         delegate :noteable, to: :sent_notification
 
         def can_handle?
-          mail_key =~ /\A\w+\z/
+          mail_key =~ HANDLER_REGEX
         end
 
         def execute

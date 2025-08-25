@@ -82,8 +82,17 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
     end
   end
 
-  context 'when no sent notification for the mail key could be found' do
+  context 'when mail key has the wrong format' do
     let(:email_raw) { fixture_file('emails/wrong_mail_key.eml') }
+
+    it 'raises a UnknownIncomingEmail' do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+    end
+  end
+
+  context 'when no sent notification for the mail key could be found' do
+    let(:email_raw) { fixture_file('emails/valid_reply.eml') }
+    let(:sent_notification) { nil }
 
     it 'raises a SentNotificationNotFoundError' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::SentNotificationNotFoundError)

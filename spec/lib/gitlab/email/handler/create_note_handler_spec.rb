@@ -41,7 +41,8 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
 
   context 'when the incoming email is from a different email address' do
     before do
-      SentNotification.for(sent_notification.reply_key).update!(recipient: original_recipient)
+      SentNotification
+        .for(sent_notification.reply_key).update!(recipient: original_recipient)
     end
 
     context 'when the issue is not a Service Desk issue' do
@@ -76,8 +77,17 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
     end
   end
 
-  context 'when no sent notification for the mail key could be found' do
+  context 'when mail key has the wrong format' do
     let(:email_raw) { fixture_file('emails/wrong_mail_key.eml') }
+
+    it 'raises a UnknownIncomingEmail' do
+      expect { receiver.execute }.to raise_error(Gitlab::Email::UnknownIncomingEmail)
+    end
+  end
+
+  context 'when no sent notification for the mail key could be found' do
+    let(:email_raw) { fixture_file('emails/valid_reply.eml') }
+    let(:sent_notification) { nil }
 
     it 'raises a SentNotificationNotFoundError' do
       expect { receiver.execute }.to raise_error(Gitlab::Email::SentNotificationNotFoundError)
@@ -240,7 +250,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler, feature_category: :sha
       SentNotification.record_note(note, Users::Internal.support_bot.id)
     end
 
-    let(:reply_address) { "support+#{sent_notification.reply_key}@example.com" }
+    let(:reply_address) { "support+#{sent_notification.partitioned_reply_key}@example.com" }
     let(:reopen_note) { noteable.notes.last }
     let(:email_raw) do
       <<~EMAIL

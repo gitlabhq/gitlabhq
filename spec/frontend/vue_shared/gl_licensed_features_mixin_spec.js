@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import GlLicensedFeaturesPlugin from '~/vue_shared/gl_licensed_features_plugin';
-import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_feature_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 
 describe('GitLab Licenced Feature Flags Plugin', () => {
   beforeEach(() => {

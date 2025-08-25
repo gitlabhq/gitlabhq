@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler do
+  include SentNotificationHelpers
+
   let(:email) { Mail.new { body 'email' } }
 
   describe '.for' do
@@ -59,11 +61,19 @@ RSpec.describe Gitlab::Email::Handler do
   end
 
   describe 'regexps are set properly' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:sent_notification) { create_sent_notification(project: project) }
+    let(:reply_key) { sent_notification.partitioned_reply_key }
+
     let(:addresses) do
-      %W[sent_notification_key#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX} sent_notification_key#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY}] +
-        %w[sent_notification_key path-to-project-123-user_email_token-merge-request] +
-        %w[path-to-project-123-user_email_token-issue path-to-project-123-user_email_token-issue-123] +
-        %w[path/to/project+user_email_token path/to/project+merge-request+user_email_token some/project]
+      %W[
+        #{reply_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX}
+        #{reply_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY}
+        #{reply_key}
+        path-to-project-123-user_email_token-merge-request
+        path-to-project-123-user_email_token-issue path-to-project-123-user_email_token-issue-123
+        path/to/project+user_email_token path/to/project+merge-request+user_email_token some/project
+      ]
     end
 
     before do

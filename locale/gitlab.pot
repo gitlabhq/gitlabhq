@@ -2428,6 +2428,12 @@ msgstr ""
 msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
 msgstr ""
 
+msgid "AICatalog|Add this flow to a project or a group"
+msgstr ""
+
+msgid "AICatalog|Add to project or group"
+msgstr ""
+
 msgid "AICatalog|Agent created successfully."
 msgstr ""
 
@@ -2515,6 +2521,9 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
+msgid "AICatalog|Failed to add flow to target. Flow not found."
+msgstr ""
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
@@ -2522,6 +2531,12 @@ msgid "AICatalog|Failed to delete flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to execute agent."
+msgstr ""
+
+msgid "AICatalog|Flow added successfully to %{name}."
+msgstr ""
+
+msgid "AICatalog|Flow could not be added: %{flowName}"
 msgstr ""
 
 msgid "AICatalog|Flow created successfully."
@@ -2581,6 +2596,9 @@ msgstr ""
 msgid "AICatalog|Project is required."
 msgstr ""
 
+msgid "AICatalog|Project or Group ID"
+msgstr ""
+
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
@@ -2605,10 +2623,16 @@ msgstr ""
 msgid "AICatalog|Select a project for your AI flow to be associated with."
 msgstr ""
 
+msgid "AICatalog|Select a project or group for which you want to enable this flow."
+msgstr ""
+
 msgid "AICatalog|Select agent"
 msgstr ""
 
 msgid "AICatalog|Select tools that this agent will have access to."
+msgstr ""
+
+msgid "AICatalog|Selected flow"
 msgstr ""
 
 msgid "AICatalog|System prompt"
@@ -2630,6 +2654,9 @@ msgid "AICatalog|The agent could not be updated. Try again."
 msgstr ""
 
 msgid "AICatalog|The flow could not be added. Try again."
+msgstr ""
+
+msgid "AICatalog|The flow could not be enabled. Try again. %{error}"
 msgstr ""
 
 msgid "AICatalog|The flow could not be updated. Try again."
@@ -5996,6 +6023,9 @@ msgid "Advanced Search"
 msgstr ""
 
 msgid "Advanced Settings"
+msgstr ""
+
+msgid "Advanced editor"
 msgstr ""
 
 msgid "Advanced export options"
@@ -27028,6 +27058,9 @@ msgstr ""
 msgid "ExperimentTracking|Run"
 msgstr ""
 
+msgid "Experimental"
+msgstr ""
+
 msgid "Experiments"
 msgstr ""
 
@@ -30201,6 +30234,9 @@ msgid "Gitpod|https://gitpod.example.com"
 msgstr ""
 
 msgid "Give feedback"
+msgstr ""
+
+msgid "Give us feedback"
 msgstr ""
 
 msgid "Give us some feedback"
@@ -57731,6 +57767,9 @@ msgstr ""
 msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before selection."
 msgstr ""
 
+msgid "SecurityOrchestration|%{boldStart}Experiment:%{boldEnd} Try our new advanced policy editor for a more intuitive experience."
+msgstr ""
+
 msgid "SecurityOrchestration|%{boldStart}Send a bot message%{boldEnd} as comment to merge request creator."
 msgstr ""
 
@@ -57938,6 +57977,9 @@ msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{st
 msgstr ""
 
 msgid "SecurityOrchestration|Automatically selected runners"
+msgstr ""
+
+msgid "SecurityOrchestration|Back to standard editor"
 msgstr ""
 
 msgid "SecurityOrchestration|Branch exceptions (%{count})"
@@ -58822,6 +58864,9 @@ msgid "SecurityOrchestration|To widen your search, change filters above or selec
 msgstr ""
 
 msgid "SecurityOrchestration|Trigger"
+msgstr ""
+
+msgid "SecurityOrchestration|Try advanced editor"
 msgstr ""
 
 msgid "SecurityOrchestration|Turn off default mode to edit scope."
@@ -75784,6 +75829,9 @@ msgid "ciReport|Download the patch to apply it manually"
 msgstr ""
 
 msgid "ciReport|Dynamic Application Security Testing (DAST)"
+msgstr ""
+
+msgid "ciReport|Error while fetching enabled scans. Please try again later."
 msgstr ""
 
 msgid "ciReport|Explain vulnerability"
