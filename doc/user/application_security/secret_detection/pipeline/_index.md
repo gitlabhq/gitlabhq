@@ -158,7 +158,7 @@ To run a historic scan:
    1. In the **Input variable value** box, enter `true`.
 1. Select **New pipeline**.
 
-### Advanced vulnerability tracking
+### Duplicate vulnerability tracking
 
 {{< details >}}
 
@@ -173,17 +173,30 @@ To run a historic scan:
 
 {{< /history >}}
 
-When developers make changes to a file with identified secrets, it's likely that the positions of these secrets will also change. Pipeline secret detection may have already flagged these secrets as vulnerabilities, tracked in the [vulnerability report](../../vulnerability_report/_index.md). These vulnerabilities are associated with specific secrets for easy identification and action. However, if the detected secrets aren't accurately tracked as they shift, managing vulnerabilities becomes challenging, potentially resulting in duplicate vulnerability reports.
+Secret detection uses an advanced vulnerability tracking algorithm to prevent
+duplicate findings and vulnerabilities from being created when a file is
+refactored or moved.
 
-Pipeline secret detection uses an advanced vulnerability tracking algorithm to more accurately identify when the same secret has moved within a file due to refactoring or unrelated changes.
+A new finding is not created when:
 
-For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
+- A secret is moved within a file.
+- A duplicate secret appears within a file.
+
+Duplicate vulnerability tracking works on a per-file basis.
+If the same secret appears in two different files, two findings are created.
+
+For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`.
+This project is available only to GitLab team members.
 
 #### Unsupported workflows
 
-- The algorithm does not support the workflow where the existing finding lacks a tracking signature and does not share the same location as the newly detected finding.
-- For some rule types, such as cryptographic keys, pipeline secret detection identifies leaks by matching prefix of the secret rather than the entire secret value. In this scenario, the algorithm consolidates different secrets of the same rule type in a file into a single finding, rather than treating each distinct secret as a separate finding. For example, the [SSH Private Key rule type](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/d2919f65f1d8001755015b5d790af620676b97ea/gitleaks.toml#L138) matches only the `-----BEGIN OPENSSH PRIVATE KEY-----` prefix of a value to confirm the presence of a SSH private key. If there are two distinct SSH Private Keys within the same file, the algorithm considers both values as identical and reports only one finding instead of two.
-- The algorithm's scope is limited to a per-file basis, meaning that the same secret appearing in two different files is treated as two distinct findings.
+Duplicate vulnerability tracking doesn't support workflows where:
+
+- The existing finding lacks a tracking signature and doesn't share the same location as the new finding.
+- Secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
+
+  For example, an SSH private key is detected by its prefix `-----BEGIN OPENSSH PRIVATE KEY-----`. If there are multiple SSH private keys in the same file,
+  pipeline secret detection creates only one finding.
 
 ### Detected secrets
 

@@ -1597,7 +1597,7 @@ but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
 proposes to add this feature. If CI/CD components become available on GitLab Self-Managed,
 the OpenTofu CI/CD template will be removed.
 
-You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).
+See more about the [new OpenTofu CI/CD component](https://gitlab.com/components/opentofu).
 
 </div>
 

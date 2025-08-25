@@ -599,7 +599,7 @@ This section is deprecated in favor of the [development seed file](../developmen
 
 {{< /alert >}}
 
-If you would like to use the evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
+If you would like to use the evaluation framework (as described [in the evaluation documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eval_scenarios/duo_chat/docs.md))
 you can import the required groups and projects using this Rake task:
 
 ```shell

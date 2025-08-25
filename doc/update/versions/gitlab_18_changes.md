@@ -28,7 +28,7 @@ For additional information for Helm chart installations, see
 
 ## Issues to be aware of when upgrading from 17.11
 
-- **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details at [here](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
+- **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details in [issue 558808](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
 
   **Prevention:** Open the Rails console and enable the feature flag before upgrading:
 

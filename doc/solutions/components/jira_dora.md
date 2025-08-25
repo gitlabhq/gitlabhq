@@ -82,14 +82,18 @@ To automatically trigger the GitLab alert endpoint when a Jira incident is creat
 1. Next, select **IF: Add a condition**. Here you can specify what conditions to check for, in order to determine if the issue created relates to an incident. For this guide, we'll select **Issue fields condition**. Under **Field**, we'll select **Summary**, the **Condition** will be set to **contains**, and the value will be `incident`. Click **Save**.
 1. With our trigger and condition set, select **THEN: Add an action**. Search for and select **Send web request**.
 1. Set the **Web request URL** to your GitLab **Webhook URL** from the previous section.
-1. Check the GitLab docs [here](../../operations/incident_management/integrations.md#authorization) for endpoint authentication options. For this guide, we'll use the [Bearer authorization header](../../operations/incident_management/integrations.md#bearer-authorization-header) method. In your Jira automation configuration, add the following headers:
+1. Check the GitLab documentation for
+   [endpoint authentication options](../../operations/incident_management/integrations.md#authorization).
+   For this guide, we'll use the
+   [Bearer authorization header](../../operations/incident_management/integrations.md#bearer-authorization-header)
+   method. In your Jira automation configuration, add the following headers:
 
-    | Name | Value |
-    | ------ | ------ |
-    | Authorization | Bearer \<GitLab endpoint **auth key** from the previous section\> |
-    | Content-Type | `application/json` |
+   | Name | Value |
+   | ------ | ------ |
+   | Authorization | Bearer \<GitLab endpoint **auth key** from the previous section\> |
+   | Content-Type | `application/json` |
 
-    - You may want to set the `Authorization` header to "Hidden".
+   - You may want to set the `Authorization` header to "Hidden".
 1. Make sure the **HTTP method** is set to **POST**, and set **Web request body** to **Issue data (Jira format)**.
 1. Finally, click **Save**, give your automation a name (e.g. `Jira incident creation`), and click **Turn it on**. At the top-right, click **Return to list**.
 1. The last thing you'll need to do is map the Jira payload values to the GitLab alert parameters. If you're planning to also set up incident resolution for the **Time to restore service** metric, skip this step for now. Otherwise, jump to [Map Jira payload values to GitLab alert parameters](#map-jira-payload-values-to-gitlab-alert-parameters) and follow the steps there.

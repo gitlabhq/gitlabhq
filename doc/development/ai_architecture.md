@@ -153,7 +153,7 @@ Code Suggestions acceptance rates are highly sensitive to latency. While writing
 
 In a worst case with sufficient latency, the IDE could be issuing a string of requests, each of which is then ignored as the user proceeds without waiting for the response. This adds no value for the user, while still putting load on our services.
 
-See our discussions [here](https://gitlab.com/gitlab-org/gitlab/-/issues/418955) around how we plan to iterate on latency for this feature.
+See our discussions [in issue 418955](https://gitlab.com/gitlab-org/gitlab/-/issues/418955) around how we plan to iterate on latency for this feature.
 
 ## Future changes to the architecture
 

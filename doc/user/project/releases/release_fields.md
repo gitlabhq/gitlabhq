@@ -44,7 +44,7 @@ Description supports [Markdown](../../markdown.md).
 A release contains the following types of assets:
 
 - [Source code](#source-code)
-- [Link](#links)
+- [Link to related materials](#links)
 
 ### Source code
 
