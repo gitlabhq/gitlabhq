@@ -62,13 +62,24 @@ export default {
         };
       },
       result() {
+        // Pipeline ID has possiblity of changing every 30 seconds
+        const currentPipelineId = this.commit?.pipeline?.id;
+
+        // if current pipeline ID has changed due to polling we need to resubscribe
+        if (this.subscribedPipelineId && this.subscribedPipelineId !== currentPipelineId) {
+          this.isSubscribed = false;
+        }
+
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (this.commit?.pipeline?.id) {
+        if (currentPipelineId && !this.isSubscribed) {
+          this.isSubscribed = true;
+          this.subscribedPipelineId = currentPipelineId;
+
           this.$apollo.queries.commit.subscribeToMore({
             document: pipelineCiStatusUpdatedSubscription,
             variables: {
-              pipelineId: this.commit.pipeline.id,
+              pipelineId: currentPipelineId,
             },
             updateQuery(
               previousData,
@@ -124,6 +135,8 @@ export default {
     return {
       projectPath: '',
       commit: null,
+      isSubscribed: false,
+      subscribedPipelineId: null,
     };
   },
   computed: {

@@ -327,6 +327,8 @@ class ProjectPolicy < BasePolicy
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
+  condition(:ancestor_scheduled_for_deletion?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain?(include_self: false) }
+
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
   rule { guest | admin | organization_owner }.enable :read_project_for_iids
@@ -446,6 +448,8 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
   rule { guest & ~public_project }.enable :read_grafana
+
+  rule { ancestor_scheduled_for_deletion? }.prevent :remove_project
 
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board

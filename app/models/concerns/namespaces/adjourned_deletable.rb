@@ -32,15 +32,17 @@ module Namespaces
     end
 
     # Returns the first record that's scheduled for deletion in self's ancestors chain (including itself).
-    def first_scheduled_for_deletion_in_hierarchy_chain
-      return self if self_deletion_scheduled?
+    # When include_self is false, only searches ancestors.
+    def first_scheduled_for_deletion_in_hierarchy_chain(include_self: true)
+      return self if include_self && self_deletion_scheduled?
 
       all_scheduled_for_deletion_in_hierarchy_chain.first
     end
 
     # Returns true if the record or any of its ancestors is scheduled for deletion.
-    def scheduled_for_deletion_in_hierarchy_chain?
-      first_scheduled_for_deletion_in_hierarchy_chain.present?
+    # When include_self is false, only searches ancestors.
+    def scheduled_for_deletion_in_hierarchy_chain?(include_self: true)
+      first_scheduled_for_deletion_in_hierarchy_chain(include_self: include_self).present?
     end
 
     # Returns true if the record or any of its ancestors is being deleted or scheduled for deletion.

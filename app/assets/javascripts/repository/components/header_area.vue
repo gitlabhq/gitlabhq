@@ -4,7 +4,11 @@ import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
+import {
+  keysFor,
+  TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
+  START_SEARCH_PROJECT_FILE,
+} from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
@@ -24,6 +28,7 @@ import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useViewport } from '~/pinia/global_stores/viewport';
+import { Mousetrap } from '~/lib/mousetrap';
 
 export default {
   name: 'HeaderArea',
@@ -31,6 +36,7 @@ export default {
     compare: __('Compare'),
     findFile: __('Find file'),
   },
+  TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
   components: {
     GlButton,
     FileIcon,
@@ -207,14 +213,37 @@ export default {
         !this.isNarrowScreen
       );
     },
+    toggleFileBrowserShortcutKey() {
+      return this.shortcutsEnabled ? keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY)[0] : null;
+    },
+    shortcutsEnabled() {
+      return !shouldDisableShortcuts();
+    },
   },
   mounted() {
     if (this.glFeatures.repositoryFileTreeBrowser) {
       this.initFileTreeVisibility();
+      this.bindShortcuts();
     }
   },
+  beforeDestroy() {
+    this.unbindShortcuts();
+  },
   methods: {
-    ...mapActions(useFileTreeBrowserVisibility, ['initFileTreeVisibility']),
+    ...mapActions(useFileTreeBrowserVisibility, [
+      'initFileTreeVisibility',
+      'toggleFileTreeVisibility',
+    ]),
+    bindShortcuts() {
+      if (this.shortcutsEnabled) {
+        Mousetrap.bind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY), this.toggleFileTreeVisibility);
+      }
+    },
+    unbindShortcuts() {
+      if (this.shortcutsEnabled) {
+        Mousetrap.unbind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY));
+      }
+    },
     onInput(selectedRef) {
       InternalEvents.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
@@ -243,7 +272,12 @@ export default {
     }"
   >
     <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-3">
-      <file-tree-browser-toggle v-if="showFileTreeBrowserToggle" />
+      <file-tree-browser-toggle
+        v-if="showFileTreeBrowserToggle"
+        ref="toggle"
+        :aria-keyshortcuts="toggleFileBrowserShortcutKey"
+        :aria-label="__('Toggle file tree browser visibility')"
+      />
       <ref-selector
         v-if="!isReadmeView"
         class="tree-ref-holder gl-max-w-26"

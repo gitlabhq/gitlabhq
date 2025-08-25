@@ -769,7 +769,8 @@ class MergeRequestDiff < ApplicationRecord
       diff_hash = diff.to_hash.merge(
         binary: false,
         merge_request_diff_id: self.id,
-        relative_order: index
+        relative_order: index,
+        project_id: self.project_id
       )
 
       # Compatibility with old diffs created with Psych.

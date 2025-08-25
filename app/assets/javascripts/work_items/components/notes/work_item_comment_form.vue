@@ -9,6 +9,7 @@ import { i18n, STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
@@ -350,6 +351,10 @@ export default {
 
       if (this.toggleResolveChecked) {
         this.$emit('toggleResolveDiscussion');
+      }
+
+      if (this.$refs.markdownEditor) {
+        trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'WorkItem_Comment');
       }
 
       this.$emit('submitForm', {

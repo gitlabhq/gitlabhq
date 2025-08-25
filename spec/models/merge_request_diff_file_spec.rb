@@ -22,6 +22,7 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
 
     it 'sets project_id when missing' do
       mrdf = merge_request.merge_request_diff.merge_request_diff_files.first
+      mrdf.update_column(:project_id, nil)
 
       expect(mrdf.project_id).to be_nil
 

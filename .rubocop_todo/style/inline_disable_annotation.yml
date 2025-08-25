@@ -1571,7 +1571,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/workers/ldap_all_groups_sync_worker_spec.rb'
     - 'ee/spec/workers/ldap_group_sync_worker_spec.rb'
     - 'ee/spec/workers/ldap_sync_worker_spec.rb'
-    - 'ee/spec/workers/projects/register_suggested_reviewers_project_worker_spec.rb'
     - 'ee/spec/workers/update_all_mirrors_worker_spec.rb'
     - 'lib/api/access_requests.rb'
     - 'lib/api/admin/plan_limits.rb'

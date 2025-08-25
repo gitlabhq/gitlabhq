@@ -30,6 +30,7 @@ export default {
       issuesSettings: computed(() => this.metadata?.issuesSettings),
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       metadataLoading: computed(() => this.$apollo.queries.metadata.loading),
+      userExportEmail: computed(() => this.metadata?.userExportEmail),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
   },

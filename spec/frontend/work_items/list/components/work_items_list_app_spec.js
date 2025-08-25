@@ -192,6 +192,9 @@ describeSkipVue3(skipReason, () => {
         hasStatusFeature: true,
         releasesPath: RELEASES_ENDPOINT,
         metadataLoading: false,
+        email: '',
+        hasAnyWorkItems: false,
+        projectImportJiraPath: '/project/import/jira',
         ...provide,
       },
       propsData: {

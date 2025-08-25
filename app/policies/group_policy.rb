@@ -135,7 +135,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { (admin | owner) & archive_group_enabled }.enable :archive_group
 
   condition(:archived?, scope: :subject) { @subject.self_or_ancestors_archived? }
-  condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
+  condition(:group_scheduled_for_deletion?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
+  condition(:ancestor_scheduled_for_deletion?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain?(include_self: false) }
 
   rule { archived? & archive_group_enabled }.policy do
     prevent :admin_build
@@ -158,12 +159,14 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :update_issue
   end
 
-  rule { archived? & archive_group_enabled & ~group_deleted? }.policy do
+  rule { archived? & archive_group_enabled & ~group_scheduled_for_deletion? }.policy do
     prevent :destroy_issue
     prevent :destroy_user_achievement
     prevent :destroy_package
     prevent :destroy_upload
   end
+
+  rule { ancestor_scheduled_for_deletion? }.prevent :remove_group
 
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity

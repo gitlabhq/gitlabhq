@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import { computed } from 'vue';
+import { GlButton, GlFilteredSearchToken, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -164,7 +165,16 @@ export default {
     WorkItemUserPreferences,
     WorkItemListActions,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   mixins: [glFeatureFlagMixin()],
+  provide() {
+    return {
+      showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
+      projectImportJiraPath: this.projectImportJiraPath,
+    };
+  },
   inject: [
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
@@ -188,6 +198,7 @@ export default {
     'canReadCrmContact',
     'releasesPath',
     'metadataLoading',
+    'projectImportJiraPath',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -317,7 +328,7 @@ export default {
         return data?.[this.namespace].workItemStateCounts ?? {};
       },
       skip() {
-        return isEmpty(this.pageParams) || !this.withTabs;
+        return isEmpty(this.pageParams);
       },
       result({ data }) {
         const { all } = data?.[this.namespace].workItemStateCounts ?? {};
@@ -433,6 +444,16 @@ export default {
         includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
+      };
+    },
+    csvExportQueryVariables() {
+      const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+      return {
+        ...this.apiFilterParams,
+        projectPath: this.rootPageFullPath,
+        state: this.state,
+        search: this.searchQuery,
+        types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
       };
     },
     searchQuery() {
@@ -770,6 +791,12 @@ export default {
     },
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+    },
+    showImportExportButtons() {
+      return !this.isGroup && this.isSignedIn;
+    },
+    currentTabCount() {
+      return this.tabCounts[this.state] ?? 0;
     },
     showParentFilter() {
       return this.glFeatures.workItemsListParentFilter;
@@ -1287,7 +1314,11 @@ export default {
               :preselected-work-item-type="preselectedWorkItemType"
               @workItemCreated="refetchItems"
             />
-            <work-item-list-actions />
+            <work-item-list-actions
+              :show-import-export-buttons="showImportExportButtons"
+              :work-item-count="currentTabCount"
+              :query-variables="csvExportQueryVariables"
+            />
           </div>
         </template>
 
@@ -1319,7 +1350,11 @@ export default {
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
               />
-              <work-item-list-actions />
+              <work-item-list-actions
+                :show-import-export-buttons="showImportExportButtons"
+                :work-item-count="currentTabCount"
+                :query-variables="csvExportQueryVariables"
+              />
             </div>
           </work-item-list-heading>
         </template>

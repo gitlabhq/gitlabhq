@@ -162,7 +162,6 @@ describe('DesignDescription', () => {
     });
 
     it('triggers mutation when form is submitted and hides the form', async () => {
-      const trackingSpy = mockTracking(undefined, null, jest.spyOn);
       createComponent({
         designUpdateMutationHandler: mockDesignUpdateResponseHandler,
       });
@@ -184,10 +183,24 @@ describe('DesignDescription', () => {
       await waitForPromises();
 
       expect(findMarkdownEditor().exists()).toBe(false);
+    });
+
+    it('tracks save markdown event when form is submitted', async () => {
+      const trackingSpy = mockTracking(undefined, null, jest.spyOn);
+
+      createComponent({
+        designUpdateMutationHandler: mockDesignUpdateResponseHandler,
+      });
+
+      await findEditDescriptionButton().vm.$emit('click');
+      findMarkdownEditor().vm.$emit('input', updatedDescription);
+      findSaveDescriptionButton().vm.$emit('click');
+
+      await waitForPromises();
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
         label: 'markdown_editor',
-        property: 'Design',
+        property: 'WorkItem_DesignDescription',
       });
     });
 

@@ -2069,6 +2069,11 @@ msgid_plural "%d weeks remaining"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 work item selected"
+msgid_plural "%d work items selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "1 year remaining"
 msgid_plural "%d years remaining"
 msgstr[0] ""
@@ -67101,6 +67106,9 @@ msgstr ""
 msgid "Toggle file browser"
 msgstr ""
 
+msgid "Toggle file tree browser visibility"
+msgstr ""
+
 msgid "Toggle focus mode"
 msgstr ""
 
@@ -68025,6 +68033,9 @@ msgid "Unarchive project"
 msgstr ""
 
 msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "Unassign"
 msgstr ""
 
 msgid "Unassign all"
@@ -72551,6 +72562,12 @@ msgstr ""
 msgid "WorkItem|All activity"
 msgstr ""
 
+msgid "WorkItem|An error occurred while exporting issues."
+msgstr ""
+
+msgid "WorkItem|An error occurred while exporting work items."
+msgstr ""
+
 msgid "WorkItem|An error occurred while getting work item counts."
 msgstr ""
 
@@ -72836,6 +72853,15 @@ msgstr ""
 msgid "WorkItem|Existing task"
 msgstr ""
 
+msgid "WorkItem|Export as CSV"
+msgstr ""
+
+msgid "WorkItem|Export issues"
+msgstr ""
+
+msgid "WorkItem|Export work items"
+msgstr ""
+
 msgid "WorkItem|Failed to archive custom field %{fieldName}."
 msgstr ""
 
@@ -72885,6 +72911,9 @@ msgid "WorkItem|History only"
 msgstr ""
 
 msgid "WorkItem|How do I use custom fields?"
+msgstr ""
+
+msgid "WorkItem|Import from Jira"
 msgstr ""
 
 msgid "WorkItem|In progress"
@@ -73402,6 +73431,9 @@ msgid "WorkItem|Text"
 msgstr ""
 
 msgid "WorkItem|The %{workItemType} was closed automatically when a branch was merged."
+msgstr ""
+
+msgid "WorkItem|The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
 msgstr ""
 
 msgid "WorkItem|The current key result"

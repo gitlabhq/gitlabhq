@@ -3,6 +3,7 @@ import { GlToggle, GlLink, GlButton, GlSprintf } from '@gitlab/ui';
 import CascadingLockIcon from '~/namespaces/cascading_settings/components/cascading_lock_icon.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
+
 import { amazonQHelpPath, duoFlowHelpPath, duoHelpPath } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
 import ExclusionSettings from './exclusion_settings.vue';
@@ -60,6 +61,16 @@ export default {
       required: false,
       default: false,
     },
+    experimentFeaturesEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    paidDuoTier: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -92,7 +103,12 @@ export default {
       return null;
     },
     shouldShowExclusionSettings() {
-      return this.licensedAiFeaturesAvailable && this.showDuoContextExclusion;
+      return (
+        this.licensedAiFeaturesAvailable &&
+        this.showDuoContextExclusion &&
+        this.experimentFeaturesEnabled &&
+        this.paidDuoTier
+      );
     },
     showCascadingButton() {
       return (

@@ -656,26 +656,21 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             end
           end
         end
+      end
 
-        context 'when permanently_remove param is not set' do
-          context 'for a html request' do
-            it 'redirects to edit path with error' do
-              subject
+      context 'when group ancestor is marked for deletion' do
+        let(:nested_group) { create(:group, :nested, parent: group) }
 
-              expect(response).to redirect_to(edit_group_path(group))
-              expect(flash[:alert]).to include "Group has been already marked for deletion"
-            end
-          end
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+        end
 
-          context 'for a json request' do
-            let(:format) { :json }
+        subject { delete :destroy, format: format, params: { id: nested_group.to_param, **params } }
 
-            it 'returns json with message' do
-              subject
+        it 'returns 404' do
+          subject
 
-              expect(json_response['message']).to eq("Group has been already marked for deletion")
-            end
-          end
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

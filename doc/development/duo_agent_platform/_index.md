@@ -54,26 +54,6 @@ Enable the Duo Agent Platform as a sidepanel instead of fullview. This is going 
 
 `"gitlab.featureFlags.duoWorkflowPanel": true,`
 
-### Executor type
-
-Allow to define which Duo Agent Platform executor is selected. Accepts:
-
-- `shell` - Current default, runs the go binary directly on the user's machine
-- `docker` - Runs the go binary inside a Docker container (deprecated)
-- `node` - Runs a nodeJs/TypeScript executor directly inside the language server. Expected to become the default.
-
-`"gitlab.duo.workflow.executor": "node",`
-
-### Agent Platform flow
-
-Experimental settings that allow Duo Agent Platform flow to be swapped. Includes:
-
-- `software_development` - default
-- `chat` - used by agentic chat
-- `search_and_replace` - Used to scan large number of files and replace results with specific instructions
-
-`"gitlab.duo.workflow.graph": "software_development",`
-
 ### Tool approval
 
 Allow users to get access to tools that require approval such as running terminal commands.

@@ -8,6 +8,7 @@ import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import {
   ADD_DISCUSSION_COMMENT_ERROR,
@@ -144,6 +145,14 @@ export default {
       }
 
       this.saving = true;
+
+      if (this.$refs.markdownEditor) {
+        trackSavedUsingEditor(
+          this.$refs.markdownEditor.isContentEditorActive,
+          'WorkItem_DesignComment',
+        );
+      }
+
       try {
         await this.$apollo.mutate({
           mutation: this.designNoteMutation,
@@ -213,6 +222,7 @@ export default {
       </gl-alert>
     </div>
     <markdown-editor
+      ref="markdownEditor"
       v-model="noteText"
       autofocus
       :markdown-docs-path="$options.markdownDocsPath"

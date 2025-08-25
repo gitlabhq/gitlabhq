@@ -20,6 +20,11 @@ import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useViewport } from '~/pinia/global_stores/viewport';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { Mousetrap } from '~/lib/mousetrap';
+import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 const defaultMockRoute = {
   params: {
@@ -34,6 +39,7 @@ const defaultMockRoute = {
 };
 
 const mockRootRef = 'root-ref';
+const toggleHotkeys = keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY);
 
 Vue.use(PiniaVuePlugin);
 
@@ -57,7 +63,6 @@ describe('HeaderArea', () => {
   const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
   const findBlobControls = () => wrapper.findComponent(BlobControls);
   const findTreeControls = () => wrapper.findByTestId('tree-controls-container');
-
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = ({
@@ -144,6 +149,48 @@ describe('HeaderArea', () => {
           expect(findFileTreeToggle().exists()).toBe(expectedToggleVisible);
         },
       );
+    });
+    describe('shortcuts', () => {
+      describe('toggle visibility', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+        });
+        it('toggles visibility on shortcut trigger', () => {
+          shouldDisableShortcuts.mockReturnValue(false);
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).toHaveBeenCalled();
+        });
+
+        it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
+          shouldDisableShortcuts.mockReturnValue(false);
+          createComponent();
+          wrapper.destroy();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).not.toHaveBeenCalled();
+        });
+      });
+      describe('toggle visibility when shortcuts are disabled', () => {
+        it('does not toggle visibility on shortcut trigger', () => {
+          shouldDisableShortcuts.mockReturnValue(true);
+          wrapper = createComponent({
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 

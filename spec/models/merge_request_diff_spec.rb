@@ -1043,6 +1043,14 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(mr_diff.empty?).to be_truthy
       end
 
+      it 'sets project_id on created diff files correctly' do
+        mr_diff = create(:merge_request).merge_request_diff
+
+        mr_diff.merge_request_diff_files.each do |mrdf|
+          expect(mrdf.project_id).to eq(mr_diff.project_id)
+        end
+      end
+
       it 'persists diff files sorted directory first' do
         mr_diff = create(:merge_request).merge_request_diff
         diff_files_paths = mr_diff.merge_request_diff_files.map { |file| file.new_path.presence || file.old_path }

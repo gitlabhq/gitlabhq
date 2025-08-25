@@ -1,10 +1,15 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltip } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { useFileBrowser } from '~/diffs/stores/file_browser';
+import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 Vue.use(PiniaVuePlugin);
 
@@ -64,6 +69,44 @@ describe('FileTreeBrowserToggle', () => {
       await findToggleButton().vm.$emit('click');
 
       expect(mockToggle).toHaveBeenCalled();
+    });
+  });
+  describe('tooltip', () => {
+    const findTooltip = () => wrapper.findComponent(GlTooltip);
+    const findShortcut = () => wrapper.findComponent(Shortcut);
+
+    it('displays hide message for open file browser with shortcut', () => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      fileTreeBrowserStore.setFileTreeVisibility(true);
+      createComponent();
+      expect(findTooltip().text()).toContain('Hide file tree browser');
+      expect(findShortcut().exists()).toBe(true);
+    });
+
+    it('displays show message for hidden file browser with shortcut', async () => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      createComponent();
+      useFileBrowser().fileBrowserVisible = false;
+      await nextTick();
+      expect(findTooltip().text()).toContain('Show file tree browser');
+      expect(findShortcut().exists()).toBe(true);
+    });
+
+    it('displays hide message for open file browser without shortcut', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      fileTreeBrowserStore.setFileTreeVisibility(true);
+      createComponent();
+      expect(findTooltip().text()).toContain('Hide file tree browser');
+      expect(findShortcut().exists()).toBe(false);
+    });
+
+    it('displays show message for hidden file browser without shortcut', async () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      createComponent();
+      useFileBrowser().fileBrowserVisible = false;
+      await nextTick();
+      expect(findTooltip().text()).toContain('Show file tree browser');
+      expect(findShortcut().exists()).toBe(false);
     });
   });
 });

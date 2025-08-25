@@ -84,7 +84,9 @@ export default {
       result({ data }) {
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (data?.project?.pipeline?.id) {
+        if (data?.project?.pipeline?.id && !this.isSubscribed) {
+          this.isSubscribed = true;
+
           this.$apollo.queries.pipeline.subscribeToMore({
             document: pipelineCiStatusUpdatedSubscription,
             variables: {
@@ -138,6 +140,7 @@ export default {
       isCanceling: false,
       isRetrying: false,
       isDeleting: false,
+      isSubscribed: false,
     };
   },
   computed: {

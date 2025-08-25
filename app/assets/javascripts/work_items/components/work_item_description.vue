@@ -11,6 +11,7 @@ import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import {
   findDescriptionWidget,
   newWorkItemId,
@@ -441,6 +442,13 @@ export default {
 
       if (key) {
         this.isSubmittingWithKeydown = true;
+      }
+
+      if (this.$refs.markdownEditor) {
+        trackSavedUsingEditor(
+          this.$refs.markdownEditor.isContentEditorActive,
+          'WorkItem_Description',
+        );
       }
 
       this.$emit('updateWorkItem', { clearDraft: () => clearDraft(this.autosaveKey) });

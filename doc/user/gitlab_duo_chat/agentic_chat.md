@@ -68,86 +68,79 @@ You can use GitLab Duo Chat in:
 - A JetBrains IDE.
 - Visual Studio for Windows.
 
+### Use GitLab Duo Chat in the GitLab UI
+
 Prerequisites:
 
-- A GitLab Duo Core, Pro, or Enterprise add-on.
-- A Premium or Ultimate subscription.
-- You have an assigned seat for or access to GitLab Duo Chat.
-- You have [turned on beta and experimental features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your GitLab instance or group.
-
-### Use GitLab Duo Chat in the GitLab UI
+- Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
 To use Chat in the GitLab UI:
 
-1. Go to a project in a group that meets the prerequisites.
+1. On the left sidebar, select **Search or go to** and find your project.
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
-1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
+   It may take a few seconds to produce an answer.
 1. Optional. Ask a follow-up question.
 
 ### Use GitLab Duo Chat in VS Code
 
 Prerequisites:
 
-- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
+- [Install and configure the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
+- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-You can only use GitLab Duo Chat in a project:
-
-- Hosted on a GitLab instance.
-- That is part of a group that meets the prerequisites.
-
-To use GitLab Duo Chat:
+Turn on GitLab Duo Chat:
 <!-- markdownlint-disable MD044 -->
 1. In VS Code, go to **Settings > Settings**.
 1. Search for `agent platform`.
 1. Under **Gitlab › Duo Agent Platform: Enabled**, select the
    **Enable GitLab Duo Agent Platform** checkbox.
+<!-- markdownlint-enable MD044 -->
+
+Then, to use GitLab Duo Chat:
+
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** tab.
 1. Select **Refresh page** if prompted.
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
-<!-- markdownlint-enable MD044 -->
 
 ### Use GitLab Duo Chat in JetBrains IDEs
 
 Prerequisites:
 
-- You have [installed and configured the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
+- [Install and configure the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
+- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-To use GitLab Duo Chat in a project, it must be:
+Turn on GitLab Duo Chat:
 
-- Hosted on a GitLab instance.
-- Part of a group that meets the prerequisites.
-
-To use GitLab Duo Chat:
-<!-- markdownlint-disable MD044 -->
 1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
 1. Under **GitLab Duo Agent Platform (Beta)**, select the **Enable GitLab Duo Agent Platform** checkbox.
 1. Restart your IDE if prompted.
+
+Then, to use GitLab Duo Chat:
+
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** tab.
 1. In the message box, enter your question and press <kbd>Enter</kbd> or select **Send**.
-<!-- markdownlint-enable MD044 -->
 
 ### Use GitLab Duo Chat in Visual Studio
 
 Prerequisites:
 
-- You have [installed and configured the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+- [Install and configure the GitLab extension for Visual Studio](../../editor_extensions/visual_studio/setup.md) version 0.60.0 or later.
+- Ensure you meet [the other prerequisites](../duo_agent_platform/_index.md#prerequisites).
 
-To use GitLab Duo Chat in a project, it must be:
+Turn on GitLab Duo Chat:
 
-- Hosted on a GitLab instance.
-- Part of a group that meets the prerequisites.
-
-To use GitLab Duo Chat:
-<!-- markdownlint-disable MD044 -->
 1. In Visual Studio, go to **Tools > Options > GitLab**.
 1. Under **GitLab**, select **General**.
 1. For **Enable Agentic Duo Chat (experimental)**, select **True**, and then **OK**.
+
+Then, to use GitLab Duo Chat:
+
 1. Select **Extensions > GitLab > Open Agentic Chat**.
 1. In the message box, enter your question and press **Enter**.
-<!-- markdownlint-enable MD044 -->
 
 ### View the chat history
 
@@ -317,24 +310,9 @@ GitLab Duo Chat works best with natural language questions. Here are some exampl
 
 When working with GitLab Duo Chat, you might encounter the following issues.
 
-### Network connectivity problems
+### Trouble connecting or viewing
 
-Because GitLab Duo Chat (Agentic) requires network access to retrieve resources, network restrictions
-might impact its functionality.
-
-To help resolve GitLab Duo Chat networking issues, see the
-[GitLab Duo Agent Platform network issue troubleshooting documentation](../duo_agent_platform/troubleshooting.md#network-issues).
-
-### GitLab Duo Chat does not show up in the IDE
-
-You might find that GitLab Duo Chat (Agentic) is not visible in your IDE. To resolve this, make sure that:
-
-1. You have enabled GitLab Duo Chat (Agentic) in the [VS Code](#use-gitlab-duo-chat-in-vs-code) or [JetBrains IDE](#use-gitlab-duo-chat-in-jetbrains-ides) settings.
-1. You have one project open in your IDE workspace, and that [project is connected to a GitLab project](../duo_agent_platform/troubleshooting.md#view-the-project-in-the-gitlab-workflow-extension).
-1. The [GitLab project is in a group namespace](../duo_agent_platform/troubleshooting.md#project-not-in-a-group-namespace).
-1. You have a Premium or Ultimate subscription.
-1. [GitLab Duo is turned on](../gitlab_duo/turn_on_off.md).
-1. [GitLab Duo experimental and beta features are turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your top-level group on GitLab.com, or your instance on GitLab Self-Managed. Contact your administrator if necessary.
+To ensure you are connected properly and can view Chat, see [Troubleshooting](../duo_agent_platform/troubleshooting.md).
 
 ### Slow response times
 

@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting flows
+title: Troubleshooting the GitLab Duo Agent Platform
 ---
 
 {{< details >}}
@@ -14,35 +14,19 @@ title: Troubleshooting flows
 
 {{< /details >}}
 
+If you are working with the GitLab Duo Agent Platform in your IDE, you might encounter the following issues.
+
 ## General guidance
 
-If you encounter issues, ensure that you have:
+Start by ensuring that GitLab Duo is on and that you are properly connected.
 
-1. The latest version of the GitLab Workflow extension for VS Code.
-1. A project that meets the [prerequisites](flows/software_development.md#prerequisites).
-1. The repository open in VS Code.
-1. The branch checked out.
-
-For details on these steps, see [the prerequisites](flows/software_development.md#prerequisites) and
-[how to connect to your repository](flows/software_development.md#connect-to-your-repository).
-
-## View debugging logs
-
-You can troubleshoot some issues by viewing debugging logs.
-
-1. Open local debugging logs:
-   - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
-   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
-1. Search for the setting **GitLab: Debug** and enable it.
-1. Open the language server logs:
-   1. In VS Code, select **View** > **Output**.
-   1. In the output panel at the bottom, in the upper-right corner,
-      select **GitLab Workflow** or **GitLab Language Server** from the list.
-1. Review for errors, warnings, connection issues, or authentication problems.
+- Ensure you meet [the prerequisites](_index.md#prerequisites).
+- Ensure the branch you want to work in is checked out.
+- Ensure you have turned on the necessary settings in the IDE.
 
 ## Network issues
 
-Your network might block the connection to the Agent Platform service,
+Your network might block the connection to the Agent Platform,
 for example, by using a firewall. By default the Agent Platform uses a gRPC
 (Google Remote Procedure Call) connection. The network must let HTTP/2 traffic through to
 the service for gRPC to work.
@@ -78,9 +62,23 @@ VS Code and JetBrains IDEs:
   1. On the left sidebar, select **Tools > GitLab Duo**.
   1. In the **GitLab Duo Agent Platform** > **Connection Type** section, select `WebSocket`.
 
-## IDE configuration
+## View debugging logs in VS Code
 
-You can try several things to ensure your repository is properly configured and connected.
+In VS Code, you can troubleshoot some issues by viewing debugging logs.
+
+1. Open local debugging logs:
+   - On macOS: <kbd>Cmd</kbd> + <kbd>,</kbd>
+   - On Windows and Linux: <kbd>Ctrl</kbd> + <kbd>,</kbd>
+1. Search for the setting **GitLab: Debug** and enable it.
+1. Open the language server logs:
+   1. In VS Code, select **View** > **Output**.
+   1. In the output panel at the bottom, in the upper-right corner,
+      select **GitLab Workflow** or **GitLab Language Server** from the list.
+1. Review for errors, warnings, connection issues, or authentication problems.
+
+## VS Code configuration
+
+You can try several things to ensure your repository is properly configured and connected in VS Code.
 
 ### View the project in the GitLab Workflow extension
 
@@ -149,11 +147,7 @@ If you are trying to run a flow but it's not visible in the GitLab UI:
 1. Ensure you have at least Developer role in the project.
 1. Ensure GitLab Duo is [turned on for your group or project](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
-1. Ensure **Allow flow execution** is turned on for your project:
-   1. Go to your project's **Settings** > **General**.
-   1. Expand the **GitLab Duo** section.
-   1. Verify that the **Allow flow execution** is turned on.
-   1. Select **Save changes**.
+1. Ensure [flows are turned on for your project](flows/_index.md#turn-on-flows-for-your-project).
 
 ## Still having issues?
 

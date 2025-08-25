@@ -1,19 +1,30 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import WorkItemsListActions from '~/work_items/components/work_item_list_actions.vue';
+import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
+import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
 
 describe('WorkItemsListActions component', () => {
   let wrapper;
+  let glModalDirective;
 
   const projectImportJiraPath = 'gitlab-org/gitlab-test/-/import/jira';
   const rssPath = '/rss/path';
   const calendarPath = '/calendar/path';
 
-  function createComponent(injectedProperties = {}) {
-    return mountExtended(WorkItemsListActions, {
+  const workItemCount = 10;
+  const showImportExportButtons = true;
+
+  function createComponent(injectedProperties = {}, props = {}) {
+    glModalDirective = jest.fn();
+    return mountExtended(WorkItemListActions, {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
+        glModal: {
+          bind(_, { value }) {
+            glModalDirective(value);
+          },
+        },
       },
       provide: {
         projectImportJiraPath: null,
@@ -21,15 +32,22 @@ describe('WorkItemsListActions component', () => {
         calendarPath: null,
         ...injectedProperties,
       },
+      propsData: {
+        workItemCount,
+        showImportExportButtons,
+        ...props,
+      },
     });
   }
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findExportButton = () => wrapper.findByTestId('export-as-csv-button');
+  const findExportModal = () => wrapper.findComponent(WorkItemCsvExportModal);
   const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
   const findRssLink = () => wrapper.findByTestId('subscribe-rss');
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
 
-  describe('import from jira', () => {
+  describe('import/export options', () => {
     describe('when projectImportJiraPath is provided', () => {
       beforeEach(() => {
         wrapper = createComponent({ projectImportJiraPath });
@@ -45,13 +63,38 @@ describe('WorkItemsListActions component', () => {
       });
     });
 
-    describe('when projectImportJiraPath is not provided', () => {
+    describe('when the showExportButton=true', () => {
       beforeEach(() => {
-        wrapper = createComponent();
+        wrapper = createComponent({ showExportButton: true });
       });
 
-      it('does not render the dropdown if no other paths are provided', () => {
-        expect(findDropdown().exists()).toBe(false);
+      it('displays the export button and the dropdown', () => {
+        expect(findExportButton().exists()).toBe(true);
+        expect(findDropdown().exists()).toBe(true);
+      });
+
+      it('renders the export modal', () => {
+        expect(findExportModal().props()).toMatchObject({
+          modalId: 'work-item-export-modal',
+          workItemCount,
+        });
+      });
+
+      it('opens the export modal', () => {
+        findExportButton().vm.$emit('click');
+
+        expect(glModalDirective).toHaveBeenCalledWith('work-item-export-modal');
+      });
+    });
+
+    describe('when the showExportButton=false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ showExportButton: false });
+      });
+
+      it('does not display the export button and modal', () => {
+        expect(findExportButton().exists()).toBe(false);
+        expect(findExportModal().exists()).toBe(false);
       });
     });
   });
@@ -73,6 +116,16 @@ describe('WorkItemsListActions component', () => {
     it('renders the Calendar link with the correct href', () => {
       expect(findCalendarLink().exists()).toBe(true);
       expect(findCalendarLink().attributes('href')).toBe(calendarPath);
+    });
+  });
+
+  describe('when no options are provided', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
+    it('does not render the dropdown', () => {
+      expect(findDropdown().exists()).toBe(false);
     });
   });
 });

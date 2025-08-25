@@ -631,8 +631,6 @@
   - 1
 - - merge_requests_audit_update_status_check_response
   - 1
-- - merge_requests_capture_suggested_reviewers_accepted
-  - 1
 - - merge_requests_cleanup_ref
   - 1
 - - merge_requests_close_issue
@@ -648,8 +646,6 @@
 - - merge_requests_duo_code_review_chat
   - 1
 - - merge_requests_execute_approval_hooks
-  - 1
-- - merge_requests_fetch_suggested_reviewers
   - 1
 - - merge_requests_handle_assignees_change
   - 1
@@ -773,8 +769,6 @@
   - 1
 - - projects_delete_branch
   - 1
-- - projects_deregister_suggested_reviewers_project
-  - 1
 - - projects_finalize_project_statistics_refresh
   - 1
 - - projects_forks_sync
@@ -804,8 +798,6 @@
 - - projects_record_target_platforms
   - 1
 - - projects_refresh_build_artifacts_size_statistics
-  - 1
-- - projects_register_suggested_reviewers_project
   - 1
 - - projects_repository_destroy
   - 1

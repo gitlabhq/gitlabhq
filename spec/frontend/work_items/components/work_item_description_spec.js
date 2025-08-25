@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditedAt from '~/issues/show/components/edited.vue';
 import { updateDraft } from '~/lib/utils/autosave';
@@ -410,6 +411,21 @@ describe('WorkItemDescription', () => {
       );
 
       expect(wrapper.emitted('updateWorkItem')).toEqual([[{ clearDraft: expect.any(Function) }]]);
+    });
+
+    it('tracks saved using editor event on submit', async () => {
+      const trackingSpy = mockTracking(undefined, null, jest.spyOn);
+      await createComponent({ isEditing: true });
+      editDescription('updated description');
+      findMarkdownEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
+      );
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+        label: 'markdown_editor',
+        property: 'WorkItem_Description',
+      });
     });
 
     describe('description templates', () => {

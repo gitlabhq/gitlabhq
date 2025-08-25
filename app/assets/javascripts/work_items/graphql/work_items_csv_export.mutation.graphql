@@ -1,0 +1,6 @@
+mutation WorkItemsCsvExport($input: WorkItemsCsvExportInput!) {
+  workItemsCsvExport(input: $input) {
+    message
+    errors
+  }
+}

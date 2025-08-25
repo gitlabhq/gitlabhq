@@ -21,6 +21,7 @@ query workItemMetadata($fullPath: ID!) {
       register
       reportAbuse
       signIn
+      userExportEmail
     }
   }
 }

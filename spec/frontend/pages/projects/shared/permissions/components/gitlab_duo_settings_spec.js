@@ -12,6 +12,8 @@ const defaultProps = {
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
   licensedAiFeaturesAvailable: true,
+  experimentFeaturesEnabled: true,
+  paidDuoTier: true,
   duoContextExclusionSettings: {
     exclusionRules: ['*.log', 'node_modules/'],
   },
@@ -288,6 +290,41 @@ describe('GitlabDuoSettings', () => {
       expect(findExclusionSettings().exists()).toBe(false);
     });
 
+    it('does not render ExclusionSettings when experiment features are disabled', () => {
+      wrapper = createWrapper(
+        { licensedAiFeaturesAvailable: true, experimentFeaturesEnabled: false },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(false);
+    });
+
+    it('does not render ExclusionSettings when paidDuoTier is false', () => {
+      wrapper = createWrapper(
+        {
+          licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: true,
+          paidDuoTier: false,
+        },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(false);
+    });
+
+    it('renders ExclusionSettings when paidDuoTier is true', () => {
+      wrapper = createWrapper(
+        {
+          licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: true,
+          paidDuoTier: true,
+        },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(true);
+    });
+
     it('updates exclusion rules when ExclusionSettings emits update', async () => {
       wrapper = createWrapper(
         { licensedAiFeaturesAvailable: true },
@@ -340,6 +377,7 @@ describe('GitlabDuoSettings', () => {
       wrapper = createWrapper(
         {
           licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: true,
           duoContextExclusionSettings: { exclusionRules: [] },
         },
         { useDuoContextExclusion: true },
@@ -358,6 +396,7 @@ describe('GitlabDuoSettings', () => {
       wrapper = createWrapper(
         {
           licensedAiFeaturesAvailable: true,
+          experimentFeaturesEnabled: true,
           duoContextExclusionSettings: {},
         },
         { useDuoContextExclusion: true },

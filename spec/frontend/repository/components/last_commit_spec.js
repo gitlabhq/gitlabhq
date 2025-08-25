@@ -177,6 +177,77 @@ describe('Repository last commit component', () => {
         pipelineId: 'gid://gitlab/Ci::Pipeline/167',
       });
     });
+
+    it('does not make redundant subscription calls for refetches', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+
+      wrapper.vm.refetchLastCommit();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not resubscribe when pipeline ID remains the same during polling', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+
+      // Advance timers to trigger polling
+      jest.advanceTimersByTime(30000);
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('does resubscribe when pipeline ID changes during polling', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+      expect(subscriptionHandler).toHaveBeenCalledWith({
+        pipelineId: 'gid://gitlab/Ci::Pipeline/167',
+      });
+
+      // Simulate a poll/refetch that returns a different pipeline ID
+      const newCommitData = createCommitData({
+        pipelineEdges: [
+          {
+            __typename: 'PipelineEdge',
+            node: {
+              __typename: 'Pipeline',
+              id: 'gid://gitlab/Ci::Pipeline/200',
+              detailedStatus: {
+                __typename: 'DetailedStatus',
+                id: 'id',
+                detailsPath: 'https://test.com/pipeline',
+                icon: 'status_running',
+                text: 'failed',
+              },
+            },
+          },
+        ],
+      });
+
+      mockResolver.mockResolvedValueOnce(newCommitData);
+
+      // Advance timers to trigger polling
+      jest.advanceTimersByTime(30000);
+      await waitForPromises();
+
+      // Should have called the subscription handler again with the new ID
+      expect(subscriptionHandler).toHaveBeenCalledTimes(2);
+      expect(subscriptionHandler).toHaveBeenLastCalledWith({
+        pipelineId: 'gid://gitlab/Ci::Pipeline/200',
+      });
+    });
   });
 
   describe('polling', () => {

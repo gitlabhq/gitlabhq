@@ -8992,3 +8992,24 @@ export const namespacePathsQueryResponse = {
     },
   },
 };
+
+export const workItemsCsvExportResponse = {
+  data: {
+    workItemsCsvExport: {
+      message: 'Your CSV export request has succeeded. The result will be emailed to email',
+      errors: [],
+      __typename: 'WorkItemsCsvExportPayload',
+    },
+  },
+};
+
+export const workItemsCsvExportFailureResponse = {
+  data: {},
+  errors: [
+    {
+      message: 'Csv export failed',
+      locations: [{ line: 2, column: 3 }],
+      path: ['workItemsCsvExport'],
+    },
+  ],
+};

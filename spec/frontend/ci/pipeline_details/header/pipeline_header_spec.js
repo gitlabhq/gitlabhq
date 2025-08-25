@@ -455,6 +455,22 @@ describe('Pipeline header', () => {
           pipelineId: pipeline.id,
         });
       });
+
+      it('does not make redundant subscription calls for refetches', async () => {
+        await createComponent([
+          [getPipelineDetailsQuery, runningHandler],
+          [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+        ]);
+
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+
+        clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
+
+        await nextTick();
+
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });
