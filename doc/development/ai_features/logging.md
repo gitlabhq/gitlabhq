@@ -9,7 +9,7 @@ In addition to standard logging in the GitLab Rails Monolith instance, specializ
 
 ## Logged events
 
-Currently logged events are documented [here](logged_events.md).
+See [logged events](logged_events.md) for the documentation.
 
 ## Implementation
 

@@ -2550,6 +2550,9 @@ msgstr ""
 msgid "AICatalog|Flow deleted successfully."
 msgstr ""
 
+msgid "AICatalog|Flow node"
+msgstr ""
+
 msgid "AICatalog|Flow nodes"
 msgstr ""
 
@@ -4423,6 +4426,9 @@ msgid "AdminAIPoweredFeatures|Model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Select a model version for full control of your configuration, or GitLab Default for GitLab to manage the selection."
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a self-hosted model"

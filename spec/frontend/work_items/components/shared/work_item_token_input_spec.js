@@ -48,6 +48,7 @@ describe('WorkItemTokenInput', () => {
           iid: '2',
           title: 'Task 1',
           confidential: false,
+          webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
           namespace: {
             id: 'gid://gitlab/Group/1',
             fullPath: 'test-project-path',
@@ -66,6 +67,7 @@ describe('WorkItemTokenInput', () => {
           iid: '3',
           title: 'Task 2',
           confidential: false,
+          webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/2',
           namespace: {
             id: 'gid://gitlab/Group/1',
             fullPath: 'test-project-path',
@@ -84,6 +86,7 @@ describe('WorkItemTokenInput', () => {
           iid: '4',
           title: 'Task 3',
           confidential: false,
+          webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/3',
           namespace: {
             id: 'gid://gitlab/Group/1',
             fullPath: 'test-project-path',
@@ -190,6 +193,7 @@ describe('WorkItemTokenInput', () => {
     iid: '3',
     title: 'Task 2',
     confidential: false,
+    webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/2',
     namespace: {
       id: 'gid://gitlab/Group/1',
       fullPath: 'test-project-path',
@@ -209,6 +213,7 @@ describe('WorkItemTokenInput', () => {
     iid: 'Task 2 <svg><use href=#/></svg>',
     title: 'Task 2 <svg><use href=#/></svg>',
     confidential: false,
+    webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/2',
     namespace: {
       id: 'gid://gitlab/Group/1',
       fullPath: 'test-project-path',
@@ -353,6 +358,7 @@ describe('WorkItemTokenInput', () => {
       iid: '101',
       title: 'Task 3',
       confidential: false,
+      webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/3',
       namespace: {
         id: 'gid://gitlab/Group/1',
         fullPath: 'test-project-path',
@@ -371,6 +377,7 @@ describe('WorkItemTokenInput', () => {
       iid: '3',
       title: 'Task 123',
       confidential: false,
+      webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/4',
       namespace: {
         id: 'gid://gitlab/Group/1',
         fullPath: 'test-project-path',
@@ -389,6 +396,7 @@ describe('WorkItemTokenInput', () => {
       iid: '123',
       title: 'Task 2',
       confidential: false,
+      webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/5',
       namespace: {
         id: 'gid://gitlab/Group/1',
         fullPath: 'test-project-path',

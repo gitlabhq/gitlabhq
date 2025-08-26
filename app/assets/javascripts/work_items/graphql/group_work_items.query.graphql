@@ -24,6 +24,7 @@ query groupWorkItems(
         iid
         title
         confidential
+        webUrl
         namespace {
           id
           fullPath
@@ -58,6 +59,7 @@ query groupWorkItems(
         iid
         title
         confidential
+        webUrl
         namespace {
           id
           fullPath

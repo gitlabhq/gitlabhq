@@ -535,7 +535,7 @@
       @extend %grid-column; // stylelint-disable-line at-rule-disallowed-list
     }
 
-    @container (width >= #{$min}) {
+    @media (width >= #{$min}) {
       // Provide basic `.gl-col-{bp}` classes for equal-width flexbox columns
       .gl-col#{$infix} {
         flex-basis: 0;

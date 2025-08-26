@@ -30,7 +30,7 @@ This feature is a work in progress so this document can get out of date
 ## Details
 
 1. The database table is designed as a [closure table](https://www.slideshare.net/slideshow/models-for-hierarchical-data/4179181)
-1. The database table structure is available [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql#L22509).
+1. The [database table structure](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql#L22509) is available.
 1. When a dependency is transitive then the corresponding `Sbom::Occurrence#ancestors` will contain entries.
 1. When a dependency is a direct dependency then the corresponding `Sbom::Occurrence#ancestors` will contain an `{}`.
 1. Dependencies can be both direct and transitive.

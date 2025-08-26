@@ -16,6 +16,7 @@ query projectWorkItems(
         iid
         title
         confidential
+        webUrl
         namespace {
           id
           fullPath
@@ -33,6 +34,7 @@ query projectWorkItems(
         iid
         title
         confidential
+        webUrl
         namespace {
           id
           fullPath

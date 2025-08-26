@@ -511,7 +511,7 @@ The example above will load all subgroups, all projects and all issues in the gr
 
 When you need to process records in a specific order in a group, you can use the [in-operator optimization](efficient_in_operator_queries.md) which can provide better performance than using a standard `each_batch` based batching strategy.
 
-You can see an example for batching over records in the group hierarchy [here](efficient_in_operator_queries.md#batch-iteration).
+You can see an example for [batching over records in the group hierarchy](efficient_in_operator_queries.md#batch-iteration).
 
 Pros:
 

@@ -4,9 +4,12 @@ import { createProcessor } from 'tailwindcss/lib/cli/build/plugin.js';
 const ROOT_PATH = path.resolve(import.meta.dirname, '../../');
 
 export async function build({ shouldWatch = false, content = false } = {}) {
+  const buildCQs = Boolean(process.env.USE_TAILWIND_CONTAINER_QUERIES);
+  const outputBundle = buildCQs ? 'tailwind_cqs.css' : 'tailwind.css';
+
   const processorOptions = {
     '--watch': shouldWatch,
-    '--output': path.join(ROOT_PATH, 'app/assets/builds', 'tailwind.css'),
+    '--output': path.join(ROOT_PATH, 'app/assets/builds', outputBundle),
     '--input': path.join(ROOT_PATH, 'app/assets/stylesheets', 'tailwind.css'),
   };
 

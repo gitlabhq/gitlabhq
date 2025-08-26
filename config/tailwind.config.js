@@ -1,5 +1,4 @@
 const tailwindDefaults = require('@gitlab/ui/tailwind.defaults');
-const tailwindContainerQueriesPlugin = require('@tailwindcss/container-queries');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -23,7 +22,6 @@ module.exports = {
   corePlugins: {
     container: false,
   },
-  plugins: [tailwindContainerQueriesPlugin],
   theme: {
     extend: {
       containers: {

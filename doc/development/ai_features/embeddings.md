@@ -72,7 +72,7 @@ The following process outlines the steps to get embeddings generated and stored 
 1. Decide where to store embeddings. Look at the [existing indices in Elasticsearch](../../integration/advanced_search/elasticsearch.md#advanced-search-index-scopes) and if there isn't a suitable existing index, [create a new index](../advanced_search.md#add-a-new-document-type-to-elasticsearch).
 1. Add embedding fields to the index: [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149209).
 1. Update the way [content](https://gitlab.com/gitlab-org/gitlab/-/blob/616f92a2251fcadfec5ef3792ff3d2e4a879920a/ee/lib/search/elastic/references/embedding.rb#L43-59) is generated to accommodate the new type.
-1. Add a new unit primitive: [here](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/918) and [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155835).
+1. Add a new unit primitive. For examples, see merge requests [918](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/918) and [155835](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155835).
 1. Use `Elastic::ApplicationVersionedSearch` to access callbacks and add the necessary checks for when to generate embeddings. See [`Search::Elastic::IssuesSearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/search/elastic/issues_search.rb) for an example.
 1. Backfill embeddings: [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154940).
 

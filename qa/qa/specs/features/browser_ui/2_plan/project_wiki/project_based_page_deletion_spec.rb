@@ -2,13 +2,18 @@
 
 module QA
   RSpec.describe 'Plan', feature_category: :wiki do
-    describe 'Testing project wiki' do
+    describe 'Testing project wiki', feature_flag: {
+      name: 'tailwind_container_queries'
+    } do
       let(:initial_wiki) { create(:project_wiki_page) }
       let(:new_wiki_page_with_spaces_in_the_path) { "a wiki page with spaces in the path" }
       let(:new_wiki_page_with_spaces_in_the_path_content) { "content for the wiki page with spaces in the path" }
       let(:commit_message) { "this is a new addition to the wiki" }
 
       before do
+        # We need to keep this feature flag disabled for now until Chrome has been updated in CI,
+        # which should resolve some related failures.
+        Runtime::Feature.disable(:tailwind_container_queries)
         Flow::Login.sign_in
       end
 

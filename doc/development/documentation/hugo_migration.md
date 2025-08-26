@@ -239,7 +239,7 @@ Cutting a release no longer requires updating `latest.Dockerfile`. This file no 
 the project, and the release template has been updated accordingly.
 
 **Why**: We've refactored versioning to use the [Parallel Deployments](../../user/project/pages/_index.md#parallel-deployments) feature.
-You can review the new release process [here](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/issue_templates/release.md).
+You can review [the new release process](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/issue_templates/release.md).
 
 ### Monthly technical writing tasks
 

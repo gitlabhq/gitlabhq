@@ -5,6 +5,7 @@ query getWorkItemsByReferences($contextNamespacePath: ID!, $refs: [String!]!) {
       iid
       title
       confidential
+      webUrl
       namespace {
         id
         fullPath

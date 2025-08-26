@@ -71,7 +71,7 @@ Visit [`devvm`](https://gitlab.com/gitlab-org/opstrace/devvm) and follow the REA
 
 The [OpenTelemetry Demo app](https://opentelemetry.io/docs/demo/) is a great way to run several Docker containers (representing a distributed system), and to send the logs, metrics, and traces to your local GDK instance.
 
-You can reference the instructions for running the demo app [here](https://opentelemetry.io/docs/demo/docker-deployment/).
+You can reference the [instructions for running the demo app](https://opentelemetry.io/docs/demo/docker-deployment/).
 
 ### OpenTelemetry Demo app Quickstart
 

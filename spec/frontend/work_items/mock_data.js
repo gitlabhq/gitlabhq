@@ -591,6 +591,7 @@ export const mockWorkItemReferenceQueryResponse = {
           title: 'Objective _linked_ items 104',
           titleHtml: 'Objective <em>linked</em> items 104',
           confidential: false,
+          webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_items/1',
           namespace: {
             id: 'gid://gitlab/Group/1',
             fullPath: 'test-project-path',
@@ -3642,6 +3643,7 @@ export const availableObjectivesResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3660,6 +3662,7 @@ export const availableObjectivesResponse = {
             iid: '118',
             title: 'Objective 103',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3678,6 +3681,7 @@ export const availableObjectivesResponse = {
             iid: '117',
             title: 'Objective 102',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3709,6 +3713,7 @@ export const searchedObjectiveResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -5559,6 +5564,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             iid: '23',
             title: 'Epic 1',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/1',
             widgets: [
               {
                 __typename: 'WorkItemWidgetMilestone',
@@ -5578,6 +5584,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             iid: '24',
             title: 'Epic 2',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/2',
             widgets: [
               {
                 __typename: 'WorkItemWidgetMilestone',

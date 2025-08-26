@@ -240,7 +240,6 @@ export default {
             parent: this.isSelectedParentAvailable
               ? {
                   ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
-                  webUrl: this.parentWebUrl ?? null,
                 }
               : null,
           });

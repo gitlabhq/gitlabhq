@@ -45,7 +45,10 @@
     = universal_stylesheet_link_tag "application"
     = yield :page_specific_styles
     = universal_stylesheet_link_tag 'application_utilities'
-  = universal_stylesheet_link_tag 'tailwind'
+  - if Feature.enabled?(:tailwind_container_queries, current_user)
+    = universal_stylesheet_link_tag 'tailwind_cqs'
+  - else
+    = universal_stylesheet_link_tag 'tailwind'
   = universal_stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = universal_stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 

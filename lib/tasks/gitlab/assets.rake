@@ -3,7 +3,7 @@
 namespace :gitlab do
   namespace :assets do
     task :tailwind, [:silent] do |_t, args|
-      cmd = 'yarn tailwindcss:build'
+      cmd = 'yarn tailwindcss:build && yarn tailwindcss:cqs:build'
       cmd += '> /dev/null 2>&1' if args[:silent].present?
 
       abort Rainbow('Error: Unable to build Tailwind CSS bundle.').red unless system(cmd)

@@ -342,4 +342,5 @@ and assign it to the Runway group.
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/_index.md#install-ai-gateway).
+An example for how to set up an end-to-end integration with the AI gateway as the backend service
+can be found in [install AI gateway](../ai_features/_index.md#install-ai-gateway).

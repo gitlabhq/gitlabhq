@@ -65,8 +65,8 @@ export function StylePlugin({ shouldWatch = false } = {}) {
       }
       const fixedId = id.replace('styles.', '').replace('.scss', '.css').replace(/\?.+/, '');
 
-      if (fixedId === 'tailwind.css') {
-        return `@import '${path.join(ROOT_PATH, 'app/assets/builds/tailwind.css')}';`;
+      if (fixedId === 'tailwind.css' || fixedId === 'tailwind_cqs.css') {
+        return `@import '${path.join(ROOT_PATH, 'app/assets/builds/', fixedId)}';`;
       }
 
       return styles[fixedId] ? `@import '${styles[fixedId]}';` : '// Does not exist';

@@ -1,4 +1,4 @@
-- @main_wrapper_class =  "gl-@container/panel" if @allow_main_container_query
+- @main_wrapper_class =  "gl-@container/panel" if Feature.enabled?(:tailwind_container_queries, current_user)
 
 .layout-page{ class: page_with_sidebar_class }
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.

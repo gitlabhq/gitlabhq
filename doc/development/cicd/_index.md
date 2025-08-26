@@ -69,7 +69,7 @@ to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_ind
 
 This section describes the dashboards and metrics that can be used by engineers during development, change validation and incident investigation.
 
-- Dashboards for all GitLab teams are available [here](https://dashboards.gitlab.net/dashboards/f/stage-groups/stage-groups).
+- [Dashboards for all GitLab teams](https://dashboards.gitlab.net/dashboards/f/stage-groups/stage-groups) are available.
   You can search for the team that owns the feature category you are interested in.
 - The [Pipeline Execution error budget dashboard](https://dashboards.gitlab.net/d/stage-groups-pipeline_execution) contains other useful metrics about pipeline
   creation and job execution.

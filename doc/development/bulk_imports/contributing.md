@@ -126,7 +126,7 @@ associations that require them. For example, documents must be imported before m
    - Anything that ends on `_html`
    - Anything sensitive (for example, tokens, encrypted data)
 
-   See a full list of prohibited references [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/attribute_cleaner.rb#L14-21).
+   See a [full list of prohibited references](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/attribute_cleaner.rb#L14-21).
 
 1. Add `methods` of the relation. If your relation has a method (for example, `document.signature`) that must also be exported, you can add it in the `methods` section.
    The exported value will be present in the export and you can do something with it on import. For example, assigning it to a field.
