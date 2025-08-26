@@ -11,7 +11,6 @@ ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
-ee/spec/frontend/members/components/table/members_table_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js

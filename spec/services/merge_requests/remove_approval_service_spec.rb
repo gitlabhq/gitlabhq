@@ -79,7 +79,12 @@ RSpec.describe MergeRequests::RemoveApprovalService, feature_category: :code_rev
       end
 
       it 'creates an unapproval note, triggers a web hook, and sends a notification' do
-        expect(service).to receive(:execute_hooks).with(merge_request, 'unapproved')
+        if Gitlab.ee?
+          expect(service).to receive(:execute_hooks).with(merge_request, 'unapproval')
+        else
+          expect(service).to receive(:execute_hooks).with(merge_request, 'unapproved')
+        end
+
         expect(SystemNoteService).to receive(:unapprove_mr)
         expect(notification_service).to receive_message_chain(:async, :unapprove_mr).with(merge_request, user)
 

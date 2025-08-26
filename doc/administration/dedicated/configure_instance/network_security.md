@@ -160,6 +160,63 @@ To enable KAS and registry through your private network:
 
 This configuration is robust to IP address changes because it uses the VPC endpoint interface rather than specific IP addresses.
 
+#### Troubleshooting
+
+##### Error: `Service name could not be verified`
+
+You might get an error that states `Service name could not be verified` when trying to create a VPC endpoint.
+
+This issue occurs when the custom IAM role provided in the support ticket does not have the proper permissions or trust policies configured in your AWS account.
+
+To resolve this issue:
+
+1. Confirm that you can assume the custom IAM role provided to GitLab in the support ticket.
+1. Verify the custom role has a trust policy that allows you to assume it. For example:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "Statement1",
+               "Effect": "Allow",
+               "Principal": {
+                   "AWS": "arn:aws:iam::CONSUMER_ACCOUNT_ID:user/user-name"
+               },
+               "Action": "sts:AssumeRole"
+           }
+       ]
+   }
+   ```
+
+1. Verify the custom role has a permission policy that allows VPC endpoint and EC2 actions. For example:
+
+   ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+         {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "vpce:*",
+            "Resource": "*"
+         },
+         {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Action": [
+                  "ec2:CreateVpcEndpoint",
+                  "ec2:DescribeVpcEndpointServices",
+                  "ec2:DescribeVpcEndpoints"
+            ],
+            "Resource": "*"
+         }
+      ]
+   }
+   ```
+
+1. Using the custom role, retry creating the VPC endpoint in your AWS console or CLI.
+
 ### Outbound Private Link
 
 Outbound private links allow your GitLab Dedicated instance and the hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.

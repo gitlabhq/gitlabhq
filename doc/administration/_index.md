@@ -20,7 +20,7 @@ Learn how to administer GitLab Self-Managed.
 - [Secure GitLab](../security/_index.md)
 - [Administer users](administer_users.md)
 - [GitLab Dedicated](dedicated/_index.md)
-- [GitLab Runner](https://docs.gitlab.com/runner/)
+- [GitLab Runner](https://docs.gitlab.com/runner/ "Run CI/CD jobs in a pipeline.")
 
 {{< /cards >}}
 

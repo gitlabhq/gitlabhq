@@ -2640,6 +2640,9 @@ msgstr ""
 msgid "AICatalog|Selected flow"
 msgstr ""
 
+msgid "AICatalog|Steps"
+msgstr ""
+
 msgid "AICatalog|System prompt"
 msgstr ""
 
