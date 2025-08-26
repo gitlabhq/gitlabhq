@@ -145,7 +145,7 @@ module TreeHelper
     project_compare_index_path(project, from: repository.root_ref, to: ref)
   end
 
-  def vue_tree_header_app_data(project, repository, ref, pipeline)
+  def vue_tree_header_app_data(project, repository, ref, pipeline, ref_type)
     archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
 
     {
@@ -162,7 +162,7 @@ module TreeHelper
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
-      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : [],
+      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix, ref_type).to_json : [],
       download_artifacts: pipeline &&
         (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
@@ -229,12 +229,12 @@ module TreeHelper
     }
   end
 
-  def download_links(project, ref, archive_prefix)
+  def download_links(project, ref, archive_prefix, ref_type)
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
         text: fmt,
         path: external_storage_url_or_path(
-          project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
+          project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt, ref_type: ref_type)
         )
       }
     end
@@ -249,14 +249,15 @@ module TreeHelper
     end
   end
 
-  def compact_code_dropdown_data(project, ref)
+  def compact_code_dropdown_data(project, ref, ref_type)
     archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
+    download_links = !project.empty_repo? ? download_links(project, ref, archive_prefix, ref_type).to_json : []
     {
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
       ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
-      directory_download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : []
+      directory_download_links: download_links
     }
   end
 end

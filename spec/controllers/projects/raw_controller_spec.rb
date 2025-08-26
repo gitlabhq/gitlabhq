@@ -234,6 +234,49 @@ RSpec.describe Projects::RawController, feature_category: :source_code_managemen
       end
     end
 
+    describe 'ambiguous refs' do
+      let(:file_path) { 'v1.1.0/bar/branch-test.txt' }
+
+      context 'when ref_type is heads' do
+        let(:params) { { ref_type: 'heads' } }
+
+        it 'shows the blob from the branch ref' do
+          expect(project.repository.tag_exists?('v1.1.0')).to be(true)
+          expect(project.repository.branch_exists?('v1.1.0')).to be(true)
+
+          get_show
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+
+      context 'when ref_type is tags' do
+        let(:params) { { ref_type: 'tags' } }
+
+        it 'shows the blob from the tag ref' do
+          expect(project.repository.tag_exists?('v1.1.0')).to be(true)
+          expect(project.repository.branch_exists?('v1.1.0')).to be(true)
+
+          get_show
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when ref_type is nil' do
+        let(:params) { { ref_type: nil } }
+
+        it 'shows the blob from the tag ref' do
+          expect(project.repository.tag_exists?('v1.1.0')).to be(true)
+          expect(project.repository.branch_exists?('v1.1.0')).to be(true)
+
+          get_show
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
     describe 'caching' do
       let(:ref) { project.default_branch }
 
