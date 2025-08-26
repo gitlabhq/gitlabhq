@@ -29,7 +29,8 @@ ClickHouse::Client.configure do |config|
     options = {
       multipart: true,
       headers: headers,
-      allow_local_requests: true
+      allow_local_requests: true,
+      silent_mode_enabled: false # override default value to be always false to allow clickhouse requests in silent mode
     }
 
     body_key = body.is_a?(IO) ? :body_stream : :body
