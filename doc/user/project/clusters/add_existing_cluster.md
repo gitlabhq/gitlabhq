@@ -231,7 +231,7 @@ checkbox at creation time, GitLab assumes RBAC is disabled for your cluster
 when interacting with it. If so, you must disable RBAC on your cluster for the
 integration to work properly.
 
-![RBAC](img/rbac_v13_1.png)
+![GitLab Kubernetes cluster integration settings for enabling RBAC.](img/rbac_v13_1.png)
 
 {{< alert type="warning" >}}
 

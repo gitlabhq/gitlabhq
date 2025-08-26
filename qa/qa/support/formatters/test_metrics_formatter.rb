@@ -260,6 +260,7 @@ module QA
             ui_fabrication: ui_fabrication,
             total_fabrication: api_fabrication + ui_fabrication,
             job_url: ci_job_url,
+            job_status: env('CI_JOB_STATUS'),
             pipeline_url: ci_pipeline_url,
             pipeline_id: env('CI_PIPELINE_ID'),
             job_id: env('CI_JOB_ID'),
