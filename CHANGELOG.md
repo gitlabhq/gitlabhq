@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.5 (2025-08-26)
+
+### Fixed (2 changes)
+
+- [Ignore silent mode in clickhouse http calls](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed59a658334df6d01362f6d23c08f5acd768ff8e)
+- [Check Stage for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eb039f297e553de4847c97eff3c7c6f6f303fd7b) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Adjust snippet blob query complexity to mitigate potential DoS attack](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1e0eabbeda3d53a366689aefaad2691fb6e83789) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5232))
+- [Gitea import rate limiting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a9dd8d3b15f7b4b5a6c9775d9f72de2cf8fa36f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5252))
+- [Fix tag/branch ambiguity in raw file display](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f871b4ea8a988103c28423a99b7907fe1b36705a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5238))
+- [Add authentication check for manual variables via new policy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f5b9f623bcc43612fa07861a57d0901291be72c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5194))
+
 ## 18.2.4 (2025-08-18)
 
 ### Fixed (1 change)
