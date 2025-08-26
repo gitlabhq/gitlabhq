@@ -425,6 +425,12 @@ module Ci
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
     end
 
+    def needs_maintainer_role_for_artifact_access?
+      return false if job_artifacts_archive.nil?
+
+      job_artifacts_archive.maintainer_access?
+    end
+
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
     end
@@ -812,17 +818,17 @@ module Ci
 
     def artifact_access_setting_in_config
       artifacts_public = options.dig(:artifacts, :public)
-      artifacts_access = options.dig(:artifacts, :access)
+      artifacts_access = options.dig(:artifacts, :access)&.to_s
 
-      if !artifacts_public.nil? && !artifacts_access.nil?
+      if artifacts_public.present? && artifacts_access.present?
         raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive'
       end
 
-      return :public if artifacts_public == true || artifacts_access == 'all'
-      return :private if artifacts_public == false || artifacts_access == 'developer'
-      return :none if artifacts_access == 'none'
+      return :public     if artifacts_public == true || artifacts_access == 'all'
+      return :private    if artifacts_public == false || artifacts_access == 'developer'
+      return :maintainer if artifacts_access == 'maintainer'
+      return :none       if artifacts_access == 'none'
 
-      # default behaviour
       :public
     end
 

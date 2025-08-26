@@ -98,9 +98,9 @@ export default {
 
 <template>
   <div v-if="runner">
-    <div class="md:gl-columns-2">
+    <div class="@md/panel:gl-columns-2">
       <dl
-        class="gl-mb-0 gl-flex gl-flex-col gl-gap-x-5 gl-gap-y-1 md:gl-grid md:gl-grid-cols-[auto_1fr] md:gl-gap-y-3"
+        class="gl-mb-0 gl-flex gl-flex-col gl-gap-x-5 gl-gap-y-1 @md/panel:gl-grid @md/panel:gl-grid-cols-[auto_1fr] @md/panel:gl-gap-y-3"
       >
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail

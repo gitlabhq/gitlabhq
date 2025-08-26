@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Subscription Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Options for accessing GitLab.
+description: Choose the right GitLab subscription for your needs.
 title: GitLab plans
 ---
 

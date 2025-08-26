@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Subscription Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Billing examples.
+description: Understand the billing processes for GitLab subscriptions.
 title: Quarterly reconciliation and annual true-ups
 ---
 

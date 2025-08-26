@@ -1075,16 +1075,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.sort_by_attribute' do
+    let_it_be(:group_1) { create(:group, id: 10, name: 'Y group') }
+    let_it_be(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let_it_be(:group_3) { create(:group, id: 12, name: 'A group') }
+    let_it_be(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+
+    let_it_be(:project_1) do
+      create(:project, namespace: group_1, statistics: create(:project_statistics, storage_size: 1278370))
+    end
+
+    let_it_be(:project_2) do
+      create(:project, namespace: group_2, statistics: create(:project_statistics, storage_size: 3178370))
+    end
+
+    let_it_be(:project_3) do
+      create(:project, namespace: group_3, statistics: create(:project_statistics, storage_size: 1178370))
+    end
+
+    let_it_be(:project_4) do
+      create(:project, namespace: group_4, statistics: create(:project_statistics, storage_size: 2278370))
+    end
+
+    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
+
     before do
       group.destroy!
     end
-
-    let!(:group_1) { create(:group, id: 10, name: 'Y group') }
-    let!(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
-    let!(:group_3) { create(:group, id: 12, name: 'A group') }
-    let!(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
-
-    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
 
     context 'when sort by is not provided' do
       let(:sort) { nil }
@@ -1130,83 +1146,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
     end
 
+    context 'when sort by storage_size_keyset_asc' do
+      let(:sort) { 'storage_size_keyset_asc' }
+
+      it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
+    end
+
+    context 'when sort by storage_size_keyset_desc' do
+      let(:sort) { 'storage_size_keyset_desc' }
+
+      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+    end
+
     context 'when sort by storage_size_desc' do
-      let!(:project_1) do
-        create(:project,
-          namespace: group_1,
-          statistics: build(
-            :project_statistics,
-            namespace: group_1,
-            repository_size: 2178370,
-            storage_size: 1278370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_2) do
-        create(:project,
-          namespace: group_2,
-          statistics: build(
-            :project_statistics,
-            namespace: group_2,
-            repository_size: 3178370,
-            storage_size: 3178370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_3) do
-        create(:project,
-          namespace: group_3,
-          statistics: build(
-            :project_statistics,
-            namespace: group_3,
-            repository_size: 1278370,
-            storage_size: 1178370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_4) do
-        create(:project,
-          namespace: group_4,
-          statistics: build(
-            :project_statistics,
-            namespace: group_4,
-            repository_size: 2178370,
-            storage_size: 2278370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
       let(:sort) { 'storage_size_desc' }
 
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }

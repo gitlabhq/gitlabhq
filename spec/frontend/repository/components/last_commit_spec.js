@@ -11,7 +11,7 @@ import SignatureBadge from '~/commit/components/signature_badge.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import eventHub from '~/repository/event_hub';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
-import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
+import pipelineStatusUpdatedSubscription from '~/repository/subscriptions/pipeline_status_updated.subscription.graphql';
 import { FORK_UPDATED_EVENT } from '~/repository/constants';
 import { mockPipelineStatusUpdatedResponse, createCommitData } from '../mock_data';
 
@@ -42,7 +42,7 @@ describe('Repository last commit component', () => {
 
     apolloProvider = createMockApollo([
       [pathLastCommitQuery, mockResolver],
-      [pipelineCiStatusUpdatedSubscription, pipelineSubscriptionHandler],
+      [pipelineStatusUpdatedSubscription, pipelineSubscriptionHandler],
     ]);
 
     wrapper = shallowMountExtended(LastCommit, {

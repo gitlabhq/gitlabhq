@@ -36098,7 +36098,7 @@ paths:
         required: false
       - in: query
         name: page_token
-        description: Name of tag to start the paginaition from
+        description: Name of tag to start the pagination from
         type: string
         required: false
       - in: query

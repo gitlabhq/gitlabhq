@@ -179,6 +179,71 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
       end
     end
 
+    context 'when sorting by storage size' do
+      let_it_be(:public_group_project) do
+        create(:project,
+          namespace: public_group,
+          statistics: build(:project_statistics, namespace: public_group, storage_size: 100.megabytes)
+        )
+      end
+
+      let_it_be(:public_group2_project) do
+        create(:project,
+          namespace: public_group2,
+          statistics: build(:project_statistics, namespace: public_group2, storage_size: 200.megabytes)
+        )
+      end
+
+      let_it_be(:public_group3_project) do
+        create(:project,
+          namespace: public_group3,
+          statistics: build(:project_statistics, namespace: public_group3, storage_size: 50.megabytes)
+        )
+      end
+
+      let_it_be(:private_group_project) do
+        create(:project,
+          namespace: private_group,
+          statistics: build(:project_statistics, namespace: private_group, storage_size: 300.megabytes)
+        )
+      end
+
+      context 'when user is not admin' do
+        # Sorting by ID in descending order is the fallback when the sort option is unrecognized.
+        let_it_be(:fallback_sorted_records) { all_groups.sort_by(&:id).reverse.map { |p| global_id_of(p).to_s } }
+
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { "storage_size_keyset_asc" }
+          let(:all_records) { fallback_sorted_records }
+        end
+
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { "storage_size_keyset_desc" }
+          let(:all_records) { fallback_sorted_records }
+        end
+      end
+
+      context 'when user is admin', :enable_admin_mode do
+        let_it_be(:admin) { create(:admin) }
+
+        let(:current_user) { admin }
+
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { "storage_size_keyset_desc" }
+          let(:all_records) do
+            [private_group, public_group2, public_group, public_group3].map { |p| global_id_of(p).to_s }
+          end
+        end
+
+        it_behaves_like 'sorted paginated query' do
+          let(:sort_param) { "storage_size_keyset_asc" }
+          let(:all_records) do
+            [public_group3, public_group, public_group2, private_group].map { |p| global_id_of(p).to_s }
+          end
+        end
+      end
+    end
+
     def pagination_query(params)
       graphql_query_for(
         '', {},

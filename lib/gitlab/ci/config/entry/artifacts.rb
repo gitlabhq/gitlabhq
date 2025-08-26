@@ -13,7 +13,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_WHEN = %w[on_success on_failure always].freeze
-          ALLOWED_ACCESS = %w[none developer all].freeze
+          ALLOWED_ACCESS = %w[none developer maintainer all].freeze
           ALLOWED_KEYS = %i[name untracked paths reports when expire_in expose_as exclude public access].freeze
           EXPOSE_AS_REGEX = /\A\w[-\w ]*\z/
           EXPOSE_AS_ERROR_MESSAGE = "can contain only letters, digits, '-', '_' and spaces"

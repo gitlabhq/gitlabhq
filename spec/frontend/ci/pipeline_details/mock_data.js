@@ -1222,6 +1222,20 @@ export const mockPipelineStatusUpdatedResponse = {
         text: 'Passed',
         __typename: 'DetailedStatus',
       },
+      status: 'SUCCESS',
+      userPermissions: {
+        destroyPipeline: true,
+        updatePipeline: true,
+        cancelPipeline: true,
+        __typename: 'PipelinePermissions',
+      },
+      errorMessages: {
+        nodes: [],
+        __typename: 'PipelineMessageConnection',
+      },
+      finishedAt: '2025-08-22T15:21:42Z',
+      queuedDuration: 160408,
+      duration: 7210,
     },
   },
 };

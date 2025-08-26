@@ -250,7 +250,7 @@
 {"name":"google-apis-bigquery_v2","version":"0.90.0","platform":"ruby","checksum":"8b622912b45fb7ab75f0600a062db17b7d25a057265366750512e574ec333d7b"},
 {"name":"google-apis-cloudbilling_v1","version":"0.22.0","platform":"ruby","checksum":"db2b72aebdc2664fd5095264a160cf757119ba3a83a036817b78d0d2ad7886fd"},
 {"name":"google-apis-cloudresourcemanager_v1","version":"0.31.0","platform":"ruby","checksum":"f0a472a228c0b9b592741380ce79ead2458ea0066a4b5a78635818b9b62efbbf"},
-{"name":"google-apis-compute_v1","version":"0.127.0","platform":"ruby","checksum":"b7c8c4f10d3f462f6a00339cbc4398b68564ad5cb1883f7d20b9ae2f9b210ab8"},
+{"name":"google-apis-compute_v1","version":"0.129.0","platform":"ruby","checksum":"b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3"},
 {"name":"google-apis-container_v1","version":"0.100.0","platform":"ruby","checksum":"5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853"},
 {"name":"google-apis-container_v1beta1","version":"0.89.0","platform":"ruby","checksum":"459acd4ba57e2e7789d0564531134a39b8cab08bbbc55b4a376379eb9d89908c"},
 {"name":"google-apis-core","version":"0.18.0","platform":"ruby","checksum":"96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee"},

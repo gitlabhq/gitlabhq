@@ -376,6 +376,14 @@ FactoryBot.define do
       end
     end
 
+    trait :artifacts_with_maintainer_access do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :maintainer, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :maintainer, job: build, expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
+
     trait :no_access_artifacts do
       after(:create) do |build, evaluator|
         create(:ci_job_artifact, :archive, :none, job: build, expire_at: build.artifacts_expire_at)
@@ -668,6 +676,14 @@ FactoryBot.define do
       options do
         {
           artifacts: { access: 'developer' }
+        }
+      end
+    end
+
+    trait :with_maintainer_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'maintainer' }
         }
       end
     end

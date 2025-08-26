@@ -10,7 +10,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
+import pipelineStatusUpdatedSubscription from '../subscriptions/pipeline_status_updated.subscription.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -77,7 +77,7 @@ export default {
           this.subscribedPipelineId = currentPipelineId;
 
           this.$apollo.queries.commit.subscribeToMore({
-            document: pipelineCiStatusUpdatedSubscription,
+            document: pipelineStatusUpdatedSubscription,
             variables: {
               pipelineId: currentPipelineId,
             },

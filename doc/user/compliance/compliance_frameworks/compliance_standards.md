@@ -58,6 +58,33 @@ to create a compliance framework for this standard.
 | TVM-05 External Library Vulnerabilities | Define, implement and evaluate processes, procedures and technical measures to identify updates for applications which use third party or open source libraries according to the organization's vulnerability management policy. | <ul><li>Container scanning running</li></ul> |
 | TVM-07 Vulnerability Identification     | Define, implement and evaluate processes, procedures and technical measures for the detection of vulnerabilities on organizationally managed assets at least monthly.                                                            | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li></ul> |
 
+## Cyber Essentials compliance requirements
+
+The following table lists the requirements supported by GitLab for Cyber Essentials and the controls for the requirements.
+You can use the
+[`cyber_essentials.json` template](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates/-/blob/main/cyber_essentials.json?ref_type=heads)
+to create a compliance framework for this standard.
+
+| Cyber Essentials requirement | Description                                                                                                                                                                                                                                                                                                                                                        | Supported controls |
+|:-----------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| A6.2 Supported software      | Is all the software on your devices supported by a supplier that produces regular fixes for any security problems? All software used by your organisation must be supported by a supplier who provides regular security updates. Unsupported software must be removed from your devices. This includes frameworks and plugins such as Java, Adobe Reader and .NET. | <ul><li>Dependency scanning running</li><li>Container scanning running</li></ul> |
+| A6.3 Software licensing      | Is all software licensed in accordance with the publisher's recommendations? All software must be licensed. It is acceptable to use free and open source software as long as you comply with any licensing requirements.                                                                                                                                           | <ul><li>License compliance running</li></ul> |
+
+## DORA compliance requirements
+
+DORA is DevOps Research and Assessment.
+
+The following table lists the requirements supported by GitLab for DORA and the controls for the requirements.
+You can use the
+[`dora.json` template](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates/-/blob/main/dora.json?ref_type=heads)
+to create a compliance framework for this standard.
+
+| DORA requirement                            | Description                                                                                                                                                                                                                                                                                                                                                                                                     | Supported controls |
+|:--------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| Article 8 Identification                    | 2. Financial entities shall, on a continuous basis, identify all sources of ICT risk, in particular the risk exposure to and from other financial entities, and assess cyber threats and ICT vulnerabilities relevant to their ICT supported business functions, information assets and ICT assets. Financial entities shall review on a regular basis, and at least yearly, the risk scenarios impacting them. | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li></ul> |
+| Article 9 Protection and prevention         | 4. As part of the ICT risk management framework, financial entities shall implement documented policies, procedures and controls for ICT change management. These changes include software, hardware, firmware, systems or security parameters, and must be based on a risk assessment approach as part of the overall change management process.                                                               | <ul><li>Default branch protected</li><li>At least two approvals</li><li>Author approved merge request is forbidden</li><li>Committers approved merge request is forbidden</li><li>Merge requests approval rules prevent editing</li></ul> |
+| Article 25 Testing of ICT tools and systems | 1. Digital operational resilience testing programs shall include vulnerability assessments, scans, open source analyses, network security assessments, gap analyses, source code reviews, scenario-based tests, compatibility testing, performance testing, and penetration testing. Testing is required before deployment of applications and infrastructure supporting critical functions.                    | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li></ul> |
+
 ## FedRAMP compliance requirements
 
 FedRAMP (Federal Risk and Authorization Management Program) categorizes cloud services into three impact levels:

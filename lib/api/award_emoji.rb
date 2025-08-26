@@ -35,6 +35,8 @@ module API
           get endpoint, feature_category: awardable_params[:feature_category] do
             if can_read_awardable?
               awards = awardable.award_emoji
+              # Batch load custom emoji URLs
+              awards.each(&:url)
               present paginate(awards), with: Entities::AwardEmoji
             else
               not_found!("Award Emoji")

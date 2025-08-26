@@ -5,6 +5,10 @@ module Resolvers
     include ResolvesGroups
     include Gitlab::Graphql::Authorize::AuthorizeResource
 
+    # Sorting by storage size needs to be optimized. Restricted to admin-only to prevent abuse.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/556662
+    ADMIN_RESTRICTED_SORTS = %w[storage_size_keyset_asc storage_size_keyset_desc].freeze
+
     type Types::GroupType.connection_type, null: true
 
     argument :ids, [GraphQL::Types::ID],
@@ -60,11 +64,12 @@ module Resolvers
     private
 
     def resolve_groups(parent_path: nil, **args)
-      args[:parent] = find_authorized_parent!(parent_path) if parent_path
-      args[:organization] = Current.organization.id
+      sanitized_args = sanitize_sort_args(args)
+      sanitized_args[:parent] = find_authorized_parent!(parent_path) if parent_path
+      sanitized_args[:organization] = Current.organization.id
 
       GroupsFinder
-        .new(context[:current_user], args)
+        .new(context[:current_user], sanitized_args)
         .execute
     end
 
@@ -76,6 +81,16 @@ module Resolvers
       end
 
       group
+    end
+
+    def sanitize_sort_args(args)
+      return args unless ADMIN_RESTRICTED_SORTS.include?(args[:sort]) && !user_is_admin?
+
+      args.except(:sort)
+    end
+
+    def user_is_admin?
+      context[:current_user].present? && context[:current_user].can_admin_all_resources?
     end
   end
 end

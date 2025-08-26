@@ -1,10 +1,8 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 
-subscription pipelineCiStatusUpdatedSubscription($pipelineId: CiPipelineID!) {
+subscription pipelineStatusUpdatedSubscription($pipelineId: CiPipelineID!) {
   ciPipelineStatusUpdated(pipelineId: $pipelineId) {
     id
-    retryable
-    cancelable
     detailedStatus {
       ...CiIcon
     }

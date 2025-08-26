@@ -396,6 +396,26 @@ class Group < Namespace
     order.apply_cursor_conditions(reorder(order))
   end
 
+  scope :order_storage_size_keyset, ->(direction) do
+    order = Gitlab::Pagination::Keyset::Order.build([
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'storage_size',
+        column_expression: Arel.sql('storage_size'),
+        order_expression: Arel.sql("storage_size #{direction == :desc ? 'DESC' : 'ASC'}"),
+        reversed_order_expression: Arel.sql("storage_size #{direction == :desc ? 'ASC' : 'DESC'}"),
+        nullable: direction == :desc ? :nulls_last : :nulls_first,
+        order_direction: direction,
+        add_to_projections: true
+      ),
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'id',
+        order_expression: direction == :desc ? Namespace.arel_table['id'].desc : Namespace.arel_table['id'].asc
+      )
+    ])
+
+    with_statistics.order(order)
+  end
+
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }
@@ -404,6 +424,10 @@ class Group < Namespace
   class << self
     def sort_by_attribute(method)
       case method.to_s
+      when 'storage_size_keyset_asc'
+        order_storage_size_keyset(:asc)
+      when 'storage_size_keyset_desc'
+        order_storage_size_keyset(:desc)
       when 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name

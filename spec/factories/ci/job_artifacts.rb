@@ -188,6 +188,10 @@ FactoryBot.define do
       accessibility { 'none' }
     end
 
+    trait :maintainer_only_access do
+      accessibility { 'maintainer' }
+    end
+
     trait :accessibility do
       file_type { :accessibility }
       file_format { :raw }

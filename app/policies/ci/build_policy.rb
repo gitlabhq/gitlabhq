@@ -44,6 +44,10 @@ module Ci
       @subject.artifacts_no_access?
     end
 
+    condition(:artifacts_maintainer_only, scope: :subject) do
+      @subject.needs_maintainer_role_for_artifact_access?
+    end
+
     condition(:terminal, scope: :subject) do
       @subject.has_terminal?
     end
@@ -66,6 +70,10 @@ module Ci
 
     condition(:project_developer) do
       can?(:developer_access, @subject.project)
+    end
+
+    condition(:project_maintainer) do
+      can?(:maintainer_access, @subject.project)
     end
 
     # Use admin_ci_minutes for detailed quota and usage reporting
@@ -115,6 +123,7 @@ module Ci
 
     rule { can_read_project_build & ~artifacts_none }.enable :read_job_artifacts
     rule { ~artifacts_public & ~project_developer }.prevent :read_job_artifacts
+    rule { artifacts_maintainer_only & ~project_maintainer }.prevent :read_job_artifacts
   end
 end
 

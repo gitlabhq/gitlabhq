@@ -1146,6 +1146,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { is_expected.to eq(:private) }
     end
 
+    context 'artifacts with maintainer access level' do
+      let(:build) { create(:ci_build, :with_maintainer_access_artifacts, pipeline: pipeline) }
+
+      it { is_expected.to eq(:maintainer) }
+    end
+
     context 'non public artifacts via access as none' do
       let(:build) { create(:ci_build, :with_none_access_artifacts, pipeline: pipeline) }
 

@@ -115,6 +115,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
         # Prepare control
         create(:ci_build, :tags, ci_stage: stage, pipeline: pipeline)
         create(:ci_bridge, ci_stage: stage, pipeline: pipeline)
+        create(:ci_bridge, :failed, ci_stage: stage, pipeline: pipeline)
         create(:generic_commit_status, ci_stage: stage, pipeline: pipeline)
 
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -125,6 +126,7 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
         # the control
         create_list(:ci_build, 10, :tags, ci_stage: stage, pipeline: pipeline)
         create_list(:ci_bridge, 10, ci_stage: stage, pipeline: pipeline)
+        create_list(:ci_bridge, 10, :failed, ci_stage: stage, pipeline: pipeline)
         create_list(:generic_commit_status, 10, ci_stage: stage, pipeline: pipeline)
 
         expect { serialize(stage) }.not_to exceed_query_limit(control)

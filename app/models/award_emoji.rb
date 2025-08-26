@@ -70,8 +70,13 @@ class AwardEmoji < ApplicationRecord
   def url
     return if TanukiEmoji.find_by_alpha_code(name)
 
-    Groups::CustomEmojiFinder.new(resource_parent, { include_ancestor_groups: true }).execute
-      .by_name(name)&.select(:file)&.first&.url
+    BatchLoader.for(name).batch(key: resource_parent) do |names, loader|
+      emoji = Groups::CustomEmojiFinder.new(resource_parent, { include_ancestor_groups: true }).execute.by_name(names).select(:file)
+
+      emoji.each do |e|
+        loader.call(e.name, e.url)
+      end
+    end
   end
 
   def expire_cache

@@ -362,3 +362,5 @@ In Jira:
 1. Select **Grant access**.
 
 Your repositories should now appear in Jira Code.
+
+For more information, see [Jira Cloud issue `JRACLOUD-95847`](https://jira.atlassian.com/browse/JRACLOUD-95847).

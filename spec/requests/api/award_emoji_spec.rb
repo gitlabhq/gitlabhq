@@ -98,6 +98,29 @@ RSpec.describe API::AwardEmoji, feature_category: :shared do
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(downvote.name)
       end
+
+      context 'with custom emoji' do
+        let_it_be_with_reload(:project) { create(:project, :public, namespace: create(:group)) }
+        let_it_be(:custom_emoji) { create_list(:custom_emoji, 10, namespace: project.namespace) }
+
+        it 'prevents n+1 queries', :use_sql_query_cache do
+          custom_emoji[0...5].each do |emoji|
+            create(:award_emoji, name: emoji.name, awardable: merge_request, user: user)
+          end
+
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji"), params: { per_page: 50 }
+          end
+
+          custom_emoji[5...-1].each do |emoji|
+            create(:award_emoji, name: emoji.name, awardable: merge_request, user: user)
+          end
+
+          expect do
+            get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/award_emoji"), params: { per_page: 50 }
+          end.not_to exceed_all_query_limit(control)
+        end
+      end
     end
 
     context 'on a snippet' do

@@ -114,7 +114,8 @@
       "enum": [
         "all",
         "developer",
-        "none"
+        "none",
+        "maintainer"
       ]
     },
     "allowFailureCriteria": {

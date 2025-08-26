@@ -444,6 +444,7 @@ Example response:
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -568,6 +569,7 @@ Example response:
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
 

@@ -57,11 +57,94 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
     end
 
+    context 'when job artifacts are restricted by different roles' do
+      using RSpec::Parameterized::TableSyntax
+
+      def user_for(role)
+        user = create(:user)
+        case role
+        when :maintainer then project.add_maintainer(user)
+        when :owner      then project.add_owner(user)
+        when :developer  then project.add_developer(user)
+        when :guest      then project.add_guest(user)
+        end
+
+        user
+      end
+
+      where(:artifact_trait, :config_build_access_trait, :role, :allowed) do
+        # --- Maintainer-only access ---
+        :artifacts           | :with_public_artifacts_config | :maintainer | true
+        :artifacts           | :with_public_artifacts_config | :owner      | true
+        :artifacts           | :with_public_artifacts_config | :developer  | true
+        :artifacts           | :with_public_artifacts_config | :guest      | true
+
+        # -- Some examples only-shows we honor the artifact access level --
+        # -- Just to illustrate the logic: we respect only job_artifacts access level --
+        :artifacts           | :with_none_access_artifacts   | :guest      | true
+
+        :private_artifacts   | :with_private_artifacts_config | :maintainer | true
+        :private_artifacts   | :with_private_artifacts_config | :owner      | true
+        :private_artifacts   | :with_private_artifacts_config | :developer  | true
+        :private_artifacts   | :with_private_artifacts_config | :guest      | false
+
+        :private_artifacts   | :with_none_access_artifacts    | :developer  | true
+
+        :no_access_artifacts | :with_none_access_artifacts | :maintainer | false
+        :no_access_artifacts | :with_none_access_artifacts | :owner      | false
+        :no_access_artifacts | :with_none_access_artifacts | :developer  | false
+        :no_access_artifacts | :with_none_access_artifacts | :guest      | false
+
+        :no_access_artifacts | :with_developer_access_artifacts | :developer | false
+
+        :artifacts_with_maintainer_access | :with_maintainer_access_artifacts | :maintainer | true
+        :artifacts_with_maintainer_access | :with_maintainer_access_artifacts | :owner      | true
+        :artifacts_with_maintainer_access | :with_maintainer_access_artifacts | :developer  | false
+        :artifacts_with_maintainer_access | :with_maintainer_access_artifacts | :guest      | false
+
+        # -- We match developer access to private access level on job artifacts --
+        :private_artifacts   | :with_developer_access_artifacts | :maintainer | true
+        :private_artifacts   | :with_developer_access_artifacts | :owner      | true
+        :private_artifacts   | :with_developer_access_artifacts | :developer  | true
+        :private_artifacts   | :with_developer_access_artifacts | :guest      | false
+
+        :no_access_artifacts | :with_none_access_artifacts | :maintainer | false
+        :no_access_artifacts | :with_none_access_artifacts | :owner      | false
+        :no_access_artifacts | :with_none_access_artifacts | :developer  | false
+        :no_access_artifacts | :with_none_access_artifacts | :guest      | false
+
+        :no_access_artifacts | :with_developer_access_artifacts | :developer | false
+      end
+
+      with_them do
+        let(:user) { user_for(role) }
+        let(:build)  { create(:ci_build, artifact_trait, config_build_access_trait, pipeline: pipeline, project: project) }
+        let(:policy) { described_class.new(user, build) }
+
+        it 'applies the expected permission' do
+          expect(policy).to(allowed ? be_allowed(:read_job_artifacts) : be_disallowed(:read_job_artifacts))
+        end
+      end
+    end
+
     context 'when job artifact access is set to none' do
       let(:build) { create(:ci_build, :no_access_artifacts, pipeline: pipeline) }
 
       it 'disallows read_job_artifacts to project members' do
         expect(policy).to be_disallowed :read_job_artifacts
+      end
+    end
+
+    context 'when no job artifacts on the build' do
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be(:user) { create(:user) }
+
+      before_all do
+        project.add_developer(user)
+      end
+
+      it 'allows read_job_artifacts to project members' do
+        expect(policy).to be_allowed :read_job_artifacts
       end
     end
   end

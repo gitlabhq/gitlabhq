@@ -82,7 +82,7 @@ export const SORT_OPTION_UPDATED = {
 };
 
 export const SORT_OPTION_STORAGE_SIZE = {
-  value: 'storage_size',
+  value: 'storage_size_keyset',
   text: SORT_LABEL_STORAGE_SIZE,
 };
 

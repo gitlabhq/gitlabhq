@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Seat assignment, GitLab Duo subscription add-on.
+description: Discover GitLab Duo subscription add-ons and assign seats.
 title: GitLab Duo add-ons
 ---
 
