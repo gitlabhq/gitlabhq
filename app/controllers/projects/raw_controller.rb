@@ -17,13 +17,17 @@ class Projects::RawController < Projects::ApplicationController
   feature_category :source_code_management
 
   def show
-    @blob = @repository.blob_at(@ref, @path, limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
+    @blob = @repository.blob_at(ref, @path, limit: Gitlab::Git::Blob::LFS_POINTER_MAX_SIZE)
 
     send_blob(@repository, @blob, inline: (params[:inline] != 'false'), allow_caching:
 ::Users::Anonymous.can?(:read_code, @project))
   end
 
   private
+
+  def ref
+    @fully_qualified_ref || @ref
+  end
 
   def check_show_rate_limit!
     check_rate_limit!(:raw_blob, scope: [@project, @path]) do

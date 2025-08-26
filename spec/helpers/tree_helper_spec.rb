@@ -110,7 +110,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       allow(helper).to receive(:show_xcode_link?).and_return(false)
     end
 
-    subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline) }
+    subject { helper.vue_tree_header_app_data(project, repository, sha, pipeline, 'heads') }
 
     it 'returns a list of attributes related to the project' do
       is_expected.to include(
@@ -127,7 +127,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         ssh_url: ssh_clone_url_to_repo(project),
         http_url: http_clone_url_to_repo(project),
         xcode_url: '',
-        download_links: helper.download_links(project, sha, "#{project.path}-#{sha.tr('/', '-')}").to_json,
+        download_links: helper.download_links(project, sha, "#{project.path}-#{sha.tr('/', '-')}", 'heads').to_json,
         download_artifacts: '[]',
         escaped_ref: sha
       )
@@ -554,7 +554,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
                          })
     end
 
-    subject { helper.compact_code_dropdown_data(project, ref) }
+    subject { helper.compact_code_dropdown_data(project, ref, 'heads') }
 
     it 'returns a hash with the expected keys' do
       expected_keys = [
@@ -620,7 +620,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         end
 
         it 'includes directory download links as JSON' do
-          expected_links = helper.download_links(project, ref, archive_prefix).to_json
+          expected_links = helper.download_links(project, ref, archive_prefix, 'heads').to_json
           expect(subject[:directory_download_links]).to eq(expected_links)
         end
       end
@@ -675,7 +675,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       end
 
       it 'uses empty string for archive prefix' do
-        expect(helper).to receive(:download_links).with(project, nil, '').and_return([])
+        expect(helper).to receive(:download_links).with(project, nil, '', 'heads').and_return([])
 
         subject
       end

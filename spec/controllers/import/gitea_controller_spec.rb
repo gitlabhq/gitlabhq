@@ -35,6 +35,7 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
       let(:extra_assign_expectations) { { gitea_host_url: host_url } }
 
       before do
+        allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
         assign_host_url
       end
 
@@ -103,6 +104,21 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
             expect(response).to have_gitlab_http_status(:ok)
           end
         end
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :gitea_import, with_redirect: true do
+      let(:token) { 'gitea token' }
+      let(:current_user) { user }
+
+      before do
+        session[:gitea_access_token] = token
+        assign_host_url
+        allow(Gitlab::LegacyGithubImport::Client).to receive(:new).and_return(double('Gitlab::LegacyGithubImport::Client', repos: [], orgs: []))
+      end
+
+      def request
+        get :status
       end
     end
   end
