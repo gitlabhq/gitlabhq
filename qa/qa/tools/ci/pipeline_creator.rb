@@ -75,7 +75,25 @@ module QA
         def create_noop(reason: nil)
           noop_yml = noop_pipeline_yml(reason || "no-op run, nothing will be executed!")
 
-          SUPPORTED_PIPELINES.each { |type| File.write(generated_yml_file_name(type), noop_yml) }
+          SUPPORTED_PIPELINES.each do |type|
+            # omnibus pipeline trigger defined an input and if it isn't present in no-op pipeline, it will fail
+            # see trigger job definition 'e2e:test-on-omnibus-ee' in '.gitlab/ci/qa.gitlab-ci.yml'
+            yml = if type == :test_on_omnibus
+                    <<~YML
+                      spec:
+                        inputs:
+                          pipeline-type:
+                            type: string
+                            default: external
+                      ---
+                      #{noop_yml}
+                    YML
+                  else
+                    noop_yml
+                  end
+
+            File.write(generated_yml_file_name(type), yml)
+          end
           logger.info("Created noop pipeline definitions for all E2E test pipelines")
         end
 
