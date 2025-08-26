@@ -138,7 +138,7 @@ To look up a project's full path using the Rails console:
    ```
 
    In the example, the quoted string in that command is the directory tree on your GitLab server.
-   For example, on a default Linux package installation, this string would be 
+   For example, on a default Linux package installation, this string would be
    `/var/opt/gitlab/git-data/repositories/@hashed/b1/7e/b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9.git`,
    with `.git` removed from the end of the directory name.
 

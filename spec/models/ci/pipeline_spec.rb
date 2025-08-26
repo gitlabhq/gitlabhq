@@ -3323,10 +3323,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       )
     end
 
-    before do
-      stub_feature_flags(source_filter_pipelines: true)
-    end
-
     it 'returns the newest pipeline by source' do
       expect(described_class.newest_first(source: :push)).to contain_exactly(merged_commit_pipeline)
     end

@@ -817,6 +817,42 @@ RSpec.describe ApplicationHelper do
     describe 'with-top-bar' do
       it { is_expected.to include('with-top-bar') }
     end
+
+    describe 'page-with-panels' do
+      context 'when `paneled_view` feature is disabled' do
+        before do
+          stub_feature_flags(paneled_view: false)
+        end
+
+        it { is_expected.not_to include('page-with-panels') }
+      end
+
+      context 'when `paneled_view` feature is enabled' do
+        before do
+          stub_feature_flags(paneled_view: true)
+        end
+
+        it { is_expected.to include('page-with-panels') }
+      end
+    end
+
+    describe 'application-chrome' do
+      context 'when `global_topbar` feature is disabled' do
+        before do
+          stub_feature_flags(global_topbar: false)
+        end
+
+        it { is_expected.not_to include('application-chrome') }
+      end
+
+      context 'when `global_topbar` feature is enabled' do
+        before do
+          stub_feature_flags(global_topbar: true)
+        end
+
+        it { is_expected.to include('application-chrome') }
+      end
+    end
   end
 
   describe '#disable_fixed_body_scroll' do

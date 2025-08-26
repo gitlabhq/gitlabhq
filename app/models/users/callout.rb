@@ -111,8 +111,8 @@ module Users
       enable_duo_banner_admin_dashboard: 107, # EE-only
       explore_duo_core_banner: 108, # EE-only
       merge_request_dashboard_display_preferences_popover: 109,
-      vulnerability_archival: 110 # EE-only
-
+      vulnerability_archival: 110, # EE-only
+      duo_amazon_q_alert: 111 # EE-only
     }
 
     validates :feature_name,

@@ -76,7 +76,6 @@ Layout/ClassStructure:
     - 'app/models/namespace/root_storage_statistics.rb'
     - 'app/models/namespace_statistics.rb'
     - 'app/models/notification_setting.rb'
-    - 'app/models/oauth_access_token.rb'
     - 'app/models/packages/conan/metadatum.rb'
     - 'app/models/packages/debian/group_architecture.rb'
     - 'app/models/packages/debian/group_component.rb'

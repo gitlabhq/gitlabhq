@@ -242,12 +242,14 @@ export default {
       </p>
     </template>
     <template #editing-content="{ stopEditing }">
-      <div class="gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 sm:gl-flex-row md:gl-flex-col">
+      <div
+        class="gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 @sm/panel:gl-flex-row @md/panel:gl-flex-col"
+      >
         <gl-form-group
           class="gl-m-0 gl-flex gl-items-center gl-gap-3"
           :label="s__('WorkItem|Start')"
           :label-for="$options.startDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 @sm/panel:gl-min-w-fit @md/panel:gl-min-w-7 gl-break-words"
         >
           <gl-datepicker
             v-model="localStartDate"
@@ -267,7 +269,7 @@ export default {
           class="gl-m-0 gl-flex gl-flex-wrap gl-items-center gl-gap-3"
           :label="s__('WorkItem|Due')"
           :label-for="$options.dueDateInputId"
-          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"
+          label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 @sm/panel:gl-min-w-fit @md/panel:gl-min-w-7 gl-break-words"
         >
           <gl-datepicker
             v-model="localDueDate"

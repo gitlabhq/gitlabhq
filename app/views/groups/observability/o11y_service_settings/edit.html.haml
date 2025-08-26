@@ -39,7 +39,7 @@
             = s_('Observability|32+ character encryption key for secure communication.')
 
       .form-group.gl-form-group
-        = f.submit s_('Save changes'), pajamas_button: true, class: 'js-dirty-submit'
+        = f.submit s_('Save changes'), pajamas_button: true
 
 - if @settings.persisted?
   = render ::Layouts::SettingsBlockComponent.new(s_('Observability|Danger Zone'),

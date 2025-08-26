@@ -1341,13 +1341,13 @@ describe('WorkItemDetail component', () => {
       createComponent({ showSidebar: true });
       await waitForPromises();
       expect(findShowSidebarButton().exists()).toBe(false);
-      expect(findRightSidebar().classes()).not.toContain('md:gl-hidden');
+      expect(findRightSidebar().classes()).not.toContain('@md/panel:gl-hidden');
     });
     it('when sidebar is hidden based on view options', async () => {
       createComponent({ showSidebar: false });
       await waitForPromises();
       expect(findShowSidebarButton().exists()).toBe(true);
-      expect(findRightSidebar().classes()).toContain('md:gl-hidden');
+      expect(findRightSidebar().classes()).toContain('@md/panel:gl-hidden');
     });
     it('when show sidebar button is used', async () => {
       createComponent({ showSidebar: false });

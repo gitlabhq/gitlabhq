@@ -217,7 +217,7 @@ export default {
     no-caret
     placement="bottom-end"
     :auto-close="false"
-    class="gl-mt-[10px] sm:gl-mt-0"
+    class="gl-mt-[10px] @sm/panel:gl-mt-0"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >
@@ -242,7 +242,7 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
     </div>
-    <div class="border-top gl-mt-2 gl-pt-3">
+    <div class="!gl-border-t gl-mt-2 !gl-border-t-gray-300 gl-pt-3">
       <div>
         <span class="gl-pl-4 gl-text-sm gl-font-bold">{{ $options.i18n.yourPreferences }}</span>
         <help-popover icon="information-o">

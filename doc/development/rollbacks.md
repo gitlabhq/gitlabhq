@@ -10,15 +10,15 @@ pitfalls when working on GitLab CE and EE.
 
 ## Consider database and token formatting changes
 
-All deployed code should be designed to support rollbacks, as they are often the fastest way to 
-mitigate incidents. Engineer On Call (EOC) or Incident Manager On Call 
-(IMOC) teams likely do not have full visibility into rollback impacts, so assume any deployment 
+All deployed code should be designed to support rollbacks, as they are often the fastest way to
+mitigate incidents. Engineer On Call (EOC) or Incident Manager On Call
+(IMOC) teams likely do not have full visibility into rollback impacts, so assume any deployment
 could be reversed.
 
-In addition to following the [database migration guide](database/_index.md) for reversibility, 
+In addition to following the [database migration guide](database/_index.md) for reversibility,
 pay special attention to data format changes that affect user-stored data.
 
-When modifying formats for user-stored data (such as authentication tokens, configuration 
+When modifying formats for user-stored data (such as authentication tokens, configuration
 files, or cached values), consider using a phased deployment approach:
 
 1. Phase 1: Deploy validation logic that accepts both old and new formats

@@ -64,7 +64,7 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 1. This model is scheduled for deprecation in GitLab 18.5. Mistral Small 24B Instruct 2506 is the recommended alternative.
 
-### Bring your own compatible model 
+### Bring your own compatible model
 
 {{< details >}}
 
@@ -78,7 +78,7 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 {{< /history >}}
 
-You can bring your own compatible models to use with GitLab Duo features. 
+You can bring your own compatible models to use with GitLab Duo features.
 
 The general model family provides support for compatible models and platforms that adhere to the OpenAI API specification. Use this model family to try language models that are not explicitly supported by GitLab.
 

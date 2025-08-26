@@ -127,7 +127,7 @@ export default {
 <template>
   <div class="gl-flex gl-w-full gl-items-start gl-justify-between gl-gap-3">
     <div
-      class="gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-3 gl-gap-y-0 xl:gl-flex-nowrap"
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-wrap gl-items-center gl-justify-between gl-gap-3 gl-gap-y-0 @xl/panel:gl-flex-nowrap"
     >
       <div class="item-title gl-flex gl-min-w-0 gl-items-center gl-gap-3">
         <gl-icon
@@ -149,7 +149,9 @@ export default {
         </gl-link>
       </div>
       <div class="item-info-area gl-mt-1 gl-flex gl-shrink-0 gl-grow gl-gap-3">
-        <div class="item-meta gl-flex gl-grow gl-flex-wrap-reverse gl-gap-3 sm:gl-justify-between">
+        <div
+          class="item-meta gl-flex gl-grow gl-flex-wrap-reverse gl-gap-3 @sm/panel:gl-justify-between"
+        >
           <div class="item-path-area item-path-id gl-flex gl-flex-wrap gl-items-center gl-gap-3">
             <span
               v-gl-tooltip
@@ -163,12 +165,12 @@ export default {
             <item-milestone
               v-if="milestone"
               :milestone="milestone"
-              class="gl-hidden gl-cursor-help gl-text-subtle sm:gl-block"
+              class="gl-hidden gl-cursor-help gl-text-subtle @sm/panel:gl-block"
             />
           </div>
           <div class="item-attributes-area gl-flex gl-items-center gl-gap-3">
             <div
-              class="item-assignees order-md-2 gl-flex gl-shrink-0 gl-items-center gl-gap-3 gl-self-end"
+              class="item-assignees gl-order-md-2 gl-flex gl-shrink-0 gl-items-center gl-gap-3 gl-self-end"
             >
               <gl-badge
                 v-if="isMergedOrClosed"
@@ -202,7 +204,7 @@ export default {
       v-gl-tooltip
       icon="ellipsis_v"
       size="small"
-      class="sm:gl-max-w-11/12 -gl-mr-2 gl-grow-0 sm:gl-block sm:gl-align-top"
+      class="@sm/panel:gl-max-w-11/12 -gl-mr-2 gl-grow-0 @sm/panel:gl-block @sm/panel:gl-align-top"
       data-testid="work-item-mr-actions-dropdown"
       text-sr-only
       :toggle-text="__('More actions')"

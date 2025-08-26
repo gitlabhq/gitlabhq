@@ -32,7 +32,6 @@ Rails/TimeZone:
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/json_web_token/token.rb'
     - 'lib/object_storage/direct_upload.rb'
-    - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'

@@ -365,9 +365,9 @@ The following languages and dependency managers are supported by Dependency Scan
         8 LTS,
         11 LTS,
         17 LTS,
-        or 21 LTS<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-1">1</a></b></sup>
+        or 21 LTS<sup>1</sup>
       </td>
-      <td><a href="https://gradle.org/">Gradle</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-2">2</a></b></sup></td>
+      <td><a href="https://gradle.org/">Gradle</a><sup>2</sup></td>
       <td>
         <ul>
             <li><code>build.gradle</code></li>
@@ -377,7 +377,7 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-6">6</a></b></sup></td>
+      <td><a href="https://maven.apache.org/">Maven</a><sup>6</sup></td>
       <td><code>pom.xml</code></td>
       <td>N</td>
     </tr>
@@ -399,7 +399,7 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>Y</td>
     </tr>
     <tr>
-      <td><a href="https://pnpm.io/">pnpm</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-3">3</a></b></sup></td>
+      <td><a href="https://pnpm.io/">pnpm</a><sup>3</sup></td>
       <td><code>pnpm-lock.yaml</code></td>
       <td>Y</td>
     </tr>
@@ -412,8 +412,8 @@ The following languages and dependency managers are supported by Dependency Scan
     </tr>
     <tr>
       <td rowspan="5">Python</td>
-      <td rowspan="5">3.11<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
+      <td rowspan="5">3.11<sup>7</sup></td>
+      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup>8</sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
     </tr>
@@ -439,7 +439,7 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://python-poetry.org/">Poetry</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-4">4</a></b></sup></td>
+      <td><a href="https://python-poetry.org/">Poetry</a><sup>4</sup></td>
       <td><code>poetry.lock</code></td>
       <td>N</td>
     </tr>
@@ -463,7 +463,7 @@ The following languages and dependency managers are supported by Dependency Scan
     <tr>
       <td>Scala</td>
       <td>All versions</td>
-      <td><a href="https://www.scala-sbt.org/">sbt</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
+      <td><a href="https://www.scala-sbt.org/">sbt</a><sup>5</sup></td>
       <td><code>build.sbt</code></td>
       <td>N</td>
     </tr>
@@ -475,14 +475,14 @@ The following languages and dependency managers are supported by Dependency Scan
       <td>N</td>
     </tr>
     <tr>
-      <td>Cocoapods<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup></td>
+      <td>Cocoapods<sup>9</sup></td>
       <td>All versions</td>
       <td><a href="https://cocoapods.org/">CocoaPods</a></td>
       <td><code>Podfile.lock</code></td>
       <td>N</td>
     </tr>
     <tr>
-      <td>Dart<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-10">10</a></b></sup></td>
+      <td>Dart<sup>10</sup></td>
       <td>All versions</td>
       <td><a href="https://pub.dev/">Pub</a></td>
       <td><code>pubspec.lock</code></td>
@@ -491,71 +491,21 @@ The following languages and dependency managers are supported by Dependency Scan
   </tbody>
 </table>
 
-<ol>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-1"></a>
-    <p>
-      Java 21 LTS for <a href="https://www.scala-sbt.org/">sbt</a> is limited to version 1.9.7. Support for more <a href="https://www.scala-sbt.org/">sbt</a> versions can be tracked in <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/430335">issue 430335</a>.
-      It is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-2"></a>
-    <p>
-      Gradle is not supported when <a href="https://docs.gitlab.com/ee/development/fips_compliance.html#enable-fips-mode">FIPS mode</a> is enabled.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
-    <p>
-      Support for <code>pnpm</code> lockfiles was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/336809">introduced in GitLab 15.11</a>. <code>pnpm</code> lockfiles do not store bundled dependencies, so the reported dependencies may differ from <code>npm</code> or <code>yarn</code>.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-4"></a>
-    <p>
-      Support for <a href="https://python-poetry.org/">Poetry</a> projects with a <code>poetry.lock</code> file was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/7006">added in GitLab 15.0</a>.
-      Support for projects without a <code>poetry.lock</code> file is tracked in issue:
-      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/32774">Poetry's pyproject.toml support for dependency scanning.</a>
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-5"></a>
-    <p>
-      Support for sbt 1.0.x was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/415835">deprecated</a> in GitLab 16.8 and <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/436985">removed</a> in GitLab 17.0.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-6"></a>
-    <p>
-      Support for Maven below 3.8.8 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/438772">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
-    <p>
-      Support for prior Python versions was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441491">removed</a> in GitLab 17.0.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
-    <p>
-      Excludes both <code>pip</code> and <code>setuptools</code> from the report as they are required by the installer.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
-    <p>
-      Only SBOM, without advisories. See <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/468764">spike on CocoaPods advisories research</a>.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-supported-languages-and-package-managers-10"></a>
-    <p>
-      No license detection yet. See <a href="https://gitlab.com/groups/gitlab-org/-/epics/17037">epic on Dart license detection</a>.
-    </p>
-  </li>
-</ol>
+<!-- markdownlint-disable MD029 -->
+**Footnotes**:
+
+1. Java 21 LTS for [sbt](https://www.scala-sbt.org/) is limited to version 1.9.7. Support for more sbt versions can be tracked in [issue 430335](https://gitlab.com/gitlab-org/gitlab/-/issues/430335).
+   It is not supported when FIPS mode is enabled.
+2. Gradle is not supported when FIPS mode is enabled.
+3. pnpm lockfiles do not store bundled dependencies, so the reported dependencies may differ from npm or yarn.
+4. Support for projects without a `poetry.lock` file is tracked in [issue 32774](https://gitlab.com/gitlab-org/gitlab/-/issues/32774).
+5. Support for sbt 1.0.x was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/415835) in GitLab 16.8 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/436985) in GitLab 17.0.
+6. Support for Maven below 3.8.8 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/438772) in GitLab 16.9 and removed in GitLab 17.0.
+7. Support for prior Python versions was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/441201) in GitLab 16.9 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441491) in GitLab 17.0.
+8. Excludes both `pip` and `setuptools` from the report as they are required by the installer.
+9. Only SBOM, without advisories. See [issue 468764](https://gitlab.com/gitlab-org/gitlab/-/issues/468764).
+10. No license detection. See [epic 17037](https://gitlab.com/groups/gitlab-org/-/epics/17037).
+<!-- markdownlint-enable MD029 -->
 <!-- markdownlint-enable MD044 -->
 
 ### Running jobs in merge request pipelines
@@ -1050,14 +1000,14 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>NuGet</td>
-      <td>v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-1">1</a></b></sup></td>
+      <td>v1, v2<sup>1</sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2">4.9</a>
       </td>
     </tr>
     <tr>
       <td>npm</td>
-      <td>v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup></td>
+      <td>v1, v2, v3</td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4">6.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4">7.x</a>,
@@ -1075,7 +1025,7 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>yarn</td>
-      <td>versions 1, 2, 3, 4<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup></td>
+      <td>versions 1, 2, 3, 4<sup>2</sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2">1.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock">2.x</a>,
@@ -1099,40 +1049,17 @@ The following package managers use lockfiles that GitLab analyzers are capable o
   </tbody>
 </table>
 
-<ol>
-  <li>
-    <a id="notes-regarding-parsing-lockfiles-1"></a>
-    <p>
-      Support for NuGet version 2 lock files was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/398680">introduced</a> in GitLab 16.2.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-parsing-lockfiles-2"></a>
-    <p>
-      Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-parsing-lockfiles-3"></a>
-    <p>
-      Support for Yarn version 4 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431752">introduced</a> in GitLab 16.11.
-    </p>
-    <p>
-      The following features are not supported for Yarn Berry:
-    </p>
-    <ul>
-      <li>
-        <a href="https://yarnpkg.com/features/workspaces">workspaces</a>
-      </li>
-      <li>
-        <a href="https://yarnpkg.com/cli/patch">yarn patch</a>
-      </li>
-    </ul>
-    <p>
-      Yarn files that contain a patch, a workspace, or both, are still processed, but these features are ignored.
-    </p>
-  </li>
-</ol>
+**Footnotes**:
+
+1. Support for NuGet version 2 lock files was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398680) in GitLab 16.2.
+1. Support for Yarn version 4 was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431752) in GitLab 16.11.
+
+   The following features are not supported for Yarn Berry:
+
+   - Workspaces
+   - `yarn patch`
+
+   Yarn files that contain a patch, a workspace, or both, are still processed, but these features are ignored.
 <!-- markdownlint-enable MD044 -->
 
 #### Obtaining dependency information by running a package manager to generate a parsable file
@@ -1172,15 +1099,15 @@ To support the following package managers, the GitLab analyzers proceed in two s
       <td>maven</td>
       <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.3.1/build/gemnasium-maven/debian/config/.tool-versions#L3">3.9.8</a></td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.3.1/spec/gemnasium-maven_image_spec.rb#L92-94">3.9.8</a><sup><b><a href="#exported-dependency-information-notes-1">1</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.3.1/spec/gemnasium-maven_image_spec.rb#L92-94">3.9.8</a><sup>1</sup>
       </td>
     </tr>
     <tr>
       <td>Gradle</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">6.7.1</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">7.6.4</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">8.8</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">6.7.1</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">7.6.4</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">8.8</a><sup>2</sup>
       </td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L316-321">5.6</a>,
@@ -1214,7 +1141,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-python/requirements.txt#L23">2023.11.15</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L243-256">2023.11.15</a><sup><b><a href="#exported-dependency-information-notes-3">3</a></b></sup>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L243-256">2023.11.15</a><sup>3</sup>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L219-241">2023.11.15</a>
       </td>
     </tr>
@@ -1224,59 +1151,23 @@ To support the following package managers, the GitLab analyzers proceed in two s
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium/alpine/Dockerfile#L91-93">1.21</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium/alpine/Dockerfile#L91-93">1.21</a><sup><strong><a href="#exported-dependency-information-notes-4">4</a></strong></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium/alpine/Dockerfile#L91-93">1.21</a><sup>4</sup>
       </td>
     </tr>
   </tbody>
 </table>
 
-<ol>
-  <li>
-    <a id="exported-dependency-information-notes-1"></a>
-    <p>
-      This test uses the default version of <code>maven</code> specified by the <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L3"><code>.tool-versions</code></a> file.
-    </p>
-  </li>
-  <li>
-    <a id="exported-dependency-information-notes-2"></a>
-    <p>
-      Different versions of Java require different versions of Gradle. The versions of Gradle listed in the previous table are pre-installed
-      in the analyzer image. The version of Gradle used by the analyzer depends on whether your project uses a <code>gradlew</code>
-      (Gradle wrapper) file or not:
-    </p>
-    <ul>
-      <li>
-        <p>
-          If your project <i>does not use</i> a <code>gradlew</code> file, then the analyzer automatically switches to one of the
-          pre-installed Gradle versions, based on the version of Java specified by the
-          <a href="#analyzer-specific-settings"><code>DS_JAVA_VERSION</code></a> variable (default version is <code>17</code>).
-        </p>
-        <p>
-          For Java versions <code>8</code> and <code>11</code>, Gradle <code>6.7.1</code> is automatically selected, Java <code>17</code> uses Gradle <code>7.6.4</code>, and Java <code>21</code> uses Gradle <code>8.8</code>.
-        </p>
-      </li>
-      <li>
-        <p>
-          If your project <i>does use</i> a <code>gradlew</code> file, then the version of Gradle pre-installed in the analyzer image is
-          ignored, and the version specified in your <code>gradlew</code> file is used instead.
-        </p>
-      </li>
-    </ul>
-  </li>
-  <li>
-    <a id="exported-dependency-information-notes-3"></a>
-    <p>
-      This test confirms that if a <code>Pipfile.lock</code> file is found, it is used by <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium">Gemnasium</a> to scan the exact package versions listed in this file.
-    </p>
-  </li>
-  <li>
-    <a id="exported-dependency-information-notes-4"></a>
-    <p>
-      Because of the implementation of <code>go build</code>, the Go build process requires network access, a pre-loaded mod cache via <code>go mod download</code>, or vendored dependencies. For more information,
-      refer to the Go documentation on <a href="https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies">compiling packages and dependencies</a>.
-    </p>
-  </li>
-</ol>
+**Footnotes**:
+
+1. This test uses the default version of maven specified by the `.tool-versions` file.
+1. Different versions of Java require different versions of Gradle. The versions of Gradle listed in the previous table are pre-installed in the analyzer image. The version of Gradle used by the analyzer depends on whether your project uses a `gradlew` (Gradle wrapper) file or not:
+   - If your project does not use a `gradlew` file, then the analyzer automatically switches to one of the pre-installed Gradle versions, based on the version of Java specified by the `DS_JAVA_VERSION` variable (default version is 17).
+
+     For Java versions 8 and 11, Gradle 6.7.1 is automatically selected, Java 17 uses Gradle 7.6.4, and Java 21 uses Gradle 8.8.
+
+   - If your project does use a `gradlew` file, then the version of Gradle pre-installed in the analyzer image is ignored, and the version specified in your gradlew file is used instead.
+1. This test confirms that if a `Pipfile.lock` file is found, it is used by Gemnasium to scan the exact package versions listed in this file.
+1. Because of the implementation of `go build`, the Go build process requires network access, a pre-loaded mod cache using `go mod download`, or vendored dependencies. For more information, refer to the [Go documentation on compiling packages and dependencies](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies).
 <!-- markdownlint-enable MD044 -->
 
 ## How analyzers are triggered

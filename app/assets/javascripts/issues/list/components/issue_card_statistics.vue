@@ -37,7 +37,7 @@ export default {
 
 <template>
   <ul class="gl-contents gl-list-none">
-    <li v-if="upvotes" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+    <li v-if="upvotes" class="gl-hidden @sm/panel:gl-mr-2 @sm/panel:gl-inline-block">
       <button
         v-gl-tooltip
         :title="__('Upvotes')"
@@ -48,7 +48,7 @@ export default {
         {{ upvotes }}
       </button>
     </li>
-    <li v-if="downvotes" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+    <li v-if="downvotes" class="gl-hidden @sm/panel:gl-mr-2 @sm/panel:gl-inline-block">
       <button
         v-gl-tooltip
         :title="__('Downvotes')"
@@ -59,7 +59,10 @@ export default {
         {{ downvotes }}
       </button>
     </li>
-    <li v-if="closingMergeRequestsCount" class="gl-hidden sm:gl-mr-2 sm:gl-inline-block">
+    <li
+      v-if="closingMergeRequestsCount"
+      class="gl-hidden @sm/panel:gl-mr-2 @sm/panel:gl-inline-block"
+    >
       <button
         v-gl-tooltip
         :title="__('Related merge requests')"

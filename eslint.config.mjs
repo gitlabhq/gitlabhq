@@ -71,7 +71,7 @@ const jestConfig = {
 };
 
 /** An object to make it easier to reuse restricted imports */
-const restrictedImports = {
+const restrictedImportsPaths = {
   axios: {
     name: 'axios',
     message: 'Import axios from ~/lib/utils/axios_utils instead.',
@@ -88,6 +88,14 @@ const restrictedImports = {
     name: 'vuex',
     message:
       'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.',
+  },
+};
+
+const restrictedImportsPatterns = {
+  gitlabUiDist: {
+    group: ['@gitlab/ui/dist/*'],
+    message:
+      'Avoid importing from `@gitlab/ui/dist`. Our build uses aliases to force importing gitlab-ui from source, using `/dist` may have no effect.',
   },
 };
 
@@ -363,10 +371,10 @@ export default [
         'error',
         {
           paths: [
-            restrictedImports.axios,
-            restrictedImports.mousetrap,
-            restrictedImports.sentry,
-            restrictedImports.vuex,
+            restrictedImportsPaths.axios,
+            restrictedImportsPaths.mousetrap,
+            restrictedImportsPaths.sentry,
+            restrictedImportsPaths.vuex,
           ],
 
           patterns: [
@@ -375,11 +383,7 @@ export default [
               message:
                 'We do not allow usage of React in our codebase except for the graphql_explorer',
             },
-            {
-              group: ['@gitlab/ui/dist/*'],
-              message:
-                'Avoid importing from `@gitlab/ui/dist`. Our build uses aliases to force importing gitlab-ui from source, using `/dist` has no effect.',
-            },
+            restrictedImportsPatterns.gitlabUiDist,
           ],
         },
       ],
@@ -540,10 +544,10 @@ export default [
         'error',
         {
           paths: [
-            restrictedImports.axios,
-            restrictedImports.mousetrap,
-            restrictedImports.sentry,
-            restrictedImports.vuex,
+            restrictedImportsPaths.axios,
+            restrictedImportsPaths.mousetrap,
+            restrictedImportsPaths.sentry,
+            restrictedImportsPaths.vuex,
             {
               name: '~/locale',
               importNames: ['__', 's__'],
@@ -551,6 +555,8 @@ export default [
                 'Do not externalize strings in specs: https://docs.gitlab.com/ee/development/i18n/externalization.html#test-files-jest',
             },
           ],
+
+          patterns: [restrictedImportsPatterns.gitlabUiDist],
         },
       ],
     },

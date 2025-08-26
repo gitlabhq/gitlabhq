@@ -107,7 +107,7 @@ export default {
         data-testid="work-item-sticky-header"
       >
         <div
-          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
+          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 @xl/panel:gl-px-6"
         >
           <work-item-state-badge
             v-if="workItemState"

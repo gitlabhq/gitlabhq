@@ -512,9 +512,7 @@ module Ci
       relation = order(id: :desc)
       relation = relation.where(ref: ref) if ref
       relation = relation.where(sha: sha) if sha
-      if source && Feature.enabled?(:source_filter_pipelines, :current_request)
-        relation = relation.where(source: source)
-      end
+      relation = relation.where(source: source) if source
 
       if limit
         ids = relation.limit(limit).select(:id)

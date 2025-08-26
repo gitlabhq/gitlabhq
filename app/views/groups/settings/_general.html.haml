@@ -37,4 +37,4 @@
 
   .form-group.gl-form-group
     = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
-  = f.submit s_('Groups|Save changes'), pajamas_button: true, class: 'js-dirty-submit', data: { testid: 'save-name-visibility-settings-button' }
+  = f.submit s_('Groups|Save changes'), pajamas_button: true, data: { testid: 'save-name-visibility-settings-button' }

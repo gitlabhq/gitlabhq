@@ -120,7 +120,6 @@ Lint/UnusedMethodArgument:
     - 'app/presenters/project_presenter.rb'
     - 'app/serializers/feature_flags_client_serializer.rb'
     - 'app/serializers/group_child_serializer.rb'
-    - 'app/services/applications/create_service.rb'
     - 'app/services/auto_merge/base_service.rb'
     - 'app/services/boards/base_item_move_service.rb'
     - 'app/services/boards/lists/base_create_service.rb'

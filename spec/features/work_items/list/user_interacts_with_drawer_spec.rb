@@ -17,6 +17,7 @@ RSpec.describe 'Work Items List Drawer', :js, feature_category: :team_planning d
     let(:issuable_container) { '[data-testid="issuable-container"]' }
 
     before_all do
+      stub_feature_flags(tailwind_container_queries: false)
       project.add_developer(user)
     end
 

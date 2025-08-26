@@ -724,7 +724,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   @apply gl-border-default;
 }
 
-.with-header {
+.application-chrome {
   // Quick search overlay
   #super-sidebar-search-modal {
     padding-top: 0;
@@ -734,6 +734,10 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     .modal-dialog {
       transition: none !important;
     }
+  }
+
+  &.with-performance-bar #super-sidebar-search-modal {
+    padding-top: $performance-bar-height;
   }
 
   // Quick search overlay search input
@@ -885,7 +889,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   }
 }
 
-.with-header .global-search-modal .modal-content {
+.application-chrome .global-search-modal .modal-content {
   border-radius: 0.75rem !important;
 
   .gl-search-box-by-type-input-borderless {
@@ -893,7 +897,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   }
 }
 
-:where(.with-header) .topbar-signup-button {
+:where(.application-chrome) .topbar-signup-button {
   --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
   --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);
   --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-1000);
@@ -905,7 +909,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-1000);
 }
 
-:where(.gl-dark.with-header) .topbar-signup-button  {
+:where(.gl-dark.application-chrome) .topbar-signup-button  {
   --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-50);
   --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-10);
   --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-0);

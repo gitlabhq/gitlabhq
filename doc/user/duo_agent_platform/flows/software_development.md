@@ -121,7 +121,7 @@ product. The following risks are important to understand:
    OAuth token with your user's identity. This token can be used to access
   GitLab APIs on your behalf. This token is limited to the duration of
    the workflow and only has access to certain APIs in GitLab.
-   Without user approval, the software development performs only read operations. By design, the token can still 
+   Without user approval, the software development performs only read operations. By design, the token can still
    perform write operations on the users behalf. You should consider
    the access your user has in GitLab before running the software development flow.
 1. You should not give the software development flow any additional credentials or secrets, in

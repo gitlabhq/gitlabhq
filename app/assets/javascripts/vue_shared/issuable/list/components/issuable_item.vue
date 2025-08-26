@@ -509,7 +509,7 @@ export default {
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}
         </span>
-        <span class="gl-hidden sm:gl-inline">
+        <span class="gl-hidden @sm/panel:gl-inline">
           <span aria-hidden="true">&middot;</span>
           <span class="issuable-authored gl-mr-3">
             <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
@@ -582,7 +582,7 @@ export default {
         </p>
       </div>
     </div>
-    <div class="issuable-meta gl-max-w-2/8 md:gl-max-w-3/8">
+    <div class="issuable-meta gl-max-w-2/8 @md/panel:gl-max-w-3/8">
       <ul
         v-if="showIssuableMeta"
         class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"
@@ -633,7 +633,7 @@ export default {
               notesCount &&
               !hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.COMMENTS)
             "
-            class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+            class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
             data-testid="issuable-comments"
           >
             <button
@@ -678,7 +678,7 @@ export default {
         <slot name="custom-status"></slot>
       </ul>
       <div
-        class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"
+        class="gl-hidden @sm/panel:gl-flex @sm/panel:gl-flex-col @sm/panel:gl-items-end @md/panel:gl-flex-row @md/panel:gl-items-center"
       >
         <slot name="health-status"></slot>
         <button
@@ -686,7 +686,7 @@ export default {
           v-gl-tooltip.bottom
           :title="tooltipTitle(timestamp)"
           :aria-label="tooltipTitle(timestamp)"
-          class="button-reset gl-text-subtle sm:gl-inline-block"
+          class="button-reset gl-text-subtle @sm/panel:gl-inline-block"
           data-testid="issuable-timestamp"
         >
           {{ formattedTimestamp }}

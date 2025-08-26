@@ -460,7 +460,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/github_import/importer/label_links_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/labels_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/lfs_objects_importer_spec.rb'
-    - 'spec/lib/gitlab/github_import/importer/milestones_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/note_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/notes_importer_spec.rb'
     - 'spec/lib/gitlab/github_import/importer/pull_requests_importer_spec.rb'

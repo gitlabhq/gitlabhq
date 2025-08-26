@@ -86,7 +86,7 @@ Next, let's complicate the output of the job by "leaking" a fake secret in a mer
    ```shell
    git checkout -b pipeline-sd-tutorial
    ```
-   
+
 1. Edit your project README and add the following lines.
    Be sure to remove the spaces before and after the `-` to match the exact format of a personal access token:
 

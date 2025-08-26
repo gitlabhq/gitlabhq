@@ -237,8 +237,8 @@ export default {
         'issue-clickable': contextualViewEnabled,
       }"
     >
-      <div class="gl-mb-2 gl-min-w-0 gl-justify-between gl-gap-3 sm:gl-flex">
-        <div class="item-title gl-mb-2 gl-min-w-0 sm:gl-mb-0">
+      <div class="gl-mb-2 gl-min-w-0 gl-justify-between gl-gap-3 @sm/panel:gl-flex">
+        <div class="item-title gl-mb-2 gl-min-w-0 @sm/panel:gl-mb-0">
           <span v-if="childItem.confidential">
             <gl-icon
               v-gl-tooltip.top
@@ -261,7 +261,7 @@ export default {
           </gl-link>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3 sm:gl-flex-row"
+          class="gl-flex gl-shrink-0 gl-flex-row-reverse gl-items-center gl-justify-end gl-gap-3 @sm/panel:gl-flex-row"
         >
           <gl-avatars-inline
             v-if="assignees.length"
@@ -307,7 +307,7 @@ export default {
         :metadata-widgets="metadataWidgets"
         :show-weight="showWeight"
         :work-item-type="childItemType"
-        class="ml-xl-0"
+        class="@xl/panel:!gl-ml-0"
       />
       <div v-if="displayLabels" class="gl-flex gl-flex-wrap">
         <gl-label

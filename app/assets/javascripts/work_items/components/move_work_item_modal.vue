@@ -209,6 +209,7 @@ export default {
 <template>
   <gl-modal
     modal-id="move-work-item-modal"
+    modal-class="gl-@container"
     :visible="isModalVisible"
     size="sm"
     :title="s__('WorkItem|Move')"

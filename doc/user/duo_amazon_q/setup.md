@@ -50,8 +50,8 @@ To set up GitLab Duo with Amazon Q, you must:
 
 - You must have GitLab Self-Managed:
   - On GitLab 17.11 or later.
-  - Amazon Q uses the GitLab instance's REST APIs to read and write data when performing requested actions and must be able to access your HTTPS URL ([the SSL certificate must not be self-signed](https://docs.gitlab.com/omnibus/settings/ssl/)). 
-  - The instance must allow inbound network access from Amazon Q services that originate from the following IP addresses, by using TCP/TLS on 
+  - Amazon Q uses the GitLab instance's REST APIs to read and write data when performing requested actions and must be able to access your HTTPS URL ([the SSL certificate must not be self-signed](https://docs.gitlab.com/omnibus/settings/ssl/)).
+  - The instance must allow inbound network access from Amazon Q services that originate from the following IP addresses, by using TCP/TLS on
     the port your instance is configured to use. This is [port 443 by default](../../administration/package_information/defaults.md#ports).
     - `34.228.181.128`
     - `44.219.176.187`

@@ -27,19 +27,12 @@ module.exports = (path, options = {}) => {
   const reporters = ['default'];
   const VUE_JEST_TRANSFORMER = USE_VUE_3 ? '@vue/vue3-jest' : '@vue/vue2-jest';
   const setupFilesAfterEnv = [`<rootDir>/${path}/test_setup.js`, 'jest-canvas-mock'];
-  const vueModuleNameMappers = {};
+  const vueModuleNameMappers = {
+    // consume @gitlab-ui from source to allow us to compile in either Vue 2 or Vue 3
+    '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
+    '@gitlab/ui$': '@gitlab/ui/src',
+  };
   const globals = {};
-
-  if (EXPLICIT_VUE_VERSION) {
-    Object.assign(vueModuleNameMappers, {
-      '^@gitlab/ui/dist/([^.]*)$': [
-        '<rootDir>/node_modules/@gitlab/ui/src/$1.vue',
-        '<rootDir>/node_modules/@gitlab/ui/src/$1.js',
-        '<rootDir>/node_modules/@gitlab/ui/dist/$1.js',
-      ],
-      '^@gitlab/ui$': '<rootDir>/node_modules/@gitlab/ui/src/index.js',
-    });
-  }
 
   if (USE_VUE_3) {
     setupFilesAfterEnv.unshift('<rootDir>/spec/frontend/vue_compat_test_setup.js');

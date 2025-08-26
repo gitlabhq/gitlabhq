@@ -816,7 +816,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/github_import/representation/diff_notes/suggestion_formatter_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/expose_attribute_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/issue_spec.rb'
-    - 'spec/lib/gitlab/github_import/representation/note_text_spec.rb'
     - 'spec/lib/gitlab/github_import/representation/protected_branch_spec.rb'
     - 'spec/lib/gitlab/github_import/settings_spec.rb'
     - 'spec/lib/gitlab/global_id/deprecations_spec.rb'

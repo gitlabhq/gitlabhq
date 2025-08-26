@@ -348,7 +348,7 @@ export default {
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
-      class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+      class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
@@ -487,7 +487,7 @@ export default {
       >
         <page-size-selector
           :value="defaultPageSize"
-          class="gl-relative gl-right-0 md:gl-absolute"
+          class="gl-relative gl-right-0 @md/panel:gl-absolute"
           @input="handlePageSizeChange"
         />
       </local-storage-sync>

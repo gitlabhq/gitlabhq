@@ -2027,7 +2027,6 @@ Style/InlineDisableAnnotation:
     - 'spec/controllers/omniauth_callbacks_controller_spec.rb'
     - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'
     - 'spec/controllers/projects/releases_controller_spec.rb'
-    - 'spec/controllers/projects/runners_controller_spec.rb'
     - 'spec/db/docs_spec.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/events.rb'

@@ -222,7 +222,7 @@ The workaround is to increase the memory available to the secondary site's Postg
 If you see this error:
 
 ```plaintext
-sql: error: connection to server at "x.x.x.x", port 5432 failed: 
+sql: error: connection to server at "x.x.x.x", port 5432 failed:
 could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied...
 ```
 

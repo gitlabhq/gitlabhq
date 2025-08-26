@@ -16,7 +16,7 @@ title: Rate limit on Organizations API
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470613) in GitLab 17.5 with a [flag](../feature_flags/_index.md) named `allow_organization_creation`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) in GitLab 18.4. Feature flag `allow_organization_creation` consolidated and renamed to `organization_switching`. 
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/549062) in GitLab 18.4. Feature flag `allow_organization_creation` consolidated and renamed to `organization_switching`.
 
 {{< /history >}}
 

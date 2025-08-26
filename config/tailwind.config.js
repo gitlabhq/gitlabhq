@@ -10,7 +10,7 @@ module.exports = {
     './{ee,jh,}/app/helpers/**/*.rb',
     './{ee,jh,}/app/components/**/*.{haml,rb}',
     './{ee,jh,}/app/views/**/*.haml',
-    './node_modules/@gitlab/ui/dist/**/*.{vue,js}',
+    './node_modules/@gitlab/ui/src/**/*.{vue,js}',
     './node_modules/@gitlab/duo-ui/dist/**/*.{vue,js}',
   ],
   blocklist: [

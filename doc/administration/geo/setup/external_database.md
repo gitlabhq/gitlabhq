@@ -284,7 +284,7 @@ Configure GitLab to use this database. These steps are for Linux package and Doc
    geo_secondary['db_port'] = <tracking_database_port>      # change to the correct port
    geo_postgresql['enable'] = false     # don't use internal managed instance
    ```
-   
+
    In multi-node setups, apply this configuration to each Rails node that needs to connect to the external tracking database.
 
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)

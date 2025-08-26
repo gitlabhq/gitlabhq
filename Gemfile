@@ -81,7 +81,7 @@ gem 'logger', '~> 1.7.0', feature_category: :shared
 gem 'marginalia', '~> 1.11.1', feature_category: :database
 
 # Authorization
-gem 'declarative_policy', '~> 1.1.0', feature_category: :shared
+gem 'declarative_policy', '~> 2.0.1', feature_category: :shared
 
 # For source code paths mapping
 gem 'coverband', '6.1.5', require: false, feature_category: :shared
@@ -725,7 +725,7 @@ gem 'cvss-suite', '~> 3.3.0', require: 'cvss_suite', feature_category: :software
 gem 'arr-pm', '~> 0.0.12', feature_category: :package_registry
 
 # Remote Development
-gem 'devfile', '~> 0.4.4', feature_category: :workspaces
+gem 'devfile', '~> 0.4.7', feature_category: :workspaces
 gem 'hashdiff', '~> 1.2.0', feature_category: :workspaces
 
 # Apple plist parsing

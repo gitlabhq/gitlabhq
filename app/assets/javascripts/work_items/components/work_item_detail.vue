@@ -492,7 +492,7 @@ export default {
     },
     modalCloseButtonClass() {
       return {
-        'sm:gl-hidden': !this.error,
+        '@sm/panel:gl-hidden': !this.error,
         'gl-flex': true,
       };
     },
@@ -1131,7 +1131,7 @@ export default {
                 />
                 <div
                   v-if="!showSidebar"
-                  class="work-item-container-xs-hidden gl-hidden md:gl-block"
+                  class="work-item-container-xs-hidden gl-hidden @md/panel:gl-block"
                 >
                   <gl-button
                     size="small"
@@ -1227,7 +1227,7 @@ export default {
               <section
                 data-testid="work-item-overview-right-sidebar"
                 class="work-item-overview-right-sidebar"
-                :class="{ 'is-modal': isModal, 'md:gl-hidden': !showSidebar }"
+                :class="{ 'is-modal': isModal, '@md/panel:gl-hidden': !showSidebar }"
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper

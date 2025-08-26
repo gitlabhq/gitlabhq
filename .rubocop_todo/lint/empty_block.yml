@@ -11,7 +11,6 @@ Lint/EmptyBlock:
     - 'ee/spec/lib/gitlab/search_context/builder_spec.rb'
     - 'ee/spec/models/concerns/ee/noteable_spec.rb'
     - 'ee/spec/models/dast/profile_schedule_spec.rb'
-    - 'ee/spec/models/ee/ci/build_dependencies_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/environment_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'

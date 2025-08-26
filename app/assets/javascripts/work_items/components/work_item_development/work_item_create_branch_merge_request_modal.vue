@@ -353,6 +353,7 @@ export default {
   <div>
     <gl-modal
       ref="create-modal"
+      modal-class="gl-@container"
       :visible="showModal || creatingBranch"
       :title="modalTitle"
       :modal-id="$options.createMRModalId"

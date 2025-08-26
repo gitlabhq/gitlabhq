@@ -15,17 +15,12 @@ export * from '@gitlab/ui';
  * are imported internally in `@gitlab/ui`.
  */
 
-/* eslint-disable global-require */
-
 jest.mock('@gitlab/ui/src/directives/tooltip/tooltip.js', () => ({
   GlTooltipDirective: {
     bind() {},
     unbind() {},
   },
 }));
-jest.mock('@gitlab/ui/dist/directives/tooltip/tooltip.js', () =>
-  require('@gitlab/ui/src/directives/tooltip/tooltip'),
-);
 
 jest.mock('@gitlab/ui/src/components/base/tooltip/tooltip.vue', () => ({
   props: ['target', 'id', 'triggers', 'placement', 'container', 'boundary', 'disabled', 'show'],
@@ -40,10 +35,6 @@ jest.mock('@gitlab/ui/src/components/base/tooltip/tooltip.vue', () => ({
     );
   },
 }));
-
-jest.mock('@gitlab/ui/dist/components/base/tooltip/tooltip.js', () =>
-  require('@gitlab/ui/src/components/base/tooltip/tooltip.vue'),
-);
 
 jest.mock('@gitlab/ui/src/components/base/popover/popover.vue', () => ({
   props: {
@@ -77,6 +68,3 @@ jest.mock('@gitlab/ui/src/components/base/popover/popover.vue', () => ({
     );
   },
 }));
-jest.mock('@gitlab/ui/dist/components/base/popover/popover.js', () =>
-  require('@gitlab/ui/src/components/base/popover/popover.vue'),
-);

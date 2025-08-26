@@ -641,6 +641,7 @@ export default {
     <gl-modal
       ref="deleteNoteModal"
       modal-id="delete-note-modal"
+      modal-class="gl-@container"
       :title="__('Delete comment?')"
       :ok-title="__('Delete comment')"
       ok-variant="danger"

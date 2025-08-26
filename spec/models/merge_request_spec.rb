@@ -2932,7 +2932,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:schedule_pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
 
       before do
-        stub_feature_flags(source_filter_pipelines: true)
         subject.mark_as_merged!
       end
 

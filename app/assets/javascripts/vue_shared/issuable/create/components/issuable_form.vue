@@ -68,9 +68,9 @@ export default {
 
 <template>
   <gl-form class="common-note-form gfm-form" @submit.stop.prevent>
-    <div data-testid="issuable-title" class="row">
-      <label for="issuable-title" class="col-12 gl-mb-0">{{ __('Title') }}</label>
-      <div class="col-12">
+    <div data-testid="issuable-title" class="gl-row">
+      <label for="issuable-title" class="gl-col-12 gl-mb-0">{{ __('Title') }}</label>
+      <div class="gl-col-12">
         <gl-form-group :description="__('Maximum of 255 characters')">
           <gl-form-input
             id="issuable-title"
@@ -82,9 +82,9 @@ export default {
         </gl-form-group>
       </div>
     </div>
-    <div data-testid="issuable-description" class="form-group row">
-      <label for="issuable-description" class="col-12">{{ __('Description') }}</label>
-      <div class="col-12">
+    <div data-testid="issuable-description" class="form-group gl-row">
+      <label for="issuable-description" class="gl-col-12">{{ __('Description') }}</label>
+      <div class="gl-col-12">
         <markdown-editor
           v-model="issuableDescription"
           :render-markdown-path="descriptionPreviewPath"
@@ -93,8 +93,8 @@ export default {
         />
       </div>
     </div>
-    <div data-testid="issuable-confidential" class="form-group row">
-      <div class="col-12">
+    <div data-testid="issuable-confidential" class="form-group gl-row">
+      <div class="gl-col-12">
         <gl-form-group :label="__('Confidentiality')" label-for="issuable-confidential">
           <gl-form-checkbox id="issuable-confidential" v-model="issuableConfidential">
             {{ confidentialityText }}
@@ -102,9 +102,9 @@ export default {
         </gl-form-group>
       </div>
     </div>
-    <div data-testid="issuable-labels" class="form-group row">
-      <label for="issuable-labels" class="col-12">{{ __('Labels') }}</label>
-      <div class="col-12">
+    <div data-testid="issuable-labels" class="form-group gl-row">
+      <label for="issuable-labels" class="gl-col-12">{{ __('Labels') }}</label>
+      <div class="gl-col-12">
         <div class="issuable-form-select-holder">
           <labels-select
             :allow-label-edit="true"

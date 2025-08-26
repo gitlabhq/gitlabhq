@@ -813,7 +813,7 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           data-testid="sidebar-toggle-action"
-          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden md:gl-block"
+          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden @md/panel:gl-block"
           @action="$emit('toggleSidebar')"
         >
           <template #list-item>
@@ -833,6 +833,7 @@ export default {
       ref="modal"
       modal-id="work-item-confirm-delete"
       data-testid="work-item-confirm-delete"
+      modal-class="gl-@container"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"
       ok-variant="danger"
