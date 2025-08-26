@@ -1,4 +1,6 @@
 - return unless can?(current_user, :remove_project, @project)
+- return if Feature.enabled?(:disallow_immediate_deletion, current_user) && @project.self_deletion_scheduled?
+
 - title = @project.self_deletion_scheduled? ? _('Delete project immediately') : _('Delete project')
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-feedback-danger' }) do |c|
@@ -7,4 +9,8 @@
       %h4.gl-text-base.gl-leading-24.gl-m-0.gl-text-feedback-danger= title
 
   - c.with_body do
-    = render 'projects/delete_card_body'
+    - if @project.self_deletion_scheduled?
+      %p= delete_immediately_namespace_scheduled_for_deletion_message(@project)
+      #js-project-delete-button{ data: project_delete_immediately_button_data(@project, _('Delete project immediately')) }
+    - else
+      = render 'delete_delayed'

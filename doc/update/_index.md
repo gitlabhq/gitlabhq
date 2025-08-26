@@ -12,6 +12,7 @@ Upgrade a GitLab installation to a later version.
 
 - [Before you upgrade](plan_your_upgrade.md)
 - [Upgrade a GitLab installation](upgrade.md)
+- [Troubleshooting and rolling back](troubleshooting_and_rolling_back.md)
 - [Releases and maintenance](../policy/maintenance.md)
 - [Other upgrade paths](convert_to_ee/_index.md)
 

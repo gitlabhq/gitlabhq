@@ -173,7 +173,9 @@ module API
       end
 
       def immediately_delete_subgroup_error(group)
-        if !group.subgroup?
+        if Feature.enabled?(:disallow_immediate_deletion, current_user)
+          '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+        elsif !group.subgroup?
           '`permanently_remove` option is only available for subgroups.'
         elsif !group.self_deletion_scheduled?
           'Group must be marked for deletion first.'

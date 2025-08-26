@@ -1226,16 +1226,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       sign_in(user)
     end
 
-    shared_examples 'deletes project right away' do
-      specify :aggregate_failures do
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(project.self_deletion_scheduled?).to be_falsey
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(dashboard_projects_path)
-      end
-    end
-
     shared_examples 'marks project for deletion' do
       specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
@@ -1265,15 +1255,33 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
-      context 'when permanently_delete param is set' do
-        it 'deletes project right away' do
-          expect(ProjectDestroyWorker).to receive(:perform_async)
+      describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+        subject(:request) { delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true } }
 
-          delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+        it 'returns error' do
+          Sidekiq::Testing.fake! do
+            expect { request }.not_to change { ProjectDestroyWorker.jobs.size }
+          end
 
-          expect(project.reload.pending_delete).to eq(true)
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(disallow_immediate_deletion: false)
+        end
+
+        context 'when permanently_delete param is set' do
+          it 'deletes project right away' do
+            expect(ProjectDestroyWorker).to receive(:perform_async)
+
+            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+
+            expect(project.reload.pending_delete).to eq(true)
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(dashboard_projects_path)
+          end
         end
       end
 
@@ -1288,85 +1296,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(response).to render_template(:edit)
           expect(flash[:alert]).to include('Project has been already marked for deletion')
         end
-      end
-    end
-
-    context 'for projects in user namespace' do
-      let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
-
-      before do
-        sign_in(user)
-      end
-
-      shared_examples 'deletes project right away' do
-        specify :aggregate_failures do
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.self_deletion_scheduled?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
-        end
-      end
-
-      shared_examples 'marks project for deletion' do
-        specify :aggregate_failures do
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.reload.self_deletion_scheduled?).to be_truthy
-          expect(project.reload.hidden?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(project_path(project))
-          expect(flash[:toast]).to be_nil
-        end
-      end
-
-      it_behaves_like 'marks project for deletion'
-
-      it 'does not mark project for deletion because of error' do
-        message = 'Error'
-
-        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: message))
-
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:edit)
-        expect(flash[:alert]).to include(message)
-      end
-
-      context 'when project is already marked for deletion' do
-        let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
-
-        context 'when permanently_delete param is set' do
-          it 'deletes project right away' do
-            expect(ProjectDestroyWorker).to receive(:perform_async)
-
-            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
-
-            expect(project.reload.pending_delete).to eq(true)
-            expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(dashboard_projects_path)
-          end
-        end
-
-        context 'when permanently_delete param is not set' do
-          it 'redirects to edit page' do
-            expect(ProjectDestroyWorker).not_to receive(:perform_async)
-
-            delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-            expect(project.reload.pending_delete).to eq(false)
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:edit)
-            expect(flash[:alert]).to include('Project has been already marked for deletion')
-          end
-        end
-      end
-
-      context 'for projects in user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
-
-        it_behaves_like 'marks project for deletion'
       end
     end
   end

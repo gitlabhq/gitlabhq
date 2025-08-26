@@ -298,17 +298,39 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
           context 'when group is already marked for deletion' do
             before do
-              create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+              create(:group_deletion_schedule, group: group)
             end
 
             context 'when permanently_remove param is set' do
-              it 'deletes the group immediately' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
+              let(:params) { { permanently_remove: true } }
 
-                delete groups_organization_path(organization, id: group.to_param, permanently_remove: true)
+              subject(:gitlab_request) do
+                delete groups_organization_path(organization, id: group.to_param), params: params, as: :json
+              end
 
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
+              describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+                it 'returns error' do
+                  Sidekiq::Testing.fake! do
+                    expect { gitlab_request }.not_to change { GroupDestroyWorker.jobs.size }
+                  end
+
+                  expect(response).to have_gitlab_http_status(:not_found)
+                end
+              end
+
+              context 'when the :disallow_immediate_deletion feature flag is disabled' do
+                before do
+                  stub_feature_flags(disallow_immediate_deletion: false)
+                end
+
+                it 'deletes the group immediately' do
+                  expect(GroupDestroyWorker).to receive(:perform_async)
+
+                  gitlab_request
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
+                end
               end
             end
 

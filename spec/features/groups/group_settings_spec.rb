@@ -395,32 +395,30 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   end
 
   describe 'delayed project deletion' do
-    let(:form_group_selector) { '[data-testid="delayed-project-removal-form-group"]' }
-
     def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
       click_button button_text
       fill_in 'confirm_name_input', with: confirm_with
       click_button confirm_button_text
     end
 
-    context 'when immediately deleting a project marked for deletion', :js do
+    context 'when group is marked for deletion', :js do
       before do
-        create(:group_deletion_schedule, group: group, marked_for_deletion_on: 2.days.from_now)
-
-        visit edit_group_path(group)
+        create(:group_deletion_schedule, group: group)
       end
 
-      it 'deletes the project immediately', :sidekiq_inline do
-        expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
+      context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(disallow_immediate_deletion: false)
 
-        expect(page).to have_content "is being deleted"
+          visit edit_group_path(group)
+        end
+
+        it 'deletes the project immediately', :sidekiq_inline do
+          expect { remove_with_confirm('Delete group immediately', group.path) }.to change { Group.count }.by(-1)
+
+          expect(page).to have_content "is being deleted"
+        end
       end
-    end
-
-    it 'does not display delayed project removal field at group level', :js do
-      visit edit_group_path(group)
-
-      expect(page).not_to have_css(form_group_selector)
     end
   end
 

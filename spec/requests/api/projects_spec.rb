@@ -5602,34 +5602,46 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           params.merge!(permanently_remove: true)
         end
 
-        context 'when project is already marked for deletion' do
+        context 'forbidden by the :disallow_immediate_deletion feature flag' do
+          let(:error_message) { '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).' }
+
+          it_behaves_like 'immediately delete project error'
+        end
+
+        context 'when the :disallow_immediate_deletion feature flag is disabled' do
           before do
-            project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+            stub_feature_flags(disallow_immediate_deletion: false)
           end
 
-          context 'with correct project full path' do
-            before do
-              params.merge!(full_path: project.full_path)
-            end
-
-            it_behaves_like 'deletes project immediately'
-          end
-
-          context 'with incorrect project full path' do
-            let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
-
-            before do
-              params.merge!(full_path: "#{project.full_path}-wrong-path")
-            end
+          context 'when project is not marked for deletion' do
+            let(:error_message) { 'Project must be marked for deletion first.' }
 
             it_behaves_like 'immediately delete project error'
           end
-        end
 
-        context 'when project is not marked for deletion' do
-          let(:error_message) { 'Project must be marked for deletion first.' }
+          context 'when project is already marked for deletion' do
+            before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+            end
 
-          it_behaves_like 'immediately delete project error'
+            context 'with correct project full path' do
+              before do
+                params.merge!(full_path: project.full_path)
+              end
+
+              it_behaves_like 'deletes project immediately'
+            end
+
+            context 'with incorrect project full path' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+
+              before do
+                params.merge!(full_path: "#{project.full_path}-wrong-path")
+              end
+
+              it_behaves_like 'immediately delete project error'
+            end
+          end
         end
       end
     end

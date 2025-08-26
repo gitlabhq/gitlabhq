@@ -118,6 +118,22 @@ listed here that also do not work properly in FIPS mode:
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
+- GitLab and FIPS do not support [DSA certificate files](../security/ssh_keys_restrictions.md#default-settings).
+  If you encounter DSA certificate errors in logs, configure the [`sshHostKeys.types`](https://docs.gitlab.com/charts/charts/gitlab/webservice/#installation-command-line-options) setting to exclude DSA:
+
+     ```yaml
+     gitlab:
+       webservice:
+         sshHostKeys:
+           types: [rsa,ecdsa,ed25519]
+     ```
+
+  {{< alert type="note" >}}
+
+  ED25519 keys might not be fully supported by all FIPS systems.
+  For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
+
+  {{< /alert >}}
 
 Additionally, these package repositories are disabled in FIPS mode:
 

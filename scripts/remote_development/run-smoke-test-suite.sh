@@ -141,8 +141,15 @@ function print_success_message {
 function main {
   trap onexit_err ERR
 
+  # Ensure we were not invoked via a non-bash shell which overrode the /bin/bash shebang
+  [ -n "${BASH_VERSION:-}" ] || { printf "\n❌❌❌ ${BRed}Please run with bash${Color_Off} ❌❌❌\n" >&2; exit 1; }
+
   # cd to gitlab root directory
   cd "$(dirname "${BASH_SOURCE[0]}")"/../..
+
+  # ensure mise is activated for gitlab directory (if we were invoked from a different directory)
+  command -v mise >/dev/null 2>&1 || { printf "\n❌❌❌ ${BRed}mise is required, please install it${Color_Off} ❌❌❌\n" >&2; exit 1; }
+  eval "$(mise activate bash)"
 
   print_start_message
 

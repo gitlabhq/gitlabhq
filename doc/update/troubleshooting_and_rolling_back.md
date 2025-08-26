@@ -3,6 +3,7 @@ stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting and rolling back
+description: Troubleshoot or roll back a GitLab instance upgrade
 ---
 
 Troubleshooting upgrades and rolling back to earlier versions.

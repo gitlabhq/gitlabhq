@@ -30,6 +30,9 @@ module Organizations
     def destroy
       if group.self_deletion_scheduled? &&
           ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+
+        return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+
         return destroy_immediately
       end
 

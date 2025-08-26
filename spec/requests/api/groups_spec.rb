@@ -3230,39 +3230,61 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
           subject { delete api("/groups/#{subgroup.id}", user), params: params }
 
-          context 'when group is already marked for deletion' do
-            before do
-              create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
-            end
-
-            context 'when full_path param is not passed' do
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
-
-            context 'when full_path param is not equal to full_path' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.path } }
-
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
-
-            context 'when the full_path param is passed and it matches the full path of subgroup' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
-
-              it_behaves_like 'immediately enqueues the job to delete the group'
-            end
+          context 'forbidden by the :disallow_immediate_deletion feature flag' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group',
+              '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
           end
 
-          context 'when group is not marked for deletion' do
-            it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+          context 'when the :disallow_immediate_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(disallow_immediate_deletion: false)
+            end
+
+            context 'when group is not marked for deletion' do
+              it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+            end
+
+            context 'when group is already marked for deletion' do
+              before do
+                create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
+              end
+
+              context 'when full_path param is not passed' do
+                it_behaves_like 'does not immediately enqueues the job to delete the group',
+                  '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+              end
+
+              context 'when full_path param is not equal to full_path' do
+                let(:params) { { permanently_remove: true, full_path: subgroup.path } }
+
+                it_behaves_like 'does not immediately enqueues the job to delete the group',
+                  '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+              end
+
+              context 'when the full_path param is passed and it matches the full path of subgroup' do
+                let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
+
+                it_behaves_like 'immediately enqueues the job to delete the group'
+              end
+            end
           end
         end
 
         context 'if group is not a subgroup' do
           subject { delete api("/groups/#{group.id}", user), params: params }
 
-          it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
+          context 'forbidden by the :disallow_immediate_deletion feature flag' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group',
+              '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+          end
+
+          context 'when the :disallow_immediate_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(disallow_immediate_deletion: false)
+            end
+
+            it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
+          end
         end
       end
 
