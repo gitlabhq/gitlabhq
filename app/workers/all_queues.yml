@@ -3006,26 +3006,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: background_migration
-  :worker_name: BackgroundMigrationWorker
-  :feature_category: :database
-  :has_external_dependencies: false
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
-- :name: background_migration_ci_database
-  :worker_name: BackgroundMigration::CiDatabaseWorker
-  :feature_category: :database
-  :has_external_dependencies: false
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
 - :name: batched_git_ref_updates_project_cleanup
   :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
   :feature_category: :gitaly

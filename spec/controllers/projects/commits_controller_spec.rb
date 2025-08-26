@@ -238,11 +238,33 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
 
           it "renders as atom" do
             expect(response).to be_successful
+            expect(response.body).to include('<entry>')
             expect(response.media_type).to eq('application/atom+xml')
           end
 
           it 'renders summary with type=html' do
             expect(response.body).to include('<summary type="html">')
+          end
+        end
+
+        context 'when ref_type is provided' do
+          let(:ref_type) { 'heads' }
+
+          before do
+            get :show,
+              params: { namespace_id: project.namespace, project_id: project, id: "master.atom", ref_type: ref_type }
+          end
+
+          it "renders as atom" do
+            expect(response).to be_successful
+            expect(response.body).to include('<entry>')
+            expect(response.media_type).to eq('application/atom+xml')
+          end
+
+          context 'when there is no reference for provided ref_type' do
+            let(:ref_type) { 'tags' }
+
+            it { is_expected.to respond_with(:not_found) }
           end
         end
 

@@ -380,7 +380,6 @@ RSpec/ExpectInHook:
     - 'spec/support/shared_examples/services/repositories/housekeeping_shared_examples.rb'
     - 'spec/support/shared_examples/services/wiki_pages/destroy_service_shared_examples.rb'
     - 'spec/support/shared_examples/uploaders/object_storage_shared_examples.rb'
-    - 'spec/support/shared_examples/workers/background_migration_worker_shared_examples.rb'
     - 'spec/support/shared_examples/workers/concerns/git_garbage_collect_methods_shared_examples.rb'
     - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/cleanup_rake_spec.rb'

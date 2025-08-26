@@ -582,7 +582,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'spec/support/shared_examples/requests/api/notes_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/resolvable_discussions_shared_examples.rb'
     - 'spec/support/shared_examples/services/security/ci_configuration/create_service_shared_examples.rb'
-    - 'spec/support/shared_examples/workers/background_migration_worker_shared_examples.rb'
     - 'spec/tasks/gitlab/db/decomposition/connection_status_rake_spec.rb'
     - 'spec/uploaders/file_mover_spec.rb'
     - 'spec/views/layouts/_head.html.haml_spec.rb'

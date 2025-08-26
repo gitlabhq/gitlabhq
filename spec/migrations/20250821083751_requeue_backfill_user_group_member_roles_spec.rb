@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillUserGroupMemberRoles, migration: :gitlab_main, feature_category: :permissions do
+RSpec.describe RequeueBackfillUserGroupMemberRoles, migration: :gitlab_main_org, feature_category: :permissions do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do
@@ -14,7 +14,7 @@ RSpec.describe QueueBackfillUserGroupMemberRoles, migration: :gitlab_main, featu
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main,
+          gitlab_schema: :gitlab_main_org,
           table_name: :members,
           column_name: :id,
           batch_size: described_class::BATCH_SIZE,

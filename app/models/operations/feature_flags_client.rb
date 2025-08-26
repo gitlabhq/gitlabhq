@@ -34,8 +34,6 @@ module Operations
     end
 
     def self.prefix_for_feature_flags_client_token
-      return FEATURE_FLAGS_CLIENT_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
       ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(FEATURE_FLAGS_CLIENT_TOKEN_PREFIX)
     end
 

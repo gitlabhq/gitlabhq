@@ -6,24 +6,6 @@
  * Mixins with fixed values
  */
 
-@keyframes blinking-dot {
-  0% {
-    opacity: 1;
-  }
-
-  25% {
-    opacity: 0.4;
-  }
-
-  75% {
-    opacity: 0.4;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
 @mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
@@ -256,6 +238,24 @@
 }
 
 @mixin build-loader-animation {
+  @keyframes blinking-dot {
+    0% {
+      opacity: 1;
+    }
+
+    25% {
+      opacity: 0.4;
+    }
+
+    75% {
+      opacity: 0.4;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
   position: relative;
   white-space: initial;
 

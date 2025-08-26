@@ -271,19 +271,21 @@ export default {
 
       <asset-links-form />
 
-      <div class="pt-3 gl-flex gl-gap-x-3">
-        <gl-button
-          class="js-no-auto-disable"
-          category="primary"
-          variant="confirm"
-          type="submit"
-          :disabled="isFormSubmissionDisabled"
-          data-testid="submit-button"
-        >
-          {{ saveButtonLabel }}
-        </gl-button>
+      <div class="gl-mt-5 gl-flex gl-flex-wrap gl-justify-between gl-gap-3">
+        <div class="gl-flex gl-flex-wrap gl-gap-3">
+          <gl-button
+            class="js-no-auto-disable"
+            category="primary"
+            variant="confirm"
+            type="submit"
+            :disabled="isFormSubmissionDisabled"
+            data-testid="submit-button"
+          >
+            {{ saveButtonLabel }}
+          </gl-button>
+          <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
+        </div>
         <confirm-delete-modal v-if="isExistingRelease" @delete="deleteRelease" />
-        <gl-button :href="cancelPath" class="js-cancel-button">{{ __('Cancel') }}</gl-button>
       </div>
     </form>
   </div>

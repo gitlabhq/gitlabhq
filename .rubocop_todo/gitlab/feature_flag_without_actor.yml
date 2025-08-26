@@ -43,7 +43,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/views/layouts/notify.html.haml'
     - 'app/views/layouts/service_desk.html.haml'
     - 'app/views/shared/issuable/_search_bar.html.haml'
-    - 'app/workers/background_migration/single_database_worker.rb'
     - 'app/workers/bulk_imports/pipeline_batch_worker.rb'
     - 'app/workers/bulk_imports/pipeline_worker.rb'
     - 'app/workers/ci/unlock_pipelines_in_queue_worker.rb'

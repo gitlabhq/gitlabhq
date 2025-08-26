@@ -26,7 +26,7 @@ module Gitlab
 
       attr_reader :relation, :returning
 
-      delegate :connection, :table_name, :primary_key, to: :relation, private: true
+      delegate :connection, :table_name, :primary_key, :column_names, to: :relation, private: true
       delegate :exec_query, :quote_column_name, to: :connection, private: true
 
       def delete_sql
@@ -50,7 +50,7 @@ module Gitlab
       end
 
       def returning_columns
-        @returning_columns ||= returning || [primary_key]
+        @returning_columns ||= returning.presence || column_names
       end
     end
   end

@@ -79,13 +79,13 @@ RSpec.describe ::Gitlab::Search::SortOptions, feature_category: :global_search d
       end
 
       it 'returns matched options for closed' do
-        expect(described_class.sort_and_direction(nil, 'closed_asc')).to eq(:closed_at_asc)
-        expect(described_class.sort_and_direction(nil, 'closed_desc')).to eq(:closed_at_desc)
+        expect(described_class.sort_and_direction(nil, 'closed_at_asc')).to eq(:closed_at_asc)
+        expect(described_class.sort_and_direction(nil, 'closed_at_desc')).to eq(:closed_at_desc)
       end
 
       it 'returns matched options for due' do
-        expect(described_class.sort_and_direction(nil, 'due_asc')).to eq(:due_date_asc)
-        expect(described_class.sort_and_direction(nil, 'due_desc')).to eq(:due_date_desc)
+        expect(described_class.sort_and_direction(nil, 'due_date_asc')).to eq(:due_date_asc)
+        expect(described_class.sort_and_direction(nil, 'due_date_desc')).to eq(:due_date_desc)
       end
     end
 

@@ -10,6 +10,11 @@ export default {
   },
 
   props: {
+    title: {
+      type: String,
+      required: false,
+      default: 'Dashboard Example',
+    },
     panels: {
       type: Array,
       required: true,
@@ -18,14 +23,19 @@ export default {
   computed: {
     dashboard() {
       return {
+        title: this.title,
         panels: this.panels,
       };
+    },
+    hasTitle() {
+      return Boolean(this.dashboard.title);
     },
   },
 };
 </script>
 <template>
   <gl-dashboard-layout :config="dashboard">
+    <template v-if="!hasTitle" #title><h2 aria-hidden="true"></h2></template>
     <template #panel="{ panel }">
       <extended-dashboard-panel :title="panel.title">
         <template #body>

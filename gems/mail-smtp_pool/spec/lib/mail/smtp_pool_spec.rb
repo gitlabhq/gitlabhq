@@ -5,13 +5,13 @@ require 'spec_helper'
 describe Mail::SMTPPool do
   describe '.create_pool' do
     it 'sets the default pool settings' do
-      expect(ConnectionPool).to receive(:new).with(size: 5, timeout: 5).once
+      expect(ConnectionPool).to receive(:new).with({ size: 5, timeout: 5 }).once
 
       described_class.create_pool
     end
 
     it 'allows overriding pool size and timeout' do
-      expect(ConnectionPool).to receive(:new).with(size: 3, timeout: 2).once
+      expect(ConnectionPool).to receive(:new).with({ size: 3, timeout: 2 }).once
 
       described_class.create_pool(pool_size: 3, pool_timeout: 2)
     end

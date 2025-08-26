@@ -649,7 +649,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryconfiguredaicatalogitemsprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
+| <a id="queryconfiguredaicatalogitemsgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
+| <a id="queryconfiguredaicatalogitemsincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
+| <a id="queryconfiguredaicatalogitemsitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
+| <a id="queryconfiguredaicatalogitemsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
 
 ### `Query.containerRepository`
 
@@ -45810,6 +45813,7 @@ The category of the additional context.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aiadditionalcontextcategoryagent_user_environment"></a>`AGENT_USER_ENVIRONMENT` | Agent_user_environment content category. |
 | <a id="aiadditionalcontextcategorydependency"></a>`DEPENDENCY` | Dependency content category. |
 | <a id="aiadditionalcontextcategoryfile"></a>`FILE` | File content category. |
 | <a id="aiadditionalcontextcategoryissue"></a>`ISSUE` | Issue content category. |

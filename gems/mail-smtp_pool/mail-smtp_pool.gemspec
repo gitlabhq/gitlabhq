@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.email = ['heinrich@gitlab.com']
 
   spec.summary = 'Mail extension for sending using an SMTP connection pool'
-  spec.homepage = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/mail-smtp_pool'
-  spec.metadata = { 'source_code_uri' => 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/mail-smtp_pool' }
+  spec.homepage = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/mail-smtp_pool'
+  spec.metadata = { 'source_code_uri' => 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/mail-smtp_pool' }
   spec.license = 'MIT'
 
   spec.files = Dir['lib/**/*.rb']

@@ -27290,7 +27290,10 @@ CREATE TABLE vulnerability_statistics (
     letter_grade smallint NOT NULL,
     latest_pipeline_id bigint,
     archived boolean DEFAULT false NOT NULL,
-    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    age_mean double precision DEFAULT 0.0 NOT NULL,
+    age_sum_of_squares double precision DEFAULT 0.0 NOT NULL,
+    risk_score double precision DEFAULT 0.0 NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_statistics_id_seq

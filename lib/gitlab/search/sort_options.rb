@@ -44,10 +44,10 @@ module Gitlab
         [nil, 'weight_desc'] => :weight_desc,
         [nil, 'health_status_asc'] => :health_status_asc,
         [nil, 'health_status_desc'] => :health_status_desc,
-        [nil, 'closed_asc'] => :closed_at_asc,
-        [nil, 'closed_desc'] => :closed_at_desc,
-        [nil, 'due_asc'] => :due_date_asc,
-        [nil, 'due_desc'] => :due_date_desc
+        [nil, 'closed_at_asc'] => :closed_at_asc,
+        [nil, 'closed_at_desc'] => :closed_at_desc,
+        [nil, 'due_date_asc'] => :due_date_asc,
+        [nil, 'due_date_desc'] => :due_date_desc
       }.freeze
 
       def sort_and_direction(order_by, sort)

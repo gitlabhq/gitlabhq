@@ -56,9 +56,7 @@ describe('Tracking', () => {
 
   describe('.event', () => {
     afterEach(() => {
-      window.doNotTrack = undefined;
-      navigator.doNotTrack = undefined;
-      navigator.msDoNotTrack = undefined;
+      navigator.globalPrivacyControl = undefined;
     });
 
     it('tracks to snowplow (our current tracking system)', () => {
@@ -116,22 +114,8 @@ describe('Tracking', () => {
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
 
-    it('skips tracking if the user does not want to be tracked (general spec)', () => {
-      window.doNotTrack = '1';
-      Tracking.event(TEST_CATEGORY, TEST_ACTION);
-
-      expect(snowplowSpy).not.toHaveBeenCalled();
-    });
-
-    it('skips tracking if the user does not want to be tracked (firefox legacy)', () => {
-      navigator.doNotTrack = 'yes';
-      Tracking.event(TEST_CATEGORY, TEST_ACTION);
-
-      expect(snowplowSpy).not.toHaveBeenCalled();
-    });
-
-    it('skips tracking if the user does not want to be tracked (IE legacy)', () => {
-      navigator.msDoNotTrack = '1';
+    it('skips tracking if the user has Global Privacy Control enabled', () => {
+      navigator.globalPrivacyControl = true;
       Tracking.event(TEST_CATEGORY, TEST_ACTION);
 
       expect(snowplowSpy).not.toHaveBeenCalled();

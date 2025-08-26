@@ -9534,6 +9534,9 @@ msgstr ""
 msgid "Authored %{timeago} by %{author}"
 msgstr ""
 
+msgid "Authored by %{authorName}"
+msgstr ""
+
 msgid "Authorization code:"
 msgstr ""
 
@@ -59779,6 +59782,9 @@ msgstr ""
 msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
+msgid "SecurityReports|Validity Check"
+msgstr ""
+
 msgid "SecurityReports|Validity check"
 msgstr ""
 
@@ -65556,6 +65562,9 @@ msgid "This file was modified for readability, and can't accept suggestions. Edi
 msgstr ""
 
 msgid "This form is disabled in preview"
+msgstr ""
+
+msgid "This graph shows commit history with branches and merges arranged from newest to oldest. Each dot represents a commit, with lines showing how code changes flow between different branches."
 msgstr ""
 
 msgid "This group"

@@ -125,6 +125,13 @@ PATH
       oj (~> 3.16, >= 3.16.10)
 
 PATH
+  remote: gems/mail-smtp_pool
+  specs:
+    mail-smtp_pool (0.1.0)
+      connection_pool (~> 2.0)
+      mail (~> 2.8)
+
+PATH
   remote: vendor/gems/devise-pbkdf2-encryptable
   specs:
     devise-pbkdf2-encryptable (0.0.0)
@@ -148,13 +155,6 @@ PATH
     gitlab-topology-service-client (0.1)
       google-protobuf (~> 3)
       grpc
-
-PATH
-  remote: vendor/gems/mail-smtp_pool
-  specs:
-    mail-smtp_pool (0.1.0)
-      connection_pool (~> 2.0)
-      mail (~> 2.8)
 
 PATH
   remote: vendor/gems/microsoft_graph_mailer
@@ -830,7 +830,7 @@ GEM
       i18n (>= 0.7)
       multi_json
       request_store (>= 1.0)
-    google-apis-androidpublisher_v3 (0.84.0)
+    google-apis-androidpublisher_v3 (0.85.0)
       google-apis-core (>= 0.15.0, < 2.a)
     google-apis-bigquery_v2 (0.90.0)
       google-apis-core (>= 0.15.0, < 2.a)
@@ -2190,7 +2190,7 @@ DEPENDENCIES
   gitlab_omniauth-ldap (~> 2.2.0)
   gitlab_quality-test_tooling (~> 2.19.0)
   gon (~> 6.5.0)
-  google-apis-androidpublisher_v3 (~> 0.84.0)
+  google-apis-androidpublisher_v3 (~> 0.85.0)
   google-apis-cloudbilling_v1 (~> 0.22.0)
   google-apis-cloudresourcemanager_v1 (~> 0.31.0)
   google-apis-compute_v1 (~> 0.127.0)

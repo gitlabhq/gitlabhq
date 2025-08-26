@@ -1,10 +1,6 @@
 include:
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "mail-smtp_pool"
-      gem_path_prefix: "vendor/gems/"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "microsoft_graph_mailer"
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml

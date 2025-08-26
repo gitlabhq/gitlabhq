@@ -406,3 +406,7 @@
   min-width: 320px;
 }
 
+.ProseMirror p:has(mark) {
+  position: relative;
+  z-index: 0;
+}

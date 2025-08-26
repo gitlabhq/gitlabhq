@@ -60,11 +60,11 @@ namespace :gitlab do
     end
 
     def migration_running?
-      store = Gitlab::SidekiqConfig::WorkerRouter.global.store(BackgroundMigrationWorker)
+      store = Gitlab::SidekiqConfig::WorkerRouter.global.store(Database::BatchedBackgroundMigrationWorker)
       _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(store)
       # rubocop:disable Cop/SidekiqApiUsage -- Acceptable to use via to set Sidekiq's redis pool
       Sidekiq::Client.via(pool) do
-        Sidekiq::ScheduledSet.new.any? { |r| r.klass == 'BackgroundMigrationWorker' && r.args[0] == 'BackfillSnippetRepositories' }
+        Sidekiq::ScheduledSet.new.any? { |r| r.klass == 'Database::BatchedBackgroundMigrationWorker' && r.args[0] == 'BackfillSnippetRepositories' }
       end
       # rubocop:enable Cop/SidekiqApiUsage
     end

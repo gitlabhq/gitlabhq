@@ -1075,19 +1075,17 @@ You can resume only `active` batched background migrations
 
 ### Enable or disable background migrations
 
-In extremely limited circumstances, a GitLab administrator can disable either or
-both of these [feature flags](../../administration/feature_flags/_index.md):
+In extremely limited circumstances, a GitLab administrator can disable the [feature flag](../../administration/feature_flags/_index.md):
 
-- `execute_background_migrations`
 - `execute_batched_migrations_on_schedule`
 
-These flags are enabled by default. Disable them only as a last resort
+This flags is enabled by default. Disable it only as a last resort
 to limit database operations in special circumstances, like database host maintenance.
 
 {{< alert type="warning" >}}
 
-Do not disable either of these flags unless you fully understand the ramifications. If you disable
-the `execute_background_migrations` or `execute_batched_migrations_on_schedule` feature flag,
+Do not disable this flags unless you fully understand the ramifications. If you disable
+the `execute_batched_migrations_on_schedule` feature flag,
 GitLab upgrades might fail and data loss might occur.
 
 {{< /alert >}}

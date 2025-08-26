@@ -6,6 +6,19 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module Scalability
+      # Checks for usage of bulk_perform_async and bulk_perform_in
+      # without context and suggests using the _with_context variants instead.
+      #
+      # @example
+      #   # bad
+      #   MyWorker.bulk_perform_async(args)
+      #
+      #   # good
+      #   MyWorker.bulk_perform_async_with_context(
+      #     args,
+      #     context: { project: project }
+      #   )
+
       class BulkPerformWithContext < RuboCop::Cop::Base
         include RuboCop::MigrationHelpers
         include RuboCop::CodeReuseHelpers
@@ -23,8 +36,6 @@ module RuboCop
           Read more about it https://docs.gitlab.com/ee/development/sidekiq/logging.html#worker-context
         MSG
 
-        BACKGROUND_MIGRATION_WORKER_NAMES = %w[BackgroundMigrationWorker CiDatabaseWorker].freeze
-
         # @!method schedules_in_batch_without_context?(node)
         def_node_matcher :schedules_in_batch_without_context?, <<~PATTERN
           (send (...) {:bulk_perform_async :bulk_perform_in} _*)
@@ -33,19 +44,15 @@ module RuboCop
         def on_send(node)
           return if in_migration?(node) || in_spec?(node)
           return unless schedules_in_batch_without_context?(node)
-          return if scheduled_for_background_migration?(node)
 
           add_offense(node)
         end
+        alias_method :on_csend, :on_send
 
         private
 
         def in_spec?(node)
           file_path_for_node(node).end_with?("_spec.rb")
-        end
-
-        def scheduled_for_background_migration?(node)
-          BACKGROUND_MIGRATION_WORKER_NAMES.include?(name_of_receiver(node))
         end
       end
     end

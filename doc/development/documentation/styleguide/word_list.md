@@ -2447,7 +2447,7 @@ Instead of:
 
 ## slashes
 
-Instead of **and/or**, use **or** or re-write the sentence. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed.
+Instead of **and/or**, use **or** or re-write the sentence. This rule also applies to other slashes, like **follow/unfollow**. Some exceptions (like **CI/CD**) are allowed. ([Vale](../testing/vale.md) rule: [`WordSlashWord.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/WordSlashWord.yml))
 
 ## slave
 

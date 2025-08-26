@@ -481,7 +481,6 @@ RSpec/ReceiveMessages:
     - 'spec/support/shared_examples/serializers/diff_file_entity_shared_examples.rb'
     - 'spec/support/shared_examples/services/repositories/housekeeping_shared_examples.rb'
     - 'spec/support/shared_examples/views/milestone_shared_examples.rb'
-    - 'spec/support/shared_examples/workers/background_migration_worker_shared_examples.rb'
     - 'spec/tasks/admin_mode_spec.rb'
     - 'spec/tasks/gitlab/backup_rake_spec.rb'
     - 'spec/tasks/gitlab/db_rake_spec.rb'

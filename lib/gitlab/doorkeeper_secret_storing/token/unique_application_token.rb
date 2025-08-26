@@ -14,9 +14,6 @@ module Gitlab
         end
 
         def self.prefix_for_oauth_application_secret
-          return OAUTH_APPLICATION_SECRET_PREFIX_FORMAT unless Feature.enabled?(
-            :custom_prefix_for_all_token_types, :instance)
-
           ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(OAUTH_APPLICATION_SECRET_PREFIX_FORMAT)
         end
       end

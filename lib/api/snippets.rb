@@ -22,11 +22,7 @@ module API
       end
 
       def find_snippet(id)
-        if ::Feature.enabled?(:optimized_snippet_search_query, current_user)
-          find_snippets(user: current_user, params: { ids: id }).first
-        else
-          find_snippets.find_by_id(id)
-        end
+        find_snippets(user: current_user, params: { ids: id }).first
       end
     end
 

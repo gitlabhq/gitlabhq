@@ -283,7 +283,6 @@ Style/GuardClause:
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/sync/group.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/user.rb'
-    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/commit_check.rb'
     - 'ee/lib/ee/gitlab/cleanup/orphan_job_artifact_files.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'

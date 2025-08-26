@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import Raphael from './raphael';
 
 export default class BranchGraph {
@@ -35,9 +35,22 @@ export default class BranchGraph {
       .then(({ data }) => {
         $('.loading', this.element).hide();
         this.prepareData(data.days, data.commits);
+        this.prepareLongDesc();
         this.buildGraph();
       })
       .catch(() => __('Error fetching network graph.'));
+  }
+
+  /* eslint-disable class-methods-use-this */
+  prepareLongDesc() {
+    const longDescTarget = document.querySelector('[data-type="figure-branch-graph"]');
+    const longDescriptionText = __(
+      'This graph shows commit history with branches and merges arranged from newest to oldest. Each dot represents a commit, with lines showing how code changes flow between different branches.',
+    );
+
+    if (longDescTarget) {
+      longDescTarget.setAttribute('aria-label', longDescriptionText);
+    }
   }
 
   prepareData(days, commits) {
@@ -262,14 +275,30 @@ export default class BranchGraph {
 
     const avatarBoxX = this.offsetX + this.unitSpace * this.mspace + 10;
     const avatarBoxY = y - 10;
+    const commitAuthorName = sprintf(__('Authored by %{authorName}'), {
+      authorName: commit.author.name,
+    });
+    const image = r.image(commit.author.icon, avatarBoxX, avatarBoxY, 20, 20);
 
     r.rect(avatarBoxX, avatarBoxY, 20, 20).attr({
       stroke: this.colors[commit.space],
       'stroke-width': 2,
     });
-    r.image(commit.author.icon, avatarBoxX, avatarBoxY, 20, 20);
+
+    /**
+     * Must set a constant when making multiple node() calls
+     * @see https://svgwg.org/svg2-draft/struct.html#TermCoreAttribute
+     *
+     * Tested and verified working in the following screen readers:
+     * MacOS - Safari, Chrome + VoiceOver
+     * Win11 - Chrome + NVDA, JAWS
+     */
+    image.node.setAttribute('aria-label', commitAuthorName);
+
+    image.node.setAttribute('role', 'img');
+
     return r
-      .text(this.offsetX + this.unitSpace * this.mspace + 35, y, commit.message.split('\n')[0])
+      .text(this.offsetX + this.unitSpace * this.mspace + 40, y, commit.message.split('\n')[0])
       .attr({
         fill: 'currentColor',
         class: 'gl-text-default',

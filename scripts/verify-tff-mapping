@@ -221,12 +221,6 @@ tests = [
   },
 
   {
-    explanation: 'Spec for FOSS sidekiq worker',
-    changed_file: 'app/workers/background_migration/single_database_worker.rb',
-    expected: ['spec/workers/every_sidekiq_worker_spec.rb']
-  },
-
-  {
     explanation: 'Spec for EE sidekiq worker',
     changed_file: 'ee/app/workers/concerns/geo/base_registry_sync_worker.rb',
     expected: ['spec/workers/every_sidekiq_worker_spec.rb']

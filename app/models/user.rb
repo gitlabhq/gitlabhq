@@ -1120,8 +1120,6 @@ class User < ApplicationRecord
     end
 
     def prefix_for_incoming_mail_token
-      return INCOMING_MAIL_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
       ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(INCOMING_MAIL_TOKEN_PREFIX)
     end
 
@@ -2960,8 +2958,6 @@ class User < ApplicationRecord
   end
 
   def self.prefix_for_feed_token
-    return FEED_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
     ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(FEED_TOKEN_PREFIX)
   end
 

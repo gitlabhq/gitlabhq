@@ -231,7 +231,7 @@ gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :share
 gem 'google-apis-iam_v1', '~> 0.73.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared
-gem 'google-apis-androidpublisher_v3', '~> 0.84.0', feature_category: :shared
+gem 'google-apis-androidpublisher_v3', '~> 0.85.0', feature_category: :shared
 
 gem 'googleauth', '~> 1.14', feature_category: :shared
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared
@@ -684,7 +684,7 @@ gem 'lru_redux', feature_category: :shared
 # fix STARTTLS handling until https://github.com/mikel/mail/pull/1536 is
 # released.
 gem 'mail', '= 2.8.1', feature_category: :shared
-gem 'mail-smtp_pool', '~> 0.1.0', path: 'vendor/gems/mail-smtp_pool', require: false, feature_category: :shared
+gem 'mail-smtp_pool', '~> 0.1.0', path: 'gems/mail-smtp_pool', require: false, feature_category: :shared
 
 gem 'microsoft_graph_mailer', '~> 0.1.0', path: 'vendor/gems/microsoft_graph_mailer', feature_category: :shared
 

@@ -88,7 +88,8 @@ module ExtractsPath
     return unless @path.empty?
 
     @id = @ref = extract_ref_without_atom(@id)
-    @commit = @repo.commit(@ref)
+    @fully_qualified_ref = ExtractsRef::RefExtractor.qualify_ref(@ref, ref_type)
+    @commit = @repo.commit(@fully_qualified_ref)
 
     request.format = :atom if @commit
   end

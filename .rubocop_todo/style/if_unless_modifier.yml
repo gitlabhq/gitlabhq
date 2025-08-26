@@ -335,7 +335,6 @@ Style/IfUnlessModifier:
     - 'ee/lib/ee/container_registry/client.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/group.rb'
-    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress.rb'
     - 'ee/lib/ee/gitlab/checks/diff_check.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/tag_check.rb'
     - 'ee/lib/ee/gitlab/cleanup/orphan_job_artifact_files.rb'

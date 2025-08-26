@@ -3,23 +3,17 @@
 class QueueBackfillUserGroupMemberRoles < Gitlab::Database::Migration[2.3]
   milestone '18.4'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillUserGroupMemberRoles"
-  BATCH_SIZE = 1000
-  SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :members,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202181
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :members, :id, [])
+    # no-op because there was a bug in the original migration, which has been
+    # fixed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202181
   end
 end

@@ -117,7 +117,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/rspec/top_level_describe_path.rb'
     - 'rubocop/cop/rspec/web_mock_enable.rb'
     - 'rubocop/cop/safe_params.rb'
-    - 'rubocop/cop/scalability/bulk_perform_with_context.rb'
     - 'rubocop/cop/scalability/cron_worker_context.rb'
     - 'rubocop/cop/scalability/file_uploads.rb'
     - 'rubocop/cop/scalability/idempotent_worker.rb'

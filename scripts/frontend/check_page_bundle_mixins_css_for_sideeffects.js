@@ -27,7 +27,7 @@ const file = fs.readFileSync(paths[0], 'utf-8');
 
 const parsed = pjs.parse(file);
 
-if (parsed.nodes.every((node) => ['comment', 'atrule'].includes(node.type))) {
+if (parsed.nodes.every((node) => ['comment'].includes(node.type))) {
   console.log('The file does not introduce any side effects, we are all good.');
   process.exit(0);
 }

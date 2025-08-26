@@ -1,0 +1,16 @@
+---
+name: gitlab_base.WordSlashWord
+description: |
+  Do not use word/word combos with slashes.
+extends: existence
+message: "Rewrite word/word combos like '%s' to not use slashes."
+vocab: false
+nonword: true
+level: suggestion
+link: https://docs.gitlab.com/development/documentation/styleguide/word_list/#slashes
+scope: text
+ignorecase: true
+tokens:
+  - "and/or"
+  - "follow/unfollow"
+  - "go/no-go"

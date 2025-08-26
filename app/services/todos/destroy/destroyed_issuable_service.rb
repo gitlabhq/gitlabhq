@@ -16,18 +16,12 @@ module Todos
       end
 
       def execute
-        inner_query = Todo.select(:id).for_target(target_id).for_type(target_type).limit(BATCH_SIZE)
-
-        delete_query = <<~SQL
-        DELETE FROM "#{Todo.table_name}"
-        WHERE id IN (#{inner_query.to_sql})
-        RETURNING user_id
-        SQL
+        relation = Todo.for_target(target_id).for_type(target_type).limit(BATCH_SIZE)
 
         loop do
-          result = Todo.connection.execute(delete_query)
+          result = relation.delete_all_returning(:user_id)
 
-          break if result.cmd_tuples == 0
+          break if result.empty?
 
           user_ids = result.map { |row| row['user_id'] }.uniq
 

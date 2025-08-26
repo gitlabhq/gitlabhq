@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/scalability/bulk_perform_with_context'
 
-RSpec.describe RuboCop::Cop::Scalability::BulkPerformWithContext do
+RSpec.describe RuboCop::Cop::Scalability::BulkPerformWithContext, feature_category: :scalability do
   it "adds an offense when calling bulk_perform_async" do
     expect_offense(<<~RUBY)
       Worker.bulk_perform_async(args)
@@ -34,18 +34,6 @@ RSpec.describe RuboCop::Cop::Scalability::BulkPerformWithContext do
 
     expect_no_offenses(<<~RUBY)
       Worker.bulk_perform_in(args)
-    RUBY
-  end
-
-  it "does not add an offense for scheduling on the BackgroundMigrationWorker" do
-    expect_no_offenses(<<~RUBY)
-      BackgroundMigrationWorker.bulk_perform_in(args)
-    RUBY
-  end
-
-  it "does not add an offense for scheduling on the CiDatabaseWorker" do
-    expect_no_offenses(<<~RUBY)
-      BackgroundMigration::CiDatabaseWorker.bulk_perform_in(args)
     RUBY
   end
 end
