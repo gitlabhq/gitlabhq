@@ -13,6 +13,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   before_action :require_non_empty_project, except: :create
   before_action :intercept_hotlinking!, only: :archive
   before_action :assign_archive_vars, only: :archive
+  before_action :assign_ref_vars, only: :archive
   before_action :assign_append_sha, only: :archive
   before_action :authorize_download_code!
   before_action :authorize_admin_project!, only: :create
@@ -39,8 +40,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
   private
 
+  def ref
+    @fully_qualified_ref || @ref
+  end
+
   def repo_params
-    @repo_params ||= { ref: @ref, path: params[:path], format: params[:format], append_sha: @append_sha }
+    @repo_params ||= { ref: ref, path: params[:path], format: params[:format], append_sha: @append_sha }
   end
 
   def set_cache_headers
@@ -66,7 +71,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
   def archive_metadata
     @archive_metadata ||= @repository.archive_metadata(
-      @ref,
+      ref,
       '', # Where archives are stored isn't really important for ETag purposes
       repo_params[:format],
       path: repo_params[:path],

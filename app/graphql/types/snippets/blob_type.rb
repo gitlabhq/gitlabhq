@@ -12,15 +12,21 @@ module Types
 
       field :rich_data, GraphQL::Types::String,
         description: 'Blob highlighted data.',
-        null: true
+        null: true,
+        calls_gitaly: true,
+        complexity: 10
 
       field :plain_data, GraphQL::Types::String,
         description: 'Blob plain highlighted data.',
-        null: true
+        null: true,
+        calls_gitaly: true,
+        complexity: 10
 
       field :raw_plain_data, GraphQL::Types::String,
         description: 'Raw content of the blob, if the blob is text data.',
-        null: true
+        null: true,
+        calls_gitaly: true,
+        complexity: 10
 
       field :raw_path, GraphQL::Types::String,
         description: 'Blob raw content endpoint path.',

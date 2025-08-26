@@ -6,6 +6,14 @@ module Ci
 
     delegate(:project) { @subject.project }
 
+    condition(:public_project, scope: :subject) do
+      @subject.project.public?
+    end
+
+    condition(:guest) do
+      can?(:guest_access, @subject.project)
+    end
+
     condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, container: @subject.project)
 
@@ -67,6 +75,9 @@ module Ci
     condition(:project_developer) do
       can?(:developer_access, @subject.project)
     end
+
+    rule { public_project & project_developer }.enable :read_manual_variables
+    rule { ~public_project & guest }.enable :read_manual_variables
 
     # Use admin_ci_minutes for detailed quota and usage reporting
     # this is limited to total usage and total quota for a builds namespace

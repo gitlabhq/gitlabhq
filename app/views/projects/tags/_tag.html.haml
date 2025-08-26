@@ -39,7 +39,7 @@
     - if can?(current_user, :admin_tag, @project)
       = render 'edit_release_button', tag: tag, project: @project, release: release
 
-    = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]
+    = render 'projects/buttons/download', project: @project, ref: tag.name, ref_type: :tags, pipeline: @tags_pipelines[tag.name]
 
     - if can?(current_user, :admin_tag, @project)
       = render 'projects/buttons/remove_tag', project: @project, tag: tag
