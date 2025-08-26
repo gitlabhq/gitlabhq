@@ -233,6 +233,9 @@ release-environments-notification-qa-failure:
 
 release-environments-labeling-merge-request:
   stage: finish
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
   script:
     - ruby scripts/release_environment/update_merge_requests_label.rb
   needs:
