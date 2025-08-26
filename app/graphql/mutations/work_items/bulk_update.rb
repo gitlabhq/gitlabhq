@@ -9,7 +9,7 @@ module Mutations
 
       MAX_WORK_ITEMS = 100
 
-      description 'Allows updating several properties for a set of work items. '
+      description 'Allows updating several properties for a set of work items.'
 
       argument :assignees_widget,
         ::Types::WorkItems::Widgets::AssigneesInputType,

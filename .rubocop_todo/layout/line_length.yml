@@ -540,8 +540,6 @@ Layout/LineLength:
     - 'ee/app/models/concerns/approver_migrate_hook.rb'
     - 'ee/app/models/concerns/ee/issuable_link.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
-    - 'ee/app/models/concerns/geo/verification_state.rb'
-    - 'ee/app/models/concerns/geo/verification_state_definition.rb'
     - 'ee/app/models/concerns/issue_widgets/acts_like_requirement.rb'
     - 'ee/app/models/concerns/security/scan_execution_policy.rb'
     - 'ee/app/models/dast/profile.rb'

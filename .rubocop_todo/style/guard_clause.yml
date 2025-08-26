@@ -213,7 +213,6 @@ Style/GuardClause:
     - 'ee/app/models/approval_merge_request_rule_source.rb'
     - 'ee/app/models/concerns/app_sec/dast/buildable.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
-    - 'ee/app/models/concerns/geo/verifiable_replicator.rb'
     - 'ee/app/models/dast/profile.rb'
     - 'ee/app/models/dast_site.rb'
     - 'ee/app/models/dast_site_profile.rb'

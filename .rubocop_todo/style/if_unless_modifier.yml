@@ -224,7 +224,6 @@ Style/IfUnlessModifier:
     - 'ee/app/models/allowed_email_domain.rb'
     - 'ee/app/models/app_sec/fuzzing/coverage/corpus.rb'
     - 'ee/app/models/concerns/elastic/application_versioned_search.rb'
-    - 'ee/app/models/concerns/geo/verifiable_replicator.rb'
     - 'ee/app/models/concerns/security/scan_execution_policy.rb'
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/ee/ci/job_artifact.rb'

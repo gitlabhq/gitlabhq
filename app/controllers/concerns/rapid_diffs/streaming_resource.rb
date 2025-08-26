@@ -27,7 +27,7 @@ module RapidDiffs
       error_component = ::RapidDiffs::StreamingErrorComponent.new(message: e.message)
       response.stream.write error_component.render_in(context)
     ensure
-      response.stream.close
+      response.stream.close unless response.stream.closed?
     end
 
     def request

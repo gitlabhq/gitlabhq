@@ -11,16 +11,16 @@ remediate.
 
 Analysis is the process of evaluating the details of a vulnerability to determine if it can and
 should be remediated. Vulnerabilities can be triaged in bulk but analysis must be done individually.
-Prioritize analysis of each vulnerability according to its severity and associated risk. As part of
-a risk management framework, analysis helps ensure resources are applied where they're most
-effective. Use the data contained in the [security dashboard](../security_dashboard/_index.md) and the
-[vulnerability report](../vulnerability_report/_index.md) to prioritize your analysis.
+As part of a risk management framework, analysis helps ensure resources are applied where they're
+most effective. Use the data contained in the security dashboard and the vulnerability report to
+prioritize analysis of vulnerabilities according to their severity and associated risk.
 
 ## Scope
 
 The scope of the analysis phase is all those vulnerabilities that have been through the triage phase
-and confirmed as needing further action. To list these vulnerabilities, use the following filter
-criteria in the vulnerability report:
+and confirmed as needing further action.
+
+Filter the vulnerability report to identify vulnerabilities needing analysis:
 
 - **Status**: Confirmed
 
@@ -29,8 +29,8 @@ criteria in the vulnerability report:
 You should conduct vulnerability analysis according to a risk assessment framework. If you're not
 already using a risk assessment framework, consider the following:
 
-- SANS Institute [Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
-- OWASP [Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
+- [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
+- [OWASP Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
 
 Calculating the risk score of a vulnerability depends on criteria that are specific to your
 organization. A basic risk score formula is:
@@ -49,8 +49,7 @@ vulnerabilities.
 
 ## Analysis strategies
 
-Use a risk assessment framework to help guide your vulnerability analysis process. The following
-strategies may also help.
+Try these strategies to focus on the most important vulnerabilities first.
 
 ### Prioritize vulnerabilities of highest severity
 
@@ -59,12 +58,12 @@ To help identify vulnerabilities of highest severity:
 - If you've not already done this in the triage phase, use the
   [Vulnerability Prioritizer CI/CD component](../vulnerabilities/risk_assessment_data.md#vulnerability-prioritizer)
   to help prioritize vulnerabilities for analysis.
-- For each group, use the following filter criteria in the vulnerability report to prioritize
-  analysis of vulnerabilities by severity:
+- For each group, filter the vulnerability report to prioritize vulnerabilities needing analysis:
+
   - **Status**: Confirmed
   - **Activity**: Still detected
   - **Group by**: Severity
-- Prioritize vulnerability analysis of your highest-priority projects - for example, applications
+- Prioritize vulnerability analysis of your highest-risk projects - for example, applications
   deployed to customers.
 
 ### Prioritize vulnerabilities that have a solution available
@@ -73,8 +72,7 @@ Some vulnerabilities have a solution available, for example "Upgrade from versio
 This reduces the time taken to analyze and remediate these vulnerabilities. Some solutions are
 available only if GitLab Duo is enabled.
 
-Use the following filter criteria in the vulnerability report to identify vulnerabilities that have
-a solution available.
+Filter the vulnerability report to identify vulnerabilities that have a solution available.
 
 - For vulnerabilities detected by SBOM scanning, use the criteria:
   - **Status**: Confirmed
@@ -109,6 +107,7 @@ If you confirm a vulnerability:
    track, document, and manage the remediation work.
 1. Continue to the remediation phase of the vulnerability management lifecycle.
 
-If you dismiss a vulnerability you must provide a brief comment that states why you've dismissed
-it. Dismissed vulnerabilities are ignored if detected in subsequent scans. Vulnerability records
-are permanent but you can change a vulnerability's status at any time.
+If you dismiss a vulnerability you must provide a brief comment that states why you've dismissed it.
+Dismissed vulnerabilities are ignored if detected again. Vulnerability records are retained for
+audit purposes (until they are archived). You can manage their lifecycle by updating their status as
+needed.

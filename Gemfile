@@ -152,7 +152,7 @@ gem 'gpgme', '~> 2.0.24', feature_category: :source_code_management
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.2.0', require: 'omniauth-ldap', feature_category: :system_access
+gem 'gitlab_omniauth-ldap', '~> 2.3.0', require: 'omniauth-ldap', feature_category: :system_access
 gem 'net-ldap', '~> 0.17.1', feature_category: :system_access
 
 # API

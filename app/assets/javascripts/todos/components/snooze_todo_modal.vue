@@ -7,9 +7,9 @@ import Tracking from '~/tracking';
 import { INSTRUMENT_TODO_ITEM_CLICK } from '~/todos/constants';
 
 const FORM_ID = 'custom-snooze-form';
-const FORM_GROUPS_CLASSES = 'sm:gl-w-1/3';
+const FORM_GROUPS_CLASSES = '@sm:gl-w-1/3';
 const DEFAULT_TIME = '09:00';
-const MODAL_ACTION_CLASSES = 'gl-w-full sm:gl-w-auto';
+const MODAL_ACTION_CLASSES = 'gl-w-full @sm:gl-w-auto';
 
 export default {
   components: {
@@ -131,6 +131,7 @@ export default {
   <gl-modal
     v-model="isModalVisible"
     modal-id="custom-snooze-todo-modal"
+    modal-class="gl-@container"
     :title="$options.i18n.snooze"
     :action-primary="actionPrimary"
     :action-secondary="$options.actionSecondary"

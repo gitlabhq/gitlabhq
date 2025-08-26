@@ -108,6 +108,7 @@ module Ci
     # doc/ci/runners/runners_scope.md#view-group-runners
     # doc/user/permissions.md#cicd-group-permissions
     rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
+      enable :read_builds
       enable :read_runner
     end
 

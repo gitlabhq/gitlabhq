@@ -19,15 +19,14 @@ small and manageable.
 The objective of the triage phase is to either confirm or dismiss each vulnerability. A confirmed
 vulnerability continues to the analysis phase but a dismissed vulnerability does not.
 
-Use the data contained in the [security dashboard](../security_dashboard/_index.md), the
-[security inventory](../security_inventory/_index.md), and the
-[vulnerability report](../vulnerability_report/_index.md) to help triage vulnerabilities efficiently
-and effectively.
+Use the data contained in the security dashboard, the security inventory, and the vulnerability
+report to help triage vulnerabilities efficiently and effectively.
 
 ## Scope
 
-The scope of the triage phase is all those vulnerabilities that have not been triaged. To list these
-vulnerabilities, use the following filter criteria in the vulnerability report:
+The scope of the triage phase includes all vulnerabilities that have not yet been assessed.
+
+Filter the vulnerability report to identify vulnerabilities needing triage:
 
 - **Status**: Needs triage
 
@@ -37,8 +36,8 @@ You should conduct vulnerability triage according to a risk assessment framework
 Depending on your industry or geographical location, compliance with a framework might be
 required by law. If not, you should use a respected risk assessment framework, for example:
 
-- SANS Institute [Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
-- OWASP [Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
+- [SANS Institute Vulnerability Management Framework](https://www.sans.org/blog/the-vulnerability-assessment-framework/)
+- [OWASP Threat and Safeguard Matrix (TaSM)](https://owasp.org/www-project-threat-and-safeguard-matrix/)
 
 Generally, the amount of time and effort spent on a vulnerability should be proportional to its
 risk. For example, your triage strategy might be that only vulnerabilities of critical and high risk continue
@@ -56,8 +55,7 @@ records are permanent but you can change a vulnerability's status at any time.
 
 ## Triage strategies
 
-Use a risk assessment framework to help guide your vulnerability triage process. The following
-strategies may also help.
+Try these strategies to focus on the most important vulnerabilities first.
 
 ### Prioritize vulnerabilities of significant risk
 
@@ -79,15 +77,14 @@ Prioritize vulnerabilities according to their risk.
 
 ### Dismiss vulnerabilities of low risk
 
-To ensure you focus on the right vulnerabilities it can help to triage in bulk those that are of low
-risk.
+Bulk triage low-risk vulnerabilities to focus on the most important ones.
 
 - Vulnerabilities are sometimes detected but no longer detected in subsequent CI/CD pipelines. In
-  this instance the vulnerability's activity is labeled as **No longer detected**. You might choose to
-  dismiss these vulnerabilities if their severity is **low** or **info**. In the
-  vulnerability report, use the filter criteria **Activity: No longer detected** and then bulk dismiss
-  them. You can also automate this by using a [vulnerability management policy](../policies/vulnerability_management_policy.md).
+  this instance the vulnerability's activity is labeled as **No longer detected**. You might choose
+  to dismiss these vulnerabilities if their severity is **low** or **info**. Use the filter
+  **Activity: No longer detected** in the vulnerability report to select them and change their
+  status to **Dismissed**. You can also automate this by using a
+  [vulnerability management policy](../policies/vulnerability_management_policy.md).
 - Dismiss vulnerabilities by identifier. If a vulnerability is mitigated by controls outside the
-  application layer, you might choose to dismiss them. In the vulnerability report, use the
-  **Identifier** filter to select all vulnerabilities matching the specific identifier and then
-  bulk dismiss them.
+  application layer, you might choose to dismiss them. Use the **Identifier** filter in the
+  vulnerability report to select them and change their status to **Dismissed**.

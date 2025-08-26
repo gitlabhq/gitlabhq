@@ -12,18 +12,12 @@ title: Advanced search
 
 {{< /details >}}
 
-{{< history >}}
-
-- Moved to GitLab Premium in 13.9.
-
-{{< /history >}}
-
 Use advanced search to find exactly what you need across your entire GitLab instance.
 
 With advanced search:
 
 - Identify code patterns across all projects to refactor shared components more efficiently.
-- Locate security vulnerabilities across your entire organization's codebase and dependencies using [advanced vulnerability management](../application_security/vulnerability_report/_index.md#advanced-vulnerability-management).
+- Locate security vulnerabilities across your entire organization's codebase and dependencies.
 - Track usage of deprecated functions or libraries throughout all repositories.
 - Find discussions buried in issues, merge requests, or comments.
 - Discover existing solutions instead of reinventing functionality that already exists.
@@ -37,7 +31,7 @@ Prerequisites:
 
 - Advanced search must be enabled:
   - For GitLab.com and GitLab Dedicated, advanced search is
-    enabled by default in [paid subscriptions](../../subscriptions/_index.md).
+    enabled by default in paid subscriptions.
   - For GitLab Self-Managed, an administrator must
     [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
 
@@ -77,12 +71,6 @@ The following scopes are available for advanced search:
 
 <!-- Remember to also update the tables in `doc/drawers/advanced_search_syntax.md` -->
 
-{{< history >}}
-
-- Refining user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
-
-{{< /history >}}
-
 Advanced search uses [`simple_query_string`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html),
 which supports both exact and fuzzy queries.
 
@@ -114,21 +102,21 @@ You can refine user search with `simple_query_string`.
 
 <!-- markdownlint-disable MD044 -->
 
-| Query                                              | Description |
-|----------------------------------------------------|-------------|
-| `rails -filename:gemfile.lock` | Returns `rails` in all files except the `gemfile.lock` file. |
-| `RSpec.describe Resolvers -*builder` | Returns `RSpec.describe Resolvers` that does not start with `builder`. |
-| `bug \| (display +banner)` | Returns `bug` or both `display` and `banner`. |
+| Query                                 | Description |
+|---------------------------------------|-------------|
+| `rails -filename:gemfile.lock`        | Returns `rails` in all files except the `gemfile.lock` file. |
+| `RSpec.describe Resolvers -*builder`  | Returns `RSpec.describe Resolvers` that does not start with `builder`. |
+| `bug \| (display +banner)`            | Returns `bug` or both `display` and `banner`. |
 | `helper -extension:yml -extension:js` | Returns `helper` in all files except files with a `.yml` or `.js` extension. |
-| `helper path:lib/git` | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
+| `helper path:lib/git`                 | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`). |
 
 <!-- markdownlint-enable MD044 -->
 
 ## Known issues
 
 - You can search only files smaller than 1 MB.
-  For GitLab Self-Managed, an administrator can
-  [configure the **Maximum file size indexed** setting](../../integration/advanced_search/elasticsearch.md#advanced-search-configuration).
+  For GitLab Self-Managed, an administrator can set a limit on the
+  [maximum file size indexed](../../administration/instance_limits.md#maximum-file-size-indexed).
 - You can use advanced search only on the default branch of a project.
   For more information, see [issue 229966](https://gitlab.com/gitlab-org/gitlab/-/issues/229966).
 - The search query must not contain any of the following characters:

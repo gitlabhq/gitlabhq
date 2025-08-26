@@ -8408,6 +8408,35 @@ Input type: `LdapAdminRoleLinkDestroyInput`
 | <a id="mutationldapadminrolelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationldapadminrolelinkdestroyldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Deleted instance-level LDAP link. |
 
+### `Mutation.lifecycleCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecyclecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecyclecreatedefaultclosedstatusindex"></a>`defaultClosedStatusIndex` | [`Int!`](#int) | Index of the default closed status in the statuses array. |
+| <a id="mutationlifecyclecreatedefaultduplicatestatusindex"></a>`defaultDuplicateStatusIndex` | [`Int!`](#int) | Index of the default duplicated status in the statuses array. |
+| <a id="mutationlifecyclecreatedefaultopenstatusindex"></a>`defaultOpenStatusIndex` | [`Int!`](#int) | Index of the default open status in the statuses array. |
+| <a id="mutationlifecyclecreatename"></a>`name` | [`String!`](#string) | Name of the lifecycle. |
+| <a id="mutationlifecyclecreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle will be created. |
+| <a id="mutationlifecyclecreatestatuses"></a>`statuses` | [`[WorkItemStatusInput!]!`](#workitemstatusinput) | Statuses of the lifecycle. Can be existing (with id) or new (without id). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecyclecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecyclecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecyclecreatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle created. |
+
 ### `Mutation.lifecycleUpdate`
 
 {{< details >}}
@@ -13697,7 +13726,7 @@ Input type: `WorkItemAddLinkedItemsInput`
 **Status**: Experiment.
 {{< /details >}}
 
-Allows move several work items.
+Moves work items between projects or groups.
 
 Input type: `WorkItemBulkMoveInput`
 
@@ -13708,7 +13737,7 @@ Input type: `WorkItemBulkMoveInput`
 | <a id="mutationworkitembulkmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitembulkmoveids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be moved. IDs that the user can't move will be ignored. A max of 100 can be provided. |
 | <a id="mutationworkitembulkmovesourcefullpath"></a>`sourceFullPath` | [`String!`](#string) | Full path of the source namespace. For example, `gitlab-org/gitlab-foss`. |
-| <a id="mutationworkitembulkmovetargetfullpath"></a>`targetFullPath` | [`String!`](#string) | Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. Only project namespaces are supported. |
+| <a id="mutationworkitembulkmovetargetfullpath"></a>`targetFullPath` | [`String!`](#string) | Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. User paths are not supported. |
 
 #### Fields
 

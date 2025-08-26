@@ -10,8 +10,17 @@ module WorkItems
     end
 
     def execute
+      if @target_namespace&.user_namespace?
+        return response(:error, message: "User namespaces are not supported as target namespaces.")
+      end
+
+      # If the source namespace is a project and the target is a group, raise an error
+      if @source_namespace&.project_namespace? && @target_namespace&.group_namespace?
+        return response(:error, message: "Cannot move work items from projects to groups.")
+      end
+
       unless @current_user.can?(:create_work_item, @target_namespace)
-        return response(:error, message: "Unknown target namespace")
+        return response(:error, message: "You do not have permission to move items to this namespace.")
       end
 
       moved_work_items =
@@ -47,10 +56,9 @@ module WorkItems
     end
 
     def can_move_work_item?(work_item)
-      return false unless @current_user.can?(:admin_work_item, work_item)
-      return false unless @current_user.can?(:create_work_item, @target_namespace)
-      return false unless work_item.supports_move_and_clone?
       return false if work_item.namespace_id == @target_namespace.id
+      return false unless @current_user.can?(:admin_work_item, work_item)
+      return false unless work_item.supports_move_and_clone?
 
       true
     end

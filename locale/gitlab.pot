@@ -9161,9 +9161,6 @@ msgstr ""
 msgid "At risk"
 msgstr ""
 
-msgid "At this moment, it is only possible to move work items to projects."
-msgstr ""
-
 msgid "Attach a file or image"
 msgstr ""
 
@@ -12660,6 +12657,9 @@ msgid "Cannot delete the default framework"
 msgstr ""
 
 msgid "Cannot delete the default organization"
+msgstr ""
+
+msgid "Cannot find target namespace."
 msgstr ""
 
 msgid "Cannot have more than %{maximum_path_exclusions} path exclusions for secret push protection per project"
@@ -62476,6 +62476,9 @@ msgstr ""
 msgid "Status (optional)"
 msgstr ""
 
+msgid "Status alert"
+msgstr ""
+
 msgid "Status checks"
 msgstr ""
 
@@ -65148,6 +65151,9 @@ msgid "There was a problem fetching the keep latest artifacts setting."
 msgstr ""
 
 msgid "There was a problem fetching the latest minimum override role."
+msgstr ""
+
+msgid "There was a problem fetching the parent items."
 msgstr ""
 
 msgid "There was a problem fetching the pipeline summary."

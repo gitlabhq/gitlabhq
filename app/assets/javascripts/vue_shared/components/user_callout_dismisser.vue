@@ -5,6 +5,9 @@ import getUserCalloutsQuery from '~/graphql_shared/queries/get_user_callouts.que
 /**
  * A renderless component for querying/dismissing UserCallouts via GraphQL.
  *
+ * To use this component your Vue app must have an apollo client set up.
+ * https://docs.gitlab.com/development/fe_guide/graphql/#usage-in-vue
+ *
  * Simplest example usage:
  *
  *     <user-callout-dismisser feature-name="my_user_callout">

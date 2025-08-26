@@ -53,7 +53,7 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-gap-2 gl-text-sm gl-text-subtle sm:gl-h-7 sm:gl-flex-col sm:gl-justify-center sm:gl-gap-0"
+    class="gl-flex gl-gap-2 gl-text-sm gl-text-subtle @sm/panel:gl-h-7 @sm/panel:gl-flex-col @sm/panel:gl-justify-center @sm/panel:gl-gap-0"
   >
     <span class="gl-text-right">
       <todo-snoozed-timestamp
@@ -65,7 +65,7 @@ export default {
 
       {{ formattedCreatedAt }}
     </span>
-    <span v-if="formattedDueDate" class="gl-inline sm:gl-hidden"> &middot; </span>
+    <span v-if="formattedDueDate" class="gl-inline @sm/panel:gl-hidden"> &middot; </span>
     <span
       v-if="formattedDueDate"
       :class="{

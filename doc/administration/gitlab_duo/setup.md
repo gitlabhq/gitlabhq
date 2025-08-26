@@ -13,35 +13,13 @@ gitlab_dedicated: no
 
 {{< /details >}}
 
-GitLab Duo is powered by large language models (LLMs), with data sent through an AI gateway. To use GitLab Duo on a GitLab Self-Managed instance, you can do one of the following:
+To ensure GitLab Duo is configured properly and can connect to GitLab:
 
-- Use the GitLab AI vendor models and the cloud-based AI gateway that’s hosted by GitLab. This is the default option.
-- [Use GitLab Duo Self-Hosted to self-host the AI gateway, with supported self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms). This option provides full control over your data and security.
-- Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration), where you deploy your self-hosted AI gateway and models for some features, but configure specific features to use the GitLab AI gateway and vendor models.
-
-{{< alert type="note" >}}
-
-You must have a Premium or Ultimate subscription with the GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
-
-{{< /alert >}}
-
-This page focuses on how to configure a GitLab Self-Managed instance if you're using the default, GitLab-hosted option.
-
-## Prerequisites
-
-- You must ensure both [outbound](#allow-outbound-connections-from-the-gitlab-instance)
-  and [inbound](#allow-inbound-connections-from-clients-to-the-gitlab-instance) connectivity exists.
-  Network firewalls can cause lag or delay.
+- You must ensure both outbound and inbound connectivity exists. Network firewalls can cause lag or delay.
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
-
-  {{< alert type="note" >}}
-
   You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
-
-  {{< /alert >}}
-
-- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
+- You should use GitLab 17.2 and later for the best results. Earlier versions might continue to work, however the experience may be degraded.
 
 GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
@@ -120,6 +98,16 @@ These tests are performed:
 | Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
-For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check for:
+For GitLab instances earlier than version 17.10, if you are encountering any issues with the health check,
+see the [troubleshooting page](../../user/gitlab_duo/troubleshooting.md).
 
-- GitLab-hosted Duo, see the [troubleshooting page](../../user/gitlab_duo/troubleshooting.md).
+## Other hosting options
+
+By default, GitLab Duo uses supported AI vendor language models and sends data through a cloud-based AI gateway that's hosted by GitLab.
+
+If you want to host your own language models or AI gateway:
+
+- You can [use GitLab Duo Self-Hosted to host the AI gateway and use any of the supported self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md#self-hosted-ai-gateway-and-llms).
+  This option provides full control over your data and security.
+- Use a [hybrid configuration](../../administration/gitlab_duo_self_hosted/_index.md#hybrid-ai-gateway-and-model-configuration),
+  where you host your own AI gateway and models for some features, but configure other features to use the GitLab AI gateway and vendor models.

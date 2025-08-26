@@ -1,0 +1,37 @@
+query parentWorkItems(
+  $search: String
+  $fullPath: ID!
+  $groupPath: ID!
+  $types: [IssueType!]
+  $in: [IssuableSearchableField!]
+  $includeAncestors: Boolean = false
+  $includeDescendants: Boolean = false
+  $isProject: Boolean!
+) {
+  group(fullPath: $groupPath) {
+    id
+    workItems(
+      search: $search
+      types: $types
+      in: $in
+      includeAncestors: $includeAncestors
+      includeDescendants: $includeDescendants
+    ) {
+      nodes {
+        id
+        iid
+        title
+      }
+    }
+  }
+  project(fullPath: $fullPath) @include(if: $isProject) {
+    id
+    workItems(search: $search, types: $types, in: $in) {
+      nodes {
+        id
+        iid
+        title
+      }
+    }
+  }
+}

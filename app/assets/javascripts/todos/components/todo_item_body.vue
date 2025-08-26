@@ -185,7 +185,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-min-w-0 gl-gap-3" data-testid="todo-item-container">
-    <div v-if="showAvatarOnNote" class="gl-hidden sm:gl-inline-block">
+    <div v-if="showAvatarOnNote" class="gl-hidden @sm/panel:gl-inline-block">
       <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1" class="gl-mt-1">
         <gl-avatar :size="32" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>

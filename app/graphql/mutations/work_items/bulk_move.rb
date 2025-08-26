@@ -10,7 +10,7 @@ module Mutations
 
       MAX_WORK_ITEMS = 100
 
-      description 'Allows move several work items.'
+      description 'Moves work items between projects or groups.'
 
       argument :ids,
         [::Types::GlobalIDType[::WorkItem]],
@@ -29,7 +29,7 @@ module Mutations
         GraphQL::Types::String,
         required: true,
         description: 'Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. ' \
-          'Only project namespaces are supported.'
+          'User paths are not supported.'
 
       field :moved_work_item_count, GraphQL::Types::Int,
         null: true,
@@ -48,18 +48,15 @@ module Mutations
       end
 
       def resolve(ids:, source_full_path:, target_full_path:)
-        target_project = resolve_project(full_path: target_full_path).sync
+        target_namespace = namespace_for(target_full_path)
 
-        if target_project.blank?
-          raise Gitlab::Graphql::Errors::ArgumentError,
-            _('At this moment, it is only possible to move work items to projects.')
-        end
+        raise Gitlab::Graphql::Errors::ArgumentError, _('Cannot find target namespace.') if target_namespace.blank?
 
         result = ::WorkItems::BulkMoveService.new(
           current_user: current_user,
           work_item_ids: ids.map(&:model_id),
           source_namespace: namespace_for(source_full_path),
-          target_namespace: target_project.project_namespace
+          target_namespace: target_namespace
         ).execute
 
         if result.success?
@@ -72,7 +69,9 @@ module Mutations
       private
 
       def namespace_for(full_path)
-        ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(::Namespace, full_path).find&.sync
+        strong_memoize_with(:namespace_for, full_path) do
+          ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(::Namespace, full_path).find&.sync
+        end
       end
     end
   end
