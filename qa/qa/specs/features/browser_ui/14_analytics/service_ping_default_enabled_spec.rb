@@ -21,7 +21,8 @@ module QA
         ) do
           Page::Admin::Settings::MetricsAndProfiling.perform do |setting|
             setting.expand_usage_statistics do |page|
-              expect(page).to have_usage_data_checkbox_checked_and_disabled
+              expect(page).to have_usage_data_checkbox_checked
+              expect(page).to have_usage_data_checkbox_disabled
             end
           end
         end
