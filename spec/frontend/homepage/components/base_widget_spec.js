@@ -1,12 +1,12 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
-describe('VisibilityChangeDetector', () => {
+describe('BaseWidget', () => {
   let wrapper;
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(VisibilityChangeDetector, {
+    wrapper = shallowMountExtended(BaseWidget, {
       slots: {
         default: '<div class="test-content">Test Content</div>',
       },

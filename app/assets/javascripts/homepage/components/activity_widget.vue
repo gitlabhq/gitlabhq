@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
+import BaseWidget from './base_widget.vue';
 
 const MAX_EVENTS = 5;
 const FILTER_OPTIONS = [
@@ -27,7 +27,7 @@ export default {
   components: {
     GlSkeletonLoader,
     GlCollapsibleListbox,
-    VisibilityChangeDetector,
+    BaseWidget,
   },
   directives: {
     SafeHtml,
@@ -118,9 +118,9 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector @visible="reload">
+  <base-widget @visible="reload">
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h2 class="gl-heading-4 gl-mb-0 gl-mt-4">{{ __('Activity') }}</h2>
+      <h2 class="gl-heading-4 gl-m-0">{{ __('Activity') }}</h2>
 
       <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
@@ -137,7 +137,7 @@ export default {
       <rect width="160" height="3" rx="1" x="8" y="16" />
       <rect width="20" height="3" rx="1" x="180" y="16" />
     </gl-skeleton-loader>
-    <p v-else-if="hasError">
+    <p v-else-if="hasError" class="gl-mb-0 gl-pt-3">
       {{
         s__(
           'HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again.',
@@ -159,7 +159,7 @@ export default {
       :class="{ 'user-activity-feed': filter === null }"
     ></ul>
     <a :href="activityPath">{{ __('All activity') }}</a>
-  </visibility-change-detector>
+  </base-widget>
 </template>
 
 <style scoped>

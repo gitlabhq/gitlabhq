@@ -2,8 +2,8 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+title: Plan your upgrade path
 description: Latest version instructions.
-title: Upgrade paths
 ---
 
 {{< details >}}
@@ -50,11 +50,7 @@ To determine your upgrade path:
      - [`17.8.z`](versions/gitlab_17_changes.md#1780). The latest GitLab 17.8 release.
      - [`17.11.z`](versions/gitlab_17_changes.md#17110). The latest GitLab 17.11 release.
 
-1. Consult the version-specific upgrade instructions:
-   - [GitLab 18 changes](versions/gitlab_18_changes.md)
-   - [GitLab 17 changes](versions/gitlab_17_changes.md)
-   - [GitLab 16 changes](versions/gitlab_16_changes.md)
-   - [GitLab 15 changes](versions/gitlab_15_changes.md)
+1. Consult the [GitLab upgrade notes](versions/_index.md).
 
 Even when not explicitly specified, upgrade GitLab to the latest available patch release of the `major`.`minor` release
 rather than the first patch release. For example, `16.8.7` instead of `16.8.0`.

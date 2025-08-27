@@ -19,3 +19,4 @@ variables:
   RUST_VERSION: "1.73"
   UBI_VERSION: "9.5"
   YARN_VERSION: "1.22"
+  VUE_VERSION: "2"

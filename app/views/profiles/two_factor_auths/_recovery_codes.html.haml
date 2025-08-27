@@ -1,11 +1,8 @@
-= render ::Layouts::CrudComponent.new(_('Recovery codes')) do |c|
+= render ::Layouts::CrudComponent.new(_('Recovery codes'),
+  options: { class: 'gl-mt-5' }) do |c|
   - if current_user.two_factor_enabled?
     - c.with_actions do
-      .gl-flex.gl-flex-wrap.gl-gap-3
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
-        .gl-w-full.sm:gl-w-auto
-          .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
+      .js-two-factor-action-confirm{ data: codes_two_factor_authentication_data(current_password_required?) }
     - c.with_body do
       = _('If you lose your recovery codes you can generate new ones, invalidating all previous codes.')
   - else

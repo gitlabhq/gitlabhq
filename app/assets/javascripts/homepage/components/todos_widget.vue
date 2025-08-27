@@ -22,7 +22,7 @@ import {
   TRACKING_LABEL_TODO_ITEMS,
   TRACKING_PROPERTY_ALL_TODOS,
 } from '../tracking_constants';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
+import BaseWidget from './base_widget.vue';
 
 const N_TODOS = 5;
 
@@ -54,7 +54,7 @@ const FILTER_OPTIONS = [
 ];
 
 export default {
-  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, VisibilityChangeDetector },
+  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, BaseWidget },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -124,21 +124,21 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector @visible="reload">
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h2 class="gl-heading-4 gl-my-4 gl-grow">{{ __('To-do items') }}</h2>
+  <base-widget @visible="reload">
+    <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
+      <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('To-do items') }}</h2>
 
       <gl-collapsible-listbox v-if="!hasError" v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
 
-    <p v-if="hasError">
+    <p v-if="hasError" class="gl-mb-3">
       {{
         s__(
           'HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again.',
         )
       }}
     </p>
-    <div v-else class="gl-rounded-lg gl-bg-subtle">
+    <template v-else>
       <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
         <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
           <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
@@ -149,7 +149,7 @@ export default {
 
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
         <span>
@@ -159,7 +159,7 @@ export default {
       </div>
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
         <span>{{ __('Sorry, your filter produced no results') }}</span>
@@ -168,16 +168,16 @@ export default {
         <todo-item
           v-for="todo in todos"
           :key="todo.id"
-          class="first:gl-rounded-t-lg hover:!gl-bg-strong"
+          class="gl-rounded-lg"
           :todo="todo"
           :tracking-additional="todoTrackingContext"
           @change="$apollo.queries.todos.refetch()"
         />
       </ol>
 
-      <div class="gl-px-5 gl-py-3">
+      <div class="gl-px-5 gl-pt-3">
         <a href="/dashboard/todos" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
       </div>
-    </div>
-  </visibility-change-detector>
+    </template>
+  </base-widget>
 </template>

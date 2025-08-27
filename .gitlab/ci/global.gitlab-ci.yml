@@ -94,7 +94,7 @@
   policy: pull
 
 .assets-cache: &assets-cache
-  key: "assets-${NODE_ENV}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
+  key: "assets-${NODE_ENV}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
   paths:
     - app/assets/javascripts/locale/**/app.js
     - public/assets/
@@ -102,7 +102,7 @@
   policy: pull-push
 
 .assets-tmp-cache: &assets-tmp-cache
-  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}"
+  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}"
   paths:
     - tmp/cache
   policy: pull

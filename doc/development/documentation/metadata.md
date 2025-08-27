@@ -75,12 +75,13 @@ The `description` tag:
 - Is shown when the page is included in a [`cards` shortcode](styleguide/_index.md#cards).
 
 For the top-level pages, like **Use GitLab** and one level underneath,
-the descriptions are lists of nouns. For example, for **Set up your organization**,
-the description is `Users, groups, namespaces, SSH keys.`
+the description should be a short sentence that starts with an active verb.
+The description should give users a clear idea of the information they will find
+on the page and the value of visiting the page.
 
 For other pages, descriptions are not actively maintained. However, if you want to add one,
 use a short description of what the page is about.
-See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips.
+For guidance, see the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions).
 
 ## Avoid pages being added to global navigation
 

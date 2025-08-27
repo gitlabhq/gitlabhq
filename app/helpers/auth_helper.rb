@@ -280,11 +280,10 @@ module AuthHelper
                 _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?')
               end
 
-    { button_text: _('Disable two-factor authentication'),
+    { button_text: _('Disable 2FA'),
       message: message,
       path: profile_two_factor_auth_path,
-      password_required: password_required.to_s,
-      size: 'small' }
+      password_required: password_required.to_s }
   end
 
   def codes_two_factor_authentication_data(password_required)

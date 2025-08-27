@@ -10,7 +10,7 @@ import {
   TRACKING_PROPERTY_REVIEW_REQUESTED,
   TRACKING_PROPERTY_ASSIGNED_TO_YOU,
 } from '../tracking_constants';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
+import BaseWidget from './base_widget.vue';
 
 export default {
   name: 'MergeRequestsWidget',
@@ -19,7 +19,7 @@ export default {
     GlLink,
     GlBadge,
     GlSprintf,
-    VisibilityChangeDetector,
+    BaseWidget,
   },
   mixins: [timeagoMixin, InternalEvents.mixin()],
   inject: [
@@ -97,8 +97,8 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
-    <h2 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
+  <base-widget @visible="reload">
+    <h2 class="gl-heading-4 gl-mb-4 gl-mt-1 gl-flex gl-items-center gl-gap-2">
       <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
     </h2>
     <p v-if="hasError" data-testid="error-message">
@@ -114,7 +114,7 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <ul v-else class="gl-list-none gl-p-0" data-testid="links-list">
+    <ul v-else class="gl-mb-1 gl-list-none gl-p-0" data-testid="links-list">
       <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
@@ -150,5 +150,5 @@ export default {
         </gl-link>
       </li>
     </ul>
-  </visibility-change-detector>
+  </base-widget>
 </template>

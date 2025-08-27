@@ -54,7 +54,7 @@ To select a different LLM for a feature:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **GitLab Duo**.
 
-   If you **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro or Enterprise turned on for the group.
+   If **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro, or Enterprise turned on for the group.
 1. Select **Configure features**.
 1. For the feature you want to configure, select an LLM from the dropdown list.
 

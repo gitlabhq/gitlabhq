@@ -162,12 +162,12 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
       it 'requires the current_password to disable two-factor authentication', :js do
         visit profile_two_factor_auth_path
 
-        click_button _('Disable two-factor authentication')
+        click_button _('Disable 2FA')
         modal_submit('wrong_password')
 
         expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
 
-        click_button _('Disable two-factor authentication')
+        click_button _('Disable 2FA')
         modal_submit(user.password)
 
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
@@ -203,7 +203,7 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
         it 'does not require the current_password to disable two-factor authentication', :js do
           visit profile_two_factor_auth_path
 
-          click_button _('Disable two-factor authentication')
+          click_button _('Disable 2FA')
           modal_submit_without_password
 
           expect(page).to have_content('Two-factor authentication has been disabled successfully!')

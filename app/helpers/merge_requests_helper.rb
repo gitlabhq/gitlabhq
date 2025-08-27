@@ -472,7 +472,7 @@ module MergeRequestsHelper
             [
               {
                 id: 'reviews',
-                title: _('Reviewer (Active)'),
+                title: _('Review requested'),
                 helpContent: _('Merge requests awaiting your review.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
@@ -481,48 +481,22 @@ module MergeRequestsHelper
                 }
               },
               {
+                id: 'assigned',
+                title: _('Your merge requests'),
+                helpContent: _("Your merge requests"),
+                query: 'authorOrAssigneeMergeRequests',
+                variables: {
+                  perPage: 10
+                }
+              },
+              {
                 id: 'reviews_inactive',
-                title: _('Reviewer (Inactive)'),
+                title: _('Reviewed'),
                 hideCount: true,
                 helpContent: _("Merge requests you've reviewed."),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
-                  perPage: 10
-                }
-              },
-              {
-                id: 'assigned',
-                title: _('Your merge requests (Active)'),
-                helpContent: _(
-                  "Your merge requests that need reviewers assigned, " \
-                    "or has feedback to address."
-                ),
-                query: 'authorOrAssigneeMergeRequests',
-                variables: {
-                  or: {
-                    reviewerWildcard: "NONE",
-                    onlyReviewerUsername: duo_code_review_bot.username,
-                    reviewStates: %w[REVIEWED REQUESTED_CHANGES]
-                  },
-                  perPage: 10
-                }
-              },
-              {
-                id: 'assigned_inactive',
-                title: _('Your merge requests (Inactive)'),
-                hideCount: true,
-                helpContent: _(
-                  "Your merge requests awaiting approvals, " \
-                    "or has been approved by all assigned reviewers."
-                ),
-                query: 'authorOrAssigneeMergeRequests',
-                variables: {
-                  reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
-                  not: {
-                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
-                  },
-                  ignoredReviewerUsername: duo_code_review_bot.username,
                   perPage: 10
                 }
               }

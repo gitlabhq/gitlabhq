@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'VisibilityChangeDetector',
+  name: 'BaseWidget',
   mounted() {
     document.addEventListener('visibilitychange', this.handleVisibilityChanged);
   },
@@ -18,7 +18,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-border gl-rounded-pill gl-p-5">
     <slot></slot>
   </div>
 </template>

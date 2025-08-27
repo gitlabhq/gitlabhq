@@ -476,8 +476,9 @@ On GitLab.com, both unprivileged and privileged runners are
 available. For projects in the `gitlab-org` group and forks of those
 projects, only one of the following tags should be added to a job:
 
-- `gitlab-org`: Jobs randomly use privileged and unprivileged runners.
-- `gitlab-org-docker`: Jobs must use a privileged runner. If you need [Docker-in-Docker support](../../ci/docker/using_docker_build.md#use-docker-in-docker),
+- `gitlab-org`: by default but only if the job doesn't need to be run in privileged mode.
+- `gitlab-org-docker`: when job needs to be run in privileged mode. If you need
+  [Docker-in-Docker support](../../ci/docker/using_docker_build.md#use-docker-in-docker),
   use `gitlab-org-docker` instead of `gitlab-org`.
 
 The `gitlab-org-docker` tag is added by the `.use-docker-in-docker` job

@@ -9,7 +9,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_MERGE_REQUESTS,
@@ -47,7 +47,7 @@ describe('MergeRequestsWidget', () => {
     wrapper.findByTestId('review-requested-last-updated-at');
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
-  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
 
   function createWrapper({
     mergeRequestsWidgetMetadataQueryHandler = mergeRequestsWidgetMetadataQuerySuccessHandler(
@@ -150,7 +150,7 @@ describe('MergeRequestsWidget', () => {
       await waitForPromises();
       reloadSpy.mockClear();
 
-      findDetector().vm.$emit('visible');
+      findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
       expect(reloadSpy).toHaveBeenCalled();

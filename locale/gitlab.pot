@@ -23769,6 +23769,9 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable 2FA"
+msgstr ""
+
 msgid "Disable SSL verification for requests to GitLab Observability Backend"
 msgstr ""
 
@@ -23794,9 +23797,6 @@ msgid "Disable inviting new members to group or project by group/project owners 
 msgstr ""
 
 msgid "Disable password authentication for users with an SSO identity"
-msgstr ""
-
-msgid "Disable two-factor authentication"
 msgstr ""
 
 msgid "Disabled"
@@ -34295,6 +34295,9 @@ msgid "Incomplete"
 msgstr ""
 
 msgid "Increase"
+msgstr ""
+
+msgid "Increase your account's security by enabling two-factor authentication (2FA)."
 msgstr ""
 
 msgid "Increment suggestion line end"
@@ -52788,12 +52791,6 @@ msgstr ""
 msgid "Register / Sign In"
 msgstr ""
 
-msgid "Register a WebAuthn device"
-msgstr ""
-
-msgid "Register a one-time password authenticator"
-msgstr ""
-
 msgid "Register a one-time password authenticator or a WebAuthn device first."
 msgstr ""
 
@@ -54234,16 +54231,13 @@ msgstr ""
 msgid "Review time is the amount of time since the first comment in a merge request."
 msgstr ""
 
+msgid "Reviewed"
+msgstr ""
+
 msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Reviewer (Active)"
-msgstr ""
-
-msgid "Reviewer (Inactive)"
-msgstr ""
 
 msgid "Reviewer commented"
 msgstr ""
@@ -75221,15 +75215,6 @@ msgstr ""
 msgid "Your merge requests"
 msgstr ""
 
-msgid "Your merge requests (Active)"
-msgstr ""
-
-msgid "Your merge requests (Inactive)"
-msgstr ""
-
-msgid "Your merge requests awaiting approvals, or has been approved by all assigned reviewers."
-msgstr ""
-
 msgid "Your merge requests have a new homepage!"
 msgstr ""
 
@@ -75237,9 +75222,6 @@ msgid "Your merge requests that are waiting for approvals."
 msgstr ""
 
 msgid "Your merge requests that have been merged."
-msgstr ""
-
-msgid "Your merge requests that need reviewers assigned, or has feedback to address."
 msgstr ""
 
 msgid "Your merge requests with approvals by all assigned reviewers."

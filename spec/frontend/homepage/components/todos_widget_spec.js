@@ -9,7 +9,7 @@ import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -43,7 +43,7 @@ describe('TodosWidget', () => {
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
   const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
-  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findErrorMessage = () =>
     wrapper.findByText('Your to-do items are not available. Please refresh the page to try again.');
 
@@ -283,7 +283,7 @@ describe('TodosWidget', () => {
 
     it('refreshes on becoming visible again', async () => {
       const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.todos, 'refetch');
-      findDetector().vm.$emit('visible');
+      findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
       expect(refetchSpy).toHaveBeenCalled();

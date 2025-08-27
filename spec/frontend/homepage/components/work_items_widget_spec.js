@@ -8,7 +8,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '~/homepage/graphql/queries/work_items_widget_metadata.query.graphql';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -42,7 +42,7 @@ describe('WorkItemsWidget', () => {
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
   const findAuthoredCount = () => wrapper.findByTestId('authored-count');
   const findAuthoredLastUpdatedAt = () => wrapper.findByTestId('authored-last-updated-at');
-  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
 
   function createWrapper({
     workItemsWidgetMetadataQueryHandler = workItemsWidgetMetadataQuerySuccessHandler(withItems),
@@ -142,7 +142,7 @@ describe('WorkItemsWidget', () => {
       await waitForPromises();
       reloadSpy.mockClear();
 
-      findDetector().vm.$emit('visible');
+      findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
       expect(reloadSpy).toHaveBeenCalled();

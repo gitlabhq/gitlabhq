@@ -35,6 +35,7 @@ class User < ApplicationRecord
   include Todoable
   include Gitlab::InternalEventsTracking
   include SafelyChangeColumnDefault
+  include Ci::PipelineScheduleOwnershipValidator
 
   columns_changing_default :organization_id
 
@@ -571,9 +572,13 @@ class User < ApplicationRecord
     end
 
     after_transition any => :deactivated do |user|
-      next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
-
       user.run_after_commit do
+        if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user)
+          notify_and_disable_all_pipeline_schedules_for_user(user.id)
+        end
+
+        next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
+
         NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
       end
     end

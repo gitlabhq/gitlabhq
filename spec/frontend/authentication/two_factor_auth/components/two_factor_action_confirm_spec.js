@@ -46,6 +46,7 @@ describe('TwoFactorActionConfirm', () => {
 
       it('renders default `danger` variant', () => {
         expect(findButton().props('variant')).toBe('danger');
+        expect(findButton().props('category')).toBe('secondary');
         expect(findButton().props('block')).toBe(true);
       });
 
@@ -92,15 +93,8 @@ describe('TwoFactorActionConfirm', () => {
         expect(buttonTooltipDirective).toBeDefined();
       });
 
-      it('renders default `danger` variant', () => {
-        expect(findButton().props('variant')).toBe('danger');
-      });
-
-      it('renders custom variant', () => {
-        const variant = 'confirm';
-        createComponent({ icon, variant });
-
-        expect(findButton().props('variant')).toBe(variant);
+      it('renders default `default` variant', () => {
+        expect(findButton().props('variant')).toBe('default');
       });
 
       it('renders the modal when button is clicked', async () => {

@@ -42078,6 +42078,8 @@ CREATE UNIQUE INDEX virtual_registries_container_registries_on_unique_group_ids 
 
 CREATE INDEX virtual_registries_container_upstreams_on_group_id ON virtual_registries_container_upstreams USING btree (group_id);
 
+CREATE INDEX virtual_registries_packages_maven_upstreams_on_name_trigram ON virtual_registries_packages_maven_upstreams USING gin (name gin_trgm_ops);
+
 CREATE INDEX vulnerability_archive_export__model_id_model_type_uploader__idx ON vulnerability_archive_export_uploads USING btree (model_id, model_type, uploader, created_at);
 
 CREATE INDEX vulnerability_archive_export_uploads_checksum_idx ON vulnerability_archive_export_uploads USING btree (checksum);

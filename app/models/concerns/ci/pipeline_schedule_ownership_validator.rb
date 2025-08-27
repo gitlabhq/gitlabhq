@@ -17,25 +17,32 @@ module Ci
         unavailable_schedules = Ci::PipelineSchedule.active
                                                     .owned_by(user_id)
                                                     .for_project(source.id)
-        process_schedules(unavailable_schedules)
+        notify_and_disable_schedules(unavailable_schedules)
       else
         source.all_projects.find_in_batches do |batch|
           project_ids = batch.pluck(:id) # rubocop:disable Database/AvoidUsingPluckWithoutLimit-- find_in_batches limit 1000
           unavailable_schedules = Ci::PipelineSchedule.active
                                                       .owned_by(user_id)
                                                       .for_project(project_ids)
-
-          process_schedules(unavailable_schedules)
+          notify_and_disable_schedules(unavailable_schedules)
         end
       end
     end
 
+    def notify_and_disable_all_pipeline_schedules_for_user(user_id)
+      schedules = Ci::PipelineSchedule.active.owned_by(user_id)
+      notify_and_disable_schedules(schedules)
+    end
+
     private
 
-    def process_schedules(schedules)
-      schedules.each do |schedule|
+    def notify_and_disable_schedules(schedules)
+      schedules.find_each do |schedule|
         notification_service.pipeline_schedule_owner_unavailable(schedule)
-        schedule.deactivate!
+      end
+
+      schedules.each_batch do |batch|
+        batch.update_all(active: false)
       end
     end
   end

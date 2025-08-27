@@ -6,7 +6,7 @@ import ActivityWidget from '~/homepage/components/activity_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/datetime_utility');
@@ -25,7 +25,7 @@ describe('ActivityWidget', () => {
     );
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findEventsList = () => wrapper.findByTestId('events-list');
-  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findAllActivityLink = () => wrapper.find('a[href="/foo/bar"]');
 
   function createWrapper() {
@@ -178,7 +178,7 @@ describe('ActivityWidget', () => {
       await waitForPromises();
       reloadSpy.mockClear();
 
-      findDetector().vm.$emit('visible');
+      findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
       expect(reloadSpy).toHaveBeenCalled();

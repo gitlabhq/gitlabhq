@@ -3160,6 +3160,46 @@ RSpec.describe User, feature_category: :user_profile do
           user.deactivate
         end
       end
+
+      context 'when deactivating user with active pipeline_schedules' do
+        let(:notification_service) { instance_double(NotificationService) }
+        let!(:pipeline_schedules) { create_list(:ci_pipeline_schedule, 2, active: true, owner: user) }
+
+        before do
+          stub_application_setting(user_deactivation_emails_enabled: false)
+          allow(NotificationService).to receive(:new).and_return(notification_service)
+          allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+        end
+
+        it "deactivates schedules and sends notifications" do
+          expect(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+            .exactly(pipeline_schedules.count).times
+          # check that all user owned schedules are deactivated
+          expect do
+            user.deactivate
+            user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
+          end.to change {
+                   pipeline_schedules.map(&:reload).map(&:active?).uniq
+                 }.from([true]).to([false])
+        end
+
+        context 'when feature flag disabled' do
+          before do
+            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
+            allow(NotificationService).to receive(:new).and_return(notification_service)
+            allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+          end
+
+          it "does not send notifications" do
+            expect(notification_service).not_to receive(:pipeline_schedule_owner_unavailable)
+
+            expect do
+              user.deactivate
+              user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
+            end.not_to change { pipeline_schedules.map(&:reload).map(&:active?) }
+          end
+        end
+      end
     end
 
     context 'a user who is blocked' do
