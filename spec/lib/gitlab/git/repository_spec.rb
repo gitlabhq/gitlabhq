@@ -172,6 +172,17 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    context 'when ref is fully qualified' do
+      where(:append_sha, :ref, :expected_prefix) do
+        false | 'refs/heads/master' | 'gitlab-git-test-master'
+        false | 'refs/tags/v1.0.0'  | 'gitlab-git-test-v1.0.0'
+      end
+
+      with_them do
+        it { expect(metadata['ArchivePrefix']).to eq(expected_prefix) }
+      end
+    end
+
     context 'format varies archive path and filename' do
       where(:format, :expected_extension) do
         nil      | 'tar.gz'

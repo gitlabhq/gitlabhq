@@ -3,6 +3,7 @@
 class Import::GiteaController < Import::GithubController
   extend ::Gitlab::Utils::Override
 
+  before_action -> { check_rate_limit!(:gitea_import, scope: current_user, redirect_back: true) }, only: :status
   before_action :verify_blocked_uri, only: :status
 
   def new

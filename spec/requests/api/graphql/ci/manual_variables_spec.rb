@@ -31,6 +31,49 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
     )
   end
 
+  context 'when the project is public' do
+    let_it_be(:project) { create(:project, :public) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:user) { create(:user) }
+
+    it 'restricts access to developer+ project members' do
+      job = create(:ci_build, :manual, pipeline: pipeline)
+      create(:ci_job_variable, key: 'MANUAL_TEST_VAR', job: job)
+
+      post_graphql(query, current_user: user)
+
+      variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
+        .dig('jobs', 'nodes').first.dig('manualVariables', 'nodes')
+      expect(variables_data).to be_nil
+
+      project.add_developer(user)
+
+      post_graphql(query, current_user: user)
+      variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
+        .dig('jobs', 'nodes').first.dig('manualVariables', 'nodes')
+      expect(variables_data.first['key']).to eq('MANUAL_TEST_VAR')
+    end
+  end
+
+  context 'when the project is internal' do
+    let_it_be(:project) { create(:project, :internal) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:user) { create(:user) }
+
+    it 'restricts access to guest+ project members' do
+      job = create(:ci_build, :manual, pipeline: pipeline)
+      create(:ci_job_variable, key: 'MANUAL_TEST_VAR', job: job)
+
+      project.add_guest(user)
+
+      post_graphql(query, current_user: user)
+
+      variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
+        .dig('jobs', 'nodes').first.dig('manualVariables', 'nodes')
+      expect(variables_data.first['key']).to eq('MANUAL_TEST_VAR')
+    end
+  end
+
   it 'returns the manual variables for actionable jobs' do
     job = create(:ci_build, :actionable, pipeline: pipeline)
     create(:ci_job_variable, key: 'MANUAL_TEST_VAR', job: job)
@@ -60,7 +103,7 @@ RSpec.describe 'Query.project(fullPath).pipelines.jobs.manualVariables', feature
 
     variables_data = graphql_data.dig('project', 'pipelines', 'nodes').first
       .dig('jobs', 'nodes').flat_map { |job| job.dig('manualVariables', 'nodes') }
-    expect(variables_data).to be_empty
+    expect(variables_data).to eq([nil])
   end
 
   it 'does not produce N+1 queries' do
