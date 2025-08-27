@@ -12,20 +12,6 @@ FactoryBot.define do
     scheduling_type { 'stage' }
     pending
 
-    options do
-      {
-        image: 'image:1.0',
-        services: ['postgres'],
-        script: ['ls -a']
-      }
-    end
-
-    yaml_variables do
-      [
-        { key: 'DB_NAME', value: 'postgres', public: true }
-      ]
-    end
-
     project { pipeline.project }
 
     ref { pipeline.ref }
@@ -33,6 +19,22 @@ FactoryBot.define do
     runner_manager { nil }
 
     execution_config { nil }
+
+    transient do
+      options do
+        {
+          image: 'image:1.0',
+          services: ['postgres'],
+          script: ['ls -a']
+        }
+      end
+
+      yaml_variables do
+        [
+          { key: 'DB_NAME', value: 'postgres', public: true }
+        ]
+      end
+    end
 
     after(:build) do |build, evaluator|
       if evaluator.runner_manager

@@ -9,8 +9,6 @@ FactoryBot.define do
     name { 'bridge' }
     created_at { '2013-10-29 09:50:00 CET' }
     status { :created }
-    # We default options to a non-blank value so that `Ci::Metadatable.degenerated?` is false
-    options { { trigger: {} } }
 
     trait :variables do
       yaml_variables do
@@ -19,6 +17,8 @@ FactoryBot.define do
     end
 
     transient do
+      # We default options to a non-blank value so that `Ci::Metadatable.degenerated?` is false
+      options { { trigger: {} } }
       downstream { nil }
       upstream { nil }
     end
@@ -27,15 +27,25 @@ FactoryBot.define do
       bridge.project ||= bridge.pipeline.project
 
       if evaluator.downstream.present?
-        bridge.options = bridge.options.to_h.deep_merge(
+        updated_options = bridge.options.deep_merge(
           trigger: { project: evaluator.downstream.full_path }
         )
       end
 
       if evaluator.upstream.present?
-        bridge.options = bridge.options.to_h.deep_merge(
+        updated_options = (updated_options || bridge.options).deep_merge(
           bridge_needs: { pipeline: evaluator.upstream.full_path }
         )
+      end
+
+      if updated_options
+        # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
+        bridge.metadata.write_attribute(:config_options, updated_options)
+        next unless bridge.job_definition
+
+        updated_config = bridge.job_definition.config.merge(options: updated_options)
+        bridge.job_definition.write_attribute(:config, updated_config)
       end
     end
 

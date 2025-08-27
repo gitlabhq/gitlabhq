@@ -64,7 +64,7 @@ RSpec.describe Ci::BridgePolicy do
     context 'when downstream project does not exist' do
       before do
         project.add_developer(user)
-        bridge.update!(options: { trigger: { project: 'deleted-project' } })
+        allow(bridge).to receive(:options).and_return({ trigger: { project: 'deleted-project' } })
       end
 
       it 'does not allow' do

@@ -43,7 +43,7 @@ export default {
     <h2 class="gl-mt-0 gl-text-base">
       {{ revisionText }}
     </h2>
-    <div class="gl-flex gl-flex-col gl-gap-3 sm:gl-flex-row">
+    <div class="gl-flex gl-flex-col gl-gap-3 @sm/panel:gl-flex-row">
       <repo-dropdown
         class="gl-min-w-0 gl-max-w-full gl-basis-1/2"
         :params-name="paramsName"

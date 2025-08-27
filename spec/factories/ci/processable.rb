@@ -11,8 +11,37 @@ FactoryBot.define do
     scheduling_type { 'stage' }
     partition_id { pipeline.partition_id }
 
-    options do
-      {}
+    # TODO: Remove metadata association when FF `stop_writing_builds_metadata` is removed.
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
+    metadata do
+      association(
+        :ci_build_metadata,
+        build: instance,
+        config_options: options,
+        config_variables: yaml_variables,
+        strategy: :build
+      )
+    end
+
+    job_definition do
+      association(
+        :ci_job_definition,
+        project: project,
+        partition_id: partition_id,
+        config: { options: options, yaml_variables: yaml_variables },
+        strategy: :build
+      )
+    end
+
+    job_definition_instance do
+      association(
+        :ci_job_definition_instance,
+        project: project,
+        partition_id: partition_id,
+        job: instance,
+        job_definition: job_definition,
+        strategy: :build
+      )
     end
 
     # This factory was updated to help with the efforts of the removal of `ci_builds.stage`:
@@ -21,6 +50,8 @@ FactoryBot.define do
     # https://gitlab.com/gitlab-org/gitlab/-/issues/467212
 
     transient do
+      options { {} }
+      yaml_variables { [] }
       stage { 'test' }
     end
 
@@ -71,6 +102,11 @@ FactoryBot.define do
             status: 'created'
           )
         end
+    end
+
+    trait :without_job_definition do
+      job_definition { nil }
+      job_definition_instance { nil }
     end
 
     trait :waiting_for_resource do

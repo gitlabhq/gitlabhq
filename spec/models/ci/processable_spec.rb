@@ -166,25 +166,14 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           expect(new_processable.needs).not_to match(processable.needs)
         end
 
-        context 'when processable has a job definition' do
-          let_it_be(:job_definition) { create(:ci_job_definition, project: pipeline.project) }
+        it 'creates a new job definition instance for the new processable' do
+          expect(new_processable.job_definition)
+            .to be_present
+            .and eq(processable.job_definition)
 
-          let_it_be(:job_definition_instance) do
-            create(:ci_job_definition_instance,
-              job: processable,
-              job_definition: job_definition,
-              project: pipeline.project)
-          end
-
-          it 'creates a new job definition instance for the new processable' do
-            expect(new_processable.job_definition)
-              .to be_present
-              .and eq(processable.job_definition)
-
-            expect(new_processable.job_definition_instance).to be_present
-            expect(new_processable.job_definition_instance)
-              .not_to eq(processable.job_definition_instance)
-          end
+          expect(new_processable.job_definition_instance).to be_present
+          expect(new_processable.job_definition_instance)
+            .not_to eq(processable.job_definition_instance)
         end
 
         context 'when the processable has protected: nil' do
@@ -318,6 +307,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       context 'when processable is degenerated' do
         before do
           processable.degenerate!
+          processable.reload
         end
 
         it { is_expected.not_to be_retryable }
@@ -390,6 +380,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       context 'when job is degenerated' do
         before do
           job.degenerate!
+          job.reload
         end
 
         it { is_expected.to be_archived }

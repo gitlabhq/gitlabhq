@@ -2822,9 +2822,10 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
 
-      context 'when job metadata record is deleted' do
+      context 'when job is degenerated' do
         before do
-          job.metadata.delete
+          job.degenerate!
+          job.reload
         end
 
         it 'reads from job_artifacts_metadata' do

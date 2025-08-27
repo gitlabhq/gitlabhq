@@ -26,13 +26,16 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     }
   end
 
+  let(:yaml_variables) { nil }
+
   let(:bridge) do
     create(
       :ci_bridge,
       status: :pending,
       user: user,
       options: trigger,
-      pipeline: upstream_pipeline
+      pipeline: upstream_pipeline,
+      yaml_variables: yaml_variables
     )
   end
 
@@ -532,9 +535,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
 
         context 'when downstream project does not allow user-defined variables for child pipelines' do
-          before do
-            bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
+          let(:yaml_variables) { [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }] }
 
+          before do
             upstream_pipeline.project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
@@ -728,8 +731,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when bridge job has YAML variables defined' do
+      let(:yaml_variables) { [{ key: 'BRIDGE', value: 'var', public: true }] }
+
       before do
-        bridge.yaml_variables = [{ key: 'BRIDGE', value: 'var', public: true }]
         downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       end
 
@@ -751,8 +755,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
 
       context 'when using YAML variables interpolation' do
+        let(:yaml_variables) { [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }] }
+
         before do
-          bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
           downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
@@ -869,6 +874,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       context 'when the FF is disabled' do
         before do
           stub_feature_flags(ci_new_downstream_errors_location: false)
+          # We need to read from the old metadata location because job_definition does not get updated
+          stub_feature_flags(read_from_new_ci_destinations: false)
         end
 
         it 'does not create a pipeline and drops the bridge' do
@@ -955,9 +962,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
 
       context 'when passing the required variable' do
-        before do
-          bridge.yaml_variables = [{ key: 'my_var', value: 'var', public: true }]
-        end
+        let(:yaml_variables) { [{ key: 'my_var', value: 'var', public: true }] }
 
         it 'creates the pipeline' do
           expect { subject }.to change(downstream_project.ci_pipelines, :count).by(1)

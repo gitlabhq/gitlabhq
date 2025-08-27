@@ -766,7 +766,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         stub_ci_pipeline_yaml_file(YAML.dump({
           rspec: { script: 'rspec', retry: retry_value }
         }))
-        rspec_job.update!(options: { retry: retry_value })
+        allow(rspec_job).to receive(:options).and_return({ retry: retry_value })
       end
 
       context 'as an integer' do

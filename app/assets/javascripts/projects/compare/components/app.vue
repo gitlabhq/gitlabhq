@@ -129,7 +129,7 @@ export default {
         </gl-sprintf>
       </template>
     </page-heading>
-    <div class="compare-revision-cards gl-items-center lg:gl-flex lg:gl-flex-row">
+    <div class="compare-revision-cards gl-items-center @lg/panel:gl-flex @lg/panel:gl-flex-row">
       <revision-card
         data-testid="sourceRevisionCard"
         :refs-project-path="to.refsProjectPath"
@@ -144,7 +144,7 @@ export default {
       />
       <gl-button
         v-gl-tooltip="$options.i18n.swapRevisions"
-        class="gl-mx-3 gl-hidden gl-self-end md:gl-flex"
+        class="gl-mx-3 gl-hidden gl-self-end @md/panel:gl-flex"
         :aria-label="$options.i18n.swap"
         data-testid="swapRevisionsButton"
         category="tertiary"
@@ -154,7 +154,7 @@ export default {
       </gl-button>
       <gl-button
         v-gl-tooltip="$options.i18n.swapRevisions"
-        class="gl-my-5 gl-flex gl-self-end md:gl-hidden"
+        class="gl-my-5 gl-flex gl-self-end @md/panel:gl-hidden"
         @click="onSwapRevision"
       >
         {{ $options.i18n.swap }}

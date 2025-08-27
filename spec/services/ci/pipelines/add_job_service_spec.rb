@@ -7,7 +7,7 @@ RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integ
 
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, partition_id: ci_testing_partition_id) }
   let(:stage) { create(:ci_stage, pipeline: pipeline, partition_id: pipeline.partition_id) }
-  let(:job) { build(:ci_build, ci_stage: stage) }
+  let(:job) { build(:ci_build, :without_job_definition, ci_stage: stage) }
 
   subject(:service) { described_class.new(pipeline) }
 

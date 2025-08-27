@@ -20469,6 +20469,29 @@ The edge type for [`Requirement`](#requirement).
 | <a id="requirementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="requirementedgenode"></a>`node` | [`Requirement`](#requirement) | The item at the end of the edge. |
 
+#### `RiskScoreByProjectConnection`
+
+The connection type for [`RiskScoreByProject`](#riskscorebyproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectconnectionedges"></a>`edges` | [`[RiskScoreByProjectEdge]`](#riskscorebyprojectedge) | A list of edges. |
+| <a id="riskscorebyprojectconnectionnodes"></a>`nodes` | [`[RiskScoreByProject]`](#riskscorebyproject) | A list of nodes. |
+| <a id="riskscorebyprojectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `RiskScoreByProjectEdge`
+
+The edge type for [`RiskScoreByProject`](#riskscorebyproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="riskscorebyprojectedgenode"></a>`node` | [`RiskScoreByProject`](#riskscorebyproject) | The item at the end of the edge. |
+
 #### `RunnerArchitectureConnection`
 
 The connection type for [`RunnerArchitecture`](#runnerarchitecture).
@@ -41623,6 +41646,41 @@ Resource quotas of a workspace.
 | <a id="resourcequotascpu"></a>`cpu` | [`String!`](#string) | Number of cpu cores. |
 | <a id="resourcequotasmemory"></a>`memory` | [`String!`](#string) | Bytes of memory. |
 
+### `RiskFactors`
+
+Risk factors contributing to the total risk score.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskfactorsvulnerabilitiesaveragescore"></a>`vulnerabilitiesAverageScore` {{< icon name="warning-solid" >}} | [`VulnerabilityAverageScoreFactor`](#vulnerabilityaveragescorefactor) | **Introduced** in GitLab 18.4. **Status**: Experiment. Factor based on average vulnerability score. |
+
+### `RiskScore`
+
+Total risk score information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyproject"></a>`byProject` {{< icon name="warning-solid" >}} | [`RiskScoreByProjectConnection`](#riskscorebyprojectconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk scores grouped by project. |
+| <a id="riskscorefactors"></a>`factors` {{< icon name="warning-solid" >}} | [`RiskFactors`](#riskfactors) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk factors contributing to the score. |
+| <a id="riskscorerating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk rating. |
+| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
+
+### `RiskScoreByProject`
+
+Risk score information for a specific project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project!`](#project) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score belongs to the project. |
+| <a id="riskscorebyprojectrating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk rating for the project. |
+| <a id="riskscorebyprojectscore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score for the project. |
+
 ### `RootStorageStatistics`
 
 #### Fields
@@ -41913,6 +41971,12 @@ A security category.
 ### `SecurityMetrics`
 
 Represents security metrics.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitymetricsriskscore"></a>`riskScore` {{< icon name="warning-solid" >}} | [`RiskScore`](#riskscore) | **Introduced** in GitLab 18.4. **Status**: Experiment. Total risk score information. This feature is currently under development and not yet available for general use. |
 
 #### Fields with arguments
 
@@ -44014,6 +44078,16 @@ Represents a vulnerability archive.
 | <a id="vulnerabilityarchivearchivedrecordscount"></a>`archivedRecordsCount` | [`Int!`](#int) | Number of records the archive contains. |
 | <a id="vulnerabilityarchivemonth"></a>`month` | [`Int!`](#int) | Month of the archive, represented as a number from 1 (January) to 12 (December). |
 | <a id="vulnerabilityarchiveyear"></a>`year` | [`Int!`](#int) | Year of the archive. |
+
+### `VulnerabilityAverageScoreFactor`
+
+Risk factor based on average vulnerability score.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityaveragescorefactorfactor"></a>`factor` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Factor value contributing to the risk score. |
 
 ### `VulnerabilityContainerImage`
 
@@ -48927,6 +49001,18 @@ Reviewer ID wildcard values.
 | ----- | ----------- |
 | <a id="reviewerwildcardidany"></a>`ANY` | Any reviewer is assigned. |
 | <a id="reviewerwildcardidnone"></a>`NONE` | No reviewer is assigned. |
+
+### `RiskRating`
+
+Risk rating levels based on score ranges.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="riskratingcritical"></a>`CRITICAL` | Critical risk (76–100). |
+| <a id="riskratinghigh"></a>`HIGH` | High risk (51–75). |
+| <a id="riskratinglow"></a>`LOW` | Low risk (0–25). |
+| <a id="riskratingmedium"></a>`MEDIUM` | Medium risk (26–50). |
+| <a id="riskratingunknown"></a>`UNKNOWN` | Unknown risk level. |
 
 ### `SastUiComponentSize`
 

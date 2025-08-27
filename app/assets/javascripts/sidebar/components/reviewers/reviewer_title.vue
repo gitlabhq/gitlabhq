@@ -38,7 +38,7 @@ export default {
     class="hide-collapsed gl-flex gl-items-center gl-gap-2 gl-font-bold gl-leading-20 gl-text-default"
   >
     {{ __('Reviewer') }}
-    <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />
+    <gl-loading-icon v-if="loading" size="sm" inline class="!gl-align-bottom" />
     <template v-if="editable">
       <reviewer-dropdown
         class="gl-ml-auto"

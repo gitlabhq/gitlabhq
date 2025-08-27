@@ -80,6 +80,7 @@ module Ci
         self.update!(options: nil, yaml_variables: nil)
         self.needs.all.delete_all
         self.metadata&.destroy
+        self.job_definition_instance&.destroy
         yield if block_given?
       end
     end

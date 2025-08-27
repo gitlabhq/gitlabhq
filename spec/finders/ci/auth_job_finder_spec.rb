@@ -30,7 +30,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
       let(:scoped_user) { create(:user) }
 
       before do
-        job.update!(options: job.options.merge(scoped_user_id: scoped_user.id))
+        allow(job).to receive(:options).and_return(job.options.merge(scoped_user_id: scoped_user.id))
       end
 
       context 'when job user does not support composite identity' do

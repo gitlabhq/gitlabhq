@@ -26,7 +26,7 @@ module PartitioningTesting
 end
 
 Ci::Partitionable::Testing.partitionable_models.each do |klass|
-  next if klass == 'Ci::Pipeline'
+  next if klass.in?(['Ci::Pipeline', 'Ci::JobDefinition'])
 
   model = klass.safe_constantize
   next unless model

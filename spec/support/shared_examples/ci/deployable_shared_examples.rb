@@ -289,9 +289,13 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier_from_options' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     subject { job.environment_tier_from_options }
 
-    let(:job) { described_class.new(options: options) }
+    let(:job) { create(factory_type, options: options) }
     let(:options) { { environment: { deployment_tier: 'production' } } }
 
     it { is_expected.to eq('production') }
@@ -399,11 +403,15 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     subject { job.environment_tier }
 
     let(:options) { { environment: { deployment_tier: 'production' } } }
     let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
-    let(:job) { described_class.new(options: options, environment: 'production', project: project) }
+    let(:job) { create(factory_type, options: options, environment: 'production', project: project) }
 
     it { is_expected.to eq('production') }
 
@@ -430,9 +438,11 @@ RSpec.shared_examples 'a deployable job' do
     it { is_expected.to eq('http://prd.example.com/$CI_JOB_NAME') }
 
     context 'when options does not include url' do
+      let(:options) { { environment: { url: nil } } }
+
       before do
         stub_feature_flags(ci_validate_config_options: false)
-        job.update!(options: { environment: { url: nil } })
+        allow(job).to receive(:options).and_return(options)
         job.persisted_environment.update!(external_url: 'http://prd.example.com/$CI_JOB_NAME')
       end
 
@@ -617,7 +627,7 @@ RSpec.shared_examples 'a deployable job' do
     describe '#environment_auto_stop_in' do
       subject { job.environment_auto_stop_in }
 
-      let(:job) { described_class.new(options: options) }
+      let(:job) { create(factory_type, options: options) }
       let(:options) { { environment: { auto_stop_in: '1 week' } } }
 
       it { is_expected.to eq('1 week') }
@@ -663,7 +673,7 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         before do
-          job.update_attribute(:yaml_variables, yaml_variables)
+          allow(job).to receive(:yaml_variables).and_return(yaml_variables)
         end
 
         it { is_expected.to eq('2 days') }
@@ -671,6 +681,10 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     shared_examples 'environment actions' do
+      before do
+        allow(job).to receive(:options).and_return(options) if try(:options)
+      end
+
       context 'when environment is defined' do
         before do
           job.update!(environment: 'review')
@@ -687,9 +701,7 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         context 'action is defined' do
-          before do
-            job.update!(options: { environment: { action: action } })
-          end
+          let(:options) { { environment: { action: action } } }
 
           it { is_expected.to be_truthy }
         end
@@ -737,6 +749,10 @@ RSpec.shared_examples 'a deployable job' do
     end
 
     describe '#stops_environment?' do
+      before do
+        allow(job).to receive(:options).and_return(options) if try(:options)
+      end
+
       subject { job.stops_environment? }
 
       context 'when environment is defined' do
@@ -749,9 +765,7 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         context 'and stop action is defined' do
-          before do
-            job.update!(options: { environment: { action: 'stop' } })
-          end
+          let(:options) { { environment: { action: 'stop' } } }
 
           it { is_expected.to be_truthy }
         end

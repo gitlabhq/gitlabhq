@@ -511,7 +511,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       before do
-        bridge.yaml_variables.concat(yaml_variables)
+        allow(bridge).to receive(:yaml_variables).and_return(bridge.yaml_variables + yaml_variables)
       end
 
       it 'correctly expands variables with interpolation' do
@@ -538,7 +538,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       before do
-        bridge.yaml_variables = yaml_variables
+        allow(bridge).to receive(:yaml_variables).and_return(yaml_variables)
         create(:ci_variable, :file, project: bridge.pipeline.project, key: 'TEST_FILE_VAR', value: 'test-file-value')
       end
 
@@ -554,7 +554,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
     context 'when recursive interpolation has been used' do
       before do
-        bridge.yaml_variables = [{ key: 'EXPANDED', value: '$EXPANDED', public: true }]
+        allow(bridge).to receive(:yaml_variables).and_return([{ key: 'EXPANDED', value: '$EXPANDED', public: true }])
       end
 
       it 'does not expand variable recursively' do
@@ -605,7 +605,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
 
         before do
-          bridge.yaml_variables = [{ key: 'SHARED_KEY', value: 'old_value' }]
+          allow(bridge).to receive(:yaml_variables).and_return([{ key: 'SHARED_KEY', value: 'old_value' }])
           create(:ci_pipeline_variable, pipeline: pipeline, key: 'SHARED_KEY', value: 'new value')
         end
 
@@ -620,7 +620,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
 
         before do
-          bridge.yaml_variables = [{ key: 'FILE_VAR', value: 'old_value' }]
+          allow(bridge).to receive(:yaml_variables).and_return([{ key: 'FILE_VAR', value: 'old_value' }])
           create(:ci_pipeline_variable, :file, pipeline: pipeline, key: 'FILE_VAR', value: 'new value')
         end
 
@@ -637,7 +637,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
 
         before do
-          bridge.yaml_variables = [{ key: 'YAML_VAR', value: '$PROJECT_FILE_VAR' }]
+          allow(bridge).to receive(:yaml_variables).and_return([{ key: 'YAML_VAR', value: '$PROJECT_FILE_VAR' }])
 
           create(:ci_variable, :file, project: pipeline.project, key: 'PROJECT_FILE_VAR', value: 'project file')
           create(:ci_pipeline_variable, pipeline: pipeline, key: 'FILE_VAR', value: '$PROJECT_FILE_VAR')
@@ -686,7 +686,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       before do
-        bridge.yaml_variables = []
+        allow(bridge).to receive(:yaml_variables).and_return([])
         pipeline_schedule.variables.create!(key: 'schedule_var_key', value: 'schedule var value', variable_type: :file)
       end
 
@@ -706,7 +706,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       before do
-        bridge.yaml_variables = []
+        allow(bridge).to receive(:yaml_variables).and_return([])
         create(:ci_variable, :file, project: pipeline.project, key: 'PROJECT_FILE_VAR', value: 'project file')
         pipeline_schedule.variables.create!(key: 'schedule_var_key', value: '$PROJECT_FILE_VAR')
       end
@@ -758,7 +758,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         pipeline_schedule.variables.create!(key: 'VAR4', value: 'value4 $VAR1')
         pipeline_schedule.variables.create!(key: 'VAR5', value: 'value5 $VAR1', raw: true)
 
-        bridge.yaml_variables.concat(yaml_variables)
+        allow(bridge).to receive(:yaml_variables).and_return(bridge.yaml_variables + yaml_variables)
       end
 
       it 'expands variables according to their raw attributes' do
@@ -840,7 +840,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       before do
-        bridge.yaml_variables = yaml_variables
+        allow(bridge).to receive(:yaml_variables).and_return(yaml_variables)
         allow(bridge.project).to receive(:protected_for?).and_return(true)
       end
 
@@ -1068,18 +1068,18 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe 'metadata support' do
-    it 'reads YAML variables from metadata' do
+    it 'reads YAML variables correctly' do
       expect(bridge.yaml_variables).not_to be_empty
       expect(bridge.metadata).to be_a Ci::BuildMetadata
       expect(bridge.read_attribute(:yaml_variables)).to be_nil
-      expect(bridge.metadata.config_variables).to be bridge.yaml_variables
+      expect(bridge.metadata.config_variables).to eq bridge.yaml_variables
     end
 
-    it 'reads options from metadata' do
+    it 'reads options correctly' do
       expect(bridge.options).not_to be_empty
       expect(bridge.metadata).to be_a Ci::BuildMetadata
       expect(bridge.read_attribute(:options)).to be_nil
-      expect(bridge.metadata.config_options).to be bridge.options
+      expect(bridge.metadata.config_options).to eq bridge.options
     end
   end
 

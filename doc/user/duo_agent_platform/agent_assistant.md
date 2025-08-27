@@ -32,7 +32,7 @@ GitLab Duo agents work in parallel to help you create code, research results,
 and perform tasks simultaneously.
 
 You can create a command line interface (CLI) agent and integrate it with a third-party
-AI model provider to customise the CLI agent to your organization's needs. You use your own
+AI model provider to customize the CLI agent to your organization's needs. You use your own
 API key to integrate with the model provider.
 
 Then, in a project issue, epic, or merge request, you can mention that CLI agent
@@ -131,8 +131,7 @@ Add the following CI/CD variables to your project's settings:
 | All                 | `GITLAB_HOST`                  | GitLab instance hostname (for example, `gitlab.com`) |
 | Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key |
 | OpenAI Codex        | `OPENAI_API_KEY`               | OpenAI API key |
-| Amazon Q            | `AWS_ACCESS_KEY_ID`            | AWS access key associated with an IAM account |
-| Amazon Q            | `AWS_SECRET_ACCESS_KEY`        | Secret key associated with the AWS access key |
+| Amazon Q            | `AWS_SECRET_NAME`              | AWS Secret Manager secret name |
 | Amazon Q            | `AWS_REGION_NAME`              | AWS region name |
 | Amazon Q            | `AMAZON_Q_SIGV4`               | Amazon Q Sig V4 credentials |
 | Google Gemini CLI   | `GOOGLE_CREDENTIALS`           | JSON credentials file contents |
@@ -353,6 +352,23 @@ variables:
 ```
 
 #### Amazon Q
+
+Instead of hard-coding your AWS credentials, store them in the AWS Secrets Manager. Then you can reference them in your YAML file.
+
+1. [Create an IAM user](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html) that does not have console access.
+1. Generate an access key pair for programmatic access.
+1. In the same AWS account where GitLab Runner is hosted, create a secret in AWS Secrets Manager. Use the following JSON format:
+
+   ```json
+   {
+     "q-cli-access-token": {"AWS_ACCESS_KEY_ID": "AKIA...", "AWS_SECRET_ACCESS_KEY": "abc123..."}
+   }
+   ```
+
+   Important: Replace the placeholder values with your actual access key ID and secret access key.
+
+1. Grant the GitLab Runner IAM role permission to access AWS Secrets Manager.
+1. Create a flow configuration file like the following.
 
 ```yaml
 image: node:22-slim
