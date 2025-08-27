@@ -6,6 +6,7 @@ import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
+import BlameHeader from '~/blob/components/blame_header.vue';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -37,6 +38,7 @@ const trackingMixin = InternalEvents.mixin();
 export default {
   components: {
     BlobHeader,
+    BlameHeader,
     BlobContent,
     GlLoadingIcon,
     GlButton,
@@ -263,6 +265,9 @@ export default {
         this.blobInfo.simpleViewer?.fileType === EMPTY_FILE
       );
     },
+    showBlameHeader() {
+      return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
+    },
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
@@ -418,6 +423,7 @@ export default {
         @error="displayError"
         @blame="handleToggleBlame"
       />
+      <blame-header v-if="showBlameHeader" />
       <blob-content
         v-if="!blobViewer"
         class="js-syntax-highlight"

@@ -827,9 +827,9 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
     end
 
-    describe 'when metadata debug_trace_enabled is set to true' do
+    describe 'when debug_trace_enabled is true' do
       before do
-        job.metadata.update!(debug_trace_enabled: true)
+        job.enable_debug_trace!
       end
 
       it_behaves_like "additional access criteria"

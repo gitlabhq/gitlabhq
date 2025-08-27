@@ -303,6 +303,101 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
+  describe '#environment_options_for_permanent_storage' do
+    subject { job.environment_options_for_permanent_storage }
+
+    let(:job) { described_class.new(options: options) }
+    let(:options) do
+      {
+        script: 'script',
+        environment: {
+          name: 'production',
+          deployment_tier: 'production',
+          action: 'prepare',
+          kubernetes: {
+            agent: 'agent',
+            namespace: 'namespace'
+          }
+        }
+      }
+    end
+
+    it { is_expected.to eq({ deployment_tier: 'production', action: 'prepare', kubernetes: { namespace: 'namespace' } }) }
+
+    context 'when there are kubernetes options other than namespace' do
+      let(:options) { { environment: { deployment_tier: 'production', kubernetes: { agent: 'agent' } } } }
+
+      it { is_expected.to eq({ deployment_tier: 'production' }) }
+    end
+
+    context 'when options is empty' do
+      let(:options) { nil }
+
+      it { is_expected.to eq({}) }
+    end
+
+    context 'when options is present but has no environment keyword' do
+      let(:options) { { image: 'image', script: 'script' } }
+
+      it { is_expected.to eq({}) }
+    end
+  end
+
+  describe '#link_to_environment' do
+    let_it_be(:environment) { create(:environment, name: 'production', project: project) }
+
+    let(:job) { create(factory_type, environment: environment.name, project: project) }
+
+    subject { job.link_to_environment(environment) }
+
+    it 'creates a new job_environment record' do
+      subject
+
+      expect(job.job_environment).to be_present
+      expect(job.job_environment).to have_attributes(
+        project: project,
+        environment: environment,
+        pipeline: job.pipeline,
+        expanded_environment_name: environment.name,
+        options: job.environment_options_for_permanent_storage.deep_stringify_keys
+      )
+    end
+
+    context 'the job_environment record fails to save' do
+      before do
+        environment.name = 'a' * 300 # Will cause a validation error due to length
+      end
+
+      it 'tracks an exception without raising' do
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          instance_of(ActiveRecord::RecordInvalid),
+          job_id: job.id
+        )
+
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'the job has not yet been saved' do
+      let(:job) { FactoryBot.build(factory_type, environment: environment.name, project: project) }
+
+      it 'does not save the job_environment record' do
+        subject
+
+        expect(job).not_to be_persisted
+        expect(job.job_environment).to be_present
+        expect(job.job_environment).not_to be_persisted
+        expect(job.job_environment).to have_attributes(
+          project: project,
+          environment: environment,
+          pipeline: job.pipeline,
+          expanded_environment_name: environment.name,
+          options: job.environment_options_for_permanent_storage.deep_stringify_keys
+        )
+      end
+    end
+  end
+
   describe '#environment_tier' do
     subject { job.environment_tier }
 

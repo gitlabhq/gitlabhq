@@ -458,6 +458,20 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     it 'does not return different packages' do
       expect(package.versions).not_to include(package4)
     end
+
+    context 'when packages_refactor_versions is disabled' do
+      before do
+        stub_feature_flags(packages_refactor_versions: false)
+      end
+
+      it 'returns other package versions of the same package name belonging to the project' do
+        expect(package.versions).to contain_exactly(package2, package3)
+      end
+
+      it 'does not return different packages' do
+        expect(package.versions).not_to include(package4)
+      end
+    end
   end
 
   describe '#pipeline' do

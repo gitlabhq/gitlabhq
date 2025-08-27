@@ -181,7 +181,7 @@ The OpenID Connect provider provides you with a client's details and secret for 
      is usually included in requests to the token endpoint.
      However, if your OpenID Connect provider does not accept the `scope` parameter
      in such requests, set this to `false`.
-   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636). Available in [GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557).
+   - `pkce` (optional): Enable [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636).
    - `client_options` are the OpenID Connect client-specific options. Specifically:
      - `identifier` is the client identifier as configured in the OpenID Connect service provider.
      - `secret` is the client secret as configured in the OpenID Connect service provider. For example,
@@ -348,11 +348,11 @@ For more information, see the [Microsoft Entra documentation on validating token
 
 You can migrate to the Generic OpenID Connect configuration from both `azure_activedirectory_v2` and `azure_oauth2`.
 
-First, set the `uid_field`. Both the `uid_field` and the `sub` claim that you can select as a `uid_field` vary depending on the provider. Signing in without setting the `uid_field` results in additional identities being created within GitLab that have to be manually modified:
+First, set the `uid_field`. Both the `uid_field` and the `sub` claim that you can select as a `uid_field` vary depending on the provider. Signing in without setting the `uid_field` results in additional identities being created in GitLab that have to be manually modified:
 
 | Provider                                                                                                        | `uid_field` | Supporting information  |
 |-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
-| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid` and `tid` are offered within the `info` object. |
+| [`omniauth-azure-oauth2`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/omniauth-azure-oauth2) | `sub` | Additional attributes `oid` and `tid` are offered in the `info` object. |
 | [`omniauth-azure-activedirectory-v2`](https://github.com/RIPAGlobal/omniauth-azure-activedirectory-v2/)         | `oid` | You must configure `oid` as `uid_field` when migrating. |
 | [`omniauth_openid_connect`](https://github.com/omniauth/omniauth_openid_connect/)                               | `sub` | Specify `uid_field` to use another field. |
 
@@ -500,7 +500,7 @@ As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgra
 - **For users with no email address**, administrators must take one of the following actions:
 
   - Set up another authentication method or enable sign-in using GitLab username and password. The user can then sign in and link their Azure identity manually using their profile.
-  - Implement OpenID Connect as a new provider alongside the existing `azure_oauth2` so the user can sign in through OAuth2, and link their OpenID Connect identity (similar to the previous method). This method would also work for users with email addresses, as long as `auto_link_user` is enabled.
+  - Implement OpenID Connect as a new provider alongside the existing `azure_oauth2` so the user can sign in through OAuth 2.0, and link their OpenID Connect identity (similar to the previous method). This method would also work for users with email addresses, as long as `auto_link_user` is enabled.
   - Update `extern_uid` manually. To do this, use the [API or Rails console](../../integration/omniauth.md#change-apps-or-configuration) to update the `extern_uid` for each user.
     This method may be required if the instance has already been upgraded to 17.0 or later, and users have attempted to sign in.
 
@@ -663,9 +663,9 @@ GitLab works with OpenID providers that use HTTPS. Although you can set up a
 Keycloak server that uses HTTP, GitLab can only communicate with a Keycloak server
 that uses HTTPS.
 
-Configure Keycloak to use public key encryption algorithms (for example,
-RSA256 or RSA512) instead of symmetric key encryption algorithms (for example,
-HS256 or HS358) to sign tokens. Public key encryption algorithms are:
+Configure Keycloak to use public key algorithms to sign tokens.
+For example, use RSA256 or RSA512 instead of HS256 or HS358.
+Public key encryption algorithms are:
 
 - Easier to configure.
 - More secure because leaking the private key has severe security consequences.
@@ -998,12 +998,6 @@ For more information, see the [GitLab API user method documentation](https://pyt
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
-
-{{< /history >}}
 
 You can configure OIDC group membership to:
 
@@ -1439,13 +1433,13 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-In some cases, default authentication methods don't sufficiently protect critical resources or
-high-risk actions. Step-up authentication adds an extra authentication layer for privileged actions
-or sensitive operations, such as accessing the Admin area.
+In some cases, default authentication methods don't protect critical resources or high-risk actions.
+Step-up authentication adds an extra layer for privileged actions or sensitive operations.
+For example, accessing the Admin area.
 
-With step-up authentication, users must provide additional credentials before they can access
-certain features or perform specific actions. These additional methods can include methods such
-as two-factor authentication (2FA), biometric authentication, or one-time passwords (OTP).
+With step-up authentication, users must complete additional authentication with an enrolled
+[two-factor authentication method](../../user/profile/account/two_factor_authentication.md)
+before they can access certain features.
 
 The OIDC standard includes authentication context class references (`ACR`). The `ACR` concept
 helps configure and implement step-up authentication for different scenarios, such as Admin Mode.
@@ -1680,9 +1674,9 @@ step-up authentication actually failed, making the guidance more relevant and ac
 
 Best practices for documentation links:
 
-- Use HTTPS URLs for security
-- Link to internal documentation that explains your organization's specific authentication requirements
-- Include information about how to enable MFA or other required authentication methods
+- Use HTTPS URLs for security.
+- Link to internal documentation that explains the specific authentication requirements for your organization.
+- Include information about how to enable `MFA` or other required authentication methods.
 
 {{< /alert >}}
 

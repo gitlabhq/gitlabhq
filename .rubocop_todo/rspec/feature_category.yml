@@ -1109,7 +1109,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/projects/mattermosts_controller_spec.rb'
     - 'spec/controllers/projects/pipelines/stages_controller_spec.rb'
     - 'spec/controllers/projects/pipelines_settings_controller_spec.rb'
-    - 'spec/controllers/projects/protected_branches_controller_spec.rb'
     - 'spec/controllers/projects/protected_tags_controller_spec.rb'
     - 'spec/controllers/projects/registry/tags_controller_spec.rb'
     - 'spec/controllers/projects/releases/evidences_controller_spec.rb'

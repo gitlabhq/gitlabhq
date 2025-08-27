@@ -149,7 +149,6 @@ module Ci
     delegate :google_play_integration, to: :project
     delegate :diffblue_cover_integration, to: :project
     delegate :ensure_persistent_ref, to: :pipeline
-    delegate :enable_debug_trace!, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize

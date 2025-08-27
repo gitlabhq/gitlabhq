@@ -1,7 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlButton } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Table from '~/repository/components/table/index.vue';
 import TableRow from '~/repository/components/table/row.vue';
 import refQuery from '~/repository/queries/ref.query.graphql';
@@ -91,7 +91,7 @@ function factory({
   commits = [],
   ref = 'main',
 }) {
-  wrapper = shallowMount(Table, {
+  wrapper = shallowMountExtended(Table, {
     propsData: {
       path,
       isLoading,
@@ -109,6 +109,8 @@ function factory({
 }
 
 const findTableRows = () => wrapper.findAllComponents(TableRow);
+const findShowMoreButton = () => wrapper.findComponent(GlButton);
+const findLoadingIndicators = () => wrapper.findAllByTestId('loader');
 
 describe('Repository table component', () => {
   it.each`
@@ -125,10 +127,10 @@ describe('Repository table component', () => {
     );
   });
 
-  it('shows loading icon', () => {
+  it('shows 3 loading indicators while loading', () => {
     factory({ path: '/', isLoading: true });
 
-    expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
+    expect(findLoadingIndicators()).toHaveLength(3);
   });
 
   it('renders table rows', () => {
@@ -182,14 +184,20 @@ describe('Repository table component', () => {
       expect(showMoreButton().exists()).toBe(expectButtonToExist);
     });
 
-    it('when is clicked, emits showMore event', async () => {
+    it('when is clicked, emits showMore event after a delay for better INP', async () => {
       factory({ path: '/' });
 
       showMoreButton().vm.$emit('click');
-
       await nextTick();
 
-      expect(wrapper.emitted('showMore')).toHaveLength(1);
+      expect(findShowMoreButton().props('loading')).toBe(true); // Show loader immediately
+      expect(wrapper.emitted('showMore')).toBeUndefined(); // Event should not be emitted immediately
+
+      jest.runAllTimers(); // Wait for the setTimeout to execute
+      await nextTick();
+
+      expect(wrapper.emitted('showMore')).toHaveLength(1); // Now the event should be emitted
+      expect(findShowMoreButton().props('loading')).toBe(false); // Hide loader
     });
   });
 });

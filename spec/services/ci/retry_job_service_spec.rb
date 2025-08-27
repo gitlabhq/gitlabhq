@@ -26,12 +26,12 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     let_it_be(:downstream_project) { create(:project, :repository) }
 
     let_it_be_with_refind(:job) do
-      create(:ci_bridge, :success,
+      create(:ci_bridge, :success, :teardown_environment,
         pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', ci_stage: stage
       )
     end
 
-    let_it_be(:job_to_clone) { job }
+    let_it_be_with_refind(:job_to_clone) { job }
 
     before do
       job.update!(retried: false)
@@ -45,7 +45,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
-    let_it_be(:job_to_clone) do
+    let_it_be_with_refind(:job_to_clone) do
       create(
         :ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
         :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
@@ -95,6 +95,31 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
           expect(Ci::BuildNeed).to receive(:bulk_insert!).and_call_original
 
           new_job
+        end
+      end
+
+      context 'when the job is related to an environment' do
+        let!(:environment) { create(:environment, project: project, name: job.environment) }
+
+        it 'links the cloned job to the environment' do
+          expect(new_job.reload_job_environment).to be_present
+          expect(new_job.job_environment).to have_attributes(
+            project: project,
+            environment: environment,
+            pipeline: pipeline,
+            expanded_environment_name: environment.name,
+            options: job.environment_options_for_permanent_storage.deep_stringify_keys
+          )
+        end
+
+        context 'when the persisted_job_environment_relationship feature flag is disabled' do
+          before do
+            stub_feature_flags(persisted_job_environment_relationship: false)
+          end
+
+          it 'does not link the cloned job to the environment' do
+            expect(new_job.reload_job_environment).to be_nil
+          end
         end
       end
 

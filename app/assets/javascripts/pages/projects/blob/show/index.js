@@ -88,6 +88,7 @@ if (viewBlobEl) {
     escapedRef,
     canDownloadCode,
     fullName,
+    hasRevsFile,
     ...dataset
   } = viewBlobEl.dataset;
 
@@ -123,6 +124,7 @@ if (viewBlobEl) {
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       canDownloadCode: parseBoolean(canDownloadCode),
+      hasRevsFile: parseBoolean(hasRevsFile),
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {

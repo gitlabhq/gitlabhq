@@ -316,12 +316,12 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(response).to render_template('_readme')
       end
 
-      it 'does not make Gitaly requests', :request_store, :clean_gitlab_redis_cache do
+      it 'makes a single Gitaly request to fetch .git-blame-ignore-revs', :request_store, :clean_gitlab_redis_cache do
         # Warm up to populate repository cache
         get_show
         RequestStore.clear!
 
-        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
+        expect { get_show }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
       end
 
       it "renders files even with invalid license" do

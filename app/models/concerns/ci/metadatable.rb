@@ -117,10 +117,15 @@ module Ci
     end
 
     def debug_trace_enabled?
-      return debug_trace_enabled unless debug_trace_enabled.nil?
+      return debug_trace_enabled if read_from_new_destination? && !debug_trace_enabled.nil?
       return true if degenerated?
 
-      metadata&.debug_trace_enabled?
+      !!metadata&.debug_trace_enabled?
+    end
+
+    def enable_debug_trace!
+      update!(debug_trace_enabled: true)
+      ensure_metadata.enable_debug_trace! if can_write_metadata?
     end
 
     def timeout_value
@@ -162,6 +167,11 @@ module Ci
       Feature.enabled?(:read_from_new_ci_destinations, project)
     end
     strong_memoize_attr :read_from_new_destination?
+
+    def can_write_metadata?
+      Feature.disabled?(:stop_writing_builds_metadata, project)
+    end
+    strong_memoize_attr :can_write_metadata?
   end
 end
 

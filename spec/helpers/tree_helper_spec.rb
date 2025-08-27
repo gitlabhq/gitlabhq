@@ -175,10 +175,43 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_file_list_data' do
-    it 'returns a list of attributes related to the project' do
+    let(:ref) { sha }
+
+    before do
       helper.instance_variable_set(:@ref_type, 'heads')
       allow(helper).to receive(:selected_branch).and_return(sha)
+    end
 
+    context 'when there is no ignore revs file' do
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: nil) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as false' do
+        expect(helper.vue_file_list_data(project, ref)).to include(
+          has_revs_file: 'false'
+        )
+      end
+    end
+
+    context 'when there is an ignore revs file' do
+      let(:ignore_revs_blob) { instance_double(Gitlab::Git::Blob) }
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: ignore_revs_blob) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as true' do
+        expect(helper.vue_file_list_data(project, ref)).to include(
+          has_revs_file: 'true'
+        )
+      end
+    end
+
+    it 'returns a list of attributes related to the project' do
       expect(helper.vue_file_list_data(project, sha)).to include(
         project_path: project.full_path,
         project_short_path: project.path,

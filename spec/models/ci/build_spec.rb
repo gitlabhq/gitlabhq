@@ -5167,22 +5167,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#debug_mode?' do
     subject { build.debug_mode? }
 
-    shared_examples 'when p_ci_builds.debug_trace_enabled is not nil' do
-      context 'when p_ci_builds.debug_trace_enabled is true' do
-        before do
-          build.update!(debug_trace_enabled: true)
-        end
+    it { is_expected.to eq(false) }
 
-        it { is_expected.to eq(true) }
+    context 'when debug_trace_enabled? is true' do
+      before do
+        allow(build).to receive(:debug_trace_enabled?).and_return(true)
       end
 
-      context 'when p_ci_builds.debug_trace_enabled is false' do
-        before do
-          build.update!(debug_trace_enabled: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
+      it { is_expected.to eq(true) }
     end
 
     context 'when CI_DEBUG_TRACE=true is in variables' do
@@ -5225,10 +5217,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
-    context 'when CI_DEBUG_TRACE is not in variables' do
-      it { is_expected.to eq false }
-    end
-
     context 'when CI_DEBUG_SERVICES=true is in variables' do
       ['true', 1, 'y'].each do |value|
         it 'reflects instance variables' do
@@ -5267,53 +5255,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           is_expected.to eq true
         end
       end
-    end
-
-    context 'when CI_DEBUG_SERVICES is not in variables' do
-      it { is_expected.to eq false }
-    end
-
-    context 'when metadata has debug_trace_enabled true' do
-      before do
-        build.metadata.update!(debug_trace_enabled: true)
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
-    end
-
-    context 'when metadata has debug_trace_enabled false' do
-      before do
-        build.metadata.update!(debug_trace_enabled: false)
-      end
-
-      it { is_expected.to eq false }
-
-      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
-    end
-
-    context 'when metadata does not exist but job is not degenerated' do
-      before do
-        # Very old jobs populated this column instead of metadata
-        build.update_column(:options, { my_config: 'value' })
-        build.metadata.delete
-        build.reload
-      end
-
-      it { is_expected.to eq false }
-
-      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
-    end
-
-    context 'when job is degenerated' do
-      before do
-        build.degenerate!
-      end
-
-      it { is_expected.to eq true }
-
-      it_behaves_like 'when p_ci_builds.debug_trace_enabled is not nil'
     end
   end
 

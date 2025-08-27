@@ -56,6 +56,7 @@ export default {
     return {
       projectPath: '',
       rowNumbers: {},
+      isProcessingShowMore: false,
     };
   },
   computed: {
@@ -83,7 +84,14 @@ export default {
   },
   methods: {
     showMore() {
-      this.$emit('showMore');
+      this.isProcessingShowMore = true;
+      // Defer heavy rendering to improve INP (Interaction to Next Paint)
+      // This allows the browser to paint the button interaction immediately
+      // before processing the new entries. See: https://web.dev/articles/optimize-inp
+      setTimeout(() => {
+        this.$emit('showMore');
+        this.isProcessingShowMore = false;
+      }, 0);
     },
     generateRowNumber(entry, index) {
       const { flatPath, id } = entry;
@@ -156,7 +164,7 @@ export default {
             />
           </template>
           <template v-if="isLoading">
-            <tr v-for="i in 5" :key="i" aria-hidden="true">
+            <tr v-for="i in 3" :key="i" aria-hidden="true" data-testid="loader">
               <td><gl-skeleton-loader :lines="1" /></td>
               <td class="gl-hidden sm:gl-block">
                 <gl-skeleton-loader :lines="1" />
@@ -174,7 +182,7 @@ export default {
                 <gl-button
                   variant="link"
                   class="gl-flex gl-w-full !gl-py-4"
-                  :loading="isLoading"
+                  :loading="isProcessingShowMore || isLoading"
                   @click="showMore"
                 >
                   {{ s__('ProjectFileTree|Show more') }}

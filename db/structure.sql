@@ -18768,7 +18768,6 @@ CREATE TABLE merge_requests (
     state_id smallint DEFAULT 1 NOT NULL,
     rebase_jid character varying,
     squash_commit_sha bytea,
-    sprint_id bigint,
     merge_ref_sha bytea,
     draft boolean DEFAULT false NOT NULL,
     prepared_at timestamp with time zone,
@@ -39064,8 +39063,6 @@ CREATE INDEX index_merge_requests_on_source_branch ON merge_requests USING btree
 
 CREATE INDEX index_merge_requests_on_source_project_id_and_source_branch ON merge_requests USING btree (source_project_id, source_branch);
 
-CREATE INDEX index_merge_requests_on_sprint_id ON merge_requests USING btree (sprint_id);
-
 CREATE INDEX index_merge_requests_on_target_branch ON merge_requests USING btree (target_branch);
 
 CREATE INDEX index_merge_requests_on_target_project_id_and_created_at_and_id ON merge_requests USING btree (target_project_id, created_at, id);
@@ -46832,9 +46829,6 @@ ALTER TABLE ONLY labels
 
 ALTER TABLE ONLY bulk_import_export_uploads
     ADD CONSTRAINT fk_7e03e410b4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_requests
-    ADD CONSTRAINT fk_7e85395a64 FOREIGN KEY (sprint_id) REFERENCES sprints(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES users(id) ON DELETE SET NULL;

@@ -120,7 +120,7 @@ sudo gitlab-rails c
 
 # Execute the following in the rails console
 scheduled_queue = Sidekiq::ScheduledSet.new
-pending_job_classes = scheduled_queue.select { |job| job["class"] == "BackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
+pending_job_classes = scheduled_queue.select { |job| job["class"] == "Database::BatchedBackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 
@@ -134,7 +134,7 @@ sudo -u git -H bundle exec rails RAILS_ENV=production
 
 # Execute the following in the rails console
 scheduled_queue = Sidekiq::ScheduledSet.new
-pending_job_classes = scheduled_queue.select { |job| job["class"] == "BackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
+pending_job_classes = scheduled_queue.select { |job| job["class"] == "Database::BatchedBackgroundMigrationWorker" }.map { |job| job["args"].first }.uniq
 pending_job_classes.each { |job_class| Gitlab::BackgroundMigration.steal(job_class) }
 ```
 

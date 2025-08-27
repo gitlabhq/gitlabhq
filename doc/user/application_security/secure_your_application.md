@@ -18,7 +18,7 @@ GitLab can check your applications for security vulnerabilities.
 - [Triage](triage/_index.md)
 - [Analyze](analyze/_index.md)
 - [Remediate](remediate/_index.md)
-- [GitLab Advisory Database](gitlab_advisory_database/_index.md)
+- [GitLab advisory database](gitlab_advisory_database/_index.md)
 - [CVE ID requests](cve_id_request.md)
 - [Policies](policies/_index.md)
 - [Security glossary](terminology/_index.md)

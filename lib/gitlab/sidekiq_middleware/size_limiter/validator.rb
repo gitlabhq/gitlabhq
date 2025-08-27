@@ -18,7 +18,7 @@ module Gitlab
       # then compressed. If the compressed payload still exceeds the limit, the
       # job is discarded, and a ExceedLimitError exception is raised.
       class Validator
-        # Avoid limiting the size of jobs for `BackgroundMigrationWorker` classes.
+        # Avoid limiting the size of jobs for `BatchedBackgroundMigrationWorker` classes.
         # We can't read the configuration from `ApplicationSetting` for those jobs
         # when migrating a path that modifies the `application_settings` table.
         # Reading the application settings through `ApplicationSetting#current`

@@ -17,6 +17,11 @@ module Deployments
       return unless deployment
 
       deployment.save!
+
+      if Feature.enabled?(:persisted_job_environment_relationship, job.project) && job.job_environment.present?
+        job.job_environment.update!(deployment: deployment)
+      end
+
       job.association(:deployment).target = deployment
       job.association(:deployment).loaded!
 

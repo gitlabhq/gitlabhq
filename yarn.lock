@@ -1351,7 +1351,7 @@
     "@floating-ui/core" "^1.7.3"
     "@floating-ui/utils" "^0.2.10"
 
-"@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.7.4":
+"@floating-ui/dom@1.7.4", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.7.4":
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.4.tgz#ee667549998745c9c3e3e84683b909c31d6c9a77"
   integrity sha512-OOchDgh4F2CchOX94cRVqhvy7b3AFb+/rQXyswmzmGakRfkMgoWVjfnLWkRirfLEfuD4ysVW16eXzwt3jHIzKA==
@@ -1395,12 +1395,12 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@10.15.4":
-  version "10.15.4"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.15.4.tgz#10e7299bb97654fb0269b406224e572c56409798"
-  integrity sha512-4W6UVZUfgOy6HcnSB/JsOB+fzfLwfRuGW8TN/Zan8bujQd1aBBXheFw9s9BENuQEEfD9izqbMWZmwRBw+gHh1A==
+"@gitlab/duo-ui@10.18.0":
+  version "10.18.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.18.0.tgz#017cda1914d42ede952de20d211f77ae630e581f"
+  integrity sha512-KN2Hg2jKRObkj/mZ7tVacNCPqVwXOsoismQHfA0oJk5In7185LMvU56aQytrYWsNVqdCferm29yKj7X9+vPXjg==
   dependencies:
-    "@floating-ui/dom" "1.7.3"
+    "@floating-ui/dom" "1.7.4"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"

@@ -8,5 +8,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199971
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/552063
 milestone: '18.3'
 group: group::ci platform
-type: gitlab_com_derisk
+type: wip
 default_enabled: false
