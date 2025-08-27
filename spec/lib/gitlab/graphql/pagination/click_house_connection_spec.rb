@@ -130,7 +130,7 @@ RSpec.describe Gitlab::Graphql::Pagination::ClickHouseConnection, :click_house, 
       end
 
       it 'only returns events between the cursors' do
-        expect(ids).to eq([event_2.id, event_3.id])
+        expect(ids).to eq([event_2.id, event_1.id])
 
         expect(connection.has_previous_page).to be_truthy
         expect(connection.has_next_page).to be_truthy

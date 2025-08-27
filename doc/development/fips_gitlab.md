@@ -6,7 +6,7 @@ title: FIPS 140-2 and 140-3
 ---
 
 FIPS is short for "Federal Information Processing Standard", which defines certain security practices for a "cryptographic module" (CM). A cryptographic
-module is set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation)
+module is set of hardware, software, or firmware that implements approved security functions (including cryptographic algorithms and key generation)
 and is contained within a cryptographic boundary.
 
 At GitLab, a cryptographic module almost always refers to an embedded software component of another product or package release and is specific to a particular

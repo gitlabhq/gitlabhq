@@ -16,6 +16,8 @@ class SentNotificationsController < ApplicationController
   def unsubscribe
     return render_404 unless unsubscribe_prerequisites_met?
 
+    @notification_id_from_request = params[:id]
+
     unsubscribe_and_redirect if current_user || params[:force] || request.post?
   end
 

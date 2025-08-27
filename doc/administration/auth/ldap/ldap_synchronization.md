@@ -473,7 +473,7 @@ group, GitLab revokes their `admin` role when syncing.
 
 {{< /tabs >}}
 
-### Global group memberships lock
+### Global LDAP group memberships lock
 
 GitLab administrators can prevent group members from inviting new members to subgroups that have their membership synchronized with LDAP.
 

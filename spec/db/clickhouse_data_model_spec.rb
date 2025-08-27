@@ -9,7 +9,7 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     # namespaces
     namespaces_query = <<~SQL
     INSERT INTO siphon_namespaces (id, traversal_ids, organization_id)
-    VALUES ({id:UInt64}, {traversal_ids:Array(UInt64)}, {organization_id:UInt64})
+    VALUES ({id:Int64}, {traversal_ids:Array(Int64)}, {organization_id:Int64})
     SQL
 
     placeholders = { id: 1, traversal_ids: [1], organization_id: 10 }
@@ -21,7 +21,7 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     # labels
     labels_query = <<~SQL
     INSERT INTO siphon_label_links (id, label_id, target_id, target_type)
-    VALUES ({id:UInt64}, {label_id:UInt64}, {target_id:UInt64}, {target_type:String})
+    VALUES ({id:Int64}, {label_id:Int64}, {target_id:Int64}, {target_type:String})
     SQL
 
     placeholders = { id: 2, label_id: 100, target_id: 1000, target_type: 'Issue' }
@@ -39,7 +39,7 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     # assignees
     assignees_query = <<~SQL
     INSERT INTO siphon_issue_assignees (user_id, issue_id)
-    VALUES ({user_id:UInt64}, {issue_id:UInt64})
+    VALUES ({user_id:Int64}, {issue_id:Int64})
     SQL
 
     placeholders = { user_id: 10_000, issue_id: 1000 }
@@ -51,10 +51,25 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     placeholders = { user_id: 10_002, issue_id: 1001 }
     connection.execute(ClickHouse::Client::Query.new(raw_query: assignees_query, placeholders: placeholders))
 
+    # award emojis
+    emojis_query = <<~SQL
+    INSERT INTO siphon_award_emoji (id, user_id, awardable_id, awardable_type, name)
+    VALUES ({id:Int64}, {user_id:Int64}, {awardable_id:Int64}, 'Issue', {name:String})
+    SQL
+
+    placeholders = { id: 1, user_id: 5, awardable_id: 1000, name: 'thumbsup' }
+    connection.execute(ClickHouse::Client::Query.new(raw_query: emojis_query, placeholders: placeholders))
+
+    placeholders = { id: 2, user_id: 10, awardable_id: 1000, name: 'thumbsup' }
+    connection.execute(ClickHouse::Client::Query.new(raw_query: emojis_query, placeholders: placeholders))
+
+    placeholders = { id: 2, user_id: 10, awardable_id: 1001, name: 'dart' }
+    connection.execute(ClickHouse::Client::Query.new(raw_query: emojis_query, placeholders: placeholders))
+
     # issues
     issues_query = <<~SQL
     INSERT INTO siphon_issues (id, namespace_id, work_item_type_id, title, author_id)
-    VALUES ({id:UInt64}, {namespace_id:UInt64}, {work_item_type_id:UInt64}, {title:String}, {author_id:UInt64})
+    VALUES ({id:Int64}, {namespace_id:Int64}, {work_item_type_id:Int64}, {title:String}, {author_id:Int64})
     SQL
 
     placeholders = { id: 1000, namespace_id: 1, work_item_type_id: 2, title: 'Issue 1', author_id: 5 }
@@ -72,16 +87,29 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     rows = connection.select("SELECT id, traversal_path FROM namespace_traversal_paths FINAL ORDER BY id")
 
     expect(rows).to eq([
-      { 'id' => '1', 'traversal_path' => '10/1/' },
-      { 'id' => '2', 'traversal_path' => '10/1/2/' }
+      { 'id' => 1, 'traversal_path' => '10/1/' },
+      { 'id' => 2, 'traversal_path' => '10/1/2/' }
     ])
 
     rows = connection.select("SELECT work_item_id, label_id FROM work_item_label_links FINAL ORDER BY id")
 
     expect(rows).to eq([
-      { 'work_item_id' => '1000', 'label_id' => '100' },
-      { 'work_item_id' => '1000', 'label_id' => '101' },
-      { 'work_item_id' => '1001', 'label_id' => '101' }
+      { 'work_item_id' => 1000, 'label_id' => 100 },
+      { 'work_item_id' => 1000, 'label_id' => 101 },
+      { 'work_item_id' => 1001, 'label_id' => 101 }
+    ])
+
+    query = <<~SQL
+    SELECT work_item_id, counts_by_emoji, user_ids_by_emoji
+    FROM work_item_award_emoji_aggregations FINAL ORDER BY work_item_id
+    SQL
+
+    rows = connection.select(query)
+    expect(rows).to eq([
+      { 'work_item_id' => 1000, 'counts_by_emoji' => { 'thumbsup' => 2 },
+        'user_ids_by_emoji' => { 'thumbsup' => '/5/10/' } },
+      { 'work_item_id' => 1001, 'counts_by_emoji' => { 'dart' => 1 },
+        'user_ids_by_emoji' => { 'dart' => '/10/' } }
     ])
 
     query = <<~SQL
@@ -92,12 +120,12 @@ RSpec.describe 'ClickHouse Group hierarchy data model', :click_house, feature_ca
     rows = connection.select(query)
 
     expect(rows).to eq([
-      { 'id' => '1000', 'traversal_path' => '10/1/', 'namespace_id' => '1', 'work_item_type_id' => '2',
-        'title' => 'Issue 1', 'author_id' => '5', 'label_ids' => '/100/101/', 'assignee_ids' => '/10000/' },
-      { 'id' => '1001', 'traversal_path' => '10/1/2/', 'namespace_id' => '2', 'work_item_type_id' => '2',
-        'title' => 'Issue 2', 'author_id' => '10', 'label_ids' => '/101/', 'assignee_ids' => '/10001/10002/' },
-      { 'id' => '1002', 'traversal_path' => '', 'namespace_id' => '3', 'work_item_type_id' => '2',
-        'title' => 'Issue 3', 'author_id' => '10', 'label_ids' => '', 'assignee_ids' => '' }
+      { 'id' => 1000, 'traversal_path' => '10/1/', 'namespace_id' => 1, 'work_item_type_id' => 2,
+        'title' => 'Issue 1', 'author_id' => 5, 'label_ids' => '/100/101/', 'assignee_ids' => '/10000/' },
+      { 'id' => 1001, 'traversal_path' => '10/1/2/', 'namespace_id' => 2, 'work_item_type_id' => 2,
+        'title' => 'Issue 2', 'author_id' => 10, 'label_ids' => '/101/', 'assignee_ids' => '/10001/10002/' },
+      { 'id' => 1002, 'traversal_path' => '', 'namespace_id' => 3, 'work_item_type_id' => 2,
+        'title' => 'Issue 3', 'author_id' => 10, 'label_ids' => '', 'assignee_ids' => '' }
     ])
   end
 end

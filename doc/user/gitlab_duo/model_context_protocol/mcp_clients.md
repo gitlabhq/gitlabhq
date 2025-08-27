@@ -1,6 +1,6 @@
 ---
-stage: Developer Experience
-group: API
+stage: AI-powered
+group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Describes Model Context Protocol and how to use it
 title: GitLab MCP clients

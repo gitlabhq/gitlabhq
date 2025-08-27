@@ -6,10 +6,10 @@ class TrackMergeRequestDiffDeletions < Gitlab::Database::Migration[2.3]
   milestone '18.4'
 
   def up
-    track_record_deletions(:merge_request_diffs)
+    # NOOP - This migration is no longer needed
   end
 
   def down
-    untrack_record_deletions(:merge_request_diffs)
+    # NOOP - This migration is no longer needed
   end
 end

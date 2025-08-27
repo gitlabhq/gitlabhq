@@ -1,6 +1,6 @@
 ---
-stage: Developer Experience
-group: API
+stage: AI-powered
+group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Connect AI tools to your GitLab instance with the official GitLab MCP server.
 title: GitLab MCP server

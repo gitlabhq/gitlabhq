@@ -59,6 +59,7 @@ import {
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
   EVT_DISCUSSIONS_ASSIGNED,
+  OLD_LINE_TYPE,
 } from '../../constants';
 import {
   DISCUSSION_SINGLE_DIFF_FAILED,
@@ -660,6 +661,48 @@ export async function saveDiffDiscussion({ note, formData }) {
         this.toggleFileCommentForm(formData.diffFile.file_path);
       }
     });
+}
+
+export function getLinesForDiscussion({ discussion }) {
+  const lines = [];
+
+  if (!discussion?.diff_file || !discussion?.position) {
+    return lines;
+  }
+
+  const diffFile = this.diffFiles.find((file) => file.file_hash === discussion.diff_file.file_hash);
+
+  if (!diffFile) {
+    return lines;
+  }
+
+  const diffLines = diffFile[INLINE_DIFF_LINES_KEY];
+  let isAdding = false;
+  const { start, end } = discussion.position?.line_range || {};
+
+  if (!start || !end) {
+    return lines;
+  }
+
+  for (let i = 0, diffLinesLength = diffLines.length - 1; i <= diffLinesLength; i += 1) {
+    const line = diffLines[i];
+
+    if (start.line_code === line.line_code) {
+      isAdding = true;
+    }
+
+    if (isAdding) {
+      if (line.type !== OLD_LINE_TYPE) {
+        lines.push(line);
+      }
+
+      if (end.line_code === line.line_code) {
+        break;
+      }
+    }
+  }
+
+  return lines;
 }
 
 export function toggleTreeOpen(path) {

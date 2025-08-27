@@ -154,3 +154,35 @@ Example response:
   }
 }
 ```
+
+## Recalculate the checksum of a specific model record
+
+```plaintext
+PUT /admin/data_management/:model_name/:id/checksum
+```
+
+| Attribute    | Type    | Required | Description                                                                   |
+|--------------|---------|----------|-------------------------------------------------------------------------------|
+| `model_name` | string  | Yes      | The name of the requested model. Must belong to the `:model_name` list above. |
+| `id`         | integer | Yes      | The ID of the requested model.                                                |
+
+If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. The checksum value is a representation of the queried model hashed with the md5 or sha256 algorithm.
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "model_class": "Project",
+  "created_at": "2025-02-05T11:27:10.173Z",
+  "file_size": null,
+  "checksum_information": {
+    "checksum": "<sha256 or md5 string>",
+    "last_checksum": "2025-07-24T14:22:18.643Z",
+    "checksum_state": 2,
+    "checksum_retry_count": 0,
+    "checksum_retry_at": null,
+    "checksum_failure": null
+  }
+}
+```

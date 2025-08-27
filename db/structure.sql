@@ -26587,6 +26587,23 @@ CREATE SEQUENCE virtual_registries_packages_maven_upstreams_id_seq
 
 ALTER SEQUENCE virtual_registries_packages_maven_upstreams_id_seq OWNED BY virtual_registries_packages_maven_upstreams.id;
 
+CREATE TABLE virtual_registries_settings (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    enabled boolean DEFAULT false NOT NULL
+);
+
+CREATE SEQUENCE virtual_registries_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_settings_id_seq OWNED BY virtual_registries_settings.id;
+
 CREATE TABLE vs_code_settings (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -30248,6 +30265,8 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLU
 
 ALTER TABLE ONLY virtual_registries_packages_maven_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_upstreams_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_settings ALTER COLUMN id SET DEFAULT nextval('virtual_registries_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
@@ -33734,6 +33753,9 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
 
 ALTER TABLE ONLY virtual_registries_packages_maven_upstreams
     ADD CONSTRAINT virtual_registries_packages_maven_upstreams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_settings
+    ADD CONSTRAINT virtual_registries_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vs_code_settings
     ADD CONSTRAINT vs_code_settings_pkey PRIMARY KEY (id);
@@ -41021,6 +41043,8 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
+
+CREATE UNIQUE INDEX index_virtual_registries_settings_on_group_id ON virtual_registries_settings USING btree (group_id);
 
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 
@@ -49365,6 +49389,9 @@ ALTER TABLE ONLY namespace_root_storage_statistics
 
 ALTER TABLE ONLY dingtalk_tracker_data
     ADD CONSTRAINT fk_rails_a138e0d542 FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_settings
+    ADD CONSTRAINT fk_rails_a1646a6b7a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY elastic_reindexing_slices
     ADD CONSTRAINT fk_rails_a17d86aeb9 FOREIGN KEY (elastic_reindexing_subtask_id) REFERENCES elastic_reindexing_subtasks(id) ON DELETE CASCADE;

@@ -1938,6 +1938,20 @@ For example:
 
 Follow the same guidance for [optional task steps](_index.md#optional-steps).
 
+## organizations
+
+When referring to the **organizations** top-level entity:
+
+- Use lowercase.
+- Use the plural form of the word.
+
+Use "organization" when referring to an individual organization.
+
+For example:
+
+- Use organizations to manage users, projects, and groups.
+- Add users to your organization.
+
 ## override
 
 Use **override** to indicate temporary replacement.

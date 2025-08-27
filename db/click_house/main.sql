@@ -516,6 +516,23 @@ PRIMARY KEY (merge_request_id, id)
 ORDER BY (merge_request_id, id)
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_award_emoji
+(
+    `id` Int64,
+    `name` LowCardinality(String),
+    `user_id` Int64,
+    `awardable_type` String,
+    `awardable_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY id
+ORDER BY id
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE siphon_bulk_import_entities
 (
     `id` Int64,
@@ -1102,6 +1119,46 @@ CREATE TABLE user_addon_assignments_history
 )
 ENGINE = AggregatingMergeTree
 ORDER BY (namespace_path, user_id, assignment_id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE work_item_award_emoji
+(
+    `work_item_id` Int64,
+    `id` Int64,
+    `name` LowCardinality(String),
+    `user_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY (work_item_id, id)
+ORDER BY (work_item_id, id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE work_item_award_emoji_aggregations
+(
+    `work_item_id` Int64,
+    `counts_by_emoji` Map(LowCardinality(String), UInt32),
+    `user_ids_by_emoji` Map(LowCardinality(String), String),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY work_item_id
+ORDER BY work_item_id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE work_item_award_emoji_trigger
+(
+    `work_item_id` Int64,
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY work_item_id
+ORDER BY work_item_id
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE work_item_label_links
@@ -2055,6 +2112,94 @@ GROUP BY
     user_id,
     purchase_id,
     add_on_name;
+
+CREATE MATERIALIZED VIEW work_item_award_emoji_aggregations_mv TO work_item_award_emoji_aggregations
+(
+    `work_item_id` Int64,
+    `counts_by_emoji` Map(LowCardinality(String), UInt32),
+    `user_ids_by_emoji` Map(LowCardinality(String), String)
+)
+AS WITH
+    work_item_ids AS
+    (
+        SELECT work_item_id
+        FROM work_item_award_emoji_trigger
+    ),
+    aggregation AS
+    (
+        SELECT
+            work_item_id,
+            mapFromArrays(CAST(groupArray(name), 'Array(LowCardinality(String))'), groupArray(toUInt32(count))) AS counts_by_emoji,
+            mapFromArrays(CAST(groupArray(name), 'Array(LowCardinality(String))'), CAST(groupArray(concat('/', arrayStringConcat(user_ids, '/'), '/')), 'Array(String)')) AS user_ids_by_emoji,
+            false AS deleted,
+            now() AS version
+        FROM
+        (
+            SELECT
+                work_item_id,
+                name,
+                countDistinct(user_id) AS count,
+                arraySort(groupUniqArray(user_id)) AS user_ids
+            FROM
+            (
+                SELECT
+                    work_item_id,
+                    id,
+                    argMax(name, version) AS name,
+                    argMax(user_id, version) AS user_id,
+                    argMax(deleted, version) AS deleted
+                FROM work_item_award_emoji
+                WHERE work_item_id IN (
+                    SELECT work_item_id
+                    FROM work_item_ids
+                )
+                GROUP BY
+                    work_item_id,
+                    id
+            ) AS work_item_award_emoji
+            WHERE deleted = false
+            GROUP BY
+                work_item_id,
+                name
+        )
+        GROUP BY work_item_id
+    )
+SELECT
+    work_item_ids.work_item_id AS work_item_id,
+    aggregation.counts_by_emoji AS counts_by_emoji,
+    aggregation.user_ids_by_emoji AS user_ids_by_emoji
+FROM work_item_ids
+LEFT JOIN aggregation ON aggregation.work_item_id = work_item_ids.work_item_id;
+
+CREATE MATERIALIZED VIEW work_item_award_emoji_mv TO work_item_award_emoji
+(
+    `work_item_id` Int64,
+    `id` Int64,
+    `name` LowCardinality(String),
+    `user_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
+)
+AS SELECT
+    awardable_id AS work_item_id,
+    id,
+    name,
+    user_id,
+    created_at,
+    updated_at,
+    _siphon_replicated_at AS version,
+    _siphon_deleted AS deleted
+FROM siphon_award_emoji
+WHERE awardable_type = 'Issue';
+
+CREATE MATERIALIZED VIEW work_item_award_emoji_trigger_mv TO work_item_award_emoji_trigger
+(
+    `work_item_id` Int64
+)
+AS SELECT DISTINCT work_item_id
+FROM work_item_award_emoji;
 
 CREATE MATERIALIZED VIEW work_item_label_links_mv TO work_item_label_links
 (

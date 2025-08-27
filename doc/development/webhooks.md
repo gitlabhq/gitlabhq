@@ -51,17 +51,17 @@ To add webhook support for a resource:
    on whether the webhook should be configurable for projects, groups, or the GitLab instance.
    See [project, group and system hooks](#decision-project-group-and-system-webhooks) for guidance.
 1. Add frontend support for a new checkbox in the webhook settings form in `app/views/shared/web_hooks/_form.html.haml`.
-1. Add support for testing the new webhook in `TestHooks::ProjectService` and/or `TestHooks::SystemService`.
+1. Add support for testing the new webhook in `TestHooks::ProjectService` and `TestHooks::SystemService`.
    `TestHooks::GroupService` does not need to be updated because it only
    [executes `ProjectService`](https://gitlab.com/gitlab-org/gitlab/-/blob/1714db7b9cc40438a1f5bf61bef07ce45d33e207/ee/app/services/test_hooks/group_service.rb#L10).
 1. Define the [webhook payload](#webhook-payloads).
 1. Update GitLab to [trigger the webhook](#triggering-a-webhook).
 1. Add [documentation of the webhook](../user/project/integrations/webhook_events.md).
 1. Add REST API support:
-   1. Update `API::ProjectHooks`, `API::GroupHooks`, and/or `API::SystemHooks` to support the argument.
-   1. Update `API::Entities::ProjectHook` and/or `API::Entities::GroupHook` to support the new field.
+   1. Update `API::ProjectHooks`, `API::GroupHooks`, and `API::SystemHooks` to support the argument.
+   1. Update `API::Entities::ProjectHook` and `API::Entities::GroupHook` to support the new field.
       (System hook use the generic `API::Entities::Hook`).
-   1. Update API documentation for [project webhooks](../api/project_webhooks.md), [group webhooks](../api/group_webhooks.md), and/or [system hooks](../api/system_hooks.md).
+   1. Update API documentation for [project webhooks](../api/project_webhooks.md), [group webhooks](../api/group_webhooks.md), and [system hooks](../api/system_hooks.md).
 
 ### Decision: Project, group, and system webhooks
 
