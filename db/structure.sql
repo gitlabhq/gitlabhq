@@ -24197,6 +24197,34 @@ CREATE SEQUENCE sbom_sources_id_seq
 
 ALTER SEQUENCE sbom_sources_id_seq OWNED BY sbom_sources.id;
 
+CREATE TABLE sbom_vulnerability_scans (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    build_id bigint NOT NULL,
+    status smallint DEFAULT 0,
+    sbom_file_store smallint DEFAULT 1,
+    result_file_store smallint DEFAULT 1,
+    sbom_file text,
+    sbom_file_final_path text,
+    result_file text,
+    error_message text,
+    CONSTRAINT check_0225eb20d7 CHECK ((char_length(error_message) <= 1024)),
+    CONSTRAINT check_08ddfcbe95 CHECK ((char_length(sbom_file_final_path) <= 1024)),
+    CONSTRAINT check_31a6970d96 CHECK ((char_length(result_file) <= 255)),
+    CONSTRAINT check_6c95e56fd1 CHECK ((char_length(sbom_file) <= 255))
+);
+
+CREATE SEQUENCE sbom_vulnerability_scans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE sbom_vulnerability_scans_id_seq OWNED BY sbom_vulnerability_scans.id;
+
 CREATE TABLE scan_execution_policy_rules (
     id bigint NOT NULL,
     security_policy_id bigint NOT NULL,
@@ -30022,6 +30050,8 @@ ALTER TABLE ONLY sbom_source_packages ALTER COLUMN id SET DEFAULT nextval('sbom_
 
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
+ALTER TABLE ONLY sbom_vulnerability_scans ALTER COLUMN id SET DEFAULT nextval('sbom_vulnerability_scans_id_seq'::regclass);
+
 ALTER TABLE ONLY scan_execution_policy_rules ALTER COLUMN id SET DEFAULT nextval('scan_execution_policy_rules_id_seq'::regclass);
 
 ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
@@ -33341,6 +33371,9 @@ ALTER TABLE ONLY sbom_source_packages
 
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY sbom_vulnerability_scans
+    ADD CONSTRAINT sbom_vulnerability_scans_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY scan_execution_policy_rules
     ADD CONSTRAINT scan_execution_policy_rules_pkey PRIMARY KEY (id);
@@ -40380,6 +40413,12 @@ CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occu
 CREATE INDEX index_sbom_sources_on_organization_id ON sbom_sources USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source_and_org_id ON sbom_sources USING btree (source_type, source, organization_id);
+
+CREATE INDEX index_sbom_vulnerability_scans_on_build_id ON sbom_vulnerability_scans USING btree (build_id);
+
+CREATE INDEX index_sbom_vulnerability_scans_on_created_at ON sbom_vulnerability_scans USING btree (created_at);
+
+CREATE INDEX index_sbom_vulnerability_scans_on_project_id ON sbom_vulnerability_scans USING btree (project_id);
 
 CREATE INDEX index_scan_execution_policy_rules_on_policy_mgmt_project_id ON scan_execution_policy_rules USING btree (security_policy_management_project_id);
 

@@ -102,7 +102,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
-      'merge_request_commits_metadata.project_id'
+      'merge_request_commits_metadata.project_id',
+      'sbom_vulnerability_scans.project_id'
     ]
   end
 

@@ -263,7 +263,8 @@ RSpec.describe 'Database schema',
       # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
       p_knowledge_graph_replicas: %w[namespace_id],
       # temp entry, removing FK on source_type_id and target_type_id until table is dropped in follow up MR
-      work_item_related_link_restrictions: %w[source_type_id target_type_id]
+      work_item_related_link_restrictions: %w[source_type_id target_type_id],
+      sbom_vulnerability_scans: %w[project_id build_id] # referenced records are in different DB and no LFK as the table contains references to object storage
     }.with_indifferent_access.freeze
   end
 

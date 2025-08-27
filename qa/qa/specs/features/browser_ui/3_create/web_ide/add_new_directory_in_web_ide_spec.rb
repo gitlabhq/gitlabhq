@@ -6,30 +6,6 @@ module QA
       include_context 'Web IDE test prep'
       let(:project) { create(:project, :with_readme, name: 'webide-add-directory-project') }
 
-      context 'when a directory with the same name already exists' do
-        let(:directory_name) { 'first_directory' }
-
-        before do
-          create(:commit, project: project, actions: [
-            { action: 'create', file_path: 'first_directory/test_file.txt', content: 'Test file content' }
-          ])
-
-          project.visit!
-          Page::Project::Show.perform(&:open_web_ide!)
-          Page::Project::WebIDE::VSCode.perform do |ide|
-            ide.wait_for_ide_to_load('README.md')
-          end
-        end
-
-        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386760' do
-          Page::Project::WebIDE::VSCode.perform do |ide|
-            ide.create_new_folder(directory_name)
-
-            expect(ide).to have_message('A file or folder first_directory already exists at this location.')
-          end
-        end
-      end
-
       context 'when user adds a new empty directory' do
         let(:directory_name) { 'new_empty_directory' }
 

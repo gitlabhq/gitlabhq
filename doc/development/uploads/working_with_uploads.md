@@ -324,6 +324,8 @@ The Scalability::Frameworks team is making object storage and uploads more easy 
 | Terraform state files                    | `carrierwave`       | `rails controller`      | `/terraform/<proj_id_hash>/<terraform_state_id>`                                                          |
 | Pages content archives                   | `carrierwave`       | `sidekiq`               | `/gitlab-gprd-pages/<proj_id_hash>/pages_deployments/<deployment_id>/`                                    |
 | Secure Files                             | `carrierwave`       | `sidekiq`               | `/ci-secure-files/<proj_id_hash>/secure_files/<secure_file_id>/`                                    |
+| Sbom Scans - sbom file                   | `direct upload`     | `workhorse`             | `/uploads/sbom_scans/<proj_id_hash>/<date>/<job_id>/<UUID>/`                                        |
+| Sbom Scans - result file                 | `carrierwave`       | `sidekiq`               | `/uploads/sbom_scans/<proj_id_hash>/<date>/<job_id>/<sbom_scan_id>/`                                |
 
 ### CarrierWave integration
 
@@ -364,3 +366,5 @@ The Scalability::Frameworks team is making object storage and uploads more easy 
 | `app/models/bulk_imports/export_upload.rb`              | `mount_uploader :export_file, ExportUploader`                                    | {{< icon name="check-circle" >}} Yes  |
 | `ee/app/models/user_permission_export_upload.rb`        | `mount_uploader :file, AttachmentUploader`                                       |                     |
 | `app/models/ci/secure_file.rb`                          | `include FileStoreMounter`                                                       |                     |
+| `ee/app/models/security/vulnerability_scanning/sbom_scan.rb` | `mount_uploader :sbom_file, Security::VulnerabilityScanning::SbomScanUploader` | {{< icon name="check-circle" >}} Yes |
+| `ee/app/models/security/vulnerability_scanning/sbom_scan.rb` | `mount_uploader :result_file, Security::VulnerabilityScanning::SbomScanUploader` | {{< icon name="check-circle" >}} Yes |
