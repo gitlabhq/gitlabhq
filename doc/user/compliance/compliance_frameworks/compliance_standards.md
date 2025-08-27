@@ -24,6 +24,8 @@ compliance standards.
 The [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project
 contains a library of JSON templates. Use these templates to quickly adopt predefined compliance frameworks.
 
+<!-- Content for tables is sourced from https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates -->
+
 ## CIS CSC compliance requirements
 
 CIS CSC are the Center for Internet Security Critical Security Controls.
@@ -283,6 +285,18 @@ to create a compliance framework for this standard.
 | 8.28 Secure coding                                  | Secure coding principles shall be applied to software development.                                                                                                                                           | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li><li>Secret detection running</li></ul> |
 | 8.29 Security testing in development and acceptance | Security testing processes shall be defined and implemented in the development lifecycle.                                                                                                                    | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li><li>Secret detection running</li></ul> |
 | 8.32 Change management                              | Changes to information processing facilities and information systems shall be subject to change management procedures.                                                                                       | <ul><li>Default branch protected</li></ul> |
+
+## NIS 2 compliance requirements
+
+The following table lists the requirements supported by GitLab for NIS 2 and the controls for the requirements.
+You can use the
+[`nis_2.json` template](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates/-/blob/main/nis_2.json?ref_type=heads)
+to create a compliance framework for this standard.
+
+| NIS 2 requirement                                                   | Description                                                                                                                                                                                                                                                                                                               | Supported controls |
+|:--------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| Article 11 Requirements, technical capabilities and tasks of CSIRTs | 3. The CSIRTs shall have the following tasks: a) monitoring and analysing cyber threats, vulnerabilities and incidents at national level and, upon request, providing assistance to essential and important entities concerned regarding real-time or near real-time monitoring of their network and information systems. | <ul><li>Dependency scanning running</li><li>Container scanning running</li></ul> |
+| Article 21 Cybersecurity risk-management measures                   | Implement cybersecurity measures based on all-hazards approach to protect systems from incidents, including supply chain security across direct suppliers and service providers, and security in network/information systems acquisition, development, maintenance, and vulnerability handling.                           | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li></ul> |
 
 ## NIST compliance requirements
 

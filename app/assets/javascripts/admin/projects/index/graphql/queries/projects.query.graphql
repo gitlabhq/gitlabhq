@@ -30,6 +30,9 @@ query getAdminProjects(
     count
     nodes {
       ...Project
+      userPermissions {
+        adminAllResources @gl_introduced(version: "18.3.0")
+      }
       statistics {
         storageSize
       }

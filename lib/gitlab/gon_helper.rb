@@ -104,6 +104,7 @@ module Gitlab
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
       push_frontend_feature_flag(:global_topbar, current_user)
       push_frontend_feature_flag(:paneled_view, current_user)
+      push_frontend_feature_flag(:disallow_immediate_deletion, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

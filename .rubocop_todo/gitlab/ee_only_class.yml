@@ -104,5 +104,4 @@ Gitlab/EeOnlyClass:
     - 'ee/lib/ee/gitlab/scim/group/deprovisioning_service.rb'
     - 'ee/lib/ee/gitlab/scim/group/provisioning_service.rb'
     - 'ee/lib/ee/gitlab/scim/group/reprovisioning_service.rb'
-    - 'ee/lib/ee/sidebars/explore/menus/dependencies_menu.rb'
     - 'ee/spec/support/helpers/ee/markdown_feature.rb'

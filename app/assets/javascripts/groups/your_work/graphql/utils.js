@@ -23,10 +23,6 @@ export const formatGroupForGraphQLResolver = (group) => ({
     canLeave: group.can_leave,
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
-    // Only used in admin area to ensure only instance admins (users with custom
-    // admin roles can also access admin area) see admin-only per-group action
-    // buttons.
-    adminAllResources: false,
   },
   webUrl: group.web_url,
   groupMembersCount: group.group_members_count ?? null,

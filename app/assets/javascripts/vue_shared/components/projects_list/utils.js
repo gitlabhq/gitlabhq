@@ -10,9 +10,16 @@ import { sprintf, __ } from '~/locale';
 
 export const availableGraphQLProjectActions = ({
   userPermissions,
-  markedForDeletionOn,
+  markedForDeletion,
+  isSelfDeletionInProgress,
+  isSelfDeletionScheduled,
   archived,
 }) => {
+  // No actions available when project deletion is in progress
+  if (isSelfDeletionInProgress) {
+    return [];
+  }
+
   const availableActions = [];
 
   if (userPermissions.viewEditPage) {
@@ -23,12 +30,21 @@ export const availableGraphQLProjectActions = ({
     availableActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
   }
 
-  if (userPermissions.removeProject && markedForDeletionOn) {
+  if (userPermissions.removeProject && isSelfDeletionScheduled) {
     availableActions.push(ACTION_RESTORE);
   }
 
   if (userPermissions.removeProject) {
-    availableActions.push(ACTION_DELETE);
+    // Projects that are not marked for deletion can be deleted (delayed)
+    if (!markedForDeletion) {
+      availableActions.push(ACTION_DELETE);
+      // Projects with self deletion scheduled can be deleted immediately
+    } else if (
+      isSelfDeletionScheduled &&
+      (userPermissions.adminAllResources || !gon?.features?.disallowImmediateDeletion)
+    ) {
+      availableActions.push(ACTION_DELETE);
+    }
   }
 
   return availableActions;
@@ -59,7 +75,7 @@ export const renderRestoreSuccessToast = (project) => {
 };
 
 export const renderDeleteSuccessToast = (project) => {
-  if (project.markedForDeletionOn) {
+  if (project.markedForDeletion) {
     toast(
       sprintf(__("Project '%{project_name}' is being deleted."), {
         project_name: project.nameWithNamespace,
@@ -79,7 +95,7 @@ export const renderDeleteSuccessToast = (project) => {
 
 export const deleteParams = (project) => {
   // Project has been marked for delayed deletion so will now be deleted immediately.
-  if (project.markedForDeletionOn) {
+  if (project.isSelfDeletionScheduled) {
     return { permanently_remove: true, full_path: project.fullPath };
   }
 

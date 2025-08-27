@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import adminInactiveGroupsGraphQlResponse from 'test_fixtures/graphql/admin/inactive_groups.query.graphql.json';
 import adminGroupsGraphQlResponse from 'test_fixtures/graphql/admin/groups.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import AdminGroupsApp from '~/admin/groups/index/components/app.vue';
@@ -17,6 +18,7 @@ import {
   ADMIN_GROUPS_TABS,
   FIRST_TAB_ROUTE_NAMES,
   ADMIN_GROUPS_ROUTE_NAME,
+  INACTIVE_TAB,
 } from '~/admin/groups/index/constants';
 import adminGroupCountsQuery from '~/admin/groups/index/graphql/queries/group_counts.query.graphql';
 import {
@@ -129,6 +131,21 @@ describe('AdminGroupsApp', () => {
     await waitForPromises();
 
     expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
+  });
+
+  it('allows deleting immediately on Inactive tab', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [adminGroupsQuery, jest.fn().mockResolvedValue(adminInactiveGroupsGraphQlResponse)],
+      ],
+      route: { name: INACTIVE_TAB.value },
+    });
+
+    await waitForPromises();
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+    expect(wrapper.findByRole('button', { name: 'Delete immediately' }).exists()).toBe(true);
   });
 
   describe('when there are no groups', () => {

@@ -1,6 +1,9 @@
 # id field is requested by ~/graphql_shared/fragments/group.fragment.graphql
 # eslint-disable-next-line @graphql-eslint/require-selections
 fragment AdminGroup on Group {
+  userPermissions {
+    adminAllResources @gl_introduced(version: "18.3.0")
+  }
   projectStatistics {
     storageSize
   }

@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlKeysetPagination } from '@gitlab/ui';
 import adminProjectsGraphQlResponse from 'test_fixtures/graphql/admin/projects.query.graphql.json';
+import adminInactiveProjectsGraphQlResponse from 'test_fixtures/graphql/admin/inactive_projects.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
@@ -29,6 +30,7 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   ADMIN_PROJECTS_ROUTE_NAME,
+  INACTIVE_TAB,
 } from '~/admin/projects/index/constants';
 import adminProjectsQuery from '~/admin/projects/index/graphql/queries/projects.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -96,6 +98,21 @@ describe('AdminProjectsApp', () => {
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
     });
+  });
+
+  it('allows deleting immediately on Inactive tab', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [adminProjectsQuery, jest.fn().mockResolvedValue(adminInactiveProjectsGraphQlResponse)],
+      ],
+      route: { name: INACTIVE_TAB.value },
+    });
+
+    await waitForPromises();
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+    expect(wrapper.findByRole('button', { name: 'Delete' }).exists()).toBe(true);
   });
 
   it('renders relative URL that supports relative_url_root', async () => {

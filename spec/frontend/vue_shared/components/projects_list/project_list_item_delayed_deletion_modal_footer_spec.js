@@ -31,18 +31,18 @@ describe('ProjectListItemDelayedDeletionModalFooterEE', () => {
   const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe.each`
-    markedForDeletionOn | footer                                                                          | link
-    ${null}             | ${`This project can be restored until ${MOCK_PERM_DELETION_DATE}. Learn more.`} | ${HELP_PATH}
-    ${'2024-03-24'}     | ${false}                                                                        | ${false}
+    markedForDeletion | footer                                                                          | link
+    ${false}          | ${`This project can be restored until ${MOCK_PERM_DELETION_DATE}. Learn more.`} | ${HELP_PATH}
+    ${true}           | ${false}                                                                        | ${false}
   `(
-    'when project.markedForDeletionOn is $markedForDeletionOn',
-    ({ markedForDeletionOn, footer, link }) => {
+    'when project.markedForDeletion is $markedForDeletion',
+    ({ markedForDeletion, footer, link }) => {
       beforeEach(() => {
         createComponent({
           props: {
             project: {
               ...project,
-              markedForDeletionOn,
+              markedForDeletion,
               permanentDeletionDate: MOCK_PERM_DELETION_DATE,
             },
           },

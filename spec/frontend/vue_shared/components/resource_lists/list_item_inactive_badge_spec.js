@@ -21,25 +21,25 @@ describe('ListItemInactiveBadge', () => {
   const findGlBadge = () => wrapper.findComponent(GlBadge);
 
   describe.each`
-    isSelfDeletionInProgress | markedForDeletionOn | archived | variant      | text
-    ${true}                  | ${'2024-01-01'}     | ${true}  | ${'warning'} | ${'Deletion in progress'}
-    ${true}                  | ${'2024-01-01'}     | ${false} | ${'warning'} | ${'Deletion in progress'}
-    ${true}                  | ${null}             | ${true}  | ${'warning'} | ${'Deletion in progress'}
-    ${true}                  | ${null}             | ${false} | ${'warning'} | ${'Deletion in progress'}
-    ${false}                 | ${'2024-01-01'}     | ${true}  | ${'warning'} | ${'Pending deletion'}
-    ${false}                 | ${'2024-01-01'}     | ${false} | ${'warning'} | ${'Pending deletion'}
-    ${false}                 | ${null}             | ${true}  | ${'info'}    | ${'Archived'}
-    ${false}                 | ${null}             | ${false} | ${false}     | ${false}
+    isSelfDeletionInProgress | markedForDeletion | archived | variant      | text
+    ${true}                  | ${true}           | ${true}  | ${'warning'} | ${'Deletion in progress'}
+    ${true}                  | ${true}           | ${false} | ${'warning'} | ${'Deletion in progress'}
+    ${true}                  | ${false}          | ${true}  | ${'warning'} | ${'Deletion in progress'}
+    ${true}                  | ${false}          | ${false} | ${'warning'} | ${'Deletion in progress'}
+    ${false}                 | ${true}           | ${true}  | ${'warning'} | ${'Pending deletion'}
+    ${false}                 | ${true}           | ${false} | ${'warning'} | ${'Pending deletion'}
+    ${false}                 | ${false}          | ${true}  | ${'info'}    | ${'Archived'}
+    ${false}                 | ${false}          | ${false} | ${false}     | ${false}
   `(
-    'when isSelfDeletionInProgress=$isSelfDeletionInProgress, markedForDeletionOn=markedForDeletionOn, archived=$archived',
-    ({ isSelfDeletionInProgress, markedForDeletionOn, archived, variant, text }) => {
+    'when isSelfDeletionInProgress=$isSelfDeletionInProgress, markedForDeletion=markedForDeletion, archived=$archived',
+    ({ isSelfDeletionInProgress, markedForDeletion, archived, variant, text }) => {
       beforeEach(() => {
         createComponent({
           props: {
             resource: {
               ...resource,
               archived,
-              markedForDeletionOn,
+              markedForDeletion,
               isSelfDeletionInProgress,
             },
           },

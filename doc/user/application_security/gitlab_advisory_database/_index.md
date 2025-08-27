@@ -73,7 +73,7 @@ accDescr: Sequence of actions that make up the advisory ingestion process.
     end
     subgraph Container scanning
         C[GitLab advisory database
-          Open Source Edition
+          open source edition
           integrated into Trivy]
     end
     A --> B{Ingest}

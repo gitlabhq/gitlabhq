@@ -22,35 +22,38 @@ export const availableGraphQLGroupActions = ({
     return [];
   }
 
-  const baseActions = [];
+  const availableActions = [];
 
   if (userPermissions.viewEditPage) {
-    baseActions.push(ACTION_EDIT);
+    availableActions.push(ACTION_EDIT);
   }
 
   if (userPermissions.archiveGroup) {
-    baseActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
+    availableActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
   }
 
   if (userPermissions.removeGroup && isSelfDeletionScheduled) {
-    baseActions.push(ACTION_RESTORE);
+    availableActions.push(ACTION_RESTORE);
   }
 
   if (userPermissions.canLeave) {
-    baseActions.push(ACTION_LEAVE);
+    availableActions.push(ACTION_LEAVE);
   }
 
   if (userPermissions.removeGroup) {
     // Groups that are not marked for deletion can be deleted (delayed)
     if (!markedForDeletion) {
-      baseActions.push(ACTION_DELETE);
+      availableActions.push(ACTION_DELETE);
       // Groups with self deletion scheduled can be deleted immediately
-    } else if (isSelfDeletionScheduled) {
-      baseActions.push(ACTION_DELETE_IMMEDIATELY);
+    } else if (
+      isSelfDeletionScheduled &&
+      (userPermissions.adminAllResources || !gon?.features?.disallowImmediateDeletion)
+    ) {
+      availableActions.push(ACTION_DELETE_IMMEDIATELY);
     }
   }
 
-  return baseActions;
+  return availableActions;
 };
 
 export const renderDeleteSuccessToast = (item) => {

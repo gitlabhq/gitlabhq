@@ -34,7 +34,7 @@ PendingDeletion.args = {
   ...Default.args,
   resource: {
     ...Default.args.resource,
-    markedForDeletionOn: '2024-12-01',
+    markedForDeletion: true,
     permanentDeletionDate: '2024-12-07',
   },
 };

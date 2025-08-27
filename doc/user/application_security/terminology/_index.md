@@ -17,11 +17,11 @@ This glossary provides definitions for terms related to security features in Git
 
 ## Analyzer
 
-Software that analyzes a [scan target type](#scan-target-type) for security vulnerabilities. Internally, it is responsible for gathering required configuration parameters, performing necessary data transformations to convert the target into a standardized format for the [Scanner](#scanner) to execute the scan operation. Finally, it produces a report in the format required by the caller.
+Software that analyzes a [scan target type](#scan-target-type) for security vulnerabilities. Internally, it is responsible for gathering required configuration parameters, performing necessary data transformations to convert the target into a standardized format for the [scanner](#scanner) to execute the scan operation. Finally, it produces a report in the format required by the caller.
 
-CI-based Analyzers integrate into GitLab using a CI job. The report produced by the CI-based Analyzer is published as an artifact after the job completes. GitLab ingests this report, allowing users to visualize and manage found vulnerabilities. The generated reports adhere to the [Secure report format](#secure-report-format).
+CI/CD-based analyzers integrate into GitLab using a CI/CD job. The report produced by the CI/CD-based analyzer is published as an artifact after the job completes. GitLab ingests this report, allowing users to visualize and manage found vulnerabilities. The generated reports adhere to the [secure report format](#secure-report-format).
 
-Many GitLab analyzers follow a standard approach using Docker to run a wrapped Scanner. For example,
+Many GitLab analyzers follow a standard approach using Docker to run a wrapped scanner. For example,
 the image `semgrep` is an analyzer that wraps the scanner `Semgrep`. However, some analyzers run directly within GitLab Rails or other target environments rather than in separate containers.
 
 ## Attack surface
@@ -38,7 +38,7 @@ A software component that makes up a portion of a software project. Examples inc
 ## Corpus
 
 The set of meaningful test cases that are generated while the fuzzer is running. Each meaningful
-test case produces new coverage in the tested program. It's advised to re-use the corpus and pass it
+test case produces new coverage in the tested program. You should re-use the corpus and pass it
 to subsequent runs.
 
 ## CNA
@@ -73,9 +73,9 @@ required, only one finding is kept and the others are eliminated. Read more abou
 
 ## Dependency graph export
 
-A dependency graph export lists the direct and indirect dependencies used by a project **and**
+A dependency graph export lists the direct and indirect dependencies used by a project and
 includes the relationships between them. It's differentiated from a lock file because it may
-_not_ be required by a [package manager](#package-managers) during installation like in the case of a `pipdeptree graph`
+not be required by a [package manager](#package-managers) during installation like in the case of a `pipdeptree graph`
 [export](https://github.com/tox-dev/pipdeptree/blob/28ed57c8e96ed1fce13a7abbf167e850625a835c/README.md#visualizing-the-dependency-graph).
 
 ## Duplicate finding
@@ -106,7 +106,7 @@ You can interact with vulnerability findings in two ways.
 A flexible and non-destructive way to visually organize vulnerabilities in groups when there are multiple findings
 that are likely related but do not qualify for deduplication. For example, you can include findings that should be
 evaluated together, would be fixed by the same action, or come from the same source. Grouping behavior for vulnerabilities is
-under development and tracked in issue [267588](https://gitlab.com/gitlab-org/gitlab/-/issues/267588).
+under development and tracked in [issue 267588](https://gitlab.com/gitlab-org/gitlab/-/issues/267588).
 
 ## Insignificant finding
 
@@ -247,17 +247,17 @@ after it's confirmed that they fall in the affected version range.
 ## Post-filter
 
 Post-filters help reduce noise in the scanner results and automate manual tasks. You can specify criteria that updates
-or modifies vulnerability data based on scanner results. For example, you can flag findings as likely False Positives
+or modifies vulnerability data based on scanner results. For example, you can flag findings as likely false positives
 and automatically resolve vulnerabilities that are no longer detected. These are not permanent actions and can be changed.
 
-Support for automatically resolving findings is tracked in epic [7478](https://gitlab.com/groups/gitlab-org/-/epics/7478) and
-support for cheap scan is proposed in issue [349926](https://gitlab.com/gitlab-org/gitlab/-/issues/349926).
+Support for automatically resolving findings is tracked in [epic 7478](https://gitlab.com/groups/gitlab-org/-/epics/7478) and
+support for cheap scan is proposed in [issue 349926](https://gitlab.com/gitlab-org/gitlab/-/issues/349926).
 
 ## Pre-filter
 
 An irreversible action that is done to filter out targets before analysis occurs. This is usually provided to allow
 the user to reduce scope and noise as well as speed up the analysis. This should not be done if a record is needed as
-we do not store anything related to the skipped/excluded code or assets.
+GitLab doesn't store anything related to the skipped/excluded code or assets.
 
 Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the scan based on the paths provided.`
 
@@ -273,15 +273,15 @@ changed.
 
 ## Processor
 
-Software that accepts an input and transforms it according to specified criteria, either by modifying the input data or by attaching additional metadata as an output. Processors exist to support Scanner operations and are commonly used in pre-scan and post-scan phases. Unlike [Filters](#pre-filter), Processors do not have decision-making capabilities to control workflow continuation or termination based on business logic - they perform transformations and pass the results forward unconditionally.
+Software that accepts an input and transforms it according to specified criteria, either by modifying the input data or by attaching additional metadata as an output. Processors exist to support scanner operations and are commonly used in pre-scan and post-scan phases. Unlike [filters](#pre-filter), processors do not have decision-making capabilities to control workflow continuation or termination based on business logic. Instead, they perform transformations and pass the results forward unconditionally.
 
-### Pre-Processor
+### Pre-processor
 
-Pre-processors typically perform data preparation tasks such as normalizing input formats, enriching scan targets with additional context, applying target-specific transformations, or augmenting configuration parameters. They ensure that the Scanner receives properly formatted and enhanced inputs optimized for the scanning operation.
+Pre-processors typically perform data preparation tasks such as normalizing input formats, enriching scan targets with additional context, applying target-specific transformations, or augmenting configuration parameters. They ensure that the scanner receives properly formatted and enhanced inputs optimized for the scanning operation.
 
-### Post-Processor
+### Post-processor
 
-Post-processors apply intelligent analysis to scan results after the [Scanner](#scanner) completes its operation. Post-processors enhance raw Scanner output through operations like vulnerability classification, false positive filtering, severity adjustment, and contextual enrichment. Scanner results can pass through multiple Post-processors in sequence before the processed results are returned to the [Analyzer](#analyzer).
+Post-processors apply intelligent analysis to scan results after the [scanner](#scanner) completes its operation. Post-processors enhance raw scanner output through operations like vulnerability classification, false positive filtering, severity adjustment, and contextual enrichment. Scanner results can pass through multiple post-processors in sequence before the processed results are returned to the [analyzer](#analyzer).
 
 ## Reachability
 
@@ -313,15 +313,15 @@ A discrete unit of content or artifact that serves as the scope boundary for run
 
 ## Scanner
 
-Software that scans for security vulnerabilities in a scan target (an instance of a [scan target type](#scan-target-type)). It is generally a stateless component that receives necessary scan configuration parameters and scan payloads from the Analyzer. The resulting scan report is not necessarily in the [Secure report format](#secure-report-format). A scanner can be a sophisticated component that wraps one or more scan engines with additional processors (for example, the Secret Detection Scanner), or it can be as simple as a standalone scan engine (for example, Trivy).
+Software that scans for security vulnerabilities in a scan target (an instance of a [scan target type](#scan-target-type)). It is generally a stateless component that receives necessary scan configuration parameters and scan payloads from the analyzer. The resulting scan report is not necessarily in the [Secure report format](#secure-report-format). A scanner can be a sophisticated component that wraps one or more scan engines with additional processors (for example, the secret detection scanner), or it can be as simple as a standalone scan engine (for example, Trivy).
 
 ## Secure product
 
 A group of features related to a specific area of application security with first-class support by
 GitLab.
 
-Products include Container Scanning, Dependency Scanning, Dynamic Application Security
-Testing (DAST), Secret Detection, Static Application Security Testing (SAST), and Fuzz Testing.
+Products include container scanning, dependency scanning, dynamic application security
+testing (DAST), secret detection, static application security testing (SAST), and fuzz testing.
 
 Each of these products typically include one or more analyzers.
 
@@ -330,7 +330,7 @@ Each of these products typically include one or more analyzers.
 A standard report format that Secure products comply with when creating JSON reports. The format is described by a
 [JSON schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas).
 
-## Security Dashboard
+## Security dashboard
 
 Provides an overview of all the vulnerabilities for a project, group, or GitLab instance.
 Vulnerabilities are only created from findings discovered on the project's default branch.

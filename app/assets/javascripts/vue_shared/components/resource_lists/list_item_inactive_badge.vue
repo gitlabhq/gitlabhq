@@ -22,7 +22,7 @@ export default {
       return Boolean(this.resource.isSelfDeletionInProgress);
     },
     isPendingDeletion() {
-      return Boolean(this.resource.markedForDeletionOn || this.resource.markedForDeletion);
+      return Boolean(this.resource.markedForDeletion);
     },
     isArchived() {
       return this.resource.archived;

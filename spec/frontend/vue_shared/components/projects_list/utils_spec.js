@@ -27,39 +27,101 @@ const MOCK_PROJECT = {
 
 const MOCK_PROJECT_DELAY_DELETION_ENABLED = {
   ...MOCK_PROJECT,
-  markedForDeletionOn: null,
+  markedForDeletion: false,
+  isSelfDeletionScheduled: false,
   permanentDeletionDate: '2024-03-31',
 };
 
 const MOCK_PROJECT_PENDING_DELETION = {
   ...MOCK_PROJECT,
-  markedForDeletionOn: '2024-03-24',
+  markedForDeletion: true,
+  isSelfDeletionScheduled: true,
   permanentDeletionDate: '2024-03-31',
 };
 
 describe('availableGraphQLProjectActions', () => {
+  beforeEach(() => {
+    window.gon = {
+      features: {
+        disallowImmediateDeletion: false,
+      },
+    };
+  });
+
   describe.each`
-    userPermissions                                  | markedForDeletionOn | archived | availableActions
-    ${{ viewEditPage: false, removeProject: false }} | ${null}             | ${false} | ${[]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${null}             | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeProject: true }}  | ${null}             | ${false} | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${null}             | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeProject: false }}  | ${'2024-12-31'}     | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${'2024-12-31'}     | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
-    ${{ archiveProject: true }}                      | ${null}             | ${false} | ${[ACTION_ARCHIVE]}
-    ${{ archiveProject: true }}                      | ${null}             | ${true}  | ${[ACTION_UNARCHIVE]}
-    ${{ archiveProject: false }}                     | ${null}             | ${false} | ${[]}
-    ${{ archiveProject: false }}                     | ${null}             | ${true}  | ${[]}
+    userPermissions                                  | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
+    ${{ viewEditPage: false, removeProject: false }} | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeProject: true }}  | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: false }}  | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
+    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_ARCHIVE]}
+    ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${true}  | ${[ACTION_UNARCHIVE]}
+    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
+    ${{ archiveProject: false }}                     | ${false}          | ${false}                 | ${false}                | ${true}  | ${[]}
   `(
     'availableGraphQLProjectActions',
-    ({ userPermissions, markedForDeletionOn, archived, availableActions }) => {
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletionOn is ${markedForDeletionOn}, and archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
+    ({
+      userPermissions,
+      markedForDeletion,
+      isSelfDeletionInProgress,
+      isSelfDeletionScheduled,
+      archived,
+      availableActions,
+    }) => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and  archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
-          availableGraphQLProjectActions({ userPermissions, markedForDeletionOn, archived }),
+          availableGraphQLProjectActions({
+            userPermissions,
+            markedForDeletion,
+            isSelfDeletionInProgress,
+            isSelfDeletionScheduled,
+            archived,
+          }),
         ).toStrictEqual(availableActions);
       });
     },
   );
+
+  describe('when disallowImmediateDeletion feature flag is enabled', () => {
+    beforeEach(() => {
+      window.gon = {
+        features: {
+          disallowImmediateDeletion: true,
+        },
+      };
+    });
+
+    it('does not allow deleting immediately', () => {
+      expect(
+        availableGraphQLProjectActions({
+          userPermissions: { viewEditPage: true, removeProject: true },
+          markedForDeletion: true,
+          isSelfDeletionInProgress: false,
+          isSelfDeletionScheduled: true,
+        }),
+      ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
+    });
+
+    describe('when userPermissions include adminAllResources', () => {
+      it('allows deleting immediately', () => {
+        expect(
+          availableGraphQLProjectActions({
+            userPermissions: { removeProject: true, adminAllResources: true },
+            markedForDeletion: true,
+            isSelfDeletionInProgress: false,
+            isSelfDeletionScheduled: true,
+          }),
+        ).toStrictEqual([ACTION_RESTORE, ACTION_DELETE]);
+      });
+    });
+  });
 });
 
 describe('renderArchiveSuccessToast', () => {

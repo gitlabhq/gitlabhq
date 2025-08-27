@@ -3512,7 +3512,6 @@ Gitlab/BoundedContexts:
     - 'ee/lib/ee/sidebars/admin/menus/admin_settings_menu.rb'
     - 'ee/lib/ee/sidebars/admin/menus/monitoring_menu.rb'
     - 'ee/lib/ee/sidebars/admin/panel.rb'
-    - 'ee/lib/ee/sidebars/explore/menus/dependencies_menu.rb'
     - 'ee/lib/ee/sidebars/explore/panel.rb'
     - 'ee/lib/ee/sidebars/groups/menus/issues_menu.rb'
     - 'ee/lib/ee/sidebars/groups/menus/settings_menu.rb'

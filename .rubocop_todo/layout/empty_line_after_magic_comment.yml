@@ -281,8 +281,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/gitlab/discussions_diff/highlight_cache.rb'
     - 'lib/gitlab/git/base_error.rb'
     - 'lib/gitlab/graphql/board/issues_connection_extension.rb'
-    - 'lib/gitlab/graphql/extensions/externally_paginated_array_extension.rb'
-    - 'lib/gitlab/graphql/extensions/forward_only_externally_paginated_array_extension.rb'
     - 'lib/gitlab/graphql/project/dast_profile_connection_extension.rb'
     - 'lib/gitlab/import_export/recursive_merge_folders.rb'
     - 'lib/gitlab/import_export/shared.rb'

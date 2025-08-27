@@ -31,7 +31,7 @@ export default {
       return this.resource.descriptionHtml;
     },
     isPendingDeletion() {
-      return Boolean(this.resource.markedForDeletion || this.resource.markedForDeletionOn);
+      return Boolean(this.resource.markedForDeletion);
     },
     formattedDate() {
       return formatDate(newDate(this.resource.permanentDeletionDate), SHORT_DATE_FORMAT);

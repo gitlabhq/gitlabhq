@@ -701,53 +701,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'remove_group' do
-    let(:policy) { described_class.new(current_user, group) }
-
-    context 'anonymous user' do
-      let(:current_user) { anonymous }
-
-      it { is_expected.to be_disallowed(:remove_group) }
-    end
-
-    context 'group member' do
-      %w[guest planner reporter developer maintainer].each do |role|
-        context role do
-          let(:current_user) { send(role) }
-
-          it { is_expected.to be_disallowed(:remove_group) }
-        end
-      end
-
-      context 'owner' do
-        let(:current_user) { owner }
-
-        context 'when group is marked for deletion' do
-          before do
-            group.namespace_details.update!(deleted_at: Time.current)
-          end
-
-          it 'allows remove_group action' do
-            expect(policy).to be_allowed(:remove_group)
-          end
-        end
-
-        context 'when group ancestor is marked for deletion' do
-          let_it_be(:ancestor) { create(:group_with_deletion_schedule, organization: group.organization) }
-
-          before do
-            group.parent = ancestor
-            group.save!
-          end
-
-          it 'prevents remove_group action' do
-            expect(policy).not_to be_allowed(:remove_group)
-          end
-        end
-      end
-    end
-  end
-
   context 'transfer_projects' do
     shared_examples_for 'allowed to transfer projects' do
       before do

@@ -33503,6 +33503,7 @@ Returns [`FindingReportsComparer`](#findingreportscomparer).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestfindingreportscomparerreporttype"></a>`reportType` | [`ComparableSecurityReportType!`](#comparablesecurityreporttype) | Filter vulnerability findings by report type. |
+| <a id="mergerequestfindingreportscomparerscanmode"></a>`scanMode` | [`ScanModeEnum`](#scanmodeenum) | Filter results by scan mode. |
 
 ##### `MergeRequest.notes`
 
@@ -48928,6 +48929,16 @@ Values for sbom source types.
 | <a id="sbomsourcetypecontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Source Type: container_scanning_for_registry. |
 | <a id="sbomsourcetypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Source Type: dependency_scanning. |
 | <a id="sbomsourcetypenil_source"></a>`NIL_SOURCE` | Enum source nil. |
+
+### `ScanModeEnum`
+
+Options for filtering by scan mode.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="scanmodeenumall"></a>`ALL` | Return results from all scans. |
+| <a id="scanmodeenumfull"></a>`FULL` | Return results from full scans. |
+| <a id="scanmodeenumpartial"></a>`PARTIAL` | Return results from partial scans. |
 
 ### `ScanStatus`
 

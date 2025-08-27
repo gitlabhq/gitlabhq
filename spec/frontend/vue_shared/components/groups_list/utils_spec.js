@@ -28,16 +28,30 @@ const MOCK_GROUP = {
 const MOCK_GROUP_WITH_DELAY_DELETION = {
   ...MOCK_GROUP,
   markedForDeletion: false,
+  isSelfDeletionScheduled: false,
   permanentDeletionDate: '2024-03-31',
 };
 
 const MOCK_GROUP_PENDING_DELETION = {
   ...MOCK_GROUP,
   markedForDeletion: true,
+  isSelfDeletionScheduled: true,
   permanentDeletionDate: '2024-03-31',
 };
 
+afterEach(() => {
+  window.gon = {};
+});
+
 describe('availableGraphQLGroupActions', () => {
+  beforeEach(() => {
+    window.gon = {
+      features: {
+        disallowImmediateDeletion: false,
+      },
+    };
+  });
+
   describe.each`
     userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
     ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
@@ -78,6 +92,40 @@ describe('availableGraphQLGroupActions', () => {
       });
     },
   );
+
+  describe('when disallowImmediateDeletion feature flag is enabled', () => {
+    beforeEach(() => {
+      window.gon = {
+        features: {
+          disallowImmediateDeletion: true,
+        },
+      };
+    });
+
+    it('does not allow deleting immediately', () => {
+      expect(
+        availableGraphQLGroupActions({
+          userPermissions: { viewEditPage: true, removeGroup: true },
+          markedForDeletion: true,
+          isSelfDeletionInProgress: false,
+          isSelfDeletionScheduled: true,
+        }),
+      ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
+    });
+
+    describe('when userPermissions include adminAllResources', () => {
+      it('allows deleting immediately', () => {
+        expect(
+          availableGraphQLGroupActions({
+            userPermissions: { removeGroup: true, adminAllResources: true },
+            markedForDeletion: true,
+            isSelfDeletionInProgress: false,
+            isSelfDeletionScheduled: true,
+          }),
+        ).toStrictEqual([ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]);
+      });
+    });
+  });
 });
 
 describe('renderDeleteSuccessToast', () => {
