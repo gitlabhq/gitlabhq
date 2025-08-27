@@ -67701,9 +67701,6 @@ msgstr ""
 msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "Unassign"
-msgstr ""
-
 msgid "Unassign all"
 msgstr ""
 

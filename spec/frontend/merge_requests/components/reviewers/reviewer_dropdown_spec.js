@@ -8,6 +8,7 @@ import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import ReviewerDropdown from '~/merge_requests/components/reviewers/reviewer_dropdown.vue';
+import UpdateReviewers from '~/merge_requests/components/reviewers/update_reviewers.vue';
 import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import setReviewersMutation from '~/merge_requests/components/reviewers/queries/set_reviewers.mutation.graphql';
@@ -82,6 +83,9 @@ function createComponent(
       issuableId: '1',
       issuableIid: '1',
       directlyInviteMembers: true,
+    },
+    stubs: {
+      UpdateReviewers,
     },
   });
 }
@@ -200,16 +204,12 @@ describe('Reviewer dropdown component', () => {
       });
     });
 
-    it('updates reviewers when dropdown is closed', async () => {
+    it('updates reviewers when dropdown is closed', () => {
       findDropdown().vm.$emit('hidden');
-
-      await waitForPromises();
 
       expect(setReviewersMutationMock).toHaveBeenCalledWith(
         expect.objectContaining({
           reviewerUsernames: ['root'],
-          projectPath: 'gitlab-org/gitlab',
-          iid: '1',
         }),
       );
     });
@@ -227,11 +227,9 @@ describe('Reviewer dropdown component', () => {
         ({ trackEventSpy } = bindInternalEventDocument(wrapper.element));
       });
 
-      it('tracks which position any selected users were in as a telemetry event', async () => {
+      it('tracks which position any selected users were in as a telemetry event', () => {
         findDropdown().vm.$emit('select', ['root']);
         findDropdown().vm.$emit('hidden');
-
-        await waitForPromises();
 
         expect(trackEventSpy).toHaveBeenCalledWith(
           'user_selects_reviewer_from_mr_sidebar',
@@ -255,8 +253,6 @@ describe('Reviewer dropdown component', () => {
         findDropdown().vm.$emit('select', ['bob']);
         findDropdown().vm.$emit('hidden');
 
-        await waitForPromises();
-
         expect(trackEventSpy).toHaveBeenCalledWith(
           'user_selects_reviewer_from_mr_sidebar',
           {
@@ -268,12 +264,10 @@ describe('Reviewer dropdown component', () => {
         );
       });
 
-      it('tracks which position any selected users were in after a search as a telemetry event', async () => {
+      it('tracks which position any selected users were in after a search as a telemetry event', () => {
         findDropdown().vm.$emit('search', 'bob');
         findDropdown().vm.$emit('select', ['bob']);
         findDropdown().vm.$emit('hidden');
-
-        await waitForPromises();
 
         expect(trackEventSpy).toHaveBeenCalledWith(
           'user_selects_reviewer_from_mr_sidebar_after_search',
@@ -286,11 +280,9 @@ describe('Reviewer dropdown component', () => {
         );
       });
 
-      it('does not send the "simple sidebar" tracking event when used "normally" (in complex mode)', async () => {
+      it('does not send the "simple sidebar" tracking event when used "normally" (in complex mode)', () => {
         findDropdown().vm.$emit('select', ['bob']);
         findDropdown().vm.$emit('hidden');
-
-        await waitForPromises();
 
         expect(trackEventSpy).not.toHaveBeenCalledWith(
           'user_requests_review_from_mr_simple_sidebar',
@@ -310,8 +302,6 @@ describe('Reviewer dropdown component', () => {
 
           findDropdown().vm.$emit('select', ['bob']);
           findDropdown().vm.$emit('hidden');
-
-          await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
             'user_requests_review_from_mr_simple_sidebar',
@@ -335,8 +325,6 @@ describe('Reviewer dropdown component', () => {
 
           findDropdown().vm.$emit('select', ['root']);
           findDropdown().vm.$emit('hidden');
-
-          await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
             'user_selects_reviewer_from_mr_sidebar',
@@ -362,8 +350,6 @@ describe('Reviewer dropdown component', () => {
 
           findDropdown().vm.$emit('select', ['bob']);
           findDropdown().vm.$emit('hidden');
-
-          await waitForPromises();
 
           expect(trackEventSpy).toHaveBeenCalledWith(
             'user_selects_reviewer_from_mr_sidebar',
@@ -402,8 +388,6 @@ describe('Reviewer dropdown component', () => {
           findDropdown().vm.$emit('select', ['coolguy']);
           findDropdown().vm.$emit('hidden');
 
-          await waitForPromises();
-
           expect(trackEventSpy).toHaveBeenCalledWith(
             'user_selects_reviewer_from_mr_sidebar_after_search',
             {
@@ -413,49 +397,6 @@ describe('Reviewer dropdown component', () => {
             },
             undefined,
           );
-        });
-      });
-    });
-
-    describe('multipleSelectionEnabled prop', () => {
-      describe('when multipleSelectionEnabled is false (default)', () => {
-        beforeEach(async () => {
-          createComponent(true, { selectedReviewers: [createMockUser()] });
-          await waitForPromises();
-        });
-
-        it('sets multiple prop to false on listbox', () => {
-          expect(findDropdown().props('multiple')).toBe(false);
-        });
-
-        it('normalizes selected reviewers to a single string value', () => {
-          expect(findDropdown().props('selected')).toBe('root');
-        });
-
-        it('shows "Unassign" as reset button label', () => {
-          expect(findDropdown().props('resetButtonLabel')).toBe('Unassign');
-        });
-      });
-
-      describe('when multipleSelectionEnabled is true', () => {
-        beforeEach(async () => {
-          createComponent(true, {
-            selectedReviewers: [createMockUser()],
-            multipleSelectionEnabled: true,
-          });
-          await waitForPromises();
-        });
-
-        it('sets multiple prop to true on listbox', () => {
-          expect(findDropdown().props('multiple')).toBe(true);
-        });
-
-        it('normalizes selected reviewers to an array', () => {
-          expect(findDropdown().props('selected')).toEqual(['root']);
-        });
-
-        it('shows "Unassign all" as reset button label', () => {
-          expect(findDropdown().props('resetButtonLabel')).toBe('Unassign all');
         });
       });
     });
@@ -488,6 +429,8 @@ describe('Reviewer dropdown component', () => {
     it('updates reviewers from selected user', async () => {
       findDropdown().vm.$emit('select', ['root']);
 
+      await waitForPromises();
+
       findDropdown().vm.$emit('hidden');
 
       await waitForPromises();
@@ -495,8 +438,6 @@ describe('Reviewer dropdown component', () => {
       expect(setReviewersMutationMock).toHaveBeenCalledWith(
         expect.objectContaining({
           reviewerUsernames: ['root'],
-          projectPath: 'gitlab-org/gitlab',
-          iid: '1',
         }),
       );
     });
