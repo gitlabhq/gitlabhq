@@ -1,9 +1,10 @@
 - project = local_assigns.fetch(:project)
 - ref = local_assigns.fetch(:ref)
+- ref_type = local_assigns.fetch(:ref_type)
 - css_class = local_assigns.fetch(:css_class, '')
 - archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
 - pipeline = local_assigns.fetch(:pipeline, nil)
-- download_links = download_links(project, ref, archive_prefix).to_json
+- download_links = download_links(project, ref, archive_prefix, ref_type).to_json
 - download_artifacts = pipeline && previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []
 
 - if !project.empty_repo? && can?(current_user, :download_code, project)

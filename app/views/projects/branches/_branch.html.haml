@@ -46,7 +46,7 @@
         = render Pajamas::ButtonComponent.new(icon: 'merge-request', href: create_mr_path(from: branch.name, source_project: @project), button_options: { class: 'has-tooltip', title: _('New merge request') }) do
           = _('New')
 
-    = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], css_class: '!gl-mr-2'
+    = render 'projects/buttons/download', project: @project, ref: branch.name, ref_type: :heads, pipeline: @refs_pipelines[branch.name], css_class: '!gl-mr-2'
 
     .gl-w-7
       - if !is_default_branch

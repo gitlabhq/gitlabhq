@@ -269,6 +269,8 @@ module Gitlab
       # This is both the filename of the archive (missing the extension) and the
       # name of the top-level member of the archive under which all files go
       def archive_prefix(ref, sha, project_path, append_sha:, path:)
+        ref = ref.gsub(%r{^refs/(?:heads|tags)/}, '')
+
         append_sha = (ref != sha) if append_sha.nil?
 
         formatted_ref = ref.tr('/', '-')

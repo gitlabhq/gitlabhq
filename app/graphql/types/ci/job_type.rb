@@ -3,7 +3,7 @@
 module Types
   module Ci
     # rubocop: disable Graphql/AuthorizeTypes
-    # The permission is presented through `StageType` that has its own authorization
+    # The permission is presented through different types that access JobType
     class JobType < BaseObject
       graphql_name 'CiJob'
 
@@ -84,7 +84,8 @@ module Types
       field :manual_job, GraphQL::Types::Boolean, null: true,
         description: 'Whether the job has a manual action.'
       field :manual_variables, ManualVariableType.connection_type, null: true,
-        description: 'Variables added to a manual job when the job is triggered.'
+        description: 'Variables added to a manual job when the job is triggered.',
+        authorize: :read_manual_variables
       field :play_path, GraphQL::Types::String, null: true,
         description: 'Play path of the job.'
       field :playable, GraphQL::Types::Boolean, null: false, method: :playable?,
