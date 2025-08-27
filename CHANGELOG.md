@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.1 (2025-08-26)
+
+### Fixed (1 change)
+
+- [Fix trusted proxies regression when hostname is specified](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70f1e084bfff4ee4e66c25729afba77d11f567f1)
+
+### Security (4 changes)
+
+- [Adjust snippet blob query complexity to mitigate potential DoS attack](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8aeaa284b4625e46b25498a7aea08f46c9808493) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5256))
+- [Gitea import rate limiting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eba1f64c91f30a3196b176cd02212a66b1602437) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5253))
+- [Fix tag/branch ambiguity in raw file display](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c48100ee91213b8ba0d607a67b2dcd972cee889) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5248))
+- [Add authentication check for manual variables via new policy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf00956e1861280ab7e12e2ecc86f314ea125ade) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5255))
+
 ## 18.3.0 (2025-08-20)
 
 ### Added (205 changes)

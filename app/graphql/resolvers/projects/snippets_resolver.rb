@@ -9,6 +9,10 @@ module Resolvers
 
       alias_method :project, :object
 
+      def self.complexity_multiplier(args)
+        [args[:iid], args[:iids]].any? ? 0 : 0.05
+      end
+
       def resolve(**args)
         return Snippet.none if project.nil?
 
