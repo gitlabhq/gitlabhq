@@ -1465,12 +1465,12 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.146.0.tgz#9d2005978252296cbff9bf47f7f2c0f29c7d35e2"
   integrity sha512-KEPhXsRQkaWjyApjk71t8aIKgMjqZ+QtgRe2H82vXsj+G17XoDDXAHl7Zw00PLf4IrJjn6ur6aS2A6CmTVHDLA==
 
-"@gitlab/ui@119.1.0":
-  version "119.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-119.1.0.tgz#5e1da597c2e42461cf291b222b6e88f65b988232"
-  integrity sha512-/1+ZHDKb/fYdQrUrrnvtv4ml0FpamtkqboqryuVHZVX6PYMHjHob8CzLu1AUy+TLUZE8XcJY4dUG1NrQJ1qQaw==
+"@gitlab/ui@119.2.0":
+  version "119.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-119.2.0.tgz#7641dc89ffe714946070066604570c23be33be52"
+  integrity sha512-U0mS1Gp5glUYEAXEgD2NHubVdaQpoeZ/RAlAn+XqCFsS5waXCyvFdY6JiXF0/RH2XjlcjEzoWPvXMdcofGYO1g==
   dependencies:
-    "@floating-ui/dom" "1.7.3"
+    "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"
     gridstack "^12.3.3"
     iframe-resizer "^4.4.5"

@@ -241,6 +241,11 @@ module Types
       complexity: 5,
       resolver: Resolvers::NestedGroupsResolver
 
+    field :shared_groups, Types::GroupType.connection_type,
+      null: true,
+      description: 'List of shared groups this group was invited to.',
+      resolver: Resolvers::Namespaces::SharedGroupsResolver
+
     field :descendant_groups_count,
       GraphQL::Types::Int,
       null: false,

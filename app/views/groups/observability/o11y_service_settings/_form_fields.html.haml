@@ -1,0 +1,25 @@
+.row
+  .form-group.col-md-6
+    = f.label :o11y_service_name, s_('Observability|Service name'), class: 'label-bold'
+    = f.text_field :o11y_service_name, class: 'form-control', placeholder: 'your-o11y-instance-name'
+    %span.form-text.gl-text-subtle
+      = s_('Observability|The Name of your o11y service instance.')
+
+  .form-group.col-md-6
+    = f.label :o11y_service_user_email, s_('Observability|User email'), class: 'label-bold'
+    = f.email_field :o11y_service_user_email, class: 'form-control', placeholder: 'user@example.com'
+    %span.form-text.gl-text-subtle
+      = s_('Observability|Email address for authentication with the o11y service.')
+
+.row
+  .form-group.col-md-6
+    = f.label :o11y_service_password, s_('Password'), class: 'label-bold'
+    = f.password_field :o11y_service_password, class: 'form-control', placeholder: '••••••••'
+    %span.form-text.gl-text-subtle
+      = s_('Observability|Password for authentication with the o11y service.')
+
+  .form-group.col-md-6
+    = f.label :o11y_service_post_message_encryption_key, s_('Observability|Encryption key'), class: 'label-bold'
+    = f.password_field :o11y_service_post_message_encryption_key, class: 'form-control', placeholder: '••••••••'
+    %span.form-text.gl-text-subtle
+      = s_('Observability|32+ character encryption key for secure communication.')

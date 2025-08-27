@@ -111,48 +111,22 @@ gdk:compile-test-assets:
     - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
 
-retrieve-frontend-fixtures:
-  variables:
-    SETUP_DB: "false"
-  extends:
-    - .default-retry
-    - .frontend:rules:default-frontend-jobs
-  stage: prepare
-  needs: []
-  script:
-    - source scripts/utils.sh
-    - source scripts/gitlab_component_helpers.sh
-    - |
-      function retrieve_frontend_fixtures() {
-        install_gitlab_gem
-        export_fixtures_sha_for_download
-
-        if check_fixtures_download; then
-          download_and_extract_fixtures
-        fi
-      }
-
-      retrieve_frontend_fixtures
-
-  artifacts:
-    expire_in: 30 days
-    paths:
-      - tmp/tests/frontend/
-
 # Download fixtures only when a merge request contains changes to only JS files
 # and fixtures are present in the package registry.
 .frontend-fixtures-base:
   extends:
     - .default-retry
     - .default-before_script
-    - .ruby-cache
+    - .base-script
+    - .fixtures-ruby-cache
     - .repo-from-artifacts
+    - .cache-analytics
   stage: fixtures
   needs:
-    - "setup-test-env"
-    - "retrieve-tests-metadata"
-    - "retrieve-frontend-fixtures"
-    - "compile-test-assets"
+    - setup-test-env
+    - retrieve-tests-metadata
+    - compile-test-assets
+    - cache:fixture-hash
     # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
     - !reference [.repo-from-artifacts, needs]
   variables:
@@ -160,14 +134,6 @@ retrieve-frontend-fixtures:
     # for the `frontend fixture RSpec files` that will be added to the Crystalball mapping in `update-tests-metadata`.
     # More information in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74003.
     WEBPACK_VENDOR_DLL: "true"
-  script:
-    - source scripts/gitlab_component_helpers.sh
-    - |
-      if check_fixtures_reuse; then
-        echoinfo "INFO: Reusing frontend fixtures from 'retrieve-frontend-fixtures'."
-        exit 0
-      fi
-    - !reference [.base-script, script]
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -176,7 +142,7 @@ retrieve-frontend-fixtures:
       - crystalball/
       - knapsack/
       - log/*.log
-      - tmp/tests/frontend/
+      - tmp/tests/frontend/**/*
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.
@@ -200,32 +166,27 @@ rspec-all frontend_fixture clickhouse:
     - !reference [.frontend-fixtures-base, script]
     - rspec_parallelized_job "--tag click_house"
 
-# Uploads EE fixtures in the EE project.
-# Uploads FOSS fixtures in the FOSS project.
+# Creates fixture cache and uploads fixtures to package registry if running in canonical project
 upload-frontend-fixtures:
-  variables:
-    SETUP_DB: "false"
   extends:
     - .default-retry
-    - .default-before_script
-    - .repo-from-artifacts
-    - .frontend:rules:upload-frontend-fixtures
+    - .with-ruby-slim-image
+    - .fixtures-cache
+    - .caching:rules:update-frontend-fixtures
   stage: fixtures
   needs:
-    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
-    - !reference [.repo-from-artifacts, needs]
+    - job: cache:fixture-hash
     - !reference [.with-fixtures-needs, needs]
   script:
-    - source scripts/gitlab_component_helpers.sh
-    - export_fixtures_sha_for_upload
     - |
-      function upload_frontend_fixtures() {
-        fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }
+      if [[ "$CI_PROJECT_PATH" == "gitlab-org/gitlab" ]]; then
+        source scripts/gitlab_component_helpers.sh
+        fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
         create_fixtures_package
         upload_fixtures_package
-      }
-
-      upload_frontend_fixtures
+      else
+        echo "Fixture upload to package registry is only supported in canonical project"
+      fi
 
 graphql-schema-dump:
   variables:
@@ -261,7 +222,6 @@ upload-graphql-schema-dump:
   script:
     - source scripts/gitlab_component_helpers.sh
     - create_and_upload_graphql_schema_package
-
 
 .frontend-test-base:
   extends:

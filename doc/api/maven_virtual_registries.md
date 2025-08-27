@@ -726,12 +726,6 @@ Example response:
 
 Removes the association between an upstream registry and a Maven virtual registry.
 
-{{< alert type="warning" >}}
-
-If this is the last association for the upstream, removal of the association deletes the upstream itself and all its cache entries.
-
-{{< /alert >}}
-
 ```plaintext
 DELETE /virtual_registries/packages/maven/registry_upstreams/:id
 ```

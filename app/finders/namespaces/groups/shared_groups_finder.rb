@@ -9,6 +9,7 @@
 #   current_user
 #   params:
 #     search: string
+#     allow_similarity_sort: boolean
 #
 module Namespaces
   module Groups

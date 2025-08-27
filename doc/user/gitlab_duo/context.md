@@ -194,10 +194,13 @@ Use the imported files in your IDE to provide context about your code project. I
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.
+- Changed to beta in GitLab 18.4.
 
 {{< /history >}}
 
-You can control which project content is included as context for GitLab Duo. Use this to protect sensitive information such as password files and configuration files.
+You can control which project content is excluded as context for GitLab Duo. Use this to protect sensitive information such as password files and configuration files. 
+
+For Duo Chat, excluded context is enforced within [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md). Excluded context is not enforced within [GitLab Duo Chat (Classic)](../gitlab_duo_chat/_index.md).
 
 ### Manage GitLab Duo context exclusions
 

@@ -157,7 +157,7 @@ export default {
 </script>
 
 <template>
-  <div class="detail-page-header gl-flex-col md:gl-flex-row">
+  <div class="detail-page-header gl-flex-col @md/panel:gl-flex-row">
     <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2 gl-text-subtle">
       <gl-badge :variant="badgeVariant" :icon="statusIcon" data-testid="issue-state-badge">
         <slot name="status-badge">{{ badgeText }}</slot>
@@ -191,7 +191,7 @@ export default {
             :data-user-id="authorId"
             data-testid="issue-author"
           >
-            <span :class="[{ 'gl-hidden': !isAuthorExternal }, 'sm:gl-inline']">
+            <span :class="[{ 'gl-hidden': !isAuthorExternal }, '@sm/panel:gl-inline']">
               {{ author.name }}
             </span>
             <gl-icon
@@ -214,7 +214,7 @@ export default {
       />
       <span
         v-if="taskCompletionStatus && hasTasks"
-        class="gl-hidden md:gl-block lg:gl-inline-block"
+        class="gl-hidden @md/panel:gl-block @lg/panel:gl-inline-block"
         >{{ taskStatusString }}</span
       >
       <gl-button

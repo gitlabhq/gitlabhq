@@ -342,6 +342,12 @@ default:
       - .npm/
 ```
 
+{{< alert type="note" >}}
+
+The `files` strategy uses Git commit history to generate cache keys, not file contents. Identical files in different branches may have different cache keys and cannot share caches.
+
+{{</ alert >}}
+
 If you're using [Yarn](https://yarnpkg.com/), you can use [`yarn-offline-mirror`](https://classic.yarnpkg.com/blog/2016/11/24/offline-mirror/)
 to cache the zipped `node_modules` tarballs. The cache generates more quickly, because
 fewer files have to be compressed:

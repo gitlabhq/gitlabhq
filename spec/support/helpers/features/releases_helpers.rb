@@ -18,7 +18,7 @@ module Features
       open_tag_popover
 
       page.within '[data-testid="tag-name-search"]' do
-        find('input[type="search"]').set(tag_name)
+        find('input[type="search"]').set(tag_name, clear: nil)
         wait_for_all_requests
 
         click_button("Create tag #{tag_name}")
@@ -54,7 +54,7 @@ module Features
         wait_for_all_requests
 
         milestone_titles.each do |milestone_title|
-          find('input[type="search"]').set(milestone_title)
+          find('input[type="search"]').set(milestone_title, clear: nil)
 
           wait_for_all_requests
 

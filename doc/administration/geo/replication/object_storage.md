@@ -84,6 +84,10 @@ configure the **secondary** in a few ways:
 - Use a separate object store and enable the **Allow this secondary node to replicate
   content on Object Storage** setting.
 
+If the **Allow this secondary node to replicate content on Object Storage** setting
+is disabled, and if you have migrated all your files from local storage to object storage,
+then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to synchronize**.
+
 {{< alert type="warning" >}}
 
 To avoid data loss, you should only enable the **Allow this secondary node to replicate content on

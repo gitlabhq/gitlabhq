@@ -46,7 +46,8 @@ module Features
 
     def select_members(names)
       Array.wrap(names).each do |name|
-        find(member_dropdown_selector).set(name)
+        # use `clear: nil` to prevent events that can trap the browser focus
+        find(member_dropdown_selector).set(name, clear: nil)
 
         wait_for_requests
         click_button name
@@ -74,6 +75,7 @@ module Features
         toggle_listbox
         select_listbox_item(role, exact_text: use_exact_text_match)
       end
+
       fill_in 'YYYY-MM-DD', with: expires_at.to_date.iso8601 if expires_at
     end
 

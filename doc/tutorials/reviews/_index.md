@@ -42,6 +42,7 @@ To review a merge request:
 1. Either:
    - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
    - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) **> Review requests**.
+<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
 
 ## Understand the structure of merge requests
 

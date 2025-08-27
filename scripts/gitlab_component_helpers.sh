@@ -56,7 +56,8 @@ fi
 
 # Fixtures constants
 export FIXTURES_PATH="tmp/tests/frontend/**/*"
-export REUSE_FRONTEND_FIXTURES_ENABLED="${REUSE_FRONTEND_FIXTURES_ENABLED:-"true"}"
+export FIXTURES_PACKAGE="fixtures-${GLCI_FIXTURES_HASH:-$CI_COMMIT_SHA}.tar.gz"
+export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${GLCI_FIXTURES_HASH:-$CI_COMMIT_SHA}/${FIXTURES_PACKAGE}"
 
 function setup_test_env() {
   mkdir -p ${GLCI_CACHED_SERVICES_FOLDER} ${TMP_TEST_FOLDER}
@@ -113,59 +114,9 @@ function check_fixtures_download() {
   fi
 }
 
-function check_fixtures_reuse() {
-  if [[ "${REUSE_FRONTEND_FIXTURES_ENABLED}" != "true" ]]; then
-    echoinfo "INFO: Reusing frontend fixtures is disabled due to REUSE_FRONTEND_FIXTURES_ENABLED=${REUSE_FRONTEND_FIXTURES_ENABLED}."
-    rm -rf "tmp/tests/frontend";
-    return 1
-  fi
-
-  if [[ "${CI_PROJECT_NAME}" != "gitlab" ]] || [[ "${CI_JOB_NAME}" =~ "foss" ]]; then
-    echoinfo "INFO: Reusing frontend fixtures is only supported in EE."
-    rm -rf "tmp/tests/frontend";
-    return 1
-  fi
-
-  if [[ -d "tmp/tests/frontend" ]]; then
-    # Remove tmp/tests/frontend/ except on the first parallelized job so that depending
-    # jobs don't download the exact same artifact multiple times.
-    if [[ -n "${CI_NODE_INDEX:-}" ]] && [[ "${CI_NODE_INDEX:-}" -ne 1 ]]; then
-      echoinfo "INFO: Removing 'tmp/tests/frontend' as we're on node ${CI_NODE_INDEX:-}. Dependent jobs will use the artifacts from the first parallelized job.";
-      rm -rf "tmp/tests/frontend";
-    fi
-    return 0
-  else
-    echoinfo "INFO: 'tmp/tests/frontend' does not exist.";
-    return 1
-  fi
-}
-
-function create_fixtures_package() {
-  create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
-}
-
 function create_and_upload_graphql_schema_package() {
   create_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PATH}"
   upload_package "${GRAPHQL_SCHEMA_PACKAGE}" "${GRAPHQL_SCHEMA_PACKAGE_URL}"
-}
-
-function download_and_extract_fixtures() {
-  read_curl_package "${FIXTURES_PACKAGE_URL}" | extract_package
-}
-
-function export_fixtures_package_variables() {
-  export FIXTURES_PACKAGE="fixtures-${FIXTURES_SHA}.tar.gz"
-  export FIXTURES_PACKAGE_URL="${API_PACKAGES_BASE_URL}/fixtures/${FIXTURES_SHA}/${FIXTURES_PACKAGE}"
-}
-
-function export_fixtures_sha_for_download() {
-  export FIXTURES_SHA="${CI_MERGE_REQUEST_TARGET_BRANCH_SHA:-${CI_MERGE_REQUEST_DIFF_BASE_SHA:-$CI_COMMIT_SHA}}"
-  export_fixtures_package_variables
-}
-
-function export_fixtures_sha_for_upload() {
-  export FIXTURES_SHA="${CI_MERGE_REQUEST_SOURCE_BRANCH_SHA:-$CI_COMMIT_SHA}"
-  export_fixtures_package_variables
 }
 
 function fixtures_archive_doesnt_exist() {
@@ -174,16 +125,8 @@ function fixtures_archive_doesnt_exist() {
   archive_doesnt_exist "${FIXTURES_PACKAGE_URL}"
 }
 
-function fixtures_directory_exists() {
-  local fixtures_directory="tmp/tests/frontend/"
-
-  if [[ -d "${fixtures_directory}" ]]; then
-    echo "${fixtures_directory} directory exists"
-    return 0
-  else
-    echo "${fixtures_directory} directory does not exist"
-    return 1
-  fi
+function create_fixtures_package() {
+  create_package "${FIXTURES_PACKAGE}" "${FIXTURES_PATH}"
 }
 
 function upload_fixtures_package() {

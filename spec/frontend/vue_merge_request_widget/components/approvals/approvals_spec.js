@@ -11,7 +11,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import Approvals from '~/vue_merge_request_widget/components/approvals/approvals.vue';
 import ApprovalsSummary from '~/vue_merge_request_widget/components/approvals/approvals_summary.vue';
-import ApprovalsSummaryOptional from '~/vue_merge_request_widget/components/approvals/approvals_summary_optional.vue';
 import {
   APPROVE_ERROR,
   UNAPPROVE_ERROR,
@@ -104,7 +103,6 @@ describe('MRWidget approvals', () => {
         };
   };
   const findSummary = () => wrapper.findComponent(ApprovalsSummary);
-  const findOptionalSummary = () => wrapper.findComponent(ApprovalsSummaryOptional);
 
   beforeEach(() => {
     service = {
@@ -363,11 +361,14 @@ describe('MRWidget approvals', () => {
         });
 
         it('is shown', () => {
-          expect(findSummary().exists()).toBe(false);
-          expect(findOptionalSummary().props()).toEqual({
-            canApprove: true,
-            helpPath: TEST_HELP_PATH,
-          });
+          expect(findSummary().exists()).toBe(true);
+          expect(findSummary().props()).toEqual(
+            expect.objectContaining({
+              optional: true,
+              canApprove: true,
+              helpPath: TEST_HELP_PATH,
+            }),
+          );
         });
       });
 
@@ -378,11 +379,14 @@ describe('MRWidget approvals', () => {
         });
 
         it('is shown', () => {
-          expect(findSummary().exists()).toBe(false);
-          expect(findOptionalSummary().props()).toEqual({
-            canApprove: false,
-            helpPath: TEST_HELP_PATH,
-          });
+          expect(findSummary().exists()).toBe(true);
+          expect(findSummary().props()).toEqual(
+            expect.objectContaining({
+              optional: true,
+              canApprove: false,
+              helpPath: TEST_HELP_PATH,
+            }),
+          );
         });
       });
     });
@@ -397,7 +401,6 @@ describe('MRWidget approvals', () => {
     it('is rendered with props', () => {
       const summary = findSummary();
 
-      expect(findOptionalSummary().exists()).toBe(false);
       expect(summary.exists()).toBe(true);
       expect(summary.props()).toMatchObject({
         approvalState: approvedByCurrentUser.data.project.mergeRequest,

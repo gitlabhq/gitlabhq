@@ -149,6 +149,54 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
   end
 
+  describe ':read_manual_variables' do
+    context 'when project is public' do
+      let(:project) { create(:project, :public) }
+
+      context 'when user is at least a developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'is allowed' do
+          expect(policy).to be_allowed :read_manual_variables
+        end
+      end
+
+      context 'when user is a developer or below' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'is not allowed' do
+          expect(policy).not_to be_allowed :read_manual_variables
+        end
+      end
+    end
+
+    context 'when project is private' do
+      let(:project) { create(:project, :private) }
+
+      context 'when user is a guest and a member of the project' do
+        before do
+          project.add_guest(user)
+        end
+
+        it 'is allowed' do
+          expect(policy).to be_allowed :read_manual_variables
+        end
+      end
+
+      context 'when user is not a member of the project' do
+        let(:user) { create(:user) }
+
+        it 'is not allowed' do
+          expect(policy).not_to be_allowed :read_manual_variables
+        end
+      end
+    end
+  end
+
   describe '#rules' do
     context 'when user does not have access to the project' do
       let(:project) { create(:project, :private) }

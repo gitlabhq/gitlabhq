@@ -105,8 +105,7 @@ You can interact with vulnerability findings in two ways.
 
 A flexible and non-destructive way to visually organize vulnerabilities in groups when there are multiple findings
 that are likely related but do not qualify for deduplication. For example, you can include findings that should be
-evaluated together, would be fixed by the same action, or come from the same source. Grouping behavior for vulnerabilities is
-under development and tracked in [issue 267588](https://gitlab.com/gitlab-org/gitlab/-/issues/267588).
+evaluated together, would be fixed by the same action, or come from the same source.
 
 ## Insignificant finding
 
@@ -251,12 +250,12 @@ or modifies vulnerability data based on scanner results. For example, you can fl
 and automatically resolve vulnerabilities that are no longer detected. These are not permanent actions and can be changed.
 
 Support for automatically resolving findings is tracked in [epic 7478](https://gitlab.com/groups/gitlab-org/-/epics/7478) and
-support for cheap scan is proposed in [issue 349926](https://gitlab.com/gitlab-org/gitlab/-/issues/349926).
+support for cheap scan is proposed in [epic 7886](https://gitlab.com/groups/gitlab-org/-/epics/7886).
 
 ## Pre-filter
 
 An irreversible action that is done to filter out targets before analysis occurs. This is usually provided to allow
-the user to reduce scope and noise as well as speed up the analysis. This should not be done if a record is needed as
+the user to reduce scope and noise and speed up the analysis. This should not be done if a record is needed as
 GitLab doesn't store anything related to the skipped/excluded code or assets.
 
 Examples: `DS_EXCLUDED_PATHS` should `Exclude files and directories from the scan based on the paths provided.`

@@ -31381,6 +31381,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupsecuritypolicyprojectsuggestionsonlylinked"></a>`onlyLinked` | [`Boolean`](#boolean) | Whether to suggest only projects already linked as security policy projects. |
 | <a id="groupsecuritypolicyprojectsuggestionssearch"></a>`search` | [`String!`](#string) | Search query for projects' full paths. |
 
+##### `Group.sharedGroups`
+
+List of shared groups this group was invited to.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsharedgroupssearch"></a>`search` | [`String`](#string) | Search for a specific group. |
+| <a id="groupsharedgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Order by name, path, id or similarity if searching. |
+
 ##### `Group.sharedProjects`
 
 List of shared projects this group was invited to.

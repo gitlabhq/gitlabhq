@@ -19,13 +19,13 @@ RSpec.describe 'Manually create a todo item from issue', :js, feature_category: 
     click_button 'Add a to-do item'
 
     expect(page).to have_button 'Mark as done'
-    expect(page).to have_link 'To-Do List 1'
+    expect(page).to have_link '1 to-do item'
   end
 
   it 'marks a todo as done' do
     click_button 'Add a to-do item'
     click_button 'Mark as done'
 
-    expect(page).to have_link 'To-Do List 0'
+    expect(page).to have_link '0 to-do items'
   end
 end

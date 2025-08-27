@@ -707,6 +707,7 @@ Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
 - On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}).
+<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
 
 ## Issue list
 

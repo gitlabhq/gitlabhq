@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.1 (2025-08-26)
+
+### Fixed (1 change)
+
+- [Fix trusted proxies regression when hostname is specified](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70f1e084bfff4ee4e66c25729afba77d11f567f1)
+
+### Security (4 changes)
+
+- [Adjust snippet blob query complexity to mitigate potential DoS attack](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8aeaa284b4625e46b25498a7aea08f46c9808493) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5256))
+- [Gitea import rate limiting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eba1f64c91f30a3196b176cd02212a66b1602437) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5253))
+- [Fix tag/branch ambiguity in raw file display](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c48100ee91213b8ba0d607a67b2dcd972cee889) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5248))
+- [Add authentication check for manual variables via new policy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf00956e1861280ab7e12e2ecc86f314ea125ade) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5255))
+
 ## 18.3.0 (2025-08-20)
 
 ### Added (205 changes)
@@ -856,6 +869,20 @@ entry.
 - [Use proper vue frontend errors on company form](https://gitlab.com/gitlab-org/gitlab/-/commit/d04f737a5d4dbef68db29c73e37edf382b8cea79) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194378)) **GitLab Enterprise Edition**
 - [Remove ignore column from Users](https://gitlab.com/gitlab-org/gitlab/-/commit/ad08665571456b0e6d8d4f70f161a0980b6a4f80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197464))
 
+## 18.2.5 (2025-08-26)
+
+### Fixed (2 changes)
+
+- [Ignore silent mode in clickhouse http calls](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed59a658334df6d01362f6d23c08f5acd768ff8e)
+- [Check Stage for self-managed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eb039f297e553de4847c97eff3c7c6f6f303fd7b) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Adjust snippet blob query complexity to mitigate potential DoS attack](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1e0eabbeda3d53a366689aefaad2691fb6e83789) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5232))
+- [Gitea import rate limiting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a9dd8d3b15f7b4b5a6c9775d9f72de2cf8fa36f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5252))
+- [Fix tag/branch ambiguity in raw file display](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f871b4ea8a988103c28423a99b7907fe1b36705a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5238))
+- [Add authentication check for manual variables via new policy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f5b9f623bcc43612fa07861a57d0901291be72c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5194))
+
 ## 18.2.4 (2025-08-18)
 
 ### Fixed (1 change)
@@ -1675,6 +1702,15 @@ entry.
 - [Remove pat_last_used_at_optimization FF](https://gitlab.com/gitlab-org/gitlab/-/commit/07b0af7a1bef7be80a2b9ed8d1a8e1ee38b8b0fb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193718))
 - [Add NOT NULL on incident_management_pending_alert_escalations](https://gitlab.com/gitlab-org/gitlab/-/commit/9eb4353a140f28bb89931e52a7606657915e95b9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193647))
 - [Sync translations from crowdin (2025-05-28)](https://gitlab.com/gitlab-org/gitlab/-/commit/b7be101322f296e7351d9f2348e5ee32ead9228a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192769))
+
+## 18.1.5 (2025-08-26)
+
+### Security (4 changes)
+
+- [Adjust snippet blob query complexity to mitigate potential DoS attack](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1002ddc2767f2e4734ecc3029dea74639f1863ea) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5231))
+- [Gitea import rate limiting](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e14b26cb33e61c0605f1a0ec91c3e0467533fb3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5254))
+- [Fix tag/branch ambiguity in raw file display](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffb1039c1e06962b217b479799b6b3052a824b7b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5239))
+- [Add authentication check for manual variables via new policy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e4fa4e405ddb8eca1cfccc9a8db355a07254f8f3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5195))
 
 ## 18.1.4 (2025-08-12)
 

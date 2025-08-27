@@ -2016,11 +2016,9 @@ use the new cache, instead of rebuilding the dependencies.
 
 **Additional details**:
 
-- The cache `key` is a SHA computed from the most recent commits
-  that changed each listed file.
-  If neither file is changed in any commits, the fallback key is `default`.
-- Wildcard patterns like `**/package.json` can be used. An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)
-  exists to increase the number of paths or patterns allowed for a cache key.
+- The cache `key` is computed as a SHA from the most recent commit that changed each listed file. If no commit changed any listed files, the fallback key is `default`.
+- Wildcard patterns like `**/package.json` can be used. Increasing the number of allowed paths is proposed in [issue 301161](https://gitlab.com/gitlab-org/gitlab/-/issues/301161).
+- Cache keys use Git commit history, not file contents. Identical files in different branches may have different cache keys and cannot share caches.
 
 ---
 
