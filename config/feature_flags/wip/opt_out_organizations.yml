@@ -1,0 +1,10 @@
+---
+name: opt_out_organizations
+description: Hide GitLab Team Member only UI elements
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562263
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202017
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562264
+milestone: '18.4'
+group: group::organizations
+type: wip
+default_enabled: false

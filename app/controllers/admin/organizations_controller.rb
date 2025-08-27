@@ -2,6 +2,8 @@
 
 module Admin
   class OrganizationsController < ApplicationController
+    include ::Organizations::OrganizationHelper
+
     feature_category :organization
 
     before_action :check_feature_flag!
@@ -14,7 +16,7 @@ module Admin
     private
 
     def check_feature_flag!
-      access_denied! unless Feature.enabled?(:ui_for_organizations, current_user)
+      access_denied! unless ui_for_organizations_enabled?
     end
   end
 end

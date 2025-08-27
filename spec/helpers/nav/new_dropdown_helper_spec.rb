@@ -160,11 +160,7 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
           )
         end
 
-        context 'when ui_for_organizations feature flag is disabled' do
-          before do
-            stub_feature_flags(ui_for_organizations: false)
-          end
-
+        context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
           it 'does not have new organization menu item' do
             expect(view_model[:menu_sections]).to be_empty
           end

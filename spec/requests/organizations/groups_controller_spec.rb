@@ -29,21 +29,21 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
       context 'with no association to an organization' do
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an organization user' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
         sign_in(user)
       end
 
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
 
       context 'when current user can create group inside the organization' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
@@ -125,7 +125,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a group owner' do
@@ -134,12 +134,12 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a user that is not an owner' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as an organization owner' do
@@ -149,7 +149,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     context 'when group does not exist' do
@@ -243,7 +243,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'marks the group for deletion'
         end
 
@@ -253,7 +253,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
 
           context 'when mark for deletion succeeds' do
             it 'marks the group for delayed deletion' do
@@ -347,7 +347,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
         context 'as a user that is not an owner' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'does not mark the group for deletion'
         end
 
@@ -358,7 +358,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'marks the group for deletion'
         end
       end
@@ -381,7 +381,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       it_behaves_like 'does not mark the group for deletion'
     end
 

@@ -96,6 +96,24 @@ To take ownership of a pipeline created by a different user:
 
 You need at least the Maintainer role to take ownership of a pipeline created by a different user.
 
+## View the scheduled pipelines you own
+
+{{< history >}}
+
+- Introduced in GitLab 18.4
+
+{{< /history >}}
+
+To view the scheduled pipelines you own:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Account**.
+1. Scroll to **Scheduled pipelines you own**.
+
+A list of active scheduled pipelines owned by your user account are
+displayed in a list.
+
 ## Related topics
 
 - [Pipeline schedules API](../../api/pipeline_schedules.md)

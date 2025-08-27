@@ -4,6 +4,8 @@ module Sidebars
   module Admin
     module Menus
       class AdminOverviewMenu < ::Sidebars::Admin::BaseMenu
+        include ::Organizations::OrganizationHelper
+
         override :configure_menu_items
         def configure_menu_items
           add_item(dashboard_menu_item)
@@ -78,7 +80,7 @@ module Sidebars
         end
 
         def organizations_menu_item
-          return unless Feature.enabled?(:ui_for_organizations, current_user)
+          return unless ui_for_organizations_enabled?
 
           build_menu_item(
             title: _('Organizations'),

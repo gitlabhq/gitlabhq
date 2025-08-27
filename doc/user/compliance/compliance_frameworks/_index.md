@@ -66,7 +66,7 @@ or deleted by using subgroups or projects. Project owners can choose a framework
 You can apply multiple compliance frameworks to a project but cannot apply compliance frameworks to projects in personal namespaces.
 
 To apply a compliance framework to a project, apply the compliance framework through the
-[Compliance projects report](../compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
+[compliance projects report](../compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
 
 You can use the [GraphQL API](../../../api/graphql/reference/_index.md#mutationprojectupdatecomplianceframeworks) to apply one or many
 compliance frameworks to a project.
@@ -77,7 +77,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 To apply a compliance framework to a project through a compliance framework:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Projects** section.
@@ -96,14 +96,14 @@ Group owners can set a default compliance framework. The default framework is ap
 projects that are created in that group. It does not affect the framework applied to the existing projects. The
 default framework cannot be deleted.
 
-A compliance framework that is set to default has a **default** label.
+A compliance framework that is set to default has a `default` label.
 
 ### Set and remove a default by using the compliance center
 
 To set as default (or remove the default) from [compliance projects report](../compliance_center/compliance_projects_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Set as default**.
@@ -112,7 +112,7 @@ To set as default (or remove the default) from [compliance projects report](../c
 To set as default (or remove the default) from [compliance framework report](../compliance_center/compliance_frameworks_report.md):
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Hover over a compliance framework, select the **Edit Framework** tab.
 1. Select **Set as default**.
@@ -121,7 +121,7 @@ To set as default (or remove the default) from [compliance framework report](../
 ## Remove a compliance framework from a project
 
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
-[Compliance projects report](../compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
+[compliance projects report](../compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
 
 ## Import and export compliance frameworks
 
@@ -144,7 +144,7 @@ With this feature, you can share and back up compliance frameworks.
 To export a compliance framework from the compliance center:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Locate the compliance framework you wish to export.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -159,7 +159,7 @@ With this feature, you can use shared or backed up compliance frameworks. The JS
 To import a compliance framework by using a JSON template:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
 1. Select **Import framework**.
@@ -184,7 +184,7 @@ If the import is successful, the new compliance framework appears in the list. A
 {{< /history >}}
 
 In GitLab Ultimate, you can define specific **requirements** for a compliance framework. Requirements are made up of one
-or more **controls**, which are checks against the configuration or behavior of projects that are assigned the framework. There is maximum of 5 controls per requirement.
+or more controls, which are checks against the configuration or behavior of projects that are assigned the framework. Each requirement has a maximum of five controls.
 
 Each control includes logic that GitLab uses during scheduled or triggered scans to evaluate a project's adherence. For
 more details on how adherence is tracked, see [Compliance status report](../compliance_center/compliance_status_report.md).
@@ -291,7 +291,7 @@ Status checks fail if an external control stays in the pending state for more th
 To add an external control when creating or editing a framework:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
@@ -328,7 +328,7 @@ If something changes outside of GitLab, you can set the [status of an external c
 To add a requirement when creating or editing a framework:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
@@ -342,7 +342,7 @@ To add a requirement when creating or editing a framework:
 To edit a requirement when creating or editing a framework:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **Action** > **Edit**.

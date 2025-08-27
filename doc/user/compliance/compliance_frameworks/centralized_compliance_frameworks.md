@@ -46,7 +46,7 @@ Framework visibility and permissions:
 
 - All users can see which frameworks are applied to projects they have access to.
 - Group members can view all compliance and security policy frameworks available to their group.
-- The **Compliance center** shows both compliance and security policy group frameworks and group-specific frameworks.
+- The compliance center shows both compliance and security policy group frameworks and group-specific frameworks.
 
 ## Prerequisites
 
@@ -67,7 +67,7 @@ For detailed instructions, see
 After you've designated a compliance and security policy group, create compliance frameworks in it:
 
 1. Go to your designated compliance and security policy group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Frameworks** tab.
 1. Select **New framework**.
 1. Enter the framework details:
@@ -112,7 +112,7 @@ cannot edit or delete them from your group.
 To apply a compliance and security policy framework to projects in your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. On the page, select the **Projects** tab.
 1. Compliance and security policy frameworks appear in the list with a special indicator.
 1. Select a compliance and security policy framework to apply it to projects in your group.
@@ -122,7 +122,7 @@ To apply a compliance and security policy framework to projects in your group:
 To see which compliance frameworks apply to your projects:
 
 1. On the left sidebar, select **Search or go to** and find your project:
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Compliance frameworks** section.
 1. View all applied frameworks, including those from the compliance and security policy group.
 

@@ -249,7 +249,11 @@ describe('UserBar component', () => {
         window.gon.current_organization = currentOrganizationValue;
         isLoggedIn.mockReturnValue(isLoggedInValue);
         createWrapper({
-          provideOverrides: { glFeatures: { uiForOrganizations: featureFlagEnabled } },
+          provideOverrides: {
+            glFeatures: {
+              uiForOrganizations: featureFlagEnabled,
+            },
+          },
         });
         await waitForPromises();
       });

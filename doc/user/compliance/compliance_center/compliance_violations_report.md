@@ -43,7 +43,7 @@ Prerequisites:
 To view the compliance violations report:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 
 The compliance violations report displays:
 
@@ -131,7 +131,7 @@ Prerequisites:
 To export a compliance violations report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. In the top-right corner, select **Export**.
 1. Select **Export violations report**.
 
@@ -174,7 +174,7 @@ Prerequisites:
 To view the static compliance violations report:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 
 You can sort the compliance report on:
 
@@ -208,8 +208,6 @@ Each compliance violation has one of the following severities.
 
 ### Violation types
 
-From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these are the available compliance violations.
-
 | Violation                         | Severity level | Category                                      | Description                                                                                                                                                                                                                                            |
 |:----------------------------------|:---------------|:----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Author approved merge request     | High           | [Separation of duties](#separation-of-duties) | Author of the merge request approved their own merge request. For more information, see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                                   |
@@ -221,9 +219,9 @@ From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these ar
 GitLab supports a separation of duties policy between users who create and approve merge requests. Our criteria for the
 separation of duties is:
 
-- [A merge request author is **not** allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
-- [A merge request committer is **not** allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
-- [The minimum number of approvals required to merge a merge request is **at least** two](../../project/merge_requests/approvals/rules.md).
+- [A merge request author is not allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+- [A merge request committer is not allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
+- [The minimum number of approvals required to merge a merge request is at least two](../../project/merge_requests/approvals/rules.md).
 
 ### Export a report of merge request compliance violations on projects in a group
 
@@ -247,7 +245,7 @@ Prerequisites:
 To export a report of merge request compliance violations for projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. In the top-right corner, select **Export**.
 1. Select **Export violations report**.
 

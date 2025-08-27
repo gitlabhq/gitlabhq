@@ -70,6 +70,21 @@
       - data = { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path(format: :json) }
       #update-username{ data: data }
 
+= render ::Layouts::SettingsSectionComponent.new(s_('Profiles|Scheduled pipelines you own')) do |c|
+  - c.with_description do
+    = s_("Profiles|View, edit, or transfer ownership of your active scheduled pipelines.")
+  - c.with_body do
+    %div{ data: { testid: 'owned-scheduled-pipelines' } }
+      - schedules = current_user.pipeline_schedules.active.with_project_path.limit(500)
+      - if schedules.any?
+        %p.gl-font-bold= _('Scheduled pipelines')
+        %ul
+          - schedules.each do |schedule|
+            %li= link_to "#{schedule.project.full_path} - #{schedule.description}", project_pipeline_schedules_path(schedule.project), target: '_blank', rel: 'noopener noreferrer'
+      - else
+        %p
+          = s_('Profiles|You do not own any active scheduled pipelines.')
+
 - if prevent_delete_account?
   = render ::Layouts::SettingsSectionComponent.new('') do |c|
     - c.with_heading do
@@ -96,7 +111,7 @@
         #delete-account-modal{ data: delete_account_modal_data }
       - else
         - if !current_user.can_be_removed?
-          - if Feature.enabled?(:ui_for_organizations, current_user) && current_user.solo_owned_organizations.present?
+          - if ui_for_organizations_enabled? && current_user.solo_owned_organizations.present?
             %p.gl-font-bold
               = _('Organizations')
               %ul

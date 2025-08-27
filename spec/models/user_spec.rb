@@ -247,6 +247,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:pipelines) }
+    it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:saved_replies).class_name('::Users::SavedReply') }
     it { is_expected.to have_many(:uploads) }

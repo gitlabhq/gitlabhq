@@ -15,7 +15,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an organization owner' do
@@ -26,7 +26,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         end
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -76,7 +76,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -84,7 +84,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     it_behaves_like 'when the user is signed in'

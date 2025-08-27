@@ -25,7 +25,7 @@ For example, you can use audit events to track:
 - Who added a new user or removed a user, and when.
 
 These events can be used to in an audit to assess risk, strengthen security measures, respond to incidents, and adhere to compliance. For a complete list the audit
-events GitLab provides, see [Audit event types](audit_event_types.md). For example:
+events GitLab provides, see [audit event types](audit_event_types.md). For example:
 
 - Generate a report of audit events to provide to an external auditor requesting proof of certain logging capabilities.
 - Provide a report of all users showing their group and project memberships for a quarterly access review so the auditor can verify compliance with an organization's access management policy.
@@ -52,7 +52,7 @@ Audit events can be viewed at the group, project, instance, and sign-in level. E
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
 1. On the left sidebar, select your avatar.
-1. Select **Edit profile > Authentication log**.
+1. Select **Edit profile** > **Authentication log**.
 
 After upgrading to a paid tier, you can also see successful sign-in events on audit event pages.
 
@@ -68,7 +68,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 To view a group's audit events:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
+1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Group audit events can also be accessed using the [group audit events API](../../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
@@ -83,7 +83,7 @@ Group audit events can also be accessed using the [group audit events API](../..
 {{< /details >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Audit events**.
+1. Select **Secure** > **Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
 Project audit events can also be accessed using the [project audit events API](../../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
@@ -98,7 +98,7 @@ Project audit events can also be accessed using the [project audit events API](.
 
 The time zone used for audit events depends on where you view them:
 
-- In GitLab UI, your local time zone is used.
+- In the GitLab UI, your local time zone is used.
 - The [audit events API](../../api/audit_events.md) returns dates and times in UTC by default, or the
   [configured time zone](../../administration/timezone.md) on GitLab Self-Managed.
 - In CSV exports, UTC is used.
@@ -107,7 +107,7 @@ The time zone used for audit events depends on where you view them:
 
 If you don't see the event you want in any of the epics, you can either:
 
-- Use the **Audit event proposal** issue template to
+- Use the audit event proposal issue template to
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to request it.
 - Contribute to GitLab and add the event.
 

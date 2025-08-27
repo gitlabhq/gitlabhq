@@ -34,6 +34,9 @@
     "admin_security_attributes": {
       "type": "boolean"
     },
+    "admin_security_labels": {
+      "type": "boolean"
+    },
     "admin_security_testing": {
       "type": "boolean"
     },

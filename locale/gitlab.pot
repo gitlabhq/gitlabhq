@@ -2427,6 +2427,9 @@ msgstr ""
 msgid "AICatalog|A public agent can be made private only if it is not used."
 msgstr ""
 
+msgid "AICatalog|A public flow can be made private only if it is not used."
+msgstr ""
+
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
@@ -2485,6 +2488,9 @@ msgid "AICatalog|Choose a memorable name for your AI flow."
 msgstr ""
 
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
+msgstr ""
+
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
 msgstr ""
 
 msgid "AICatalog|Connect AI agents to automate complicated tasks."
@@ -2677,6 +2683,9 @@ msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|This flow can be made private if it is not used."
 msgstr ""
 
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
@@ -49533,6 +49542,9 @@ msgstr ""
 msgid "Profiles|SSH Key: %{title}"
 msgstr ""
 
+msgid "Profiles|Scheduled pipelines you own"
+msgstr ""
+
 msgid "Profiles|Select a service to sign in with."
 msgstr ""
 
@@ -49638,6 +49650,9 @@ msgstr ""
 msgid "Profiles|Using emoji in names seems fun, but please try to set a status message instead"
 msgstr ""
 
+msgid "Profiles|View, edit, or transfer ownership of your active scheduled pipelines."
+msgstr ""
+
 msgid "Profiles|Warning! Insecure key. %{message}"
 msgstr ""
 
@@ -49657,6 +49672,9 @@ msgid "Profiles|You can upload your avatar here"
 msgstr ""
 
 msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
+msgstr ""
+
+msgid "Profiles|You do not own any active scheduled pipelines."
 msgstr ""
 
 msgid "Profiles|You don't have access to delete this user."
@@ -56577,6 +56595,9 @@ msgid "Scheduled Deletion At - %{permanent_deletion_time}"
 msgstr ""
 
 msgid "Scheduled a rebase of branch %{branch}."
+msgstr ""
+
+msgid "Scheduled pipelines"
 msgstr ""
 
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
@@ -72811,6 +72832,9 @@ msgstr ""
 msgid "WorkItem|Create lifecycle"
 msgstr ""
 
+msgid "WorkItem|Create new work item by email"
+msgstr ""
+
 msgid "WorkItem|Created %{timeago}"
 msgstr ""
 
@@ -72880,10 +72904,19 @@ msgstr ""
 msgid "WorkItem|Edit work item"
 msgstr ""
 
+msgid "WorkItem|Email a new work item to this project"
+msgstr ""
+
 msgid "WorkItem|Email participants"
 msgstr ""
 
 msgid "WorkItem|Emoji reactions"
+msgstr ""
+
+msgid "WorkItem|Enter the work item description"
+msgstr ""
+
+msgid "WorkItem|Enter the work item title"
 msgstr ""
 
 msgid "WorkItem|Epic"
@@ -73319,6 +73352,9 @@ msgstr ""
 msgid "WorkItem|Select which type you would like to change this item to."
 msgstr ""
 
+msgid "WorkItem|Send email"
+msgstr ""
+
 msgid "WorkItem|Show all ancestors"
 msgstr ""
 
@@ -73493,6 +73529,12 @@ msgstr ""
 msgid "WorkItem|The current task"
 msgstr ""
 
+msgid "WorkItem|The subject is used as the title of the new work item, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
+msgstr ""
+
+msgid "WorkItem|There was an error when resetting email token."
+msgstr ""
+
 msgid "WorkItem|These existing items have a similar title and may represent potential duplicates."
 msgstr ""
 
@@ -73512,6 +73554,9 @@ msgid "WorkItem|This action cannot be undone."
 msgstr ""
 
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
+msgstr ""
+
+msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
 msgstr ""
 
 msgid "WorkItem|This item is hidden because its author has been banned."
@@ -73611,6 +73656,9 @@ msgid "WorkItem|Work items"
 msgstr ""
 
 msgid "WorkItem|Yes, close %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|You can create a new work item inside this project by sending an email to the following email address:"
 msgstr ""
 
 msgid "WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels."

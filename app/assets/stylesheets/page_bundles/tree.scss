@@ -39,7 +39,7 @@ $bottom-padding: $gl-spacing-scale-6;
     li {
       min-width: $gl-spacing-scale-9;
     }
-  } 
+  }
 
   .nav-block {
     margin: $gl-spacing-scale-2 0 $gl-spacing-scale-5;
@@ -146,7 +146,7 @@ $bottom-padding: $gl-spacing-scale-6;
 
       &:hover:not(.tree-truncated-warning) {
         td, th {
-          @apply gl-bg-blue-50 dark:gl-bg-neutral-800 gl-bg-clip-padding;
+          @apply gl-bg-blue-50 dark:gl-bg-neutral-800;
           border-top: 1px solid var(--gl-action-selected-border-color-default);
           border-bottom: 1px solid var(--gl-action-selected-border-color-default);
 

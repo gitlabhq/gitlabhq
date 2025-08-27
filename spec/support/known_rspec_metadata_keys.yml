@@ -147,6 +147,7 @@
 - :timecop
 - :travel_to
 - :type
+- :ui_for_organizations_disabled
 - :unless
 - :unlimited_max_formatted_output_length
 - :unlock_pipelines

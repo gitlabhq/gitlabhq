@@ -148,4 +148,63 @@ RSpec.describe 'profiles/accounts/show', feature_category: :user_profile do
       end
     end
   end
+
+  context 'for owned pipeline schedules' do
+    let(:test_id_selector) { '[data-testid="owned-scheduled-pipelines"]' }
+    let(:active_schedules) { [] }
+
+    before do
+      render
+    end
+
+    it 'renders the section' do
+      expect(rendered).to have_text('Scheduled pipelines you own')
+    end
+
+    it 'has no list' do
+      expect(rendered).to have_text('You do not own any active scheduled pipelines')
+      expect(rendered).to have_css("#{test_id_selector} ul li", count: 0)
+    end
+
+    context 'when active pipeline schedules are owned' do
+      # rubocop:disable RSpec/FactoryBot/AvoidCreate -- we create records so that we can test the query performance.
+      let_it_be(:active_schedules) do
+        # To validate that two projects in the same group render as two
+        # links.
+        group = create(:group)
+        project_1 = create(:project, :repository, group: group)
+        project_2 = create(:project, :repository, group: group)
+        [
+          create(:ci_pipeline_schedule, project: project_1, owner: user),
+          create(:ci_pipeline_schedule, project: project_2, owner: user),
+          create(:ci_pipeline_schedule, owner: user)
+        ]
+      end
+      # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
+      it 'renders the correct number of active pipeline schedules' do
+        expect(rendered).to have_css("#{test_id_selector} ul li", count: 3)
+      end
+
+      it 'renders links to the project pipeline schedules page' do
+        active_schedules.each do |schedule|
+          expect(rendered).to have_link(
+            href: project_pipeline_schedules_path(schedule.project)
+          )
+        end
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        # Firstly, record how many PostgreSQL queries the endpoint will
+        # make when it returns the records created above.
+        control = ActiveRecord::QueryRecorder.new { render }
+
+        # Now create an additional scheduled pipeline record and ensure
+        # that the API does not execute any more queries than before.
+        create(:ci_pipeline_schedule, owner: user) # rubocop:disable RSpec/FactoryBot/AvoidCreate -- explained above
+
+        expect { render }.not_to exceed_query_limit(control)
+      end
+    end
+  end
 end

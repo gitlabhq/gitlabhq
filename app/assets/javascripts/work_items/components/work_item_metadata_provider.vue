@@ -31,6 +31,11 @@ export default {
       hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       metadataLoading: computed(() => this.$apollo.queries.metadata.loading),
       userExportEmail: computed(() => this.metadata?.userExportEmail),
+      newWorkItemEmailAddress: computed(() => this.metadata.newWorkItemEmailAddress),
+      canCreateWorkItem: computed(() => this.metadata.createWorkItem),
+      emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
+      markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
+      quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
   },
@@ -58,6 +63,7 @@ export default {
         return {
           ...(namespace.licensedFeatures || {}),
           ...(namespace.linkPaths || {}),
+          ...(namespace.userPermissions || {}),
         };
       },
     },

@@ -579,11 +579,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text project_url(project, leave: 1)
       end
 
-      context 'when ui_for_organizations feature is disabled' do
-        before do
-          stub_feature_flags(ui_for_organizations: false)
-        end
-
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         it 'contains all the useful information', :aggregate_failures do
           is_expected.to have_subject "Access to the #{project.full_name} project was granted"
           is_expected.to have_body_text project.full_name
@@ -1650,11 +1646,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text group_url(group, leave: 1)
       end
 
-      context 'when ui_for_organizations feature is disabled' do
-        before do
-          stub_feature_flags(ui_for_organizations: false)
-        end
-
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         it 'contains all the useful information', :aggregate_failures do
           is_expected.to have_subject "Access to the #{group.name} group was granted"
           is_expected.to have_body_text group.name
