@@ -8767,6 +8767,9 @@ msgstr ""
 msgid "Archived in this version"
 msgstr ""
 
+msgid "Archived labels are not available for use. Unarchive a label you want to use, or delete a label you want to permanently remove."
+msgstr ""
+
 msgid "Archiving projects"
 msgstr ""
 

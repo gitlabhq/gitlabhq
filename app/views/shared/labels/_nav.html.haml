@@ -4,7 +4,7 @@
 .top-area.adjust
   = gl_tabs_nav({ class: 'gl-grow gl-border-0' }) do
     - if Feature.enabled?(:labels_archive, :instance)
-      = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' && archived != 'true' }
+      = gl_tab_link_to _('Active'), labels_filter_path, { item_active: subscribed != 'true' && archived != 'true' }
       = gl_tab_link_to _('Archived'), labels_filter_path(archived: 'true'), { item_active: archived == 'true' }
     - else
       = gl_tab_link_to _('All'), labels_filter_path, { item_active: subscribed != 'true' }

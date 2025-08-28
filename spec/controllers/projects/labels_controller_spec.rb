@@ -69,6 +69,24 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         let_it_be(:all_labels) { [archived_label, unarchived_label, group_label_1, group_label_2, group_label_3, group_label_4] }
 
         it_behaves_like 'handles archived labels'
+
+        context 'when viewing archived tab' do
+          it 'does not show prioritized labels' do
+            get :index, params: { namespace_id: project.namespace.to_param, project_id: project, archived: 'true' }
+            expect(assigns(:prioritized_labels)).to be_empty
+          end
+
+          context 'with feature flag labels_archive disabled' do
+            before do
+              stub_feature_flags(labels_archive: false)
+            end
+
+            it 'returns all prioritized labels' do
+              get :index, params: { namespace_id: project.namespace.to_param, project_id: project, archived: 'true' }
+              expect(assigns(:prioritized_labels)).to match_array group_priority_labels + project_priority_labels
+            end
+          end
+        end
       end
 
       it 'does not include labels with priority' do

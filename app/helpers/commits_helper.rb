@@ -45,9 +45,9 @@ module CommitsHelper
       'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(@ref),
       'ref_type' => @ref_type.to_s,
       'root_ref' => @project.default_branch,
-      'path' => @path,
-      "browse_files_path" => path_to_browse_file_or_directory(@project, @ref, @path),
-      "commits_feed_path" => project_commits_path(@project, @id, rss_url_options)
+      'browse_files_path' => path_to_browse_file_or_directory(@project, @ref, @path),
+      'commits_feed_path' => project_commits_path(@project, @id, rss_url_options),
+      'base_path' => project_commits_root_path(@project)
     }
   end
 

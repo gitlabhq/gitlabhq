@@ -89,7 +89,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def label
-    @label ||= available_labels(params.merge(only_group_labels: true)).find(params[:id])
+    @label ||= available_labels(params.merge(only_group_labels: true, ignore_archived: true)).find(params[:id])
   end
   alias_method :subscribable_resource, :label
 
@@ -122,6 +122,10 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def available_labels(options = params)
+    archived_param = if Feature.enabled?(:labels_archive, :instance) && !options[:ignore_archived]
+                       options[:archived].nil? ? false : options[:archived]
+                     end
+
     @available_labels ||=
       LabelsFinder.new(
         current_user,
@@ -132,7 +136,7 @@ class Groups::LabelsController < Groups::ApplicationController
         subscribed: options[:subscribed],
         include_descendant_groups: options[:include_descendant_groups],
         search: options[:search],
-        archived: options[:archived]
+        archived: archived_param
       ).execute
   end
 

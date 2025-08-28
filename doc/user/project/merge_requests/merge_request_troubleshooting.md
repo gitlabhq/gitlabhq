@@ -330,3 +330,17 @@ approvals for those merge requests. In GitLab Premium and Ultimate, by default, 
 [when commits are added to the source branch](approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
 To avoid this problem, add logic to your automation that ensures
 [commits are processed before approving](../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests) the merge request.
+
+## Merge request `merged manually`
+
+If a merged merge request contains a `merged manually` system note, it was either merged outside the GitLab UI, or contains commits
+that were merged as part of a different merge request. For example:
+
+- Merge request 1 is for the branch `single-fix`, and has commit `cd87d6`.
+- Merge request 2 is for the branch `several-fixes`. It contains commit `cd87d6` and several others.
+
+Merging the `several-fixes` branch merges all commits on that branch, including commit `cd87d6`.
+Even though no action has been taken on the branch `single-fix`, commit `cd87d6` was merged
+as part of `several-fixes`, so `single-fix` now shows as merged.
+
+For more information, see [Multiple branches containing the same commit](../repository/branches/_index.md#multiple-branches-containing-the-same-commit).

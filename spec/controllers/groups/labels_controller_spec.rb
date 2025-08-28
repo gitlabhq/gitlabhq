@@ -113,6 +113,16 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
+    context 'with archived label' do
+      let_it_be(:archived_label) { create(:group_label, :archived, group: group) }
+
+      it 'shows the edit page' do
+        get :edit, params: { group_id: group.to_param, id: archived_label.to_param }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
     it_behaves_like 'when current_user does not have ability to modify the label' do
       let_it_be(:sub_group) { create(:group, parent: group) }
       let(:group_request) { get :edit, params: { group_id: group.to_param, id: label.to_param } }

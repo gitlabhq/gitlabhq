@@ -14,11 +14,14 @@
 
   - if can_admin_label && search.blank?
     %p.gl-text-subtle.gl-mt-5
-      = _('Labels can be applied to issues and merge requests. Star a label to make it a priority label.')
+      - if archived && Feature.enabled?(:labels_archive, :instance)
+        = _('Archived labels are not available for use. Unarchive a label you want to use, or delete a label you want to permanently remove.')
+      - else
+        = _('Labels can be applied to issues and merge requests. Star a label to make it a priority label.')
 
   .labels-container.gl-flex.gl-flex-col.gl-gap-5
-    -# Only show it in the first page
-    - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
+    -# Only show it in the first page and hide when viewing archived tab
+    - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1') || (Feature.enabled?(:labels_archive, :instance) && archived.present? && archived)
     = render ::Layouts::CrudComponent.new(_('Prioritized labels'),
       options: {class: ['prioritized-labels', ('gl-hidden' if hide), ('is-not-draggable' unless can_admin_label)].compact.join(' ')},
       count: number_with_delimiter(@prioritized_labels.size),
