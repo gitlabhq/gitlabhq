@@ -177,6 +177,7 @@ Custom headers show in [**Recent events**](#view-webhook-request-history) with m
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
+- JSON serialization of interpolated field values [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template_serialization`. Disabled by default.
 
 {{< /history >}}
 

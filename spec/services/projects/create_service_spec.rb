@@ -940,7 +940,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     subject(:project) { create_project(user, opts) }
 
     context 'when an instance-level instance specific integration' do
-      let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+      let!(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
 
       it 'creates integration inheriting from the instance level integration' do
         expect(project.integrations.count).to eq(1)

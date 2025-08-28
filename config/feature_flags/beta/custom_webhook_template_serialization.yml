@@ -1,0 +1,10 @@
+---
+name: custom_webhook_template_serialization
+description: Enable JSON serialization in custom webhook template field interpolation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/511476
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197992
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560952
+milestone: '18.4'
+group: group::import
+type: beta
+default_enabled: false

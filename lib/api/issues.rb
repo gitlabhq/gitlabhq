@@ -256,6 +256,7 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid]
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do
         issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project

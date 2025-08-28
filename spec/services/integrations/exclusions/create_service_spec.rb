@@ -72,7 +72,7 @@ RSpec.describe Integrations::Exclusions::CreateService, feature_category: :sourc
     end
 
     context 'when there are existing custom settings' do
-      let_it_be(:instance_level_integration) { create(:beyond_identity_integration) }
+      let_it_be(:instance_level_integration) { create(:beyond_identity_integration, :instance) }
       let_it_be(:project_level_integration) do
         create(
           :beyond_identity_integration,

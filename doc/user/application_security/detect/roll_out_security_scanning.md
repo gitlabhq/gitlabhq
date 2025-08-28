@@ -161,7 +161,7 @@ For each project in scope:
 1. Expand **Security configuration**.
 1. Enable the appropriate application security testing based on your project's stack.
 
-For more details, see [Security configuration](../configuration/_index.md).
+For more details, see [Security configuration](security_configuration.md).
 
 ### For developers
 

@@ -111,8 +111,8 @@ permissions, ask your instance administrator or top-level group Owner for help.
    - `write_repository`
    - `api`
    - `ai_features`
-1. [Add the service account to your project](../../user/profile/service_accounts.md#service-account-access-to-groups-and-projects) with the Developer role. This
-ensures the service account has the minimum permissions necessary.
+1. [Add the service account to your project](../../user/project/members/_index.md#add-users-to-a-project)
+   with the Developer role. This ensures the service account has the minimum permissions necessary.
 
 When adding the service account to your project, you must enter the exact name
 of the service account. If you enter the wrong name, the CLI agent does not work.

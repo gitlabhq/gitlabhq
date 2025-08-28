@@ -13289,7 +13289,6 @@ CREATE TABLE ci_runners (
     locked boolean DEFAULT false NOT NULL,
     name text,
     token_encrypted text,
-    token text,
     description text,
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
@@ -13298,8 +13297,7 @@ CREATE TABLE ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
 )
 PARTITION BY LIST (runner_type);
 
@@ -16689,7 +16687,6 @@ CREATE TABLE group_type_ci_runners (
     locked boolean DEFAULT false NOT NULL,
     name text,
     token_encrypted text,
-    token text,
     description text,
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
@@ -16698,8 +16695,7 @@ CREATE TABLE group_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
 );
 
 CREATE TABLE group_wiki_repositories (
@@ -17362,7 +17358,6 @@ CREATE TABLE instance_type_ci_runners (
     locked boolean DEFAULT false NOT NULL,
     name text,
     token_encrypted text,
-    token text,
     description text,
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
@@ -17371,8 +17366,7 @@ CREATE TABLE instance_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
 );
 
 CREATE TABLE integrations (
@@ -23201,7 +23195,6 @@ CREATE TABLE project_type_ci_runners (
     locked boolean DEFAULT false NOT NULL,
     name text,
     token_encrypted text,
-    token text,
     description text,
     maintainer_note text,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
@@ -23210,8 +23203,7 @@ CREATE TABLE project_type_ci_runners (
     CONSTRAINT check_030ad0773d CHECK ((char_length(token_encrypted) <= 512)),
     CONSTRAINT check_1f8618ab23 CHECK ((char_length(name) <= 256)),
     CONSTRAINT check_24b281f5bf CHECK ((char_length(maintainer_note) <= 1024)),
-    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024)),
-    CONSTRAINT check_af25130d5a CHECK ((char_length(token) <= 128))
+    CONSTRAINT check_5db8ae9d30 CHECK ((char_length(description) <= 1024))
 );
 
 CREATE TABLE project_uploads (
@@ -31596,6 +31588,9 @@ ALTER TABLE epic_issues
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE integrations
+    ADD CONSTRAINT check_2aae034509 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -36261,10 +36256,6 @@ CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ONLY ci_ru
 
 CREATE INDEX idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc ON group_type_ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE UNIQUE INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ON ONLY ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
-CREATE UNIQUE INDEX idx_group_type_ci_runners_on_token_runner_type_when_not_null ON group_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
-
 CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
 
 CREATE INDEX idx_hosted_runner_usage_on_namespace_billing_month ON ci_gitlab_hosted_runner_monthly_usages USING btree (root_namespace_id, billing_month);
@@ -36324,8 +36315,6 @@ CREATE UNIQUE INDEX index_ci_runners_on_token_encrypted_and_runner_type ON ONLY 
 CREATE UNIQUE INDEX idx_instance_type_ci_runners_on_token_encrypted_and_runner_type ON instance_type_ci_runners USING btree (token_encrypted, runner_type);
 
 CREATE INDEX idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc ON instance_type_ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE UNIQUE INDEX idx_instance_type_ci_runners_on_token_runner_type_when_not_null ON instance_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
 CREATE INDEX idx_issues_on_project_id_and_created_at_and_id_and_state_id ON issues USING btree (project_id, created_at, id, state_id);
 
@@ -36540,8 +36529,6 @@ CREATE UNIQUE INDEX idx_project_type_ci_runners_on_token_encrypted_and_runner_ty
 CREATE INDEX idx_project_type_ci_runners_on_token_expires_at_and_id_desc ON project_type_ci_runners USING btree (token_expires_at, id DESC);
 
 CREATE INDEX idx_project_type_ci_runners_on_token_expires_at_desc_id_desc ON project_type_ci_runners USING btree (token_expires_at DESC, id DESC);
-
-CREATE UNIQUE INDEX idx_project_type_ci_runners_on_token_runner_type_when_not_null ON project_type_ci_runners USING btree (token, runner_type) WHERE (token IS NOT NULL);
 
 CREATE INDEX idx_projects_api_created_at_id_for_archived ON projects USING btree (created_at, id) WHERE ((archived = true) AND (pending_delete = false) AND (hidden = false));
 
@@ -44591,8 +44578,6 @@ ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION id
 
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc;
 
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_group_type_ci_runners_on_token_runner_type_when_not_null;
-
 ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_inst_type_ci_runner_machines_on_sharding_key_when_not_null;
 
 ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION idx_instance_type_ci_runner_machines_on_created_at_and_id_desc;
@@ -44608,8 +44593,6 @@ ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION i
 ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION idx_instance_type_ci_runners_on_token_encrypted_and_runner_type;
 
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc;
-
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_instance_type_ci_runners_on_token_runner_type_when_not_null;
 
 ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_proj_type_ci_runner_machines_on_sharding_key_when_not_null;
 
@@ -44632,8 +44615,6 @@ ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION
 ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_token_expires_at_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_token_expires_at_desc_id_desc;
-
-ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH PARTITION idx_project_type_ci_runners_on_token_runner_type_when_not_null;
 
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION import_export_upload_uploads_checksum_idx;
 

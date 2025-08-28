@@ -685,19 +685,24 @@ To run this command in dry-run mode, set the environment variable `DRY_RUN=true`
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195450) in GitLab 18.2.
+- Spot check of predefined set of indexes for corruption [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198071) in GitLab 18.3.
+- Option to customize `MAX_TABLE_SIZE` and bypass PgBouncer [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202736) in GitLab 18.4.
 
 {{< /history >}}
 
-The PostgreSQL collation checker detects collation version mismatches between the database and
-operating system that can cause index corruption. PostgreSQL uses the operating
-system's `glibc` library for string collation (sorting and comparison rules).
+The PostgreSQL collation checker:
+
+- Detects collation version mismatches between the database and operating system that can cause index corruption. PostgreSQL uses the operating system's `glibc` library for
+  string collation (sorting and comparison rules).
+- Performs corruption spot checks (duplicate detection) on a predefined set of indexes. These indexes are known to be prone to corruption issues because of collation mismatch.
+
 Run this task after operating system upgrades that change the underlying `glibc` library.
 
 Prerequisites:
 
 - PostgreSQL 13 or later.
 
-To check for PostgreSQL collation mismatches in all databases:
+To check for PostgreSQL collation mismatches and related index corruption in all databases:
 
 ```shell
 sudo gitlab-rake gitlab:db:collation_checker
@@ -713,6 +718,42 @@ sudo gitlab-rake gitlab:db:collation_checker:main
 sudo gitlab-rake gitlab:db:collation_checker:ci
 ```
 
+### Adjust table size limits
+
+By default, tables larger than 1 GB are skipped to avoid long-running queries that could impact database performance.
+You can adjust the table size threshold by setting the `MAX_TABLE_SIZE` environment variable.
+
+{{< alert type="warning" >}}
+
+Increasing the table size limit might result in long-running queries that could impact database performance.
+
+{{< /alert >}}
+
+```shell
+# Set custom table size limit (in bytes)
+# to increase the max table size threshold to 10 GB
+MAX_TABLE_SIZE=10737418240 sudo gitlab-rake gitlab:db:collation_checker:main
+```
+
+### Bypass PgBouncer for long-running queries
+
+If your GitLab instance uses PgBouncer and you encounter statement timeouts, bypass PgBouncer by using direct PostgreSQL connections.
+
+```shell
+# Example with direct connection
+GITLAB_BACKUP_PGUSER=postgres GITLAB_BACKUP_PGHOST=localhost sudo gitlab-rake gitlab:db:collation_checker:main
+```
+
+Supported environment variables:
+
+- `GITLAB_BACKUP_PGHOST`
+- `GITLAB_BACKUP_PGUSER`
+- `GITLAB_BACKUP_PGPORT`
+- `GITLAB_BACKUP_PGPASSWORD`
+
+For more information on bypassing PgBouncer and a full list of supported environment variables, see the
+[procedure for bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+
 ### Example output
 
 When no issues are found:
@@ -720,6 +761,8 @@ When no issues are found:
 ```plaintext
 Checking for PostgreSQL collation mismatches on main database...
 No collation mismatches detected on main.
+Found 8 indexes to corruption spot check.
+No corrupted indexes detected.
 ```
 
 If mismatches are detected, the task provides remediation steps to fix the affected indexes.
@@ -733,10 +776,13 @@ Checking for PostgreSQL collation mismatches on main database...
   - en_US.utf8: stored=428.1, actual=513.1
   - es_ES.utf8: stored=428.1, actual=513.1
 
+Found 8 indexes to corruption spot check.
 Affected indexes that need to be rebuilt:
   - index_projects_on_name (btree) on table projects
+    • Issues detected: duplicates
     • Affected columns: name
     • Type: UNIQUE
+    • Needs deduplication: Yes
 
 REMEDIATION STEPS:
 1. Put GitLab into maintenance mode
@@ -756,8 +802,7 @@ REINDEX INDEX CONCURRENTLY index_projects_on_name;
 REINDEX DATABASE main;
 
 # Step 3: Refresh collation versions
-ALTER COLLATION "en_US.utf8" REFRESH VERSION;
-ALTER COLLATION "es_ES.utf8" REFRESH VERSION;
+ALTER DATABASE main REFRESH COLLATION VERSION;
 
 3. Take GitLab out of maintenance mode
 ```

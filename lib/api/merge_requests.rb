@@ -398,6 +398,7 @@ module API
         ]
         tags %w[merge_requests]
       end
+      route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid]
       get ':id/merge_requests/:merge_request_iid', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 

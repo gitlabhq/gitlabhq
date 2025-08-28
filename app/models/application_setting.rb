@@ -7,11 +7,7 @@ class ApplicationSetting < ApplicationRecord
   include ChronicDurationAttribute
   include Sanitizable
   include Gitlab::EncryptedAttribute
-  include SafelyChangeColumnDefault
   include IgnorableColumns
-
-  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period,
-    :wiki_page_max_content_bytes
 
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'

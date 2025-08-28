@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_category: :source_code_management do
   include_context 'changes access checks context'
   let(:integration_check) { Gitlab::Checks::IntegrationsCheck.new(changes_access) }
-  let!(:beyond_identity_integration) { create(:beyond_identity_integration) }
+  let!(:beyond_identity_integration) { create(:beyond_identity_integration, :instance) }
 
   subject(:check) { described_class.new(integration_check) }
 
@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
 
         context 'when service accounts are excluded' do
           let!(:beyond_identity_integration) do
-            create(:beyond_identity_integration, exclude_service_accounts: true)
+            create(:beyond_identity_integration, :instance, exclude_service_accounts: true)
           end
 
           it 'does not raise an error' do

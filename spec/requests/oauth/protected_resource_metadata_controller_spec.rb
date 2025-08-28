@@ -7,7 +7,10 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
     let(:protected_resource_path) { Gitlab::Routing.url_helpers.oauth_protected_resource_metadata_path }
     let(:expected_response) do
       {
-        'resource' => "http://www.example.com/api/v4/mcp",
+        'resource' => [
+          "http://www.example.com/api/v4/mcp",
+          "http://www.example.com/api/v4/mcp_server"
+        ],
         'authorization_servers' => [
           "http://www.example.com"
         ]
@@ -51,7 +54,10 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'returns metadata with custom base URL' do
         expected_custom_response = {
-          'resource' => "#{custom_host}/api/v4/mcp",
+          'resource' => [
+            "#{custom_host}/api/v4/mcp",
+            "#{custom_host}/api/v4/mcp_server"
+          ],
           'authorization_servers' => [
             custom_host
           ]
@@ -91,11 +97,15 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
       end
 
       it 'has correct resource format' do
-        resource_url = response.parsed_body['resource']
+        resource_urls = response.parsed_body['resource']
+        expect(resource_urls.size).to eq(2)
 
-        expect(resource_url).to be_a(String)
+        expect(resource_urls).to all be_a(String)
+        expect(resource_urls).to all match(%r{\Ahttps?://})
+
+        resource_url, another_resource_url = resource_urls
         expect(resource_url).to end_with('/api/v4/mcp')
-        expect(resource_url).to match(%r{\Ahttps?://})
+        expect(another_resource_url).to end_with('/api/v4/mcp_server')
       end
 
       it 'has correct authorization_servers format' do
@@ -109,7 +119,7 @@ RSpec.describe Oauth::ProtectedResourceMetadataController, feature_category: :sy
 
       it 'authorization_servers contains the same base URL as resource' do
         response_body = response.parsed_body
-        resource_base = response_body['resource'].gsub('/api/v4/mcp', '')
+        resource_base = response_body['resource'][0].gsub('/api/v4/mcp', '')
         auth_server = response_body['authorization_servers'].first
 
         expect(auth_server).to eq(resource_base)

@@ -366,7 +366,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           end
 
           context 'with instance specific integration' do
-            let_it_be(:instance_specific_integration) { create(:beyond_identity_integration) }
+            let_it_be(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
             let_it_be(:group_instance_specific_integration) do
               create(
                 :beyond_identity_integration,

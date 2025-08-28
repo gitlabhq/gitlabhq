@@ -193,7 +193,7 @@ The whole batched background migration is marked as `failed`
 the migration as `failed`) if any of the following is true:
 
 - There are no more jobs to consume, and there are failed jobs.
-- More than [half of the jobs failed since the background migration was started](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_migration.rb#L160).
+- More than [half of the jobs failed after the background migration was started](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/database/background_migration/batched_migration.rb#L160).
 
 ### Throttling batched migrations
 
@@ -539,27 +539,27 @@ iterate over the full specified table. This iteration is done using the
 [`PrimaryKeyBatchingStrategy`](https://gitlab.com/gitlab-org/gitlab/-/blob/c9dabd1f4b8058eece6d8cb4af95e9560da9a2ee/lib/gitlab/database/migrations/batched_background_migration_helpers.rb#L17).
 If the table has 1000 records and the batch size is 100, the work is batched into 10 jobs.
 
-And if you want to perform the migration only on a subset of the table, it can be done in 2 ways.
+Migrating a subset of the table can be done with or without the `scope_to` block.
 
-#### Apply selection using scope_to
+#### Apply selection using `scope_to`
 
-BBM provides an option to define the `scope_to` block, it adds an additional qualifier to the query that determines
+BBM provides an option to define the `scope_to` block. it adds an additional qualifier to the query that determines
 the minimum and maximum range for each batch.
 
 By default, the batching range is determined using the primary key index, which is highly efficient.
 However, using `scope_to` means the query must consider only rows matching the given condition, potentially impacting performance.
 
-So it should be used **only when the scoped conditions are indexed**, and the batching query is **not filtering** out any rows.
+It should be used only when the scoped conditions are indexed, and the batching query is not filtering out any rows.
 
 {{< alert type="warning" >}}
 
-A strong indicator of the proper index is, the query plan should have index-only scan without any additional filters on them.
+A strong indicator of the proper index: the query plan should have an index-only scan without any additional filters.
 
 {{< /alert >}}
 
-To err on the side of caution, `Database/AvoidScopeTo` cop is employed to prevent using `scope_to`. Once you confirm that
-the selection query will be performant (with proper index), disable the cop and specify the index definition which
-will cover the scope.
+To err on the side of caution, the `Database/AvoidScopeTo` cop is employed to prevent using `scope_to`. After you confirm that
+the selection query is performant (with a proper index), disable the cop and specify the index definition which
+covers the scope:
 
 ```ruby
 module Gitlab
@@ -580,10 +580,10 @@ module Gitlab
 end
 ```
 
-#### Apply selection without scope_to
+#### Apply selection without `scope_to`
 
-In this approach the selection is pushed down on to each sub-batch, this will follow the default BBM way of iterating the entire table.
-It doesn't need an additional index as the batching will rely only on the primary key.
+In this approach, the selection is pushed down on to each sub-batch. This follows the default BBM way of iterating over the entire table.
+It doesn't need an additional index, as the batching relies only on the primary key.
 
 ```ruby
 module Gitlab

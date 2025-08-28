@@ -284,7 +284,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end
 
       context 'when the new default integration is instance specific and deactivated' do
-        let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+        let!(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
         let!(:project_instance_specific_integration) do
           create(
             :beyond_identity_integration,

@@ -96,7 +96,7 @@ export default {
     checkboxHelp: s__(
       'AdminSettings|Configure when dormant projects should be automatically deleted. %{linkStart}What are dormant projects?%{linkEnd}',
     ),
-    checkboxHelpDocLink: helpPagePath('administration/inactive_project_deletion'),
+    checkboxHelpDocLink: helpPagePath('administration/dormant_project_deletion'),
     minSizeMbLabel: s__('AdminSettings|When to delete dormant projects'),
     minSizeMbDescription: s__('AdminSettings|Delete dormant projects that exceed'),
     minSizeMbInvalidFeedback: s__('AdminSettings|Minimum size must be at least 0.'),

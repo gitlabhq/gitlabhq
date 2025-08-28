@@ -23,7 +23,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
   end
 
   context 'when the integration is active for the instance', :enable_admin_mode do
-    let(:instance_integration) { create :beyond_identity_integration }
+    let(:instance_integration) { create(:beyond_identity_integration, :instance) }
 
     before do
       ::Integrations::PropagateService.new(instance_integration).execute
@@ -126,7 +126,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
       end
 
       context 'and the integration is activated for the instance' do
-        let(:instance_integration) { create :beyond_identity_integration }
+        let(:instance_integration) { create(:beyond_identity_integration, :instance) }
 
         before do
           ::Integrations::PropagateService.new(instance_integration).execute
@@ -144,7 +144,7 @@ RSpec.describe "Adding and removing exclusions to Beyond Identity integration", 
       it { expect(project.reload.beyond_identity_integration).not_to be_activated }
 
       context 'and the integration is activated for the instance' do
-        let(:instance_integration) { create :beyond_identity_integration }
+        let(:instance_integration) { create(:beyond_identity_integration, :instance) }
 
         before do
           ::Integrations::PropagateService.new(instance_integration).execute
