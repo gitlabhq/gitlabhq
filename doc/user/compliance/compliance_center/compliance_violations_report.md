@@ -196,8 +196,8 @@ Each compliance violation has one of the following severities.
 
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
 
-| Icon                    | Severity level |
-|:------------------------|:---------------|
+| Icon                                  | Severity level |
+|:--------------------------------------|:---------------|
 | {{< icon name="severity-critical" >}} | Critical       |
 | {{< icon name="severity-high" >}}     | High           |
 | {{< icon name="severity-medium" >}}   | Medium         |
@@ -209,8 +209,8 @@ Each compliance violation has one of the following severities.
 ### Violation types
 
 | Violation                         | Severity level | Category                                      | Description                                                                                                                                                                                                                                            |
-|:----------------------------------|:---------------|:----------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Author approved merge request     | High           | [Separation of duties](#separation-of-duties) | Author of the merge request approved their own merge request. For more information, see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).                                                   |
+|:----------------------------------|:---------------|:----------------------------------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Author approved merge request     | High           | [Separation of duties](#separation-of-duties) | Author of the merge request approved their own merge request. For more information, see [Prevent approval by merge request creator](../../project/merge_requests/approvals/settings.md#prevent-approval-by-merge-request-creator).                     |
 | Committers approved merge request | High           | [Separation of duties](#separation-of-duties) | Committers of the merge request approved the merge request they contributed to. For more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). |
 | Fewer than two approvals          | High           | [Separation of duties](#separation-of-duties) | Merge request was merged with fewer than two approvals. For more information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).                                                                                     |
 
@@ -219,7 +219,7 @@ Each compliance violation has one of the following severities.
 GitLab supports a separation of duties policy between users who create and approve merge requests. Our criteria for the
 separation of duties is:
 
-- [A merge request author is not allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+- [A merge request creator is not allowed to approve their merge request](../../project/merge_requests/approvals/settings.md#prevent-approval-by-merge-request-creator).
 - [A merge request committer is not allowed to approve a merge request they have added commits to](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - [The minimum number of approvals required to merge a merge request is at least two](../../project/merge_requests/approvals/rules.md).
 

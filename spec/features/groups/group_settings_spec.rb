@@ -233,11 +233,11 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
     end
   end
 
-  context 'enable email notifications' do
-    it 'is visible' do
+  describe 'enable email notifications' do
+    it 'is available' do
       visit edit_group_path(group)
 
-      expect(page).to have_selector('#group_emails_enabled', visible: true)
+      expect(page).to have_selector('#group_emails_enabled')
     end
 
     it 'accepts the changed state' do

@@ -44,6 +44,8 @@ class PersonalAccessToken < ApplicationRecord
   belongs_to :previous_personal_access_token, class_name: 'PersonalAccessToken'
 
   has_many :last_used_ips, class_name: 'Authn::PersonalAccessTokenLastUsedIp'
+  has_many :personal_access_token_granular_scopes, class_name: 'Authz::PersonalAccessTokenGranularScope'
+  has_many :granular_scopes, through: :personal_access_token_granular_scopes, class_name: 'Authz::GranularScope'
 
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token

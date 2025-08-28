@@ -89,7 +89,11 @@ module Deployments
     end
 
     def flux_resource_path
-      environment_options.dig(:kubernetes, :flux_resource_path)
+      dashboard_options[:flux_resource_path] || environment_options.dig(:kubernetes, :flux_resource_path)
+    end
+
+    def dashboard_options
+      environment_options.dig(:kubernetes, :dashboard) || {}
     end
 
     def renew_external_url

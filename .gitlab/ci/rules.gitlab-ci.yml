@@ -52,10 +52,6 @@
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
-# canoncal project creates branches in foss project to run mr pipelines via cross project trigger
-.if-as-if-foss-mr-refs: &if-as-if-foss-mr-refs
-  if: '$CI_PROJECT_NAME == "gitlab-foss" && $CI_COMMIT_REF_NAME =~ /^as-if-foss\//'
-
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.
 .if-sync-changes-on-stable-branches: &if-sync-changes-on-stable-branches
@@ -1229,7 +1225,7 @@
       when: manual
       allow_failure: true
 
-# rules for updating unprotected caches via maintenance schedule pipelines
+# rules for updating unprotected caches via maintenance schedule pipelines, like rubocop cache
 .caching:rules:update-master-based-caches:
   rules:
     - <<: *if-schedule-maintenance
@@ -1237,43 +1233,19 @@
     - <<: *if-foss-schedule
     - <<: *if-merge-request-labels-update-caches
 
-.caching:rules:rubocop-cache-update:
-  rules:
-    - !reference [.caching:rules:update-master-based-caches, rules]
-    - <<: *if-default-branch-push
-      changes:
-        - '**/*.rb'
-        - '**/*.rake'
-        - '.rubocop_todo/**/*.yml'
-        - '.rubocop.yml'
-
 # This rule is used by pull-push cache jobs to ensure pipeline always has cache populated
-# All caches are generally related to app code, so limit cache jobs to code-backstage-patterns
-.caching:rules:update-cache-on-code-changes:
+.caching:rules:update-cache:
   rules:
-    - <<: *if-default-refs
-      changes: *code-backstage-patterns
-    - *if-as-if-foss-mr-refs
+    - <<: *if-merge-train
+      when: never
+    - when: always
 
 # e2e runners are only available in .com and in gitlab-org grouped projects
 .caching:rules:e2e-gem-cache-e2e-runners:
   rules:
     - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
-    - !reference [.caching:rules:update-cache-on-code-changes, rules]
-
-# this rule is combination of rules for compile assets jobs:
-#  * .frontend:rules:compile-test-assets
-#  * .frontend:rules:compile-production-assets
-.caching:rules:frontend-asset-hash:
-  rules:
-    - <<: *if-tag
-    - <<: *if-sync-changes-on-stable-branches
-    - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
-    - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
-    - !reference [.frontend:rules:compile-test-assets, rules]
-    - !reference [.frontend:rules:assets-shared, rules]
-    - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
+    - !reference [.caching:rules:update-cache, rules]
 
 .caching:rules:update-frontend-fixtures:
   rules:

@@ -683,7 +683,7 @@ GEM
     fog-json (1.2.0)
       fog-core
       multi_json (~> 1.10)
-    fog-local (0.8.0)
+    fog-local (0.9.0)
       fog-core (>= 1.27, < 3.0)
     fog-xml (0.1.5)
       fog-core
@@ -726,7 +726,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (1.28.0)
+    gitlab-cloud-connector (1.29.0)
       activesupport (~> 7.0)
       jwt (~> 2.9)
     gitlab-crystalball (1.1.1)

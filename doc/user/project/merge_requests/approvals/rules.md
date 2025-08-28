@@ -310,30 +310,30 @@ Code Owners.
 When you assign individual users as approvers for approval rules or reference users in `CODEOWNERS`
 files, like `@username`:
 
-| Membership type                                                                                                    | Approval rules                              | Code Owners |
-|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|-------------|
+| Membership type                                                                                                    | Approval rules                              | Code Owners                                 |
+|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
 | Direct member of the project                                                                                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Direct member of the project's group                                                                               | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Inherited member of the project's group                                                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Direct member of a [group invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 | Direct member of a [group invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 | Direct member of a group invited to the project's group's parent groups                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 
 #### Group eligibility
 
 When you assign groups as approvers for approval rules or reference groups in `CODEOWNERS` files,
 like `@group-name`, only direct members of eligible groups can provide approvals:
 
-| Group type | Approval rules | Code Owners |
-|------------|----------------|-------------|
-| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Groups invited to a parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| The project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| A parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Group type                                                                                       | Approval rules                              | Code Owners                                 |
+|--------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
+| Groups invited to a parent of the project's group                                                | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
+| The project's group                                                                              | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| A parent of the project's group                                                                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 
 {{< alert type="note" >}}
 
@@ -363,7 +363,7 @@ in the following ways:
   counts as one approver, not two.
 - Merge request authors do not count as eligible approvers on their own merge requests by default.
   To change this behavior, disable the
-  [**Prevent author approval**](settings.md#prevent-approval-by-author)
+  [**Prevent merge request creator approval**](settings.md#prevent-approval-by-merge-request-creator)
   project setting.
 - By default, committers to merge requests can approve a merge request. To change this behavior, enable
   the [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)

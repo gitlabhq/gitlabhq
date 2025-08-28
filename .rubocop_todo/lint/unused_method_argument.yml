@@ -372,7 +372,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/graphql/project/dast_profile_connection_extension.rb'
     - 'lib/gitlab/graphql/query_analyzers/ast/logger_analyzer.rb'
     - 'lib/gitlab/hook_data/subgroup_builder.rb'
-    - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/issuable_sorter.rb'
     - 'lib/gitlab/json.rb'
     - 'lib/gitlab/lfs/client.rb'

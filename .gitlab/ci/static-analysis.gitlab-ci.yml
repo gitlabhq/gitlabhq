@@ -16,11 +16,8 @@ update-static-analysis-cache:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache-push
-    - .caching:rules:rubocop-cache-update
+    - .caching:rules:update-master-based-caches
   stage: prepare
-  needs:
-    - job: cache:ruby-gems
-      optional: true
   script:
     # Silence cop offenses for rules with "grace period".
     # This will notify Slack if offenses were silenced.

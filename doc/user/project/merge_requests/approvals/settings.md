@@ -21,7 +21,7 @@ to apply those rules as a merge request moves toward completion.
 
 Use any combination of these settings to configure approval limits for merge requests:
 
-- [**Prevent approval by author**](#prevent-approval-by-author):
+- [**Prevent approval by merge request creator**](#prevent-approval-by-merge-request-creator):
   Prevents the author of a merge request from approving it.
 - [**Prevent approvals by users who add commits**](#prevent-approvals-by-users-who-add-commits):
   Prevents users who add commits to a merge request from also approving it.
@@ -59,17 +59,17 @@ at the broadest possible level. Rules created:
 If a group or project inherits settings, you can't change them in the inheriting group or project.
 You must change the settings where they originated: the top-level group or instance.
 
-## Prevent approval by author
+## Prevent approval by merge request creator
 
-By default, the author of a merge request cannot approve it. To change this setting:
+By default, the creator of a merge request (author) cannot approve it. To change this setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   clear the **Prevent approval by author** checkbox.
+   clear the **Prevent approval by merge request creator (author)** checkbox.
 1. Select **Save changes**.
 
-Authors can edit the approval rule in an individual merge request and override
+Merge request creators can edit the approval rule in an individual merge request and override
 this setting, unless you configure one of these options:
 
 - [Prevent overrides of default approvals](#prevent-editing-approval-rules-in-merge-requests) for your project.

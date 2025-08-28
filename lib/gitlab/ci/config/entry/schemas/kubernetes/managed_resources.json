@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "GitLab-managed Kubernetes resources settings",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "type": "boolean",
+      "description": "Enable or disable managed resources."
+    }
+  },
+  "additionalProperties": false
+}

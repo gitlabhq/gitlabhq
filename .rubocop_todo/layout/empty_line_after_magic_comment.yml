@@ -348,7 +348,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/features/projects/tags/user_views_tags_spec.rb'
     - 'spec/finders/packages/conan/package_file_finder_spec.rb'
     - 'spec/finders/packages/conan/package_finder_spec.rb'
-    - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/finders/packages/package_file_finder_spec.rb'
     - 'spec/finders/projects/members/effective_access_level_finder_spec.rb'
     - 'spec/finders/projects/members/effective_access_level_per_user_finder_spec.rb'

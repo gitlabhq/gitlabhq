@@ -503,7 +503,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/import_export/base/relation_factory.rb'
     - 'lib/gitlab/import_export/base/relation_object_saver.rb'
     - 'lib/gitlab/import_export/decompressed_archive_size_validator.rb'
-    - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/import_export/group/tree_restorer.rb'
     - 'lib/gitlab/import_export/importer.rb'
     - 'lib/gitlab/import_export/lfs_restorer.rb'

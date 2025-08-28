@@ -40,6 +40,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
     it { is_expected.to belong_to(:group).optional }
     it { is_expected.to have_many(:last_used_ips) }
+    it { is_expected.to have_many(:personal_access_token_granular_scopes).class_name('Authz::PersonalAccessTokenGranularScope') }
+    it { is_expected.to have_many(:granular_scopes).class_name('Authz::GranularScope') }
   end
 
   describe 'scopes' do

@@ -435,6 +435,27 @@
                 },
                 "namespace": {
                   "type": "string"
+                },
+                "managed_resources": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "dashboard": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "namespace": {
+                      "type": "string"
+                    },
+                    "flux_resource_path": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             },

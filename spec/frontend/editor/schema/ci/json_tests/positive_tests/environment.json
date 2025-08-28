@@ -71,5 +71,34 @@
       "name": "review/$CI_COMMIT_REF_NAME",
       "url": "https://$CI_ENVIRONMENT_SLUG.example.com/"
     }
+  },
+  "deploy with Kubernetes (deprecated format)": {
+    "stage": "deploy",
+    "script": "echo 'Deploying to production server...'",
+    "environment": {
+      "name": "production",
+      "kubernetes": {
+        "agent": "path/to/agent/project:agent-name",
+        "namespace": "my-namespace",
+        "flux_resource_path": "helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource"
+      }
+    }
+  },
+  "deploy with Kubernetes": {
+    "stage": "deploy",
+    "script": "echo 'Deploying to production server...'",
+    "environment": {
+      "name": "production",
+      "kubernetes": {
+        "agent": "path/to/agent/project:agent-name",
+        "managed_resources": {
+          "enabled": true
+        },
+        "dashboard": {
+          "namespace": "my-namespace",
+          "flux_resource_path": "helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource"
+        }
+      }
+    }
   }
 }

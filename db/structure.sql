@@ -16315,6 +16315,25 @@ CREATE SEQUENCE grafana_integrations_id_seq
 
 ALTER SEQUENCE grafana_integrations_id_seq OWNED BY grafana_integrations.id;
 
+CREATE TABLE granular_scopes (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    namespace_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    permissions jsonb DEFAULT '[]'::jsonb NOT NULL,
+    CONSTRAINT check_permissions_is_array CHECK ((jsonb_typeof(permissions) = 'array'::text))
+);
+
+CREATE SEQUENCE granular_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE granular_scopes_id_seq OWNED BY granular_scopes.id;
+
 CREATE TABLE group_crm_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -21442,6 +21461,22 @@ CREATE SEQUENCE path_locks_id_seq
 
 ALTER SEQUENCE path_locks_id_seq OWNED BY path_locks.id;
 
+CREATE TABLE personal_access_token_granular_scopes (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    personal_access_token_id bigint NOT NULL,
+    granular_scope_id bigint NOT NULL
+);
+
+CREATE SEQUENCE personal_access_token_granular_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE personal_access_token_granular_scopes_id_seq OWNED BY personal_access_token_granular_scopes.id;
+
 CREATE TABLE personal_access_token_last_used_ips (
     id bigint NOT NULL,
     personal_access_token_id bigint NOT NULL,
@@ -24416,7 +24451,9 @@ CREATE TABLE security_finding_token_statuses (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    raw_source_code_extract text,
+    CONSTRAINT raw_source_code_extract_not_longer_than_2048 CHECK ((char_length(raw_source_code_extract) <= 2048))
 );
 
 CREATE SEQUENCE security_findings_id_seq
@@ -29466,6 +29503,8 @@ ALTER TABLE ONLY gpg_signatures ALTER COLUMN id SET DEFAULT nextval('gpg_signatu
 
 ALTER TABLE ONLY grafana_integrations ALTER COLUMN id SET DEFAULT nextval('grafana_integrations_id_seq'::regclass);
 
+ALTER TABLE ONLY granular_scopes ALTER COLUMN id SET DEFAULT nextval('granular_scopes_id_seq'::regclass);
+
 ALTER TABLE ONLY group_crm_settings ALTER COLUMN group_id SET DEFAULT nextval('group_crm_settings_group_id_seq'::regclass);
 
 ALTER TABLE ONLY group_custom_attributes ALTER COLUMN id SET DEFAULT nextval('group_custom_attributes_id_seq'::regclass);
@@ -29865,6 +29904,8 @@ ALTER TABLE ONLY pages_domain_acme_orders ALTER COLUMN id SET DEFAULT nextval('p
 ALTER TABLE ONLY pages_domains ALTER COLUMN id SET DEFAULT nextval('pages_domains_id_seq'::regclass);
 
 ALTER TABLE ONLY path_locks ALTER COLUMN id SET DEFAULT nextval('path_locks_id_seq'::regclass);
+
+ALTER TABLE ONLY personal_access_token_granular_scopes ALTER COLUMN id SET DEFAULT nextval('personal_access_token_granular_scopes_id_seq'::regclass);
 
 ALTER TABLE ONLY personal_access_token_last_used_ips ALTER COLUMN id SET DEFAULT nextval('personal_access_token_last_used_ips_id_seq'::regclass);
 
@@ -32236,6 +32277,9 @@ ALTER TABLE ONLY gpg_signatures
 ALTER TABLE ONLY grafana_integrations
     ADD CONSTRAINT grafana_integrations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY granular_scopes
+    ADD CONSTRAINT granular_scopes_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY group_audit_events
     ADD CONSTRAINT group_audit_events_pkey PRIMARY KEY (id, created_at);
 
@@ -33030,6 +33074,9 @@ ALTER TABLE ONLY pages_domains
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY personal_access_token_granular_scopes
+    ADD CONSTRAINT personal_access_token_granular_scopes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY personal_access_token_last_used_ips
     ADD CONSTRAINT personal_access_token_last_used_ips_pkey PRIMARY KEY (id);
@@ -36218,6 +36265,10 @@ CREATE INDEX idx_gitlab_hosted_runner_monthly_usages_on_billing_month_year ON ci
 
 CREATE INDEX idx_gpg_keys_on_user_externally_verified ON gpg_keys USING btree (user_id) WHERE (externally_verified = true);
 
+CREATE INDEX idx_granular_scopes_on_namespace_id ON granular_scopes USING btree (namespace_id);
+
+CREATE INDEX idx_granular_scopes_on_organization_id ON granular_scopes USING btree (organization_id);
+
 CREATE INDEX idx_group_audit_events_on_author_id_created_at_id ON ONLY group_audit_events USING btree (author_id, created_at, id);
 
 CREATE INDEX idx_group_audit_events_on_group_id_author_created_at_id ON ONLY group_audit_events USING btree (group_id, author_id, created_at, id DESC);
@@ -36433,6 +36484,12 @@ CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_npm ON p
 CREATE INDEX idx_packages_packages_on_npm_scope_and_project_id ON packages_packages USING btree (split_part((name)::text, '/'::text, 1), project_id) WHERE ((package_type = 2) AND ("position"((name)::text, '/'::text) > 0) AND (status = ANY (ARRAY[0, 3])) AND (version IS NOT NULL));
 
 CREATE INDEX idx_packages_packages_on_project_id_name_version_package_type ON packages_packages USING btree (project_id, name, version, package_type);
+
+CREATE INDEX idx_pat_granular_scopes_on_granular_scope_id ON personal_access_token_granular_scopes USING btree (granular_scope_id);
+
+CREATE INDEX idx_pat_granular_scopes_on_organization_id ON personal_access_token_granular_scopes USING btree (organization_id);
+
+CREATE INDEX idx_pat_granular_scopes_on_pat_id ON personal_access_token_granular_scopes USING btree (personal_access_token_id);
 
 CREATE INDEX idx_pat_last_used_ips_on_pat_id ON personal_access_token_last_used_ips USING btree (personal_access_token_id);
 
@@ -46061,6 +46118,9 @@ ALTER TABLE ONLY resource_link_events
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_2a0421d824 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY personal_access_token_granular_scopes
+    ADD CONSTRAINT fk_2a2bab7170 FOREIGN KEY (personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_2a74c6e52d FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
@@ -46693,6 +46753,9 @@ ALTER TABLE ONLY project_compliance_violations_issues
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_73a34da7d8 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY granular_scopes
+    ADD CONSTRAINT fk_73a513f489 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT fk_74b2492545 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -48278,6 +48341,9 @@ ALTER TABLE ONLY catalog_verified_namespaces
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY personal_access_token_granular_scopes
+    ADD CONSTRAINT fk_rails_1b90422c3e FOREIGN KEY (granular_scope_id) REFERENCES granular_scopes(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY board_assignees
     ADD CONSTRAINT fk_rails_1c0ff59e82 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -48298,6 +48364,9 @@ ALTER TABLE ONLY approval_policy_merge_request_bypass_events
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_rails_1ecfd9f2de FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY granular_scopes
+    ADD CONSTRAINT fk_rails_1f506e10eb FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY external_status_checks
     ADD CONSTRAINT fk_rails_1f5a8aa809 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -49102,6 +49171,9 @@ ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY personal_access_token_granular_scopes
+    ADD CONSTRAINT fk_rails_824dd5f58e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_build_tags
     ADD CONSTRAINT fk_rails_8284d35c66 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;

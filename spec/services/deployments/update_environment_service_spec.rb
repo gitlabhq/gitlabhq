@@ -300,7 +300,17 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
     context 'when kubernetes namespace is specified' do
       let(:agent) { create(:cluster_agent, project: project) }
       let(:namespace) { 'my-namespace' }
-      let(:options) { { name: environment_name, kubernetes: { agent: agent_path, namespace: namespace } } }
+      let(:options) do
+        {
+          name: environment_name,
+          kubernetes: {
+            agent: agent_path,
+            dashboard: {
+              namespace: namespace
+            }
+          }
+        }
+      end
 
       context 'when the agent does not exist' do
         let(:agent_path) { "#{project.full_path}:non-existent-agent" }
@@ -349,6 +359,28 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
       end
     end
 
+    context 'when kubernetes namespace is specified with the deprecated format' do
+      let(:agent) { create(:cluster_agent, project: project) }
+      let(:namespace) { 'my-namespace' }
+      let(:options) do
+        {
+          name: environment_name,
+          kubernetes: {
+            agent: agent_path,
+            namespace: namespace
+          }
+        }
+      end
+
+      let(:agent_path) { "#{project.full_path}:#{agent.name}" }
+
+      it 'assigns the kubernetes namespace to the environment' do
+        agent.user_access_project_authorizations.create!(project: project, config: {})
+
+        expect { subject.execute }.to change { environment.kubernetes_namespace }.from(nil).to(namespace)
+      end
+    end
+
     context 'when flux resource path is specified' do
       let(:agent) { create(:cluster_agent, project: project) }
       let(:namespace) { 'my-namespace' }
@@ -358,8 +390,10 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
           name: environment_name,
           kubernetes: {
             agent: agent_path,
-            namespace: namespace,
-            flux_resource_path: flux_resource_path
+            dashboard: {
+              namespace: namespace,
+              flux_resource_path: flux_resource_path
+            }
           }
         }
       end
@@ -425,6 +459,30 @@ RSpec.describe Deployments::UpdateEnvironmentService, feature_category: :continu
             end
           end
         end
+      end
+    end
+
+    context 'when the flux resource path is specified with the deprecated format' do
+      let(:agent) { create(:cluster_agent, project: project) }
+      let(:namespace) { 'my-namespace' }
+      let(:flux_resource_path) { 'path/to/flux/resource' }
+      let(:options) do
+        {
+          name: environment_name,
+          kubernetes: {
+            agent: agent_path,
+            namespace: namespace,
+            flux_resource_path: flux_resource_path
+          }
+        }
+      end
+
+      let(:agent_path) { "#{project.full_path}:#{agent.name}" }
+
+      it 'assigns the flux resource path to the environment' do
+        agent.user_access_project_authorizations.create!(project: project, config: {})
+
+        expect { subject.execute }.to change { environment.flux_resource_path }.from(nil).to(flux_resource_path)
       end
     end
   end

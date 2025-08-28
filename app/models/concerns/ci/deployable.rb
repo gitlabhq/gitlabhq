@@ -128,7 +128,8 @@ module Ci
     def expanded_kubernetes_namespace
       return unless has_environment_keyword?
 
-      namespace = options.dig(:environment, :kubernetes, :namespace)
+      namespace = options.dig(:environment, :kubernetes, :dashboard, :namespace) ||
+        options.dig(:environment, :kubernetes, :namespace)
 
       return unless namespace.present?
 

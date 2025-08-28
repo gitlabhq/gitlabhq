@@ -2617,20 +2617,27 @@ Some actions can be used to reset the scheduled stop time for the environment. F
 
 - `agent` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
 - `namespace` and `flux_resource_path` keywords [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500164) in GitLab 17.7.
+- `namespace` and `flux_resource_path` keywords [deprecated](deprecated_keywords.md) in GitLab 18.4.
+- `dashboard:namespace` and `dashboard:flux_resource_path` keywords [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/515854) in GitLab 18.4.
 
 {{< /history >}}
 
 Use the `kubernetes` keyword to configure the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md)
-for an environment.
+and [GitLab-managed Kubernetes resources](../../user/clusters/agent/managed_kubernetes_resources.md) for an environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
 
 - `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`. If the agent is connected to the project running the pipeline, use `$CI_PROJECT_PATH:agent-name`.
-- `namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword.
-- `flux_resource_path`: A string representing the full path to the Flux resource, such as a HelmRelease. The Flux resource must be set together with the
-  `agent` and `namespace` keywords.
+- `dashboard:namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword. `namespace` is [deprecated](deprecated_keywords.md#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path).
+- `dashboard:flux_resource_path`: A string representing the full path to the Flux resource, such as a `HelmRelease`. The Flux resource must be set together with the
+  `agent` and `dashboard:namespace` keywords. `flux_resource_path` is [deprecated](deprecated_keywords.md#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path).
+- `managed_resources`: A hash with the `enabled` keyword to configure the
+  [GitLab-managed Kubernetes resources](../../user/clusters/agent/managed_kubernetes_resources.md) for the environment.
+  - `managed_resources:enabled`: A boolean value indicating whether GitLab-managed Kubernetes resources are enabled for the environment.
+- `dashboard`: A hash with the `dashboard:namespace` and `dashboard:flux_resource_path` keywords to configure the
+  [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for the environment.
 
 **Example of `environment:kubernetes`**:
 
@@ -2642,8 +2649,26 @@ deploy:
     name: production
     kubernetes:
       agent: path/to/agent/project:agent-name
-      namespace: my-namespace
-      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
+      dashboard:
+        namespace: my-namespace
+        flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
+```
+
+**Example of `environment:kubernetes`** when disabling managed resources:
+
+```yaml
+deploy:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: production
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+      managed_resources:
+        enabled: false
+      dashboard:
+        namespace: my-namespace
+        flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
 ```
 
 This configuration:

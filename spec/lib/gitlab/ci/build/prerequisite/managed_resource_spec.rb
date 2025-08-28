@@ -15,8 +15,21 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
     let_it_be(:user) { create(:user, developer_of: deployment_project) }
     let_it_be(:deployment) { create(:deployment, environment: environment, user: user) }
-    let_it_be(:build) do
-      create(:ci_build, project: deployment_project, environment: environment, user: user, deployment: deployment)
+    let(:agent_path) { "#{agent_management_project.full_path}:#{cluster_agent.name}" }
+    let(:options) do
+      {
+        environment: {
+          name: environment.name,
+          kubernetes: {
+            agent: agent_path
+          }
+        }
+      }
+    end
+
+    let(:build) do
+      create(:ci_build, project: deployment_project, environment: environment, user: user, deployment: deployment,
+        options: options)
     end
 
     let(:status) { :processing }
@@ -115,6 +128,27 @@ RSpec.describe Gitlab::Ci::Build::Prerequisite::ManagedResource, feature_categor
 
               it 'returns true' do
                 expect(execute_unmet).to be_truthy
+              end
+            end
+
+            context 'when managed resources is disabled in environment options' do
+              let(:managed_resource) { nil }
+              let(:options) do
+                {
+                  environment: {
+                    name: environment.name,
+                    kubernetes: {
+                      agent: agent_path,
+                      managed_resources: {
+                        enabled: false
+                      }
+                    }
+                  }
+                }
+              end
+
+              it 'returns false' do
+                expect(execute_unmet).to be_falsey
               end
             end
           end

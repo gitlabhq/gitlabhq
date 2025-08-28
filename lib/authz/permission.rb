@@ -11,6 +11,10 @@ module Authz
         all[name]
       end
 
+      def defined?(name)
+        all.key?(name.to_sym)
+      end
+
       private
 
       def load_definitions

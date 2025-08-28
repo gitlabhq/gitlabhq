@@ -36,6 +36,30 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
     end
   end
 
+  describe '.defined?' do
+    subject(:defined) { described_class.defined?(permission) }
+
+    context 'when the permission exists' do
+      context 'when the permission is passed as a symbol' do
+        let(:permission) { :create_issue }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'when the permission is passed as a string' do
+        let(:permission) { 'create_issue' }
+
+        it { is_expected.to be(true) }
+      end
+    end
+
+    context 'when the permission does not exist' do
+      let(:permission) { :non_existent_permission }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#name' do
     specify do
       expect(permission.name).to eq('test_permission')

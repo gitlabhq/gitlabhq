@@ -548,7 +548,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/i18n/po_linter.rb'
     - 'lib/gitlab/import/import_failure_service.rb'
     - 'lib/gitlab/import_export/base/relation_factory.rb'
-    - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/import_export/group/tree_restorer.rb'
     - 'lib/gitlab/import_export/merge_request_parser.rb'
     - 'lib/gitlab/import_export/project/export_task.rb'

@@ -1929,7 +1929,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/import_export/config_spec.rb'
     - 'spec/lib/gitlab/import_export/decompressed_archive_size_validator_spec.rb'
     - 'spec/lib/gitlab/import_export/duration_measuring_spec.rb'
-    - 'spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb'
     - 'spec/lib/gitlab/import_export/import_failure_service_spec.rb'
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/json/ndjson_reader_spec.rb'

@@ -146,7 +146,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
       end
 
       with_them do
-        let(:headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
+        let(:headers) { user_role == :anonymous ? {} : build_token_auth_header(token) }
 
         before do
           group.update!(visibility: visibility.to_s)
@@ -163,6 +163,36 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token', :found
     it_behaves_like 'allowing anyone to pull public terraform modules', :found
+
+    context 'for semver sorting' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
+
+      before_all do
+        group.add_developer(user)
+        create(:terraform_module_package, :with_metadatum, project: project, name: package.name, version: '1.0.10')
+        create(:terraform_module_package, :with_metadatum, project: project, name: package.name, version: '1.0.9')
+      end
+
+      it 'sorts semver versions correctly', :aggregate_failures do
+        get_download
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response.headers['Location']).to include "#{package.name}/1.0.10/download"
+      end
+
+      context 'when order_by_semver_in_terraform_modules feature flag is disabled' do
+        before do
+          stub_feature_flags(order_by_semver_in_terraform_modules: false)
+        end
+
+        it 'does not sort semver versions', :aggregate_failures do
+          get_download
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response.headers['Location']).to include "#{package.name}/1.0.9/download"
+        end
+      end
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system' do
@@ -173,7 +203,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     context 'with empty registry' do
       let(:package_name) { 'non-existent-package' }
-      let(:headers) { { 'Authorization' => "Bearer #{tokens[:personal_access_token]}" } }
+      let(:headers) { build_token_auth_header(tokens[:personal_access_token]) }
 
       it 'returns not found when there is no module' do
         get_module
@@ -220,7 +250,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
       end
 
       with_them do
-        let(:headers) { user_role == :anonymous ? {} : { 'Authorization' => "Bearer #{token}" } }
+        let(:headers) { user_role == :anonymous ? {} : build_token_auth_header(token) }
 
         before do
           group.update!(visibility: visibility.to_s)
@@ -237,6 +267,36 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
     it_behaves_like 'accessing a public/internal project with another project\'s job token'
     it_behaves_like 'allowing anyone to pull public terraform modules'
+
+    context 'for semver sorting' do
+      let(:headers) { build_headers_for_auth_type(:personal_access_token) }
+
+      before_all do
+        group.add_developer(user)
+        create(:terraform_module_package, :with_metadatum, project: project, name: package.name, version: '1.0.10')
+        create(:terraform_module_package, :with_metadatum, project: project, name: package.name, version: '1.0.9')
+      end
+
+      it 'sorts semver versions correctly', :aggregate_failures do
+        get_module
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['version']).to eq('1.0.10')
+      end
+
+      context 'when order_by_semver_in_terraform_modules feature flag is disabled' do
+        before do
+          stub_feature_flags(order_by_semver_in_terraform_modules: false)
+        end
+
+        it 'does not sort semver versions', :aggregate_failures do
+          get_module
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response['version']).to eq('1.0.9')
+        end
+      end
+    end
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version' do

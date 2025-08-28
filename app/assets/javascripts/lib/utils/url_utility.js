@@ -805,7 +805,7 @@ export function visitUrlWithAlerts(destination, alerts) {
 }
 
 export function refreshCurrentPage() {
-  visitUrl(window.location.href);
+  window.location.reload();
 }
 
 // Adds a ref_type param to the path if refType is available

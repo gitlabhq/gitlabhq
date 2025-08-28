@@ -39,7 +39,9 @@ deploy:
     name: production
     url: https://prod.example.com
     kubernetes:
-      namespace: production
+      agent: path/to/agent/project:agent-name
+      dashboard:
+        namespace: production
 ```
 
 This demonstrates the concept of hidden / expanding complexity: if users need

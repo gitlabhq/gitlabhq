@@ -2282,18 +2282,44 @@
                   "type": "object",
                   "description": "Used to configure the kubernetes deployment for this environment. This is currently not supported for kubernetes clusters that are managed by GitLab.",
                   "properties": {
-                    "namespace": {
-                      "type": "string",
-                      "description": "The kubernetes namespace where this environment should be deployed to.",
-                      "minLength": 1
-                    },
                     "agent": {
                       "type": "string",
                       "description": "Specifies the GitLab Agent for Kubernetes. The format is `path/to/agent/project:agent-name`."
                     },
+                    "namespace": {
+                      "type": "string",
+                      "description": "Deprecated. Use `dashboard.namespace` instead. The kubernetes namespace where this environment's dashboard should be deployed to.",
+                      "minLength": 1
+                    },
                     "flux_resource_path": {
                       "type": "string",
-                      "description": "The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                      "description": "Deprecated. Use `dashboard.flux_resource_path` instead. The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                    },
+                    "managed_resources": {
+                      "type": "object",
+                      "description": "Used to configure the managed resources for this environment.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Indicates whether the managed resources are enabled for this environment.",
+                          "default": true
+                        }
+                      }
+                    },
+                    "dashboard": {
+                      "type": "object",
+                      "description": "Used to configure the dashboard for this environment.",
+                      "properties": {
+                        "namespace": {
+                          "type": "string",
+                          "description": "The kubernetes namespace where the dashboard for this environment should be deployed to.",
+                          "minLength": 1
+                        },
+                        "flux_resource_path": {
+                          "type": "string",
+                          "description": "The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                        }
+                      }
                     }
                   }
                 },

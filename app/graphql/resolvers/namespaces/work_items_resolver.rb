@@ -6,7 +6,13 @@ module Resolvers
     class WorkItemsResolver < ::Resolvers::WorkItemsResolver
       include TimeFrameHelpers
 
-      GROUP_NAMESPACE_ONLY_ARGS = %i[include_ancestors include_descendants exclude_projects timeframe].freeze
+      GROUP_NAMESPACE_ONLY_ARGS = %i[
+        include_ancestors
+        include_descendants
+        exclude_projects
+        timeframe
+        exclude_group_work_items
+      ].freeze
 
       argument :include_ancestors, GraphQL::Types::Boolean,
         required: false,
@@ -23,6 +29,13 @@ module Resolvers
         default_value: false,
         description: 'Exclude work items from projects within the group. Ignored for project namespaces.',
         experiment: { milestone: '17.5' }
+
+      argument :exclude_group_work_items, GraphQL::Types::Boolean,
+        required: false,
+        default_value: false,
+        description: 'Exclude group-level work items within the group and its descendants.' \
+          'Ignored for project namespaces.',
+        experiment: { milestone: '18.4' }
 
       argument :timeframe, Types::TimeframeInputType,
         required: false,

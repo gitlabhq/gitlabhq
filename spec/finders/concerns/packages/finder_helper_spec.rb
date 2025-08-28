@@ -296,7 +296,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
   end
 
-  context 'for projecs visibile to user' do
+  context 'for projects visible to user' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be(:user) { create(:user) }

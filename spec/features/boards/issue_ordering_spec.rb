@@ -167,9 +167,9 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
   context 'ordering when changing list' do
     let(:label2) { create(:label, project: project) }
     let!(:list2) { create(:list, board: board, label: label2, position: 1) }
-    let!(:issue4) { create(:labeled_issue, project: project, title: 'testing 1', labels: [label2], relative_position: 3.0) }
-    let!(:issue5) { create(:labeled_issue, project: project, title: 'testing 2', labels: [label2], relative_position: 2.0) }
-    let!(:issue6) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label2], relative_position: 1.0) }
+    let!(:issue4) { create(:labeled_issue, project: project, title: 'testing 4', labels: [label2], relative_position: 3.0) }
+    let!(:issue5) { create(:labeled_issue, project: project, title: 'testing 5', labels: [label2], relative_position: 2.0) }
+    let!(:issue6) { create(:labeled_issue, project: project, title: 'testing 6', labels: [label2], relative_position: 1.0) }
 
     before do
       visit project_board_path(project, board)
@@ -192,7 +192,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
 
     it 'moves to bottom of another list' do
-      drag(list_from_index: 1, list_to_index: 2, to_index: 3, duration: 1020)
+      drag(list_from_index: 1, list_to_index: 2, to_index: 3, duration: 1020, extra_height: 50)
 
       wait_for_requests
 
@@ -218,7 +218,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1, duration: 1000)
+  def drag(selector: '.board-list', list_from_index: 1, from_index: 0, to_index: 0, list_to_index: 1, duration: 1000, extra_height: 0)
     drag_to(
       selector: selector,
       scrollable: '#board-app',
@@ -226,7 +226,8 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       from_index: from_index,
       to_index: to_index,
       list_to_index: list_to_index,
-      duration: duration
+      duration: duration,
+      extra_height: extra_height
     )
   end
 end

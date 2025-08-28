@@ -5006,7 +5006,6 @@
 - './spec/lib/gitlab/import_export/design_repo_saver_spec.rb'
 - './spec/lib/gitlab/import_export/duration_measuring_spec.rb'
 - './spec/lib/gitlab/import_export/error_spec.rb'
-- './spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb'
 - './spec/lib/gitlab/import_export/group/object_builder_spec.rb'
 - './spec/lib/gitlab/import_export/group/relation_factory_spec.rb'
 - './spec/lib/gitlab/import_export/group/relation_tree_restorer_spec.rb'

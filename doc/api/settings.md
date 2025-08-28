@@ -701,7 +701,7 @@ to configure other related settings. These requirements are
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |
-| `prevent_merge_requests_author_approval`         | boolean  | no                                   | Prevent approval by author |
+| `prevent_merge_requests_author_approval`         | boolean  | no                                   | Prevent approval by merge request creator (author) |
 | `prevent_merge_requests_committers_approval`     | boolean  | no                                   | Prevent approval by committers to merge requests |
 | `push_event_activities_limit`            | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which a [bulk push event is created](../administration/settings/push_event_activities_limit.md). Setting to `0` does not disable throttling. |
 | `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. Default: `3`. |

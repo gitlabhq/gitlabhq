@@ -485,7 +485,9 @@ module SystemNotes
         text = "#{self.class.cross_reference_note_prefix}%#{mentioned_in.to_reference(nil)}"
         notes.like_note_or_capitalized_note(text)
       else
-        gfm_reference = mentioned_in.gfm_reference(noteable.project || noteable.group)
+        from = noteable.project || noteable.try(:group) || noteable.try(:namespace)
+
+        gfm_reference = mentioned_in.gfm_reference(from)
         text = cross_reference_note_content(gfm_reference)
         notes.for_note_or_capitalized_note(text)
       end

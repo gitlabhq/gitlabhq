@@ -220,7 +220,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       end
     end
 
-    context 'with add_organization_to_diff_commit_users feature flag' do
+    context 'with organization_id in lookup' do
       let(:test_project) { create(:project) }
       let(:test_diff) { create(:merge_request_diff) }
       let(:organization_id) { test_project.organization_id }
@@ -237,82 +237,40 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         })]
       end
 
-      context 'when enabled' do
-        it 'uses organization_id in hash lookup' do
-          users_hash = {
-            ['Feature Test Author', 'feature@test.com', organization_id] =>
-              instance_double(MergeRequest::DiffCommitUser, id: 1),
-            ['Feature Test Committer', 'committer@test.com', organization_id] =>
-              instance_double(MergeRequest::DiffCommitUser, id: 2)
-          }
+      it 'uses organization_id in hash lookup' do
+        users_hash = {
+          ['Feature Test Author', 'feature@test.com', organization_id] =>
+            instance_double(MergeRequest::DiffCommitUser, id: 1),
+          ['Feature Test Committer', 'committer@test.com', organization_id] =>
+            instance_double(MergeRequest::DiffCommitUser, id: 2)
+        }
 
-          allow(MergeRequest::DiffCommitUser).to receive(:bulk_find_or_create).and_return(users_hash)
+        allow(MergeRequest::DiffCommitUser).to receive(:bulk_find_or_create).and_return(users_hash)
 
-          expect { described_class.create_bulk(test_diff.id, commits, test_project) }.not_to raise_error
-        end
-      end
-
-      context 'when disabled' do
-        it 'uses name and email only in hash lookup' do
-          stub_feature_flags(add_organization_to_diff_commit_users: false)
-          users_hash = {
-            ['Feature Test Author', 'feature@test.com'] =>
-              instance_double(MergeRequest::DiffCommitUser, id: 1),
-            ['Feature Test Committer', 'committer@test.com'] =>
-              instance_double(MergeRequest::DiffCommitUser, id: 2)
-          }
-
-          allow(MergeRequest::DiffCommitUser).to receive(:bulk_find_or_create).and_return(users_hash)
-
-          expect { described_class.create_bulk(test_diff.id, commits, test_project) }.not_to raise_error
-        end
+        expect { described_class.create_bulk(test_diff.id, commits, test_project) }.not_to raise_error
       end
     end
   end
 
   describe '.prepare_commits_for_bulk_insert' do
-    context 'when with_organization is true' do
-      it 'returns the commit hashes and unique user triples' do
-        organization_id = create(:organization).id
-        commit = double(:commit, to_hash: {
-          parent_ids: %w[foo bar],
-          author_name: 'a' * 1000,
-          author_email: 'a' * 1000,
-          committer_name: 'Alice',
-          committer_email: 'alice@example.com'
-        })
-        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, true)
-        expect(hashes).to eq([{
-          author_name: 'a' * 512,
-          author_email: 'a' * 512,
-          committer_name: 'Alice',
-          committer_email: 'alice@example.com'
-        }])
-        expect(triples)
-          .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
-      end
-    end
-
-    context 'when with_organization is false' do
-      it 'returns the commit hashes and unique user triples' do
-        organization_id = create(:organization).id
-        commit = double(:commit, to_hash: {
-          parent_ids: %w[foo bar],
-          author_name: 'a' * 1000,
-          author_email: 'a' * 1000,
-          committer_name: 'Alice',
-          committer_email: 'alice@example.com'
-        })
-        hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id, false)
-        expect(hashes).to eq([{
-          author_name: 'a' * 512,
-          author_email: 'a' * 512,
-          committer_name: 'Alice',
-          committer_email: 'alice@example.com'
-        }])
-        expect(triples)
-          .to include(['a' * 512, 'a' * 512], ['Alice', 'alice@example.com'])
-      end
+    it 'returns the commit hashes and unique user triples' do
+      organization_id = create(:organization).id
+      commit = double(:commit, to_hash: {
+        parent_ids: %w[foo bar],
+        author_name: 'a' * 1000,
+        author_email: 'a' * 1000,
+        committer_name: 'Alice',
+        committer_email: 'alice@example.com'
+      })
+      hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id)
+      expect(hashes).to eq([{
+        author_name: 'a' * 512,
+        author_email: 'a' * 512,
+        committer_name: 'Alice',
+        committer_email: 'alice@example.com'
+      }])
+      expect(triples)
+        .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
     end
   end
 

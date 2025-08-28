@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Permissions that can be assigned to tokens",
+  "type": "array",
+  "items": {
+    "type": "string",
+    "format": "known_permissions"
+  },
+  "uniqueItems": true,
+  "minItems": 1,
+  "additionalItems": false
+}

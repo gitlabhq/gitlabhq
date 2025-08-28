@@ -7,4 +7,8 @@ JSONSchemer.configure do |config|
   config.formats['known_product_category'] = proc do |category, _format|
     feature_categories.include?(category)
   end
+
+  config.formats['known_permissions'] = proc do |permission, _format|
+    Authz::Permission.defined?(permission)
+  end
 end

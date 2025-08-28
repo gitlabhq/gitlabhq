@@ -3053,7 +3053,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/import_export/base/object_builder_spec.rb'
     - 'spec/lib/gitlab/import_export/base/relation_object_saver_spec.rb'
     - 'spec/lib/gitlab/import_export/command_line_util_spec.rb'
-    - 'spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb'
     - 'spec/lib/gitlab/import_export/import_failure_service_spec.rb'
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/json/ndjson_reader_spec.rb'

@@ -77,9 +77,9 @@ The GitLab standard consists of the following rules:
 ### Prevent authors as approvers
 
 To comply with the GitLab standard, you must prevent users from approving their own merge requests. For more information,
-see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+see [Prevent approval by merge request creator](../../project/merge_requests/approvals/settings.md#prevent-approval-by-merge-request-creator).
 
-On GitLab Self-Managed, when instance-level setting for [prevent approval by author](../../../administration/merge_requests_approvals.md)
+On GitLab Self-Managed, when instance-level setting for [prevent approval by merge request creator](../../../administration/merge_requests_approvals.md)
 is updated, the adherence status for all the projects on the instance is not updated automatically.
 To update the adherence status for these projects, the group-level or the project-level setting must be updated.
 
@@ -124,7 +124,7 @@ The SOC 2 standard consists of one rule:
 To comply with the SOC 2 standard, you must:
 
 - Prevent users from approving their own merge requests. For more information, see
-  [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
+  [Prevent approval by merge request creator](../../project/merge_requests/approvals/settings.md#prevent-approval-by-merge-request-creator).
 - Prevent users from approving merge requests where they've added commits, see
   [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - At least one approval is required, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
@@ -133,7 +133,7 @@ These settings are available for an entire instance. However, when these setting
 the adherence status for all the projects on the instance is not updated automatically. To update the adherence status
 for these projects, you must update the group-level or project-level setting. For more information on the instance-level settings, see:
 
-- [Prevent approval by author](../../../administration/merge_requests_approvals.md).
+- [Prevent approval by merge request creator](../../../administration/merge_requests_approvals.md).
 - [Prevent approvals by users who add commits](../../../administration/merge_requests_approvals.md).
 
 ## Export compliance standards adherence report for projects in a group

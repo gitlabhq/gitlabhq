@@ -8614,7 +8614,7 @@ msgstr ""
 msgid "ApprovalSettings|Merge request approval settings have been updated."
 msgstr ""
 
-msgid "ApprovalSettings|Prevent approval by author"
+msgid "ApprovalSettings|Prevent approval by merge request creator"
 msgstr ""
 
 msgid "ApprovalSettings|Prevent approvals by users who add commits"
@@ -59846,9 +59846,6 @@ msgstr ""
 msgid "SecurityReports|Validity Check"
 msgstr ""
 
-msgid "SecurityReports|Validity check"
-msgstr ""
-
 msgid "SecurityReports|Vulnerabilities over time"
 msgstr ""
 
@@ -61068,6 +61065,9 @@ msgid "Show all merge requests."
 msgstr ""
 
 msgid "Show all milestones"
+msgstr ""
+
+msgid "Show all reviewers"
 msgstr ""
 
 msgid "Show all test cases."
@@ -70661,6 +70661,9 @@ msgstr ""
 msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
 msgstr ""
 
+msgid "VirtualRegistry|Failed to remove upstream. Try again."
+msgstr ""
+
 msgid "VirtualRegistry|Failed to search cache entries."
 msgstr ""
 
@@ -70728,6 +70731,15 @@ msgid "VirtualRegistry|Registry cache cleared successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Registry types"
+msgstr ""
+
+msgid "VirtualRegistry|Remove upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Remove upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Removed upstream from virtual registry."
 msgstr ""
 
 msgid "VirtualRegistry|Something went wrong while creating the upstream. Try again."

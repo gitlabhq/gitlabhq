@@ -1,0 +1,10 @@
+---
+name: order_by_semver_in_terraform_modules
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/562697
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202297
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562699
+milestone: '18.4'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

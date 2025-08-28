@@ -87,7 +87,6 @@ domains:
       - fleet_visibility
       - job_artifacts
       - pipeline_reports
-      - artifact_security
       - code_testing
 
   CloudConnector:
@@ -332,6 +331,11 @@ domains:
     description:
     feature_categories:
       - incident_management
+
+  SupplyChain:
+    description: Capabilities related to securing the software supply chain
+    feature_categories:
+      - artifact_security
 
   Terraform:
     description:

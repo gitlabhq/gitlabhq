@@ -10,7 +10,6 @@ Capybara/VisibilityMatcher:
     - 'ee/spec/support/shared_examples/views/issuable_bulk_dropdown_shared_examples.rb'
     - 'ee/spec/views/registrations/welcome/show.html.haml_spec.rb'
     - 'spec/features/dashboard/merge_requests_spec.rb'
-    - 'spec/features/groups/group_settings_spec.rb'
     - 'spec/features/issuables/task_lists_spec.rb'
     - 'spec/features/issues/design_management/user_views_designs_with_svg_xss_spec.rb'
     - 'spec/features/issues/new/user_creates_issue_spec.rb'
