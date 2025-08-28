@@ -1,22 +1,15 @@
-query getState($projectPath: ID!, $iid: String!) {
+query getState($projectPath: ID!, $iid: String!, $initialRequest: Boolean = true) {
   project(fullPath: $projectPath) {
     id
     archived
     onlyAllowMergeIfPipelineSucceeds
-    allowMergeOnSkippedPipeline
     mergeRequest(iid: $iid) {
       id
       autoMergeEnabled
-      commitCount
-      conflicts
-      detailedMergeStatus
-      diffHeadSha
-      mergeAfter
+      commitCount @include(if: $initialRequest)
+      detailedMergeStatus @include(if: $initialRequest)
       mergeError
-      mergeable
-      sourceBranchExists
       state
-      targetBranchExists
       userPermissions {
         canMerge
       }

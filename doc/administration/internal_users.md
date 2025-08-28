@@ -69,5 +69,5 @@ GitLab Security Bot is an internal user responsible for commenting on merge requ
 ## GitLab Security Policy Bot
 
 GitLab Security Policy Bot is an internal user responsible for triggering scheduled pipelines
-defined in [security policies](../user/application_security/policies/_index.md). This account is
+defined in [security policies](../user/application_security/policies/_index.md#gitlab-security-policy-bot-user). This account is
 created in every project on which a security policy is enforced.

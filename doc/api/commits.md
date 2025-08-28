@@ -44,19 +44,39 @@ Get a list of repository commits in a project.
 GET /projects/:id/repository/commits
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `ref_name` | string | no | The name of a repository branch, tag or revision range, or if not given the default branch |
-| `since` | string | no | Only commits after or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
-| `until` | string | no | Only commits before or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
-| `path` | string | no | The file path |
-| `author` | string | no | Search commits by commit author.|
-| `all` | boolean | no | Retrieve every commit from the repository. When set to `true`, the `ref_name` parameter is ignored |
-| `with_stats` | boolean | no | Stats about each commit are added to the response |
-| `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |
-| `order` | string | no | List commits in order. Possible values: `default`, [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). Defaults to `default`, the commits are shown in reverse chronological order. |
-| `trailers` | boolean | no | Parse and include [Git trailers](https://git-scm.com/docs/git-interpret-trailers) for every commit |
+| Attribute      | Type           | Required | Description |
+|----------------|----------------|----------|-------------|
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `all`          | boolean        | No       | Retrieve every commit from the repository. If `true`, the `ref_name` parameter is ignored. |
+| `author`       | string         | No       | Search commits by commit author. |
+| `first_parent` | boolean        | No       | If `true`, follows only the first parent commit upon seeing a merge commit. |
+| `order`        | string         | No       | List commits in order. Possible values: `default`, [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). Defaults to `default`, the commits are shown in reverse chronological order. |
+| `path`         | string         | No       | The file path. |
+| `ref_name`     | string         | No       | The name of a repository branch, tag or revision range, or if not given the default branch. |
+| `since`        | string         | No       | Only commits after or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ`. |
+| `trailers`     | boolean        | No       | If `true`, parses and includes [Git trailers](https://git-scm.com/docs/git-interpret-trailers) for every commit. |
+| `until`        | string         | No       | Only commits before or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ`. |
+| `with_stats`   | boolean        | No       | If `true`, retrieve stats about each commit. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute           | Type   | Description |
+|---------------------|--------|-------------|
+| `author_email`      | string | Email address of the commit author. |
+| `author_name`       | string | Name of the commit author. |
+| `authored_date`     | string | Date when the commit was authored. |
+| `committed_date`    | string | Date when the commit was committed. |
+| `committer_email`   | string | Email address of the commit committer. |
+| `committer_name`    | string | Name of the commit committer. |
+| `created_at`        | string | Date when the commit was created (identical to `committed_date`). |
+| `extended_trailers` | object | Extended Git trailers with all values. |
+| `id`                | string | SHA of the commit. |
+| `message`           | string | Full commit message. |
+| `parent_ids`        | array  | Array of parent commit SHAs. |
+| `short_id`          | string | Short SHA of the commit. |
+| `title`             | string | Title of the commit message. |
+| `trailers`          | object | Git trailers parsed from the commit message. |
+| `web_url`           | string | Web URL of the commit. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -121,29 +141,49 @@ Create a commit by posting a JSON payload
 POST /projects/:id/repository/commits
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `branch` | string | yes | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
-| `commit_message` | string | yes | Commit message |
-| `start_branch` | string | no | Name of the branch to start the new branch from |
-| `start_sha` | string | no | SHA of the commit to start the new branch from |
-| `start_project` | integer/string | no | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
-| `actions[]` | array | yes | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
-| `author_email` | string | no | Specify the commit author's email address |
-| `author_name` | string | no | Specify the commit author's name |
-| `stats` | boolean | no | Include commit stats. Default is true |
-| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha` |
+| Attribute        | Type           | Required | Description |
+|------------------|----------------|----------|-------------|
+| `actions[]`      | array          | Yes      | An array of action hashes to commit as a batch. See the next table for what attributes it can take. |
+| `branch`         | string         | Yes      | Name of the branch to commit into. To create a new branch, also provide either `start_branch` or `start_sha`, and optionally `start_project`. |
+| `commit_message` | string         | Yes      | Commit message. |
+| `id`             | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `author_email`   | string         | No       | Specify the commit author's email address. |
+| `author_name`    | string         | No       | Specify the commit author's name. |
+| `force`          | boolean        | No       | If `true`, overwrites the target branch with a new commit based on the `start_branch` or `start_sha`. |
+| `start_branch`   | string         | No       | Name of the branch to start the new branch from. |
+| `start_project`  | integer or string | No       | The project ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) to start the new branch from. Defaults to the value of `id`. |
+| `start_sha`      | string         | No       | SHA of the commit to start the new branch from. |
+| `stats`          | boolean        | No       | Include commit stats. Default is `true`. |
 
 | `actions[]` Attribute | Type    | Required | Description |
 |-----------------------|---------|----------|-------------|
-| `action`              | string  | yes      | The action to perform: `create`, `delete`, `move`, `update`, or `chmod`. |
-| `file_path`           | string  | yes      | Full path to the file. For example: `lib/class.rb`. |
-| `previous_path`       | string  | no       | Original full path to the file being moved. For example `lib/class1.rb`. Only considered for `move` action. |
-| `content`             | string  | no       | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` preserve the existing file content, and any other value of `content` overwrites the file content. |
-| `encoding`            | string  | no       | `text` or `base64`. `text` is default. |
-| `last_commit_id`      | string  | no       | Last known file commit ID. Only considered in update, move, and delete actions. |
-| `execute_filemode`    | boolean | no       | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
+| `action`              | string  | Yes      | The action to perform: `create`, `delete`, `move`, `update`, or `chmod`. |
+| `file_path`           | string  | Yes      | Full path to the file. For example: `lib/class.rb`. |
+| `content`             | string  | No       | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` preserve the existing file content, and any other value of `content` overwrites the file content. |
+| `encoding`            | string  | No       | `text` or `base64`. `text` is default. |
+| `execute_filemode`    | boolean | No       | If `true`, enables the execute flag on the file. If `false`, disables it. Only considered for `chmod` action. |
+| `last_commit_id`      | string  | No       | Last known file commit ID. Only considered in update, move, and delete actions. |
+| `previous_path`       | string  | No       | Original full path to the file being moved. For example `lib/class1.rb`. Only considered for `move` action. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute         | Type   | Description |
+|-------------------|--------|-------------|
+| `author_email`    | string | Email address of the commit author. |
+| `author_name`     | string | Name of the commit author. |
+| `authored_date`   | string | Date when the commit was authored. |
+| `committed_date`  | string | Date when the commit was committed. |
+| `committer_email` | string | Email address of the commit committer. |
+| `committer_name`  | string | Name of the commit committer. |
+| `created_at`      | string | Date when the commit was created. |
+| `id`              | string | SHA of the created commit. |
+| `message`         | string | Full commit message. |
+| `parent_ids`      | array  | Array of parent commit SHAs. |
+| `short_id`        | string | Short SHA of the created commit. |
+| `stats`           | object | Statistics about the commit (additions, deletions, total). |
+| `status`          | string | Status of the commit. |
+| `title`           | string | Title of the commit message. |
+| `web_url`         | string | Web URL of the commit. |
 
 ```shell
 PAYLOAD=$(cat << 'JSON'
@@ -238,7 +278,7 @@ curl --request POST \
      --form "actions[][file_path]=foo/bar5" \
      --form "actions[][execute_filemode]=true" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/1/repository/commits"
+     --url "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
 
 ## Get a single commit
@@ -251,11 +291,32 @@ GET /projects/:id/repository/commits/:sha
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash or name of a repository branch or tag |
-| `stats` | boolean | no | Include commit stats. Default is true |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | The commit hash or name of a repository branch or tag. |
+| `stats`   | boolean        | No       | Include commit stats. Default is `true`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute         | Type   | Description |
+|-------------------|--------|-------------|
+| `author_email`    | string | Email address of the commit author. |
+| `author_name`     | string | Name of the commit author. |
+| `authored_date`   | string | Date when the commit was authored. |
+| `committed_date`  | string | Date when the commit was committed. |
+| `committer_email` | string | Email address of the commit committer. |
+| `committer_name`  | string | Name of the commit committer. |
+| `created_at`      | string | Date when the commit was created. |
+| `id`              | string | SHA of the commit. |
+| `last_pipeline`   | object | Information about the last pipeline for this commit. |
+| `message`         | string | Full commit message. |
+| `parent_ids`      | array  | Array of parent commit SHAs. |
+| `short_id`        | string | Short SHA of the commit. |
+| `stats`           | object | Statistics about the commit (additions, deletions, total). |
+| `status`          | string | Status of the commit. |
+| `title`           | string | Title of the commit message. |
+| `web_url`         | string | Web URL of the commit. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -307,11 +368,18 @@ GET /projects/:id/repository/commits/:sha/refs
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash  |
-| `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | The commit hash. |
+| `type`    | string         | No       | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `name`    | string | Name of the branch or tag. |
+| `type`    | string | Type of reference (`branch` or `tag`). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -341,7 +409,7 @@ Example response:
 ]
 ```
 
-## Get the sequence of a commit
+## Get commit sequence
 
 {{< history >}}
 
@@ -360,10 +428,16 @@ GET /projects/:id/repository/commits/:sha/sequence
 Parameters:
 
 | Attribute      | Type           | Required | Description |
-| -------------- | -------------- | -------- | ----------- |
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `sha`          | string         | yes      | The commit hash. |
-| `first_parent` | boolean        | no       | Follow only the first parent commit upon seeing a merge commit. |
+|----------------|----------------|----------|-------------|
+| `id`           | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`          | string         | Yes      | The commit hash. |
+| `first_parent` | boolean        | No       | If `true`, follows only the first parent commit upon seeing a merge commit. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type | Description |
+| --------- | ---- | ----------- |
+| `count` | integer | Sequence number of the commit. |
 
 Example request:
 
@@ -390,13 +464,31 @@ POST /projects/:id/repository/commits/:sha/cherry_pick
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash  |
-| `branch` | string | yes | The name of the branch  |
-| `dry_run` | boolean | no | Does not commit any changes. Default is false. |
-| `message` | string | no | A custom commit message to use for the new commit. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `branch`  | string         | Yes      | The name of the branch. |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | The commit hash. |
+| `dry_run` | boolean        | No       | If `true`, does not commit any changes. Default is `false`. |
+| `message` | string         | No       | A custom commit message to use for the new commit. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute         | Type   | Description |
+|-------------------|--------|-------------|
+| `author_email`    | string | Email address of the original commit author. |
+| `author_name`     | string | Name of the original commit author. |
+| `authored_date`   | string | Date when the original commit was authored. |
+| `committed_date`  | string | Date when the cherry-picked commit was committed. |
+| `committer_email` | string | Email address of the cherry-pick committer. |
+| `committer_name`  | string | Name of the cherry-pick committer. |
+| `created_at`      | string | Date when the cherry-picked commit was created. |
+| `id`              | string | SHA of the cherry-picked commit. |
+| `message`         | string | Full commit message. |
+| `parent_ids`      | array  | Array of parent commit SHAs. |
+| `short_id`        | string | Short SHA of the cherry-picked commit. |
+| `title`           | string | Title of the commit message. |
+| `web_url`         | string | Web URL of the cherry-picked commit. |
 
 ```shell
 curl --request POST \
@@ -465,12 +557,30 @@ POST /projects/:id/repository/commits/:sha/revert
 
 Parameters:
 
-| Attribute | Type           | Required | Description                                                                     |
-| --------- | ----           | -------- | -----------                                                                     |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha`     | string         | yes      | Commit SHA to revert                                                            |
-| `branch`  | string         | yes      | Target branch name                                                              |
-| `dry_run` | boolean        | no       | Does not commit any changes. Default is false. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `branch`  | string         | Yes      | Target branch name. |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | Commit SHA to revert. |
+| `dry_run` | boolean        | No       | If `true`, does not commit any changes. Default is `false`. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute         | Type   | Description |
+|-------------------|--------|-------------|
+| `author_email`    | string | Email address of the revert commit author. |
+| `author_name`     | string | Name of the revert commit author. |
+| `authored_date`   | string | Date when the revert commit was authored. |
+| `committed_date`  | string | Date when the revert commit was committed. |
+| `committer_email` | string | Email address of the revert commit committer. |
+| `committer_name`  | string | Name of the revert commit committer. |
+| `created_at`      | string | Date when the revert commit was created. |
+| `id`              | string | SHA of the revert commit. |
+| `message`         | string | Full revert commit message. |
+| `parent_ids`      | array  | Array of parent commit SHAs. |
+| `short_id`        | string | Short SHA of the revert commit. |
+| `title`           | string | Title of the revert commit message. |
+| `web_url`         | string | Web URL of the revert commit. |
 
 ```shell
 curl --request POST \
@@ -527,7 +637,7 @@ responds with `200 OK`:
 In the event of a failure, an error displays that is identical to a failure without
 dry run.
 
-## Get the diff of a commit
+## Get commit diff
 
 Get the diff of a commit in a project.
 
@@ -537,11 +647,24 @@ GET /projects/:id/repository/commits/:sha/diff
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash or name of a repository branch or tag |
-| `unidiff` | boolean | no | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | The commit hash or name of a repository branch or tag. |
+| `unidiff` | boolean        | No       | If `true`, presents diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute      | Type    | Description |
+|----------------|---------|-------------|
+| `a_mode`       | string  | File mode before the change. |
+| `b_mode`       | string  | File mode after the change. |
+| `deleted_file` | boolean | If `true`, the file was deleted. |
+| `diff`         | string  | The diff content. |
+| `new_file`     | boolean | If `true`, this is a new file. |
+| `new_path`     | string  | New path of the file. |
+| `old_path`     | string  | Old path of the file. |
+| `renamed_file` | boolean | If `true`, the file was renamed. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -565,7 +688,7 @@ Example response:
 ]
 ```
 
-## Get the comments of a commit
+## Get commit comments
 
 Get the comments of a commit in a project.
 
@@ -575,10 +698,17 @@ GET /projects/:id/repository/commits/:sha/comments
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string         | Yes      | The commit hash or name of a repository branch or tag. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `author`  | object | Information about the comment author. |
+| `note`    | string | The comment text. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -629,14 +759,25 @@ in the Discussions API.
 POST /projects/:id/repository/commits/:sha/comments
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha`       | string  | yes | The commit SHA or name of a repository branch or tag |
-| `note`      | string  | yes | The text of the comment |
-| `path`      | string  | no  | The file path relative to the repository |
-| `line`      | integer | no  | The line number where the comment should be placed |
-| `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
+| Attribute   | Type           | Required | Description |
+|-------------|----------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `note`      | string         | Yes      | The text of the comment. |
+| `sha`       | string         | Yes      | The commit SHA or name of a repository branch or tag. |
+| `line`      | integer        | No       | The line number where the comment should be placed. |
+| `line_type` | string         | No       | The line type. Takes `new` or `old` as arguments. |
+| `path`      | string         | No       | The file path relative to the repository. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `author`     | object  | Information about the comment author. |
+| `created_at` | string  | Date when the comment was created. |
+| `line_type`  | string  | Type of line the comment is on. |
+| `line`       | integer | Line number where the comment is placed. |
+| `note`       | string  | The comment text. |
+| `path`       | string  | File path relative to the repository. |
 
 ```shell
 curl --request POST \
@@ -668,7 +809,7 @@ Example response:
 }
 ```
 
-## Get the discussions of a commit
+## Get commit discussions
 
 Get the discussions of a commit in a project.
 
@@ -680,8 +821,16 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha`     | string | yes | The commit hash or name of a repository branch or tag |
+| `id`      | integer or string | Yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string | Yes | The commit hash or name of a repository branch or tag. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute         | Type    | Description |
+|-------------------|---------|-------------|
+| `id`              | string  | ID of the discussion. |
+| `individual_note` | boolean | If `true`, the discussion is an individual note. |
+| `notes`           | array   | Array of notes in the discussion. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -728,7 +877,7 @@ Example response:
 
 The commit status API for use with GitLab.
 
-### List the statuses of a commit
+### List commit statuses
 
 {{< history >}}
 
@@ -743,17 +892,34 @@ The pagination parameters `page` and `per_page` can be used to restrict the list
 GET /projects/:id/repository/commits/:sha/statuses
 ```
 
-| Attribute     | Type           | Required | Description                                                                          |
-|---------------|----------------| -------- |--------------------------------------------------------------------------------------|
-| `id`          | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).          |
-| `sha`         | string         | Yes | Hash of the commit.                                                                      |
-| `ref`         | string         | No  | Name of the branch or tag. Default is the default branch.          |
-| `stage`       | string         | No  | Filter statuses by [build stage](../ci/yaml/_index.md#stages). For example, `test`.             |
-| `name`        | string         | No  | Filter statuses by [job name](../ci/yaml/_index.md#job-keywords). For example, `bundler:audit`. |
-| `pipeline_id` | integer        | No  | Filter statuses by pipeline ID. For example, `1234`.                                            |
-| `order_by`    | string         | No  | Values for sorting statuses. Valid values are `id` and `pipeline_id`. Default is `id`.                    |
-| `sort`        | string         | No  | Sort statuses in ascending or descending order. Valid values are `asc` and `desc`. Default is `asc`.                  |
-| `all`         | boolean        | No  | Include all statuses instead of latest only. Default is `false`.                                       |
+| Attribute     | Type              | Required | Description |
+|---------------|-------------------|----------|-------------|
+| `id`          | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`         | string            | Yes      | Hash of the commit. |
+| `all`         | boolean           | No       | If `true`, include all statuses instead of latest only. Default is `false`. |
+| `name`        | string            | No       | Filter statuses by [job name](../ci/yaml/_index.md#job-keywords). For example, `bundler:audit`. |
+| `order_by`    | string            | No       | Values for sorting statuses. Valid values are `id` and `pipeline_id`. Default is `id`. |
+| `pipeline_id` | integer           | No       | Filter statuses by pipeline ID. For example, `1234`. |
+| `ref`         | string            | No       | Name of the branch or tag. Default is the default branch. |
+| `sort`        | string            | No       | Sort statuses in ascending or descending order. Valid values are `asc` and `desc`. Default is `asc`. |
+| `stage`       | string            | No       | Filter statuses by [build stage](../ci/yaml/_index.md#stages). For example, `test`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute       | Type    | Description |
+|-----------------|---------|-------------|
+| `allow_failure` | boolean | If `true`, the status allows failure. |
+| `author`        | object  | Information about the status author. |
+| `created_at`    | string  | Date when the status was created. |
+| `description`   | string  | Description of the status. |
+| `finished_at`   | string  | Date when the status was finished. |
+| `id`            | integer | ID of the status. |
+| `name`          | string  | Name of the status. |
+| `ref`           | string  | Reference (branch or tag) of the commit. |
+| `sha`           | string  | SHA of the commit. |
+| `started_at`    | string  | Date when the status was started. |
+| `status`        | string  | Status of the commit. |
+| `target_url`    | string  | Target URL associated with the status. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -811,7 +977,7 @@ Example response:
 ]
 ```
 
-### Set the pipeline status of a commit
+### Set commit pipeline status
 
 Add or update the pipeline status of a commit. If the commit is associated with a merge request,
 the API call must target the commit in the merge request's source branch.
@@ -825,17 +991,35 @@ If a pipeline already exists and it exceeds the [maximum number of jobs in a sin
 POST /projects/:id/statuses/:sha
 ```
 
-| Attribute | Type | Required | Description                                                                                                           |
-| --------- | ---- | -------- |-----------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                           |
-| `sha`     | string  | yes   | The commit SHA                                                                                                        |
-| `state`   | string  | yes   | The state of the status. Can be one of the following: `pending`, `running`, `success`, `failed`, `canceled`, `skipped` |
-| `ref`     | string  | no    | The `ref` (branch or tag) to which the status refers. Must be 255 characters or fewer.                                                                  |
-| `name` or `context` | string  | no | The label to differentiate this status from the status of other systems. Default value is `default`                   |
-| `target_url` |  string  | no  | The target URL to associate with this status. Must be 255 characters or fewer.                                                                          |
-| `description` | string  | no  | The short description of the status. Must be 255 characters or fewer.                                                                                   |
-| `coverage` | float  | no    | The total code coverage                                                                                               |
-| `pipeline_id` |  integer  | no  | The ID of the pipeline to set status. Use in case of several pipeline on same SHA.                                    |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`               | string            | Yes      | The commit SHA. |
+| `state`             | string            | Yes      | The state of the status. Can be one of the following: `pending`, `running`, `success`, `failed`, `canceled`, `skipped`. |
+| `coverage`          | float             | No       | The total code coverage. |
+| `description`       | string            | No       | The short description of the status. Must be 255 characters or fewer. |
+| `name` or `context` | string            | No       | The label to differentiate this status from the status of other systems. Default value is `default`. |
+| `pipeline_id`       | integer           | No       | The ID of the pipeline to set status. Use in case of several pipeline on same SHA. |
+| `ref`               | string            | No       | The `ref` (branch or tag) to which the status refers. Must be 255 characters or fewer. |
+| `target_url`        | string            | No       | The target URL to associate with this status. Must be 255 characters or fewer. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute       | Type    | Description |
+|-----------------|---------|-------------|
+| `allow_failure` | boolean | If `true`, the status allows failure. |
+| `author`        | object  | Information about the status author. |
+| `coverage`      | float   | Code coverage percentage. |
+| `created_at`    | string  | Date when the status was created. |
+| `description`   | string  | Description of the status. |
+| `finished_at`   | string  | Date when the status was finished. |
+| `id`            | integer | ID of the status. |
+| `name`          | string  | Name of the status. |
+| `ref`           | string  | Reference (branch or tag) of the commit. |
+| `sha`           | string  | SHA of the commit. |
+| `started_at`    | string  | Date when the status was started. |
+| `status`        | string  | Status of the commit. |
+| `target_url`    | string  | Target URL associated with the status. |
 
 ```shell
 curl --request POST \
@@ -884,11 +1068,47 @@ Returns information about the merge request that originally introduced a specifi
 GET /projects/:id/repository/commits/:sha/merge_requests
 ```
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha`     | string         | Yes      | The commit SHA |
-| `state`   | string         | No       | Returns merge requests with the specified state: `opened`, `closed`, `locked`, or `merged`. Omit this parameter to get all merge requests regardless of state. |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string            | Yes      | The commit SHA. |
+| `state`   | string            | No       | Returns merge requests with the specified state: `opened`, `closed`, `locked`, or `merged`. Omit this parameter to get all merge requests regardless of state. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                      | Type    | Description |
+|--------------------------------|---------|-------------|
+| `assignee`                     | object  | Information about the merge request assignee. |
+| `author`                       | object  | Information about the merge request author. |
+| `created_at`                   | string  | Date when the merge request was created. |
+| `description`                  | string  | Description of the merge request. |
+| `discussion_locked`            | boolean | If `true`, discussions are locked. |
+| `downvotes`                    | integer | Number of downvotes. |
+| `draft`                        | boolean | If `true`, the merge request is a draft. |
+| `force_remove_source_branch`   | boolean | If `true`, forces source branch removal. |
+| `id`                           | integer | ID of the merge request. |
+| `iid`                          | integer | Internal ID of the merge request. |
+| `labels`                       | array   | Labels associated with the merge request. |
+| `merge_commit_sha`             | string  | SHA of the merge commit. |
+| `merge_status`                 | string  | Merge status of the merge request. |
+| `merge_when_pipeline_succeeds` | boolean | If `true`, merges when pipeline succeeds. |
+| `milestone`                    | object  | Milestone associated with the merge request. |
+| `project_id`                   | integer | ID of the project. |
+| `sha`                          | string  | SHA of the merge request. |
+| `should_remove_source_branch`  | boolean | If `true`, removes source branch after merge. |
+| `source_branch`                | string  | Source branch of the merge request. |
+| `source_project_id`            | integer | ID of the source project. |
+| `squash_commit_sha`            | string  | SHA of the squash commit. |
+| `state`                        | string  | State of the merge request. |
+| `target_branch`                | string  | Target branch of the merge request. |
+| `target_project_id`            | integer | ID of the target project. |
+| `time_stats`                   | object  | Time tracking statistics. |
+| `title`                        | string  | Title of the merge request. |
+| `updated_at`                   | string  | Date when the merge request was last updated. |
+| `upvotes`                      | integer | Number of upvotes. |
+| `user_notes_count`             | integer | Number of user notes. |
+| `web_url`                      | string  | Web URL of the merge request. |
+| `work_in_progress`             | boolean | If `true`, the merge request is set as work in progress. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -947,7 +1167,7 @@ Example response:
 ]
 ```
 
-## Get signature of a commit
+## Get commit signature
 
 Get the [signature from a commit](../user/project/repository/signed_commits/_index.md),
 if it is signed. For unsigned commits, it results in a 404 response.
@@ -958,10 +1178,25 @@ GET /projects/:id/repository/commits/:sha/signature
 
 Parameters:
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `sha`     | string            | Yes      | The commit hash or name of a repository branch or tag. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute               | Type    | Description |
+|-------------------------|---------|-------------|
+| `commit_source`         | string  | Source of the commit. |
+| `gpg_key_id`            | integer | ID of the GPG key (for PGP signatures). |
+| `gpg_key_primary_keyid` | string  | Primary key ID of the GPG key. |
+| `gpg_key_subkey_id`     | string  | Subkey ID of the GPG key. |
+| `gpg_key_user_email`    | string  | Email address associated with the GPG key. |
+| `gpg_key_user_name`     | string  | User name associated with the GPG key. |
+| `key`                   | object  | SSH key information (for SSH signatures). |
+| `signature_type`        | string  | Type of signature (`PGP`, `SSH`, or `X509`). |
+| `verification_status`   | string  | Verification status of the signature. |
+| `x509_certificate`      | object  | X.509 certificate information (for X.509 signatures). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

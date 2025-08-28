@@ -173,7 +173,7 @@ export default {
   <gl-loading-icon v-if="isLoading" size="md" color="dark" class="gl-m-auto gl-py-6" />
 
   <div v-else-if="commit">
-    <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
+    <commit-info :commit="commit" class="gl-hidden @sm/panel:gl-flex">
       <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
         <div v-if="commit.pipeline.id" class="gl-flex gl-h-7 gl-items-center">
@@ -206,7 +206,7 @@ export default {
     <collapsible-commit-info
       :commit="commit"
       :history-url="historyUrl"
-      class="gl-block !gl-border-t-0 sm:gl-hidden"
+      class="gl-block !gl-border-t-0 @sm/panel:gl-hidden"
     />
   </div>
 </template>

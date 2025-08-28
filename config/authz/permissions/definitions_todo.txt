@@ -276,6 +276,7 @@ delete_conversation_thread
 delete_custom_emoji
 delete_group_stage
 delete_merge_train_car
+delete_o11y_settings
 delete_pipl_user
 delete_project_secrets
 delete_project_subscription
@@ -822,6 +823,7 @@ update_merge_request
 update_milestone
 update_name
 update_note
+update_o11y_settings
 update_organization_user
 update_owned_user_achievement
 update_package

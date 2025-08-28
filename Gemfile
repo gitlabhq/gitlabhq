@@ -201,10 +201,8 @@ gem 'prawn-svg', feature_category: :vulnerability_management
 
 # for backups
 gem 'fog-aws', '~> 3.26', feature_category: :shared
-# Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
-# Also see config/initializers/fog_core_patch.rb.
-gem 'fog-core', '= 2.1.0', feature_category: :shared
-gem 'fog-google', '~> 1.24.1', require: 'fog/google', feature_category: :shared
+gem 'fog-core', '~> 2.5', feature_category: :shared
+gem 'fog-google', '~> 1.25', require: 'fog/google', feature_category: :shared
 gem 'fog-local', '~> 0.8', feature_category: :shared
 # NOTE:
 # the fog-aliyun gem since v0.4 pulls in aliyun-sdk transitively, which monkey-patches

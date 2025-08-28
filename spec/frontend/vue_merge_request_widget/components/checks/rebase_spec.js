@@ -29,12 +29,14 @@ const mockQueryHandler = ({
   rebaseInProgress = false,
   targetBranch = '',
   pushToSourceBranch = true,
+  allowMergeOnSkippedPipeline = true,
   nodes = mockPipelineNodes,
 } = {}) =>
   jest.fn().mockResolvedValue({
     data: {
       project: {
         id: '1',
+        allowMergeOnSkippedPipeline,
         mergeRequest: {
           id: '2',
           rebaseInProgress,
@@ -151,7 +153,10 @@ describe('Merge request merge checks rebase component', () => {
               poll: pollMock,
             },
           },
-          handler: mockQueryHandler({ pushToSourceBranch: true }),
+          handler: mockQueryHandler({
+            pushToSourceBranch: true,
+            allowMergeOnSkippedPipeline: false,
+          }),
         });
 
         await waitForPromises();

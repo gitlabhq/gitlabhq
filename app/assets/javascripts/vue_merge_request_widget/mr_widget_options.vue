@@ -88,7 +88,10 @@ export default {
         return !this.mr;
       },
       variables() {
-        return this.mergeRequestQueryVariables;
+        return {
+          initialRequest: this.initialRequest,
+          ...this.mergeRequestQueryVariables,
+        };
       },
       pollInterval() {
         return this.pollInterval;
@@ -101,6 +104,7 @@ export default {
 
         if (response.data?.project) {
           this.mr.setGraphqlData(response.data.project);
+          this.initialRequest = false;
           this.loading = false;
         }
 
@@ -118,7 +122,7 @@ export default {
         },
         variables() {
           return {
-            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, this.mr?.id),
+            issuableId: convertToGraphQLId(TYPENAME_MERGE_REQUEST, `${this.mr?.id}`),
           };
         },
         updateQuery(
@@ -155,6 +159,7 @@ export default {
       loading: true,
       startingPollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
       pollInterval: STATE_QUERY_POLLING_INTERVAL_DEFAULT,
+      initialRequest: true,
     };
   },
   computed: {

@@ -168,7 +168,7 @@ export default {
         <todo-item
           v-for="todo in todos"
           :key="todo.id"
-          class="gl-rounded-lg"
+          class="-gl-mx-3 gl-rounded-lg gl-border-b-0 !gl-px-3 gl-py-4"
           :todo="todo"
           :tracking-additional="todoTrackingContext"
           @change="$apollo.queries.todos.refetch()"

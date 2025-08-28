@@ -195,7 +195,9 @@ namespace :gitlab do
     end
 
     def check_topology_service_health!
-      return unless Gitlab.config.cell.enabled
+      unless Gitlab.config.cell.enabled
+        return puts 'Skipping Topology Service health check due to the cell being disabled'
+      end
 
       if Gitlab.config.cell.database.skip_sequence_alteration
         return puts 'Skipping Topology Service health check due to cell sequences alteration being disabled'
@@ -209,9 +211,13 @@ namespace :gitlab do
     end
 
     def alter_cell_sequences_range
-      return unless Gitlab.config.cell.enabled
+      unless Gitlab.config.cell.enabled
+        return puts 'Skipping altering cell sequences range due to the cell being disabled'
+      end
 
-      return puts "Skipping altering cell sequences range" if Gitlab.config.cell.database.skip_sequence_alteration
+      if Gitlab.config.cell.database.skip_sequence_alteration
+        return puts "Skipping altering cell sequences range due to cell sequences alteration being disabled"
+      end
 
       sequence_ranges = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges
 

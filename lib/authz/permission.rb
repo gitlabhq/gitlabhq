@@ -40,6 +40,8 @@ module Authz
       end
     end
 
+    attr_reader :definition
+
     def initialize(definition)
       @definition = definition
     end
@@ -59,9 +61,5 @@ module Authz
     def feature_category
       definition[:feature_category]
     end
-
-    private
-
-    attr_reader :definition
   end
 end

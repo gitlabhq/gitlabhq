@@ -624,6 +624,11 @@ export default {
         ? '-gl-mx-5 gl-px-5 gl-bg-overlap gl-py-3'
         : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
     },
+    selectedProjectGroupPath() {
+      return this.selectedProjectFullPath
+        ? this.selectedProjectFullPath.split('/')[0]
+        : this.groupPath;
+    },
   },
   watch: {
     shouldDiscardDraft: {
@@ -1185,7 +1190,7 @@ export default {
                   :can-update="canUpdate"
                   :work-item-id="workItemId"
                   :work-item-type="selectedWorkItemTypeName"
-                  :group-path="groupPath"
+                  :group-path="selectedProjectGroupPath"
                   :full-path="selectedProjectFullPath"
                   :parent="workItemParent"
                   :is-group="isGroup"

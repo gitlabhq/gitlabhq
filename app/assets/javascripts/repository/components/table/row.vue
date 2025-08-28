@@ -255,7 +255,7 @@ export default {
         :size="12"
       />
     </th>
-    <td class="tree-commit cursor-default gl-hidden sm:gl-table-cell">
+    <td class="tree-commit cursor-default gl-hidden @sm/panel:gl-table-cell">
       <gl-link
         v-if="commitData"
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"

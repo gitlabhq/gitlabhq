@@ -304,6 +304,92 @@ When you apply annotations for the first time, GitLab creates the annotations fo
 
 {{< /alert >}}
 
+## GitLab Security Policy Bot user
+
+GitLab Security Policy Bot is an internal user that executes security policies across your GitLab instance. This bot is essential for security policies and scheduled pipelines to function properly.
+
+The Security Policy Bot is responsible for:
+
+- Scheduled pipeline execution: Triggers pipelines defined in scan execution policies with `type: schedule` rules.
+- Container scanning automation: Triggers container scanning jobs when images are pushed with the `latest` tag.
+- Policy enforcement: Executes security scans and compliance checks as defined in your security policies.
+- Pipeline creation: Creates and manages policy-driven pipelines in projects where security policies are enforced.
+
+### Account characteristics
+
+The Security Policy Bot has the following characteristics:
+
+- Created automatically in every project where a security policy is enforced.
+- Runs with Guest role permissions in projects, with specific additional permissions.
+- Does not count toward license limits as it is marked as an internal user.
+- Each project gets its own Security Policy Bot instance when policies are applied.
+
+### Permissions and access
+
+The Security Policy Bot operates with minimal but essential permissions:
+
+- Repository access: Read-only access to the repository content required for policy execution.
+- Pipeline creation: Ability to create and trigger pipelines for policy enforcement.
+- CI/CD variables: Access to project and group variables according to the variable precedence rules.
+- Registry access: Can authenticate to container registries when configured with appropriate credentials.
+
+### Limitations and restrictions
+
+Be aware of the following limitations for the GitLab Security Policy Bot:
+
+- Cannot be manually deleted: You cannot delete the bot in the UI.
+- Cannot be modified: You cannot manually change the user settings or permissions.
+- Project-bound: Each bot instance is tied to a specific project and you cannot shared an instance across projects.
+- Policy-dependent: The bot's functionality is entirely dependent on the security policies configured for the project.
+
+### Security troubleshooting 
+
+{{< alert type="warning" >}}
+
+Vulnerability with abuse reports: GitLab Security Policy Bot instances can be banned or deleted through the abuse reporting system, which can prevent scheduled pipelines from running. Administrators should be aware that:
+
+- Reporting a Security Policy Bot for abuse can lead to the bot being banned or deleted.
+- Banning or deleting the bot causes scheduled pipelines to fail.
+- Once banned, you cannot easily restore the bot through standard administrative actions.
+- Security policy enforcement is completely disrupted until the bot is restored.
+
+To prevent accidental disruption of security policies, administrators should exercise caution when processing abuse reports for internal user accounts.
+
+{{< /alert >}}
+
+If you experience issues with Security Policy Bot functionality:
+
+#### Scheduled pipelines not running
+
+If the scheduled pipelines are not running as configured:
+
+- Verify the bot account exists and is not banned or deleted.
+- Check that the security policy configuration is valid.
+- Ensure the bot has the necessary permissions in the project.
+
+#### Policy jobs failing
+
+If the policy job are failing:
+
+- Verify the bot has access to required CI/CD variables.
+- Check that referenced CI/CD configuration files exist and are accessible.
+- Review pipeline logs for specific error messages.
+
+#### Container scanning not triggering
+
+If container scanning is not triggering as configured:
+
+- Confirm container scanning policies are properly configured.
+- Verify the bot has registry authentication credentials, if required.
+- Check that the `latest` tag push triggered the expected policy rules.
+   
+#### Bot account missing
+
+If the bot account no longer exists:
+
+- Re-apply or update the security policy to recreate the bot account.
+- Contact your GitLab administrator if the bot was accidentally banned or deleted through abuse reports.
+
 ## Troubleshooting
 
 When working with security policies, consider these troubleshooting tips:

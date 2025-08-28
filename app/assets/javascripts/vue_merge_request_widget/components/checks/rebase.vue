@@ -26,7 +26,7 @@ export default {
       variables() {
         return this.mergeRequestQueryVariables;
       },
-      update: (data) => data.project?.mergeRequest || null,
+      update: (data) => data.project || null,
     },
   },
   inject: {
@@ -60,21 +60,24 @@ export default {
     isLoading() {
       return this.$apollo.queries.state.loading || !this.state;
     },
+    mergeRequest() {
+      return this.state?.mergeRequest;
+    },
     rebaseInProgress() {
-      return this.state.rebaseInProgress;
+      return this.mergeRequest.rebaseInProgress;
     },
     showRebaseWithoutPipeline() {
       return (
-        this.state.userPermissions.pushToSourceBranch &&
+        this.mergeRequest.userPermissions.pushToSourceBranch &&
         (!this.mr.onlyAllowMergeIfPipelineSucceeds ||
-          (this.mr.onlyAllowMergeIfPipelineSucceeds && this.mr.allowMergeOnSkippedPipeline))
+          (this.mr.onlyAllowMergeIfPipelineSucceeds && this.state.allowMergeOnSkippedPipeline))
       );
     },
     isForkMergeRequest() {
       return this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath;
     },
     isLatestPipelineCreatedInTargetProject() {
-      const latestPipeline = this.state.pipelines.nodes[0];
+      const latestPipeline = this.mergeRequest.pipelines.nodes[0];
 
       return latestPipeline?.project?.fullPath === this.mr.targetProjectFullPath;
     },
@@ -87,7 +90,7 @@ export default {
     },
     tertiaryActionsButtons() {
       return [
-        this.state.userPermissions.pushToSourceBranch && {
+        this.mergeRequest.userPermissions.pushToSourceBranch && {
           text: s__('mrWidget|Rebase'),
           loading: this.isMakingRequest || this.rebaseInProgress,
           testId: 'standard-rebase-button',

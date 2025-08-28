@@ -86,7 +86,7 @@ GEM
     domain_name (0.6.20240107)
     drb (2.2.1)
     erubi (1.12.0)
-    excon (1.2.7)
+    excon (1.3.0)
       logger
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)

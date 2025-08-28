@@ -375,7 +375,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/initializers/database_config_spec.rb'
-    - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/initializers/session_store_spec.rb'
     - 'ee/spec/lib/analytics/group_activity_calculator_spec.rb'
     - 'ee/spec/lib/analytics/productivity_analytics_request_params_spec.rb'

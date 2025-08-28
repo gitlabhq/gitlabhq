@@ -166,11 +166,11 @@ export default {
           <template v-if="isLoading">
             <tr v-for="i in 3" :key="i" aria-hidden="true" data-testid="loader">
               <td><gl-skeleton-loader :lines="1" /></td>
-              <td class="gl-hidden sm:gl-block">
+              <td class="gl-hidden @sm/panel:gl-block">
                 <gl-skeleton-loader :lines="1" />
               </td>
               <td>
-                <div class="gl-flex lg:gl-justify-end">
+                <div class="gl-flex @lg/panel:gl-justify-end">
                   <gl-skeleton-loader :equal-width-lines="true" :lines="1" />
                 </div>
               </td>

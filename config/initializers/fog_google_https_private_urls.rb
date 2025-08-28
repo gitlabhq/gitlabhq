@@ -5,8 +5,8 @@
 # See https://gitlab.com/gitlab-org/gitlab/issues/4879
 #
 module Fog
-  module Storage
-    class GoogleXML
+  module Google
+    class StorageXML
       class File < Fog::Model
         module MonkeyPatch
           def url(expires, options = {})

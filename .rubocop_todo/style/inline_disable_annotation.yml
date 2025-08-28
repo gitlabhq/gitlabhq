@@ -1472,7 +1472,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/finders/ee/group_members_finder_spec.rb'
     - 'ee/spec/helpers/analytics/analytics_dashboards_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
-    - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/backfill_iteration_cadence_id_for_boards_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'

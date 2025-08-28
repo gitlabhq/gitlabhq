@@ -9,6 +9,15 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
     let(:exclusion_list) { ['undefined_permission'] }
     let(:exclusion_list_data) { exclusion_list.join("\n") }
     let(:exclusion_file) { Tempfile.new("definitions_todo.txt") }
+    let(:permission) do
+      Authz::Permission.new({
+        name: 'defined_permission',
+        description: 'a defined permission',
+        feature_category: 'permissions',
+        scopes: %w[project group]
+      })
+    end
+
     let(:mock_policy_class) do
       Class.new(DeclarativePolicy::Base) do
         rule { default }.enable :defined_permission
@@ -23,7 +32,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
 
       # Stub permission definitions
       allow(Authz::Permission).to receive(:get).and_return(nil)
-      allow(Authz::Permission).to receive(:get).with(:defined_permission).and_return(true)
+      allow(Authz::Permission).to receive(:get).with(:defined_permission).and_return(permission)
 
       # Stub exclusion list
       File.open(exclusion_file.path, "w+b") { |f| f.write exclusion_list_data }
@@ -47,7 +56,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
-          #  The following permissions are missing a documentation file
+          #  The following permissions are missing a documentation file.
           #
           #    - undefined_permission
           #
@@ -63,8 +72,8 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
-          #  The following permissions have an entry in config/authz/permissions/definitions_todo.txt but are defined.
-          #  Remove any defined permissions from config/authz/permissions/definitions_todo.txt.
+          #  The following permissions have a documentation file.
+          #  Remove them from config/authz/permissions/definitions_todo.txt.
           #
           #    - defined_permission
           #
@@ -80,14 +89,74 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
         expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
           #######################################################################
           #
-          #  The following permissions are missing a documentation file
+          #  The following permissions are missing a documentation file.
           #
           #    - undefined_permission
           #
-          #  The following permissions have an entry in config/authz/permissions/definitions_todo.txt but are defined.
-          #  Remove any defined permissions from config/authz/permissions/definitions_todo.txt.
+          #  The following permissions have a documentation file.
+          #  Remove them from config/authz/permissions/definitions_todo.txt.
           #
           #    - defined_permission
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a defined permission is not in the correct schema' do
+      let(:permission) do
+        Authz::Permission.new({
+          name: 'defined_permission',
+          description: 'a defined permission',
+          feature_category: 'unknown',
+          scopes: %w[project foobar],
+          key: 'not allowed'
+        })
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following permissions failed schema validation.
+          #
+          #    - defined_permission
+          #        - property '/feature_category' does not match format: known_product_category
+          #        - property '/scopes/1' is not one of: ["admin", "instance", "group", "project"]
+          #        - property '/key' is invalid: error_type=schema
+          #
+          #######################################################################
+        OUTPUT
+      end
+    end
+
+    context 'when a defined permission contains a disallowed action' do
+      let(:permission) do
+        Authz::Permission.new({
+          name: 'admin_permission',
+          description: 'a defined permission',
+          feature_category: 'permissions',
+          scopes: %w[project]
+        })
+      end
+
+      let(:mock_policy_class) do
+        Class.new(DeclarativePolicy::Base) do
+          rule { default }.enable :admin_permission
+        end
+      end
+
+      before do
+        allow(Authz::Permission).to receive(:get).with(:admin_permission).and_return(permission)
+      end
+
+      it 'returns an error' do
+        expect { run }.to raise_error(SystemExit).and output(<<~OUTPUT).to_stdout
+          #######################################################################
+          #
+          #  The following permissions contain a disallowed action.
+          #
+          #    - admin_permission: Prefer a granular action over admin.
           #
           #######################################################################
         OUTPUT

@@ -503,7 +503,7 @@ describe('HeaderArea', () => {
       expect(wrapper.find('section').classes()).toEqual([
         'gl-items-center',
         'gl-justify-between',
-        'sm:gl-flex',
+        '@sm/panel:gl-flex',
       ]);
     });
   });

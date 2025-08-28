@@ -31,7 +31,7 @@
 module Fog
   module ServicesMixin
     # Gems that have not yet updated with the new fog-core namespace
-    LEGACY_FOG_PROVIDERS = %w[google aliyun].freeze
+    LEGACY_FOG_PROVIDERS = %w[aliyun].freeze
 
     # rubocop:disable Gitlab/ConstGetInheritFalse
     def service_provider_constant(service_name, provider_name)

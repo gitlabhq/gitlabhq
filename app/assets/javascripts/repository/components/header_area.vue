@@ -268,10 +268,11 @@ export default {
   <section
     class="gl-items-center gl-justify-between"
     :class="{
-      [glFeatures.repositoryFileTreeBrowser ? 'md:gl-flex' : 'sm:gl-flex']: isProjectOverview,
+      [glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-flex' : '@sm/panel:gl-flex']:
+        isProjectOverview,
     }"
   >
-    <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-3">
+    <div class="tree-ref-container !gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 @md/panel:!gl-mb-0">
       <file-tree-browser-toggle
         v-if="showFileTreeBrowserToggle"
         ref="toggle"
@@ -315,8 +316,8 @@ export default {
       :class="[
         'gl-flex gl-flex-col gl-items-stretch gl-justify-end',
         glFeatures.repositoryFileTreeBrowser
-          ? 'md:gl-flex-row md:gl-items-center md:gl-gap-5'
-          : 'sm:gl-flex-row sm:gl-items-center sm:gl-gap-5',
+          ? '@md/panel:gl-flex-row @md/panel:gl-items-center @md/panel:gl-gap-5'
+          : '@sm/panel:gl-flex-row @sm/panel:gl-items-center @sm/panel:gl-gap-5',
         { 'gl-my-5': !isProjectOverview },
       ]"
     >
@@ -324,7 +325,7 @@ export default {
         v-if="!isReadmeView && !isProjectOverview"
         :class="[
           'gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1',
-          glFeatures.repositoryFileTreeBrowser ? 'md:gl-my-0' : 'sm:gl-my-0',
+          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-my-0' : '@sm/panel:gl-my-0',
         ]"
         data-testid="repository-heading"
       >
@@ -349,7 +350,7 @@ export default {
         v-if="!showBlobControls"
         :class="[
           'tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3',
-          glFeatures.repositoryFileTreeBrowser ? 'md:gl-mb-0' : 'sm:gl-mb-0',
+          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-mb-0' : '@sm/panel:gl-mb-0',
         ]"
         data-testid="tree-controls-container"
       >
@@ -357,7 +358,7 @@ export default {
           v-if="!isReadmeView && showCompactCodeDropdown"
           :class="[
             'gl-hidden',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-block' : 'sm:gl-block',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-block' : '@sm/panel:gl-block',
           ]"
           :current-path="currentPath"
           :can-collaborate="canCollaborate"
@@ -388,7 +389,7 @@ export default {
           data-testid="tree-find-file-control"
           :class="[
             'gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
           @click="handleFindFile"
         >
@@ -398,7 +399,7 @@ export default {
         <web-ide-link
           :class="[
             'gl-w-full sm:!gl-ml-0',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
           data-testid="js-tree-web-ide-link"
           :project-id="projectIdAsNumber"
@@ -425,13 +426,15 @@ export default {
         <div
           :class="[
             'project-code-holder gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
         >
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
-              :class="glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden'"
+              :class="
+                glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-hidden' : '@sm/panel:gl-hidden'
+              "
               :current-path="currentPath"
               :can-collaborate="canCollaborate"
               :can-edit-tree="canEditTree"
@@ -475,7 +478,9 @@ export default {
             <code-dropdown
               :class="[
                 'git-clone-holder js-git-clone-holder gl-hidden',
-                glFeatures.repositoryFileTreeBrowser ? 'md:gl-inline-block' : 'sm:gl-inline-block',
+                glFeatures.repositoryFileTreeBrowser
+                  ? '@md/panel:gl-inline-block'
+                  : '@sm/panel:gl-inline-block',
               ]"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
@@ -488,14 +493,16 @@ export default {
               :class="[
                 'gl-flex gl-w-full gl-gap-3',
                 glFeatures.repositoryFileTreeBrowser
-                  ? 'md:gl-inline-block md:gl-w-auto'
-                  : 'sm:gl-inline-block sm:gl-w-auto',
+                  ? '@md/panel:gl-inline-block @md/panel:gl-w-auto'
+                  : '@sm/panel:gl-inline-block @sm/panel:gl-w-auto',
               ]"
             >
               <div
                 :class="[
                   'gl-flex gl-w-full gl-items-stretch gl-gap-3',
-                  glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden',
+                  glFeatures.repositoryFileTreeBrowser
+                    ? '@md/panel:gl-hidden'
+                    : '@sm/panel:gl-hidden',
                 ]"
               >
                 <source-code-download-dropdown

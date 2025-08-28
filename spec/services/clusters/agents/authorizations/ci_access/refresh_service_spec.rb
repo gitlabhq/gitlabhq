@@ -154,9 +154,9 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
           stub_application_setting(organization_cluster_agent_authorization_enabled: true)
         end
 
-        it 'allows authorizing groups outside of the configuration project hierarchy' do
+        it 'allows authorizing projects outside of the configuration project hierarchy' do
           expect(subject).to be_truthy
-          expect(agent.ci_access_authorized_groups).to contain_exactly(added_group, modified_group)
+          expect(agent.ci_access_authorized_projects).to contain_exactly(added_project, modified_project)
         end
       end
 
@@ -217,6 +217,9 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
         let(:setting_enabled) { false }
 
         it 'does not refresh authorizations for the agent' do
+          expect(subject).to be_truthy
+          expect(agent.ci_access_organization_authorizations.count).to eq(1)
+
           authorization = agent.ci_access_organization_authorizations.first
           expect(authorization.organization).to eq(project.organization)
           expect(authorization.config).to eq({ 'default_namespace' => 'default' })

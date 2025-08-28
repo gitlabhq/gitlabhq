@@ -313,23 +313,27 @@ is needed, you'd need to write some custom styles.
 <div class="gl-mt-5 max-lg:gl-mt-3"></div>
 <div class="gl-mt-3 sm:max-lg:gl-mt-5"></div>
 
-<!-- Good (using mobile-first container queries) -->
+<!-- Good (using min-width container queries) -->
 <div class="gl-mt-3 @md:gl-mt-5"></div>
 <div class="gl-mt-3 @sm:gl-mt-5 @lg:gl-mt-3"></div>
 
 <!-- Bad -->
-<!-- Changing the display mode of child components can cause visual regressions. -->
+<!--
+`gl-hidden` applies `display: none` to all container sizes. This forces us to make assumptions on
+what `display` value to reset the component to on larger viewports. In this case, we _assume_ `flex`
+should be used. However, this might not match the component's internal styling and might end up
+causing visual regressions.
+-->
 <gl-button class="gl-hidden @lg:gl-flex">Edit</gl-button>
 
 <!-- Good -->
-<gl-button class="my-button">Edit</gl-button>
-<style lang="scss">
-@include panel-container-width-down(lg) {
-    .my-button {
-        display: none;
-    }
-}
-</style>
+<!--
+A `@max-*:gl-hidden` class only applies `display: none` in smaller containers,
+ensuring that the component can gracefully fall back to its own `display` value in larger containers.
+-->
+<gl-button class="@max-lg:gl-hidden">Edit</gl-button>
+<!-- One can also define a breakpoint range in which to apply the override -->
+<gl-button class="@sm:@max-md:gl-hidden">Edit</gl-button>
 ```
 
 ### Component classes
@@ -340,12 +344,12 @@ is needed, you'd need to write some custom styles.
   @apply gl-mt-5 max-lg:gl-mt-3;
 }
 
-// Good (using mobile-first container queries)
+// Good (using min-width container queries)
 .class-name {
   @apply gl-mt-3 @lg:gl-mt-5;
 }
 
-// Bad (using desktop-first container queries)
+// Bad (using max-width container queries)
 .class-name {
   display: block;
 
@@ -354,7 +358,7 @@ is needed, you'd need to write some custom styles.
   }
 }
 
-// Good (using mobile-first container queries)
+// Good (using min-width container queries)
 .class-name {
   display: flex;
 
@@ -387,6 +391,7 @@ The script supports the following file types:
 - Vue
 - JavaScript
 - HAML<sup>*</sup>
+- Ruby
 - SCSS
 
 <sup>*</sup>In HAML files, the script might break the syntax because the Tailwind container queries

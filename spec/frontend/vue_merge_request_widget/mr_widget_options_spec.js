@@ -38,6 +38,7 @@ import mergeChecksQuery from '~/vue_merge_request_widget/queries/merge_checks.qu
 import mergeChecksSubscription from '~/vue_merge_request_widget/queries/merge_checks.subscription.graphql';
 import userPermissionsReviewerQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import missingBranchQuery from '~/vue_merge_request_widget/queries/states/missing_branch.query.graphql';
 
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData, { mockDeployment, mockMergePipeline, mockPostMergeDeployments } from './mock_data';
@@ -126,6 +127,20 @@ describe('MrWidgetOptions', () => {
             project: {
               id: 1,
               mergeRequest: { id: 1, userPermissions: { canMerge: true }, mergeabilityChecks: [] },
+            },
+          },
+        }),
+      ],
+      [
+        missingBranchQuery,
+        jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: {
+                id: 1,
+                sourceBranchExists: false,
+              },
             },
           },
         }),
@@ -303,6 +318,7 @@ describe('MrWidgetOptions', () => {
           wrapper.vm.mr = {
             ...wrapper.vm.mr,
             setGraphqlData: jest.fn(),
+            setGraphqlSubscriptionData: jest.fn(),
             mergePipelinesEnabled: true,
           };
 
@@ -599,6 +615,8 @@ describe('MrWidgetOptions', () => {
             it('responds to the GraphQL query finishing', () => {
               delete queryResponse.data.project.mergeTrains;
               delete queryResponse.data.project.mergeRequest.mergeTrainCar;
+              delete queryResponse.data.project.mergeRequest.detailedMergeStatus;
+              delete queryResponse.data.project.mergeRequest.commitCount;
 
               expect(mockSetGraphqlData).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -620,7 +638,7 @@ describe('MrWidgetOptions', () => {
                 eventHub.$emit('EnablePolling');
 
                 expect(stateQueryHandler).toHaveBeenCalled();
-                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF);
+                jest.advanceTimersByTime(interval * STATE_QUERY_POLLING_INTERVAL_BACKOFF + 100);
                 expect(stateQueryHandler).toHaveBeenCalledTimes(2);
               });
             });
@@ -838,27 +856,34 @@ describe('MrWidgetOptions', () => {
       });
 
       it('removes the Preparing widget when the MR indicates it has been prepared', async () => {
-        const stateSubscription = createMockApolloSubscription();
+        const stateSubscriptions = [];
+        const stateSubscriptionHandler = () => {
+          const sub = createMockApolloSubscription();
+          stateSubscriptions.push(sub);
+          return sub;
+        };
 
         await createComponent({
           updatedMrData: { state: 'opened', detailedMergeStatus: 'PREPARING' },
           options: {},
           data: {},
-          stateSubscriptionHandler: () => stateSubscription,
+          stateSubscriptionHandler,
         });
 
         expect(wrapper.html()).toContain('mr-widget-preparing-stub');
 
-        stateSubscription.next({
-          data: {
-            mergeRequestMergeStatusUpdated: {
-              preparedAt: 'non-null value',
+        stateSubscriptions.forEach((stateSubscription) => {
+          stateSubscription.next({
+            data: {
+              mergeRequestMergeStatusUpdated: {
+                detailedMergeStatus: 'MERGEABLE',
+              },
             },
-          },
+          });
         });
 
         // Wait for batched DOM updates
-        await nextTick();
+        await waitForPromises();
 
         expect(wrapper.html()).not.toContain('mr-widget-preparing-stub');
       });

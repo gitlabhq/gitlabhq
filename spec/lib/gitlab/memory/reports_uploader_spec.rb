@@ -13,9 +13,9 @@ RSpec.describe Gitlab::Memory::ReportsUploader, :aggregate_failures do
   end
 
   # rubocop: disable RSpec/VerifiedDoubles
-  # `Fog::Storage::Google` does not implement `put_object` itself, so it is tricky to pinpoint particular method
-  # with instance_double without revealing `Fog::Storage::Google` internals. For simplicity, we use a simple double.
-  let(:fog) { double("Fog::Storage::Google") }
+  # `Fog::Google::Storage` does not implement `put_object` itself, so it is tricky to pinpoint particular method
+  # with instance_double without revealing `Fog::Google::Storage` internals. For simplicity, we use a simple double.
+  let(:fog) { double("Fog::Google::Storage") }
   # rubocop: enable RSpec/VerifiedDoubles
 
   let(:report) { Tempfile.new("report.1.worker_1.#{Time.current.to_i}.json") }
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::Memory::ReportsUploader, :aggregate_failures do
 
   describe '#upload' do
     before do
-      allow(Fog::Storage::Google)
+      allow(Fog::Google::Storage)
         .to receive(:new)
         .with(google_project: gcs_project, google_json_key_location: gcs_key)
         .and_return(fog)
