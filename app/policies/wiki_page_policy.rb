@@ -19,4 +19,8 @@ class WikiPagePolicy < BasePolicy
   rule { can?(:read_wiki) & planner_or_reporter_access }.policy do
     enable :mark_note_as_internal
   end
+
+  rule { can?(:developer_access) }.policy do
+    enable :resolve_note
+  end
 end

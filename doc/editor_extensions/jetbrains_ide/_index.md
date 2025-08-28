@@ -26,7 +26,7 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 
 To update your extension to the latest version:
 
-1. In your JetBrains IDE, go to **Settings > Plugins**.
+1. In your JetBrains IDE, go to **Settings** > **Plugins**.
 1. From **Marketplace**, select **GitLab Duo** published by **GitLab, Inc.**.
 1. Select **Update** to update to the latest plugin version.
 

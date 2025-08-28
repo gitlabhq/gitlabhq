@@ -4,10 +4,6 @@ module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
-  def sidebar_tracking_attributes_by_object(object)
-    sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
-  end
-
   def scope_avatar_classes(object)
     %w[avatar-container rect-avatar s32].tap do |klasses|
       klass = sidebar_attributes_for_object(object).fetch(:scope_avatar_class, nil)

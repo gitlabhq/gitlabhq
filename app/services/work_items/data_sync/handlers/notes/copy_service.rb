@@ -125,11 +125,16 @@ module WorkItems
 
           def new_desc_versions(description_version_ids_map)
             DescriptionVersion.id_in(description_version_ids_map.keys).map do |description_version|
-              description_version.attributes.tap do |attrs|
-                attrs['id'] = description_version_ids_map[description_version.id]
-                attrs['issue_id'] = target_noteable.id
-                attrs['namespace_id'] = target_noteable.namespace_id
-              end
+              build_description_version_attributes(description_version, description_version_ids_map)
+            end
+          end
+
+          # overridden in EE
+          def build_description_version_attributes(description_version, description_version_ids_map)
+            description_version.attributes.tap do |attrs|
+              attrs['id'] = description_version_ids_map[description_version.id]
+              attrs['issue_id'] = target_noteable.id
+              attrs['namespace_id'] = target_noteable.namespace_id
             end
           end
 
@@ -165,3 +170,4 @@ module WorkItems
     end
   end
 end
+WorkItems::DataSync::Handlers::Notes::CopyService.prepend_mod

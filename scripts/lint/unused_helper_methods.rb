@@ -75,10 +75,11 @@ end
 potential_methods = YAML.load_file(POTENTIAL_METHODS_PATH, symbolize_names: true)
 potential_methods_count = potential_methods.size
 
-if unused.size > potential_methods_count
-  added_count = unused.size - potential_methods_count
+current_unused_names = unused.collect { |entry| entry[:method].to_sym }.uniq
 
-  current_unused_names = unused.collect { |entry| entry[:method].to_sym }
+if current_unused_names.size > potential_methods_count
+  added_count = current_unused_names.size - potential_methods_count
+
   new_unused_method_names = current_unused_names - potential_methods.keys
   newly_unused = unused.select { |entry| new_unused_method_names.include? entry[:method].to_sym }
 
