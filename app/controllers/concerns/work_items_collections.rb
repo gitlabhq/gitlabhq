@@ -55,6 +55,11 @@ module WorkItemsCollections
     if @project
       options[:project_id] = @project.id
       options[:attempt_project_search_optimizations] = true
+    elsif @group
+      options[:group_id] = @group.id
+      options[:include_descendants] = true
+      options[:exclude_group_work_items] = true
+      options[:attempt_group_search_optimizations] = true
     end
 
     work_items_collection_params.merge(options)

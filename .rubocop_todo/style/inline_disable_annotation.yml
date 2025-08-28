@@ -661,6 +661,7 @@ Style/InlineDisableAnnotation:
     - 'app/validators/x509_certificate_credentials_validator.rb'
     - 'app/views/dashboard/issues.atom.builder'
     - 'app/views/groups/issues.atom.builder'
+    - 'app/views/groups/work_items/work_items.atom.builder'
     - 'app/views/issues/_issues_calendar.ics.ruby'
     - 'app/views/projects/issues/index.atom.builder'
     - 'app/views/projects/merge_requests/index.atom.builder'

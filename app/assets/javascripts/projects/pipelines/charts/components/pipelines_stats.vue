@@ -1,12 +1,9 @@
 <script>
 import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
 import { GlSingleStat } from '@gitlab/ui/src/charts';
+import { formatBigInt } from '~/analytics/shared/utils';
 import { s__ } from '~/locale';
-import {
-  formatPipelineCount,
-  formatPipelineCountPercentage,
-  formatPipelineDuration,
-} from '../format_utils';
+import { formatPipelineCountPercentage, formatPipelineDuration } from '../format_utils';
 
 export default {
   name: 'PipelinesStats',
@@ -47,7 +44,7 @@ export default {
         {
           label: s__('PipelineCharts|Total pipeline runs'),
           identifier: 'total-pipeline-runs',
-          value: formatPipelineCount(count),
+          value: formatBigInt(count),
         },
         {
           label: s__('PipelineCharts|Median duration'),

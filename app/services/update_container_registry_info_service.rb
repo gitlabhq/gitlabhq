@@ -19,15 +19,10 @@ class UpdateContainerRegistryInfoService
   def fetch_registry_info
     return fetch_registry_info_from_v2 unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
 
-    info =
-      if Feature.enabled?(:use_registry_statistics_endpoint, Feature.current_request)
-        ContainerRegistry::GitlabApiClient.statistics.merge({ vendor: 'gitlab' })
-      else
-        fetch_registry_info_from_v2
-      end
-
+    info = ContainerRegistry::GitlabApiClient.statistics.merge({ vendor: 'gitlab' })
     info[:features] ||= []
     info[:features] << ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE
+
     info
   end
 

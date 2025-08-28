@@ -1,6 +1,5 @@
 import {
   calculatePipelineCountPercentage,
-  formatPipelineCount,
   formatPipelineCountPercentage,
   formatPipelineDuration,
   formatPipelineDurationForAxis,
@@ -9,20 +8,6 @@ import {
 const largeNumber = '12345678901234567890'; // Larger than MAX_SAFE_INTEGER
 
 describe('Stats formatting utilities', () => {
-  describe('formatPipelineCount', () => {
-    it.each`
-      input             | output
-      ${'1234'}         | ${'1,234'}
-      ${largeNumber}    | ${'12,345,678,901,234,567,890'}
-      ${'0'}            | ${'0'}
-      ${'not-a-number'} | ${'-'}
-      ${null}           | ${'-'}
-      ${undefined}      | ${'-'}
-    `('formats $input as "$output"', ({ input, output }) => {
-      expect(formatPipelineCount(input)).toBe(output);
-    });
-  });
-
   describe('calculatePipelineCountPercentage', () => {
     it.each`
       input                                | output

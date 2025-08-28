@@ -1,16 +1,6 @@
 import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
-import { formatNumber } from '~/locale';
-
-export const formatPipelineCount = (count) => {
-  try {
-    const n = BigInt(count);
-    return formatNumber(n);
-  } catch {
-    return '-';
-  }
-};
 
 export const calculatePipelineCountPercentage = (a, b) => {
   try {

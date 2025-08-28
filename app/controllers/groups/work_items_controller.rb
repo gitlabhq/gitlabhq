@@ -2,6 +2,9 @@
 
 module Groups
   class WorkItemsController < Groups::ApplicationController
+    include SearchRateLimitable
+    include WorkItemsCollections
+
     feature_category :team_planning
 
     before_action do
@@ -18,7 +21,15 @@ module Groups
         group&.work_items_list_parent_filter_feature_flag_enabled?)
       push_frontend_feature_flag(:work_items_group_issues_list, group&.root_ancestor)
     end
+
     before_action :handle_new_work_item_path, only: [:show]
+    before_action :check_search_rate_limit!, if: ->(c) do
+      c.action_name.to_sym == :rss
+    end
+
+    prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
+
+    urgency :low, [:rss]
 
     def index
       not_found unless ::Feature.enabled?(:work_item_planning_view, group)
@@ -29,6 +40,16 @@ module Groups
 
       @work_item = ::WorkItems::WorkItemsFinder.new(current_user, group_id: group.id)
         .execute.with_work_item_type.find_by_iid(show_params[:iid])
+    end
+
+    def rss
+      respond_to do |format|
+        format.atom do
+          @work_items = work_items_for_rss.non_archived
+
+          render layout: 'xml'
+        end
+      end
     end
 
     private
