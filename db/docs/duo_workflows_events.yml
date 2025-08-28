@@ -3,7 +3,7 @@ table_name: duo_workflows_events
 classes:
 - Ai::DuoWorkflows::Event
 feature_categories:
-- duo_workflow
+- agent_foundations
 description:
 introduced_by_url:
 milestone: '17.5'

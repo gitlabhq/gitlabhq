@@ -8,7 +8,7 @@ module API
       before { authenticate! }
       before { authorize! :admin_cicd_variables, user_project }
 
-      feature_category :ci_variables
+      feature_category :pipeline_composition
 
       helpers ::API::Helpers::VariablesHelpers
 

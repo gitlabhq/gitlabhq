@@ -11,6 +11,7 @@
 - activation
 - add-on_provisioning
 - advisory_database
+- agent_foundations
 - ai_abstraction_layer
 - ai_agents
 - ai_evaluation
@@ -27,7 +28,6 @@
 - capacity_planning
 - cell
 - ci_scaling
-- ci_variables
 - cloud_native_installation
 - code_quality
 - code_review_workflow
@@ -58,7 +58,6 @@
 - dora_metrics
 - duo_chat
 - duo_setting
-- duo_workflow
 - durability_metrics
 - dynamic_application_security_testing
 - editor_extensions

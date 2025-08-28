@@ -5,6 +5,7 @@ module Projects
     class OperationsController < Projects::ApplicationController
       layout 'project_settings'
       before_action :authorize_admin_operations!
+      before_action :block_error_tracking_update_if_feature_disabled, only: [:update]
 
       before_action do
         push_frontend_feature_flag(:integrated_error_tracking, project)
@@ -98,6 +99,15 @@ module Projects
 
       def update_params
         params.require(:project).permit(permitted_project_params)
+      end
+
+      def block_error_tracking_update_if_feature_disabled
+        head :not_found if Feature.enabled?(:hide_error_tracking_features, project) &&
+          error_tracking_params_present?
+      end
+
+      def error_tracking_params_present?
+        update_params[:error_tracking_setting_attributes].present?
       end
 
       # overridden in EE

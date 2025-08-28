@@ -44,21 +44,6 @@ RSpec.describe Packages::Nuget::CreateTemporaryPackageService, feature_category:
           .to change { Packages::Package.count }.by(1)
           .and change { Packages::PackageFile.count }.by(1)
       end
-
-      context 'when packages_create_package_service_refactor is disabled' do
-        before do
-          stub_feature_flags(packages_create_package_service_refactor: false)
-        end
-
-        it 'creates a temporary package and enqueues extraction', :aggregate_failures do
-          expect(Packages::CreatePackageFileService).to receive(:new).and_call_original
-          expect(Packages::Nuget::ExtractionWorker).to receive(:perform_async)
-
-          expect { response }
-            .to change { Packages::Package.count }.by(1)
-            .and change { Packages::PackageFile.count }.by(1)
-        end
-      end
     end
 
     context 'when creating temporary package fails' do

@@ -104,7 +104,7 @@ module API
             package = if end_of_new_upload?
                         ::Packages::CreateTemporaryPackageService.new(
                           project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
-                        ).execute(:debian, ::Packages::Debian::Package,
+                        ).execute(::Packages::Debian::Package,
                           name: ::Packages::Debian::TEMPORARY_PACKAGE_NAME)
                       else
                         ::Packages::Debian::FindOrCreateIncomingService.new(project_or_group, current_user).execute

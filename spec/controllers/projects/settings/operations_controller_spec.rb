@@ -318,7 +318,27 @@ RSpec.describe Projects::Settings::OperationsController, feature_category: :inci
         }
       end
 
-      it_behaves_like 'PATCHable'
+      context 'when error tracking is disabled by feature flag' do
+        it 'returns 404 Not Found and does not call the service' do
+          # Error tracking is deprecated with the hide_error_tracking_features feature flag
+          # See https://gitlab.com/groups/gitlab-org/-/epics/17678 for more information
+          expect(::Projects::Operations::UpdateService).not_to receive(:new)
+
+          patch :update,
+            params: project_params(project, params),
+            format: :json
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when error tracking is enabled by feature flag' do
+        before do
+          stub_feature_flags(hide_error_tracking_features: false)
+        end
+
+        it_behaves_like 'PATCHable'
+      end
     end
   end
 

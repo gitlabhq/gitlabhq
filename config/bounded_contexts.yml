@@ -30,7 +30,7 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - duo_workflow
+      - agent_foundations
       - workflow_catalog
       - knowledge_graph
 
@@ -253,7 +253,7 @@ domains:
     description:
     feature_categories:
       - pages
-  
+
   DeployTokens:
     description: Managing deploy tokens
     feature_categories:

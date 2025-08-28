@@ -10,7 +10,6 @@ module Packages
         app_group.tr!('/', '.')
 
         package = create_package!(
-          :maven,
           ::Packages::Maven::Package,
           maven_metadatum_attributes: {
             path: params[:path],

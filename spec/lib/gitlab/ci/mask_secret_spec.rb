@@ -3,7 +3,7 @@
 # TODO: Change back to fast_spec_helper when removing FF
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::MaskSecret, feature_category: :ci_variables do
+RSpec.describe Gitlab::Ci::MaskSecret, feature_category: :pipeline_composition do
   subject { described_class }
 
   describe '#mask' do

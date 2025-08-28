@@ -4312,7 +4312,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Ci_Variable"
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4GroupsIdVariables
     post:
       description: Create a new variable in a group
@@ -4341,7 +4341,7 @@ paths:
         '400':
           description: 400 Bad Request
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: postApiV4GroupsIdVariables
   "/api/v4/groups/{id}/variables/{key}":
     get:
@@ -4369,7 +4369,7 @@ paths:
         '404':
           description: Group Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4GroupsIdVariablesKey
     put:
       description: Update an existing variable from a group
@@ -4405,7 +4405,7 @@ paths:
         '404':
           description: Group Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: putApiV4GroupsIdVariablesKey
     delete:
       description: Delete an existing variable from a group
@@ -4432,7 +4432,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Ci_Variable"
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: deleteApiV4GroupsIdVariablesKey
   "/api/v4/groups/{id}/integrations":
     get:
@@ -11497,7 +11497,7 @@ paths:
         - ondemand_dast_validation
         - security_orchestration_policy
         - container_registry_push
-        - duo_workflow
+        - agent_foundations
         - pipeline_execution_policy_schedule
         required: false
         example: push
@@ -12707,7 +12707,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Ci_Variable"
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4ProjectsIdVariables
     post:
       description: Create a new variable in a project
@@ -12735,7 +12735,7 @@ paths:
         '400':
           description: 400 Bad Request
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: postApiV4ProjectsIdVariables
   "/api/v4/projects/{id}/variables/{key}":
     get:
@@ -12767,7 +12767,7 @@ paths:
         '404':
           description: Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4ProjectsIdVariablesKey
     put:
       description: Update an existing variable from a project
@@ -12800,7 +12800,7 @@ paths:
         '404':
           description: Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: putApiV4ProjectsIdVariablesKey
     delete:
       description: Delete an existing variable from a project
@@ -12831,7 +12831,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Ci_Variable"
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: deleteApiV4ProjectsIdVariablesKey
   "/api/v4/projects/{id}/cluster_agents/{agent_id}/tokens":
     get:
@@ -36933,7 +36933,7 @@ paths:
           schema:
             "$ref": "#/definitions/API_Entities_Ci_Variable"
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4AdminCiVariables
     post:
       description: Create a new instance-level variable
@@ -36955,7 +36955,7 @@ paths:
         '400':
           description: 400 Bad Request
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: postApiV4AdminCiVariables
   "/api/v4/admin/ci/variables/{key}":
     get:
@@ -36976,7 +36976,7 @@ paths:
         '404':
           description: Instance Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: getApiV4AdminCiVariablesKey
     put:
       description: Update an instance-level variable
@@ -37003,7 +37003,7 @@ paths:
         '404':
           description: Instance Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: putApiV4AdminCiVariablesKey
     delete:
       description: Delete an existing instance-level variable
@@ -37019,7 +37019,7 @@ paths:
         '204':
           description: Instance Variable Not Found
       tags:
-      - ci_variables
+      - pipeline_composition
       operationId: deleteApiV4AdminCiVariablesKey
   "/api/v4/admin/databases/{database_name}/dictionary/tables/{table_name}":
     get:

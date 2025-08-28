@@ -33,7 +33,6 @@ module Packages
 
       def create_terraform_module_package!
         package = create_package!(
-          :terraform_module,
           ::Packages::TerraformModule::Package,
           name: name,
           version: params[:module_version],

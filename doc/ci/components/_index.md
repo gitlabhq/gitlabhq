@@ -296,16 +296,18 @@ While it's possible for a component to use other components in turn, make sure t
 Each component project should have clear and comprehensive documentation. To
 write a good `README.md` file:
 
-- The documentation should start with a summary of the capabilities that the components in the project provide.
+- Start with a summary of the capabilities that the components provide.
 - If the project contains multiple components, use a [table of contents](../../user/markdown.md#table-of-contents)
   to help users quickly jump to a specific component's details.
-- Add a `## Components` section with sub-sections like `### Component A` for each component in the project.
+- Add a `## Components` section with sub-sections like `### Component A` for each component.
 - In each component section:
-  - Add a description of what the component does.
+  - Describe what the component does.
   - Add at least one YAML example showing how to use it.
-  - If the component uses inputs, add a table showing all inputs with name, description, type, and default value.
-  - If the component uses any variables or secrets, those should be documented too.
-- A `## Contribute` section is recommended if contributions are welcome.
+  - Use [`spec:inputs:description`](../yaml/_index.md#specinputsdescription) to
+    document any variables or secrets the component uses.
+  - Do not duplicate input documentation in the `README`. Inputs appear automatically on the component page.
+    Instead, link to the published component.
+- Add a `## Contribute` section if contributions are welcome.
 
 If a component needs more instructions, add additional documentation in a Markdown file
 in the component directory and link to it from the main `README.md` file. For example:
@@ -321,7 +323,7 @@ templates/
     └── docs.md
 ```
 
-For an example of a component `README.md`, see the [Deploy to AWS with GitLab CI/CD component's `README.md`](https://gitlab.com/components/aws/-/blob/main/README.md).
+For an example, see the [AWS components README](https://gitlab.com/components/aws/-/blob/main/README.md).
 
 ### Test the component
 

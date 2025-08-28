@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Maskable, feature_category: :ci_variables do
+RSpec.describe Ci::Maskable, feature_category: :pipeline_composition do
   let(:variable) { build(:ci_variable) }
 
   describe 'masked value validations' do

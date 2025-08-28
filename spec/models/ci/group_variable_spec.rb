@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariable, feature_category: :ci_variables do
+RSpec.describe Ci::GroupVariable, feature_category: :pipeline_composition do
   let_it_be_with_refind(:group) { create(:group) }
 
   subject { build(:ci_group_variable, group: group) }

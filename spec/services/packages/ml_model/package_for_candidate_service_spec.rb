@@ -44,23 +44,6 @@ RSpec.describe Packages::MlModel::PackageForCandidateService, feature_category: 
         expect(package.version).to eq("candidate_#{candidate.iid}")
         expect(package.project).to eq(project)
       end
-
-      context 'when packages_create_package_service_refactor is disabled' do
-        before do
-          stub_feature_flags(packages_create_package_service_refactor: false)
-        end
-
-        it 'creates a package' do
-          expect { execute_service }.to change { Packages::Package.count }.by(1)
-
-          package = execute_service
-
-          expect(candidate.reload.package).to eq(package)
-          expect(package.name).to eq(model.name)
-          expect(package.version).to eq("candidate_#{candidate.iid}")
-          expect(package.project).to eq(project)
-        end
-      end
     end
 
     context 'when candidate already has a package' do

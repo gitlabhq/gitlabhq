@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['CiGroupEnvironmentScope'], feature_category: :ci_variables do
+RSpec.describe GitlabSchema.types['CiGroupEnvironmentScope'], feature_category: :pipeline_composition do
   specify do
     expect(described_class).to have_graphql_fields(
       :name

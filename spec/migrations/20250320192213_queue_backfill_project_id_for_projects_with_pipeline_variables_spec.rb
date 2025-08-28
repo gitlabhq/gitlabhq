@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillProjectIdForProjectsWithPipelineVariables, migration: :gitlab_ci, feature_category: :ci_variables do
+RSpec.describe QueueBackfillProjectIdForProjectsWithPipelineVariables, migration: :gitlab_ci, feature_category: :pipeline_composition do
   let!(:batched_migration) { described_class::MIGRATION }
 
   # No-op because we decided not to pursue the migration. See https://gitlab.com/groups/gitlab-org/-/epics/16522#note_2492640881

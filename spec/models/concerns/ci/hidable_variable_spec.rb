@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::HidableVariable, feature_category: :ci_variables do
+RSpec.describe Ci::HidableVariable, feature_category: :pipeline_composition do
   using RSpec::Parameterized::TableSyntax
   shared_examples 'HiddenVariableValidations' do |variable_class, association|
     let(:variable_key) { 'TESTKEY1' }

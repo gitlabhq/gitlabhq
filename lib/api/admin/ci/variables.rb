@@ -8,7 +8,7 @@ module API
 
         before { authenticated_as_admin! }
 
-        feature_category :ci_variables
+        feature_category :pipeline_composition
 
         namespace 'admin' do
           namespace 'ci' do

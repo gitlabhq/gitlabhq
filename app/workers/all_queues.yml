@@ -3520,7 +3520,7 @@
   :queue_namespace:
 - :name: ci_safe_disable_pipeline_variables
   :worker_name: Ci::SafeDisablePipelineVariablesWorker
-  :feature_category: :ci_variables
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

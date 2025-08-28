@@ -23,7 +23,7 @@ module Packages
       private
 
       def created_package
-        find_or_create_package!(:composer, ::Packages::Composer::Package, name: package_name, version: package_version)
+        find_or_create_package!(::Packages::Composer::Package, name: package_name, version: package_version)
       end
 
       def composer_json

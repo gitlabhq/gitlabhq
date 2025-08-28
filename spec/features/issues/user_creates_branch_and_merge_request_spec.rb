@@ -168,7 +168,6 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
     context 'when merge requests are disabled' do
       before do
-        stub_feature_flags(work_item_view_for_issues: false)
         project.project_feature.update!(merge_requests_access_level: 0)
 
         visit project_issue_path(project, issue)

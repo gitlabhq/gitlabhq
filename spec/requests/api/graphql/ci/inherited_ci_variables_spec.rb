@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category: :ci_variables do
+RSpec.describe 'Query.project(fullPath).inheritedCiVariables', feature_category: :pipeline_composition do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

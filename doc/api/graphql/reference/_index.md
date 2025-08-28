@@ -30006,6 +30006,7 @@ GPG signature for a signed commit.
 | <a id="grouprequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="grouprequiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in the group are required to set up two-factor authentication. |
 | <a id="grouprootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
+| <a id="groupsecuritycategories"></a>`securityCategories` | [`[SecurityCategory!]`](#securitycategory) | Security categories for the group. |
 | <a id="groupsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within the group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
@@ -41952,7 +41953,7 @@ A security attribute.
 | <a id="securityattributecolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
 | <a id="securityattributedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
 | <a id="securityattributeeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security attribute. |
-| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID`](#securityattributeid) | Global ID of the security attribute. |
 | <a id="securityattributename"></a>`name` | [`String!`](#string) | Name of the security attribute. |
 | <a id="securityattributesecuritycategory"></a>`securityCategory` | [`SecurityCategory!`](#securitycategory) | Security category the attribute belongs to. |
 
@@ -41966,7 +41967,7 @@ A security category.
 | ---- | ---- | ----------- |
 | <a id="securitycategorydescription"></a>`description` | [`String`](#string) | Description of the security category. |
 | <a id="securitycategoryeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security category. |
-| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category. |
+| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
 | <a id="securitycategorymultipleselection"></a>`multipleSelection` | [`Boolean!`](#boolean) | Whether multiple attributes can be selected. |
 | <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
 | <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |

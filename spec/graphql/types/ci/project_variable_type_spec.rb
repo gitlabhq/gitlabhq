@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['CiProjectVariable'], feature_category: :ci_variables do
+RSpec.describe GitlabSchema.types['CiProjectVariable'], feature_category: :pipeline_composition do
   specify { expect(described_class.interfaces).to contain_exactly(Types::Ci::VariableInterface) }
 
   specify do

@@ -77,6 +77,19 @@ RSpec.describe WikiPage::Meta, feature_category: :wiki do
     end
   end
 
+  describe '#participants' do
+    let_it_be(:wiki_page_meta) { create(:wiki_page_meta, canonical_slug: 'foo', container: project) }
+    let_it_be(:user_1) { create(:user, developer_of: project) }
+    let_it_be(:user_2) { create(:user, developer_of: project) }
+    let_it_be(:user_3) { create(:user, developer_of: project) }
+    let_it_be(:note_1) { create(:note, project: project, noteable: wiki_page_meta, author: user_1, note: "Quux") }
+    let_it_be(:note_2) { create(:note, project: project, noteable: wiki_page_meta, author: user_2, note: "Quuux") }
+
+    it 'returns all note authors' do
+      expect(wiki_page_meta.participants).to match_array([user_1, user_2])
+    end
+  end
+
   describe '#canonical_slug' do
     subject { described_class.find(meta.id) }
 

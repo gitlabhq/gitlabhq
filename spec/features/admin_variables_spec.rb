@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Instance variables', :js, feature_category: :ci_variables do
+RSpec.describe 'Instance variables', :js, feature_category: :pipeline_composition do
   let(:admin) { create(:admin) }
   let(:page_path) { ci_cd_admin_application_settings_path }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :ci_variables do
+RSpec.describe Gitlab::Ci::Variables::Builder::Group, feature_category: :pipeline_composition do
   let_it_be(:group) { create(:group) }
 
   let(:builder) { described_class.new(group) }

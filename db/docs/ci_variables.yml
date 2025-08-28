@@ -3,7 +3,7 @@ table_name: ci_variables
 classes:
 - Ci::Variable
 feature_categories:
-- ci_variables
+- pipeline_composition
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62
 milestone: '8.0'

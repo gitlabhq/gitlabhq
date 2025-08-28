@@ -6,50 +6,28 @@ module Packages
 
     protected
 
-    def find_or_create_package!(package_type, packages_class, name: params[:name], version: params[:version])
+    def find_or_create_package!(packages_class, name: params[:name], version: params[:version])
       # safe_find_or_create_by! was originally called here.
       # We merely switched to `find_or_create_by!`
       # rubocop: disable CodeReuse/ActiveRecord
-      if Feature.enabled?(:packages_create_package_service_refactor, project)
-        packages_class
-          .for_projects(project)
-          .not_pending_destruction
-          .find_or_create_by!(name: name, version: version) do |package|
-            package.status = params[:status] if params[:status]
-            package.creator = package_creator
+      packages_class
+        .for_projects(project)
+        .not_pending_destruction
+        .find_or_create_by!(name: name, version: version) do |package|
+          package.status = params[:status] if params[:status]
+          package.creator = package_creator
 
-            add_build_info(package)
-          end
-      else
-        project
-          .packages
-          .with_package_type(package_type)
-          .not_pending_destruction
-          .find_or_create_by!(name: name, version: version) do |package|
-            package.status = params[:status] if params[:status]
-            package.creator = package_creator
-
-            add_build_info(package)
-          end
-      end
+          add_build_info(package)
+        end
       # rubocop: enable CodeReuse/ActiveRecord
     end
 
-    def create_package!(package_type, packages_class, attrs = {})
-      if Feature.enabled?(:packages_create_package_service_refactor, project)
-        packages_class
-          .for_projects(project)
-          .create!(package_attrs(attrs)) do |package|
-            add_build_info(package)
-          end
-      else
-        project
-          .packages
-          .with_package_type(package_type)
-          .create!(package_attrs(attrs)) do |package|
-            add_build_info(package)
-          end
-      end
+    def create_package!(packages_class, attrs = {})
+      packages_class
+        .for_projects(project)
+        .create!(package_attrs(attrs)) do |package|
+          add_build_info(package)
+        end
     end
 
     def can_create_package?

@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     class BackfillProjectIdForProjectsWithPipelineVariables < BatchedMigrationJob
       operation_name :backfill_projects_with_pipeline_variables
-      feature_category :ci_variables
+      feature_category :pipeline_composition
 
       class Project < ::ApplicationRecord
         self.table_name = 'projects'

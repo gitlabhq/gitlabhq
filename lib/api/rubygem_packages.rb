@@ -145,7 +145,7 @@ module API
             ApplicationRecord.transaction do
               package = ::Packages::CreateTemporaryPackageService.new(
                 project, current_user, declared_params.merge(build: current_authenticated_job)
-              ).execute(:rubygems, ::Packages::Rubygems::Package, name: ::Packages::Rubygems::TEMPORARY_PACKAGE_NAME)
+              ).execute(::Packages::Rubygems::Package, name: ::Packages::Rubygems::TEMPORARY_PACKAGE_NAME)
 
               file_params = {
                 file: params[:file],

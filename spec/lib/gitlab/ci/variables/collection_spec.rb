@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :ci_variables do
+RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_composition do
   describe '.fabricate' do
     using RSpec::Parameterized::TableSyntax
 

@@ -1,0 +1,6 @@
+query namespaceMergeRequestsEnabled($fullPath: ID!) {
+  workspace: namespace(fullPath: $fullPath) {
+    id
+    mergeRequestsEnabled
+  }
+}

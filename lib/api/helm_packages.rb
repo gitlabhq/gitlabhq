@@ -155,7 +155,7 @@ module API
 
           package = ::Packages::CreateTemporaryPackageService.new(
             authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job)
-          ).execute(:helm, ::Packages::Helm::Package, name: ::Packages::Helm::TEMPORARY_PACKAGE_NAME)
+          ).execute(::Packages::Helm::Package, name: ::Packages::Helm::TEMPORARY_PACKAGE_NAME)
 
           chart_params = {
             file: params[:chart],

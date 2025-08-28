@@ -6,7 +6,7 @@ module Ci
 
     data_consistency :sticky
 
-    feature_category :ci_variables
+    feature_category :pipeline_composition
     urgency :low
     idempotent!
 

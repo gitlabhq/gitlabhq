@@ -196,7 +196,7 @@ ul.wiki-pages-list.content-list {
     .right-sidebar {
       position: sticky;
       top: $top-bar-height;
-      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem);
+      height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem - 1px);
     }
   }
 }

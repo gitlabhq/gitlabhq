@@ -24,6 +24,12 @@ title: JaCoCo coverage report
 For JaCoCo coverage reports to work, you must generate a properly formatted [JaCoCo XML file](https://www.jacoco.org/jacoco/trunk/coverage/jacoco.xml)
 that provides [line coverage](https://www.eclemma.org/jacoco/trunk/doc/counters.html).
 
+{{< alert type="note" >}}
+
+Aggregated reports from multi-module projects are not supported. To contribute to aggregated report support, see [issue 491015](https://gitlab.com/gitlab-org/gitlab/-/issues/491015).
+
+{{< /alert >}}
+
 The JaCoCo coverage reports visualization supports:
 
 - [Instructions (C0 Coverage)](https://www.eclemma.org/jacoco/trunk/doc/counters.html),

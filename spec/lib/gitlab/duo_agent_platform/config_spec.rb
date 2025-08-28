@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :duo_workflow do
+RSpec.describe Gitlab::DuoAgentPlatform::Config, feature_category: :agent_foundations do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:config) { described_class.new(project) }

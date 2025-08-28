@@ -1153,7 +1153,7 @@ Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query 
       {
         "term": {
           "confidential": {
-            "_name": "filters:non_confidential",
+            "_name": "filters:confidentiality:projects:non_confidential",
             "value": false
           }
         }
@@ -1164,7 +1164,7 @@ Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query 
             {
               "term": {
                 "confidential": {
-                  "_name": "filters:confidential",
+                  "_name": "filters:confidentiality:projects:confidential",
                   "value": true
                 }
               }
@@ -1175,7 +1175,7 @@ Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query 
                   {
                     "term": {
                       "author_id": {
-                        "_name": "filters:confidential:as_author",
+                        "_name": "filters:confidentiality:projects:confidential:as_author",
                         "value": 1
                       }
                     }
@@ -1183,14 +1183,14 @@ Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query 
                   {
                     "term": {
                       "assignee_id": {
-                        "_name": "filters:confidential:as_assignee",
+                        "_name": "filters:confidentiality:projects:confidential:as_assignee",
                         "value": 1
                       }
                     }
                   },
                   {
                     "terms": {
-                      "_name": "filters:confidential:project:membership:id",
+                      "_name": "filters:confidentiality:projects:confidential:project:membership:id",
                       "project_id": [
                         12345
                       ]
@@ -1205,6 +1205,213 @@ Requires `confidential`, `author_id`, `assignee_id`, `project_id` fields. Query 
     ]
   }
 }
+```
+
+#### `by_combined_confidentiality`
+
+Requires `search_level` field and at least one of `use_group_authorization` or `use_project_authorization`. Query with `confidential` in options.
+This filter combines `by_project_confidentiality` and `by_group_level_confidentiality` into one query if both
+`use_group_authorization` and `use_project_authorization` are provided. See those methods for required fields.
+
+```json
+[
+  {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "confidential": {
+                          "_name": "filters:confidentiality:projects:non_confidential",
+                          "value": false
+                        }
+                      }
+                    },
+                    {
+                      "bool": {
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "_name": "filters:confidentiality:projects:confidential",
+                                "value": true
+                              }
+                            }
+                          },
+                          {
+                            "bool": {
+                              "should": [
+                                {
+                                  "term": {
+                                    "author_id": {
+                                      "_name": "filters:confidentiality:projects:confidential:as_author",
+                                      "value": 278964
+                                    }
+                                  }
+                                },
+                                {
+                                  "term": {
+                                    "assignee_id": {
+                                      "_name": "filters:confidentiality:projects:confidential:as_assignee",
+                                      "value": 278964
+                                    }
+                                  }
+                                },
+                                {
+                                  "terms": {
+                                    "_name": "filters:confidentiality:projects:confidential:project:membership:id",
+                                    "project_id": []
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "bool": {
+                        "_name": "filters:confidentiality:groups:non_confidential:public",
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "value": false
+                              }
+                            }
+                          },
+                          {
+                            "term": {
+                              "namespace_visibility_level": {
+                                "value": 20
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "_name": "filters:confidentiality:groups:non_confidential:internal",
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "value": false
+                              }
+                            }
+                          },
+                          {
+                            "term": {
+                              "namespace_visibility_level": {
+                                "value": 10
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "_name": "filters:confidentiality:groups:non_confidential:private",
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "value": false
+                              }
+                            }
+                          }
+                        ],
+                        "should": [
+                          {
+                            "prefix": {
+                              "traversal_ids": {
+                                "_name": "filters:confidentiality:groups:non_confidential:private:ancestry_filter:descendants",
+                                "value": "9970-"
+                              }
+                            }
+                          }
+                        ],
+                        "minimum_should_match": 1
+                      }
+                    },
+                    {
+                      "bool": {
+                        "_name": "filters:confidentiality:groups:non_confidential:private",
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "value": false
+                              }
+                            }
+                          },
+                          {
+                            "terms": {
+                              "_name": "filters:confidentiality:groups:non_confidential:private:project:membership",
+                              "namespace_id": [
+                                9971
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "_name": "filters:confidentiality:groups:confidential:private",
+                        "must": [
+                          {
+                            "term": {
+                              "confidential": {
+                                "value": true
+                              }
+                            }
+                          }
+                        ],
+                        "should": [
+                          {
+                            "prefix": {
+                              "traversal_ids": {
+                                "_name": "filters:confidentiality:groups:confidential:private:ancestry_filter:descendants",
+                                "value": "9970-"
+                              }
+                            }
+                          }
+                        ],
+                        "minimum_should_match": 1
+                      }
+                    }
+                  ],
+                  "minimum_should_match": 1
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+]
 ```
 
 #### `by_label_ids`
@@ -1815,6 +2022,188 @@ Examples are shown for a logged in user. The JSON may be different for users wit
               }
             ],
             "minimum_should_match": 1
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+]
+```
+
+#### `by_combined_search_level_and_membership`
+
+Requires `search_level` field and at least one of `use_group_authorization` or `use_project_authorization`. This filter combines
+`by_search_level_and_membership` and `by_search_level_and_group_membership` into one query if both
+`use_group_authorization` and `use_project_authorization` are provided. See those methods for required fields.
+
+```json
+[
+  {
+    "bool": {
+      "should": [
+        {
+          "bool": {
+            "filter": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "bool": {
+                        "should": [
+                          {
+                            "prefix": {
+                              "traversal_ids": {
+                                "_name": "filters:permissions:global:private_access:ancestry_filter:descendants",
+                                "value": "9970-"
+                              }
+                            }
+                          }
+                        ],
+                        "filter": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:private_access:issues_access_level:enabled_or_private",
+                              "issues_access_level": [
+                                20,
+                                10
+                              ]
+                            }
+                          }
+                        ],
+                        "minimum_should_match": 1
+                      }
+                    },
+                    {
+                      "bool": {
+                        "filter": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:private_access:issues_access_level:enabled_or_private",
+                              "issues_access_level": [
+                                20,
+                                10
+                              ]
+                            }
+                          },
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:private_access:project:member",
+                              "project_id": [
+                                278964
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "should": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:issues_access_level:enabled",
+                              "issues_access_level": [
+                                20
+                              ]
+                            }
+                          }
+                        ],
+                        "filter": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:project_visibility_level:public_and_internal",
+                              "project_visibility_level": [
+                                20,
+                                10
+                              ]
+                            }
+                          }
+                        ],
+                        "minimum_should_match": 1
+                      }
+                    }
+                  ],
+                  "minimum_should_match": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "bool": {
+            "filter": [
+              {
+                "bool": {
+                  "_name": "filters:permissions:global",
+                  "should": [
+                    {
+                      "bool": {
+                        "filter": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:namespace_visibility_level:public_and_internal",
+                              "namespace_visibility_level": [
+                                20,
+                                10
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "bool": {
+                        "must": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:namespace_visibility_level:private",
+                              "namespace_visibility_level": [
+                                0
+                              ]
+                            }
+                          }
+                        ],
+                        "should": [
+                          {
+                            "prefix": {
+                              "traversal_ids": {
+                                "_name": "filters:permissions:global:ancestry_filter:descendants",
+                                "value": "9970-"
+                              }
+                            }
+                          }
+                        ],
+                        "minimum_should_match": 1
+                      }
+                    },
+                    {
+                      "bool": {
+                        "must": [
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:namespace_visibility_level:private",
+                              "namespace_visibility_level": [
+                                0
+                              ]
+                            }
+                          },
+                          {
+                            "terms": {
+                              "_name": "filters:permissions:global:project:membership",
+                              "namespace_id": [
+                                9971
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "minimum_should_match": 1
+                }
+              }
+            ]
           }
         }
       ],

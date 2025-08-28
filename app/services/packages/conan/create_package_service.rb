@@ -9,7 +9,6 @@ module Packages
         end
 
         created_package = create_package!(
-          :conan,
           ::Packages::Conan::Package,
           name: params[:package_name],
           version: params[:package_version],
