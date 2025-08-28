@@ -159,10 +159,10 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     add_another_asset_link
     fill_asset_link(link_2)
 
-    # Click on the body in order to trigger a `blur` event on the current field.
+    # Trigger a `blur` event on the current field.
     # This triggers the form's validation to run so that the
     # "Create release" button is enabled and clickable.
-    page.find('body').click
+    send_keys(:tab)
 
     click_button('Create release')
 

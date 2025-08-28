@@ -11,7 +11,7 @@ title: CLI agents
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
-- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): No
 
 {{< /details >}}
 
@@ -65,8 +65,6 @@ provider, you must:
 - [Turn on GitLab Duo](../gitlab_duo/turn_on_off.md).
 - Have GitLab Duo Enterprise with an [assigned seat](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
 - Have a project that belongs to a [group namespace](../namespace/_index.md) with an Ultimate subscription.
-- If you are using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md),
-  your self-hosted models must be [either an Anthropic or OpenAI model](../../administration/gitlab_duo_self_hosted/supported_models_and_hardware_requirements.md).
 
 ### Set up CI/CD
 

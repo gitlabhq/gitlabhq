@@ -34,12 +34,24 @@ FactoryBot.define do
           { key: 'DB_NAME', value: 'postgres', public: true }
         ]
       end
+
+      id_tokens { nil }
     end
 
     after(:build) do |build, evaluator|
       if evaluator.runner_manager
         build.runner = evaluator.runner_manager.runner
         create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
+      end
+
+      if evaluator.id_tokens
+        # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
+        build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
+        next unless build.job_definition
+
+        updated_config = build.job_definition.config.merge(id_tokens: evaluator.id_tokens)
+        build.job_definition.write_attribute(:config, updated_config)
       end
     end
 

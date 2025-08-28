@@ -56,7 +56,8 @@ module Groups
         :crm_enabled,
         :crm_source_group_id,
         :force_pages_access_control,
-        :enable_namespace_descendants_cache
+        :enable_namespace_descendants_cache,
+        :step_up_auth_required_oauth_provider
       ] + [group_feature_attributes: group_feature_attributes]
     end
 

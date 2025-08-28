@@ -221,8 +221,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  it_behaves_like 'has ID tokens', :ci_build
-
   it_behaves_like 'a retryable job'
 
   it_behaves_like 'a deployable job' do
@@ -2747,9 +2745,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       context 'when the build has ID tokens' do
         before do
-          build.update!(
-            id_tokens: { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } }
-          )
+          allow(build).to receive(:id_tokens).and_return({ 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } })
         end
 
         it 'includes the tokens and excludes the predefined JWT variables' do
@@ -3295,10 +3291,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           ci_stage: pipeline.stages.first,
           ref: 'feature',
           project: project,
-          pipeline: pipeline
+          pipeline: pipeline,
+          id_tokens: id_tokens
         )
       end
 
+      let(:id_tokens) { nil }
       let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
 
       context 'and id_tokens are not present in the build' do
@@ -3309,8 +3307,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'and id_tokens are present in the build' do
-        before do
-          build.id_tokens = {
+        let(:id_tokens) do
+          {
             'ID_TOKEN_1' => { aud: 'developers' },
             'ID_TOKEN_2' => { aud: 'maintainers' }
           }
@@ -3620,9 +3618,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        build.metadata.update!(id_tokens: {
-          'ID_TOKEN_1' => { aud: 'developers' },
-          'ID_TOKEN_2' => { aud: 'maintainers' }
+        allow(build).to receive(:id_tokens).and_return({
+          'ID_TOKEN_1' => { 'aud' => 'developers' },
+          'ID_TOKEN_2' => { 'aud' => 'maintainers' }
         })
         build.runner = build_stubbed(:ci_runner)
       end
@@ -3668,10 +3666,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        build.metadata.update!(id_tokens: {
-          'ID_TOKEN_1' => { aud: '$CI_SERVER_URL' },
-          'ID_TOKEN_2' => { aud: 'https://$CI_SERVER_HOST' },
-          'ID_TOKEN_3' => { aud: ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
+        allow(build).to receive(:id_tokens).and_return({
+          'ID_TOKEN_1' => { 'aud' => '$CI_SERVER_URL' },
+          'ID_TOKEN_2' => { 'aud' => 'https://$CI_SERVER_HOST' },
+          'ID_TOKEN_3' => { 'aud' => ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
         })
         build.runner = build_stubbed(:ci_runner)
       end
@@ -3710,9 +3708,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         build.update!(environment: 'production')
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        build.metadata.update!(id_tokens: {
-          'ID_TOKEN_1' => { aud: '$ENVIRONMENT_SCOPED_VAR' },
-          'ID_TOKEN_2' => { aud: ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
+        allow(build).to receive(:id_tokens).and_return({
+          'ID_TOKEN_1' => { 'aud' => '$ENVIRONMENT_SCOPED_VAR' },
+          'ID_TOKEN_2' => { 'aud' => ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
         })
         build.runner = build_stubbed(:ci_runner)
       end
@@ -4955,6 +4953,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:default_options) { { key: 'default' } }
 
     subject { build.send(:read_metadata_attribute, :options, :config_options, :options, default_options) }
+
+    before do
+      # Remove when FF `read_from_new_ci_destinations` is removed
+      build.clear_memoization(:read_from_new_destination?)
+    end
 
     context 'when all destination options are set' do
       before do

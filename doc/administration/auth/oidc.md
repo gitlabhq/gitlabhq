@@ -1409,7 +1409,7 @@ To configure a custom duration for your ID tokens:
 
 {{< /tabs >}}
 
-## Step-up authentication for Admin Mode
+## Step-up authentication
 
 {{< details >}}
 
@@ -1418,12 +1418,6 @@ To configure a custom duration for your ID tokens:
 - Status: Experiment
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474650) in GitLab 17.11 [with a flag](../feature_flags/_index.md) named `omniauth_step_up_auth_for_admin_mode`. Disabled by default.
-
-{{< /history >}}
 
 {{< alert type="flag" >}}
 
@@ -1448,6 +1442,11 @@ This feature is an [experiment](../../policy/development_stages_support.md) and 
 
 ### Enable step-up authentication for Admin Mode
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474650) in GitLab 17.11 [with a flag](../feature_flags/_index.md) named `omniauth_step_up_auth_for_admin_mode`. Disabled by default.
+
+{{< /history >}}
 To enable step-up authentication for Admin Mode:
 
 1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
@@ -1637,6 +1636,96 @@ To require step-up authentication for Admin Mode with Microsoft Entra ID:
    ```
 
 1. Save the configuration file and restart GitLab for the changes to take effect.
+
+### Add a step-up authentication provider for groups
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) in GitLab 18.4 [with a flag](../feature_flags/_index.md) named `omniauth_step_up_auth_for_namespace`. Disabled by default.
+
+{{< /history >}}
+
+You can also add step-up authentication providers available to all groups in your instance. This does not force groups to use step-up authentication, each group must still [set up](#force-step-up-authentication-for-a-group) this feature individually.
+
+To add a step-up authentication provider for groups:
+
+1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
+   step-up authentication for an specific OmniAuth provider.
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Provider name',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"], # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             # Unlike step-up authentication configuration for Admin Mode, you use the `namespace`
+             # object. This is because you're adding step-up authentication to access the entire
+             # group, not just Admin Mode.
+             namespace : {
+               # The `id_token` field defines the claims that must be included with the token.
+               # You can specify claims in one or both of the `required` or `included` fields.
+               # The token must include matching values for every claim you define in these fields.
+               id_token: {
+                 # The `required` field defines key-value pairs that must be included with the ID token.
+                 # The values must match exactly what is defined.
+                 # In this example, the 'acr' (Authentication Context Class Reference) claim
+                 # must have the value 'gold' to pass the step-up authentication challenge.
+                 # This ensures a specific level of authentication assurance.
+                 required: {
+                   acr: 'gold'
+                 },
+                 # The `included` field also defines key-value pairs that must be included with the ID token.
+                 # Multiple accepted values can be defined in an array. If an array is not used, the value must match exactly.
+                 # In this example, the 'amr' (Authentication Method References) claim
+                 # must have a value of either 'mfa' or 'fpt' to pass the step-up authentication challenge.
+                 # This is useful for scenarios where the user must provide additional authentication factors.
+                 included: {
+                   amr: ['mfa', 'fpt']
+                 },
+               },
+               # The `params` field defines any additional parameters that are sent during the authentication process.
+               # In this example, the `claims` parameter is added to the authorization request and instructs the
+               # identity provider to include an 'acr' claim with the value 'gold' in the ID token.
+               # The 'essential: true' indicates that this claim is required for successful authentication.
+               params: {
+                 claims: {
+                   id_token: {
+                     acr: {
+                       essential: true,
+                       values: ['gold']
+                     }
+                   }
+                 }
+               }
+             },
+           }
+         }
+   ```
+
+1. Save the configuration file and restart GitLab for the changes to take effect.
+
+### Force step-up authentication for a group
+
+You can force users to complete step-up authentication before they access a group. This setting is managed for each group individually, but requires a step-up authentication provider that was previously added for the entire instance.
+
+Prerequisites:
+
+- [A step-up authentication provider for groups in your instance](#add-a-step-up-authentication-provider-for-groups).
+- You must have the Owner role.
+
+To force step-up authentication for a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Under Step-up authentication, select an available authentication provider.
+1. Select **Save changes**.
 
 ### Add custom documentation links for step-up authentication
 

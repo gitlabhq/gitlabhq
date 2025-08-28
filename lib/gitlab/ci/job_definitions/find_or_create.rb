@@ -6,74 +6,50 @@ module Gitlab
       class FindOrCreate
         BATCH_SIZE = 50
 
-        def initialize(project, partition_id, checksum_to_config)
-          @project = project
-          @partition_id = partition_id
-          @checksum_to_config = checksum_to_config
+        def initialize(pipeline, jobs)
+          @project_id = pipeline.project_id
+          @partition_id = pipeline.partition_id
+          @job_definitions = Array.wrap(jobs).map(&:temp_job_definition).uniq(&:checksum)
         end
 
-        # This method assumes that the parameters are valid and can be inserted to the DB safely.
         def execute
-          return ::Ci::JobDefinition.none if checksum_to_config.empty?
+          return [] if job_definitions.empty?
 
-          checksums = checksum_to_config.keys
-
-          existing = fetch_records_by(checksums)
-          missing_checksums = checksums - existing.map(&:checksum)
-
-          return existing if missing_checksums.empty?
-
-          missing_checksums.each_slice(BATCH_SIZE) do |batch|
-            insert_missing(batch)
+          existing_definitions = fetch_records_for(job_definitions)
+          existing_definitions_by_checksum = existing_definitions.group_by(&:checksum)
+          missing_definitions = @job_definitions.reject do |d|
+            existing_definitions_by_checksum[d.checksum]
           end
 
-          existing + fetch_records_by(missing_checksums)
+          return existing_definitions if missing_definitions.empty?
+
+          insert_missing(missing_definitions)
+
+          existing_definitions + fetch_records_for(missing_definitions)
         end
 
         private
 
-        attr_reader :project, :partition_id, :checksum_to_config
+        attr_reader :project_id, :partition_id, :job_definitions
 
-        def fetch_records_by(checksums)
+        def fetch_records_for(definitions)
+          checksums = definitions.map(&:checksum)
+
           ::Ci::JobDefinition
-            .select(:id, :checksum)
+            .select(:id, :partition_id, :project_id, :checksum, :interruptible)
             .in_partition(partition_id)
-            .for_project(project.id)
+            .for_project(project_id)
             .for_checksum(checksums)
             .to_a # Explicitly convert to array for further processing
         end
 
-        def insert_missing(checksums)
-          attributes = build_attributes(checksums)
-
-          ::Ci::JobDefinition.insert_all(
-            attributes,
+        def insert_missing(definitions)
+          ::Ci::JobDefinition.bulk_insert!(
+            definitions,
             unique_by: [:project_id, :partition_id, :checksum],
-            returning: false # We want to use fetch_records_by again to fetch the records in case there are some
-            # lags between read-replicas.
+            skip_duplicates: true,
+            batch_size: BATCH_SIZE
           )
-        end
-
-        def build_attributes(checksums)
-          current_time = Time.current
-
-          checksums.map do |checksum|
-            {
-              project_id: project.id,
-              partition_id: partition_id,
-              checksum: checksum,
-              config: checksum_to_config[checksum],
-              interruptible: interruptible(checksum),
-              created_at: current_time,
-              updated_at: current_time
-            }
-          end
-        end
-
-        def interruptible(checksum)
-          checksum_to_config[checksum].fetch(:interruptible) do
-            ::Ci::JobDefinition.column_defaults['interruptible']
-          end
         end
       end
     end

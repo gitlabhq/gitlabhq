@@ -21,7 +21,6 @@ module Ci
       accepts_nested_attributes_for :metadata
 
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
-      delegate :id_tokens, to: :metadata, allow_nil: true
       delegate :exit_code, to: :metadata, allow_nil: true
 
       before_validation :ensure_metadata, on: :create
@@ -109,12 +108,16 @@ module Ci
       ensure_metadata.interruptible = value
     end
 
+    def id_tokens
+      read_metadata_attribute(nil, :id_tokens, :id_tokens, {}).deep_stringify_keys
+    end
+
     def id_tokens?
-      metadata&.id_tokens.present?
+      id_tokens.present?
     end
 
     def id_tokens=(value)
-      ensure_metadata.id_tokens = value
+      ensure_metadata.id_tokens = value if can_write_metadata?
     end
 
     def debug_trace_enabled?

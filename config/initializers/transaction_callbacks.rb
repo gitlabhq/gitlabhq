@@ -15,9 +15,7 @@
 #   Project.touch
 # end
 
-if ActiveRecord::ConnectionAdapters::NullTransaction.new.respond_to?(:before_commit)
-  raise 'This version of Rails natively supports transaction callbacks. Please remove this patch.'
-end
+return if ::Gitlab.next_rails?
 
 ActiveRecord::ConnectionAdapters::NullTransaction.prepend(
   GemExtensions::ActiveRecord::ConnectionAdapters::Transaction::NullTransactionCallbacks)

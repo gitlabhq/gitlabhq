@@ -51,6 +51,8 @@
     = render_if_exists 'groups/settings/extended_grat_expiry_webhook_execute', f: f, group: @group
     = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f, group: @group
+    - if Feature.enabled?(:omniauth_step_up_auth_for_namespace, @group)
+      = render 'groups/settings/step_up_authentication', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/placeholder_confirmation_bypass', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group

@@ -722,6 +722,12 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
     end
 
     context 'when the configuration includes ID tokens' do
+      before do
+        # TODO: We can remove this stub after we start writing `id_tokens` to ci_job_definitions
+        # on pipeline creation. https://gitlab.com/gitlab-org/gitlab/-/issues/551860
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
       it 'creates variables for the ID tokens' do
         config = YAML.dump({
           job_with_id_tokens: {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Create, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -101,11 +101,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
     end
 
     let(:job) do
-      build(:ci_build, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_build, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     let(:bridge) do
-      build(:ci_bridge, ci_stage: stage, pipeline: pipeline, project: project)
+      build(:ci_bridge, :without_job_definition, ci_stage: stage, pipeline: pipeline, project: project)
     end
 
     before do
@@ -142,6 +142,190 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Create do
 
         expect(job).to be_persisted
         expect(job.reload.tag_list).to match_array(%w[tag1 tag2])
+      end
+    end
+  end
+
+  describe 'job definitions persistence' do
+    let(:stage) do
+      build(:ci_stage, pipeline: pipeline, project: project)
+    end
+
+    let(:job1) do
+      build(:ci_build,
+        :without_job_definition,
+        ci_stage: stage,
+        pipeline: pipeline,
+        project: project,
+        name: 'job1',
+        options: { script: ['echo test'] }
+      )
+    end
+
+    let(:job2) do
+      build(:ci_build,
+        :without_job_definition,
+        ci_stage: stage,
+        pipeline: pipeline,
+        project: project,
+        name: 'job2',
+        options: { script: ['echo test'] } # Same config as job1
+      )
+    end
+
+    let(:job3) do
+      build(:ci_build,
+        :without_job_definition,
+        ci_stage: stage,
+        pipeline: pipeline,
+        project: project,
+        name: 'job3',
+        options: { script: ['echo different'] } # Different config
+      )
+    end
+
+    before do
+      pipeline.stages = [stage]
+      stage.statuses = [job1, job2, job3]
+
+      # Set temp_job_definition as it would be set by Seed::Build
+      config1 = { options: { script: ['echo test'] } }
+      config2 = { options: { script: ['echo different'] } }
+
+      job_def1 = Ci::JobDefinition.fabricate(
+        config: config1,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+      job_def2 = Ci::JobDefinition.fabricate(
+        config: config2,
+        project_id: project.id,
+        partition_id: pipeline.partition_id
+      )
+
+      job1.temp_job_definition = job_def1
+      job2.temp_job_definition = job_def1
+      job3.temp_job_definition = job_def2
+    end
+
+    it 'uses JobDefinitionBuilder to create job definitions' do
+      builder_double = instance_double(Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder)
+      expect(Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder)
+        .to receive(:new)
+        .with(pipeline, [job1, job2, job3])
+        .and_return(builder_double)
+      expect(builder_double).to receive(:run)
+
+      step.perform!
+    end
+
+    it 'creates job definitions' do
+      expect { step.perform! }.to change { Ci::JobDefinition.count }.by(2)
+    end
+
+    it 'creates job definition instances for each job' do
+      expect { step.perform! }.to change { Ci::JobDefinitionInstance.count }.by(3)
+    end
+
+    it 'deduplicates job definitions with same checksum' do
+      step.perform!
+
+      job_definitions = Ci::JobDefinition.all
+      expect(job_definitions.count).to eq(2)
+
+      # job1 and job2 should share the same job definition
+      expect(job1.reload.job_definition).to eq(job2.reload.job_definition)
+      expect(job3.reload.job_definition).not_to eq(job1.job_definition)
+    end
+
+    it 'sets correct job definition attributes' do
+      step.perform!
+
+      job_def1 = job1.reload.job_definition
+      expect(job_def1.project).to eq(project)
+      expect(job_def1.partition_id).to eq(pipeline.partition_id)
+      expect(job_def1.config[:options]).to eq(script: ['echo test'])
+
+      job_def3 = job3.reload.job_definition
+      expect(job_def3.config[:options]).to eq(script: ['echo different'])
+    end
+
+    context 'with yaml_variables' do
+      before do
+        config = { options: { script: ['echo test'] }, yaml_variables: [{ key: 'VAR', value: 'value' }] }
+        job_def = Ci::JobDefinition.fabricate(
+          config: config,
+          project_id: project.id,
+          partition_id: pipeline.partition_id
+        )
+        job1.temp_job_definition = job_def
+      end
+
+      it 'includes yaml_variables in job definition' do
+        step.perform!
+
+        job_def = job1.reload.job_definition
+        expect(job_def.config[:yaml_variables]).to eq([{ key: 'VAR', value: 'value' }])
+      end
+    end
+
+    context 'with jobs without temp_job_definition' do
+      before do
+        job1.temp_job_definition = nil
+
+        config = { options: { script: ['echo test'] } }
+        job_def = Ci::JobDefinition.fabricate(
+          config: config,
+          project_id: project.id,
+          partition_id: pipeline.partition_id
+        )
+        job2.temp_job_definition = job_def
+        job3.temp_job_definition = nil
+      end
+
+      it 'only creates job definitions for jobs with temp_job_definition' do
+        expect { step.perform! }.to change { Ci::JobDefinition.count }.by(1)
+      end
+
+      it 'only creates job definition instances for jobs with temp_job_definition' do
+        expect { step.perform! }.to change { Ci::JobDefinitionInstance.count }.by(1)
+      end
+    end
+
+    context 'when pipeline save fails' do
+      before do
+        allow(pipeline).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+      end
+
+      it 'still creates job definitions (as they are created outside the transaction)' do
+        # Job definitions are intentionally created outside the transaction
+        # so they can be reused in future pipeline creations
+        expect do
+          step.perform!
+        rescue StandardError
+          nil
+        end.to change { Ci::JobDefinition.count }.by(2)
+      end
+    end
+
+    context 'when write_to_new_ci_destinations feature flag is disabled' do
+      before do
+        stub_feature_flags(write_to_new_ci_destinations: false)
+      end
+
+      it 'does not create job definitions' do
+        expect { step.perform! }.not_to change { Ci::JobDefinition.count }
+      end
+
+      it 'does not create job definition instances' do
+        expect { step.perform! }.not_to change { Ci::JobDefinitionInstance.count }
+      end
+
+      it 'still saves the pipeline successfully' do
+        step.perform!
+
+        expect(pipeline).to be_persisted
+        expect(job1.reload).to be_persisted
       end
     end
   end

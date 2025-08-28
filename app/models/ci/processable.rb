@@ -13,6 +13,8 @@ module Ci
 
     self.allow_legacy_sti_class = true
 
+    attribute :temp_job_definition
+
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
     has_one :trigger, through: :pipeline
@@ -28,7 +30,6 @@ module Ci
       class_name: 'Ci::JobDefinition',
       foreign_key: :job_id,
       partition_foreign_key: :partition_id,
-      inverse_of: :jobs,
       through: :job_definition_instance
 
     has_many :job_messages,

@@ -146,7 +146,9 @@ module Gitlab
 
         def batching_disabled?
           # disable batching to make local development and testing easier
-          Rails.env.development? || Rails.env.test?
+          Rails.env.development? ||
+            Rails.env.test? ||
+            (::Gitlab.staging? && ::Feature.enabled?(:snowplow_emitter_batching_off, :instance))
         end
 
         def failure_callback(success_count, failures)

@@ -32,11 +32,9 @@ Various events in GitLab can trigger webhooks. For example:
 - Posting a comment on an issue.
 - Creating a merge request.
 
-For a complete list of events and the JSON data sent in the webhook payload, see [webhook events](webhook_events.md).
-
 ## Webhook limits
 
-GitLab.com enforces [webhook limits](../../gitlab_com/_index.md#webhooks), including:
+GitLab.com enforces webhook limits, including:
 
 - Maximum number of webhooks per project or group.
 - Number of webhook calls per minute.
@@ -52,7 +50,7 @@ GitLab limits webhook triggers for push events that include multiple changes:
 - Behavior when exceeded: No webhooks are triggered for the entire push event.
 - Applies to: Both project webhooks and system hooks.
 - Configuration: GitLab Self-Managed administrators can modify the `push_event_hooks_limit`
-  setting through the [Application Settings API](../../../api/settings.md#available-settings).
+  setting through the application settings API.
 
 If you frequently push multiple tags or branches simultaneously and need webhook
 notifications, contact your GitLab administrator to increase this limit.
@@ -71,11 +69,8 @@ Group webhooks are custom HTTP callbacks that send notifications for events acro
 
 You can configure group webhooks to listen for:
 
-- All events that occur in projects in the group and subgroups.
-- Group-specific events:
-  - [Group member events](webhook_events.md#group-member-events).
-  - [Project events](webhook_events.md#project-events)
-  - [Subgroup events](webhook_events.md#subgroup-events).
+- All events that occur in projects in the group and subgroups
+- Group-specific events, including group member events, project events, and subgroup events
 
 ### Webhooks in both a project and a group
 
@@ -112,21 +107,14 @@ To create a webhook:
    Use percent-encoding for special characters.
 1. Optional. Enter a **Name** and **Description** for the webhook.
 1. Optional. In **Secret token**, enter a token to validate requests.
-1. In the **Trigger** section, select the [events](webhook_events.md) to trigger the webhook.
-1. Optional. To disable [SSL verification](_index.md#ssl-verification), clear the **Enable SSL verification** checkbox.
+1. In the **Trigger** section, select the events to trigger the webhook.
+1. Optional. To disable SSL verification, clear the **Enable SSL verification** checkbox.
 1. Select **Add webhook**.
 
 The secret token is sent with the webhook request in the `X-Gitlab-Token` HTTP header.
 Your webhook endpoint can use this token to verify the legitimacy of the request.
 
 ### Mask sensitive portions of webhook URLs
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_form_mask_url`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.7. Feature flag `webhook_form_mask_url` removed.
-
-{{< /history >}}
 
 Mask sensitive portions of webhook URLs to enhance security.
 Masked portions are replaced with configured values when webhooks are executed, are not logged, and
@@ -164,12 +152,12 @@ You can configure up to 20 custom headers per webhook.
 
 Custom headers must:
 
-- Not override the values of [delivery headers](#delivery-headers).
+- Not override the values of delivery headers.
 - Contain only alphanumeric characters, periods, dashes, or underscores.
 - Start with a letter and end with a letter or number.
 - Have no consecutive periods, dashes, or underscores.
 
-Custom headers show in [**Recent events**](#view-webhook-request-history) with masked values.
+Custom headers show in **Recent events** with masked values.
 
 ### Custom webhook template
 
@@ -194,7 +182,7 @@ To create a custom webhook template:
 1. Set a custom webhook template.
 1. Ensure the template renders as valid JSON.
 
-Use fields from the [payload of an event](webhook_events.md) in your template. For example:
+Use fields from the payload of an event in your template. For example:
 
 - `{{build_name}}` for a job event
 - `{{deployable_url}}` for a deployment event
@@ -360,10 +348,7 @@ Configure firewalls for webhook traffic based on how GitLab sends webhooks:
 - Asynchronously from Sidekiq nodes (most common)
 - Synchronously from Rails nodes (in specific cases)
 
-Webhooks are sent synchronously from Rails nodes when:
-
-- [Testing a webhook](#test-a-webhook) in the UI
-- [Retrying a webhook](#inspect-request-and-response-details) in the UI
+Webhooks are sent synchronously from Rails nodes when you test or retry a webhook in the UI.
 
 When configuring firewalls, ensure both Sidekiq and Rails nodes can send webhook traffic.
 
@@ -372,12 +357,6 @@ When configuring firewalls, ensure both Sidekiq and Rails nodes can send webhook
 Monitor and maintain your configured webhooks in GitLab.
 
 ### View webhook request history
-
-{{< history >}}
-
-- **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
-
-{{< /history >}}
 
 View the history of webhook requests to monitor their performance and troubleshoot issues.
 
@@ -413,7 +392,7 @@ Prerequisites:
 - For project webhooks, you must have at least the Maintainer role for the project.
 - For group webhooks, you must have the Owner role for the group.
 
-Each webhook request in [**Recent events**](#view-webhook-request-history) has a **Request details** page.
+Each webhook request in **Recent events** has a **Request details** page.
 This page contains the body and headers of:
 
 - The response GitLab received from the webhook receiver endpoint
@@ -427,13 +406,13 @@ To inspect the request and response details of a webhook event:
 1. Go to the **Recent events** section.
 1. Select **View details** for the event.
 
-To send the request again with the same data and the same [`Idempotency-Key` header](#delivery-headers)), select **Resend Request**.
+To send the request again with the same data and the same `Idempotency-Key` header, select **Resend Request**.
 If the webhook URL has changed, you cannot resend the request.
-For resending programmatically, refer to our [API documentation](../../../api/project_webhooks.md#resend-a-project-webhook-event).
+You can also resend the request programmatically through the project webhooks API.
 
 ### Test a webhook
 
-Test a webhook to ensure it's working properly or to re-enable a [disabled webhook](#re-enable-disabled-webhooks).
+Test a webhook to ensure it's working properly or to re-enable a disabled webhook.
 
 Prerequisites:
 
@@ -467,7 +446,7 @@ Use this technical reference to:
 
 Implement fast and stable webhook receiver endpoints to ensure reliable webhook delivery.
 
-Slow, unstable, or incorrectly configured receivers may be [disabled automatically](#auto-disabled-webhooks).
+Slow, unstable, or incorrectly configured receivers might be disabled automatically.
 Invalid HTTP responses are treated as failed requests.
 
 To optimize your webhook receivers:
@@ -475,12 +454,12 @@ To optimize your webhook receivers:
 1. Respond quickly with a `200` or `201` status:
    - Avoid processing webhooks in the same request.
    - Use a queue to handle webhooks after receiving them.
-   - Respond before the [timeout limit](../../gitlab_com/_index.md#other-limits) to prevent automatic disabling on GitLab.com.
+   - Respond before the timeout limit to prevent automatic disabling on GitLab.com.
 1. Handle potential duplicate events:
    - Prepare for duplicate events if a webhook times out.
    - Ensure your endpoint is consistently fast and stable.
 1. Minimize response headers and body:
-   - GitLab stores response headers and body for [later inspection](#inspect-request-and-response-details).
+   - GitLab stores response headers and body for later inspection.
    - Limit the number and size of returned headers.
    - Consider responding with an empty body.
 1. Use appropriate status codes:
@@ -492,9 +471,8 @@ To optimize your webhook receivers:
 
 {{< history >}}
 
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) for project webhooks in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385902) for group webhooks in GitLab 15.10.
-- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) in GitLab 15.10 [with a flag](../../../administration/feature_flags/_index.md) named `auto_disabling_web_hooks`.
+- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) for project webhooks in GitLab 15.10 [with a flag](../../../administration/feature_flags/_index.md) named `auto_disabling_web_hooks`.
 - **Fails to connect** and **Failing to connect** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to **Disabled** and **Temporarily disabled** in GitLab 17.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to become permanently disabled after 40 consecutive failures in GitLab 17.11.
 
@@ -516,20 +494,20 @@ To view auto-disabled webhooks:
 
 In the webhook list, auto-disabled webhooks display as:
 
-- **Temporarily disabled** for [temporarily disabled](#temporarily-disabled-webhooks) webhooks
-- **Disabled** for [permanently disabled](#permanently-disabled-webhooks) webhooks
+- **Temporarily disabled** if they fail four consecutive times
+- **Disabled** if they fail 40 consecutive times
 
 ![Badges on failing webhooks](img/failed_badges_v17_11.png)
 
 #### Temporarily disabled webhooks
 
 Webhooks are temporarily disabled if they fail four consecutive times.
-If webhooks fail 40 consecutive times, they become [permanently disabled](#permanently-disabled-webhooks).
+If webhooks fail 40 consecutive times, they become permanently disabled.
 
 Failure occurs when:
 
-- The [webhook receiver](#webhook-receiver-requirements) returns a response code in the `4xx` or `5xx` range.
-- The webhook experiences a [timeout](../../gitlab_com/_index.md#webhooks) when attempting to connect to the webhook receiver.
+- The webhook receiver returns a response code in the `4xx` or `5xx` range.
+- The webhook experiences a timeout when attempting to connect to the webhook receiver.
 - The webhook encounters other HTTP errors.
 
 Temporarily disabled webhooks are initially disabled for one minute,
@@ -539,30 +517,21 @@ After this period has elapsed, these webhooks are automatically re-enabled.
 #### Permanently disabled webhooks
 
 Webhooks are permanently disabled if they fail 40 consecutive times.
-Unlike [temporarily disabled webhooks](#temporarily-disabled-webhooks), these webhooks are not automatically re-enabled.
+Unlike temporarily disabled webhooks, these webhooks are not automatically re-enabled.
 
 Webhooks that were permanently disabled in GitLab 17.10 and earlier underwent a data migration.
-These webhooks might display four failures in [**Recent events**](#view-webhook-request-history)
+These webhooks might display four failures in **Recent events**
 even though the UI might state they have 40 failures.
 
 #### Re-enable disabled webhooks
 
-{{< history >}}
-
-- Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags/_index.md) named `webhooks_failed_callout`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
-
-{{< /history >}}
-
-To re-enable a disabled webhook, [send a test request](#test-a-webhook).
+To re-enable a disabled webhook, send a test request.
 The webhook is re-enabled if the test request returns a response code in the `2xx` range.
 
 ### Delivery headers
 
 {{< history >}}
 
-- `X-Gitlab-Event-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
-- `X-Gitlab-Instance` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31333) in GitLab 15.5.
 - `X-Gitlab-Webhook-UUID` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230830) in GitLab 16.2.
 - `Idempotency-Key` header [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388692) in GitLab 17.4.
 
@@ -570,14 +539,14 @@ The webhook is re-enabled if the test request returns a response code in the `2x
 
 GitLab includes the following headers in webhook requests to your endpoint:
 
-| Header                  | Description                                             | Example |
-| ----------------------- | ------------------------------------------------------- | ------- |
-| `User-Agent`            | User agent in the format `"Gitlab/<VERSION>"`.          | `"GitLab/15.5.0-pre"` |
-| `X-Gitlab-Instance`     | Hostname of the GitLab instance that sent the webhook.  | `"https://gitlab.com"` |
-| `X-Gitlab-Webhook-UUID` | Unique ID for each webhook.                             | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
-| `X-Gitlab-Event`        | Webhook type name. Corresponds to [event types](webhook_events.md) in the format `"<EVENT> Hook"`. | `"Push Hook"` |
+| Header                  | Description                                                                                                    | Example |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------- |
+| `User-Agent`            | User agent in the format `"Gitlab/<VERSION>"`.                                                                 | `"GitLab/15.5.0-pre"` |
+| `X-Gitlab-Instance`     | Hostname of the GitLab instance that sent the webhook.                                                         | `"https://gitlab.com"` |
+| `X-Gitlab-Webhook-UUID` | Unique ID for each webhook.                                                                                    | `"02affd2d-2cba-4033-917d-ec22d5dc4b38"` |
+| `X-Gitlab-Event`        | Webhook type name. Corresponds to event types in the format `"<EVENT> Hook"`.                                  | `"Push Hook"` |
 | `X-Gitlab-Event-UUID`   | Unique ID for non-recursive webhooks. Recursive webhooks (triggered by earlier webhooks) share the same value. | `"13792a34-cac6-4fda-95a8-c58e00a3954e"` |
-| `Idempotency-Key`       | Unique ID consistent across webhook retries. Use to ensure idempotency in integrations. | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
+| `Idempotency-Key`       | Unique ID consistent across webhook retries. Use to ensure idempotency in integrations.                        | `"f5e5f430-f57b-4e6e-9fac-d9128cd7232f"` |
 
 ### Image URL display in webhook body
 
@@ -611,10 +580,11 @@ GitLab does not rewrite image URLs when:
 
 ## Related topics
 
-- [Webhook events and webhook JSON payloads](webhook_events.md)
+- [Webhook events and JSON payloads](webhook_events.md)
+- [Webhook limits](../../gitlab_com/_index.md#webhooks)
 - [Project webhooks API](../../../api/project_webhooks.md)
 - [Group webhooks API](../../../api/group_webhooks.md)
 - [System hooks API](../../../api/system_hooks.md)
-- [Troubleshooting](webhooks_troubleshooting.md)
+- [Troubleshooting webhooks](webhooks_troubleshooting.md)
 - [Send SMS alerts with webhooks and Twilio](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
 - [Applying GitLab labels automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/)

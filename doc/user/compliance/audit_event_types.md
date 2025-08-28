@@ -655,6 +655,7 @@ Audit event types belong to the following product categories.
 | [`authenticated_with_password`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with password | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with two-factor authentication | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_webauthn`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with WebAuthn device | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
+| [`step_up_auth_required_oauth_provider_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199423) | Step-up authentication OAuth provider requirement is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) | Group |
 
 ### Team planning
 

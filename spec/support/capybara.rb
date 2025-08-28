@@ -115,6 +115,7 @@ Capybara.default_max_wait_time = timeout
 Capybara.ignore_hidden_elements = true
 Capybara.default_normalize_ws = true
 Capybara.enable_aria_label = true
+Capybara.default_set_options = { clear: :backspace }
 
 Capybara::Screenshot.append_timestamp = false
 

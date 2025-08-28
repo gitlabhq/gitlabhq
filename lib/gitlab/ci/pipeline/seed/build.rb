@@ -73,6 +73,8 @@ module Gitlab
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
               .deep_merge(scoped_user_id_attribute)
+              .then { |attrs| apply_job_definition_attributes(attrs) }
+              .then { |attrs| remove_ci_builds_metadata_attributes(attrs) }
               .except(:stage)
           end
 
@@ -228,6 +230,25 @@ module Gitlab
             @seed_attributes[:yaml_variables] = Gitlab::Ci::Variables::Helpers.inherit_yaml_variables(
               from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance
             )
+          end
+
+          def apply_job_definition_attributes(attrs)
+            return attrs if ::Feature.disabled?(:write_to_new_ci_destinations, @pipeline.project)
+
+            temp_job_definition = ::Ci::JobDefinition.fabricate(
+              config: attrs, project_id: @pipeline.project.id, partition_id: @pipeline.partition_id
+            )
+
+            attrs.merge(temp_job_definition: temp_job_definition)
+          end
+
+          def remove_ci_builds_metadata_attributes(attrs)
+            attrs
+
+            # This change would make this MR too big since it also requires lots of test changes as the FFs are
+            # enabled by default. So, this will be a part of https://gitlab.com/gitlab-org/gitlab/-/issues/561405.
+            # return attrs if ::Feature.disabled?(:stop_writing_builds_metadata, @pipeline.project)
+            # attrs.except(*::Ci::JobDefinition::CONFIG_ATTRIBUTES)
           end
         end
       end

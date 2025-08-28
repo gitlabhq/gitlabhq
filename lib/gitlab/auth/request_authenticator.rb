@@ -33,6 +33,12 @@ module Gitlab
         nil
       end
 
+      def job_from_token
+        find_job_from_job_token
+      rescue Gitlab::Auth::AuthenticationError
+        nil
+      end
+
       def find_sessionless_user(request_format)
         case request_format
         when :graphql_api

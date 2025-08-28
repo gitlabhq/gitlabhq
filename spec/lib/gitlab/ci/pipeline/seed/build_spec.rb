@@ -558,6 +558,125 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    describe 'job definition attributes generation' do
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          options: { script: ['echo test'] },
+          yaml_variables: [{ key: 'VAR', value: 'value' }],
+          interruptible: true
+        }
+      end
+
+      it 'sets correct attributes on temp_job_definition' do
+        job_def = subject[:temp_job_definition]
+        expect(job_def.project_id).to eq(project.id)
+        expect(job_def.partition_id).to eq(pipeline.partition_id)
+        expect(job_def.config).to include(:options, :yaml_variables, :interruptible)
+      end
+
+      it 'preserves original job attributes' do
+        expect(subject[:options]).to eq(attributes[:options])
+        expect(subject[:yaml_variables]).to eq(attributes[:yaml_variables])
+        expect(subject[:interruptible]).to eq(attributes[:interruptible])
+      end
+
+      context 'with id_tokens' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            id_tokens: {
+              TEST_TOKEN: { aud: 'https://gitlab.com' }
+            }
+          }
+        end
+
+        it 'includes id_tokens in temp_job_definition' do
+          expect(subject[:temp_job_definition].config[:id_tokens]).to eq(attributes[:id_tokens])
+          expect(subject[:id_tokens]).to eq(attributes[:id_tokens])
+        end
+      end
+
+      context 'with secrets' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            secrets: {
+              TEST_SECRET: {
+                gitlab_secrets_manager: { name: 'foo' }
+              }
+            }
+          }
+        end
+
+        it 'includes secrets in temp_job_definition' do
+          expect(subject[:temp_job_definition].config[:secrets]).to eq(attributes[:secrets])
+          expect(subject[:secrets]).to eq(attributes[:secrets])
+        end
+      end
+
+      context 'with same configuration' do
+        let(:attributes2) do
+          {
+            name: 'test',
+            ref: 'master',
+            options: { script: ['echo test'] },
+            yaml_variables: [{ key: 'VAR', value: 'value' }],
+            interruptible: true
+          }
+        end
+
+        it 'generates same checksum for identical configs' do
+          seed2 = described_class.new(seed_context, attributes2, previous_stages + [current_stage])
+
+          checksum1 = subject[:temp_job_definition].checksum
+          checksum2 = seed2.attributes[:temp_job_definition].checksum
+
+          expect(checksum1).to eq(checksum2)
+        end
+      end
+
+      context 'with different configuration' do
+        let(:attributes2) do
+          {
+            name: 'test',
+            ref: 'master',
+            options: { script: ['echo different'] },
+            yaml_variables: [{ key: 'VAR', value: 'value' }],
+            interruptible: true
+          }
+        end
+
+        it 'generates different checksums for different configs' do
+          seed2 = described_class.new(seed_context, attributes2, previous_stages + [current_stage])
+
+          checksum1 = subject[:temp_job_definition].checksum
+          checksum2 = seed2.attributes[:temp_job_definition].checksum
+
+          expect(checksum1).not_to eq(checksum2)
+        end
+      end
+
+      context 'when write_to_new_ci_destinations feature flag is disabled' do
+        before do
+          stub_feature_flags(write_to_new_ci_destinations: false)
+        end
+
+        it 'does not include temp_job_definition' do
+          expect(subject).not_to include(:temp_job_definition)
+        end
+
+        it 'includes original job attributes' do
+          expect(subject[:options]).to eq(attributes[:options])
+          expect(subject[:yaml_variables]).to eq(attributes[:yaml_variables])
+          expect(subject[:interruptible]).to eq(attributes[:interruptible])
+        end
+      end
+    end
+
     describe 'propagating composite identity', :request_store do
       let_it_be(:user) { create(:user) }
 

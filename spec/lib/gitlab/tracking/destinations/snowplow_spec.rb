@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default do
+RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_by_default, feature_category: :application_instrumentation do
   let(:emitter) { SnowplowTracker::Emitter.new(endpoint: 'localhost', options: { buffer_size: 1 }) }
   let(:event_eligibility_checker) { instance_double(Gitlab::Tracking::EventEligibilityChecker) }
   let(:event_eligible) { true }
@@ -140,6 +140,66 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       expect(Kernel).not_to receive(:at_exit)
 
       subject
+    end
+  end
+
+  context "when in staging" do
+    before do
+      allow(Gitlab).to receive(:staging?).and_return(true)
+      allow(Rails.env).to receive(:test?).and_return(false)
+
+      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
+      allow(tracker).to receive(:track_struct_event).and_call_original
+
+      allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+        allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+      end
+    end
+
+    it "initializes POST emitter with buffer_size 1" do
+      options = {
+        protocol: 'https',
+        method: 'post',
+        buffer_size: 1,
+        on_success: subject.method(:increment_successful_events_emissions),
+        on_failure: subject.method(:failure_callback)
+      }
+      expect(SnowplowTracker::AsyncEmitter)
+        .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
+
+      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+    end
+
+    it "doesn't add Kernel.at_exit hook" do
+      expect(Kernel).not_to receive(:at_exit)
+
+      subject
+    end
+
+    context 'when snowplow_emitter_batching_off feature flag is disabled' do
+      before do
+        stub_feature_flags(snowplow_emitter_batching_off: false)
+      end
+
+      it "initializes POST emitter with buffer_size 10" do
+        options = {
+          protocol: 'https',
+          method: 'post',
+          buffer_size: 10,
+          on_success: subject.method(:increment_successful_events_emissions),
+          on_failure: subject.method(:failure_callback)
+        }
+        expect(SnowplowTracker::AsyncEmitter)
+          .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
+
+        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+      end
+
+      it "adds Kernel.at_exit hook" do
+        expect(Kernel).to receive(:at_exit)
+
+        subject
+      end
     end
   end
 

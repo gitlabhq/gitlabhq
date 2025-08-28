@@ -829,4 +829,63 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       expect(helper.group_merge_requests(group)).to contain_exactly(merge_request)
     end
   end
+
+  describe '#step_up_auth_provider_options_for_select' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:current_user) { create(:user, owner_of: group) }
+
+    let(:omniauth_provider_oidc) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:omniauth_provider_oidc_only_namespace) do
+      GitlabSettings::Options.new(
+        name: "openid_connect_only_namespace",
+        label: "OpenID Connect (Only namespace)",
+        args: {
+          strategy_class: 'OmniAuth::Strategies::OpenIDConnect'
+        },
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject { helper.step_up_auth_provider_options_for_select }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+
+      stub_omniauth_setting(enabled: true, providers: providers)
+      allow(Devise).to receive(:omniauth_providers).and_return(providers.map(&:name))
+    end
+
+    where(:providers, :expected_options) do
+      [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | [['Openid connect', 'openid_connect'], ['OpenID Connect (Only namespace)', 'openid_connect_only_namespace']]
+      [ref(:omniauth_provider_oidc)] | [['Openid connect', 'openid_connect']]
+      [] | []
+    end
+    with_them do
+      it { is_expected.to match_array(expected_options) }
+    end
+  end
 end

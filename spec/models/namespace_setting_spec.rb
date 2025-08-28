@@ -702,4 +702,39 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
   end
+
+  describe '#step_up_auth_required_oauth_provider' do
+    subject { namespace_settings }
+
+    context 'without omniauth provider configured for step-up authentication' do
+      it { is_expected.to validate_presence_of(:step_up_auth_required_oauth_provider).allow_nil }
+      it { is_expected.to validate_inclusion_of(:step_up_auth_required_oauth_provider).in_array([]).allow_nil }
+      it { is_expected.to nullify_if_blank(:step_up_auth_required_oauth_provider) }
+    end
+
+    context 'with omniauth providers configured for step-up authentication' do
+      let(:ommiauth_provider_config_with_step_up_auth) do
+        GitlabSettings::Options.new(
+          name: "openid_connect",
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: { acr: 'gold' }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config_with_step_up_auth])
+      end
+
+      it { is_expected.to validate_inclusion_of(:step_up_auth_required_oauth_provider).in_array([ommiauth_provider_config_with_step_up_auth.name]) }
+
+      it { is_expected.to allow_value(ommiauth_provider_config_with_step_up_auth.name).for(:step_up_auth_required_oauth_provider) }
+      it { is_expected.to allow_value('').for(:step_up_auth_required_oauth_provider) }
+      it { is_expected.not_to allow_value('google_oauth2').for(:step_up_auth_required_oauth_provider).with_message('is not included in the list') }
+    end
+  end
 end

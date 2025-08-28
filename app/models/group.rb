@@ -182,6 +182,8 @@ class Group < Namespace
     :require_dpop_for_manage_api_endpoints=,
     :seat_control,
     :setup_for_company,
+    :step_up_auth_required_oauth_provider,
+    :step_up_auth_required_oauth_provider=,
     to: :namespace_settings
   )
 

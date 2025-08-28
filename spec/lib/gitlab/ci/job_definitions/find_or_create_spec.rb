@@ -6,23 +6,23 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
   include Ci::PartitioningHelpers
 
   let_it_be(:project) { create(:project) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, partition_id: partition_id) }
   let(:partition_id) { ci_testing_partition_id }
-  let(:bulk_insert) { described_class.new(project, partition_id, checksum_to_config) }
+  let(:jobs) { [] }
+  let(:service) { described_class.new(pipeline, jobs) }
 
   before do
     stub_current_partition_id(partition_id)
   end
 
   describe '#execute' do
-    subject(:execute) { bulk_insert.execute }
+    subject(:execute) { service.execute }
 
-    context 'when checksum_to_config is empty' do
-      let(:checksum_to_config) { {} }
+    context 'when jobs array is empty' do
+      let(:jobs) { [] }
 
-      it 'returns an empty relation' do
-        result = execute
-
-        expect(result).to eq(::Ci::JobDefinition.none)
+      it 'returns an empty array' do
+        expect(execute).to eq([])
       end
 
       it 'does not create any records' do
@@ -31,16 +31,20 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
     end
 
     context 'when inserting new records' do
-      let(:checksum1) { 'checksum1' }
-      let(:checksum2) { 'checksum2' }
-      let(:config1) { { name: 'job1', script: ['echo test1'] } }
-      let(:config2) { { name: 'job2', script: ['echo test2'] } }
-      let(:checksum_to_config) do
-        {
-          checksum1 => config1,
-          checksum2 => config2
-        }
+      let(:config1) { { options: { script: ['echo test1'] } } }
+      let(:config2) { { options: { script: ['echo test2'] } } }
+
+      let(:job_def1) do
+        ::Ci::JobDefinition.fabricate(config: config1, project_id: project.id, partition_id: partition_id)
       end
+
+      let(:job_def2) do
+        ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
+      end
+
+      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
+      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
+      let(:jobs) { [job1, job2] }
 
       it 'creates new job definitions' do
         expect { execute }.to change { ::Ci::JobDefinition.count }.by(2)
@@ -50,19 +54,19 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         result = execute
 
         expect(result.count).to eq(2)
-        expect(result.pluck(:checksum)).to contain_exactly(checksum1, checksum2)
+        expect(result.map(&:checksum)).to contain_exactly(job_def1.checksum, job_def2.checksum)
       end
 
       it 'stores the correct attributes', :freeze_time do
         execute
 
-        definition1 = ::Ci::JobDefinition.find_by(checksum: checksum1)
-        definition2 = ::Ci::JobDefinition.find_by(checksum: checksum2)
+        definition1 = ::Ci::JobDefinition.find_by(checksum: job_def1.checksum)
+        definition2 = ::Ci::JobDefinition.find_by(checksum: job_def2.checksum)
 
         expect(definition1).to have_attributes(
           project_id: project.id,
           partition_id: partition_id,
-          checksum: checksum1,
+          checksum: job_def1.checksum,
           config: config1,
           interruptible: false,
           created_at: Time.current,
@@ -72,35 +76,59 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         expect(definition2).to have_attributes(
           project_id: project.id,
           partition_id: partition_id,
-          checksum: checksum2,
+          checksum: job_def2.checksum,
           config: config2,
           interruptible: false,
           created_at: Time.current,
           updated_at: Time.current
         )
       end
+
+      context 'when jobs have the same config' do
+        let(:config) { { options: { script: ['echo test'] } } }
+        let(:shared_job_def) do
+          ::Ci::JobDefinition.fabricate(config: config, project_id: project.id, partition_id: partition_id)
+        end
+
+        let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: shared_job_def) }
+        let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: shared_job_def) }
+        let(:jobs) { [job1, job2] }
+
+        it 'creates only one job definition' do
+          expect { execute }.to change { ::Ci::JobDefinition.count }.by(1)
+        end
+
+        it 'returns one job definition' do
+          result = execute
+          expect(result.count).to eq(1)
+          expect(result.first.checksum).to eq(shared_job_def.checksum)
+        end
+      end
     end
 
     context 'when some records already exist' do
-      let(:existing_checksum) { 'existing_checksum' }
-      let(:new_checksum) { 'new_checksum' }
-      let(:existing_config) { { name: 'existing', script: ['echo existing'] } }
-      let(:new_config) { { name: 'new', script: ['echo new'] } }
+      let(:existing_config) { { options: { script: ['echo existing'] } } }
+      let(:new_config) { { options: { script: ['echo new'] } } }
+
+      let(:existing_job_def) do
+        ::Ci::JobDefinition.fabricate(config: existing_config, project_id: project.id, partition_id: partition_id)
+      end
+
+      let(:new_job_def) do
+        ::Ci::JobDefinition.fabricate(config: new_config, project_id: project.id, partition_id: partition_id)
+      end
 
       let!(:existing_definition) do
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,
-          checksum: existing_checksum,
+          checksum: existing_job_def.checksum,
           config: existing_config)
       end
 
-      let(:checksum_to_config) do
-        {
-          existing_checksum => existing_config,
-          new_checksum => new_config
-        }
-      end
+      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: existing_job_def) }
+      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: new_job_def) }
+      let(:jobs) { [job1, job2] }
 
       it 'only creates the missing records' do
         expect { execute }.to change { ::Ci::JobDefinition.count }.by(1)
@@ -110,7 +138,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         result = execute
 
         expect(result.count).to eq(2)
-        expect(result.pluck(:checksum)).to contain_exactly(existing_checksum, new_checksum)
+        expect(result.map(&:checksum)).to contain_exactly(existing_job_def.checksum, new_job_def.checksum)
       end
 
       it 'does not update existing records', :freeze_time do
@@ -124,16 +152,22 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
     end
 
     context 'when all records already exist' do
-      let(:checksum1) { 'checksum1' }
-      let(:checksum2) { 'checksum2' }
-      let(:config1) { { name: 'job1', script: ['echo test1'] } }
-      let(:config2) { { name: 'job2', script: ['echo test2'] } }
+      let(:config1) { { options: { script: ['echo test1'] } } }
+      let(:config2) { { options: { script: ['echo test2'] } } }
+
+      let(:job_def1) do
+        ::Ci::JobDefinition.fabricate(config: config1, project_id: project.id, partition_id: partition_id)
+      end
+
+      let(:job_def2) do
+        ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
+      end
 
       let!(:existing_definition1) do
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,
-          checksum: checksum1,
+          checksum: job_def1.checksum,
           config: config1)
       end
 
@@ -141,16 +175,13 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         create(:ci_job_definition,
           project: project,
           partition_id: partition_id,
-          checksum: checksum2,
+          checksum: job_def2.checksum,
           config: config2)
       end
 
-      let(:checksum_to_config) do
-        {
-          checksum1 => config1,
-          checksum2 => config2
-        }
-      end
+      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
+      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
+      let(:jobs) { [job1, job2] }
 
       it 'does not create any new records' do
         expect { execute }.not_to change { ::Ci::JobDefinition.count }
@@ -160,38 +191,46 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         result = execute
 
         expect(result.size).to eq(2)
-        expect(result.pluck(:checksum)).to contain_exactly(checksum1, checksum2)
+        expect(result.map(&:checksum)).to contain_exactly(job_def1.checksum, job_def2.checksum)
       end
     end
 
     context 'when config includes interruptible field' do
-      let(:checksum_interruptible_true) { 'checksum_int_true' }
-      let(:checksum_interruptible_false) { 'checksum_int_false' }
-      let(:checksum_no_interruptible) { 'checksum_no_int' }
+      let(:config_interruptible_true) { { options: { script: ['echo test1'] }, interruptible: true } }
+      let(:config_interruptible_false) { { options: { script: ['echo test2'] }, interruptible: false } }
+      let(:config_no_interruptible) { { options: { script: ['echo test3'] } } }
 
-      let(:config_interruptible_true) { { name: 'job1', script: ['echo test1'], interruptible: true } }
-      let(:config_interruptible_false) { { name: 'job2', script: ['echo test2'], interruptible: false } }
-      let(:config_no_interruptible) { { name: 'job3', script: ['echo test3'] } }
-
-      let(:checksum_to_config) do
-        {
-          checksum_interruptible_true => config_interruptible_true,
-          checksum_interruptible_false => config_interruptible_false,
-          checksum_no_interruptible => config_no_interruptible
-        }
+      let(:job_def_true) do
+        ::Ci::JobDefinition.fabricate(config: config_interruptible_true, project_id: project.id,
+          partition_id: partition_id)
       end
+
+      let(:job_def_false) do
+        ::Ci::JobDefinition.fabricate(config: config_interruptible_false, project_id: project.id,
+          partition_id: partition_id)
+      end
+
+      let(:job_def_default) do
+        ::Ci::JobDefinition.fabricate(config: config_no_interruptible, project_id: project.id,
+          partition_id: partition_id)
+      end
+
+      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_true) }
+      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_false) }
+      let(:job3) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_default) }
+      let(:jobs) { [job1, job2, job3] }
 
       it 'sets interruptible based on config or defaults to false' do
         execute
 
-        definition_true = ::Ci::JobDefinition.find_by(checksum: checksum_interruptible_true)
-        definition_false = ::Ci::JobDefinition.find_by(checksum: checksum_interruptible_false)
-        definition_default = ::Ci::JobDefinition.find_by(checksum: checksum_no_interruptible)
+        definition_true = ::Ci::JobDefinition.find_by(checksum: job_def_true.checksum)
+        definition_false = ::Ci::JobDefinition.find_by(checksum: job_def_false.checksum)
+        definition_default = ::Ci::JobDefinition.find_by(checksum: job_def_default.checksum)
 
         expect(definition_true).to have_attributes(
           project_id: project.id,
           partition_id: partition_id,
-          checksum: checksum_interruptible_true,
+          checksum: job_def_true.checksum,
           config: config_interruptible_true,
           interruptible: true
         )
@@ -199,7 +238,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         expect(definition_false).to have_attributes(
           project_id: project.id,
           partition_id: partition_id,
-          checksum: checksum_interruptible_false,
+          checksum: job_def_false.checksum,
           config: config_interruptible_false,
           interruptible: false
         )
@@ -207,10 +246,93 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         expect(definition_default).to have_attributes(
           project_id: project.id,
           partition_id: partition_id,
-          checksum: checksum_no_interruptible,
+          checksum: job_def_default.checksum,
           config: config_no_interruptible,
           interruptible: false
         )
+      end
+    end
+
+    context 'when batch processing' do
+      let(:job_definitions) do
+        Array.new(described_class::BATCH_SIZE + 10) do |i|
+          config = { options: { script: ["echo test#{i}"] } }
+          ::Ci::JobDefinition.fabricate(config: config, project_id: project.id, partition_id: partition_id)
+        end
+      end
+
+      let(:jobs) do
+        job_definitions.map do |job_def|
+          build(:ci_build, pipeline: pipeline, temp_job_definition: job_def)
+        end
+      end
+
+      it 'handles batch inserts correctly' do
+        expect { execute }.to change { ::Ci::JobDefinition.count }.by(60)
+      end
+
+      it 'uses BATCH_SIZE for bulk_insert!' do
+        expect(::Ci::JobDefinition).to receive(:bulk_insert!).with(
+          anything, hash_including(batch_size: described_class::BATCH_SIZE)
+        ).at_least(:once).and_call_original
+
+        execute
+      end
+    end
+
+    context 'when records are inserted concurrently' do
+      let(:config1) { { options: { script: ['echo concurrent1'] } } }
+      let(:config2) { { options: { script: ['echo concurrent2'] } } }
+
+      let(:job_def1) do
+        ::Ci::JobDefinition.fabricate(config: config1, project_id: project.id, partition_id: partition_id)
+      end
+
+      let(:job_def2) do
+        ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
+      end
+
+      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
+      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
+      let(:jobs) { [job1, job2] }
+
+      it 'handles race condition where definitions are inserted after initial check' do
+        # Stub the first fetch_records_for call to return empty (simulating no existing records)
+        first_call = true
+        allow(service).to receive(:fetch_records_for).and_wrap_original do |method, *args|
+          # First call returns empty, subsequent calls use the real method
+          if first_call
+            first_call = false
+            []
+          else
+            method.call(*args)
+          end
+        end
+
+        # Create the records after the initial check but before bulk_insert! is called
+        # This simulates another process/thread creating the same records
+        expect(::Ci::JobDefinition).to receive(:bulk_insert!).and_wrap_original do |method, *args, **kwargs|
+          create(:ci_job_definition,
+            project: project,
+            partition_id: partition_id,
+            checksum: job_def1.checksum,
+            config: config1)
+
+          create(:ci_job_definition,
+            project: project,
+            partition_id: partition_id,
+            checksum: job_def2.checksum,
+            config: config2)
+
+          method.call(*args, **kwargs)
+        end
+
+        result = execute
+
+        expect(result.size).to eq(2)
+        expect(result.map(&:checksum)).to contain_exactly(job_def1.checksum, job_def2.checksum)
+
+        expect(::Ci::JobDefinition.where(checksum: [job_def1.checksum, job_def2.checksum]).count).to eq(2)
       end
     end
   end

@@ -156,14 +156,13 @@ export default {
       v-safe-html="activityFeedHtml"
       data-testid="events-list"
       class="gl-list-none gl-p-0"
-      :class="{ 'user-activity-feed': filter === null }"
     ></ul>
     <a :href="activityPath">{{ __('All activity') }}</a>
   </base-widget>
 </template>
 
 <style scoped>
-::v-deep .user-activity-feed .system-note-image {
+::v-deep .user-profile-activity .system-note-image {
   width: 22px;
   height: 22px;
   display: flex;
@@ -173,29 +172,28 @@ export default {
   background-color: var(--gl-background-color-strong);
 }
 
-::v-deep .user-activity-feed .system-note-image svg {
+::v-deep .user-profile-activity svg {
   width: 14px;
   height: 14px;
 }
 
-::v-deep .user-activity-feed .user-profile-activity:not(:last-child)::before {
+::v-deep .user-profile-activity:not(:last-child)::before {
   content: '';
   position: absolute;
   width: 2px;
   left: 10px;
   top: 20px;
-  height: calc(100% - 32px);
   background-color: var(--gl-background-color-strong);
   height: 100%;
 }
 
-::v-deep .user-activity-feed .user-profile-activity:last-child::before {
+::v-deep .project-activity-item:not(:last-child)::before {
   content: '';
   position: absolute;
   width: 2px;
-  left: 10px;
-  top: 10px;
+  left: 15px;
+  top: 20px;
+  height: 100%;
   background-color: var(--gl-background-color-strong);
-  bottom: 9px;
 }
 </style>

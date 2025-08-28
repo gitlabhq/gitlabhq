@@ -164,6 +164,11 @@ When you are ready to send your code back to the upstream repository, create a n
 described in [When you work in a fork](../merge_requests/creating_merge_requests.md#when-you-work-in-a-fork).
 When successfully merged, your changes are added to the repository and branch you're merging into.
 
+After your merge request is merged upstream, the branch in your fork is not automatically considered
+**Merged** for bulk deletion purposes. The branch is only considered merged if your fork's default
+branch contains those changes. To mark these branches as merged in your fork,
+[update your fork](#update-your-fork) to sync with the upstream repository.
+
 ## Unlink a fork
 
 Removing a fork relationship unlinks your fork from its upstream repository.

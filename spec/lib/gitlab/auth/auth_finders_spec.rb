@@ -1217,6 +1217,68 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  describe '#find_job_from_job_token' do
+    let(:token) { job.token }
+
+    subject { find_job_from_job_token }
+
+    shared_examples "job from token" do
+      it { is_expected.to eq(job) }
+
+      context 'when the job is not running' do
+        let(:token) { failed_job.token }
+
+        it 'raises UnauthorizedError' do
+          expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
+        end
+      end
+    end
+
+    context 'with API requests' do
+      before do
+        set_header('SCRIPT_NAME', '/api/endpoint')
+      end
+
+      context 'when the token is in the headers' do
+        before do
+          set_header(described_class::JOB_TOKEN_HEADER, token)
+        end
+
+        it_behaves_like "job from token"
+      end
+
+      context 'when the token is in the job_token param' do
+        before do
+          set_param(described_class::JOB_TOKEN_PARAM, token)
+        end
+
+        it_behaves_like "job from token"
+      end
+
+      context 'when the token is in the token param' do
+        before do
+          set_param(described_class::RUNNER_JOB_TOKEN_PARAM, token)
+        end
+
+        it_behaves_like "job from token"
+      end
+    end
+
+    context 'not in an API request' do
+      before do
+        set_header('SCRIPT_NAME', 'url.ics')
+      end
+
+      context 'when the token is in the headers' do
+        before do
+          set_header(described_class::JOB_TOKEN_HEADER, token)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
   describe '#find_user_from_job_token' do
     let(:token) { job.token }
 

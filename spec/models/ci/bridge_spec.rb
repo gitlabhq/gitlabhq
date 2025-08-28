@@ -25,8 +25,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     expect(bridge).to have_one(:sourced_pipeline)
   end
 
-  it_behaves_like 'has ID tokens', :ci_bridge
-
   it_behaves_like 'a retryable job'
 
   it_behaves_like 'a deployable job' do

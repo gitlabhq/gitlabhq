@@ -5,6 +5,8 @@ RSpec.shared_examples 'pipelines are created without N+1 SQL queries' do
     # warm up
     stub_ci_pipeline_yaml_file(config1)
     execute_service
+    stub_ci_pipeline_yaml_file(config2)
+    execute_service
   end
 
   it 'avoids N+1 queries', :aggregate_failures, :request_store, :use_sql_query_cache do

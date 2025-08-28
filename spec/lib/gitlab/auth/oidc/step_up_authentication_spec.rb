@@ -302,4 +302,68 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
       it { is_expected.to all be_failed.and(be_enabled_by_config) }
     end
   end
+
+  describe '.enabled_providers' do
+    subject { described_class.enabled_providers(scope: scope) }
+
+    let(:omniauth_provider_oidc) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          },
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:omniauth_provider_oidc_only_namespace) do
+      GitlabSettings::Options.new(
+        name: "openid_connect_aad",
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: provider_configs)
+      allow(Devise).to receive(:omniauth_providers).and_return(provider_configs.map(&:name))
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:scope, :provider_configs, :expected_result) do
+      :admin_mode    | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      'admin_mode'   | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :admin_mode    | [ref(:omniauth_provider_oidc_only_namespace)]                               | []
+      :namespace     | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | %w[openid_connect openid_connect_aad]
+      'namespace'    | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :namespace     | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :namespace     | []                                                                          | []
+      :unknown_scope | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | []
+      nil            | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | []
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to match_array(expected_result) }
+    end
+  end
 end

@@ -31901,6 +31901,9 @@ msgstr ""
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
 msgstr ""
 
+msgid "GroupSettings|Disabled"
+msgstr ""
+
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
 msgstr ""
 
@@ -31938,6 +31941,9 @@ msgid "GroupSettings|Export group"
 msgstr ""
 
 msgid "GroupSettings|Failed to save changes."
+msgstr ""
+
+msgid "GroupSettings|Forces users to complete step-up authentication before they can access this group."
 msgstr ""
 
 msgid "GroupSettings|Git abuse rate limit"
@@ -32045,6 +32051,9 @@ msgstr ""
 msgid "GroupSettings|Settings that apply only to enterprise users associated with this group."
 msgstr ""
 
+msgid "GroupSettings|Step-up authentication"
+msgstr ""
+
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr ""
 
@@ -32088,6 +32097,9 @@ msgid "GroupSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "GroupSettings|What is Insights?"
+msgstr ""
+
+msgid "GroupSettings|What is step-up authentication?"
 msgstr ""
 
 msgid "GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method."

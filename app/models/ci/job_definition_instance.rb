@@ -16,9 +16,8 @@ module Ci
       class_name: 'Ci::Processable', partition_foreign_key: :partition_id,
       inverse_of: :job_definition_instance
 
-    belongs_to :job_definition, ->(definition) { in_partition(definition) },
-      class_name: 'Ci::JobDefinition', partition_foreign_key: :partition_id,
-      inverse_of: :job_definition_instances
+    belongs_to :job_definition, ->(definition) { in_partition(definition) }, # rubocop: disable Rails/InverseOf -- this relation is not present on Ci::JobDefinition
+      class_name: 'Ci::JobDefinition', partition_foreign_key: :partition_id
 
     validates :project, presence: true
     validates :job, presence: true

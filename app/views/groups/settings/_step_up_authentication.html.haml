@@ -1,0 +1,15 @@
+%h5= s_('GroupSettings|Step-up authentication')
+%p
+  = link_to s_('GroupSettings|What is step-up authentication?'),
+      help_page_path('administration/auth/oidc.md', anchor: 'force-step-up-authentication-for-a-group'),
+      target: '_blank',
+      rel: 'noopener noreferrer'
+
+.form-group
+  = f.select :step_up_auth_required_oauth_provider,
+      step_up_auth_provider_options_for_select,
+      { include_blank: s_('GroupSettings|Disabled') },
+      { class: 'form-control gl-form-select' }
+
+  .form-text.gl-text-subtle
+    = s_('GroupSettings|Forces users to complete step-up authentication before they can access this group.')

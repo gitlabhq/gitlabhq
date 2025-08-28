@@ -430,4 +430,51 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
       end
     end
   end
+
+  describe '#runner_jobs_request?' do
+    let_it_be(:job) { create(:ci_build, :running) }
+    let_it_be(:runner) { build(:ci_runner) }
+
+    subject { request.send(:runner_jobs_request?) }
+
+    context 'when there is no associated token' do
+      let(:path) { "/api/v4/jobs/#{job.id}/update" }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when there is a runner token present' do
+      let(:path) { "/api/v4/jobs/request" }
+
+      before do
+        allow(Gitlab::Auth::RequestAuthenticator).to receive_message_chain(:new, :runner).and_return(runner)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when there is a job token present' do
+      before do
+        allow(Gitlab::Auth::RequestAuthenticator).to receive_message_chain(:new, :runner, :job_from_token).and_return(job)
+      end
+
+      context 'for job update request' do
+        let(:path) { "/api/v4/jobs/#{job.id}/update" }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'for job trace request' do
+        let(:path) { "/api/v4/jobs/#{job.id}/trace" }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'for job artifacts request' do
+        let(:path) { "/api/v4/jobs/#{job.id}/artifacts" }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
 end

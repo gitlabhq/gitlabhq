@@ -186,6 +186,15 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
+      def find_job_from_job_token
+        return unless api_request?
+
+        self.current_token = get_job_token_from_query_param_or_header
+        return unless current_token
+
+        find_valid_running_job_by_token!(current_token)
+      end
+
       def validate_and_save_access_token!(scopes: [], save_auth_context: true, reset_token: false)
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -376,9 +385,7 @@ module Gitlab
       end
 
       def find_user_from_job_token_query_params_or_header
-        self.current_token = current_request.params[JOB_TOKEN_PARAM].presence ||
-          current_request.params[RUNNER_JOB_TOKEN_PARAM].presence ||
-          current_request.env[JOB_TOKEN_HEADER].presence
+        self.current_token = get_job_token_from_query_param_or_header
         return unless current_token
 
         job = find_valid_running_job_by_token!(current_token.to_s)
@@ -498,6 +505,12 @@ module Gitlab
         return unless access_token_rotation_request?
 
         PersonalAccessTokens::RevokeTokenFamilyService.new(token).execute
+      end
+
+      def get_job_token_from_query_param_or_header
+        current_request.params[JOB_TOKEN_PARAM].presence ||
+          current_request.params[RUNNER_JOB_TOKEN_PARAM].presence ||
+          current_request.env[JOB_TOKEN_HEADER].presence
       end
 
       def access_token_rotation_request?

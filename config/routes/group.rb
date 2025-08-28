@@ -46,6 +46,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         get :runner_setup_scripts, format: :json
       end
 
+      resource :issues, param: :work_item_type do
+        get '(/*vueroute)', to: 'work_items#show', as: :issues, format: false
+      end
+
       resource :repository, only: [:show], controller: 'repository' do
         post :create_deploy_token, path: 'deploy_token/create'
       end

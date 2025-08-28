@@ -65,10 +65,11 @@ RSpec.describe Gitlab::Ci::Config::Entry::Jobs do
         end
 
         context 'when job is invalid' do
-          let(:config) { { rspec: nil } }
+          let(:config) { { rspec_Mix_UPPER: nil } }
 
           it 'reports error' do
-            expect(entry.errors).to include 'jobs rspec config should implement the script:, run:, or trigger: keyword'
+            expect(entry.errors)
+              .to include 'jobs rspec_mix_upper config should implement the script:, run:, or trigger: keyword'
           end
 
           context 'when the job name cannot be cast directly to a symbol' do

@@ -254,6 +254,14 @@ module GroupsHelper
     MergeRequestsFinder.new(current_user, group_id: group.id, include_subgroups: true, non_archived: true).execute
   end
 
+  def step_up_auth_provider_options_for_select
+    available_step_up_auth_providers_for_namespace.map do |provider|
+      provider_config = Gitlab::Auth::OAuth::Provider.config_for(provider.to_s)
+      provider_label = provider_config[:label].presence || provider.to_s.humanize
+      [provider_label, provider.to_s]
+    end
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false)
@@ -330,6 +338,12 @@ module GroupsHelper
       ci: _('I want to use GitLab CI with my existing repository'),
       other: _('A different reason')
     }.with_indifferent_access.freeze
+  end
+
+  def available_step_up_auth_providers_for_namespace
+    Gitlab::Auth::Oidc::StepUpAuthentication.enabled_providers(
+      scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE
+    )
   end
 end
 

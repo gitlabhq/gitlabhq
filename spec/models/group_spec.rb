@@ -262,6 +262,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Referable) }
   end
 
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:step_up_auth_required_oauth_provider).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:step_up_auth_required_oauth_provider=).to(:namespace_settings).with_arguments(:args) }
+  end
+
   describe 'validations' do
     let_it_be(:private_organization) { create(:organization, :private) }
     let_it_be(:public_organization) { create(:organization, :public) }

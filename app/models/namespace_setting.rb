@@ -58,9 +58,17 @@ class NamespaceSetting < ApplicationRecord
   validate :validate_enterprise_bypass_expires_at, if: ->(record) {
     record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
   }
+  validates :step_up_auth_required_oauth_provider, presence: true, allow_nil: true
+  validates :step_up_auth_required_oauth_provider, inclusion: { in: ->(_) {
+    Gitlab::Auth::Oidc::StepUpAuthentication
+      .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE)
+      .map(&:to_s)
+  } }, allow_nil: true
 
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
+
+  nullify_if_blank :step_up_auth_required_oauth_provider
 
   before_validation :set_pipeline_variables_default_role, on: :create
 
