@@ -680,11 +680,6 @@ production: &base
     geo_prune_event_log_worker:
       cron: "*/5 * * * *"
 
-    # GitLab Geo repository sync worker
-    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
-    geo_repository_sync_worker:
-      cron: "*/1 * * * *"
-
     # GitLab Geo registry backfill worker
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_secondary_registry_consistency_worker:

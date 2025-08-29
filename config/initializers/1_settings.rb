@@ -500,6 +500,12 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
   Settings.cron_jobs.merge!(Settings.ee_cron_jobs)
 end
 
+Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
+Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
+Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
+Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
+Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
+Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
 Settings.cron_jobs['poll_interval'] ||= ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"] ? ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"].to_i : nil
 Settings.cron_jobs['flush_stale_counter_increments_cron_worker'] ||= {}
 Settings.cron_jobs['flush_stale_counter_increments_cron_worker']['cron'] ||= '0 */1 * * *'
@@ -803,12 +809,6 @@ Gitlab.ee do
   Settings.cron_jobs['active_user_count_threshold_worker'] ||= {}
   Settings.cron_jobs['active_user_count_threshold_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['active_user_count_threshold_worker']['job_class'] = 'ActiveUserCountThresholdWorker'
-  Settings.cron_jobs['adjourned_group_deletion_worker'] ||= {}
-  Settings.cron_jobs['adjourned_group_deletion_worker']['cron'] ||= '0 2 * * *'
-  Settings.cron_jobs['adjourned_group_deletion_worker']['job_class'] = 'AdjournedGroupDeletionWorker'
-  Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
-  Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
-  Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
   Settings.cron_jobs['geo_verification_cron_worker'] ||= {}
   Settings.cron_jobs['geo_verification_cron_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['geo_verification_cron_worker']['job_class'] ||= 'Geo::VerificationCronWorker'
