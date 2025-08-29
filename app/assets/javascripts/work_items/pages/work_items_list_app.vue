@@ -709,20 +709,18 @@ export default {
         });
       }
 
-      if (this.showParentFilter) {
-        tokens.push({
-          type: TOKEN_TYPE_PARENT,
-          title: TOKEN_TITLE_PARENT,
-          icon: 'work-item-parent',
-          token: WorkItemParentToken,
-          fullPath: this.rootPageFullPath,
-          isProject: !this.isGroup,
-          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-parent`,
-          operators: OPERATORS_IS_NOT,
-          unique: true,
-          idProperty: 'id',
-        });
-      }
+      tokens.push({
+        type: TOKEN_TYPE_PARENT,
+        title: TOKEN_TITLE_PARENT,
+        icon: 'work-item-parent',
+        token: WorkItemParentToken,
+        fullPath: this.rootPageFullPath,
+        isProject: !this.isGroup,
+        recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-parent`,
+        operators: OPERATORS_IS_NOT,
+        unique: true,
+        idProperty: 'id',
+      });
 
       if (this.eeSearchTokens.length) {
         tokens.push(...this.eeSearchTokens);
@@ -815,9 +813,6 @@ export default {
     },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
-    },
-    showParentFilter() {
-      return this.glFeatures.workItemsListParentFilter;
     },
     isManualOrdering() {
       return this.sortKey === RELATIVE_POSITION_ASC;

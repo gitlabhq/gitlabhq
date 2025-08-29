@@ -53,7 +53,15 @@ module Resolvers
       private
 
       def alert_is_disabled?
-        Feature.enabled?(:hide_incident_management_features, object)
+        Feature.enabled?(:hide_incident_management_features, project)
+      end
+
+      def project
+        if object.is_a?(::Project)
+          object
+        else
+          object.project
+        end
       end
 
       # This error is raised when the alert feature is disabled via feature flag.

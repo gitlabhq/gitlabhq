@@ -255,6 +255,7 @@ export default {
     copyTooltipText: __('Copy item URL'),
     copiedTooltipText: __('Copied'),
     openTooltipText: __('Open in full page'),
+    closePanelText: __('Close panel'),
   },
   defaultExcludedSelectors: [
     '#confirmationModal',
@@ -353,9 +354,9 @@ export default {
     </template>
   </gl-drawer>
   <mounting-portal v-else-if="open" mount-to="#contextual-panel-portal" append>
-    <div data-testid="work-item-panel" class="work-item-drawer gl-pt-4 gl-leading-reset">
+    <div data-testid="work-item-drawer" class="work-item-drawer gl-pt-4 gl-leading-reset">
       <div
-        class="work-item-drawer-header gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 @xl/panel:gl-px-6"
+        class="work-item-drawer-header gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 gl-px-4 @xl/panel:gl-px-6"
       >
         <div class="gl-flex gl-grow gl-items-center gl-gap-2">
           <gl-link
@@ -390,7 +391,14 @@ export default {
           :aria-label="$options.i18n.openTooltipText"
           @click="redirectToWorkItem"
         />
-        <gl-button category="tertiary" icon="close" size="small" @click="handleClose" />
+        <gl-button
+          class="gl-drawer-close-button"
+          category="tertiary"
+          icon="close"
+          size="small"
+          :aria-label="$options.i18n.closePanelText"
+          @click="handleClose"
+        />
       </div>
       <work-item-detail
         :key="activeItem.iid"
@@ -399,7 +407,7 @@ export default {
         :modal-is-group="modalIsGroup"
         :is-board="isBoard"
         is-drawer
-        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
+        class="work-item-drawer gl-px-4 !gl-pt-0 @xl/panel:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
         @work-item-updated="handleWorkItemUpdated"
         @workItemTypeChanged="$emit('workItemTypeChanged', $event)"

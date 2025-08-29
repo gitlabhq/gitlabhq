@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
 import CommitListBreadcrumb from '~/projects/commits/components/commit_list_breadcrumb.vue';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -19,12 +20,14 @@ describe('CommitListHeader', () => {
 
   const defaultProvide = {
     projectRootPath: 'gitlab-org/gitlab',
+    projectFullPath: 'gitlab-org/gitlab',
     projectId: '1',
     escapedRef: 'feature',
     refType: 'heads',
     rootRef: 'main',
     browseFilesPath,
     commitsFeedPath,
+    path: './README.md',
   };
 
   const createComponent = (provide = {}) => {
@@ -42,6 +45,7 @@ describe('CommitListHeader', () => {
   const findCommitsFeedItem = () => wrapper.findByTestId('commits-feed-link');
   const findCommitListBreadcrumb = () => wrapper.findComponent(CommitListBreadcrumb);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
+  const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
 
   beforeEach(() => {
     createComponent();
@@ -106,6 +110,15 @@ describe('CommitListHeader', () => {
         defaultBranch: 'main',
         queryParams: { sort: 'updated_desc' },
         value: 'refs/heads/feature',
+      });
+    });
+
+    it('renders OpenMrBadge with correct props', () => {
+      expect(findOpenMrBadge().exists()).toBe(true);
+      expect(findOpenMrBadge().props()).toMatchObject({
+        projectPath: 'gitlab-org/gitlab',
+        blobPath: './README.md',
+        currentRef: 'feature',
       });
     });
   });

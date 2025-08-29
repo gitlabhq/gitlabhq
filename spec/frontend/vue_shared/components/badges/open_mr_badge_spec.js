@@ -4,10 +4,10 @@ import { GlDisclosureDropdown, GlSkeletonLoader, GlDisclosureDropdownItem } from
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import getOpenMrCountsForBlobPath from '~/repository/queries/open_mr_count.query.graphql';
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
-import MergeRequestListItem from '~/repository/components/header_area/merge_request_list_item.vue';
+import MergeRequestListItem from '~/badges/components/open_mr_badge/merge_request_list_item.vue';
 import { logError } from '~/lib/logger';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -27,6 +27,7 @@ describe('OpenMrBadge', () => {
   const defaultProps = {
     projectPath: 'group/project',
     blobPath: 'path/to/file.js',
+    currentRef: 'main',
   };
 
   useFakeDate('2020-04-15 09:00:00 GMT+2');
@@ -48,9 +49,6 @@ describe('OpenMrBadge', () => {
       propsData: {
         ...defaultProps,
         ...props,
-      },
-      provide: {
-        currentRef: 'main',
       },
       apolloProvider: mockApollo,
       stubs: {

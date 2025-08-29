@@ -13957,6 +13957,9 @@ msgstr ""
 msgid "Close milestone"
 msgstr ""
 
+msgid "Close panel"
+msgstr ""
+
 msgid "Close sidebar widget"
 msgstr ""
 
@@ -32838,7 +32841,16 @@ msgstr ""
 msgid "HomePageFeedbackWidget|Share your feedback"
 msgstr ""
 
-msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the %{linkStart}dashboard%{linkEnd}."
+msgid "HomePageMergeRequestsWidget|Merge requests assigned to you"
+msgstr ""
+
+msgid "HomePageMergeRequestsWidget|Merge requests waiting for your review"
+msgstr ""
+
+msgid "HomePageMergeRequestsWidget|Merge requests with review requested"
+msgstr ""
+
+msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard."
 msgstr ""
 
 msgid "HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again."
@@ -32847,13 +32859,19 @@ msgstr ""
 msgid "HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again."
 msgstr ""
 
-msgid "HomePageWorkItemsWidget|Assigned to you"
+msgid "HomePageWorkItemsWidget|Issues assigned to you"
 msgstr ""
 
-msgid "HomePageWorkItemsWidget|Authored by you"
+msgid "HomePageWorkItemsWidget|Issues authored by you"
 msgstr ""
 
-msgid "HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the %{linkStart}issue list%{linkEnd}."
+msgid "HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list."
+msgstr ""
+
+msgid "HomePageWorkItemsWidget|Work items assigned to you"
+msgstr ""
+
+msgid "HomePageWorkItemsWidget|Work items authored by you"
 msgstr ""
 
 msgid "Homepage"
@@ -37647,7 +37665,7 @@ msgstr ""
 msgid "Large File Storage"
 msgstr ""
 
-msgid "Large table corruption checks skipped. Manual checking recommended."
+msgid "Large table corruption checks were skipped to avoid long-running queries. Administrators can manually check them with a higher table size limit."
 msgstr ""
 
 msgid "Last %d day"
@@ -37827,6 +37845,9 @@ msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}
 msgstr ""
 
 msgid "Learn how to %{no_packages_link_start}publish and share your packages%{no_packages_link_end} with GitLab."
+msgstr ""
+
+msgid "Learn how to run the check with higher limits"
 msgstr ""
 
 msgid "Learn more"

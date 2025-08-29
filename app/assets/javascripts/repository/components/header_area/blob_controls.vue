@@ -26,7 +26,7 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
-import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import BlobOverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
@@ -273,7 +273,7 @@ export default {
     class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-self-end"
     data-testid="blob-controls"
   >
-    <open-mr-badge :project-path="projectPath" :blob-path="filePath" />
+    <open-mr-badge :project-path="projectPath" :blob-path="filePath" :current-ref="currentRef" />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
       :title="findFileTooltip"

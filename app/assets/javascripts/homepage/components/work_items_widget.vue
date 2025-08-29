@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -10,16 +10,12 @@ import {
   TRACKING_PROPERTY_ASSIGNED_TO_YOU,
   TRACKING_PROPERTY_AUTHORED_BY_YOU,
 } from '../tracking_constants';
-import BaseWidget from './base_widget.vue';
 
 export default {
   name: 'WorkItemsWidget',
   components: {
     GlIcon,
     GlLink,
-    GlBadge,
-    GlSprintf,
-    BaseWidget,
   },
   mixins: [timeagoMixin, InternalEvents.mixin()],
   props: {
@@ -55,19 +51,37 @@ export default {
   },
   computed: {
     assignedCount() {
-      return this.metadata?.assigned?.count ?? '-';
+      const count = this.metadata?.assigned?.count;
+      return count != null ? this.formatCount(count) : '-';
     },
     assignedLastUpdatedAt() {
       return this.metadata?.assigned?.nodes?.[0]?.updatedAt ?? null;
     },
     authoredCount() {
-      return this.metadata?.authored?.count ?? '-';
+      const count = this.metadata?.authored?.count;
+      return count != null ? this.formatCount(count) : '-';
     },
     authoredLastUpdatedAt() {
       return this.metadata?.authored?.nodes?.[0]?.updatedAt ?? null;
     },
   },
+  mounted() {
+    document.addEventListener('visibilitychange', this.handleVisibilityChanged);
+  },
+  beforeDestroy() {
+    document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
+  },
   methods: {
+    formatCount(count) {
+      if (Math.abs(count) < 10000) {
+        return new Intl.NumberFormat(navigator.language).format(count);
+      }
+      return new Intl.NumberFormat(navigator.language, {
+        notation: 'compact',
+        compactDisplay: 'short',
+        maximumFractionDigits: 1,
+      }).format(count);
+    },
     reload() {
       this.hasError = false;
       this.$apollo.queries.metadata.refetch();
@@ -84,63 +98,102 @@ export default {
         property: TRACKING_PROPERTY_AUTHORED_BY_YOU,
       });
     },
+    handleVisibilityChanged() {
+      if (!document.hidden) {
+        this.reload();
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <base-widget @visible="reload">
-    <h2 class="gl-heading-4 gl-mb-4 gl-mt-1 gl-flex gl-items-center gl-gap-2">
-      <gl-icon name="issues" :size="16" />{{ __('Issues') }}
-    </h2>
-    <p v-if="hasError" data-testid="error-message">
-      <gl-sprintf
-        :message="
-          s__(
-            'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the %{linkStart}issue list%{linkEnd}.',
-          )
-        "
+  <div class="gl-flex gl-w-full">
+    <div class="gl-flex gl-w-full gl-gap-4">
+      <gl-link
+        class="gl-border gl-flex-1 gl-cursor-pointer gl-rounded-lg gl-border-subtle gl-bg-subtle gl-px-4 gl-py-4 hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+        :href="assignedToYouPath"
+        :aria-label="s__('HomePageWorkItemsWidget|Work items assigned to you')"
+        variant="meta"
+        @click="handleAssignedClick"
       >
-        <template #link="{ content }">
-          <gl-link :href="assignedToYouPath">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
-    <ul v-else class="gl-mb-1 gl-list-none gl-p-0" data-testid="links-list">
-      <li>
-        <gl-link
-          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
-          variant="meta"
-          :href="assignedToYouPath"
-          @click="handleAssignedClick"
-        >
-          {{ s__('HomePageWorkItemsWidget|Assigned to you') }}
-          <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
-          <span
-            v-if="assignedLastUpdatedAt"
-            data-testid="assigned-last-updated-at"
-            class="gl-ml-auto gl-text-sm gl-text-subtle"
-            >{{ timeFormatted(assignedLastUpdatedAt) }}</span
-          >
-        </gl-link>
-      </li>
-      <li>
-        <gl-link
-          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
-          variant="meta"
-          :href="authoredByYouPath"
-          @click="handleAuthoredClick"
-        >
-          {{ s__('HomePageWorkItemsWidget|Authored by you') }}
-          <gl-badge data-testid="authored-count">{{ authoredCount }}</gl-badge>
-          <span
-            v-if="authoredLastUpdatedAt"
-            data-testid="authored-last-updated-at"
-            class="gl-ml-auto gl-text-sm gl-text-subtle"
-            >{{ timeFormatted(authoredLastUpdatedAt) }}</span
-          >
-        </gl-link>
-      </li>
-    </ul>
-  </base-widget>
+        <div>
+          <div v-if="hasError" class="gl-m-2">
+            <div class="gl-flex gl-flex-col gl-items-start gl-gap-4">
+              <gl-icon name="error" class="gl-text-red-500" :size="16" />
+              <p class="gl-text-size-h5 gl-text-default-400 gl-mb-0">
+                {{
+                  s__(
+                    'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+          <div v-else>
+            <div class="gl-m-2 gl-flex gl-flex-col-reverse gl-items-start gl-gap-2">
+              <h2 class="gl-heading-5 gl-mb-0 gl-font-normal">
+                {{ s__('HomePageWorkItemsWidget|Issues assigned to you') }}
+              </h2>
+              <div class="gl-flex gl-items-center gl-gap-4">
+                <div class="gl-heading-1 gl-mb-0" data-testid="assigned-count">
+                  {{ assignedCount }}
+                </div>
+                <gl-icon name="work-item-issue" :size="16" />
+              </div>
+            </div>
+            <span
+              v-if="assignedLastUpdatedAt"
+              data-testid="assigned-last-updated-at"
+              class="gl-text-sm gl-text-gray-400 gl-text-subtle"
+            >
+              {{ timeFormatted(assignedLastUpdatedAt) }}
+            </span>
+          </div>
+        </div>
+      </gl-link>
+      <gl-link
+        class="gl-border gl-flex-1 gl-cursor-pointer gl-rounded-lg gl-border-subtle gl-bg-subtle gl-p-5 hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+        :href="authoredByYouPath"
+        :aria-label="s__('HomePageWorkItemsWidget|Work items authored by you')"
+        variant="meta"
+        @click="handleAuthoredClick"
+      >
+        <div>
+          <div v-if="hasError" class="gl-m-2">
+            <div class="gl-flex gl-flex-col gl-items-start gl-gap-4">
+              <gl-icon name="error" class="gl-text-red-500" :size="16" />
+              <p class="gl-text-size-h3 gl-text-default-400 gl-mb-0">
+                {{
+                  s__(
+                    'HomePageWorkItemsWidget|The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
+                  )
+                }}
+              </p>
+            </div>
+          </div>
+          <div v-else>
+            <div class="gl-m-2 gl-flex gl-flex-col-reverse gl-items-start gl-gap-2">
+              <h2 class="gl-heading-5 gl-mb-0 gl-font-normal">
+                {{ s__('HomePageWorkItemsWidget|Issues authored by you') }}
+              </h2>
+              <div class="gl-flex gl-items-center gl-gap-4">
+                <div class="gl-heading-1 gl-mb-0" data-testid="authored-count">
+                  {{ authoredCount }}
+                </div>
+                <gl-icon name="work-item-issue" :size="16" />
+              </div>
+            </div>
+            <span
+              v-if="authoredLastUpdatedAt"
+              data-testid="authored-last-updated-at"
+              class="gl-text-sm gl-text-gray-400 gl-text-subtle"
+            >
+              {{ timeFormatted(authoredLastUpdatedAt) }}
+            </span>
+          </div>
+        </div>
+      </gl-link>
+    </div>
+  </div>
 </template>

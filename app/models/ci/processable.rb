@@ -209,7 +209,7 @@ module Ci
       # We also handle the case where `user` is `nil` (legacy behavior in specs).
       return unless user&.composite_identity_enforced?
 
-      User.find_by_id(options[:scoped_user_id])
+      User.find_by_id(scoped_user_id)
     end
     strong_memoize_attr :scoped_user
 

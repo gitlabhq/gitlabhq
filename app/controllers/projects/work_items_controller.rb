@@ -15,8 +15,6 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
-    push_force_frontend_feature_flag(:work_items_list_parent_filter,
-      project&.work_items_list_parent_filter_feature_flag_enabled?)
   end
 
   before_action :check_search_rate_limit!, if: ->(c) do

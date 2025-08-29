@@ -689,7 +689,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
 
       it 'does not propagate composite identity by default' do
+        # Remove options check with stop_writing_builds_metadata
         expect(seed_attributes[:options].key?(:scoped_user_id)).to be(false)
+        expect(seed_attributes.key?(:scoped_user_id)).to be(false)
       end
     end
   end

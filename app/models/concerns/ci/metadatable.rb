@@ -151,6 +151,10 @@ module Ci
     end
     strong_memoize_attr :downstream_errors
 
+    def scoped_user_id
+      (read_from_new_destination? && read_attribute(:scoped_user_id)) || options[:scoped_user_id]
+    end
+
     private
 
     def read_metadata_attribute(legacy_key, metadata_key, job_definition_key, default_value = nil)

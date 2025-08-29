@@ -1,6 +1,6 @@
 import { GlIcon, GlAvatarsInline } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import MergeRequestListItem from '~/repository/components/header_area/merge_request_list_item.vue';
+import MergeRequestListItem from '~/badges/components/open_mr_badge/merge_request_list_item.vue';
 import { getTimeago } from '~/lib/utils/datetime/timeago_utility';
 
 jest.mock('~/lib/utils/datetime/timeago_utility', () => ({

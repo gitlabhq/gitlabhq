@@ -8,7 +8,6 @@ import { useFakeDate } from 'helpers/fake_date';
 import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '~/homepage/graphql/queries/work_items_widget_metadata.query.graphql';
-import BaseWidget from '~/homepage/components/base_widget.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -33,16 +32,12 @@ describe('WorkItemsWidget', () => {
 
   let wrapper;
 
-  const findLinksList = () => wrapper.findByTestId('links-list');
-  const findErrorMessage = () => wrapper.findByTestId('error-message');
-  const findGlLinks = () => wrapper.findAllComponents(GlLink);
-  const findAssignedToYouLink = () => findGlLinks().at(0);
-  const findAuthoredByYouLink = () => findGlLinks().at(1);
+  const findAssignedCard = () => wrapper.findAllComponents(GlLink).at(0);
+  const findAuthoredCard = () => wrapper.findAllComponents(GlLink).at(1);
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
   const findAuthoredCount = () => wrapper.findByTestId('authored-count');
   const findAuthoredLastUpdatedAt = () => wrapper.findByTestId('authored-last-updated-at');
-  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
 
   function createWrapper({
     workItemsWidgetMetadataQueryHandler = workItemsWidgetMetadataQuerySuccessHandler(withItems),
@@ -58,27 +53,28 @@ describe('WorkItemsWidget', () => {
       },
       stubs: {
         GlSprintf,
+        'visibility-change-detector': true,
       },
     });
   }
 
-  describe('links', () => {
+  describe('cards', () => {
     beforeEach(() => {
       createWrapper();
     });
 
-    it('renders the "Assigned to you" link', () => {
-      const link = findGlLinks().at(0);
+    it('renders the "Issues assigned to you" card', () => {
+      const card = findAssignedCard();
 
-      expect(link.props('href')).toBe(MOCK_ASSIGNED_TO_YOU_PATH);
-      expect(link.text()).toMatch('Assigned to you');
+      expect(card.exists()).toBe(true);
+      expect(card.text()).toMatch('Issues assigned to you');
     });
 
-    it('renders the "Authored by you" link', () => {
-      const link = findGlLinks().at(1);
+    it('renders the "Issues authored by you" card', () => {
+      const card = findAuthoredCard();
 
-      expect(link.props('href')).toBe(MOCK_AUTHORED_BY_YOU_PATH);
-      expect(link.text()).toMatch('Authored by you');
+      expect(card.exists()).toBe(true);
+      expect(card.text()).toMatch('Issues authored by you');
     });
   });
 
@@ -117,20 +113,42 @@ describe('WorkItemsWidget', () => {
       expect(findAuthoredCount().text()).toBe('0');
     });
 
-    it('shows an error message if the query errors out', async () => {
+    it('shows error messages in both cards if the query errors out', async () => {
       createWrapper({
         workItemsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
       });
       await waitForPromises();
 
-      expect(findErrorMessage().text()).toBe(
+      expect(findAssignedCard().text()).toContain(
         'The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
       );
-      expect(findErrorMessage().findComponent(GlLink).props('href')).toBe(
-        MOCK_ASSIGNED_TO_YOU_PATH,
+      expect(findAuthoredCard().text()).toContain(
+        'The number of issues is not available. Please refresh the page to try again, or visit the issue list.',
       );
       expect(Sentry.captureException).toHaveBeenCalled();
-      expect(findLinksList().exists()).toBe(false);
+
+      expect(findAssignedCard().text()).not.toMatch('Issues assigned to you');
+      expect(findAuthoredCard().text()).not.toMatch('Issues authored by you');
+    });
+
+    it('shows error icons in both cards when in error state', async () => {
+      createWrapper({
+        workItemsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
+      });
+      await waitForPromises();
+      const allIcons = wrapper.findAllComponents({ name: 'GlIcon' });
+
+      let errorIconCount = 0;
+      for (let i = 0; i < allIcons.length; i += 1) {
+        const icon = allIcons.at(i);
+        if (icon.props('name') === 'error') {
+          expect(icon.props('size')).toBe(16);
+          expect(icon.classes('gl-text-red-500')).toBe(true);
+          errorIconCount += 1;
+        }
+      }
+
+      expect(errorIconCount).toBe(2);
     });
   });
 
@@ -142,11 +160,54 @@ describe('WorkItemsWidget', () => {
       await waitForPromises();
       reloadSpy.mockClear();
 
-      findBaseWidget().vm.$emit('visible');
+      wrapper.vm.reload();
       await waitForPromises();
 
       expect(reloadSpy).toHaveBeenCalled();
       reloadSpy.mockRestore();
+    });
+  });
+
+  describe('number formatting', () => {
+    it('formats large counts using formatNumberWithScale', async () => {
+      const mockData = {
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            assigned: {
+              count: 15000,
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/1',
+                  updatedAt: '2025-06-28T18:13:25Z',
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            authored: {
+              count: 1500000,
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/2',
+                  updatedAt: '2025-06-25T18:13:25Z',
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      };
+
+      createWrapper({
+        workItemsWidgetMetadataQueryHandler: workItemsWidgetMetadataQuerySuccessHandler(mockData),
+      });
+      await waitForPromises();
+
+      expect(findAssignedCount().text()).toBe('15K');
+      expect(findAuthoredCount().text()).toBe('1.5M');
     });
   });
 
@@ -158,11 +219,11 @@ describe('WorkItemsWidget', () => {
       await waitForPromises();
     });
 
-    it('tracks click on "Assigned to you" link', () => {
+    it('tracks click on "Issues assigned to you" card', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-      const assignedLink = findAssignedToYouLink();
+      const assignedCard = findAssignedCard();
 
-      assignedLink.vm.$emit('click');
+      assignedCard.vm.$emit('click');
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -174,11 +235,11 @@ describe('WorkItemsWidget', () => {
       );
     });
 
-    it('tracks click on "Authored by you" link', () => {
+    it('tracks click on "Issues authored by you" card', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-      const authoredLink = findAuthoredByYouLink();
+      const authoredCard = findAuthoredCard();
 
-      authoredLink.vm.$emit('click');
+      authoredCard.vm.$emit('click');
 
       expect(trackEventSpy).toHaveBeenCalledWith(
         EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,

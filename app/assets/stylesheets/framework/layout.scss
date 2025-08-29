@@ -162,6 +162,16 @@ html {
   }
 }
 
+.paneled-view.contextual-panel {
+  position: absolute !important;
+  overflow-y: auto;
+  @apply gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden;
+  @apply gl-@container/panel @xl/content-panels:gl-w-1/2 gl-z-[252] gl-shadow-lg @xl/content-panels:gl-shadow-none gl-w-8/10 gl-right-0;
+  @apply @xl/content-panels:gl-relative #{!important};
+  height: calc(100vh - calc(var(--header-height) + calc(var(--system-header-height) + var(--performance-bar-height) + 0.5rem)));
+  clip-path: inset(0 0 0 -15px round 1rem);
+}
+
 
 /*
  * These are used by the `Tab width` user preference in

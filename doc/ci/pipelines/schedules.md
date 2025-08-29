@@ -55,15 +55,18 @@ you must delete unused schedules before you can add another.
 
 ## Edit a pipeline schedule
 
-The owner of a pipeline schedule can edit it:
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+- You must be the owner of the schedule, or take ownership of the schedule.
+- For pipeline schedules that run on protected tags, you must be [allowed to create protected tags](../../user/project/protected_tags.md#configuring-protected-tags).
+
+To edit a pipeline schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline schedules**.
-1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}) and fill in the form.
-
-The user must have at least the Developer role for the project. If the user is
-not the owner of the schedule, they must first [take ownership](#take-ownership)
-of the schedule.
+1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes, then select **Save changes**.
 
 ## Run manually
 

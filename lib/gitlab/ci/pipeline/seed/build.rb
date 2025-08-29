@@ -176,7 +176,13 @@ module Gitlab
 
             return {} unless user_identity&.composite? && user_identity.linked?
 
-            { options: { scoped_user_id: user_identity.scoped_user.id } }
+            attrs = { scoped_user_id: user_identity.scoped_user.id }
+
+            if Feature.enabled?(:stop_writing_builds_metadata, @pipeline.project)
+              attrs
+            else
+              attrs.merge(options: attrs)
+            end
           end
 
           def rules_attributes

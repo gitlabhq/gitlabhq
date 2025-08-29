@@ -156,7 +156,6 @@ describeSkipVue3(skipReason, () => {
     additionalHandlers = [],
     canReadCrmOrganization = true,
     canReadCrmContact = true,
-    workItemsListParentFilter = false,
     stubs = {},
   } = {}) => {
     window.gon = {
@@ -180,7 +179,6 @@ describeSkipVue3(skipReason, () => {
         glFeatures: {
           okrsMvc: true,
           workItemPlanningView,
-          workItemsListParentFilter,
         },
         canReadCrmOrganization,
         canReadCrmContact,
@@ -574,6 +572,7 @@ describeSkipVue3(skipReason, () => {
         TOKEN_TYPE_MILESTONE,
         TOKEN_TYPE_MY_REACTION,
         TOKEN_TYPE_ORGANIZATION,
+        TOKEN_TYPE_PARENT,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_TYPE,
@@ -613,6 +612,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
           TOKEN_TYPE_ORGANIZATION,
+          TOKEN_TYPE_PARENT,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -645,6 +645,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
           TOKEN_TYPE_ORGANIZATION,
+          TOKEN_TYPE_PARENT,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -739,47 +740,24 @@ describeSkipVue3(skipReason, () => {
     });
 
     describe('Parent filter token', () => {
-      describe('when workItemsListParentFilter is true', () => {
-        beforeEach(async () => {
-          mountComponent({ workItemsListParentFilter: true, provide: { isGroup: false } });
-          await waitForPromises();
-        });
-
-        it('configures parent token with correct properties', () => {
-          const parentToken = findIssuableList()
-            .props('searchTokens')
-            .find((token) => token.type === TOKEN_TYPE_PARENT);
-
-          expect(parentToken).toMatchObject({
-            fullPath: 'full/path',
-            isProject: true,
-            recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-parent',
-            operators: [
-              { description: 'is', value: '=' },
-              { description: 'is not one of', value: '!=' },
-            ],
-          });
-        });
+      beforeEach(async () => {
+        mountComponent({ provide: { isGroup: false } });
+        await waitForPromises();
       });
 
-      describe('when workItemsListParentFilter is false', () => {
-        beforeEach(async () => {
-          mountComponent({ workItemsListParentFilter: false, provide: { isGroup: false } });
-          await waitForPromises();
-        });
+      it('configures parent token with correct properties', () => {
+        const parentToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_PARENT);
 
-        it('does not include parent token in available tokens', () => {
-          const tokens = findIssuableList()
-            .props('searchTokens')
-            .map((token) => token.type);
-
-          expect(tokens).not.toEqual(
-            expect.arrayContaining([
-              expect.objectContaining({
-                type: TOKEN_TYPE_PARENT,
-              }),
-            ]),
-          );
+        expect(parentToken).toMatchObject({
+          fullPath: 'full/path',
+          isProject: true,
+          recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-parent',
+          operators: [
+            { description: 'is', value: '=' },
+            { description: 'is not one of', value: '!=' },
+          ],
         });
       });
     });

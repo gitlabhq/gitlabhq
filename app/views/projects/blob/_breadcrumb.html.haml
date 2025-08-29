@@ -15,7 +15,7 @@
           - else
             = link_to title, project_tree_path(@project, tree_join(@ref, path), ref_type: @ref_type)
 
-  .tree-controls.gl-flex.gl-flex-wrap.sm:gl-flex-nowrap.gl-items-baseline.gl-gap-3
+  .tree-controls.gl-flex.gl-flex-wrap.gl-items-baseline.gl-gap-3{ class: '@sm/panel:gl-flex-nowrap' }
     = render 'projects/find_file_link'
     -# only show normal/blame view links for text files
     - if blob.readable_text?
@@ -26,7 +26,7 @@
 
     - permalink_description = _('Go to permalink')
     - permalink_shortcut = 'y'
-    - permalink_title = "#{permalink_description} <kbd class='flat ml-1' aria-hidden=true>#{permalink_shortcut}</kbd>"
+    - permalink_title = "#{permalink_description} <kbd class='flat !gl-ml-2' aria-hidden=true>#{permalink_shortcut}</kbd>"
     = link_button_to _('Permalink'), project_blob_path(@project, tree_join(@commit.sha, @path)),
         'aria-keyshortcuts': permalink_shortcut,
         class: 'has-tooltip js-data-file-blob-permalink-url',

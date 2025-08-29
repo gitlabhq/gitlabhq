@@ -28,13 +28,16 @@ export default {
   },
   directives: { GlTooltip: GlTooltipDirective },
   mixins: [InternalEvents.mixin()],
-  inject: ['currentRef'],
   props: {
     projectPath: {
       type: String,
       required: true,
     },
     blobPath: {
+      type: String,
+      required: true,
+    },
+    currentRef: {
       type: String,
       required: true,
     },

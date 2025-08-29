@@ -384,6 +384,21 @@ To update your extension to the latest version:
 1. From **Extension: GitLab Workflow**, select **Update to {later version}**.
 1. Optional. To enable automatic updates in the future, select **Auto-Update**
 
+## Enable telemetry
+
+GitLab Workflow extension uses the telemetry settings in Visual Studio Code to send usage and error
+information to GitLab. To enable or customize telemetry in Visual Studio Code:
+
+1. In Visual Studio Code, go to **File** > **Preferences** > **Settings** (on Windows/Linux) or **Code** > **Settings** > **Settings** (on macOS).
+1. In the search bar, search for `Telemetry`.
+1. On the left sidebar, select **Telemetry**.
+1. For **Telemetry Level**, select the data you want to share:
+   - `all`: Sends usage data, general error telemetry, and crash reports.
+   - `error`: Sends general error telemetry, and crash reports.
+   - `crash`: Sends OS-level crash reports.
+   - `off`: Disables all telemetry data in Visual Studio Code.
+1. Save your changes.
+
 ## Related topics
 
 - [Troubleshooting the GitLab Workflow extension for VS Code](troubleshooting.md)

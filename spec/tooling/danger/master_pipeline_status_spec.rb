@@ -129,13 +129,21 @@ RSpec.describe Tooling::Danger::MasterPipelineStatus, feature_category: :tooling
         it 'raises warnings for rubocop' do
           expect(master_pipeline_status).to receive(:warn).with(
             <<~MSG
-              The [master pipeline status page](#{expected_status_url}) reported failures in
+              <details>
+              <summary>
+              Pipelines failing on master.
+              </summary>
+
+              The [master pipeline status page](#{expected_status_url}) reported failures.
+
+              If these jobs fail in your merge request with the same errors, the failures are not caused by your changes.
+              Check for ongoing incidents in the [incident issue tracker](#{described_class::STATUS_FILE_PROJECT}/-/issues)
+              or in the `#master-broken` Slack channel.
 
               * [rubocop](rubocop_failed_web_url)
               * [rspec](rspec_failed_web_url)
 
-              If these jobs fail in your merge request with the same errors, then they are not caused by your changes.
-              Please check for any on-going incidents in the [incident issue tracker](#{described_class::STATUS_FILE_PROJECT}/-/issues) or in the `#master-broken` Slack channel.
+              </details>
             MSG
           )
 

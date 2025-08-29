@@ -516,6 +516,21 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       end
     end
 
+    context 'when actor is an unsupported ActiveRecord model' do
+      let(:actor) do
+        Class.new(ActiveRecord::Base) do
+          def self.name
+            'MergeRequest'
+          end
+        end.new
+      end
+
+      it 'raises an exception' do
+        expect { described_class.enabled?(:enabled_feature_flag, actor) }
+          .to raise_error(/is not a valid feature flag actor but was used for feature flag/)
+      end
+    end
+
     context 'validates usage of feature flag with YAML definition' do
       let(:definition) do
         Feature::Definition.new(

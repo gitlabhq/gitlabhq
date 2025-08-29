@@ -50,7 +50,7 @@ export default {
     <homepage-preferences-banner />
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/panel:gl-grid-cols-3">
       <div class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
-        <div class="gl-grid gl-grid-cols-1 gl-gap-5 @lg/panel:gl-grid-cols-2">
+        <div class="gl-grid gl-grid-cols-1 gl-gap-4 @lg/panel:gl-grid-cols-2">
           <merge-requests-widget
             :review-requested-path="reviewRequestedPath"
             :assigned-to-you-path="assignedMergeRequestsPath"
