@@ -51,15 +51,30 @@ export default {
 
       const firstHeader = getHeaderNumber(headers[0]);
 
-      this.items = headers.map((el) => ({
-        text: el.textContent.trim(),
-        href: `#${el.querySelector('a').getAttribute('id')}`,
-        extraAttrs: {
-          style: {
-            paddingLeft: `${BASE_PADDING + Math.max((getHeaderNumber(el) - firstHeader) * 8, 0)}px`,
-          },
-        },
-      }));
+      this.items = headers
+        .filter((el) => el.querySelector('a'))
+        .map((el) => {
+          let href;
+          const anchor = el.querySelector('a');
+          // Check if this is AsciiDoc (heading has id) or Markdown (anchor has id)
+          if (el.id) {
+            // AsciiDoc: use anchor's href
+            href = anchor.getAttribute('href');
+          } else {
+            // Markdown: use anchor's id with #
+            href = `#${anchor.getAttribute('id')}`;
+          }
+
+          return {
+            text: el.textContent.trim(),
+            href,
+            extraAttrs: {
+              style: {
+                paddingLeft: `${BASE_PADDING + Math.max((getHeaderNumber(el) - firstHeader) * 8, 0)}px`,
+              },
+            },
+          };
+        });
     },
   },
 };
@@ -68,6 +83,8 @@ export default {
 <template>
   <gl-disclosure-dropdown
     v-if="!isHidden && items.length"
+    :toggle-text="__('Table of contents')"
+    text-sr-only
     icon="list-bulleted"
     class="!gl-pr-0"
     :items="items"
