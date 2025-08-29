@@ -31,7 +31,6 @@ export default {
   },
   data() {
     return {
-      webauthnOptions: convertGetParams(this.webauthnParams),
       inProgress: false,
       isAuthenticated: false,
       errorMessage: '',
@@ -66,7 +65,9 @@ export default {
     async authenticate() {
       this.inProgress = true;
       try {
-        const response = await navigator.credentials.get({ publicKey: this.webauthnOptions });
+        const response = await navigator.credentials.get({
+          publicKey: convertGetParams(this.webauthnParams),
+        });
         const convertedResponse = convertGetResponse(response);
         this.deviceResponse = JSON.stringify(convertedResponse);
         this.isAuthenticated = true;
