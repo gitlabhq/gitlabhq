@@ -28,18 +28,43 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
     end
 
     context 'when subrelation collection is present' do
+      let(:label) { create(:label, project: project) }
+      let(:label_links) do
+        [
+          build(:label_link, label_id: label.id, target: nil, importing: true),
+          build(:label_link, label_id: nil, target: nil, importing: true)
+        ]
+      end
+
       let(:notes) { build_list(:note, 2, project: project, importing: true) }
-      let(:relation_object) { build(:issue, project: project, notes: notes) }
-      let(:relation_definition) { { 'notes' => {} } }
+      let(:relation_object) { build(:issue, project: project, notes: notes, label_links: label_links) }
+      let(:relation_definition) { { 'notes' => {}, 'label_links' => {} } }
 
       it 'saves relation object with subrelations' do
         expect(relation_object.notes).to receive(:<<).and_call_original
-        expect(relation_object).to receive(:save).and_call_original
+        expect(relation_object).to receive(:save).twice.and_call_original
 
         saver.execute
 
         issue = project.issues.last
         expect(issue.notes.count).to eq(2)
+        expect(issue.label_links).to contain_exactly(have_attributes(label_id: label.id, target_id: issue.id))
+      end
+
+      context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
+        before do
+          stub_feature_flags(validate_label_link_parent_presence_on_import: false)
+        end
+
+        it 'saves invalid label links' do
+          saver.execute
+
+          issue = project.issues.last
+          expect(issue.label_links).to contain_exactly(
+            have_attributes(label_id: label.id, target_id: issue.id),
+            have_attributes(label_id: nil, target_id: issue.id)
+          )
+        end
       end
     end
 

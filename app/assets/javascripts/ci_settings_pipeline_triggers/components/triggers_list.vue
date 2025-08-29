@@ -216,7 +216,7 @@ export default {
         </tooltip-on-truncate>
       </template>
       <template #cell(owner)="{ item }">
-        <span class="trigger-owner sr-only">{{ item.owner.name }}</span>
+        <span class="trigger-owner gl-sr-only">{{ item.owner.name }}</span>
         <gl-avatar-link
           v-if="item.owner"
           v-gl-tooltip

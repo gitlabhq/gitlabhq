@@ -3,13 +3,6 @@ import {
   formatGraphQLGroup,
   formatGraphQLGroups,
 } from '~/vue_shared/components/groups_list/formatter';
-import {
-  ACTION_DELETE_IMMEDIATELY,
-  ACTION_EDIT,
-  ACTION_LEAVE,
-  ACTION_RESTORE,
-  ACTION_ARCHIVE,
-} from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
 const {
@@ -20,10 +13,6 @@ const {
   },
 } = organizationGroupsGraphQlResponse;
 
-afterEach(() => {
-  window.gon = {};
-});
-
 const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
   expect(formattedGroup).toMatchObject({
     id: getIdFromGraphQLId(mockGroup.id),
@@ -33,13 +22,7 @@ const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
     accessLevel: {
       integerValue: 50,
     },
-    availableActions: [
-      ACTION_EDIT,
-      ACTION_ARCHIVE,
-      ACTION_RESTORE,
-      ACTION_LEAVE,
-      ACTION_DELETE_IMMEDIATELY,
-    ],
+    availableActions: ['edit', 'archive', 'restore', 'leave', 'delete-immediately'],
     children: [],
     childrenLoading: false,
     hasChildren: false,

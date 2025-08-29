@@ -16,6 +16,8 @@ RSpec.describe 'User uploads alerts to incident', :js, feature_category: :incide
 
     shared_examples 'shows alert tab with details' do
       specify do
+        wait_for_requests
+
         expect(page).to have_link(s_('Incident|Alert details'))
         expect(page).to have_content(alert.title)
       end

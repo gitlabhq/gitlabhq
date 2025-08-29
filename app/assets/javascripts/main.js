@@ -17,11 +17,7 @@ import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
 import initLayoutNav from './layout_nav';
-import {
-  handleLocationHash,
-  addSelectOnFocusBehaviour,
-  parseBoolean,
-} from './lib/utils/common_utils';
+import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
@@ -38,7 +34,6 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
-import { initDuoPanel } from './init_duo_panel';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -102,11 +97,6 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
   initExpireSessionModal();
-
-  const projectStudioEnabled = parseBoolean($body[0].dataset.projectStudioEnabled);
-  if (projectStudioEnabled) {
-    initDuoPanel();
-  }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

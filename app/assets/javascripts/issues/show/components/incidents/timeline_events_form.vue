@@ -179,7 +179,7 @@ export default {
       <div class="gl-flex">
         <gl-form-group :label="__('Time')">
           <div class="gl-flex">
-            <label label-for="timeline-input-hours" class="sr-only"></label>
+            <label label-for="timeline-input-hours" class="gl-sr-only"></label>
             <gl-form-input
               id="timeline-input-hours"
               v-model="hourPickerInput"
@@ -189,7 +189,7 @@ export default {
               min="00"
               max="23"
             />
-            <label label-for="timeline-input-minutes" class="sr-only"></label>
+            <label label-for="timeline-input-minutes" class="gl-sr-only"></label>
             <gl-form-input
               id="timeline-input-minutes"
               v-model="minutePickerInput"

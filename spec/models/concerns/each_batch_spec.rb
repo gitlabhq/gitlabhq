@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EachBatch do
+RSpec.describe EachBatch, feature_category: :database do
   let(:model) do
     Class.new(ActiveRecord::Base) do
       include EachBatch
@@ -34,7 +34,7 @@ RSpec.describe EachBatch do
       it 'accepts a custom batch size' do
         amount = 0
 
-        model.each_batch(**kwargs.merge({ of: 1 })) { amount += 1 }
+        model.each_batch(**kwargs, of: 1) { amount += 1 }
 
         expect(amount).to eq(5)
       end
@@ -113,7 +113,7 @@ RSpec.describe EachBatch do
       let(:ids_with_new_relation) { model.where(id: entry.id).pluck(:id) }
 
       it 'does not leak current scope to block being executed' do
-        model.never_signed_in.each_batch(of: 5) do |relation|
+        model.never_signed_in.each_batch(of: 5) do
           expect(ids_with_new_relation).to include(entry.id)
         end
       end
@@ -209,15 +209,15 @@ RSpec.describe EachBatch do
     let_it_be(:users) { create_list(:user, 5, updated_at: 1.day.ago) }
 
     it 'counts the records' do
-      count, last_value = User.each_batch_count
+      count, last_value = model.each_batch_count
 
       expect(count).to eq(5)
-      expect(last_value).to eq(nil)
+      expect(last_value).to be_nil
     end
 
     context 'when using a different column' do
       it 'returns correct count' do
-        count, _ = User.each_batch_count(column: :email, of: 2)
+        count, _ = model.each_batch_count(column: :email, of: 2)
 
         expect(count).to eq(5)
       end
@@ -225,13 +225,13 @@ RSpec.describe EachBatch do
 
     context 'when stopping and resuming the counting' do
       it 'returns the correct count' do
-        count, last_value = User.each_batch_count(of: 1) do |current_count, _current_value|
+        count, last_value = model.each_batch_count(of: 1) do |current_count, _current_value|
           current_count == 3 # stop when count reaches 3
         end
 
         expect(count).to eq(3)
 
-        final_count, _ = User.each_batch_count(of: 1, last_value: last_value, last_count: count)
+        final_count, _ = model.each_batch_count(of: 1, last_value: last_value, last_count: count)
         expect(final_count).to eq(5)
       end
     end

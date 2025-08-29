@@ -49,4 +49,9 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
       timeEstimate
     }
   }
+  ... on WorkItemWidgetHierarchy {
+    parent {
+      id
+    }
+  }
 }

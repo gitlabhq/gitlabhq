@@ -565,6 +565,27 @@ Special cases:
 
 - If the `.gitlab-ci.yml` specified stages as `[check, publish]`, the resulting pipeline has the following stages: `[check, policy-stage, publish]`
 
+#### Default stage order
+
+When stages are not defined in a policy, GitLab enforces the default stages order:
+
+1. `.pre`
+1. `build`
+1. `test`
+1. `deploy`
+1. `.post`.
+
+The default order may conflict with projects that use any of these default stages in a different order. For example, using `test` before `build` in `stages: [test, build, deploy]`.
+
+#### Avoiding cyclic dependencies
+
+Cyclic dependency errors occur when the stage order in a policy conflicts with the stage order in a project. To avoid these errors:
+
+- Always explicitly define the stages in your policy to ensure the stage order is clear and compatible with your projects. If your policy uses the default stages `build`, `test`, or `deploy`, be aware that the order will be enforced on all projects.
+- When you use only reserved stages (`.pipeline-policy-pre` and `.pipeline-policy-post`), you don't need to define the default stages in your policy as these reserved stages are always placed at the beginning and end of the pipeline.
+
+By following these guidelines, you can create policies that work reliably across projects with different stage configurations.
+
 ### `inject_ci` (deprecated)
 
 {{< alert type="warning" >}}
@@ -875,7 +896,7 @@ To do so, use the `override_project_ci` strategy in the policy and include the p
 # policy.yml
 type: pipeline_execution_policy
 name: Secret detection
-description: >-
+description: >
   This policy enforces secret detection and allows projects to override the
   behavior of the scanner.
 enabled: true

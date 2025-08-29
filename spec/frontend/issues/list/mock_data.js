@@ -17,6 +17,7 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
@@ -219,6 +220,8 @@ export const locationSearch = [
   'crm_organization_id=456',
   'health_status=atRisk',
   'not[health_status]=onTrack',
+  'parent_id=123',
+  'not[parent_id]=123',
 ].join('&');
 
 export const locationSearchWithWildcardValues = [
@@ -232,6 +235,7 @@ export const locationSearchWithWildcardValues = [
   'epic_id=None',
   'weight=None',
   'health_status=None',
+  'parent_id=Any',
 ].join('&');
 
 const makeFilteredTokens = ({ grouped }) => [
@@ -307,6 +311,8 @@ const makeFilteredTokens = ({ grouped }) => [
   { type: TOKEN_TYPE_ORGANIZATION, value: { data: '456', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_HEALTH, value: { data: 'atRisk', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_HEALTH, value: { data: 'onTrack', operator: OPERATOR_NOT } },
+  { type: TOKEN_TYPE_PARENT, value: { data: '123', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_PARENT, value: { data: '123', operator: OPERATOR_NOT } },
 ];
 
 export const filteredTokens = makeFilteredTokens({ grouped: false });
@@ -323,6 +329,7 @@ export const filteredTokensWithWildcardValues = [
   { type: TOKEN_TYPE_EPIC, value: { data: 'None', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_WEIGHT, value: { data: 'None', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_HEALTH, value: { data: 'None', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_PARENT, value: { data: 'Any', operator: OPERATOR_IS } },
 ];
 
 export const apiParams = {
@@ -341,6 +348,10 @@ export const apiParams = {
   crmContactId: '123',
   crmOrganizationId: '456',
   healthStatusFilter: 'atRisk',
+  hierarchyFilters: {
+    parentIds: ['gid://gitlab/WorkItem/123'],
+    includeDescendantWorkItems: true,
+  },
   not: {
     authorUsername: 'marge',
     assigneeUsernames: ['patty', 'selma'],
@@ -353,6 +364,7 @@ export const apiParams = {
     epicId: '34',
     weight: '3',
     healthStatusFilter: 'onTrack',
+    parentIds: ['gid://gitlab/WorkItem/123'],
   },
   or: {
     authorUsernames: ['burns', 'smithers'],
@@ -372,6 +384,10 @@ export const apiParamsWithWildcardValues = {
   epicWildcardId: 'NONE',
   weightWildcardId: 'NONE',
   healthStatusFilter: 'NONE',
+  hierarchyFilters: {
+    includeDescendantWorkItems: true,
+    parentWildcardId: 'ANY',
+  },
 };
 
 export const urlParams = {
@@ -404,6 +420,8 @@ export const urlParams = {
   crm_organization_id: '456',
   health_status: 'atRisk',
   'not[health_status]': 'onTrack',
+  parent_id: '123',
+  'not[parent_id]': '123',
 };
 
 export const urlParamsWithWildcardValues = {
@@ -417,4 +435,5 @@ export const urlParamsWithWildcardValues = {
   epic_id: 'None',
   weight: 'None',
   health_status: 'None',
+  parent_id: 'Any',
 };

@@ -47,4 +47,4 @@
 
       - unless hide_gutter_toggle
         = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-h-fit gutter-toggle js-sidebar-toggle lg:!gl-hidden" }) do
-          %span.sr-only= _('Expand sidebar')
+          %span.gl-sr-only= _('Expand sidebar')

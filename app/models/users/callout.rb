@@ -112,7 +112,8 @@ module Users
       explore_duo_core_banner: 108, # EE-only
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110, # EE-only
-      duo_amazon_q_alert: 111 # EE-only
+      duo_amazon_q_alert: 111, # EE-only
+      personal_homepage_preferences_banner: 112
     }
 
     validates :feature_name,

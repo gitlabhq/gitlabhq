@@ -371,7 +371,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/repository_cache.rb'
     - 'lib/gitlab/sidekiq_daemon/monitor.rb'
     - 'lib/gitlab/slash_commands/base_command.rb'
-    - 'lib/gitlab/sql/set_operator.rb'
     - 'lib/gitlab/suggestions/commit_message.rb'
     - 'lib/gitlab/untrusted_regexp.rb'
     - 'lib/gitlab/utils/safe_inline_hash.rb'

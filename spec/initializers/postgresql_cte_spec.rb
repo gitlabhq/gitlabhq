@@ -7,7 +7,7 @@ RSpec.describe 'ActiveRecord::Relation patch for PostgreSQL WITH statements', fe
     subject(:relation) { User.with.recursive }
 
     it 'sets recursive value flag on the relation' do
-      expect(relation.recursive_value).to eq(true)
+      expect(relation.recursive_value).to be(true)
     end
 
     it 'raises an error when #update_all is called' do

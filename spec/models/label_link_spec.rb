@@ -13,6 +13,44 @@ RSpec.describe LabelLink do
     let(:invalid_items_for_bulk_insertion) { [] } # class does not have any validations defined
   end
 
+  describe 'validations' do
+    describe 'label presence' do
+      it { is_expected.to validate_presence_of(:label) }
+
+      context 'when importing' do
+        subject { build(:label_link, importing: true) }
+
+        it { is_expected.to validate_presence_of(:label) }
+
+        context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
+          before do
+            stub_feature_flags(validate_label_link_parent_presence_on_import: false)
+          end
+
+          it { is_expected.not_to validate_presence_of(:label) }
+        end
+      end
+    end
+
+    describe 'target presence' do
+      it { is_expected.to validate_presence_of(:target) }
+
+      context 'when importing' do
+        subject { build(:label_link, importing: true) }
+
+        it { is_expected.to validate_presence_of(:target) }
+
+        context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
+          before do
+            stub_feature_flags(validate_label_link_parent_presence_on_import: false)
+          end
+
+          it { is_expected.not_to validate_presence_of(:target) }
+        end
+      end
+    end
+  end
+
   describe '.for_target' do
     it 'returns the label links for a given target' do
       label_link = create(:label_link, target: create(:merge_request))

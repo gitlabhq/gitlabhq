@@ -46,6 +46,12 @@
     "execution_policy_job": {
       "type": "boolean"
     },
+    "execution_policy_name": {
+      "type": "string"
+    },
+    "execution_policy_pre_succeeds": {
+      "type": "boolean"
+    },
     "execution_policy_variables_override": {
       "$ref": "#/definitions/executionPolicyVariablesOverrideDefinition"
     },

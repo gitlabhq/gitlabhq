@@ -2347,6 +2347,9 @@ msgstr ""
 msgid "AI Agent was successfully deleted"
 msgstr ""
 
+msgid "AI Chat Panel"
+msgstr ""
+
 msgid "AI Gateway"
 msgstr ""
 
@@ -15406,6 +15409,9 @@ msgstr ""
 msgid "Collapse %{section} merge requests"
 msgstr ""
 
+msgid "Collapse GitLab Duo Chat"
+msgstr ""
+
 msgid "Collapse all files"
 msgstr ""
 
@@ -24438,9 +24444,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Get issue"
 msgstr ""
 
-msgid "DuoAgentsPlatform|ID"
-msgstr ""
-
 msgid "DuoAgentsPlatform|List comments"
 msgstr ""
 
@@ -24451,9 +24454,6 @@ msgid "DuoAgentsPlatform|List files"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Manage automated flows within your project."
-msgstr ""
-
-msgid "DuoAgentsPlatform|Name"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New"
@@ -24525,9 +24525,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Start an agent session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Status"
-msgstr ""
-
 msgid "DuoAgentsPlatform|The flow trigger could not be created. Try again."
 msgstr ""
 
@@ -24541,9 +24538,6 @@ msgid "DuoAgentsPlatform|To learn more about this session, view the %{boldStart}
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Updated"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Write file"
@@ -32838,6 +32832,12 @@ msgstr ""
 msgid "Home page URL"
 msgstr ""
 
+msgid "HomePageFeedbackWidget|Help us improve the new homepage by sharing your thoughts and suggestions."
+msgstr ""
+
+msgid "HomePageFeedbackWidget|Share your feedback"
+msgstr ""
+
 msgid "HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the %{linkStart}dashboard%{linkEnd}."
 msgstr ""
 
@@ -32871,7 +32871,16 @@ msgstr ""
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
 msgstr ""
 
+msgid "Homepage|Go to preferences"
+msgstr ""
+
 msgid "Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
+msgstr ""
+
+msgid "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can update your user preferences."
+msgstr ""
+
+msgid "Homepage|Welcome to the new homepage"
 msgstr ""
 
 msgid "Hook execution failed. %{error}"
@@ -65821,6 +65830,9 @@ msgid "This issue is hidden because its author has been banned."
 msgstr ""
 
 msgid "This issue is in a child epic of the filtered epic"
+msgstr ""
+
+msgid "This item belongs to a descendant of the filtered parent."
 msgstr ""
 
 msgid "This item is disabled"

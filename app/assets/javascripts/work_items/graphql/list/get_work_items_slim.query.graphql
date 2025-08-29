@@ -29,6 +29,9 @@ query getWorkItemsSlim(
   $updatedBefore: Time
   $crmOrganizationId: String
   $crmContactId: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $hierarchyFilters: HierarchyFilterInput
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
@@ -36,8 +39,6 @@ query getWorkItemsSlim(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
-  $releaseTag: [String!]
-  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -70,6 +71,7 @@ query getWorkItemsSlim(
       crmOrganizationId: $crmOrganizationId
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
+      hierarchyFilters: $hierarchyFilters
       in: $in
       not: $not
       or: $or

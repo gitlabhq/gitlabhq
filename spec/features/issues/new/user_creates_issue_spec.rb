@@ -151,13 +151,14 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
       it "cancels a file upload correctly", :capybara_ignore_server_errors do
         slow_requests do
           dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
-        end
-        within_testid 'markdown-field' do
-          click_button 'Cancel'
 
-          expect(page).to have_button('Attach a file or image')
-          expect(page).not_to have_button('Cancel')
-          expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+          within_testid 'markdown-field' do
+            click_button 'Cancel'
+
+            expect(page).to have_button('Attach a file or image')
+            expect(page).not_to have_button('Cancel')
+            expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+          end
         end
       end
     end

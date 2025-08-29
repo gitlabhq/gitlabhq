@@ -7,6 +7,7 @@ export const TRACKING_LABEL_MERGE_REQUESTS = 'Merge requests';
 export const TRACKING_LABEL_ISSUES = 'Issues';
 export const TRACKING_LABEL_TODO_ITEMS = 'To-do items';
 export const TRACKING_LABEL_RECENTLY_VIEWED = 'Recently viewed';
+export const TRACKING_LABEL_FEEDBACK = 'Feedback';
 
 // Properties
 export const TRACKING_PROPERTY_REVIEW_REQUESTED = 'Review requested';

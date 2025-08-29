@@ -427,9 +427,6 @@ class User < ApplicationRecord
   # User's Project preference
   enum :project_view, { readme: 0, activity: 1, files: 2, wiki: 3 }
 
-  # User's role
-  enum :role, { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, suffix: true
-
   delegate :notes_filter_for,
     :set_notes_filter,
     :first_day_of_week, :first_day_of_week=,

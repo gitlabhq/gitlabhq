@@ -1,10 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import VueRouter from 'vue-router';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -58,6 +58,7 @@ import {
   TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
@@ -86,6 +87,7 @@ import {
   workItemsQueryResponseNoAssignees,
   groupWorkItemStateCountsQueryResponse,
   combinedQueryResultExample,
+  workItemsWithSubChildQueryResponse,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -110,6 +112,9 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
+  const workItemsSubChildQueryHandler = jest
+    .fn()
+    .mockResolvedValue(workItemsWithSubChildQueryResponse);
   const defaultSlimQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
   const defaultCountsQueryHandler = jest
     .fn()
@@ -128,11 +133,15 @@ describeSkipVue3(skipReason, () => {
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
   const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
-  const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
+  const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
   const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
   const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
+  const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
+  const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
+  const findSubChildIndicator = (item) =>
+    item.find('[data-testid="sub-child-work-item-indicator"]');
 
   const mountComponent = ({
     provide = {},
@@ -148,6 +157,7 @@ describeSkipVue3(skipReason, () => {
     canReadCrmOrganization = true,
     canReadCrmContact = true,
     workItemsListParentFilter = false,
+    stubs = {},
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -156,7 +166,7 @@ describeSkipVue3(skipReason, () => {
         workItemViewForIssues: workItemsToggleEnabled,
       },
     };
-    wrapper = shallowMount(WorkItemsListApp, {
+    wrapper = shallowMountExtended(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
         [getWorkItemsFullQuery, queryHandler],
@@ -210,6 +220,7 @@ describeSkipVue3(skipReason, () => {
       },
       stubs: {
         WorkItemBulkEditSidebar: true,
+        ...stubs,
       },
       mocks: {
         $toast: {
@@ -323,6 +334,26 @@ describeSkipVue3(skipReason, () => {
 
     it('calls `getParameterByName` to get the `show` param', () => {
       expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+    });
+
+    it('does not show tree icon if not searched parent', async () => {
+      mountComponent({ queryHandler: workItemsSubChildQueryHandler, stubs: { IssuableList } });
+
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(false);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
+
+    it('shows tree icon based on a sub child of the searched parent', async () => {
+      setWindowLocation('?parent_id=1');
+
+      mountComponent({ queryHandler: workItemsSubChildQueryHandler, stubs: { IssuableList } });
+
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
     });
   });
 

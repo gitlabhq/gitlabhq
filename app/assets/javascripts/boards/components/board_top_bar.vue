@@ -88,10 +88,12 @@ export default {
 <template>
   <div class="issues-filters">
     <div
-      class="issues-details-filters filtered-search-block row-content-block second-block gl-flex gl-flex-col gl-gap-3 gl-px-5 md:gl-flex-row xl:gl-px-6"
+      class="issues-details-filters filtered-search-block row-content-block second-block gl-flex gl-flex-col gl-gap-3 gl-px-5 @md/panel:gl-flex-row @xl/panel:gl-px-6"
     >
-      <div class="gl-mb-0 gl-flex gl-w-full gl-min-w-0 gl-grow gl-flex-col gl-gap-3 md:gl-flex-row">
-        <div class="gl-flex gl-items-center gl-gap-3 md:gl-mb-0">
+      <div
+        class="gl-mb-0 gl-flex gl-w-full gl-min-w-0 gl-grow gl-flex-col gl-gap-3 @md/panel:gl-flex-row"
+      >
+        <div class="gl-flex gl-items-center gl-gap-3 @md/panel:gl-mb-0">
           <boards-selector
             :board="board"
             :is-current-board-loading="isLoading"
@@ -127,7 +129,7 @@ export default {
           @setFilters="$emit('setFilters', $event)"
         />
       </div>
-      <div class="gl-hidden gl-gap-2 md:gl-flex">
+      <div class="gl-hidden gl-gap-2 @md/panel:gl-flex">
         <board-options
           :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
           :is-swimlanes-on="isSwimlanesOn"

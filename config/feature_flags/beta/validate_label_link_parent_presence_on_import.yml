@@ -1,0 +1,10 @@
+---
+name: validate_label_link_parent_presence_on_import
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/514599
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203009
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/565988
+milestone: '18.4'
+group: group::project management
+type: beta
+default_enabled: false

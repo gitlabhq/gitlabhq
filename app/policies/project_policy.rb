@@ -649,7 +649,7 @@ class ProjectPolicy < BasePolicy
     enable :read_secure_files
     enable :update_sentry_issue
 
-    UPDATE_JOB_PERMISSIONS.each { |perm| enable(perm) }
+    enable(*UPDATE_JOB_PERMISSIONS)
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -855,8 +855,8 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
-    CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+    prevent(*UPDATE_JOB_PERMISSIONS)
+    prevent(*CLEANUP_JOB_PERMISSIONS)
 
     prevent :read_build
     prevent :create_build

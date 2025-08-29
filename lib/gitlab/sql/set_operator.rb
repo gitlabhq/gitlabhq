@@ -18,15 +18,15 @@ module Gitlab
     #
     #     Project.where("id IN (#{sql})")
     class SetOperator
+      def self.operator_keyword
+        raise NotImplementedError
+      end
+
       def initialize(relations, remove_duplicates: true, remove_order: true)
         verify_select_values!(relations) if Rails.env.test? || Rails.env.development?
         @relations = relations
         @remove_duplicates = remove_duplicates
         @remove_order = remove_order
-      end
-
-      def self.operator_keyword
-        raise NotImplementedError
       end
 
       def to_sql
@@ -44,7 +44,7 @@ module Gitlab
         end
 
         if fragments.any?
-          "(" + fragments.join(")\n#{operator_keyword_fragment}\n(") + ")"
+          "(#{fragments.join(")\n#{operator_keyword_fragment}\n(")})"
         else
           relations.first&.to_sql.presence || 'NULL'
         end
@@ -70,23 +70,23 @@ module Gitlab
           end
         end
 
-        unless all_select_values.map(&:size).uniq.one?
-          relation_select_sizes = all_select_values.map.with_index do |select_values, index|
-            if select_values.empty?
-              "Relation ##{index}: *, all columns"
-            else
-              "Relation ##{index}: #{select_values.size} select values"
-            end
+        return if all_select_values.map(&:size).uniq.one?
+
+        relation_select_sizes = all_select_values.map.with_index do |select_values, index|
+          if select_values.empty?
+            "Relation ##{index}: *, all columns"
+          else
+            "Relation ##{index}: #{select_values.size} select values"
           end
-
-          exception_text = <<~EOF
-          Relations with uneven select values were passed. The UNION query could break when the underlying table changes (add or remove columns).
-
-          #{relation_select_sizes.join("\n")}
-          EOF
-
-          raise(exception_text)
         end
+
+        exception_text = <<~MESSAGE
+        Relations with uneven select values were passed. The UNION query could break when the underlying table changes (add or remove columns).
+
+        #{relation_select_sizes.join("\n")}
+        MESSAGE
+
+        raise(exception_text)
       end
     end
   end

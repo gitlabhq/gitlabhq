@@ -74,8 +74,8 @@ describe('BoardApp', () => {
     findBoardContent().vm.$emit('drawer-opened');
     await nextTick();
     const classes = findBoardContent().classes();
-    expect(classes).toContain('lg:gl-w-[calc(100%-480px)]');
-    expect(classes).toContain('xl:gl-w-[calc(100%-768px)]');
+    expect(classes).toContain('@lg/panel:gl-w-[calc(100%-480px)]');
+    expect(classes).toContain('@xl/panel:gl-w-[calc(100%-768px)]');
     expect(classes).toContain('min-[1440px]:gl-w-[calc(100%-912px)]');
   });
 
@@ -84,8 +84,8 @@ describe('BoardApp', () => {
     await nextTick();
 
     const classes = findBoardContent().classes();
-    expect(classes).not.toContain('lg:gl-w-[calc(100%-480px)]');
-    expect(classes).not.toContain('xl:gl-w-[calc(100%-768px)]');
+    expect(classes).not.toContain('@lg/panel:gl-w-[calc(100%-480px)]');
+    expect(classes).not.toContain('@xl/panel:gl-w-[calc(100%-768px)]');
     expect(classes).not.toContain('min-[1440px]:gl-w-[calc(100%-912px)]');
   });
 

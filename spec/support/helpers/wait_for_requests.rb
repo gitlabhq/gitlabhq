@@ -19,7 +19,7 @@ module WaitForRequests
     Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
   end
 
-  # Slow down requests inside block by injecting `sleep 0.2` before each response
+  # Slow down requests inside block by injecting `sleep 1` before each response
   def slow_requests
     Gitlab::Testing::RequestBlockerMiddleware.slow_requests!
     yield

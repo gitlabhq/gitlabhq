@@ -36,7 +36,7 @@ html {
 }
 
 /* Hide all .paneled-view elements when the last .paneled-view contains .fullscreen */
-.content-panels:has(~ .paneled-view .fullscreen) {
+.panels-container:has(~ .paneled-view .fullscreen) {
   display: none;
 }
 

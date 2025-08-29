@@ -297,7 +297,6 @@ Lint/UnusedBlockArgument:
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/concerns/ci/partitionable/switch_spec.rb'
     - 'spec/models/concerns/ci/partitionable_spec.rb'
-    - 'spec/models/concerns/each_batch_spec.rb'
     - 'spec/models/container_repository_spec.rb'
     - 'spec/requests/api/graphql/gitlab_schema_spec.rb'
     - 'spec/requests/git_http_spec.rb'

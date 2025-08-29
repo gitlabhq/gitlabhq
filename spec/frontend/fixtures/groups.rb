@@ -51,6 +51,24 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
   end
 
+  describe Groups::ChildrenController, '(JavaScript fixtures)', type: :controller do
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:nested_subgroup) { create(:group, parent: subgroup, name: 'foo bar baz') }
+    let_it_be(:project) { create(:project, namespace: subgroup) }
+    let_it_be(:nested_project) { create(:project, namespace: nested_subgroup) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    it 'groups/children.json' do
+      get :index, format: :json, params: { group_id: group.full_path, filter: 'project' }
+
+      expect(response).to be_successful
+    end
+  end
+
   describe API::Groups, '(JavaScript fixtures)', type: :request do
     before do
       group.add_owner(user)

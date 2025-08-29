@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { TYPENAME_ITERATIONS_CADENCE } from '~/graphql_shared/constants';
+import { TYPENAME_ITERATIONS_CADENCE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -24,6 +24,7 @@ import {
   TOKEN_TYPE_EPIC,
   TOKEN_TYPE_WEIGHT,
   TOKEN_TYPE_STATE,
+  TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -356,6 +357,10 @@ export const isIterationCadenceIdParam = (type, data) => {
   return type === TOKEN_TYPE_ITERATION && data?.includes('&');
 };
 
+export const isParentIdParam = (type) => {
+  return type === TOKEN_TYPE_PARENT;
+};
+
 const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
   const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
@@ -442,6 +447,19 @@ export const convertToApiParams = (filterTokens) => {
           ? [obj.get(secondApiField), iterationWildCardId].flat()
           : iterationWildCardId,
       );
+    } else if (isParentIdParam(token.type)) {
+      // Due to complex nature of the hierarchy filters we had to add this block
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/565597
+      if (token.value.operator === OPERATOR_NOT) {
+        obj.set(apiField, [convertToGraphQLId(TYPENAME_WORK_ITEM, data)]);
+      } else {
+        obj.set('hierarchyFilters', {
+          [apiField]: wildcardFilterValues.includes(data)
+            ? data.toUpperCase()
+            : [convertToGraphQLId(TYPENAME_WORK_ITEM, data)],
+          includeDescendantWorkItems: true,
+        });
+      }
     } else {
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
     }

@@ -5736,6 +5736,119 @@ export const workItemsQueryResponse = {
   },
 };
 
+export const workItemsWithSubChildQueryResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/103',
+            iid: '103',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#103',
+            state: 'OPEN',
+            title: 'a group level work item 103',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                hasChildren: false,
+                parent: {
+                  id: 'gid://gitlab/WorkItem/102',
+                },
+                hasParent: true,
+                rolledUpCountsByType: [],
+                children: {
+                  nodes: [],
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+          {
+            id: 'gid://gitlab/WorkItem/102',
+            iid: '102',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#102',
+            state: 'OPEN',
+            title: 'a group level work item 102',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                hasChildren: false,
+                parent: {
+                  id: 'gid://gitlab/WorkItem/1',
+                },
+                hasParent: true,
+                rolledUpCountsByType: [],
+                children: {
+                  nodes: [],
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const workItemsQueryResponseNoLabels = {
   data: {
     namespace: {

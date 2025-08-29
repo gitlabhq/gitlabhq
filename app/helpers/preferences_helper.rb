@@ -22,6 +22,9 @@ module PreferencesHelper
 
     dashboards -= ['homepage'] unless Feature.enabled?(:personal_homepage, current_user)
 
+    # Move homepage to first position if it's available
+    dashboards.unshift('homepage') if dashboards.delete('homepage')
+
     dashboards.map do |key|
       {
         # Use `fetch` so `KeyError` gets raised when a key is missing

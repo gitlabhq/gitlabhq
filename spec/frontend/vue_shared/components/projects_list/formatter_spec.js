@@ -20,10 +20,6 @@ const {
   },
 } = projectsGraphQLResponse;
 
-afterEach(() => {
-  window.gon = {};
-});
-
 const itCorrectlyFormatsProject = (formattedProject, mockProject) => {
   expect(formattedProject).toMatchObject({
     id: getIdFromGraphQLId(mockProject.id),

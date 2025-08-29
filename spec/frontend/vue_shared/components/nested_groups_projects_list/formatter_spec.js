@@ -6,13 +6,6 @@ import {
   LIST_ITEM_TYPE_GROUP,
 } from '~/vue_shared/components/nested_groups_projects_list/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import {
-  ACTION_DELETE_IMMEDIATELY,
-  ACTION_EDIT,
-  ACTION_LEAVE,
-  ACTION_RESTORE,
-  ACTION_ARCHIVE,
-} from '~/vue_shared/components/list_actions/constants';
 
 const {
   data: {
@@ -47,10 +40,6 @@ const mockGroupsAndProjects = [
   },
 ];
 
-afterEach(() => {
-  window.gon = {};
-});
-
 describe('formatGraphQLGroupsAndProjects', () => {
   it('correctly formats the groups and projects', () => {
     window.gon = { relative_url_root: '/gitlab' };
@@ -73,13 +62,7 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: [
-        ACTION_EDIT,
-        ACTION_ARCHIVE,
-        ACTION_RESTORE,
-        ACTION_LEAVE,
-        ACTION_DELETE_IMMEDIATELY,
-      ],
+      availableActions: ['edit', 'archive', 'restore', 'leave', 'delete-immediately'],
       childrenLoading: false,
       hasChildren: true,
       relativeWebUrl: `/gitlab/${firstMockGroup.fullPath}`,
@@ -96,7 +79,7 @@ describe('formatGraphQLGroupsAndProjects', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: [ACTION_EDIT, ACTION_ARCHIVE],
+      availableActions: ['edit', 'archive'],
       customProperty: mockProject.nameWithNamespace,
       isPersonal: false,
       relativeWebUrl: `/gitlab/${mockProject.fullPath}`,

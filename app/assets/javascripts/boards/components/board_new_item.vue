@@ -63,7 +63,7 @@ export default {
 
 <template>
   <div class="board-new-issue-form gl-z-3 gl-m-3">
-    <div class="board-card position-relative rounded gl-p-5">
+    <div class="board-card gl-relative gl-rounded-base gl-p-5">
       <gl-form @submit.prevent="handleFormSubmit" @reset="handleFormCancel">
         <label :for="inputFieldId" class="gl-font-bold">{{ __('Title') }}</label>
         <gl-form-input

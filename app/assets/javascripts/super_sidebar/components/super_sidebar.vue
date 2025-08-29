@@ -197,7 +197,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="super-sidebar-wrapper">
     <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
       v-if="sidebarData.is_logged_in"

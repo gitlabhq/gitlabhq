@@ -295,7 +295,7 @@ export default {
           </template>
           <template v-if="!email">
             <gl-loading-icon size="sm" :inline="true" />
-            <span class="sr-only">{{ __('Fetching incoming email') }}</span>
+            <span class="gl-sr-only">{{ __('Fetching incoming email') }}</span>
           </template>
         </gl-form-group>
 

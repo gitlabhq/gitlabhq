@@ -1,6 +1,13 @@
 <script>
 import { computed } from 'vue';
-import { GlButton, GlFilteredSearchToken, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlFilteredSearchToken,
+  GlLoadingIcon,
+  GlTooltipDirective,
+  GlIcon,
+  GlSkeletonLoader,
+} from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -121,6 +128,7 @@ import {
 } from '../constants';
 import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
 import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
+import { findHierarchyWidget } from '../utils';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -166,6 +174,8 @@ export default {
     WorkItemUserPreferences,
     WorkItemListActions,
     WorkItemByEmail,
+    GlIcon,
+    GlSkeletonLoader,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -354,6 +364,7 @@ export default {
       if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
         return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
       }
+
       return this.workItemsSlim;
     },
     shouldShowList() {
@@ -811,6 +822,9 @@ export default {
     isManualOrdering() {
       return this.sortKey === RELATIVE_POSITION_ASC;
     },
+    parentId() {
+      return this.apiFilterParams?.hierarchyFilters?.parentIds?.[0] || null;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -847,6 +861,7 @@ export default {
   methods: {
     combineSlimAndFullLists(slim, full) {
       const findSlimItem = (id) => slim.find((item) => item.id === id);
+
       return full.map((fullItem) => {
         const slimVersion = findSlimItem(fullItem.id);
         const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
@@ -1186,7 +1201,6 @@ export default {
           throw error;
         });
     },
-
     updateWorkItemsCache(cache, oldIndex, newIndex) {
       cache.updateQuery(
         {
@@ -1221,6 +1235,13 @@ export default {
           return newData;
         },
       );
+    },
+    isDirectChildOfWorkItem(workItem) {
+      if (!workItem) {
+        return false;
+      }
+
+      return findHierarchyWidget(workItem)?.parent?.id !== this.parentId;
     },
   },
   constants: {
@@ -1435,6 +1456,24 @@ export default {
             name="custom-status"
             :issuable="issuable"
           ></slot>
+        </template>
+        <template v-if="parentId" #title-icons="{ issuable }">
+          <span
+            v-if="!detailLoading && isDirectChildOfWorkItem(issuable)"
+            v-gl-tooltip
+            data-testid="sub-child-work-item-indicator"
+            :title="__('This item belongs to a descendant of the filtered parent.')"
+            class="gl-ml-1 gl-inline-block"
+          >
+            <gl-icon name="file-tree" variant="subtle" />
+          </span>
+          <gl-skeleton-loader
+            v-if="detailLoading"
+            class="gl-ml-1 gl-inline-block"
+            :width="20"
+            :lines="1"
+            equal-width-lines
+          />
         </template>
       </issuable-list>
     </template>

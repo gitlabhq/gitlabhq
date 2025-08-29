@@ -12,8 +12,8 @@ module Ci
       end
 
       rule { has_outdated_deployment }.policy do
-        ::ProjectPolicy::UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
-        ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+        prevent(*ProjectPolicy::UPDATE_JOB_PERMISSIONS)
+        prevent(*ProjectPolicy::CLEANUP_JOB_PERMISSIONS)
       end
     end
   end

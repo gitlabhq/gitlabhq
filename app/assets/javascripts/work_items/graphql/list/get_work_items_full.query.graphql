@@ -28,6 +28,9 @@ query getWorkItemsFull(
   $updatedBefore: Time
   $crmOrganizationId: String
   $crmContactId: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $hierarchyFilters: HierarchyFilterInput
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
@@ -35,8 +38,6 @@ query getWorkItemsFull(
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
-  $releaseTag: [String!]
-  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   namespace(fullPath: $fullPath) {
     id
@@ -69,6 +70,7 @@ query getWorkItemsFull(
       crmContactId: $crmContactId
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
+      hierarchyFilters: $hierarchyFilters
       in: $in
       not: $not
       or: $or
@@ -114,6 +116,7 @@ query getWorkItemsFull(
             TIME_TRACKING
             LINKED_ITEMS
             DEVELOPMENT
+            HIERARCHY
           ]
         ) {
           type

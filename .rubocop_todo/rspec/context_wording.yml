@@ -1869,7 +1869,6 @@ RSpec/ContextWording:
     - 'spec/models/concerns/deployment_platform_spec.rb'
     - 'spec/models/concerns/ignorable_columns_spec.rb'
     - 'spec/models/concerns/issuable_spec.rb'
-    - 'spec/models/concerns/loose_index_scan_spec.rb'
     - 'spec/models/concerns/mentionable_spec.rb'
     - 'spec/models/concerns/milestoneable_spec.rb'
     - 'spec/models/concerns/noteable_spec.rb'

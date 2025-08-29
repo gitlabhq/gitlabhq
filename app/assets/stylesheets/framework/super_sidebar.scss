@@ -22,7 +22,7 @@ $command-palette-spacing: px-to-rem(14px);
 
 .super-topbar,
 .super-sidebar,
-.panels-container {
+.page-with-panels {
   --super-sidebar-bg: var(--gl-background-color-strong);
   --super-sidebar-accent-color-fg: var(--gl-color-blue-800);
   --super-sidebar-accent-color-bg: var(--gl-color-blue-100);
@@ -74,7 +74,7 @@ $command-palette-spacing: px-to-rem(14px);
 ) {
   .super-topbar,
   .super-sidebar,
-  .panels-container {
+  &.page-with-panels {
     --super-sidebar-bg: #{$background};
     --super-sidebar-accent-color-fg: #{$accent-color-fg};
     --super-sidebar-accent-color-bg: #{$accent-color-bg};
@@ -724,7 +724,8 @@ $scroll-scrim-height: 2.25rem;
 
 .super-topbar,
 .super-sidebar,
-.panels-container {
+.application-chrome body,
+.page-with-panels body {
   background-color: var(--super-sidebar-bg);
 }
 
@@ -785,8 +786,6 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     display: flex;
     gap: .5rem;
     height: calc(100vh - #{$calc-application-bars-height});
-    padding-block-end: .5rem;
-    padding-inline-end: .5rem;
   }
 
   // Panel
@@ -962,4 +961,65 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-10);
   --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-0);
   --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-0);
+}
+
+.page-with-panels {
+  // Layout
+  .layout-page {
+    display: flex;
+    gap: .5rem;
+    align-items: stretch;
+    justify-content: center;
+    padding-left: 0;
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.5rem;
+    height: calc(100vh - var(--system-header-height) - var(--performance-bar-height) - var(--header-height));
+
+    // Temporarily solution to hide empty AI Chat divs
+    // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
+    > div:not(:has(*)) {
+      display: none;
+    }
+
+    .panels-container {
+      height: calc(100vh - #{$calc-application-bars-height} - 1rem);
+    }
+  }
+
+  .panels-container {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    gap: .5rem;
+  }
+
+  #js-peek,
+  .super-topbar,
+  #super-sidebar,
+  .header-logged-out {
+    position: relative !important;
+    top: 0;
+  }
+
+  #super-sidebar {
+    height: 100%;
+  }
+
+  &.application-chrome .layout-page {
+    padding-top: 0;
+
+    .panels-container {
+      height: calc(100vh - #{$calc-application-bars-height} - 0.5rem);
+    }
+  }
+
+  // Super sidebar
+  .page-with-super-sidebar-collapsed .super-sidebar-wrapper {
+    width: 0;
+  }
+
+  .page-with-super-sidebar-collapsed .super-sidebar {
+    margin: 0;
+  }
 }
