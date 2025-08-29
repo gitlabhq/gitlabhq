@@ -40521,6 +40521,8 @@ CREATE UNIQUE INDEX index_security_categories_namespace_name ON security_categor
 
 CREATE UNIQUE INDEX index_security_inventory_filters_on_project_id ON security_inventory_filters USING btree (project_id);
 
+CREATE INDEX index_security_inventory_filters_on_traversal_ids ON security_inventory_filters USING btree (traversal_ids);
+
 CREATE INDEX index_security_orchestration_policy_rule_schedules_on_namespace ON security_orchestration_policy_rule_schedules USING btree (namespace_id);
 
 CREATE INDEX index_security_orchestration_policy_rule_schedules_on_project_i ON security_orchestration_policy_rule_schedules USING btree (project_id);

@@ -211,11 +211,7 @@ the feature can use that tool:
 
 This error occurs when you specify a command using a relative path (like `node` instead of `/usr/bin/node`), and that command cannot be found in the `PATH` environment variable that was passed to the GitLab Language Server.
 
-{{< alert type="note" >}}
-
-Improvements to resolving `PATH` are being planned in [issue 1345](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1345).
-
-{{< /alert >}}
+Improvements to resolving `PATH` are tracked in [issue 1345](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1345).
 
 ### Troubleshooting MCP in VS Code
 

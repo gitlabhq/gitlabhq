@@ -1236,6 +1236,25 @@ Returns [`Namespace`](#namespace).
 | ---- | ---- | ----------- |
 | <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.namespaceSecurityProjects`
+
+Security-filtered projects for a namespace.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querynamespacesecurityprojectsnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
+| <a id="querynamespacesecurityprojectssearch"></a>`search` | [`String`](#string) | Search projects by name. |
+| <a id="querynamespacesecurityprojectssecurityanalyzerfilters"></a>`securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](#analyzerfilterinput) | Filter projects by analyzer type and status. |
+| <a id="querynamespacesecurityprojectsvulnerabilitycountfilters"></a>`vulnerabilityCountFilters` | [`[VulnerabilityCountFilterInput!]`](#vulnerabilitycountfilterinput) | Filter projects by vulnerability counts using comparison operators. |
+
 ### `Query.note`
 
 {{< details >}}
@@ -46758,6 +46777,16 @@ Comparable security report type.
 | <a id="comparablesecurityreporttypesast"></a>`SAST` | SAST report. |
 | <a id="comparablesecurityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
 
+### `ComparisonOperator`
+
+Comparison operators for filtering.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="comparisonoperatorequal_to"></a>`EQUAL_TO` | Equal to (=). |
+| <a id="comparisonoperatorgreater_than_or_equal_to"></a>`GREATER_THAN_OR_EQUAL_TO` | Greater than or equal to (>=). |
+| <a id="comparisonoperatorless_than_or_equal_to"></a>`LESS_THAN_OR_EQUAL_TO` | Less than or equal to (<=). |
+
 ### `ComplianceFrameworkPresenceFilter`
 
 ComplianceFramework of a project for filtering.
@@ -53203,6 +53232,17 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="alertmanagementpayloadalertfieldinputpath"></a>`path` | [`[PayloadAlertFieldPathSegment!]!`](#payloadalertfieldpathsegment) | Path to value inside payload JSON. |
 | <a id="alertmanagementpayloadalertfieldinputtype"></a>`type` | [`AlertManagementPayloadAlertFieldType!`](#alertmanagementpayloadalertfieldtype) | Type of the parsed value. |
 
+### `AnalyzerFilterInput`
+
+Input type for filtering projects by analyzer type and status.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="analyzerfilterinputanalyzertype"></a>`analyzerType` | [`AnalyzerTypeEnum!`](#analyzertypeenum) | Type of analyzer to filter by. |
+| <a id="analyzerfilterinputstatus"></a>`status` | [`AnalyzerStatusEnum!`](#analyzerstatusenum) | Status of the analyzer to filter by. |
+
 ### `BoardIssueInput`
 
 #### Arguments
@@ -54077,6 +54117,18 @@ Attributes for value stream setting.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="verificationstatusinputverificationstatus"></a>`verificationStatus` | [`TestReportState!`](#testreportstate) | Verification status of the work item. |
+
+### `VulnerabilityCountFilterInput`
+
+Input type for filtering projects by vulnerability count and severity.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitycountfilterinputcount"></a>`count` | [`Int!`](#int) | Number of vulnerabilities to filter by. |
+| <a id="vulnerabilitycountfilterinputoperator"></a>`operator` | [`ComparisonOperator!`](#comparisonoperator) | Comparison operator for the vulnerability count. |
+| <a id="vulnerabilitycountfilterinputseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Severity level of vulnerabilities to filter by. |
 
 ### `VulnerabilityIdentifierInput`
 

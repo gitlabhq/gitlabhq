@@ -7,8 +7,18 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
   let(:prev_cursor) { 1 }
   let(:next_cursor) { 6 }
   let(:values) { [2, 3, 4, 5] }
-  let(:all_nodes) { Gitlab::Graphql::ExternallyPaginatedArray.new(prev_cursor, next_cursor, *values) }
+  let(:has_next_page_value) { nil }
+  let(:has_previous_page_value) { nil }
   let(:arguments) { {} }
+  let(:all_nodes) do
+    Gitlab::Graphql::ExternallyPaginatedArray.new(
+      prev_cursor,
+      next_cursor,
+      *values,
+      has_next_page: has_next_page_value,
+      has_previous_page: has_previous_page_value
+    )
+  end
 
   subject(:connection) do
     described_class.new(all_nodes, **{ context: context, max_page_size: values.size }.merge(arguments))
@@ -82,6 +92,33 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
         expect(connection.has_next_page).to eq(false)
       end
     end
+
+    context 'when items have explicit has_next_page value' do
+      context 'when has_next_page is true' do
+        let(:has_next_page_value) { true }
+
+        it 'returns true regardless of cursor presence' do
+          expect(connection.has_next_page).to eq(true)
+        end
+      end
+
+      context 'when has_next_page is false' do
+        let(:has_next_page_value) { false }
+
+        it 'returns false even when cursor is present' do
+          expect(connection.has_next_page).to eq(false)
+          expect(connection.end_cursor).to eq(next_cursor)
+        end
+      end
+
+      context 'when has_next_page is nil' do
+        let(:has_next_page_value) { nil }
+
+        it 'falls back to cursor presence check' do
+          expect(connection.has_next_page).to eq(true)
+        end
+      end
+    end
   end
 
   describe '#has_previous_page' do
@@ -94,6 +131,33 @@ RSpec.describe Gitlab::Graphql::Pagination::ExternallyPaginatedArrayConnection d
 
       it 'returns false' do
         expect(connection.has_previous_page).to eq(false)
+      end
+    end
+
+    context 'when items have explicit has_previous_page value' do
+      context 'when has_previous_page is true' do
+        let(:has_previous_page_value) { true }
+
+        it 'returns true regardless of cursor presence' do
+          expect(connection.has_previous_page).to eq(true)
+        end
+      end
+
+      context 'when has_previous_page is false' do
+        let(:has_previous_page_value) { false }
+
+        it 'returns false even when cursor is present' do
+          expect(connection.has_previous_page).to eq(false)
+          expect(connection.start_cursor).to eq(prev_cursor)
+        end
+      end
+
+      context 'when has_previous_page is nil' do
+        let(:has_previous_page_value) { nil }
+
+        it 'falls back to cursor presence check' do
+          expect(connection.has_previous_page).to eq(true)
+        end
       end
     end
   end

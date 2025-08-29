@@ -34,13 +34,6 @@ module Issues
         return
       end
 
-      author = User.find_by_id(params["closed_by"])
-
-      unless author
-        logger.info(structured_payload(message: "Author not found.", user_id: params["closed_by"]))
-        return
-      end
-
       user = User.find_by_id(params["user_id"])
 
       unless user
@@ -48,21 +41,8 @@ module Issues
         return
       end
 
-      if !issue.is_a?(ExternalIssue) && !user.can?(:update_issue, issue)
-        logger.info(
-          structured_payload(message: "User cannot update issue.", user_id: params["user_id"], issue_id: issue_id)
-        )
-        return
-      end
-
-      closing_user = if Feature.enabled?(:auto_close_issues_stop_using_commit_author, project)
-                       user
-                     else
-                       author
-                     end
-
       commit = Commit.build_from_sidekiq_hash(project, params["commit_hash"])
-      service = Issues::CloseService.new(container: project, current_user: closing_user)
+      service = Issues::CloseService.new(container: project, current_user: user)
 
       service.execute(issue, commit: commit)
     end

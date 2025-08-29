@@ -87,7 +87,8 @@ module GraphqlHelpers
       resolver_class: resolver_class,
       owner: resolver_parent,
       name: 'field_value',
-      calls_gitaly: field_opts[:calls_gitaly]
+      calls_gitaly: field_opts[:calls_gitaly],
+      **(field_opts[:connection_extension] ? { connection_extension: field_opts[:connection_extension] } : {})
     )
 
     # All mutations accept a single `:input` argument. Wrap arguments here.

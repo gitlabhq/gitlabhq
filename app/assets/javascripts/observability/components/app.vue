@@ -136,7 +136,7 @@ export default {
       v-show="isAuthenticated"
       ref="o11yFrame"
       frameborder="0"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-downloads"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-downloads allow-popups"
       class="gl-h-full gl-w-full"
       :src="iframeUrl"
       :title="title"
