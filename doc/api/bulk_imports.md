@@ -13,12 +13,6 @@ description: "Start and view group and project migrations with the REST API."
 
 {{< /details >}}
 
-{{< history >}}
-
-- Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
-
-{{< /history >}}
-
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
 [group migration by direct transfer](../user/group/import/_index.md).
 
@@ -29,12 +23,6 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/dir
 
 ## Start a new group or project migration
 
-{{< history >}}
-
-- `project_entity` source type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
-
-{{< /history >}}
-
 Use this endpoint to start a new group or project migration.
 To migrate a project, specify `entities[project_entity]`.
 
@@ -42,19 +30,19 @@ To migrate a project, specify `entities[project_entity]`.
 POST /bulk_imports
 ```
 
-| Attribute                         | Type   | Required | Description |
-| --------------------------------- | ------ | -------- | ----------- |
-| `configuration`                   | Hash   | yes      | The source GitLab instance configuration. |
-| `configuration[url]`              | String | yes      | Source GitLab instance URL. |
-| `configuration[access_token]`     | String | yes      | Access token to the source GitLab instance. |
-| `entities`                        | Array  | yes      | List of entities to import. |
-| `entities[source_type]`           | String | yes      | Source entity type. Valid values are `group_entity` and `project_entity` (GitLab 15.11 and later). |
-| `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
-| `entities[destination_slug]`      | String | yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
-| `entities[destination_name]`      | String | no       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
-| `entities[destination_namespace]` | String | yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. Must be an existing group in the destination instance. Personal namespaces are not supported. |
-| `entities[migrate_projects]`      | Boolean | no      | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
-| `entities[migrate_memberships]`   | Boolean | no      | Import user memberships. Defaults to `true`. |
+| Attribute                         | Type    | Required | Description |
+| --------------------------------- | ------- | -------- | ----------- |
+| `configuration`                   | Hash    | Yes      | The source GitLab instance configuration. |
+| `configuration[url]`              | String  | Yes      | Source GitLab instance URL. |
+| `configuration[access_token]`     | String  | Yes      | Access token to the source GitLab instance. |
+| `entities`                        | Array   | Yes      | List of entities to import. |
+| `entities[source_type]`           | String  | Yes      | Source entity type. Valid values are `group_entity` and `project_entity`. |
+| `entities[source_full_path]`      | String  | Yes      | Source full path of the entity to import. For example, `gitlab-org/gitlab`. |
+| `entities[destination_slug]`      | String  | Yes      | Destination slug for the entity. GitLab uses the slug as the URL path to the entity. The name of the imported entity is copied from the name of the source entity and not the slug. |
+| `entities[destination_namespace]` | String  | Yes      | Full path of the destination group [namespace](../user/namespace/_index.md) for the entity. Must be an existing group in the destination instance. Personal namespaces are not supported. |
+| `entities[destination_name]`      | String  | No       | Deprecated: Use `destination_slug` instead. Destination slug for the entity. |
+| `entities[migrate_memberships]`   | Boolean | No       | Import user memberships. Defaults to `true`. |
+| `entities[migrate_projects]`      | Boolean | No       | Also import all nested projects of the group (if `source_type` is `group_entity`). Defaults to `true`. |
 
 ```shell
 curl --request POST \

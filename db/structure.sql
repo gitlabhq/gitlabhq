@@ -40003,8 +40003,6 @@ CREATE INDEX index_project_import_data_on_project_id ON project_import_data USIN
 
 CREATE INDEX index_project_incident_management_settings_on_p_id_sla_timer ON project_incident_management_settings USING btree (project_id) WHERE (sla_timer = true);
 
-CREATE INDEX index_project_members_on_id_temp ON members USING btree (id) WHERE ((source_type)::text = 'Project'::text);
-
 CREATE INDEX index_project_mirror_data_on_last_successful_update_at ON project_mirror_data USING btree (last_successful_update_at);
 
 CREATE INDEX index_project_mirror_data_on_last_update_at_and_retry_count ON project_mirror_data USING btree (last_update_at, retry_count);
@@ -41892,8 +41890,6 @@ CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_req
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
-
-CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 

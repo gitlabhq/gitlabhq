@@ -73,7 +73,7 @@ namespace :tw do
       CodeOwnerRule.new('Redirect', 'Redirect'),
       # CodeOwnerRule.new('Respond', ''),
       CodeOwnerRule.new('Runner', '@rsarangadharan'),
-      CodeOwnerRule.new('Hosted Runners', '@rsarangadharan'),
+      CodeOwnerRule.new('Runners Platform', '@rsarangadharan'),
       CodeOwnerRule.new('Seat Management', '@lciutacu'),
       # CodeOwnerRule.new('Security Infrastructure', ''),
       CodeOwnerRule.new('Security Platform Management', '@rlehmann1'),

@@ -49,9 +49,9 @@ Start a new group export.
 POST /groups/:id/export
 ```
 
-| Attribute | Type           | Required | Description                              |
-| --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | ID of the group |
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | Integer or string | Yes      | ID of the group. |
 
 ```shell
 curl --request POST \
@@ -73,9 +73,9 @@ Download the finished export.
 GET /groups/:id/export/download
 ```
 
-| Attribute | Type           | Required | Description                              |
-| --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | ID of the group |
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `id`      | Integer or string | Yes      | ID of the group. |
 
 ```shell
 group=1
@@ -92,7 +92,7 @@ ls *export.tar.gz
 2020-12-05_22-11-148_namespace_export.tar.gz
 ```
 
-Time spent on exporting a group may vary depending on a size of the group. This endpoint
+Time spent on exporting a group might vary depending on a size of the group. This endpoint
 returns either:
 
 - The exported archive (when available)
@@ -113,12 +113,12 @@ For information on the maximum import file size on GitLab.com, see
 POST /groups/import
 ```
 
-| Attribute | Type           | Required | Description                              |
-| --------- | -------------- | -------- | ---------------------------------------- |
-| `name` | string | yes | The name of the group to be imported |
-| `path` | string | yes | Name and path for new group |
-| `file` | string | yes | The file to be uploaded |
-| `parent_id` | integer | no | ID of a parent group to import the group into. Defaults to the current user's namespace if not provided. |
+| Attribute   | Type           | Required | Description |
+| ----------- | -------------- | -------- | ----------- |
+| `file`      | String         | Yes      | The file to be uploaded. |
+| `name`      | String         | Yes      | The name of the group to be imported. |
+| `path`      | String         | Yes      | Name and path for new group. |
+| `parent_id` | Integer        | No       | ID of a parent group to import the group into. Defaults to the current user's namespace if not provided. |
 
 To upload a file from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`.
@@ -128,7 +128,8 @@ by `@`. For example:
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --form "name=imported-group" --form "path=imported-group" \
+  --form "name=imported-group" \
+  --form "path=imported-group" \
   --form "file=@/path/to/file" \
   --url "https://gitlab.example.com/api/v4/groups/import"
 ```

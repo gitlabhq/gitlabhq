@@ -1,6 +1,23 @@
 ## Executive Summary
 [Brief description of the feature and its scope]
 
+#### Customer Impact
+- **Top Customers Impacted**: [List key enterprise customers impacted, including number of seats]
+- **Migration Opportunity**: [Describe customer migration desires and current blockers]
+- **Competitive Position**: [Outline strategic market opportunity and competitive landscape]
+
+#### ARR Impact
+- **Year/year revenue growth (FY26)**: [X% acceleration in moderate investment plan, Y% acceleration in ambitious plan]
+- **Year/year revenue growth (FY27)**: [X% acceleration in moderate investment plan, Y% acceleration in ambitious plan]
+- **Year/year revenue growth (FY28)**: [X% acceleration in moderate investment plan, Y% acceleration in ambitious plan]
+- **FY26-FY28 Revenue Projection**: [$X+ over three years]
+
+#### GTM Strategy
+- **Target Audience**: [Describe ideal customer profile and size]
+- **Positioning**: [List key value propositions and differentiators]
+- **Sales Enablement**: [Outline materials and resources needed for sales teams]
+- **Marketing**: [Detail marketing channels and content strategy for promotion]
+
 #### Engineering Assessment 
 
 [Brief description of the engineering assessment of this candidate item.]

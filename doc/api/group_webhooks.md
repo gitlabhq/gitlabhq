@@ -172,13 +172,13 @@ GET /groups/:id/hooks/:hook_id/events
 
 Supported attributes:
 
-| Attribute | Type              | Required | Description                                                                                                                                                                                 |
-|-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                          |
-| `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
-| `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
-| `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
-| `per_page`         | integer | No | Number of records to return per page. Defaults to `20`.                                                                                                                                     |
+| Attribute  | Type                 | Required | Description |
+|----------- |--------------------- |--------- |------------ |
+| `hook_id`  | Integer              | Yes      | The ID of a project hook. |
+| `id`       | Integer or string    | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `page`     | Integer              | No       | Page to retrieve. Defaults to `1`. |
+| `per_page` | Integer              | No       | Number of records to return per page. Defaults to `20`. |
+| `status`   | Integer or string    | No       | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
 
 Example request:
 
@@ -458,11 +458,11 @@ POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
 
 Supported attributes:
 
-| Attribute | Type             | Required | Description             |
-|-----------|------------------|----------|-------------------------|
-| `id`      | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer          | Yes      | The ID of a group hook. |
-| `hook_event_id`      | integer | Yes      | The ID of a hook event. |
+| Attribute       | Type              | Required | Description |
+|---------------- |------------------ |--------- |------------ |
+| `hook_event_id` | Integer           | Yes      | The ID of a hook event. |
+| `hook_id`       | Integer           | Yes      | The ID of a group hook. |
+| `id`            | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -490,36 +490,36 @@ POST /groups/:id/hooks
 
 Supported attributes:
 
-| Attribute                    | Type           | Required | Description |
-| -----------------------------| -------------- |----------| ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `url`                        | string         | yes      | The hook URL. |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `push_events`                | boolean        | no       | Trigger hook on push events. |
-| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
-| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
-| `note_events`                | boolean        | no       | Trigger hook on note events. |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
-| `job_events`                 | boolean        | no       | Trigger hook on job events. |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
-| `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
-| `releases_events`            | boolean        | no       | Trigger hook on release events. |
-| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
-| `member_events`              | boolean        | no       | Trigger hook on member events. |
-| `project_events`             | boolean        | no       | Trigger hook on project events. |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
-| `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response. |
-| `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events. |
-| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
-| `custom_headers`             | array             | No       | Custom headers for the hook. |
+| Attribute                      | Type              | Required | Description |
+|------------------------------- |------------------ |--------- |------------ |
+| `id`                           | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `url`                          | String            | Yes      | The hook URL. |
+| `branch_filter_strategy`       | String            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `confidential_issues_events`   | Boolean           | No       | Trigger hook on confidential issue events. |
+| `confidential_note_events`     | Boolean           | No       | Trigger hook on confidential note events. |
+| `custom_headers`               | Array             | No       | Custom headers for the hook. |
+| `custom_webhook_template`      | String            | No       | Custom webhook template for the hook. |
+| `deployment_events`            | Boolean           | No       | Trigger hook on deployment events. |
+| `description`                  | String            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `enable_ssl_verification`      | Boolean           | No       | Do SSL verification when triggering the hook. |
+| `feature_flag_events`          | Boolean           | No       | Trigger hook on feature flag events. |
+| `issues_events`                | Boolean           | No       | Trigger hook on issue events. |
+| `job_events`                   | Boolean           | No       | Trigger hook on job events. |
+| `member_events`                | Boolean           | No       | Trigger hook on member events. |
+| `merge_requests_events`        | Boolean           | No       | Trigger hook on merge request events. |
+| `milestone_events`             | Boolean           | No       | Trigger hook on milestone events. |
+| `name`                         | String            | No       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `note_events`                  | Boolean           | No       | Trigger hook on note events. |
+| `pipeline_events`              | Boolean           | No       | Trigger hook on pipeline events. |
+| `project_events`               | Boolean           | No       | Trigger hook on project events. |
+| `push_events`                  | Boolean           | No       | Trigger hook on push events. |
+| `push_events_branch_filter`    | String            | No       | Trigger hook on push events for matching branches only. |
+| `releases_events`              | Boolean           | No       | Trigger hook on release events. |
+| `resource_access_token_events` | Boolean           | No       | Trigger hook on project access token expiry events. |
+| `subgroup_events`              | Boolean           | No       | Trigger hook on subgroup events. |
+| `tag_push_events`              | Boolean           | No       | Trigger hook on tag push events. |
+| `token`                        | String            | No       | Secret token to validate received payloads; not returned in the response. |
+| `wiki_page_events`             | Boolean           | No       | Trigger hook on wiki page events. |
 
 Example request:
 
@@ -580,38 +580,38 @@ PUT /groups/:id/hooks/:hook_id
 
 Supported attributes:
 
-| Attribute                    | Type           | Required | Description |
-| ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id`                    | integer        | yes      | The ID of the group hook. |
-| `url`                        | string         | yes      | The hook URL. |
-| `name`                       | string         | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
-| `push_events`                | boolean        | no       | Trigger hook on push events. |
-| `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
-| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
-| `issues_events`              | boolean        | no       | Trigger hook on issue events. |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issue events. |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge request events. |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
-| `note_events`                | boolean        | no       | Trigger hook on note events. |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
-| `job_events`                 | boolean        | no       | Trigger hook on job events. |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
-| `feature_flag_events`        | boolean        | no       | Trigger hook on feature flag events. |
-| `releases_events`            | boolean        | no       | Trigger hook on release events. |
-| `milestone_events`           | boolean        | no       | Trigger hook on milestone events. |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
-| `member_events`              | boolean        | no       | Trigger hook on member events. |
-| `project_events`             | boolean        | no       | Trigger hook on project events. |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
-| `service_access_tokens_expiration_enforced` | boolean | no | Require service account access tokens to have an expiration date. |
-| `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
-| `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
-| `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
-| `custom_headers`             | array             | no       | Custom headers for the hook. |
+| Attribute                                   | Type              | Required | Description |
+|-------------------------------------------- |------------------ |--------- |------------ |
+| `hook_id`                                   | Integer           | Yes      | The ID of the group hook. |
+| `id`                                        | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `url`                                       | String            | Yes      | The hook URL. |
+| `branch_filter_strategy`                    | String            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `confidential_issues_events`                | Boolean           | No       | Trigger hook on confidential issue events. |
+| `confidential_note_events`                  | Boolean           | No       | Trigger hook on confidential note events. |
+| `custom_headers`                            | Array             | No       | Custom headers for the hook. |
+| `custom_webhook_template`                   | String            | No       | Custom webhook template for the hook. |
+| `deployment_events`                         | Boolean           | No       | Trigger hook on deployment events. |
+| `description`                               | String            | No       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `enable_ssl_verification`                   | Boolean           | No       | Do SSL verification when triggering the hook. |
+| `feature_flag_events`                       | Boolean           | No       | Trigger hook on feature flag events. |
+| `issues_events`                             | Boolean           | No       | Trigger hook on issue events. |
+| `job_events`                                | Boolean           | No       | Trigger hook on job events. |
+| `member_events`                             | Boolean           | No       | Trigger hook on member events. |
+| `merge_requests_events`                     | Boolean           | No       | Trigger hook on merge request events. |
+| `milestone_events`                          | Boolean           | No       | Trigger hook on milestone events. |
+| `name`                                      | String            | No       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
+| `note_events`                               | Boolean           | No       | Trigger hook on note events. |
+| `pipeline_events`                           | Boolean           | No       | Trigger hook on pipeline events. |
+| `project_events`                            | Boolean           | No       | Trigger hook on project events. |
+| `push_events`                               | Boolean           | No       | Trigger hook on push events. |
+| `push_events_branch_filter`                 | String            | No       | Trigger hook on push events for matching branches only. |
+| `releases_events`                           | Boolean           | No       | Trigger hook on release events. |
+| `resource_access_token_events`              | Boolean           | No       | Trigger hook on project access token expiry events. |
+| `service_access_tokens_expiration_enforced` | Boolean           | No       | Require service account access tokens to have an expiration date. |
+| `subgroup_events`                           | Boolean           | No       | Trigger hook on subgroup events. |
+| `tag_push_events`                           | Boolean           | No       | Trigger hook on tag push events. |
+| `token`                                     | String            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
+| `wiki_page_events`                          | Boolean           | No       | Trigger hook on wiki page events. |
 
 Example request:
 
@@ -678,10 +678,10 @@ DELETE /groups/:id/hooks/:hook_id
 
 Supported attributes:
 
-| Attribute | Type           | Required | Description |
-| --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer        | yes      | The ID of the group hook. |
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -712,11 +712,11 @@ To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administra
 POST /groups/:id/hooks/:hook_id/test/:trigger
 ```
 
-| Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
-|-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                                                                                                                                                                           |
-| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
+| Attribute | Type              | Required | Description |
+|---------- |------------------ |--------- |------------ |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `trigger` | String            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
 
@@ -749,11 +749,11 @@ PUT /groups/:id/hooks/:hook_id/custom_headers/:key
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the custom header. |
-| `value`   | string            | Yes      | The value of the custom header. |
+|---------- |------------------ |--------- |------------ |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `key`     | String            | Yes      | The key of the custom header. |
+| `value`   | String            | Yes      | The value of the custom header. |
 
 Example request:
 
@@ -782,10 +782,10 @@ DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the custom header. |
+|---------- |------------------ |--------- |------------ |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `key`     | String            | Yes      | The key of the custom header. |
 
 Example request:
 
@@ -812,11 +812,11 @@ PUT /groups/:id/hooks/:hook_id/url_variables/:key
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the URL variable. |
-| `value`   | string            | Yes      | The value of the URL variable. |
+|---------- |------------------ |--------- |------------ |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `key`     | String            | Yes      | The key of the URL variable. |
+| `value`   | String            | Yes      | The value of the URL variable. |
 
 Example request:
 
@@ -830,12 +830,6 @@ On success, no message is returned.
 
 ## Delete a URL variable
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
-
 ```plaintext
 DELETE /groups/:id/hooks/:hook_id/url_variables/:key
 ```
@@ -843,10 +837,10 @@ DELETE /groups/:id/hooks/:hook_id/url_variables/:key
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|-----------|-------------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `hook_id` | integer           | Yes      | The ID of the group hook. |
-| `key`     | string            | Yes      | The key of the URL variable. |
+|---------- |------------------ |--------- |------------ |
+| `hook_id` | Integer           | Yes      | The ID of the group hook. |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `key`     | String            | Yes      | The key of the URL variable. |
 
 Example request:
 

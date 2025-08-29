@@ -13,7 +13,9 @@ description: Steps to take before you upgrade.
 
 {{< /details >}}
 
-Before you upgrade, create an upgrade plan that documents:
+Before you upgrade, review the [GitLab release and maintenance policy](../policy/maintenance.md).
+
+You should then create an upgrade plan that documents:
 
 - The steps to take to upgrade your instance, including your [upgrade path](upgrade_paths.md). Use the
   [upgrade path tool](upgrade_paths.md#upgrade-path-tool) to determine if your upgrade includes required upgrade stops.

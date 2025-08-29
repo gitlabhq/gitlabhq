@@ -216,7 +216,7 @@ commands:
         echo "Committing changes to branch: $CI_WORKLOAD_REF"
         git commit --message "Claude Code changes"
         echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/gl-demo-ultimate-dev-ai-epic-17570/test-java-project.git $CI_WORKLOAD_REF
+        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
         echo "Changes successfully pushed"
       fi
     else
@@ -274,7 +274,7 @@ commands:
         echo "Committing changes to branch: $CI_WORKLOAD_REF"
         git commit --message "Codex changes"
         echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/gl-demo-ultimate-dev-ai-epic-17570/test-java-project.git $CI_WORKLOAD_REF
+        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
         echo "Changes successfully pushed"
       fi
     else
@@ -337,7 +337,7 @@ commands:
         echo "Committing changes to branch: $CI_WORKLOAD_REF"
         git commit --message "Codex changes"
         echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/gl-demo-ultimate-dev-ai-epic-17570/test-java-project.git $CI_WORKLOAD_REF
+        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
         echo "Changes successfully pushed"
       fi
     else
@@ -502,7 +502,7 @@ commands:
         echo "Committing changes to branch: $CI_WORKLOAD_REF"
         git commit --message "Gemini Code changes"
         echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/gl-demo-ultimate-dev-ai-epic-17570/test-java-project.git $CI_WORKLOAD_REF
+        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
         echo "Changes successfully pushed"
       fi
     else
@@ -535,7 +535,7 @@ action that the user takes to trigger the CLI agent.
    - **Service account user**: From the **Service account user** dropdown list,
      select the service account user.
    - **Config Path**: Enter the location of the flow configuration file.
-     For example `.gitlab/duo/flows/claude.yml`.
+     For example `.gitlab/duo/flows/claude.yaml`.
 1. Select **Create flow trigger**.
 
 You have created the flow trigger. Check that it appears in **Automate** > **Flow triggers**.

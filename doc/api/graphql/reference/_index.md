@@ -230,6 +230,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryaicatalogconfigureditemsgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
 | <a id="queryaicatalogconfigureditemsincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
 | <a id="queryaicatalogconfigureditemsitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogconfigureditemsitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
 | <a id="queryaicatalogconfigureditemsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
 
 ### `Query.aiCatalogItem`
@@ -2552,9 +2553,7 @@ Input type: `AiCatalogItemConsumerCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemconsumercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationaicatalogitemconsumercreateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether to enable the item. |
 | <a id="mutationaicatalogitemconsumercreateitemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
-| <a id="mutationaicatalogitemconsumercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether to lock the item configuration (groups only). |
 | <a id="mutationaicatalogitemconsumercreatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
 | <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target in which the catalog item is configured. |
 
@@ -2604,9 +2603,7 @@ Input type: `AiCatalogItemConsumerUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemconsumerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationaicatalogitemconsumerupdateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether the flow is enabled in the group or project. |
 | <a id="mutationaicatalogitemconsumerupdateid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the catalog item consumer to update. |
-| <a id="mutationaicatalogitemconsumerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether the configuration is locked. |
 | <a id="mutationaicatalogitemconsumerupdatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
 
 #### Fields
@@ -22892,11 +22889,9 @@ An AI catalog item configuration.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemconsumerenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the catalog item is enabled or not. |
 | <a id="aicatalogitemconsumergroup"></a>`group` | [`Group`](#group) | Group in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerid"></a>`id` | [`ID!`](#id) | ID of the configuration item. |
 | <a id="aicatalogitemconsumeritem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Configuration catalog item. |
-| <a id="aicatalogitemconsumerlocked"></a>`locked` | [`Boolean!`](#boolean) | Indicates whether the catalog item configuration is locked or can be overridden. |
 | <a id="aicatalogitemconsumerorganization"></a>`organization` | [`Organization`](#organization) | Organization in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerpinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch item is pinned to. |
 | <a id="aicatalogitemconsumerproject"></a>`project` | [`Project`](#project) | Project in which the catalog item is configured. |
@@ -29996,6 +29991,7 @@ GPG signature for a signed commit.
 | <a id="groupisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="grouplifecycletemplates"></a>`lifecycleTemplates` {{< icon name="warning-solid" >}} | [`[WorkItemLifecycle!]`](#workitemlifecycle) | **Introduced** in GitLab 18.4. **Status**: Experiment. Lifecycle templates available to the namespace. |
 | <a id="grouplifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="grouplinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -35736,6 +35732,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacelicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="namespacelifecycletemplates"></a>`lifecycleTemplates` {{< icon name="warning-solid" >}} | [`[WorkItemLifecycle!]`](#workitemlifecycle) | **Introduced** in GitLab 18.4. **Status**: Experiment. Lifecycle templates available to the namespace. |
 | <a id="namespacelifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |

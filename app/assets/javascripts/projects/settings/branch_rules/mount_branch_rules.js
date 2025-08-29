@@ -28,6 +28,8 @@ export default function mountBranchRules(el, store, allowEditSquashSetting = fal
     showCodeOwners,
     showEnterpriseAccessLevels,
     canAdminProtectedBranches,
+    canAdminGroupProtectedBranches,
+    groupSettingsRepositoryPath,
   } = el.dataset;
 
   return new Vue({
@@ -47,6 +49,8 @@ export default function mountBranchRules(el, store, allowEditSquashSetting = fal
       showCodeOwners: parseBoolean(showCodeOwners),
       showEnterpriseAccessLevels: parseBoolean(showEnterpriseAccessLevels),
       canAdminProtectedBranches: parseBoolean(canAdminProtectedBranches),
+      canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
+      groupSettingsRepositoryPath,
       allowEditSquashSetting,
     },
     render(h) {

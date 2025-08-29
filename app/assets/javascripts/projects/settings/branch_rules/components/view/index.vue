@@ -266,7 +266,8 @@ export default {
         this.glFeatures.editBranchRules &&
         this.branchRule &&
         this.canAdminProtectedBranches &&
-        !this.isAllBranchesRule
+        !this.isAllBranchesRule &&
+        !this.branchProtection?.isGroupLevel
       );
     },
   },
@@ -308,6 +309,9 @@ export default {
         });
     },
     openAllowedToMergeDrawer() {
+      if (this.branchProtection?.isGroupLevel) {
+        return;
+      }
       this.isAllowedToMergeDrawerOpen = true;
     },
     closeAccessLevelsDrawer() {
@@ -315,6 +319,9 @@ export default {
       this.isAllowedToPushAndMergeDrawerOpen = false;
     },
     openAllowedToPushAndMergeDrawer() {
+      if (this.branchProtection?.isGroupLevel) {
+        return;
+      }
       this.isAllowedToPushAndMergeDrawerOpen = true;
     },
     onEditRuleTarget(ruleTarget) {
@@ -526,6 +533,7 @@ export default {
           :groups="mergeAccessLevels.groups"
           :empty-state-copy="$options.i18n.allowedToMergeEmptyState"
           :is-edit-available="canAdminProtectedBranches"
+          :is-group-level="branchProtection.isGroupLevel"
           data-testid="allowed-to-merge-content"
           @edit="openAllowedToMergeDrawer"
         />
@@ -544,6 +552,7 @@ export default {
           :empty-state-copy="$options.i18n.allowedToPushEmptyState"
           :help-text="$options.i18n.allowedToPushDescription"
           :is-edit-available="canAdminProtectedBranches"
+          :is-group-level="branchProtection.isGroupLevel"
           data-testid="allowed-to-push-content"
           @edit="openAllowedToPushAndMergeDrawer"
         />
@@ -560,6 +569,7 @@ export default {
           :description="forcePushAttributes.description"
           :description-link="$options.pushRulesHelpDocLink"
           :is-loading="isAllowForcePushLoading"
+          :is-group-level="branchProtection.isGroupLevel"
           @toggle="onEnableForcePushToggle"
         />
 
@@ -575,6 +585,7 @@ export default {
           :description="codeOwnersApprovalAttributes.description"
           :description-link="$options.codeOwnersHelpDocLink"
           :is-loading="isCodeOwnersLoading"
+          :is-group-level="branchProtection.isGroupLevel"
           @toggle="onEnableCodeOwnersToggle"
         />
       </settings-section>

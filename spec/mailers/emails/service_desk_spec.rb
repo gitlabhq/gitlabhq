@@ -292,14 +292,6 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
       expect(reply_address).to eq(expected_reply_address)
     end
-
-    context 'when feature flag service_desk_custom_email_reply is disabled' do
-      before do
-        stub_feature_flags(service_desk_custom_email_reply: false)
-      end
-
-      it { is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/ }
-    end
   end
 
   describe '.service_desk_thank_you_email' do

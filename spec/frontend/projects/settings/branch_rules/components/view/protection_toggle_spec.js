@@ -1,5 +1,6 @@
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
 
 describe('ProtectionToggle', () => {
@@ -16,6 +17,9 @@ describe('ProtectionToggle', () => {
         GlIcon,
         GlLink,
         GlSprintf,
+        GroupInheritancePopover: {
+          template: '<div>Stubbed GroupInheritancePopover</div>',
+        },
       },
       provide: {
         glFeatures,
@@ -52,6 +56,11 @@ describe('ProtectionToggle', () => {
       expect(wrapper.findComponent(GlSprintf).exists()).toBe(false);
     });
 
+    it('does not render group inheritance popover', () => {
+      expect(findToggle().props('disabled')).toBe(false);
+      expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(false);
+    });
+
     it('renders the toggle description, when protection is on', () => {
       createComponent({
         props: { isProtected: true, description: 'Some description' },
@@ -59,6 +68,18 @@ describe('ProtectionToggle', () => {
       });
 
       expect(wrapper.findComponent(GlSprintf).exists()).toBe(true);
+    });
+
+    describe('when isGroupLevel is true', () => {
+      it('renders group inheritance popover and disabled toggle, when protection is on', () => {
+        createComponent({
+          props: { isProtected: true, isGroupLevel: true },
+          provided: { canAdminProtectedBranches: true },
+        });
+
+        expect(findToggle().props('disabled')).toBe(true);
+        expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(true);
+      });
     });
   });
 
