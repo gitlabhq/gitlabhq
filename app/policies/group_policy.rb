@@ -138,31 +138,69 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
   rule { archived? & archive_group_enabled }.policy do
+    prevent :activate_group_member
+    prevent :add_cluster
+    prevent :admin_achievement
     prevent :admin_build
+    prevent :admin_cluster
     prevent :admin_group_member
     prevent :admin_issue
     prevent :admin_issue_board
     prevent :admin_issue_board_list
     prevent :admin_label
+    prevent :admin_member_access_request
     prevent :admin_milestone
+    prevent :admin_note
+    prevent :admin_package
     prevent :admin_pipeline
+    prevent :admin_push_rules
+    prevent :admin_runners
     prevent :admin_work_item
+    prevent :award_achievement
+    prevent :award_emoji
+    prevent :change_new_user_signups_cap
+    prevent :change_prevent_sharing_groups_outside_hierarchy
+    prevent :change_seat_control
+    prevent :change_share_with_group_lock
+    prevent :change_visibility_level
+    prevent :create_cluster
+    prevent :create_custom_emoji
+    prevent :create_deploy_token
+    prevent :create_jira_connect_subscription
+    prevent :create_note
+    prevent :create_observability_access_request
     prevent :create_package
     prevent :create_projects
+    prevent :create_resource_access_tokens
     prevent :create_runners
     prevent :create_subgroup
-    prevent :edit_billing
     prevent :import_projects
+    prevent :invite_group_members
+    prevent :register_group_runners
     prevent :reopen_issue
+    prevent :request_access
+    prevent :resolve_note
+    prevent :set_new_issue_metadata
+    prevent :set_new_work_item_metadata
+    prevent :set_show_diff_preview_in_email
     prevent :transfer_projects
+    prevent :update_cluster
+    prevent :update_default_branch_protection
+    prevent :update_git_access_protocol
     prevent :update_issue
+    prevent :update_max_artifacts_size
+    prevent :update_o11y_settings
+    prevent :update_runners_registration_token
+    prevent :upload_file
   end
 
   rule { archived? & archive_group_enabled & ~group_deleted? }.policy do
+    prevent :delete_custom_emoji
+    prevent :delete_o11y_settings
     prevent :destroy_issue
-    prevent :destroy_user_achievement
     prevent :destroy_package
     prevent :destroy_upload
+    prevent :destroy_user_achievement
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do

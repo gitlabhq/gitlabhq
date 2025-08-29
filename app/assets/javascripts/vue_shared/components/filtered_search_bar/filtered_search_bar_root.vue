@@ -351,8 +351,10 @@ export default {
 </script>
 
 <template>
-  <div class="vue-filtered-search-bar-container gl-flex gl-flex-col sm:gl-flex-row sm:gl-gap-3">
-    <div class="flex-grow-1 gl-flex gl-min-w-0 gl-gap-3">
+  <div
+    class="vue-filtered-search-bar-container gl-flex gl-flex-col @sm/panel:gl-flex-row @sm/panel:gl-gap-3"
+  >
+    <div class="gl-flex gl-min-w-0 gl-grow gl-gap-3">
       <gl-form-checkbox
         v-if="showCheckbox"
         class="gl-min-h-0 gl-self-center"
@@ -379,7 +381,7 @@ export default {
         :show-friendly-text="showFriendlyText"
         :show-search-button="showSearchButton"
         :terms-as-tokens="termsAsTokens"
-        class="flex-grow-1"
+        class="gl-grow"
         @history-item-selected="handleHistoryItemSelected"
         @clear="onClear"
         @clear-history="handleClearHistory"
@@ -410,7 +412,7 @@ export default {
         :sort-options="transformedSortOptions"
         :sort-by="sortById"
         :is-ascending="sortDirectionAscending"
-        class="sort-dropdown-container gl-w-full sm:!gl-m-0 sm:gl-w-auto"
+        class="sort-dropdown-container gl-w-full @sm/panel:gl-w-auto sm:!gl-m-0"
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"
         sort-direction-toggle-class="!gl-shrink !gl-grow-0"

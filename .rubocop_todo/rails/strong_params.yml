@@ -208,8 +208,6 @@ Rails/StrongParams:
     - 'app/controllers/users_controller.rb'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'
     - 'ee/app/controllers/admin/emails_controller.rb'
-    - 'ee/app/controllers/admin/geo/application_controller.rb'
-    - 'ee/app/controllers/admin/geo/replicables_controller.rb'
     - 'ee/app/controllers/concerns/arkose/token_verifiable.rb'
     - 'ee/app/controllers/concerns/audit_events/date_range.rb'
     - 'ee/app/controllers/concerns/audit_events/enforces_valid_date_params.rb'

@@ -369,7 +369,7 @@ module QA
         return log_failure(resource, response) unless mark_for_deletion_possible?(resource)
 
         if permanent && resource[:type] != 'sandbox'
-          delete_permanently(resource, delayed_verification)
+          delete_permanently(resource, delayed_verification, skip_verification)
         else
           log_marked_for_deletion(resource)
         end

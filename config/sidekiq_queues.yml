@@ -1039,6 +1039,8 @@
   - 1
 - - security_unenforceable_policy_rules_pipeline_notification
   - 1
+- - security_vulnerability_scanning_process_sbom_scan
+  - 1
 - - service_desk_email_receiver
   - 2
 - - set_user_status_based_on_user_cap_setting

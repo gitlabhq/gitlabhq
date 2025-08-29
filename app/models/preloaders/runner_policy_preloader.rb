@@ -16,7 +16,7 @@ module Preloaders # rubocop: disable Gitlab/BoundedContexts -- will be addressed
           groups: [:route],
           projects: [:route],
           owner_runner_project: [project: :route],
-          owner_runner_namespace: [namespace: :route]
+          owner_runner_namespace: [namespace: [:route, :namespace_settings_with_ancestors_inherited_settings]]
         ]
       ).call
 

@@ -30,6 +30,7 @@ module QA
         @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (24 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
         @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
+        @skip_verification = !!(ENV['SKIP_VERIFICATION'].to_s =~ /true|1|y/i)
         @type = nil
       end
 
@@ -49,7 +50,9 @@ module QA
       # @param [Hash] API call options
       # @return [Array<String, Hash>] results
       def delete_resources(
-        resources, delayed_verification = false, permanent = @permanently_delete, skip_verification = false, **options)
+        resources, delayed_verification = false, permanent = @permanently_delete,
+        skip_verification = @skip_verification, **options
+      )
         logger.info("Deleting #{resources.length} #{@type}s...\n")
 
         unverified_deletions = []

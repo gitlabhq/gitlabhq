@@ -590,114 +590,75 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'group archiving abilities' do
-    let(:group) { create(:group, :public) }
-    let(:policy) { described_class.new(current_user, group) }
-    let(:current_user) { owner }
-
+  it_behaves_like 'group archiving abilities' do
     let(:archived_abilities) do
       %i[
+        activate_group_member
+        add_cluster
+        admin_achievement
         admin_build
+        admin_cluster
         admin_group_member
         admin_issue
         admin_issue_board
         admin_issue_board_list
         admin_label
+        admin_member_access_request
         admin_milestone
+        admin_note
+        admin_package
         admin_pipeline
+        admin_push_rules
+        admin_runners
         admin_work_item
+        award_achievement
+        award_emoji
+        change_new_user_signups_cap
+        change_prevent_sharing_groups_outside_hierarchy
+        change_seat_control
+        change_share_with_group_lock
+        change_visibility_level
+        create_cluster
+        create_custom_emoji
+        create_deploy_token
+        create_jira_connect_subscription
+        create_note
+        create_observability_access_request
         create_package
         create_projects
+        create_resource_access_tokens
         create_runners
         create_subgroup
-        edit_billing
         import_projects
-        remove_group
+        invite_group_members
+        register_group_runners
         reopen_issue
+        request_access
+        resolve_note
+        set_new_issue_metadata
+        set_new_work_item_metadata
+        set_show_diff_preview_in_email
         transfer_projects
+        update_cluster
+        update_default_branch_protection
+        update_git_access_protocol
         update_issue
+        update_max_artifacts_size
+        update_o11y_settings
+        update_runners_registration_token
+        upload_file
       ]
     end
 
     let(:destroy_abilities) do
       %i[
+        delete_custom_emoji
+        delete_o11y_settings
         destroy_issue
-        destroy_user_achievement
         destroy_package
         destroy_upload
+        destroy_user_achievement
       ]
-    end
-
-    shared_examples 'prevents archived abilities' do
-      it 'prevents abilities defined in ARCHIVED_ABILITIES' do
-        archived_abilities.each do |ability|
-          expect(policy).not_to be_allowed(ability)
-        end
-      end
-    end
-
-    shared_examples 'prevents destroy actions' do
-      it 'prevents destroy actions on archived features' do
-        destroy_abilities.each do |feature|
-          expect(policy).not_to be_allowed(feature)
-        end
-      end
-    end
-
-    shared_examples 'allows destroy actions' do
-      it 'allows destroy actions on archived features' do
-        destroy_abilities.each do |feature|
-          expect(policy).to be_allowed(feature) if policy.respond_to?(:"#{feature}")
-        end
-      end
-    end
-
-    shared_examples 'archived but not marked for deletion' do
-      it_behaves_like 'prevents archived abilities'
-      it_behaves_like 'prevents destroy actions'
-    end
-
-    shared_examples 'archived and marked for deletion' do
-      it_behaves_like 'prevents archived abilities'
-      it_behaves_like 'allows destroy actions'
-    end
-
-    context 'when group is archived but not marked for deletion' do
-      before do
-        group.archive
-      end
-
-      it_behaves_like 'archived but not marked for deletion'
-    end
-
-    context 'when group is archived and marked for deletion' do
-      before do
-        group.archive
-        group.namespace_details.update!(deleted_at: Time.current)
-      end
-
-      it_behaves_like 'archived and marked for deletion'
-    end
-
-    context 'when group ancestor is archived' do
-      let(:group) { create(:group, :nested) }
-
-      before do
-        group.parent.archive
-      end
-
-      it_behaves_like 'archived but not marked for deletion'
-    end
-
-    context 'when group ancestor is marked for deletion' do
-      let(:group) { create(:group, :nested) }
-
-      before do
-        group.parent.archive
-        group.parent.namespace_details.update!(deleted_at: Time.current)
-      end
-
-      it_behaves_like 'archived and marked for deletion'
     end
   end
 

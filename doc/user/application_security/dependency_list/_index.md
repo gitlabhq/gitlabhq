@@ -15,9 +15,9 @@ description: Vulnerabilities, licenses, filtering, and exporting.
 
 {{< history >}}
 
-- Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies`. Disabled by default.
-- Group-level dependency list [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.4.
-- Group-level dependency list [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132015) in GitLab 16.5. Feature flag `group_level_dependencies` removed.
+- Dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) for groups in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies`. Disabled by default.
+- Dependency list for groups [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.4.
+- Dependency list for groups [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132015) in GitLab 16.5. Feature flag `group_level_dependencies` removed.
 
 {{< /history >}}
 
@@ -31,8 +31,8 @@ For an overview, see [Project Dependency - Advanced Security Testing](https://ww
 
 ## Set up the dependency list
 
-To list your project's dependencies, run [Dependency Scanning](../dependency_scanning/_index.md)
-or [Container Scanning](../container_scanning/_index.md) on the default branch of your project.
+To list your project's dependencies, run [dependency scanning](../dependency_scanning/_index.md)
+or [container scanning](../container_scanning/_index.md) on the default branch of your project.
 
 The dependency list also shows dependencies from any
 [CycloneDX reports](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) uploaded from the
@@ -75,13 +75,13 @@ To view the dependencies of a project or all projects in a group:
 
 Details of each dependency are listed, sorted by decreasing severity of vulnerabilities (if any). You can sort the list instead by component name, packager, or license.
 
-| Field     | Description |
-|:----------|:-----------|
-| Component | The dependency's name and version. |
-| Packager  | The packager used to install the dependency. |
-| Location  | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
+| Field                       | Description |
+|-----------------------------|-------------|
+| Component                   | The dependency's name and version. |
+| Packager                    | The packager used to install the dependency. |
+| Location                    | For system dependencies, this field lists the image that was scanned. For application dependencies, this field shows a link to the packager-specific lock file in your project that declared the dependency. It also shows the direct [dependents](#dependency-paths), if any. If there are transitive dependencies, selecting **View dependency paths** shows the full path of all dependents. Transitive dependencies are indirect dependents that have a direct dependent as an ancestor. |
 | License (for projects only) | Links to dependency's software licenses. A warning badge that includes the number of vulnerabilities detected in the dependency. |
-| Projects (for groups only) | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. |
+| Projects (for groups only)  | Links to the project with the dependency. If multiple projects have the same dependency, the total number of these projects is shown. To go to a project with this dependency, select the **Projects** number, then search for and select its name. |
 
 ## Filter dependency list
 
@@ -156,13 +156,9 @@ select the vulnerability's description. The [vulnerability's details](../vulnera
 
 {{< /history >}}
 
-The dependency list shows the direct dependents of a listed component if the component is transient and belongs to any supported package manager.
-
-{{< alert type="note" >}}
-
-The dependency path is only displayed for dependencies that have vulnerabilities.
-
-{{< /alert >}}
+The dependency path shows the direct dependents of a listed component if the component is transient
+and belongs to a supported package manager. The dependency path is only displayed for dependencies
+that have vulnerabilities.
 
 Dependency paths are supported for the following package managers:
 
@@ -183,7 +179,7 @@ Dependency paths are supported for the following package managers only when usin
 
 ### Licenses
 
-If the [Dependency Scanning](../dependency_scanning/_index.md) CI job is configured,
+If the [dependency scanning](../dependency_scanning/_index.md) CI/CD job is configured,
 [discovered licenses](../../compliance/license_scanning_of_cyclonedx_files/_index.md) are displayed on this page.
 
 ## Export
@@ -194,15 +190,18 @@ You can export the dependency list in:
 - CSV
 - CycloneDX format (for projects only)
 
-To download the dependency list:
+To export the dependency list:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 1. Select **Export** and then select the file format.
 
-When the exported details are available, you'll receive an email. To download the exported details, select the link in the email.
+The dependency list is sent to your email address. To download the dependency list, select the
+link in the email.
 
 ## Troubleshooting
+
+When working with the dependency list, you might encounter the following issues.
 
 ### License appears as 'unknown'
 

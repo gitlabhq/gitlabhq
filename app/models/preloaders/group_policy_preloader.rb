@@ -12,7 +12,7 @@ module Preloaders
 
       ActiveRecord::Associations::Preloader.new(
         records: groups,
-        associations: [:organization]
+        associations: [:organization, :namespace_settings_with_ancestors_inherited_settings]
       ).call
 
       Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
