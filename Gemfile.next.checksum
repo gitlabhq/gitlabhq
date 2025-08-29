@@ -199,7 +199,7 @@
 {"name":"flipper-active_record","version":"0.28.3","platform":"ruby","checksum":"c6a91c265da8062b75cf575708e325b931e248e5f81582fea8c4cdf461ad1920"},
 {"name":"flipper-active_support_cache_store","version":"0.28.3","platform":"ruby","checksum":"111ae20579920206f001d4b33a9d96770fd23c709beeb6ca136c9ebc96fbd9fd"},
 {"name":"fog-aliyun","version":"0.4.0","platform":"ruby","checksum":"8f2334604beb781eafbb9cd5f50141fbb2c7eb77c7f2b01f45c2e04db0e5cc38"},
-{"name":"fog-aws","version":"3.28.0","platform":"ruby","checksum":"7d2e7e13eb123914be9cea12f3d134285fa9fc14e0fa0daebc97386a3d9567cd"},
+{"name":"fog-aws","version":"3.33.0","platform":"ruby","checksum":"ce4bcd58e1d6bde866aefb40f5ec5225687591e0fc572817d4a99b15ef0aa7a2"},
 {"name":"fog-core","version":"2.6.0","platform":"ruby","checksum":"3fe08aa83a23cddce42f4ba412040c08f890d7ff04c175c0ee59119371245be6"},
 {"name":"fog-google","version":"1.25.0","platform":"ruby","checksum":"58aea3b0abf5938ed6ca2a3b51282cfe7038403e2eeb70bdb0a1b998307ce18f"},
 {"name":"fog-json","version":"1.2.0","platform":"ruby","checksum":"dd4f5ab362dbc72b687240bba9d2dd841d5dfe888a285797533f85c03ea548fe"},

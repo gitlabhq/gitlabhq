@@ -473,6 +473,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'StatusPage::PublishWorker' => 5,
         'Security::StoreSecurityReportsByProjectWorker' => 3,
         'Security::VulnerabilityScanning::ProcessSbomScanWorker' => false,
+        'Security::VulnerabilityScanning::DestroyExpiredSbomScansWorker' => 3,
         'SyncSeatLinkRequestWorker' => 20,
         'SyncSeatLinkWorker' => 12,
         'SystemHookPushWorker' => 3,

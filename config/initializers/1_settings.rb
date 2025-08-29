@@ -944,6 +944,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker'] ||= {}
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['cron'] ||= '0 2 * * *'
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['job_class'] = 'Security::VulnerabilityScanning::DestroyExpiredSbomScansWorker'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= {}
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'

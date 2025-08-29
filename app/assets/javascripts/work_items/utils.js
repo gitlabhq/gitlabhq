@@ -47,6 +47,8 @@ export const isMilestoneWidget = (widget) => widget.type === WIDGET_TYPE_MILESTO
 
 export const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 
+export const isStatusWidget = (widget) => widget.type === WIDGET_TYPE_STATUS;
+
 export const findAssigneesWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
 
