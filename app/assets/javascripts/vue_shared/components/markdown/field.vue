@@ -269,6 +269,7 @@ export default {
         workItems: this.enableAutocomplete,
         mergeRequests: this.enableAutocomplete,
         epics: this.enableAutocomplete,
+        epicsAlternative: this.enableAutocomplete,
         milestones: this.enableAutocomplete,
         labels: this.enableAutocomplete,
         snippets: this.enableAutocomplete,

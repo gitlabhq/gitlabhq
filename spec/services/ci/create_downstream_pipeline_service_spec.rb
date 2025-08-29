@@ -870,24 +870,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
         expect(bridge.downstream_errors).to eq(['Reference not found'])
       end
-
-      context 'when the FF is disabled' do
-        before do
-          stub_feature_flags(ci_new_downstream_errors_location: false)
-          # We need to read from the old metadata location because job_definition does not get updated
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it 'does not create a pipeline and drops the bridge' do
-          expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
-          expect(subject).to be_error
-          expect(subject.message).to match_array(['Reference not found'])
-
-          expect(bridge.reload).to be_failed
-          expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-          expect(bridge.downstream_errors).to eq(['Reference not found'])
-        end
-      end
     end
 
     context 'when downstream pipeline has a branch rule and does not satisfy' do

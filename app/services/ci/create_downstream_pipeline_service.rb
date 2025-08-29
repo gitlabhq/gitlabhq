@@ -61,12 +61,8 @@ module Ci
           ServiceResponse.success(payload: pipeline)
         else
           messages = pipeline.errors.full_messages
-          if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
-            subject.options[:downstream_errors] = messages
-          end
 
           subject.drop!(:downstream_pipeline_creation_failed)
-
           create_downstream_error_messages(subject, messages)
           ServiceResponse.error(payload: pipeline, message: messages)
         end
@@ -82,8 +78,6 @@ module Ci
     end
 
     def create_downstream_error_messages(bridge, messages)
-      return if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
-
       messages.each do |message|
         attributes = { content: message, project_id: bridge.project_id }
         bridge.job_messages.error.create!(attributes)

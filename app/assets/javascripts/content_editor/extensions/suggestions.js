@@ -196,6 +196,7 @@ export default Node.create({
       createPlugin('$', 'reference', REFERENCE_TYPES.SNIPPET),
       createPlugin('~', 'referenceLabel', REFERENCE_TYPES.LABEL, { limit: 100 }),
       createPlugin('&', 'reference', REFERENCE_TYPES.EPIC),
+      createPlugin('[epic:', 'reference', REFERENCE_TYPES.EPIC_ALTERNATIVE),
       createPlugin('!', 'reference', REFERENCE_TYPES.MERGE_REQUEST),
       createPlugin('[vulnerability:', 'reference', REFERENCE_TYPES.VULNERABILITY, {
         filterOnBackend: true,

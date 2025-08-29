@@ -43,8 +43,12 @@ module Doorkeeper # rubocop:disable Gitlab/BoundedContexts -- Override from a ge
         end
 
         def fallback_strategies
-          [Gitlab::DoorkeeperSecretStoring::Sha512Hash, Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512,
-            Doorkeeper::SecretStoring::Plain]
+          if Gitlab::FIPS.enabled?
+            [Doorkeeper::SecretStoring::Plain]
+          else
+            [Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512,
+              Doorkeeper::SecretStoring::Plain]
+          end
         end
       end
     end

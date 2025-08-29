@@ -147,8 +147,6 @@ module Ci
     end
 
     def downstream_errors
-      return options[:downstream_errors] if ::Feature.disabled?(:ci_new_downstream_errors_location, project)
-
       error_job_messages.map(&:content).presence || options[:downstream_errors]
     end
     strong_memoize_attr :downstream_errors

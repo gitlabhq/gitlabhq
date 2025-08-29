@@ -31,7 +31,7 @@ Agent Platform consists of four separate services:
 
 ### Development Setup for Backend Components
 
-You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
+You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md)
 to run local versions of GitLab, Duo Agent Platform Service, and Executor.
 
 This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).

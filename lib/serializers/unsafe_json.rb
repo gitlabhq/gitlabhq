@@ -7,7 +7,7 @@ module Serializers
         obj.to_json(unsafe: true)
       end
 
-      delegate :load, to: :JSON
+      delegate :load, to: :'::JSON'
     end
   end
 end

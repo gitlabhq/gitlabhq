@@ -62,8 +62,8 @@ module WorkItems
       {
         'Author' => 'author_name',
         'Author Username' => ->(work_item) { work_item.author&.username },
-        'Assignee(s)' => ->(work_item) { widget_value_for(work_item, :assignees)&.map(&:name)&.join(', ') },
-        'Assignee(s) Username(s)' => ->(work_item) do
+        'Assignee' => ->(work_item) { widget_value_for(work_item, :assignees)&.map(&:name)&.join(', ') },
+        'Assignee Username' => ->(work_item) do
           widget_value_for(work_item, :assignees)&.map(&:username)&.join(', ')
         end
       }
@@ -71,9 +71,9 @@ module WorkItems
 
     def dates_data
       {
-        'Created At' => ->(work_item) { work_item.created_at&.to_fs(:csv) },
-        'Updated At' => ->(work_item) { work_item.updated_at&.to_fs(:csv) },
-        'Closed At' => ->(work_item) { work_item.closed_at&.to_fs(:csv) },
+        'Created At (UTC)' => ->(work_item) { work_item.created_at&.to_fs(:csv) },
+        'Updated At (UTC)' => ->(work_item) { work_item.updated_at&.to_fs(:csv) },
+        'Closed At (UTC)' => ->(work_item) { work_item.closed_at&.to_fs(:csv) },
         'Due Date' => ->(work_item) { widget_value_for(work_item, :start_and_due_date, :due_date)&.to_fs(:csv) },
         'Start Date' => ->(work_item) { widget_value_for(work_item, :start_and_due_date, :start_date)&.to_fs(:csv) }
       }

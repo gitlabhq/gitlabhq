@@ -33,7 +33,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import LineHighlighter from '~/blob/line_highlighter';
 import { LEGACY_FILE_TYPES } from '~/repository/constants';
-import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
+import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/components/constants';
 import eventHub from '~/notes/event_hub';
 import {
   simpleViewerMock,
@@ -96,7 +96,10 @@ const createComponent = async (mockData = {}, mountFn = shallowMount) => {
     createMergeRequestIn = userPermissionsMock.createMergeRequestIn,
     isBinary,
     inject = { highlightWorker },
+    urlParams,
   } = mockData;
+
+  if (urlParams) await router.replace(urlParams);
 
   const blobInfo = {
     ...projectMock,
@@ -634,23 +637,24 @@ describe('Blob content viewer component', () => {
 
   describe('active viewer based on plain attribute', () => {
     it.each`
-      hasRichViewer | plain  | activeViewerType
-      ${true}       | ${'0'} | ${RICH_BLOB_VIEWER}
-      ${true}       | ${'1'} | ${SIMPLE_BLOB_VIEWER}
-      ${false}      | ${'0'} | ${SIMPLE_BLOB_VIEWER}
-      ${false}      | ${'1'} | ${SIMPLE_BLOB_VIEWER}
+      hasRichViewer | plain  | blame  | activeViewer          | activeViewerType
+      ${true}       | ${'0'} | ${'0'} | ${RICH_BLOB_VIEWER}   | ${RICH_BLOB_VIEWER}
+      ${true}       | ${'1'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${false}      | ${'0'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${false}      | ${'1'} | ${'0'} | ${SIMPLE_BLOB_VIEWER} | ${SIMPLE_BLOB_VIEWER}
+      ${true}       | ${'0'} | ${'1'} | ${SIMPLE_BLOB_VIEWER} | ${BLAME_VIEWER}
     `(
-      'activeViewerType is `$activeViewerType` when hasRichViewer is $hasRichViewer and plain is set to $plain',
-      async ({ hasRichViewer, plain, activeViewerType }) => {
+      'activeViewerType is `$activeViewerType` when hasRichViewer is $hasRichViewer, plain is set to $plain, and blame is set to $blame',
+      async ({ hasRichViewer, plain, blame, activeViewer, activeViewerType }) => {
+        const urlParams = `?plain=${plain}&blame=${blame}`;
         await createComponent(
-          { blob: hasRichViewer ? richViewerMock : simpleViewerMock },
+          { blob: hasRichViewer ? richViewerMock : simpleViewerMock, urlParams },
           shallowMount,
         );
-        await router.replace(`?plain=${plain}`);
 
         expect(findBlobContent().props('activeViewer')).toEqual(
           expect.objectContaining({
-            type: activeViewerType,
+            type: activeViewer,
           }),
         );
         expect(findBlobHeader().props('activeViewerType')).toEqual(activeViewerType);

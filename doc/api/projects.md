@@ -2189,7 +2189,7 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). |
 | `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
 
 ### Restore a project marked for deletion

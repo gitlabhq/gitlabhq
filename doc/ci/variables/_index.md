@@ -577,6 +577,35 @@ jobs that use the `trigger` keyword to trigger downstream pipelines. Trigger job
 pass variables to a downstream pipelines as pipeline variables, which is also controlled
 by this setting.
 
+#### Enable pipeline variable restriction for multiple projects
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514242) in GitLab 18.4.
+
+{{< /history >}}
+
+For groups with many projects, you can disable pipeline variables
+in all projects that don't currently use them. This option sets the
+**Minimum role to use pipeline variables** setting to `no_one_allowed` for projects
+that have never used pipeline variables.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To enable the pipeline variable restriction setting in projects in the group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
+1. In the **Disable pipeline variables in projects that don't use them** section,
+   select **Start migration**.
+
+The migration runs in the background. You receive an email notification
+when the migration is complete. Project maintainers can later change the setting
+for their individual projects if needed.
+
 ## Exporting variables
 
 Scripts executed in separate shell contexts do not share exports, aliases,

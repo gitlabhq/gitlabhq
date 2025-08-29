@@ -57,7 +57,10 @@ export default {
       return this.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
     isEpic() {
-      return this.referenceType === REFERENCE_TYPES.EPIC;
+      return (
+        this.referenceType === REFERENCE_TYPES.EPIC ||
+        this.referenceType === REFERENCE_TYPES.EPIC_ALTERNATIVE
+      );
     },
     isExpandable() {
       return (

@@ -24417,9 +24417,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Fetching logs..."
-msgstr ""
-
 msgid "DuoAgentsPlatform|Flow trigger created successfully."
 msgstr ""
 
@@ -24475,9 +24472,6 @@ msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No flow triggers yet"
-msgstr ""
-
-msgid "DuoAgentsPlatform|No logs available yet."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Owner"
@@ -24538,6 +24532,12 @@ msgid "DuoAgentsPlatform|The flow trigger could not be created. Try again."
 msgstr ""
 
 msgid "DuoAgentsPlatform|The flow trigger could not be updated. Try again."
+msgstr ""
+
+msgid "DuoAgentsPlatform|This session has no activity"
+msgstr ""
+
+msgid "DuoAgentsPlatform|To learn more about this session, view the %{boldStart}Details%{boldEnd} tab."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Unknown"
