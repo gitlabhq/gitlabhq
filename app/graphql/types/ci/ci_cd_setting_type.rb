@@ -59,6 +59,11 @@ module Types
           'repository using a job token',
         method: :push_repository_for_job_token_allowed?,
         authorize: :admin_project
+      field :resource_group_default_process_mode,
+        Types::Ci::ResourceGroups::ProcessModeEnum,
+        null: true,
+        description: 'Default process mode for resource groups.',
+        authorize: :admin_project
     end
   end
 end

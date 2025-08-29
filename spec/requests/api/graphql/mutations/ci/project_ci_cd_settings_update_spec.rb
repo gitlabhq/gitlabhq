@@ -326,6 +326,54 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
     end
 
+    describe 'resource_group_default_process_mode' do
+      let_it_be(:variables) do
+        {
+          full_path: project.full_path,
+          resource_group_default_process_mode: 'OLDEST_FIRST'
+        }
+      end
+
+      it 'updates resource_group_default_process_mode', :aggregate_failures do
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response_errors).to be_blank
+        expect(project.ci_cd_settings.resource_group_default_process_mode).to eq('oldest_first')
+      end
+
+      it 'does not update resource_group_default_process_mode if not specified', :aggregate_failures do
+        variables.except!(:resource_group_default_process_mode)
+
+        post_graphql_mutation(mutation, current_user: user)
+
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response_errors).to be_blank
+        expect(project.ci_cd_settings.resource_group_default_process_mode).to eq('unordered')
+      end
+
+      context 'with different process modes' do
+        %w[UNORDERED OLDEST_FIRST NEWEST_FIRST NEWEST_READY_FIRST].each do |mode|
+          it "accepts #{mode} process mode", :aggregate_failures do
+            variables[:resource_group_default_process_mode] = mode
+
+            post_graphql_mutation(mutation, current_user: user)
+
+            project.reload
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response_errors).to be_blank
+            expected_value = mode.downcase
+            expect(project.ci_cd_settings.resource_group_default_process_mode).to eq(expected_value)
+          end
+        end
+      end
+    end
+
     context 'when bad arguments are provided' do
       let(:variables) { { full_path: '', keep_latest_artifact: false } }
 

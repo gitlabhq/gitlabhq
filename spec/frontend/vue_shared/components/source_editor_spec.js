@@ -2,6 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import SourceEditor from '~/vue_shared/components/source_editor.vue';
 import * as helpers from 'jest/editor/helpers';
 
@@ -32,7 +33,7 @@ describe('Source Editor component', () => {
       createInstance: createInstanceMock,
     };
   });
-  function createComponent(props = {}) {
+  function createComponent(props = {}, directives = {}) {
     wrapper = shallowMount(SourceEditor, {
       propsData: {
         value,
@@ -40,6 +41,7 @@ describe('Source Editor component', () => {
         fileGlobalId,
         ...props,
       },
+      directives,
     });
   }
 
@@ -162,6 +164,14 @@ describe('Source Editor component', () => {
         await nextTick();
         expect(mockInstance.setValue).not.toHaveBeenCalled();
       });
+    });
+
+    it('applies the v-dynamic-height directive to the editor element', () => {
+      createComponent({}, { DynamicHeight: createMockDirective('dynamic-height') });
+      const editorElement = wrapper.find('[data-testid="source-editor-container"]');
+      const directiveBinding = getBinding(editorElement.element, 'dynamic-height');
+
+      expect(directiveBinding).toBeDefined();
     });
   });
 });

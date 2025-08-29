@@ -22390,7 +22390,8 @@ CREATE TABLE project_ci_cd_settings (
     id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL,
     delete_pipelines_in_seconds integer,
     allow_composite_identities_to_run_pipelines boolean DEFAULT false NOT NULL,
-    display_pipeline_variables boolean DEFAULT false NOT NULL
+    display_pipeline_variables boolean DEFAULT false NOT NULL,
+    resource_group_default_process_mode smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq
@@ -26297,6 +26298,7 @@ CREATE TABLE user_preferences (
     work_items_display_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     default_duo_add_on_assignment_id bigint,
     markdown_maintain_indentation boolean DEFAULT false NOT NULL,
+    project_studio_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),

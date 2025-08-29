@@ -1,11 +1,11 @@
 - args = { show_project_name: local_assigns.fetch(:show_project_name, false) }
 
 .row.gl-mt-3
-  .col-md-3
+  .gl-col-md-3
     = render 'shared/milestones/issuables', args.merge(title: _('Work in progress (open and unassigned)'), issuables: merge_requests.opened.unassigned, id: 'unassigned', show_counter: true)
-  .col-md-3
+  .gl-col-md-3
     = render 'shared/milestones/issuables', args.merge(title: _('Waiting for merge (open and assigned)'), issuables: merge_requests.opened.assigned, id: 'ongoing', show_counter: true)
-  .col-md-3
+  .gl-col-md-3
     = render 'shared/milestones/issuables', args.merge(title: _('Rejected (closed)'), issuables: merge_requests.closed, id: 'closed', show_counter: true)
-  .col-md-3
+  .gl-col-md-3
     = render 'shared/milestones/issuables', args.merge(title: _('Merged'), issuables: merge_requests.merged, id: 'merged', primary: true, show_counter: true)

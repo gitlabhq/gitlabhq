@@ -2029,6 +2029,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         user3.reload
       end
 
+      after do
+        user3.update!(private_profile: false)
+        user3.reload
+      end
+
       context 'user does not have access to view the private profile' do
         it 'returns no projects' do
           get api(path, user)
@@ -2098,6 +2103,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'with a private profile' do
       before do
         user3.update!(private_profile: true)
+        user3.reload
+      end
+
+      after do
+        user3.update!(private_profile: false)
         user3.reload
       end
 
@@ -2884,6 +2894,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['ci_forward_deployment_rollback_allowed']).to eq(project.ci_forward_deployment_rollback_allowed)
         expect(json_response['ci_allow_fork_pipelines_to_run_in_parent_project']).to eq(project.ci_allow_fork_pipelines_to_run_in_parent_project)
         expect(json_response['ci_separated_caches']).to eq(project.ci_separated_caches)
+        expect(json_response['resource_group_default_process_mode']).to eq(project.resource_group_default_process_mode)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['squash_option']).to eq(project.squash_option.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
@@ -4928,12 +4939,47 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
                           ci_forward_deployment_rollback_allowed: false,
                           ci_allow_fork_pipelines_to_run_in_parent_project: false,
                           ci_separated_caches: false,
+                          resource_group_default_process_mode: 'oldest_first',
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(:ok)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      context 'when updating resource_group_default_process_mode' do
+        %w[unordered oldest_first newest_first newest_ready_first].each do |mode|
+          it "updates resource_group_default_process_mode to #{mode}" do
+            project_param = { resource_group_default_process_mode: mode }
+
+            put api("/projects/#{project3.id}", user4), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['resource_group_default_process_mode']).to eq(mode)
+            expect(project3.reload.resource_group_default_process_mode).to eq(mode)
+          end
+        end
+
+        it 'returns error for invalid resource_group_default_process_mode' do
+          project_param = { resource_group_default_process_mode: 'invalid_mode' }
+
+          put api("/projects/#{project3.id}", user4), params: project_param
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to include('resource_group_default_process_mode')
+        end
+
+        it 'does not update resource_group_default_process_mode if not specified' do
+          original_mode = project3.resource_group_default_process_mode
+          project_param = { description: 'updated description' }
+
+          put api("/projects/#{project3.id}", user4), params: project_param
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['resource_group_default_process_mode']).to eq(original_mode)
+          expect(project3.reload.resource_group_default_process_mode).to eq(original_mode)
         end
       end
 

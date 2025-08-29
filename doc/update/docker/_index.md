@@ -13,14 +13,17 @@ description: Upgrade a Docker-based instance.
 
 {{< /details >}}
 
-Upgrade a Docker-based installation to a later version of GitLab.
+Upgrade a Docker-based instance to a later version of GitLab.
 
-## Upgrade GitLab using Docker Engine
+Before you upgrade, consult [information you need before you upgrade](../plan_your_upgrade.md).
 
-To upgrade a GitLab instance that was [installed using Docker Engine](../../install/docker/installation.md#install-gitlab-by-using-docker-engine):
+## Upgrade GitLab by using Docker Engine
 
-1. Create a [backup](../../install/docker/backup.md). As a minimum, back up [the database](../../install/docker/backup.md#create-a-database-backup) and
-   the GitLab secrets file.
+To upgrade a GitLab instance that was
+[installed by using Docker Engine](../../install/docker/installation.md#install-gitlab-by-using-docker-engine):
+
+1. Create a [backup](../../install/docker/backup.md). As a minimum, back up
+   [the database](../../install/docker/backup.md#create-a-database-backup) and the GitLab secrets file.
 
 1. Stop the running container:
 
@@ -36,9 +39,25 @@ To upgrade a GitLab instance that was [installed using Docker Engine](../../inst
 
 1. Pull the new image:
 
+   {{< tabs >}}
+
+   {{< tab title="GitLab Enterprise Edition" >}}
+
    ```shell
    sudo docker pull gitlab/gitlab-ee:<version>-ee.0
    ```
+
+   {{< /tab >}}
+
+   {{< tab title="GitLab Community Edition" >}}
+
+   ```shell
+   sudo docker pull gitlab/gitlab-ce:<version>-ce.0
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 1. Ensure that the `GITLAB_HOME` environment variable is [defined](../../install/docker/installation.md#create-a-directory-for-the-volumes):
 
@@ -64,15 +83,13 @@ To upgrade a GitLab instance that was [installed using Docker Engine](../../inst
 
 On the first run, GitLab reconfigures and upgrades itself.
 
-Refer to the GitLab [Upgrade recommendations](../../policy/maintenance.md#upgrade-recommendations)
-when upgrading to different versions.
+## Upgrade GitLab by using Docker Compose
 
-## Upgrade GitLab using Docker compose
+To upgrade a GitLab instance that was
+[installed by using Docker Compose](../../install/docker/installation.md#install-gitlab-by-using-docker-compose):
 
-To upgrade a GitLab instance that was [installed using Docker Compose](../../install/docker/installation.md#install-gitlab-by-using-docker-compose):
-
-1. Take a [backup](../../install/docker/backup.md). As a minimum, back up [the database](../../install/docker/backup.md#create-a-database-backup) and
-   the GitLab secrets file.
+1. Create a [backup](../../install/docker/backup.md). As a minimum, back up
+   [the database](../../install/docker/backup.md#create-a-database-backup) and the GitLab secrets file.
 1. Edit `docker-compose.yml` and change the version to pull.
 1. Download the newest release and upgrade your GitLab instance:
 
@@ -80,27 +97,3 @@ To upgrade a GitLab instance that was [installed using Docker Compose](../../ins
    docker compose pull
    docker compose up -d
    ```
-
-## Downgrade GitLab
-
-The restore overwrites all newer GitLab database content with the older state.
-A downgrade is only recommended where necessary. For example, if post-upgrade tests reveal problems that cannot be resolved quickly.
-
-{{< alert type="warning" >}}
-
-You must have at least a database backup created with the exact same version and edition you are downgrading to.
-The backup is required to revert the schema changes (migrations) made during the upgrade.
-
-{{< /alert >}}
-
-To downgrade GitLab shortly after an upgrade:
-
-1. Follow the upgrade procedure, by [specifying an earlier version](../../install/docker/installation.md#find-the-gitlab-version-and-edition-to-use)
-   than you have installed.
-
-1. Restore the [database backup you made](../../install/docker/backup.md#create-a-database-backup) before the upgrade.
-
-   - [Follow the restore steps for Docker images](../../administration/backup_restore/restore_gitlab.md#restore-for-docker-image-and-gitlab-helm-chart-installations), including
-     stopping Puma and Sidekiq. Only the database must be restored, so add
-     `SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state`
-     to the `gitlab-backup restore` command line arguments.

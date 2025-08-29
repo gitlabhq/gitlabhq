@@ -2340,7 +2340,7 @@ DEPENDENCIES
   rack-oauth2 (~> 2.2.1)
   rack-proxy (~> 0.7.7)
   rack-timeout (~> 0.7.0)
-  rails (~> 7.2.2.1)
+  rails (~> 7.2.2.2)
   rails-controller-testing
   rails-i18n (~> 7.0, >= 7.0.9)
   rainbow (~> 3.0)

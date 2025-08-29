@@ -35670,6 +35670,9 @@ msgstr ""
 msgid "IssuesAnalytics|Total:"
 msgstr ""
 
+msgid "Issues|An error occurred while importing issues."
+msgstr ""
+
 msgid "Issues|Move selected"
 msgstr ""
 
@@ -42165,6 +42168,9 @@ msgstr ""
 msgid "Navigation|Monitor settings"
 msgstr ""
 
+msgid "Navigation|New UI"
+msgstr ""
+
 msgid "Navigation|Observability"
 msgstr ""
 
@@ -42186,6 +42192,12 @@ msgstr ""
 msgid "Navigation|Preferences"
 msgstr ""
 
+msgid "Navigation|Preview"
+msgstr ""
+
+msgid "Navigation|Preview new UI"
+msgstr ""
+
 msgid "Navigation|Primary navigation"
 msgstr ""
 
@@ -42193,6 +42205,9 @@ msgid "Navigation|Profile"
 msgstr ""
 
 msgid "Navigation|Projects you visit often will appear here."
+msgstr ""
+
+msgid "Navigation|Provide feedback"
 msgstr ""
 
 msgid "Navigation|Repository settings"
@@ -45134,6 +45149,12 @@ msgid "OperationsDashboard|The operations dashboard provides a summary of each p
 msgstr ""
 
 msgid "Opstrace endpoint for Error Tracking integration"
+msgstr ""
+
+msgid "Opt in to Project Studio"
+msgstr ""
+
+msgid "Opt out of Project Studio"
 msgstr ""
 
 msgid "Optimize repository period"
@@ -59742,6 +59763,9 @@ msgstr ""
 msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."
 msgstr ""
 
+msgid "SecurityReports|Risk score"
+msgstr ""
+
 msgid "SecurityReports|Scan details"
 msgstr ""
 
@@ -72728,6 +72752,9 @@ msgstr ""
 msgid "WorkItem|An error occurred while getting work item counts."
 msgstr ""
 
+msgid "WorkItem|An error occurred while importing work items."
+msgstr ""
+
 msgid "WorkItem|An error occurred while making status default."
 msgstr ""
 
@@ -73082,7 +73109,13 @@ msgstr ""
 msgid "WorkItem|How do I use custom fields?"
 msgstr ""
 
+msgid "WorkItem|Import CSV"
+msgstr ""
+
 msgid "WorkItem|Import from Jira"
+msgstr ""
+
+msgid "WorkItem|Import work items"
 msgstr ""
 
 msgid "WorkItem|In progress"
@@ -73103,6 +73136,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "WorkItem|Issues settings"
+msgstr ""
+
+msgid "WorkItem|It must have a header row and at least two columns: the first column is the work item title and the second column is the work item description. The separator is automatically detected."
 msgstr ""
 
 msgid "WorkItem|Iteration"
@@ -73348,6 +73384,9 @@ msgid "WorkItem|Please provide a name for the lifecycle."
 msgstr ""
 
 msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} for this project."
+msgstr ""
+
+msgid "WorkItem|Please select a file to import."
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -73768,6 +73807,9 @@ msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the f
 msgstr ""
 
 msgid "WorkItem|Your data might be out of date. Refresh to see the latest information."
+msgstr ""
+
+msgid "WorkItem|Your work items will be imported in the background. Once finished, you'll get a confirmation email."
 msgstr ""
 
 msgid "WorkItem|Zoom link"

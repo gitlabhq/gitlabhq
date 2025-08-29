@@ -20,6 +20,7 @@ import {
 import { visitUrl } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import Api from '~/api';
+import { createDynamicHeightManager } from '~/vue_shared/utils/dynamic_height';
 
 jest.mock('~/api', () => ({ getRawFile: jest.fn().mockResolvedValue({ data: 'raw content' }) }));
 jest.mock('~/editor/source_editor');
@@ -31,6 +32,11 @@ jest.mock('~/editor/extensions/source_editor_toolbar_ext');
 jest.mock('~/editor/extensions/source_editor_security_policy_schema_ext');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
+jest.mock('~/vue_shared/utils/dynamic_height', () => ({
+  createDynamicHeightManager: jest.fn().mockReturnValue({
+    destroy: jest.fn(),
+  }),
+}));
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const defaultExtensions = [
@@ -298,6 +304,43 @@ describe('Blob Editing', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred previewing the blob',
       });
+    });
+  });
+
+  describe('dynamic height integration', () => {
+    it('initializes dynamic height manager for the editor element', async () => {
+      setHTMLFixture(`
+        <div class="js-edit-mode-pane"></div>
+        <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
+        <form class="js-edit-blob-form">
+          <div id="file_path"></div>
+          <div id="editor" data-ref="main"></div>
+          <textarea id="file-content"></textarea>
+        </form>
+      `);
+
+      await initEditor();
+
+      expect(createDynamicHeightManager).toHaveBeenCalledWith(document.getElementById('editor'));
+    });
+
+    it('cleans up dynamic height manager on destroy', async () => {
+      setHTMLFixture(`
+        <div class="js-edit-mode-pane"></div>
+        <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
+        <form class="js-edit-blob-form">
+          <div id="file_path"></div>
+          <div id="editor" data-ref="main"></div>
+          <textarea id="file-content"></textarea>
+        </form>
+      `);
+
+      await initEditor();
+      const mockManager = createDynamicHeightManager.mock.results[0].value;
+
+      blobInstance.destroy();
+
+      expect(mockManager.destroy).toHaveBeenCalled();
     });
   });
 });

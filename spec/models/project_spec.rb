@@ -1739,7 +1739,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'job_token_scope_enabled' => 'ci_outbound_',
           'id_token_sub_claim_components' => 'ci_',
           'delete_pipelines_in_seconds' => 'ci_',
-          'display_pipeline_variables' => 'ci_'
+          'display_pipeline_variables' => 'ci_',
+          'resource_group_default_process_mode' => ''
         }
       end
 
@@ -1905,6 +1906,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#group_runners_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method' do
         let(:delegated_method) { :group_runners_enabled? }
+      end
+    end
+
+    describe '#resource_group_default_process_mode' do
+      let_it_be(:project) { create(:project) }
+
+      it 'delegates to ci_cd_settings' do
+        expect(project.resource_group_default_process_mode).to eq('unordered')
+      end
+
+      it 'can be set through delegation' do
+        project.resource_group_default_process_mode = 'oldest_first'
+        expect(project.resource_group_default_process_mode).to eq('oldest_first')
+        expect(project.ci_cd_settings.resource_group_default_process_mode).to eq('oldest_first')
+      end
+
+      it 'returns nil when ci_cd_settings is nil' do
+        allow(project).to receive(:ci_cd_settings).and_return(nil)
+        expect(project.resource_group_default_process_mode).to be_nil
       end
     end
   end

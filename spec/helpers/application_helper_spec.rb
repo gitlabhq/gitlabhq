@@ -537,6 +537,38 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#project_studio_available' do
+    let(:user) { build(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'calls ProjectStudio#available?' do
+      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
+        expect(studio).to receive(:available?)
+      end
+
+      helper.project_studio_available?
+    end
+  end
+
+  describe '#project_studio_enabled?' do
+    let(:user) { build(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'calls ProjectStudio#enabled?' do
+      expect_next_instance_of(Users::ProjectStudio, user) do |studio|
+        expect(studio).to receive(:enabled?)
+      end
+
+      helper.project_studio_enabled?
+    end
+  end
+
   describe '#body_data' do
     context 'when @project is not set' do
       it 'does not include project data in the body data elements' do
@@ -545,7 +577,9 @@ RSpec.describe ApplicationHelper do
             page: 'application',
             page_type_id: nil,
             group: nil,
-            group_full_path: nil
+            group_full_path: nil,
+            project_studio_available: 'false',
+            project_studio_enabled: 'false'
           }
         )
       end
@@ -561,7 +595,9 @@ RSpec.describe ApplicationHelper do
               page: 'application',
               page_type_id: nil,
               group: group.path,
-              group_full_path: group.full_path
+              group_full_path: group.full_path,
+              project_studio_available: 'false',
+              project_studio_enabled: 'false'
             }
           )
         end
@@ -587,7 +623,9 @@ RSpec.describe ApplicationHelper do
             project_id: project.id,
             project: project.path,
             project_full_path: project.full_path,
-            namespace_id: project.namespace.id
+            namespace_id: project.namespace.id,
+            project_studio_available: 'false',
+            project_studio_enabled: 'false'
           }
         )
       end
@@ -605,7 +643,9 @@ RSpec.describe ApplicationHelper do
               project_id: project.id,
               project: project.path,
               project_full_path: project.full_path,
-              namespace_id: project.namespace.id
+              namespace_id: project.namespace.id,
+              project_studio_available: 'false',
+              project_studio_enabled: 'false'
             }
           )
         end
@@ -631,7 +671,9 @@ RSpec.describe ApplicationHelper do
                 project_id: issue.project.id,
                 project: issue.project.path,
                 project_full_path: project.full_path,
-                namespace_id: issue.project.namespace.id
+                namespace_id: issue.project.namespace.id,
+                project_studio_available: 'false',
+                project_studio_enabled: 'false'
               }
             )
           end
@@ -787,9 +829,9 @@ RSpec.describe ApplicationHelper do
 
           it { is_expected.not_to include('with-header') }
 
-          context 'when `global_topbar` feature is enabled' do
+          context 'when `project studio` feature is enabled' do
             before do
-              stub_feature_flags(global_topbar: true)
+              allow(helper).to receive(:project_studio_enabled?).and_return(true)
             end
 
             it { is_expected.to include('with-header') }
@@ -819,17 +861,17 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'page-with-panels' do
-      context 'when `paneled_view` feature is disabled' do
+      context 'when `project studio` feature is disabled' do
         before do
-          stub_feature_flags(paneled_view: false)
+          allow(helper).to receive(:project_studio_enabled?).and_return(false)
         end
 
         it { is_expected.not_to include('page-with-panels') }
       end
 
-      context 'when `paneled_view` feature is enabled' do
+      context 'when `project studio` feature is enabled' do
         before do
-          stub_feature_flags(paneled_view: true)
+          allow(helper).to receive(:project_studio_enabled?).and_return(true)
         end
 
         it { is_expected.to include('page-with-panels') }
@@ -837,17 +879,17 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'application-chrome' do
-      context 'when `global_topbar` feature is disabled' do
+      context 'when `project studio` feature is disabled' do
         before do
-          stub_feature_flags(global_topbar: false)
+          allow(helper).to receive(:project_studio_enabled?).and_return(false)
         end
 
         it { is_expected.not_to include('application-chrome') }
       end
 
-      context 'when `global_topbar` feature is enabled' do
+      context 'when `project studio` feature is enabled' do
         before do
-          stub_feature_flags(global_topbar: true)
+          allow(helper).to receive(:project_studio_enabled?).and_return(true)
         end
 
         it { is_expected.to include('application-chrome') }

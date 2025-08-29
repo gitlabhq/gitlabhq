@@ -3,6 +3,7 @@ import { createMockDirective } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemListActions from '~/work_items/components/work_item_list_actions.vue';
 import WorkItemCsvExportModal from '~/work_items/components/work_items_csv_export_modal.vue';
+import WorkItemsCsvImportModal from '~/work_items/components/work_items_csv_import_modal.vue';
 
 describe('WorkItemsListActions component', () => {
   let wrapper;
@@ -11,6 +12,7 @@ describe('WorkItemsListActions component', () => {
   const projectImportJiraPath = 'gitlab-org/gitlab-test/-/import/jira';
   const rssPath = '/rss/path';
   const calendarPath = '/calendar/path';
+  const fullPath = 'gitlab-org/gitlab-test';
 
   const workItemCount = 10;
   const showImportExportButtons = true;
@@ -30,11 +32,13 @@ describe('WorkItemsListActions component', () => {
         projectImportJiraPath: null,
         rssPath: null,
         calendarPath: null,
+        canImportWorkItems: false,
         ...injectedProperties,
       },
       propsData: {
         workItemCount,
         showImportExportButtons,
+        fullPath,
         ...props,
       },
     });
@@ -43,6 +47,8 @@ describe('WorkItemsListActions component', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findExportButton = () => wrapper.findByTestId('export-as-csv-button');
   const findExportModal = () => wrapper.findComponent(WorkItemCsvExportModal);
+  const findImportButton = () => wrapper.findByTestId('import-csv-button');
+  const findImportModal = () => wrapper.findComponent(WorkItemsCsvImportModal);
   const findImportFromJiraLink = () => wrapper.findByTestId('import-from-jira-link');
   const findRssLink = () => wrapper.findByTestId('subscribe-rss');
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
@@ -95,6 +101,41 @@ describe('WorkItemsListActions component', () => {
       it('does not display the export button and modal', () => {
         expect(findExportButton().exists()).toBe(false);
         expect(findExportModal().exists()).toBe(false);
+      });
+    });
+
+    describe('when canImportWorkItems=true', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ canImportWorkItems: true });
+      });
+
+      it('displays the import button and the dropdown', () => {
+        expect(findImportButton().exists()).toBe(true);
+        expect(findDropdown().exists()).toBe(true);
+      });
+
+      it('renders the import modal', () => {
+        expect(findImportModal().props()).toMatchObject({
+          modalId: 'work-item-import-modal',
+          fullPath,
+        });
+      });
+
+      it('opens the import modal', () => {
+        findImportButton().vm.$emit('click');
+
+        expect(glModalDirective).toHaveBeenCalledWith('work-item-import-modal');
+      });
+    });
+
+    describe('when canImportWorkItems=false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ canImportWorkItems: false });
+      });
+
+      it('does not display the import button and modal', () => {
+        expect(findImportButton().exists()).toBe(false);
+        expect(findImportModal().exists()).toBe(false);
       });
     });
   });

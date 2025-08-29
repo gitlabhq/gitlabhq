@@ -1,5 +1,8 @@
 import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
-import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
+import {
+  formatGraphQLGroup,
+  formatGraphQLGroups,
+} from '~/vue_shared/components/groups_list/formatter';
 import {
   ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
@@ -21,6 +24,62 @@ afterEach(() => {
   window.gon = {};
 });
 
+const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
+  expect(formattedGroup).toMatchObject({
+    id: getIdFromGraphQLId(mockGroup.id),
+    avatarLabel: mockGroup.fullName,
+    fullName: mockGroup.fullName,
+    parent: null,
+    accessLevel: {
+      integerValue: 50,
+    },
+    availableActions: [
+      ACTION_EDIT,
+      ACTION_ARCHIVE,
+      ACTION_RESTORE,
+      ACTION_LEAVE,
+      ACTION_DELETE_IMMEDIATELY,
+    ],
+    children: [],
+    childrenLoading: false,
+    hasChildren: false,
+    relativeWebUrl: `/gitlab/${mockGroup.fullPath}`,
+    customProperty: mockGroup.fullName,
+  });
+};
+
+const itCorrectlyFormatsWithoutActions = (formattedGroup, mockGroup) => {
+  expect(formattedGroup).toMatchObject({
+    id: getIdFromGraphQLId(mockGroup.id),
+    avatarLabel: mockGroup.fullName,
+    fullName: mockGroup.fullName,
+    parent: null,
+    accessLevel: {
+      integerValue: 0,
+    },
+    availableActions: [],
+  });
+};
+
+describe('formatGraphQLGroup', () => {
+  it('correctly formats the group with edit, delete, and leave permissions', () => {
+    window.gon = { relative_url_root: '/gitlab' };
+    const [mockGroup] = organizationGroups;
+    const formattedGroup = formatGraphQLGroup(mockGroup, (group) => ({
+      customProperty: group.fullName,
+    }));
+
+    itCorrectlyFormatsWithActions(formattedGroup, mockGroup);
+  });
+
+  it('correctly formats the group without edit, archive, delete, and leave permissions', () => {
+    const nonDeletableGroup = organizationGroups[1];
+    const formattedGroup = formatGraphQLGroup(nonDeletableGroup);
+
+    itCorrectlyFormatsWithoutActions(formattedGroup, nonDeletableGroup);
+  });
+});
+
 describe('formatGraphQLGroups', () => {
   it('correctly formats the groups with edit, delete, and leave permissions', () => {
     window.gon = { relative_url_root: '/gitlab' };
@@ -30,27 +89,7 @@ describe('formatGraphQLGroups', () => {
     }));
     const [firstFormattedGroup] = formattedGroups;
 
-    expect(firstFormattedGroup).toMatchObject({
-      id: getIdFromGraphQLId(firstMockGroup.id),
-      avatarLabel: firstMockGroup.fullName,
-      fullName: firstMockGroup.fullName,
-      parent: null,
-      accessLevel: {
-        integerValue: 50,
-      },
-      availableActions: [
-        ACTION_EDIT,
-        ACTION_ARCHIVE,
-        ACTION_RESTORE,
-        ACTION_LEAVE,
-        ACTION_DELETE_IMMEDIATELY,
-      ],
-      children: [],
-      childrenLoading: false,
-      hasChildren: false,
-      relativeWebUrl: `/gitlab/${firstMockGroup.fullPath}`,
-      customProperty: firstMockGroup.fullName,
-    });
+    itCorrectlyFormatsWithActions(firstFormattedGroup, firstMockGroup);
     expect(formattedGroups).toHaveLength(organizationGroups.length);
   });
 
@@ -59,17 +98,7 @@ describe('formatGraphQLGroups', () => {
     const formattedGroups = formatGraphQLGroups(organizationGroups);
     const nonDeletableFormattedGroup = formattedGroups[1];
 
-    expect(nonDeletableFormattedGroup).toMatchObject({
-      id: getIdFromGraphQLId(nonDeletableGroup.id),
-      avatarLabel: nonDeletableGroup.fullName,
-      fullName: nonDeletableGroup.fullName,
-      parent: null,
-      accessLevel: {
-        integerValue: 0,
-      },
-      availableActions: [],
-    });
-
+    itCorrectlyFormatsWithoutActions(nonDeletableFormattedGroup, nonDeletableGroup);
     expect(formattedGroups).toHaveLength(organizationGroups.length);
   });
 });

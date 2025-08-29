@@ -1,0 +1,19 @@
+---
+description: Click on a link in activity feed
+internal_events: true
+status: active
+action: user_clicks_link_in_activity_feed
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Source - a string describing the activity feed filter active when link was clicked (e.g. "Your activity", "Starred projects", "Followed users")
+product_group: engagement
+product_categories:
+- navigation
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202386
+tiers:
+- free
+- premium
+- ultimate

@@ -6232,6 +6232,30 @@ Input type: `DestroySnippetInput`
 | <a id="mutationdestroysnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.devfileValidate`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `DevfileValidateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdevfilevalidateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdevfilevalidatedevfileyaml"></a>`devfileYaml` | [`String!`](#string) | Input devfile. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdevfilevalidateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdevfilevalidateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationdevfilevalidatevalid"></a>`valid` | [`Boolean`](#boolean) | Status whether devfile is valid or not. |
+
 ### `Mutation.disableDevopsAdoptionNamespace`
 
 **Status**: Beta.
@@ -10035,6 +10059,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdatemergetrainsskiptrainallowed"></a>`mergeTrainsSkipTrainAllowed` | [`Boolean`](#boolean) | Indicates whether an option is allowed to merge without refreshing the merge train. Ignored unless the `merge_trains_skip_train` feature flag is also enabled. |
 | <a id="mutationprojectcicdsettingsupdatepipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="mutationprojectcicdsettingsupdatepushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+| <a id="mutationprojectcicdsettingsupdateresourcegroupdefaultprocessmode"></a>`resourceGroupDefaultProcessMode` | [`ResourceGroupsProcessMode`](#resourcegroupsprocessmode) | Default process mode for resource groups in the project. |
 
 #### Fields
 
@@ -13230,6 +13255,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -40477,6 +40503,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectcicdsettingpipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String!`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 | <a id="projectcicdsettingpushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+| <a id="projectcicdsettingresourcegroupdefaultprocessmode"></a>`resourceGroupDefaultProcessMode` | [`ResourceGroupsProcessMode`](#resourcegroupsprocessmode) | Default process mode for resource groups. |
 
 ### `ProjectComplianceControlStatusType`
 
@@ -43710,6 +43737,7 @@ Returns [`String`](#string).
 | <a id="userpreferencesmergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
+| <a id="userpreferencesprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Whether Project Studio is enabled for the user. |
 | <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferencestimezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
@@ -49025,6 +49053,17 @@ Status of a requirement based on last test report.
 | <a id="requirementstatusfilterfailed"></a>`FAILED` | Failed test report. |
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
 | <a id="requirementstatusfilterpassed"></a>`PASSED` | Passed test report. |
+
+### `ResourceGroupsProcessMode`
+
+Process mode for resource groups.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="resourcegroupsprocessmodenewest_first"></a>`NEWEST_FIRST` | Newest first. |
+| <a id="resourcegroupsprocessmodenewest_ready_first"></a>`NEWEST_READY_FIRST` | Newest ready first. |
+| <a id="resourcegroupsprocessmodeoldest_first"></a>`OLDEST_FIRST` | Oldest first. |
+| <a id="resourcegroupsprocessmodeunordered"></a>`UNORDERED` | Unordered. |
 
 ### `ReviewerWildcardId`
 

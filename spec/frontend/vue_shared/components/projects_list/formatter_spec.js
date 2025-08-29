@@ -1,5 +1,8 @@
 import projectsGraphQLResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
-import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import {
+  formatGraphQLProjects,
+  formatGraphQLProject,
+} from '~/vue_shared/components/projects_list/formatter';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 
@@ -21,6 +24,36 @@ afterEach(() => {
   window.gon = {};
 });
 
+const itCorrectlyFormatsProject = (formattedProject, mockProject) => {
+  expect(formattedProject).toMatchObject({
+    id: getIdFromGraphQLId(mockProject.id),
+    nameWithNamespace: mockProject.nameWithNamespace,
+    avatarLabel: mockProject.nameWithNamespace,
+    mergeRequestsAccessLevel: mockProject.mergeRequestsAccessLevel.stringValue,
+    issuesAccessLevel: mockProject.issuesAccessLevel.stringValue,
+    forkingAccessLevel: mockProject.forkingAccessLevel.stringValue,
+    accessLevel: {
+      integerValue: 50,
+    },
+    availableActions: ['edit', 'delete'],
+    customProperty: mockProject.nameWithNamespace,
+    isPersonal: false,
+    relativeWebUrl: `/gitlab/${mockProject.fullPath}`,
+  });
+};
+
+describe('formatGraphQLProject', () => {
+  it('correctly formats the projects', () => {
+    window.gon = { relative_url_root: '/gitlab' };
+    const [mockProject] = projects;
+    const formattedProject = formatGraphQLProject(mockProject, (project) => ({
+      customProperty: project.nameWithNamespace,
+    }));
+
+    itCorrectlyFormatsProject(formattedProject, mockProject);
+  });
+});
+
 describe('formatGraphQLProjects', () => {
   it('correctly formats the projects', () => {
     window.gon = { relative_url_root: '/gitlab' };
@@ -30,21 +63,7 @@ describe('formatGraphQLProjects', () => {
     }));
     const [firstFormattedProject] = formattedProjects;
 
-    expect(firstFormattedProject).toMatchObject({
-      id: getIdFromGraphQLId(firstMockProject.id),
-      nameWithNamespace: firstMockProject.nameWithNamespace,
-      avatarLabel: firstMockProject.nameWithNamespace,
-      mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
-      issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
-      forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
-      accessLevel: {
-        integerValue: 50,
-      },
-      availableActions: ['edit', 'delete'],
-      customProperty: firstMockProject.nameWithNamespace,
-      isPersonal: false,
-      relativeWebUrl: `/gitlab/${firstMockProject.fullPath}`,
-    });
+    itCorrectlyFormatsProject(firstFormattedProject, firstMockProject);
 
     expect(formattedProjects).toHaveLength(projects.length);
   });

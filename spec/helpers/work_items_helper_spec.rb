@@ -48,7 +48,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true',
             rss_path: project_work_items_path(project, format: :atom),
-            calendar_path: project_work_items_path(project, format: :ics)
+            calendar_path: project_work_items_path(project, format: :ics),
+            can_import_work_items: "true"
           }
         )
       end

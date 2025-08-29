@@ -75,6 +75,20 @@
   }
 }
 
+// Aligns collapsed sidebar toggle height and border color with topbar
+.panels-container {
+  .milestone-sidebar {
+    .js-sidebar-toggle.gutter-toggle {
+      height: 49px;
+      border-bottom-color: var(--super-sidebar-bg) !important;
+    }
+  }
+}
+
+.js-right-sidebar.right-sidebar-expanded {
+    display: block !important;
+}
+
 .milestone-issues-list,
 .milestone-merge_requests-list {
   .issuable-detail {

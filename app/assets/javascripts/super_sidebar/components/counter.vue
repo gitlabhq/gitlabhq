@@ -2,13 +2,12 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { highCountTrim } from '~/lib/utils/text_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: {
     GlIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
+  inject: ['projectStudioEnabled'],
   props: {
     count: {
       type: [Number, String],
@@ -29,9 +28,6 @@ export default {
     },
   },
   computed: {
-    superTopbarEnabled() {
-      return this.glFeatures.globalTopbar;
-    },
     ariaLabel() {
       return `${this.label} ${this.count}`;
     },
@@ -60,11 +56,11 @@ export default {
       :name="icon"
       class="gl-shrink-0"
       :class="{
-        '!gl-mr-0': superTopbarEnabled,
-        'notification-dot-mask': count && superTopbarEnabled,
+        '!gl-mr-0': projectStudioEnabled,
+        'notification-dot-mask': count && projectStudioEnabled,
       }"
     />
-    <span v-if="count && superTopbarEnabled" class="notification-dot"></span>
+    <span v-if="count && projectStudioEnabled" class="notification-dot"></span>
     <span v-else-if="count" aria-hidden="true" class="gl-font-semibold">{{ formattedCount }}</span>
   </component>
 </template>

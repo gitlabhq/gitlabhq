@@ -65,7 +65,7 @@ RSpec.describe 'PipelineScheduleDelete', feature_category: :continuous_integrati
 
           expect(graphql_errors).not_to be_empty
           expect(graphql_errors[0]['message'])
-            .to eq("Internal server error: Couldn't find Ci::PipelineSchedule with 'id'=0")
+            .to eq("Internal server error: Couldn't find Ci::PipelineSchedule with 'id'=\"0\"")
         end
       end
     end

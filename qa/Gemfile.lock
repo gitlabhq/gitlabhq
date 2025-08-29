@@ -22,13 +22,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    actionview (7.1.5.1)
-      activesupport (= 7.1.5.1)
+    actionview (7.1.5.2)
+      activesupport (= 7.1.5.2)
       builder (~> 3.1)
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
-    activesupport (7.1.5.1)
+    activesupport (7.1.5.2)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -376,7 +376,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 7.1.5.1)
+  activesupport (~> 7.1.5.2)
   allure-rspec (~> 2.27.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)

@@ -31370,6 +31370,16 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[resource_group_default_process_mode]
+        description: The process mode of the resource group
+        type: string
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
+        required: false
+      - in: formData
         name: override_params[resolve_outdated_diff_discussions]
         description: Automatically resolve merge request diff threads on lines changed
           with a push
@@ -32039,6 +32049,16 @@ paths:
         name: override_params[group_runners_enabled]
         description: Flag indication if group runners are enabled for that project
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[resource_group_default_process_mode]
+        description: The process mode of the resource group
+        type: string
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
         required: false
       - in: formData
         name: override_params[resolve_outdated_diff_discussions]
@@ -32789,6 +32809,16 @@ paths:
         name: override_params[group_runners_enabled]
         description: Flag indication if group runners are enabled for that project
         type: boolean
+        required: false
+      - in: formData
+        name: override_params[resource_group_default_process_mode]
+        description: The process mode of the resource group
+        type: string
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
         required: false
       - in: formData
         name: override_params[resolve_outdated_diff_discussions]
@@ -47913,6 +47943,9 @@ definitions:
         example: 3600
       group_runners_enabled:
         type: boolean
+      resource_group_default_process_mode:
+        type: string
+        example: unordered
       auto_cancel_pending_pipelines:
         type: string
         example: enabled
@@ -63236,6 +63269,14 @@ definitions:
       group_runners_enabled:
         type: boolean
         description: Flag indication if group runners are enabled for that project
+      resource_group_default_process_mode:
+        type: string
+        description: The process mode of the resource group
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
       resolve_outdated_diff_discussions:
         type: boolean
         description: Automatically resolve merge request diff threads on lines changed
@@ -63655,6 +63696,14 @@ definitions:
       group_runners_enabled:
         type: boolean
         description: Flag indication if group runners are enabled for that project
+      resource_group_default_process_mode:
+        type: string
+        description: The process mode of the resource group
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
       resolve_outdated_diff_discussions:
         type: boolean
         description: Automatically resolve merge request diff threads on lines changed
@@ -64141,6 +64190,9 @@ definitions:
         example: 3600
       group_runners_enabled:
         type: boolean
+      resource_group_default_process_mode:
+        type: string
+        example: unordered
       auto_cancel_pending_pipelines:
         type: string
         example: enabled
@@ -64549,6 +64601,14 @@ definitions:
       group_runners_enabled:
         type: boolean
         description: Flag indication if group runners are enabled for that project
+      resource_group_default_process_mode:
+        type: string
+        description: The process mode of the resource group
+        enum:
+        - unordered
+        - oldest_first
+        - newest_first
+        - newest_ready_first
       resolve_outdated_diff_discussions:
         type: boolean
         description: Automatically resolve merge request diff threads on lines changed

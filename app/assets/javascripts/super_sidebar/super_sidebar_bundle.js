@@ -70,6 +70,8 @@ export const getSuperSidebarData = () => {
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
 
+  const { projectStudioEnabled, projectStudioAvailable } = document.body.dataset;
+
   return {
     el,
     rootPath,
@@ -92,6 +94,8 @@ export const getSuperSidebarData = () => {
     contextSwitcherLinks,
     isImpersonating,
     isGroup,
+    projectStudioEnabled: parseBoolean(projectStudioEnabled),
+    projectStudioAvailable: parseBoolean(projectStudioAvailable),
   };
 };
 
@@ -117,6 +121,8 @@ export const initSuperSidebar = async ({
   contextSwitcherLinks,
   isImpersonating,
   isGroup,
+  projectStudioEnabled,
+  projectStudioAvailable,
 }) => {
   if (!el) return false;
 
@@ -155,6 +161,8 @@ export const initSuperSidebar = async ({
       ),
       isGroup,
       isSaas: parseBoolean(isSaas),
+      projectStudioEnabled,
+      projectStudioAvailable,
     },
     store: createStore({
       searchPath,
@@ -222,6 +230,8 @@ export const initSuperTopbar = async ({
   isImpersonating,
   isGroup,
   isSaas,
+  projectStudioEnabled,
+  projectStudioAvailable,
 }) => {
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
@@ -250,6 +260,8 @@ export const initSuperTopbar = async ({
       ),
       isGroup,
       isSaas: parseBoolean(isSaas),
+      projectStudioEnabled,
+      projectStudioAvailable,
     },
     store: createStore({
       searchPath,

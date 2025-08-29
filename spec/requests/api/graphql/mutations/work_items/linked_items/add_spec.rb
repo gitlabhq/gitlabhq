@@ -100,7 +100,7 @@ RSpec.describe "Add linked items to a work item", feature_category: :portfolio_m
             post_graphql_mutation(mutation, current_user: current_user)
           end.not_to change { WorkItems::RelatedWorkItemLink.count }
 
-          expect_graphql_errors_to_include("Couldn't find WorkItem with 'id'=#{non_existing_record_id}")
+          expect_graphql_errors_to_include("Couldn't find WorkItem with 'id'=\"#{non_existing_record_id}\"")
         end
       end
 

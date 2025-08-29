@@ -50,6 +50,11 @@ module Mutations
         required: false,
         description: 'Minimum role required to set variables when creating a pipeline or running a job.'
 
+      argument :resource_group_default_process_mode,
+        Types::Ci::ResourceGroups::ProcessModeEnum,
+        required: false,
+        description: 'Default process mode for resource groups in the project.'
+
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
         null: false,
@@ -94,7 +99,8 @@ module Mutations
           ci_push_repository_for_job_token_allowed: args[:push_repository_for_job_token_allowed],
           restrict_user_defined_variables: args[:restrict_user_defined_variables],
           ci_pipeline_variables_minimum_override_role: args[:pipeline_variables_minimum_override_role],
-          ci_display_pipeline_variables: args[:display_pipeline_variables]
+          ci_display_pipeline_variables: args[:display_pipeline_variables],
+          resource_group_default_process_mode: args[:resource_group_default_process_mode]
         }.compact
       end
     end

@@ -131,12 +131,22 @@ module ApplicationHelper
     sanitize(str, tags: %w[a span])
   end
 
+  def project_studio_available?
+    Users::ProjectStudio.new(current_user).available?
+  end
+
+  def project_studio_enabled?
+    Users::ProjectStudio.new(current_user).enabled?
+  end
+
   def body_data
     {
       page: body_data_page,
       page_type_id: controller.params[:id],
       group: @group&.path,
-      group_full_path: @group&.full_path
+      group_full_path: @group&.full_path,
+      project_studio_available: project_studio_available?.to_s,
+      project_studio_enabled: project_studio_enabled?.to_s
     }.merge(project_data)
   end
 
@@ -307,9 +317,9 @@ module ApplicationHelper
     class_names << 'issue-boards-page gl-overflow-auto' if current_controller?(:boards)
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
-    class_names << 'with-header' if @with_header || !current_user || Feature.enabled?(:global_topbar, current_user)
-    class_names << 'application-chrome' if Feature.enabled?(:global_topbar, current_user)
-    class_names << 'page-with-panels' if Feature.enabled?(:paneled_view, current_user)
+    class_names << 'with-header' if @with_header || !current_user || project_studio_enabled?
+    class_names << 'application-chrome' if project_studio_enabled?
+    class_names << 'page-with-panels' if project_studio_enabled?
     class_names << system_message_class
 
     class_names

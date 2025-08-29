@@ -5,6 +5,13 @@ import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
 import { s__ } from '~/locale';
+import { InternalEvents } from '~/tracking';
+import {
+  EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+  TRACKING_SCOPE_YOUR_ACTIVITY,
+  TRACKING_SCOPE_STARRED_PROJECTS,
+  TRACKING_SCOPE_FOLLOWED_USERS,
+} from '../tracking_constants';
 import BaseWidget from './base_widget.vue';
 
 const MAX_EVENTS = 5;
@@ -12,14 +19,17 @@ const FILTER_OPTIONS = [
   {
     value: null,
     text: s__('HomepageActivityWidget|Your activity'),
+    scope: TRACKING_SCOPE_YOUR_ACTIVITY,
   },
   {
     value: 'starred',
     text: s__('HomepageActivityWidget|Starred projects'),
+    scope: TRACKING_SCOPE_STARRED_PROJECTS,
   },
   {
     value: 'followed',
     text: s__('HomepageActivityWidget|Followed users'),
+    scope: TRACKING_SCOPE_FOLLOWED_USERS,
   },
 ];
 
@@ -32,6 +42,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     activityPath: {
       type: String,
@@ -63,6 +74,19 @@ export default {
         return validValues.includes(savedFilter) ? savedFilter : null;
       } catch (e) {
         return null;
+      }
+    },
+
+    handleActivityClick(event) {
+      const clickedLink = event.target.closest('a');
+
+      if (clickedLink && clickedLink.href) {
+        const currentFilter = this.$options.FILTER_OPTIONS.find(
+          (option) => option.value === this.filter,
+        );
+        this.trackEvent(EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED, {
+          label: currentFilter.scope,
+        });
       }
     },
 
@@ -156,6 +180,8 @@ export default {
       v-safe-html="activityFeedHtml"
       data-testid="events-list"
       class="gl-list-none gl-p-0"
+      :class="{ 'user-activity-feed': filter === null }"
+      @click="handleActivityClick"
     ></ul>
     <a :href="activityPath">{{ __('All activity') }}</a>
   </base-widget>

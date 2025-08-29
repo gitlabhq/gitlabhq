@@ -42,7 +42,7 @@ export default {
     createNew: __('Create new…'),
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled'],
+  inject: ['isGroup', 'fullPath', 'workItemPlanningViewEnabled', 'projectStudioEnabled'],
   props: {
     groups: {
       type: Array,
@@ -57,9 +57,6 @@ export default {
     };
   },
   computed: {
-    superTopbarEnabled() {
-      return this.glFeatures.globalTopbar;
-    },
     allowedWorkItemTypes() {
       if (this.isGroup) {
         return [];
@@ -69,7 +66,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: DROPDOWN_Y_OFFSET,
-        crossAxis: this.superTopbarEnabled ? -8 : DROPDOWN_X_OFFSET_BASE,
+        crossAxis: this.projectStudioEnabled ? -8 : DROPDOWN_X_OFFSET_BASE,
       };
     },
     preselectedWorkItemType() {
@@ -116,14 +113,14 @@ export default {
   <gl-disclosure-dropdown
     v-gl-tooltip.bottom="dropdownOpen ? '' : $options.i18n.createNew"
     category="tertiary"
-    :icon="superTopbarEnabled ? 'plus-square-o' : 'plus'"
+    :icon="projectStudioEnabled ? 'plus-square-o' : 'plus'"
     no-caret
     text-sr-only
     :toggle-text="$options.i18n.createNew"
     :toggle-id="$options.toggleId"
     :dropdown-offset="dropdownOffset"
     class="super-sidebar-new-menu-dropdown"
-    :toggle-class="{ '!gl-rounded-lg': superTopbarEnabled }"
+    :toggle-class="{ '!gl-rounded-lg': projectStudioEnabled }"
     data-testid="new-menu-toggle"
     @shown="dropdownOpen = true"
     @hidden="dropdownOpen = false"

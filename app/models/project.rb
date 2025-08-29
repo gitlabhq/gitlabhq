@@ -566,6 +566,7 @@ class Project < ApplicationRecord
     delegate :restrict_user_defined_variables, :restrict_user_defined_variables=
     delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=
     delegate :job_token_scope_enabled, :job_token_scope_enabled=, prefix: :ci_outbound
+    delegate :resource_group_default_process_mode, :resource_group_default_process_mode=
 
     with_options prefix: :ci do
       delegate :pipeline_variables_minimum_override_role, :pipeline_variables_minimum_override_role=

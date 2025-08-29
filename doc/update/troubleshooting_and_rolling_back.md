@@ -12,6 +12,6 @@ Troubleshooting upgrades and rolling back to earlier versions.
 
 - [Troubleshooting background migrations](background_migrations_troubleshooting.md)
 - [Troubleshooting Linux package upgrades](package/package_troubleshooting.md)
-- [Roll back Linux package instances](package/downgrade.md)
+- [Roll back GitLab instances](package/downgrade.md)
 
 {{< /cards >}}

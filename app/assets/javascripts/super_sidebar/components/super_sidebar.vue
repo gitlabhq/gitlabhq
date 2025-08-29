@@ -42,7 +42,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialWidget'],
+  inject: ['showTrialWidget', 'projectStudioEnabled'],
   props: {
     sidebarData: {
       type: Object,
@@ -170,7 +170,7 @@ export default {
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.isAdmin && !this.glFeatures.globalTopbar) {
+      if (this.isAdmin && !this.projectStudioEnabled) {
         return this.$refs.adminAreaLink.$el;
       }
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -223,7 +223,7 @@ export default {
         {{ $options.i18n.primaryNavigation }}
       </h2>
       <user-bar
-        v-if="!glFeatures.globalTopbar"
+        v-if="!projectStudioEnabled"
         ref="userBar"
         :has-collapse-button="!showOverlay"
         :sidebar-data="sidebarData"
@@ -257,7 +257,7 @@ export default {
             <help-center ref="helpCenter" :sidebar-data="sidebarData" />
 
             <gl-button
-              v-if="isAdmin && !glFeatures.globalTopbar"
+              v-if="isAdmin && !projectStudioEnabled"
               ref="adminAreaLink"
               class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
               data-testid="sidebar-admin-link"

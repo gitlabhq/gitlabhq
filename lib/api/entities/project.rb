@@ -131,6 +131,7 @@ module API
         expose :ci_pipeline_variables_minimum_override_role, documentation: { type: 'string' }
         expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
         expose :group_runners_enabled, documentation: { type: 'boolean' }
+        expose :resource_group_default_process_mode, documentation: { type: 'string', example: 'unordered' }
         expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
         expose :build_timeout, documentation: { type: 'integer', example: 3600 }
         expose :auto_devops_enabled?, as: :auto_devops_enabled, documentation: { type: 'boolean' }

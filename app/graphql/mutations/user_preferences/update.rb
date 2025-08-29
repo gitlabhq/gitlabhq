@@ -10,7 +10,8 @@ module Mutations
         :organization_groups_projects_display,
         :visibility_pipeline_id_type,
         :use_work_items_view,
-        :merge_request_dashboard_list_type
+        :merge_request_dashboard_list_type,
+        :project_studio_enabled
       ].freeze
 
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
@@ -52,6 +53,11 @@ module Mutations
         required: false,
         experiment: { milestone: '18.1' }
 
+      argument :project_studio_enabled, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Whether Project Studio is enabled for the user.',
+        experiment: { milestone: '18.4' }
+
       field :user_preferences,
         Types::UserPreferencesType,
         null: true,
@@ -70,6 +76,12 @@ module Mutations
           existing_settings = user_preferences.work_items_display_settings
           attributes[:work_items_display_settings] =
             existing_settings.merge(attributes[:work_items_display_settings])
+        end
+
+        # Disallow enabling Project Studio unless its available to the user
+        #
+        if attributes.include?(:project_studio_enabled) && !current_user.can?(:enable_project_studio)
+          attributes[:project_studio_enabled] = false
         end
 
         user_preferences.update(attributes)

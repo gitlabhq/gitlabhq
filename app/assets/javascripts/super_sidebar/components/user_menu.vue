@@ -20,6 +20,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
+import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -192;
@@ -49,6 +50,7 @@ export default {
     GlDisclosureDropdownItem,
     GlButton,
     UserMenuProfileItem,
+    UserMenuProjectStudioSection,
     SetStatusModal: () =>
       import(
         /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
@@ -60,7 +62,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
-  inject: ['isImpersonating'],
+  inject: ['isImpersonating', 'projectStudioAvailable', 'projectStudioEnabled'],
   props: {
     data: {
       required: true,
@@ -74,9 +76,6 @@ export default {
     };
   },
   computed: {
-    superTopbarEnabled() {
-      return this.glFeatures.globalTopbar;
-    },
     avatarUrl() {
       return this.updatedAvatarUrl || this.data.avatar_url;
     },
@@ -306,11 +305,11 @@ export default {
 <template>
   <div
     :class="{
-      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': superTopbarEnabled,
+      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': projectStudioEnabled,
     }"
   >
     <gl-button
-      v-if="superTopbarEnabled && isImpersonating"
+      v-if="projectStudioEnabled && isImpersonating"
       v-gl-tooltip.bottom
       :href="data.stop_impersonation_path"
       :title="$options.i18n.stopImpersonating"
@@ -334,7 +333,7 @@ export default {
         <gl-button
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
-          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': superTopbarEnabled }"
+          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': projectStudioEnabled }"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
@@ -342,7 +341,7 @@ export default {
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
-            :size="superTopbarEnabled ? 32 : 24"
+            :size="projectStudioEnabled ? 32 : 24"
             :entity-name="data.name"
             :src="avatarUrl"
             aria-hidden="true"
@@ -358,7 +357,7 @@ export default {
         </gl-button>
 
         <div
-          v-if="superTopbarEnabled && hasEmoji"
+          v-if="projectStudioEnabled && hasEmoji"
           class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
@@ -413,7 +412,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="superTopbarEnabled && isAdmin"
+          v-if="projectStudioEnabled && isAdmin"
           :item="adminLinkItem"
           class="xl:gl-hidden"
           data-testid="admin-link"
@@ -463,6 +462,8 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
+
+      <user-menu-project-studio-section v-if="projectStudioAvailable" />
 
       <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
         <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item">

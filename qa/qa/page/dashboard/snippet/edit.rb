@@ -62,6 +62,7 @@ module QA
             within_element_by_index('file-holder-container', file_number - 1) do
               click_element('delete-file-button')
             end
+            sleep 1 # debounce delay
           end
 
           def save_changes

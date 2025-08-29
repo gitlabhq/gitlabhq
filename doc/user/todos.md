@@ -139,18 +139,6 @@ Hi, please message @frank :incoming_envelope:
 ```
 ````
 
-### Re-add a done to-do item
-
-If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
-
-1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
-<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
-1. At the top, select **Done**.
-1. [Find the to-do item](#filter-the-to-do-list) you want to re-add.
-1. Next to this to-do item, select **Re-add this to-do item** {{< icon name="redo" >}}.
-
-The to-do item is now visible in the **To Do** tab of the To-Do List.
-
 ## Actions that mark a to-do item as done
 
 Various actions on the to-do item object (like issue, merge request, or epic) mark its
@@ -188,26 +176,17 @@ There are two ways to do this:
 - In the To-Do List, to the right of the to-do item, select **Mark as done** ({{< icon name="check" >}}).
 - In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** ({{< icon name="todo-done" >}}).
 
-### Bulk edit to-do items
+## Re-add a done to-do item
 
-{{< history >}}
+If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16564) in GitLab 17.10.
+1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
+<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
+1. At the top, select **Done**.
+1. [Find the to-do item](#filter-the-to-do-list) you want to re-add.
+1. Next to this to-do item, select **Undo** {{< icon name="redo" >}}.
 
-{{< /history >}}
-
-You can bulk edit your to-do items:
-
-- On the **To Do** tab: Mark to-do items as done or snooze them.
-- On the **Snoozed** tab: Mark to-do items as done or remove them.
-- On the **Done** tab: Restore to-do items.
-
-To bulk edit to-do items:
-
-1. In your To-Do List:
-   - To select individual items, to the left of each item you want to edit, select the checkbox.
-   - To select all items on the page, in the upper-left corner, select the **Select all** checkbox.
-1. In the upper-right corner, select the desired action.
+The to-do item is now visible in the **To Do** tab of the To-Do List.
 
 ## Snooze to-do items
 
@@ -250,6 +229,27 @@ From the Snoozed tab, you can:
 - View when a snoozed to-do is scheduled to return to your main list.
 - Remove the snooze to immediately return an item to your main To-Do List.
 - Mark a snoozed to-do as done.
+
+## Bulk edit to-do items
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16564) in GitLab 17.10.
+
+{{< /history >}}
+
+You can bulk edit your to-do items:
+
+- On the **To Do** tab: Mark to-do items as done or snooze them.
+- On the **Snoozed** tab: Mark to-do items as done or remove them.
+- On the **Done** tab: Restore to-do items.
+
+To bulk edit to-do items:
+
+1. In your To-Do List:
+   - To select individual items, to the left of each item you want to edit, select the checkbox.
+   - To select all items on the page, in the upper-left corner, select the **Select all** checkbox.
+1. In the upper-right corner, select the desired action.
 
 ## How a user's To-Do List is affected when their access changes
 

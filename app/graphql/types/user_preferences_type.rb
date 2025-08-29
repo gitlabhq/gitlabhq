@@ -58,6 +58,11 @@ module Types
       null: false,
       description: 'Display settings for the work item lists.'
 
+    field :project_studio_enabled, GraphQL::Types::Boolean,
+      description: 'Whether Project Studio is enabled for the user.',
+      experiment: { milestone: '18.4' },
+      null: false
+
     def issues_sort
       user_preference.issues_sort&.to_sym
     end

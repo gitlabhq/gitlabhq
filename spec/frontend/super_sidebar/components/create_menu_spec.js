@@ -31,6 +31,7 @@ describe('CreateMenu component', () => {
         fullPath: 'full-path',
         isGroup: false,
         workItemPlanningViewEnabled: true,
+        projectStudioEnabled: false,
         ...provide,
       },
       propsData: {

@@ -13,6 +13,7 @@ module WorkItemsHelper
         data[:project_import_jira_path] = project_import_jira_path(resource_parent)
         data[:rss_path] = project_work_items_path(resource_parent, format: :atom)
         data[:calendar_path] = project_work_items_path(resource_parent, format: :ics)
+        data[:can_import_work_items] = can?(current_user, :import_work_items, resource_parent).to_s
       end
     end
   end
@@ -60,6 +61,7 @@ module WorkItemsHelper
       group_id: group&.id,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
       can_read_crm_contact: can?(current_user, :read_crm_contact, resource_parent.crm_group).to_s,
+      max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s
     }
   end

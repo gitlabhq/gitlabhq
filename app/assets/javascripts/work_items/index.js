@@ -73,6 +73,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     projectImportJiraPath,
     rssPath,
     calendarPath,
+    maxAttachmentSize,
+    canImportWorkItems,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -156,6 +158,8 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       projectImportJiraPath,
       rssPath,
       calendarPath,
+      maxAttachmentSize,
+      canImportWorkItems: parseBoolean(canImportWorkItems),
     },
     mounted() {
       performanceMarkAndMeasure({

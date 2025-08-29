@@ -71,6 +71,7 @@ describe('SuperSidebar component', () => {
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
         showTrialWidget: false,
+        projectStudioEnabled: false,
         ...provide,
       },
       propsData: {

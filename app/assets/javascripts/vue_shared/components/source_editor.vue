@@ -3,6 +3,7 @@ import { debounce, isEmpty } from 'lodash';
 import { CONTENT_UPDATE_DEBOUNCE, EDITOR_READY_EVENT } from '~/editor/constants';
 import Editor from '~/editor/source_editor';
 import { markRaw } from '~/lib/utils/vue3compat/mark_raw';
+import DynamicHeight from '~/vue_shared/directives/dynamic_height';
 
 function initSourceEditor({ el, ...args }) {
   const editor = new Editor({
@@ -20,6 +21,9 @@ function initSourceEditor({ el, ...args }) {
 }
 
 export default {
+  directives: {
+    DynamicHeight,
+  },
   inheritAttrs: false,
   props: {
     value: {
@@ -103,6 +107,7 @@ export default {
   <div
     :id="`source-editor-${fileGlobalId}`"
     ref="editor"
+    v-dynamic-height
     data-editor-loading
     data-testid="source-editor-container"
     @[$options.readyEvent]="$emit($options.readyEvent, $event)"

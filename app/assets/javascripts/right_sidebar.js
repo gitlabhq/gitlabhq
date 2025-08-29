@@ -78,6 +78,8 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
   const $toggleButtons = $('.js-sidebar-toggle');
   const $collapseIcon = $('.js-sidebar-collapse');
   const $expandIcon = $('.js-sidebar-expand');
+  const $toggleButtonMilestone = $('.js-milestone-toggle');
+
   const $toggleContainer = $('.js-sidebar-toggle-container');
   const isExpanded = $toggleContainer.data('is-expanded');
   const tooltipLabel = isExpanded ? __('Expand sidebar') : __('Collapse sidebar');
@@ -94,6 +96,10 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     if (!this.isMR) {
       $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
     }
+
+    if ($toggleButtonMilestone) {
+      $toggleButtonMilestone.removeClass('hidden');
+    }
   } else {
     $toggleContainer.data('is-expanded', true);
     $expandIcon.addClass('hidden');
@@ -104,6 +110,10 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
 
     if (!this.isMR) {
       $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+    }
+
+    if ($toggleButtonMilestone) {
+      $toggleButtonMilestone.addClass('hidden');
     }
   }
 

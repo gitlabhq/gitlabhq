@@ -1325,6 +1325,7 @@ export default {
               :show-import-export-buttons="showImportExportButtons"
               :work-item-count="currentTabCount"
               :query-variables="csvExportQueryVariables"
+              :full-path="rootPageFullPath"
             />
           </div>
         </template>
@@ -1361,6 +1362,7 @@ export default {
                 :show-import-export-buttons="showImportExportButtons"
                 :work-item-count="currentTabCount"
                 :query-variables="csvExportQueryVariables"
+                :full-path="rootPageFullPath"
               />
             </div>
           </work-item-list-heading>

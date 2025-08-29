@@ -8,18 +8,22 @@ import {
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import WorkItemCsvExportModal from './work_items_csv_export_modal.vue';
+import WorkItemsCsvImportModal from './work_items_csv_import_modal.vue';
 
 export default {
   exportModalId: 'work-item-export-modal',
+  importModalId: 'work-item-import-modal',
   components: {
     GlDisclosureDropdownItem,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     WorkItemCsvExportModal,
+    WorkItemsCsvImportModal,
   },
   i18n: {
     exportAsCSV: s__('WorkItem|Export as CSV'),
     importFromJira: s__('WorkItem|Import from Jira'),
+    importCsv: s__('WorkItem|Import CSV'),
   },
   directives: {
     GlModal: GlModalDirective,
@@ -38,6 +42,9 @@ export default {
     calendarPath: {
       default: null,
     },
+    canImportWorkItems: {
+      default: false,
+    },
   },
   props: {
     workItemCount: {
@@ -55,6 +62,11 @@ export default {
       required: false,
       default: false,
     },
+    fullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -66,6 +78,11 @@ export default {
       return {
         text: this.$options.i18n.importFromJira,
         href: this.projectImportJiraPath,
+      };
+    },
+    importCsv() {
+      return {
+        text: this.$options.i18n.importCsv,
       };
     },
     exportAsCSV() {
@@ -96,7 +113,10 @@ export default {
       return this.rssPath || this.calendarPath;
     },
     hasImportExportOptions() {
-      return this.showImportExportButtons && (this.projectImportJiraPath || this.showExportButton);
+      return (
+        this.showImportExportButtons &&
+        (Boolean(this.projectImportJiraPath) || this.showExportButton || this.canImportWorkItems)
+      );
     },
     shouldShowDropdown() {
       return this.hasImportExportOptions || this.hasSubscriptionOptions;
@@ -143,11 +163,24 @@ export default {
         :item="exportAsCSV"
       />
 
+      <gl-disclosure-dropdown-item
+        v-if="canImportWorkItems"
+        v-gl-modal="$options.importModalId"
+        data-testid="import-csv-button"
+        :item="importCsv"
+      />
+
       <work-item-csv-export-modal
         v-if="showExportButton"
         :modal-id="$options.exportModalId"
         :work-item-count="workItemCount"
         :query-variables="queryVariables"
+      />
+
+      <work-items-csv-import-modal
+        v-if="canImportWorkItems"
+        :modal-id="$options.importModalId"
+        :full-path="fullPath"
       />
     </template>
     <gl-disclosure-dropdown-group

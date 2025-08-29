@@ -17,7 +17,11 @@ import { initPrefetchLinks } from '~/lib/utils/navigation_utility';
 import { logHelloDeferred } from 'jh_else_ce/lib/logger/hello_deferred';
 import initAlertHandler from './alert_handler';
 import initLayoutNav from './layout_nav';
-import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
+import {
+  handleLocationHash,
+  addSelectOnFocusBehaviour,
+  parseBoolean,
+} from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime/timeago_utility';
 import { getLocationHash, visitUrl, mergeUrlParams } from './lib/utils/url_utility';
 
@@ -98,7 +102,9 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
   initExpireSessionModal();
-  if (gon.features.paneledView) {
+
+  const projectStudioEnabled = parseBoolean($body[0].dataset.projectStudioEnabled);
+  if (projectStudioEnabled) {
     initDuoPanel();
   }
 
