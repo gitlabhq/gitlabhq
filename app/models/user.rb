@@ -2752,7 +2752,10 @@ class User < ApplicationRecord
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?
-      abuse_report = AbuseReport.create!(attrs.merge(message: msg))
+      # rubocop: disable CodeReuse/ServiceClass -- TODO: this is legacy code
+      response = AntiAbuse::AbuseReport::CreateService.new(attrs.merge(message: msg)).execute
+      # rubocop: enable CodeReuse/ServiceClass
+      abuse_report = response.payload
     else
       abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
     end

@@ -24,7 +24,7 @@ module AntiAbuse
 
       self.table_name = 'abuse_report_notes'
 
-      belongs_to :abuse_report
+      belongs_to :abuse_report, class_name: '::AbuseReport'
 
       alias_attribute :noteable_id, :abuse_report_id
       alias_method :noteable, :abuse_report

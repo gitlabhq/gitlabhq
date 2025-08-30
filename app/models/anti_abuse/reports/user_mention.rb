@@ -5,7 +5,7 @@ module AntiAbuse
     class UserMention < UserMention
       self.table_name = 'abuse_report_user_mentions'
 
-      belongs_to :abuse_report, optional: false
+      belongs_to :abuse_report, class_name: '::AbuseReport', optional: false
       belongs_to :note, optional: false
     end
   end

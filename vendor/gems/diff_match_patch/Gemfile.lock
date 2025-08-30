@@ -13,5 +13,8 @@ PLATFORMS
 DEPENDENCIES
   diff_match_patch!
 
+CHECKSUMS
+  diff_match_patch (0.1.0)
+
 BUNDLED WITH
-   2.4.21
+   2.7.1

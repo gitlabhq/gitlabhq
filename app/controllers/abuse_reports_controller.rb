@@ -23,10 +23,11 @@ class AbuseReportsController < ApplicationController
   end
 
   def create
-    @abuse_report = AbuseReport.new(report_params)
-    @abuse_report.reporter = current_user
+    abuse_report_service = AntiAbuse::AbuseReport::CreateService.new(report_params.merge(reporter: current_user))
+    response = abuse_report_service.execute
 
-    if @abuse_report.save
+    if response.success?
+      @abuse_report = response.payload
       @abuse_report.notify
 
       Gitlab::Tracking.event(
