@@ -57,6 +57,9 @@
 .if-sync-changes-on-stable-branches: &if-sync-changes-on-stable-branches
   if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/'
 
+.if-stable-branch: &if-stable-branch
+  if: '$CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/'
+
 .if-auto-deploy-branches: &if-auto-deploy-branches
   if: '$CI_COMMIT_BRANCH =~ /^\d+-\d+-auto-deploy-\d+$/'
 
@@ -3209,6 +3212,8 @@
 #############
 .gdk:rules:gdk-update:
   rules:
+    - <<: *if-stable-branch
+      when: never
     - <<: *if-not-canonical-namespace
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
