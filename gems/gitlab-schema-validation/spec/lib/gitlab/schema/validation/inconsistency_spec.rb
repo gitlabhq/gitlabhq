@@ -110,4 +110,28 @@ RSpec.describe Gitlab::Schema::Validation::Inconsistency, feature_category: :dat
       expect(inconsistency.display).to eql(expected_output)
     end
   end
+
+  describe '#details' do
+    it 'returns an empty hash' do
+      expect(inconsistency.details).to eq({})
+    end
+
+    context 'with details' do
+      let(:details) do
+        {
+          column_name: 'namespace_id',
+          expected_type: 'integer',
+          actual_type: 'bigint'
+        }
+      end
+
+      subject(:inconsistency) do
+        described_class.new(validator, structure_sql_object, database_object, details: details)
+      end
+
+      it 'returns the original details' do
+        expect(inconsistency.details).to eq(details)
+      end
+    end
+  end
 end

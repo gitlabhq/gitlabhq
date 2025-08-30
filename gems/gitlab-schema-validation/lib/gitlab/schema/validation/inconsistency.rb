@@ -4,10 +4,13 @@ module Gitlab
   module Schema
     module Validation
       class Inconsistency
-        def initialize(validator_class, structure_sql_object, database_object)
+        attr_reader :details
+
+        def initialize(validator_class, structure_sql_object, database_object, details: {})
           @validator_class = validator_class
           @structure_sql_object = structure_sql_object
           @database_object = database_object
+          @details = details
         end
 
         def error_message

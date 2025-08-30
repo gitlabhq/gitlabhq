@@ -17,8 +17,8 @@ configurations exported from the Bamboo UI or stored in Spec repositories.
 
 ## Key migration considerations
 
-| Configuration aspect  | Bamboo                             | GitLab CI/CD                         | Migration impact |
-| --------------------- | ---------------------------------- | ------------------------------------ | ---------------- |
+| Configuration aspect  | Bamboo                             | GitLab CI/CD                         | Migration tasks |
+| --------------------- | ---------------------------------- | ------------------------------------ | --------------- |
 | Configuration files   | Bamboo Specs (Java or YAML)        | `.gitlab-ci.yml` file                | Convert Specs to GitLab YAML syntax |
 | Variable syntax       | `${bamboo.variableName}`           | `$VARIABLE_NAME`                     | Update all variable references in scripts |
 | Execution environment | Agents (local or remote)           | Runners with executors               | Install and configure runners |
@@ -222,7 +222,7 @@ The following examples show how the Bamboo `docker` keyword translates to the Gi
 {{< tab title="Bamboo" >}}
 
 Builds and deployments run by default on the Bamboo agent's native operating system,
-but can be configured to run in containers using the `docker` keyword:
+but can be configured to run in containers using the `docker` keyword.
 
 ```yaml
 version: 2
@@ -355,7 +355,7 @@ Pipelines do not use polling.
 job:
   script: echo "Hello, Rules!"
   rules:
-    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME = development
+    - if: $CI_COMMIT_REF_NAME == "development"
 
 workflow:
   rules:
@@ -615,7 +615,7 @@ To migrate from Bamboo:
    - Convert `${bamboo.variableName}` syntax to `$VARIABLE_NAME`.
    - Replace Bamboo-specific variables like `${bamboo.planKey}` with GitLab equivalents
      like `$CI_PIPELINE_ID`.
-   - Remove Bamboo checkout tasks (GitLab handles this automatically).
+   - Remove Bamboo checkout tasks. GitLab automatically checks out your source code at the start of each job.
 
 1. Migrate artifact handling:
    - Remove Bamboo `artifact-subscriptions` and `artifact-download` configurations.

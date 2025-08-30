@@ -14,7 +14,12 @@ module Gitlab
               next if database_sequence.nil?
               next if database_sequence.owner == sequence.owner
 
-              build_inconsistency(self.class, sequence, database_sequence)
+              details = {
+                current_owner: database_sequence.owner,
+                expected_owner: sequence.owner
+              }
+
+              build_inconsistency(self.class, sequence, database_sequence, details: details)
             end
           end
         end

@@ -43,7 +43,7 @@ RSpec.describe Ci::PipelineEditorHelper, feature_category: :pipeline_composition
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
-        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/_index.md', anchor: 'simulate-a-cicd-pipeline'),
+        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/_index.md', anchor: 'validate-cicd-configuration'),
         "uses-external-config" => 'false',
         "validate-tab-illustration-path" => 'illustrations/validate.svg',
         "yml-help-page-path" => help_page_path('ci/yaml/_index.md')

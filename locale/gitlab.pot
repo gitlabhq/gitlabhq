@@ -21657,6 +21657,9 @@ msgstr ""
 msgid "DatabaseDiagnostics|Contact Support"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Current Owner"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Database: %{name}"
 msgstr ""
 
@@ -21669,7 +21672,13 @@ msgstr ""
 msgid "DatabaseDiagnostics|Detect database schema inconsistencies and structural issues"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Expected Owner"
+msgstr ""
+
 msgid "DatabaseDiagnostics|Foreign keys"
+msgstr ""
+
+msgid "DatabaseDiagnostics|Incorrect ownership"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Indexes"
@@ -21687,10 +21696,16 @@ msgstr ""
 msgid "DatabaseDiagnostics|Missing items"
 msgstr ""
 
+msgid "DatabaseDiagnostics|Missing sequences"
+msgstr ""
+
 msgid "DatabaseDiagnostics|No diagnostics have been run yet. Click \"Run Collation Check\" to analyze your database for potential collation issues."
 msgstr ""
 
 msgid "DatabaseDiagnostics|No schema issues detected."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Ownership issues"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Run collation check"
@@ -21703,6 +21718,9 @@ msgid "DatabaseDiagnostics|Schema health check"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Select \"Run Schema Check\" to analyze your database schema for potential issues."
+msgstr ""
+
+msgid "DatabaseDiagnostics|Sequence Name"
 msgstr ""
 
 msgid "DatabaseDiagnostics|Sequences"
