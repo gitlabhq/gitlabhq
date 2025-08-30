@@ -169,7 +169,7 @@ export default {
 
 <template>
   <div class="gl-mt-5 gl-flex gl-flex-col gl-gap-5">
-    <form class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row" @submit.prevent="runReport">
+    <form class="gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row" @submit.prevent="runReport">
       <group-select
         class="gl-md-form-input-md gl-mb-0 gl-w-full"
         :label="__('Group')"
@@ -224,9 +224,12 @@ export default {
           @clear="clearTimeSpentToDate"
         />
       </gl-form-group>
-      <gl-button class="gl-w-full gl-self-end md:gl-w-auto" variant="confirm" @click="runReport">{{
-        $options.i18n.runReport
-      }}</gl-button>
+      <gl-button
+        class="gl-w-full gl-self-end @md/panel:gl-w-auto"
+        variant="confirm"
+        @click="runReport"
+        >{{ $options.i18n.runReport }}</gl-button
+      >
     </form>
     <div v-if="!isLoading" data-testid="table-container" class="gl-flex gl-flex-col">
       <div v-if="report.length" class="gl-border-t gl-flex gl-gap-2 gl-py-4">
