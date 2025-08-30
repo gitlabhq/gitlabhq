@@ -101,7 +101,7 @@ To access and configure your GitLab Dedicated instance:
 1. [Change your temporary root password](../../../user/profile/user_passwords.md#change-your-password) to a new secure password.
 1. Go to the Admin area and [add the license key](../../license_file.md#add-license-in-the-admin-area) for your GitLab Dedicated subscription.
 1. Return to Switchboard and [add users](../configure_instance/users_notifications.md#add-switchboard-users), if needed.
-1. Review the [release rollout schedule](../maintenance.md#release-rollout-schedule) for upgrades and maintenance.
+1. Review the [release rollout schedule](../releases.md#release-rollout-schedule) for upgrades and maintenance.
 
 Also plan ahead if you need the following GitLab Dedicated features:
 

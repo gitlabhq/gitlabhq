@@ -11,7 +11,7 @@ GitLab Dedicated is running the n-1 GitLab version to provide sufficient run-up 
 
 GitLab Dedicated instances are automatically upgraded during scheduled maintenance windows throughout the week.
 
-The [release rollout schedule](../administration/dedicated/maintenance.md#release-rollout-schedule) for GitLab Dedicated outlines when instances are expected to be upgraded to a new release.
+The [release rollout schedule](../administration/dedicated/releases.md#release-rollout-schedule) for GitLab Dedicated outlines when instances are expected to be upgraded to a new release.
 
 ## Feature flags
 

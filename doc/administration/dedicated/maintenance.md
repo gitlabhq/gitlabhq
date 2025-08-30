@@ -2,8 +2,8 @@
 stage: GitLab Dedicated
 group: Environment Automation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Maintenance windows, release schedules, and emergency maintenance processes for GitLab Dedicated instances.
-title: GitLab Dedicated maintenance and release schedule
+description: Scheduled maintenance windows, emergency procedures, and contact management for GitLab Dedicated instances.
+title: GitLab Dedicated maintenance operations
 ---
 
 {{< details >}}
@@ -13,103 +13,129 @@ title: GitLab Dedicated maintenance and release schedule
 
 {{< /details >}}
 
-Regular maintenance is performed on GitLab Dedicated instances according to scheduled maintenance windows and release upgrade timelines.
-
-During scheduled maintenance windows, the following tasks might be performed:
-
-- Application and operating system software patches and upgrades.
-- Operating system restarts.
-- Infrastructure upgrades.
-- Activities needed to operate and enhance the availability or security of your tenant.
-- Feature enhancements.
+GitLab Dedicated provides regular maintenance for your instance to ensure security,
+reliability, and optimal performance during scheduled weekly windows.
 
 ## Maintenance windows
 
-Maintenance is performed outside standard working hours:
+Maintenance is performed during scheduled weekly windows outside standard working hours.
+You choose your maintenance window during onboarding, and it cannot be changed after
+your instance is created.
+
+### Maintenance window schedule
 
 | Region                          | Day           | Time (UTC) |
-|---------------------------------|---------------|------------|
+| ------------------------------- | ------------- | ---------- |
 | Asia Pacific                    | Wednesday     | 1:00 PM-5:00 PM |
 | Europe, Middle East, and Africa | Tuesday       | 1:00 AM-5:00 AM |
 | Americas (Option 1)             | Tuesday       | 7:00 AM-11:00 AM |
 | Americas (Option 2)             | Sunday-Monday | 9:00 PM-1:00 AM |
 
-You choose your maintenance window during [onboarding](create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance).
-This window cannot be changed after your instance is created.
-To view your maintenance window, go to [Switchboard](tenant_overview.md#maintenance-windows).
+To view your assigned maintenance window, go to [Switchboard](tenant_overview.md).
 
-{{< alert type="note" >}}
+During scheduled maintenance windows, the following tasks might be performed:
 
-The scheduled weekly maintenance window is separate from [emergency maintenance](#emergency-maintenance), which can happen at any time.
-
-{{< /alert >}}
+- Application and operating system software patches and upgrades
+- Operating system restarts
+- Infrastructure upgrades
+- Security and availability enhancements
+- Feature enhancements
 
 ### Access during maintenance
 
-Downtime is not expected for the entire duration of your maintenance window. A brief service interruption (less than one minute) may occur when compute resources restart after upgrades, typically during the first half of the maintenance window.
+Downtime is not expected for the entire duration of your maintenance window. A brief
+service interruption (less than one minute) may occur when compute resources restart
+after upgrades, typically during the first half of the maintenance window.
 
-Long-running connections may be interrupted during this period. To minimize disruption, you can implement strategies like automatic recovery and retry.
+Long-running connections may be interrupted during this period. To minimize disruption,
+you can implement strategies like automatic recovery and retry.
 
-Longer service interruptions are rare. If extended downtime is expected, GitLab provides advance notice.
+Longer service interruptions are rare. If extended downtime is expected, you receive advance notice.
 
 {{< alert type="note" >}}
 
-Performance degradation or downtime during the scheduled maintenance window does not count against the system service level availability (SLA).
+Performance degradation or downtime during the scheduled maintenance window does not
+count against the system service level availability (SLA).
 
 {{< /alert >}}
 
-## Release rollout schedule
+### Scheduling exceptions
 
-GitLab Dedicated is [upgraded](../../subscriptions/gitlab_dedicated/maintenance.md#upgrades-and-patches) to the previous minor version (`N-1`) after each GitLab release. For example, when GitLab 16.9 is released, GitLab Dedicated instances are upgraded to 16.8.
+A production change lock (PCL) is a complete pause on all production changes during periods of reduced team
+availability, such as major holidays. A PCL ensures system stability when support resources are limited.
 
-Upgrades occur in your selected [maintenance window](#maintenance-windows) according to the following schedule, where `T` is the date of a [minor GitLab release](../../policy/maintenance.md):
+During a PCL, the following is paused:
 
-| Calendar days after release | Maintenance window region |
-|-------------------|---------------------------|
-| `T`+5 | Europe, Middle East, and Africa,<br/> Americas (Option 1) |
-| `T`+6 | Asia Pacific |
-| `T`+10 | Americas (Option 2) |
+- Configuration changes using Switchboard
+- Code deployments or infrastructure changes
+- Automated maintenance
+- New customer onboarding
 
-For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Americas (Option 1) regions were then upgraded to 16.8 on 2024-02-20, 5 days after the 16.9 release.
+If a PCL is active during your scheduled upgrade, the upgrade is deferred
+to the first maintenance window after the PCL ends.
+
+When a PCL is active, you see a notification banner in Switchboard.
+
+## Zero-downtime upgrades
+
+GitLab Dedicated provides zero-downtime upgrades to ensure backward compatibility for your instance.
+When no infrastructure changes or maintenance tasks require downtime,
+you can continue using your instance safely during upgrades.
+
+To ensure asset availability during version upgrades:
+
+1. Each static asset has a unique name that changes when its content changes.
+1. Browsers cache each static asset.
+1. Each request from the same browser routes to the same server temporarily.
+
+Upgrades are usually unnoticeable. In rare cases, you might experience temporary
+interface inconsistencies during an upgrade. If this occurs, refresh the page
+to resolve any visual inconsistencies.
 
 {{< alert type="note" >}}
 
-If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends.
-
-A PCL for GitLab Dedicated is a complete pause on all production changes during periods of reduced team availability such as major holidays. During a PCL, the following is paused:
-
-- Configuration changes using Switchboard.
-- Code deployments or infrastructure changes.
-- Automated maintenance.
-- New customer onboarding.
-
-When a PCL is in effect, Switchboard displays a notification banner to alert users.
-PCLs help ensure system stability when support resources may be limited.
+Implementing a caching proxy in your network further reduces the risk of
+interface inconsistencies during upgrades.
 
 {{< /alert >}}
 
 ## Emergency maintenance
 
-Emergency maintenance is initiated when urgent actions are required on a GitLab Dedicated tenant instance. For example, when a critical (S1) security vulnerability requires urgent patching, GitLab performs emergency maintenance to upgrade your tenant instance to a secure version. This maintenance can occur outside scheduled maintenance windows.
+Emergency maintenance is initiated when your instance requires urgent actions.
+This maintenance can happen outside your scheduled maintenance windows and cannot be postponed.
 
-GitLab prioritizes stability and security while minimizing customer impact during emergency maintenance. The specific maintenance procedures follow established internal processes, and all changes undergo appropriate internal review and approval before they are applied.
+For example, when a critical (S1) security vulnerability requires urgent patching,
+your instance receives emergency maintenance to upgrade it to a secure version.
 
-GitLab provides advance notice when possible and sends complete details
-after the issue is resolved. The GitLab Support team:
+During emergency maintenance, stability and security are prioritized while minimizing
+impact to your service. All changes follow internal processes and undergo appropriate
+internal review and approval before they are applied to your instance.
+
+You receive advance notice when possible and complete details after the issue
+is resolved. The Support team:
 
 - Creates a support ticket for tracking.
-- Sends email notifications only to addresses listed as **Operational email addresses** in the
+- Sends email notifications to your **Operational email addresses** in the
   **Customer communication** section of Switchboard.
 - Copies your Customer Success Manager (CSM) on all communications.
 
-You cannot postpone emergency maintenance because it is critical to stability and security.
-
 ### Verify your operational contacts
 
-To ensure you receive maintenance notifications:
+To ensure you receive maintenance notifications, verify that your operational contacts
+are current in Switchboard.
+
+To verify your operational contacts:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. Select your tenant.
-1. In the **Customer communication** section, review the email addresses listed under **Operational email addresses**.
+1. In the **Customer communication** section, review the email addresses listed under
+   **Operational email addresses**.
 
 To update these contacts, submit a support ticket.
+
+## Related topics
+
+- [GitLab Dedicated releases and versioning](releases.md)
+- [Tenant overview](tenant_overview.md)
+- [GitLab release and maintenance policy](../../policy/maintenance.md)
+- [Zero-downtime upgrades](../../update/zero_downtime.md)
