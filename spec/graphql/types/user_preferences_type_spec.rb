@@ -18,6 +18,7 @@ RSpec.describe Types::UserPreferencesType, feature_category: :user_profile do
       merge_request_dashboard_list_type
       work_items_display_settings
       project_studio_enabled
+      merge_request_dashboard_show_drafts
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

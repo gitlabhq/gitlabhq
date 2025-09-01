@@ -29,6 +29,10 @@ module Types
       description: 'Merge request dashboard list rendering type.',
       null: true
 
+    field :merge_request_dashboard_show_drafts, GraphQL::Types::Boolean,
+      description: 'Show draft merge requests on merge request dashboard.',
+      null: true
+
     field :projects_sort,
       Types::Projects::ProjectSortEnum,
       description: 'Sort order for projects.',

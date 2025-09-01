@@ -156,6 +156,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts).to(:user_preference) }
+    it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
 

@@ -20,7 +20,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'useWorkItemsView' => true,
       'mergeRequestDashboardListType' => 'ROLE_BASED',
       'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false },
-      'projectStudioEnabled' => true
+      'projectStudioEnabled' => true,
+      'mergeRequestDashboardShowDrafts' => true
     }
   end
 
@@ -57,6 +58,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
       expect(mutation_response['userPreferences']['useWorkItemsView']).to eq(true)
       expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
+      expect(mutation_response['userPreferences']['mergeRequestDashboardShowDrafts']).to eq(true)
       expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
         'shouldOpenItemsInSidePanel' => false
       })
@@ -69,6 +71,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
+      expect(current_user.user_preference.merge_request_dashboard_show_drafts).to eq(true)
       expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
       expect(current_user.user_preference.project_studio_enabled).to eq(true)
     end
@@ -86,7 +89,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         use_work_items_view: false,
         merge_request_dashboard_list_type: 'action_based',
         work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true },
-        project_studio_enabled: false
+        project_studio_enabled: false,
+        merge_request_dashboard_show_drafts: false
       }
     end
 
@@ -114,6 +118,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
+      expect(current_user.user_preference.merge_request_dashboard_show_drafts).to eq(true)
       expect(current_user.user_preference.work_items_display_settings).to eq({
         'shouldOpenItemsInSidePanel' => false
       })

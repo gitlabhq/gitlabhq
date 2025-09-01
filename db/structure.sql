@@ -26299,6 +26299,7 @@ CREATE TABLE user_preferences (
     default_duo_add_on_assignment_id bigint,
     markdown_maintain_indentation boolean DEFAULT false NOT NULL,
     project_studio_enabled boolean DEFAULT false NOT NULL,
+    merge_request_dashboard_show_drafts boolean DEFAULT true NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),

@@ -142,7 +142,6 @@ module Tooling
         when /node-modules/ then 'node-modules'
         when /go-pkg/ then 'go'
         when /assets/ then 'assets'
-        when /frontend-fixtures/ then 'frontend-fixtures'
         when /rubocop/ then 'rubocop'
         when /qa-ruby/ then 'qa-ruby-gems'
         when /helm/ then 'cng-helm'

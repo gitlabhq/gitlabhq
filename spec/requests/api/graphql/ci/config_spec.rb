@@ -74,6 +74,31 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
     )
   end
 
+  context 'when using cookie/session authentication' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns an authentication error' do
+      post_graphql(query, current_user: nil)
+
+      expect(graphql_errors.first['message']).to eq('This query requires API authentication')
+    end
+
+    context 'when ci_restrict_cookie_auth_linting is disabled' do
+      before do
+        stub_feature_flags(ci_restrict_cookie_auth_linting: false)
+      end
+
+      it 'allows the user to lint the config' do
+        post_graphql(query, current_user: nil)
+
+        expect(graphql_errors).to be_nil
+        expect(graphql_data['ciConfig']).to be_present
+      end
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql_query

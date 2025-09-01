@@ -1,0 +1,10 @@
+---
+name: ci_restrict_cookie_auth_linting
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201771
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/565424
+milestone: '18.4'
+group: group::pipeline authoring
+type: gitlab_com_derisk
+default_enabled: false

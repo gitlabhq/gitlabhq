@@ -111,14 +111,12 @@ gdk:compile-test-assets:
     - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
 
-# Download fixtures only when a merge request contains changes to only JS files
-# and fixtures are present in the package registry.
 .frontend-fixtures-base:
   extends:
     - .default-retry
     - .default-before_script
     - .base-script
-    - .fixtures-ruby-cache
+    - .ruby-cache
     - .repo-from-artifacts
     - .cache-analytics
   stage: fixtures
@@ -126,7 +124,6 @@ gdk:compile-test-assets:
     - setup-test-env
     - retrieve-tests-metadata
     - compile-test-assets
-    - cache:fixture-hash
     # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
     - !reference [.repo-from-artifacts, needs]
   variables:
@@ -166,27 +163,21 @@ rspec-all frontend_fixture clickhouse:
     - !reference [.frontend-fixtures-base, script]
     - rspec_parallelized_job "--tag click_house"
 
-# Creates fixture cache and uploads fixtures to package registry if running in canonical project
+# Uploads fixtures to package registry if running in canonical project
 upload-frontend-fixtures:
   extends:
     - .default-retry
     - .with-ruby-slim-image
-    - .fixtures-cache
     - .caching:rules:update-frontend-fixtures
   stage: fixtures
   needs:
-    - job: cache:fixture-hash
     - !reference [.with-fixtures-needs, needs]
   script:
+    - source scripts/gitlab_component_helpers.sh
     - |
-      if [[ "$CI_PROJECT_PATH" == "gitlab-org/gitlab" ]]; then
-        source scripts/gitlab_component_helpers.sh
-        fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
-        create_fixtures_package
-        upload_fixtures_package
-      else
-        echo "Fixture upload to package registry is only supported in canonical project"
-      fi
+      fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
+      create_fixtures_package
+      upload_fixtures_package
 
 graphql-schema-dump:
   variables:

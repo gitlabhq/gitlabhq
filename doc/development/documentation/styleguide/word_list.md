@@ -40,14 +40,15 @@ Do not use Latin abbreviations. Use **and** instead, unless you are documenting 
 
 ## `@mention`
 
-Try to avoid **`@mention`**. Say **mention** instead, and consider linking to the
+Try to avoid **@mention**. Say **mention** instead, and consider linking to the
 [mentions topic](../../../user/discussions/_index.md#mentions).
 Don't use backticks.
 
 ## 2FA, two-factor authentication
 
 Spell out **two-factor authentication** in sentence case for the first use and in topic titles, and **2FA**
-thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
+thereafter. If the first word in a sentence, do not capitalize **factor** or **authentication**.
+For example:
 
 - Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first sign in.
 
@@ -639,7 +640,7 @@ Use **compute** for the resources used by runners to run CI/CD jobs.
 
 Related terms:
 
-- [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, `400 compute minutes`.
+- [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, 400 compute minutes.
 - [**compute quota**](../../../ci/pipelines/compute_minutes.md): The limit of compute minutes that a namespace can use each month.
 - **compute usage**: The number of compute minutes that the namespace has used from the monthly quota.
 
@@ -677,7 +678,7 @@ Do not use **confirmation box** or **confirmation dialog box**. See also [**dial
 
 ## container registry
 
-When documenting the GitLab container registry features and functionality, use lowercase.
+When documenting the GitLab **container registry** features and functionality, use lowercase.
 
 Use:
 
@@ -1532,7 +1533,7 @@ Instead of:
 
 ## level
 
-If you can, avoid `level` in the context of an instance, project, or group.
+If you can, avoid **level** in the context of an instance, project, or group.
 
 Use:
 
@@ -1925,8 +1926,8 @@ like deleting private projects, or adding users to them.
 ## optional
 
 If something is optional, such as a command argument, parameter value,
-or a file, use `Optional` followed by a period. For optional topics,
-append `(optional)` to the topic title.
+or a file, use **Optional** followed by a period. For optional topics,
+append **(optional)** to the topic title.
 
 For example:
 
@@ -1945,7 +1946,7 @@ When referring to the **organizations** top-level entity:
 - Use lowercase.
 - Use the plural form of the word.
 
-Use "organization" when referring to an individual organization.
+Use **organization** when referring to an individual organization.
 
 For example:
 

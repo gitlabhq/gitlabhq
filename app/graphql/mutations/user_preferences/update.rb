@@ -11,7 +11,8 @@ module Mutations
         :visibility_pipeline_id_type,
         :use_work_items_view,
         :merge_request_dashboard_list_type,
-        :project_studio_enabled
+        :project_studio_enabled,
+        :merge_request_dashboard_show_drafts
       ].freeze
 
       argument :extensions_marketplace_opt_in_status, Types::ExtensionsMarketplaceOptInStatusEnum,
@@ -23,6 +24,9 @@ module Mutations
       argument :merge_request_dashboard_list_type, Types::MergeRequests::DashboardListTypeEnum,
         required: false,
         description: 'Merge request dashboard list rendering type.'
+      argument :merge_request_dashboard_show_drafts, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Show draft merge requests on the merge request dashboard.'
       argument :merge_requests_sort, Types::MergeRequestSortEnum,
         required: false,
         description: 'Sort order for issue lists.'

@@ -1279,7 +1279,7 @@
 
 .caching:rules:update-frontend-fixtures:
   rules:
-    - <<: *if-default-branch-push
+    - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-patterns
 
 ######################

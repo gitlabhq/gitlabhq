@@ -41,6 +41,10 @@ module Resolvers
       def resolve(project_path:, content:, sha: nil, dry_run: false, skip_verify_project_sha: false)
         project = authorized_find!(project_path: project_path)
 
+        if Feature.enabled?(:ci_restrict_cookie_auth_linting, project) && !::Current.token_info
+          raise_resource_not_available_error!('This query requires API authentication')
+        end
+
         result = ::Gitlab::Ci::Lint
           .new(project: project, current_user: context[:current_user], sha: sha,
             verify_project_sha: !skip_verify_project_sha)

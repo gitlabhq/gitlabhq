@@ -130,6 +130,10 @@ To use the created self-hosted model to power AI-native features:
 
 With this, you have successfully configured the self-hosted model to power AI-native features in your GitLab instance. To test the feature using, for example, Chat, open Chat and say `Hello`. You should see the response powered by your self-hosted model in the chat.
 
+### Cleaning up Duo Self-hosted
+
+To revert to using .com configuration and remove any duo self-hosted related data, use `bundle exec rake gitlab:duo:clean_up_duo_self_hosted`.
+
 ## Moving a feature available in GitLab.com or GitLab Self-Managed to GitLab Duo Self-Hosted
 
 To move a feature available in GitLab.com or GitLab Self-Managed to GitLab Duo Self-Hosted:

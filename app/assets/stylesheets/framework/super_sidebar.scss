@@ -1029,13 +1029,10 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   // Layout
   .layout-page {
     display: flex;
-    gap: .5rem;
+    @apply gl-gap-3;
     align-items: stretch;
     justify-content: center;
-    padding-left: 0;
-    padding-top: 0.5rem;
-    padding-right: 0.5rem;
-    padding-bottom: 0.5rem;
+    @apply gl-pl-0 gl-py-3 gl-pr-3;
     height: calc(100vh - var(--system-header-height) - var(--performance-bar-height) - var(--header-height));
 
     // Temporarily solution to hide empty AI Chat divs
@@ -1048,6 +1045,10 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
       @apply gl-pr-0;
       height: calc(100vh - #{$calc-application-bars-height} - 1rem);
     }
+  }
+
+  .ai-panel {
+    @apply gl-px-2 -gl-mx-2;
   }
 
   .panels-container {
