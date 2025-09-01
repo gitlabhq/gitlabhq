@@ -123,6 +123,7 @@ InitializerConnections.raise_if_new_database_connection do
         as: 'banzai_upload'
 
       get '/whats_new' => 'whats_new#index'
+      post '/whats_new/mark_as_read' => 'whats_new#mark_as_read'
 
       get 'offline' => "pwa#offline"
       get 'manifest' => "pwa#manifest", constraints: ->(req) { req.format == :json }

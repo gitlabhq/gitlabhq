@@ -630,7 +630,6 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
     enable :read_cluster_agent
-    enable :use_k8s_proxies
     enable :create_release
     enable :update_release
     enable :destroy_release

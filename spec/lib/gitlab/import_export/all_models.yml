@@ -844,7 +844,6 @@ project:
 - helm_metadata_caches
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
-- alerting_setting
 - project_setting
 - webide_pipelines
 - reviews

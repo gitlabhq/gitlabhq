@@ -16,6 +16,29 @@ RSpec.describe API::Mcp::Server, feature_category: :mcp_server do
     end
 
     context 'when authenticated' do
+      it 'is successful' do
+        post api('/mcp_server', user, oauth_access_token: access_token),
+          params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Json.parse(response.body)).to eq({
+          "id" => "1",
+          "jsonrpc" => "2.0",
+          "result" => {
+            "capabilities" => {
+              "tools" => {
+                "listChanged" => false
+              }
+            },
+            "protocolVersion" => "2025-06-18",
+            "serverInfo" => {
+              "name" => "Official GitLab MCP Server",
+              "version" => "18.4.0-pre"
+            }
+          }
+        })
+      end
+
       context 'when feature flag is disabled' do
         before do
           stub_feature_flags(mcp_server: false)

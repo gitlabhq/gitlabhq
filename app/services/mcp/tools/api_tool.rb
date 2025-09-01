@@ -5,6 +5,19 @@ module Mcp
     class ApiTool
       attr_reader :route, :settings
 
+      # Grape types are represented as a string by calling `.to_s` on a type
+      # The values are built based on the existing routes:
+      # - [String, Integer] is usually a type of an id, which can be represented as a string
+      # - Grape::API::Boolean is a boolean
+      # - [Integer] is usually an array passed a parameter
+      # - [String] represents a comma-separated string
+      TYPE_CONVERSIONS = {
+        '[String, Integer]' => 'string',
+        'Grape::API::Boolean' => 'boolean',
+        '[Integer]' => 'array',
+        '[String]' => 'string'
+      }.freeze
+
       def initialize(route)
         @route = route
         @settings = route.app.route_setting(:mcp)
@@ -44,13 +57,7 @@ module Mcp
       private
 
       def parse_type(type)
-        array_str_match = type.match(/^\[(.*)\]$/)
-        if array_str_match
-          return array_str_match[1].split(", ")[0].downcase # return the first element from [String, Integer] types
-        end
-
-        return 'boolean' if type == 'Grape::API::Boolean'
-        return 'array' if type.start_with?('Array')
+        return TYPE_CONVERSIONS[type] if TYPE_CONVERSIONS.key?(type)
 
         type.downcase
       end

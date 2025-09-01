@@ -23,3 +23,4 @@ variables:
   RUN_WITH_BUNDLE: "true"
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder
   QA_PATH: "qa"
+  MAX_E2E_TEST_EXECUTION_TIME: 45m

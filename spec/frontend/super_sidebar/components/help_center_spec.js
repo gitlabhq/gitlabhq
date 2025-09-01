@@ -283,7 +283,12 @@ describe('HelpCenter component', () => {
 
       it("shows the What's new slideout", () => {
         expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
-          sidebarData.whats_new_version_digest,
+          {
+            versionDigest: sidebarData.whats_new_version_digest,
+            initialReadArticles: sidebarData.whats_new_read_articles,
+            markAsReadPath: sidebarData.whats_new_mark_as_read_path,
+            mostRecentReleaseItemsCount: sidebarData.whats_new_most_recent_release_items_count,
+          },
           expect.any(Function),
         );
       });

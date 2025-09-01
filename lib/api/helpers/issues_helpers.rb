@@ -14,6 +14,12 @@ module API
       params :issues_stats_params_ee do
       end
 
+      def self.create_issue_mcp_params
+        [
+          :id, :title, :description, :assignee_ids, :milestone_id, :labels, :confidential
+        ]
+      end
+
       def self.update_params_at_least_one_of
         [
           :assignee_id,

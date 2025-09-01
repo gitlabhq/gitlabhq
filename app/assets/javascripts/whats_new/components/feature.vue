@@ -25,6 +25,10 @@ export default {
       type: Object,
       required: true,
     },
+    showUnread: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -75,6 +79,12 @@ export default {
     toggleArticle() {
       this.articleOpen = !this.articleOpen;
     },
+    toggleAndMarkArticle() {
+      if (this.showUnread) {
+        this.$emit('mark-article-as-read');
+      }
+      this.toggleArticle();
+    },
   },
 };
 </script>
@@ -92,7 +102,7 @@ export default {
       variant="default"
       block
       data-testid="whats-new-article-toggle"
-      @click="toggleArticle"
+      @click="toggleAndMarkArticle"
     >
       <div class="gl-p-5 gl-text-left">
         <gl-badge
@@ -107,6 +117,13 @@ export default {
           class="gl-my-2 gl-text-wrap gl-text-lg gl-leading-24 gl-text-default"
           data-testid="toggle-feature-name"
         >
+          <gl-icon
+            v-if="showUnread"
+            name="status-active"
+            :size="8"
+            class="gl-my-1 gl-mr-1 gl-text-status-info"
+            data-testid="unread-article-icon"
+          />
           {{ feature.name }}
         </h3>
         <gl-truncate :text="sanitizedDescription" class="gl-leading-20" />

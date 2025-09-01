@@ -181,7 +181,12 @@ export default {
         this.toggleWhatsNewDrawer = toggleWhatsNewDrawer;
 
         this.toggleWhatsNewDrawer(
-          this.sidebarData.whats_new_version_digest,
+          {
+            versionDigest: this.sidebarData.whats_new_version_digest,
+            initialReadArticles: this.sidebarData.whats_new_read_articles,
+            markAsReadPath: this.sidebarData.whats_new_mark_as_read_path,
+            mostRecentReleaseItemsCount: this.sidebarData.whats_new_most_recent_release_items_count,
+          },
           this.hideWhatsNewNotification,
         );
       } else {

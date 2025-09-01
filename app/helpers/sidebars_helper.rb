@@ -138,7 +138,9 @@ module SidebarsHelper
 
     {
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
-      whats_new_version_digest: whats_new_version_digest
+      whats_new_version_digest: whats_new_version_digest,
+      whats_new_read_articles: whats_new_read_articles,
+      whats_new_mark_as_read_path: whats_new_mark_as_read_path
     }
   end
 

@@ -74,38 +74,6 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
     end
 
-    context 'with array types' do
-      let(:route_params) do
-        {
-          'array_param' => { required: true, type: '[String, Integer]', desc: 'Array parameter' }
-        }
-      end
-
-      let(:mcp_settings) { { params: [:array_param] } }
-
-      it 'extracts first element type from array notation' do
-        schema = api_tool.input_schema
-
-        expect(schema[:properties]['array_param'][:type]).to eq('string')
-      end
-    end
-
-    context 'with Array type' do
-      let(:route_params) do
-        {
-          'array_param' => { required: false, type: 'Array<String>', desc: 'Array parameter' }
-        }
-      end
-
-      let(:mcp_settings) { { params: [:array_param] } }
-
-      it 'returns array type for Array types' do
-        schema = api_tool.input_schema
-
-        expect(schema[:properties]['array_param'][:type]).to eq('array')
-      end
-    end
-
     context 'when no required fields' do
       let(:route_params) do
         {
@@ -279,13 +247,18 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
           'string_param' => { required: false, type: 'String', desc: 'String param' },
           'integer_param' => { required: false, type: 'Integer', desc: 'Integer param' },
           'boolean_param' => { required: false, type: 'Grape::API::Boolean', desc: 'Boolean param' },
-          'array_param' => { required: false, type: 'Array<String>', desc: 'Array param' },
+          'array_int_param' => { required: false, type: '[Integer]', desc: 'Array of integers param' },
+          'array_string_param' => { required: false, type: '[String]', desc: 'Array of strings param' },
           'complex_array_param' => { required: false, type: '[String, Integer]', desc: 'Complex array param' }
         }
       end
 
       let(:mcp_settings) do
-        { params: [:string_param, :integer_param, :boolean_param, :array_param, :complex_array_param] }
+        {
+          params: [
+            :string_param, :integer_param, :boolean_param, :array_string_param, :array_int_param, :complex_array_param
+          ]
+        }
       end
 
       it 'correctly parses different types' do
@@ -294,7 +267,8 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
         expect(schema[:properties]['string_param'][:type]).to eq('string')
         expect(schema[:properties]['integer_param'][:type]).to eq('integer')
         expect(schema[:properties]['boolean_param'][:type]).to eq('boolean')
-        expect(schema[:properties]['array_param'][:type]).to eq('array')
+        expect(schema[:properties]['array_int_param'][:type]).to eq('array')
+        expect(schema[:properties]['array_string_param'][:type]).to eq('string')
         expect(schema[:properties]['complex_array_param'][:type]).to eq('string')
       end
     end

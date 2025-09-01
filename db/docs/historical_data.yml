@@ -9,6 +9,6 @@ description: Stores seat usage data as active_user_count. Used in service ping a
   cloud licensing, user limits, and renewal workflows.
 introduced_by_url: https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/390
 milestone: '7.11'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
+notes: sharding is unnecessary for this table. Refer to https://gitlab.com/gitlab-org/gitlab/-/issues/555532
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/555532

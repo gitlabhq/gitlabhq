@@ -3,7 +3,6 @@
 Gitlab/Rails/AttrEncrypted:
   Exclude:
     - 'app/models/alert_management/http_integration.rb'
-    - 'app/models/alerting/project_alerting_setting.rb'
     - 'app/models/application_setting.rb'
     - 'app/models/atlassian/identity.rb'
     - 'app/models/bulk_imports/configuration.rb'

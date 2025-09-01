@@ -112,4 +112,12 @@ describe('whats new actions', () => {
       ]);
     });
   });
+
+  describe('setReadArticles', () => {
+    it('should commit setReadArticles', () => {
+      return testAction(actions.setReadArticles, [1], {}, [
+        { type: types.SET_READ_ARTICLES, payload: [1] },
+      ]);
+    });
+  });
 });

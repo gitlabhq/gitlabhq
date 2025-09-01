@@ -6,4 +6,5 @@ export default {
   pageInfo: {
     nextPage: null,
   },
+  readArticles: [],
 };

@@ -38,6 +38,7 @@ describe('App', () => {
       closeDrawer: jest.fn(),
       fetchItems: jest.fn(),
       setDrawerBodyHeight: jest.fn(),
+      setReadArticles: jest.fn(),
     };
 
     store = new Vuex.Store({
@@ -48,6 +49,7 @@ describe('App', () => {
         drawerBodyHeight: MOCK_DRAWER_BODY_HEIGHT,
         fetching: false,
         pageInfo: {},
+        readArticles: [],
         ...stateOverrides,
       },
     });
@@ -56,6 +58,7 @@ describe('App', () => {
       store,
       propsData: {
         versionDigest: 'version-digest',
+        initialReadArticles: [1, 2],
         ...(includeWithClose && { withClose }),
       },
       ...(Object.keys(glFeatures).length > 0 && { provide: { glFeatures } }),
@@ -140,6 +143,10 @@ describe('App', () => {
           property: 'navigation_top',
           value: 'namespace-840',
         });
+      });
+
+      it('sets readArticles from initialReadArticles', () => {
+        expect(actions.setReadArticles).toHaveBeenCalledWith(expect.any(Object), [1, 2]);
       });
 
       it('dispatches closeDrawer when clicking close', () => {

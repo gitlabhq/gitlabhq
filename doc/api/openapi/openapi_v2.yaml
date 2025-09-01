@@ -27384,6 +27384,12 @@ paths:
         description: The ID or URL-encoded path of the project.
         type: string
         required: true
+      - in: path
+        name: merge_request_iid
+        description: The internal ID of the merge request.
+        type: integer
+        format: int32
+        required: true
       - in: query
         name: page
         description: Current page number
@@ -27400,11 +27406,6 @@ paths:
         default: 20
         required: false
         example: 20
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
       responses:
         '200':
           description: Get single merge request commits
@@ -27558,6 +27559,12 @@ paths:
         description: The ID or URL-encoded path of the project.
         type: string
         required: true
+      - in: path
+        name: merge_request_iid
+        description: The internal ID of the merge request.
+        type: integer
+        format: int32
+        required: true
       - in: query
         name: page
         description: Current page number
@@ -27580,11 +27587,6 @@ paths:
         type: boolean
         default: false
         required: false
-      - in: path
-        name: merge_request_iid
-        type: integer
-        format: int32
-        required: true
       responses:
         '200':
           description: Get the merge request diffs
@@ -27638,6 +27640,7 @@ paths:
         required: true
       - in: path
         name: merge_request_iid
+        description: The internal ID of the merge request.
         type: integer
         format: int32
         required: true

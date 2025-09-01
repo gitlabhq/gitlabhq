@@ -218,7 +218,7 @@ gem 'gitlab-fog-azure-rm', '~> 2.2.0', require: 'fog/azurerm', feature_category:
 # Need this specific version of google-apis-storage_v1 so that fog-google will utilize the updated list_objects with
 # match_glob support in google-apis-core 0.11.1. Because of this we also have to bump google-cloud-storage to 1.45.0.
 gem 'google-apis-storage_v1', '~> 0.29', feature_category: :shared
-gem 'google-cloud-storage', '~> 1.45.0', feature_category: :shared
+gem 'google-cloud-storage', '~> 1.57.0', feature_category: :shared
 # We need >= 0.11.1 because that's when match_glob support is added to list_objects
 gem 'google-apis-core', '~> 0.18.0', '>= 0.18.0', feature_category: :shared
 gem 'google-apis-compute_v1', '~> 0.129.0', feature_category: :shared

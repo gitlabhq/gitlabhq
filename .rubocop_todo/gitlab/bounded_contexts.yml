@@ -658,7 +658,6 @@ Gitlab/BoundedContexts:
     - 'app/models/alert_management/alert_user_mention.rb'
     - 'app/models/alert_management/http_integration.rb'
     - 'app/models/alert_management/metric_image.rb'
-    - 'app/models/alerting/project_alerting_setting.rb'
     - 'app/models/appearance.rb'
     - 'app/models/application_record.rb'
     - 'app/models/application_setting.rb'

@@ -56808,6 +56808,9 @@ msgstr ""
 msgid "Search by Git revision"
 msgstr ""
 
+msgid "Search by ID"
+msgstr ""
+
 msgid "Search by author"
 msgstr ""
 

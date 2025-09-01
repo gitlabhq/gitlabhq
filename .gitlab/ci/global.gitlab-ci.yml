@@ -204,6 +204,15 @@
   policy: pull
   unprotect: true
 
+.workhorse-go-cache: &workhorse-go-cache
+  key:
+    prefix: workhorse-go-dependencies
+    files:
+      - workhorse/go.sum
+  paths:
+    - .go/pkg/mod/
+  policy: pull-push
+
 # E2E related gem caching
 .qa-bundler-variables: &qa-bundler-variables
   BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
@@ -317,6 +326,17 @@
   cache:
     - <<: *fixtures-cache-key
       policy: push
+
+.workhorse-job-cache:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *workhorse-go-cache
+
+.workhorse-job-cache-pull:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - <<: *workhorse-go-cache
+      policy: pull
 
 .redis-services:
   services:

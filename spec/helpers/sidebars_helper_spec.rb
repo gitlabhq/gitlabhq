@@ -184,7 +184,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         it do
           is_expected.to include({
             whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
-            whats_new_version_digest: helper.whats_new_version_digest
+            whats_new_version_digest: helper.whats_new_version_digest,
+            whats_new_read_articles: helper.whats_new_read_articles,
+            whats_new_mark_as_read_path: whats_new_mark_as_read_path
           })
         end
       end

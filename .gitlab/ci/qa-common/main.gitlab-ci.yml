@@ -76,6 +76,9 @@ stages:
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     FF_NETWORK_PER_BUILD: "true"
+    # RUNNER_SCRIPT_TIMEOUT will trigger before overall job timeout, this ensures after_script will still be executed
+    # https://docs.gitlab.com/ci/runners/configure_runners/#set-script-and-after_script-timeouts
+    RUNNER_SCRIPT_TIMEOUT: $MAX_E2E_TEST_EXECUTION_TIME
 
 .e2e-test-base:
   extends:

@@ -319,7 +319,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_cluster_agent
     enable :read_group_all_available_runners
     enable :read_observability_portal
-    enable :use_k8s_proxies
   end
 
   rule { reporter }.policy do

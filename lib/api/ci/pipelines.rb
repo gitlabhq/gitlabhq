@@ -168,6 +168,7 @@ module API
           use :pagination
         end
 
+        route_setting :mcp, tool_name: :get_pipeline_jobs, params: [:id, :pipeline_id, :per_page, :page]
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds]

@@ -3,10 +3,10 @@
 class WhatsNewController < ApplicationController
   include Gitlab::Utils::StrongMemoize
 
-  skip_before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: :index
 
   before_action :check_whats_new_enabled
-  before_action :check_valid_page_param, :set_pagination_headers
+  before_action :check_valid_page_param, :set_pagination_headers, only: :index
 
   feature_category :onboarding
   urgency :low
@@ -16,6 +16,16 @@ class WhatsNewController < ApplicationController
       format.js do
         render json: highlights.items
       end
+    end
+  end
+
+  def mark_as_read
+    result = article_read_status_service.mark_article_as_read(mark_as_read_params[:article_id])
+
+    if result.success?
+      head :ok
+    else
+      render json: result.message, status: :bad_request
     end
   end
 
@@ -41,5 +51,13 @@ class WhatsNewController < ApplicationController
 
   def set_pagination_headers
     response.set_header('X-Next-Page', highlights.next_page)
+  end
+
+  def mark_as_read_params
+    params.permit(:article_id)
+  end
+
+  def article_read_status_service
+    Onboarding::WhatsNew::ReadStatusService.new(current_user.id, ReleaseHighlight.most_recent_version_digest)
   end
 end

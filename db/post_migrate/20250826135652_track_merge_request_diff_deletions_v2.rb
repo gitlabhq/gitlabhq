@@ -6,14 +6,10 @@ class TrackMergeRequestDiffDeletionsV2 < Gitlab::Database::Migration[2.3]
   milestone '18.4'
 
   def up
-    with_lock_retries do
-      track_record_deletions(:merge_request_diffs)
-    end
+    # NOOP - This migration is no longer needed
   end
 
   def down
-    with_lock_retries do
-      untrack_record_deletions(:merge_request_diffs)
-    end
+    # NOOP - This migration is no longer needed
   end
 end

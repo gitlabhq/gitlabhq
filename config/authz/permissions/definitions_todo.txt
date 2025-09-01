@@ -865,7 +865,6 @@ update_workspace
 upload_alert_management_metric_image
 upload_file
 upload_issuable_metric_image
-use_k8s_proxies
 use_project_statistics_filters
 use_quick_actions
 use_slash_commands
