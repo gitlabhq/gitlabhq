@@ -15,14 +15,6 @@ description: Upgrade a self-compiled instance.
 
 Upgrade a self-compiled installation to a later version of GitLab.
 
-## Prerequisites
-
-Before you upgrade:
-
-- Consult [information you need before you upgrade](plan_your_upgrade.md).
-- Review the [software requirements](../install/self_compiled/_index.md#software-requirements) for Ruby, Node.js, Go,
-  and PostgreSQL.
-
 To upgrade a self-compiled GitLab instance:
 
 1. [Create a backup](#create-a-backup).
@@ -40,6 +32,14 @@ To upgrade a self-compiled GitLab instance:
 1. [Update Gitaly](#update-gitaly).
 1. [Update GitLab Pages](#update-gitlab-pages).
 1. [Perform post-upgrade steps](#post-upgrade-steps).
+
+## Prerequisites
+
+Before you upgrade:
+
+- Consult [information you need before you upgrade](plan_your_upgrade.md).
+- Review the [software requirements](../install/self_compiled/_index.md#software-requirements) for Ruby, Node.js, Go,
+  and PostgreSQL.
 
 ## Create a backup
 

@@ -88,7 +88,8 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
         expect(page).to have_content 'Thank you for your report'
       end
 
-      it 'allows multiple users to report the same user', :js do
+      it 'allows multiple users to report the same user', :js,
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/563735' do
         fill_and_submit_abuse_category_form
         fill_and_submit_report_abuse_form
 
