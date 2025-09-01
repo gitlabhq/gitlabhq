@@ -31,6 +31,7 @@ export default {
       :key="pageKey"
       :root-page-full-path="rootPageFullPath"
       :with-tabs="withTabs"
+      class="work-item-router-view"
       data-testid="work-item-router-view"
     />
   </work-item-metadata-provider>

@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     removeTransitions() {
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       this.prevTransitions = {
         sidebar: sidebar.style.transition,
@@ -42,24 +42,40 @@ export default {
 
       sidebar.style.transition = '0s';
       contentWrapper.style.transition = '0s';
+
+      if (contentPanelWrapper) {
+        contentPanelWrapper.style.transition = '0s';
+      }
     },
     restoreTransitions() {
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       sidebar.style.transition = this.prevTransitions.sidebar;
       contentWrapper.style.transition = this.prevTransitions.contentWrapper;
+
+      if (contentPanelWrapper) {
+        contentPanelWrapper.style.transition = this.prevTransitions.contentWrapper;
+      }
     },
     updateWidths(width) {
       if (typeof width === 'number') this.sidebarWidth = width;
 
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       if (this.resizeEnabled) {
-        contentWrapper.style.paddingRight = `${this.sidebarWidth}px`;
         sidebar.style.width = `${this.sidebarWidth}px`;
+        contentWrapper.style.paddingRight = `${this.sidebarWidth}px`;
+
+        if (contentPanelWrapper) {
+          contentPanelWrapper.style.paddingRight = `${this.sidebarWidth}px`;
+        }
       } else {
-        contentWrapper.style.paddingRight = '';
         sidebar.style.width = '';
+        contentWrapper.style.paddingRight = '';
+
+        if (contentPanelWrapper) {
+          contentPanelWrapper.style.paddingRight = '';
+        }
       }
 
       this.resizeEnabled = isScreenMd();
@@ -71,6 +87,7 @@ export default {
   },
   sidebar: document.querySelector('.js-wiki-sidebar'),
   contentWrapper: document.querySelector('.content-wrapper'),
+  contentPanelWrapper: document.querySelector('#static-panel-portal .panel-content-inner'),
 };
 </script>
 <template>

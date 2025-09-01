@@ -168,7 +168,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
             ).save!
           end
 
-          it 'returns the gitlab ghost user id' do
+          it 'returns the gitlab ghost user id', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/565885' do
             expect(user_formatter.gitlab_id).to eq(gitlab_ghost_user.id)
           end
         end

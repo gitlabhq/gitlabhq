@@ -5,7 +5,7 @@ require 'rails/generators/testing/assertions'
 require 'rails/generators/testing/behavior'
 
 RSpec.describe BatchedBackgroundMigration::BatchedBackgroundMigrationGenerator, feature_category: :database do
-  include Rails::Generators::Testing::Behaviour
+  include Rails::Generators::Testing::Behavior
   include Rails::Generators::Testing::Assertions
   include FileUtils
 

@@ -30,5 +30,9 @@ AI is a productivity multiplier and creative catalyst for the Technical Writing 
   - Analyze documentation sets and identify pain points and improvement areas.
   - Summarize long documents.
   - Generate lists of content by topic or category.
+- Collaborate as a thinking partner
+  - Co-develop content iteratively through conversation.
+  - Challenge assumptions and explore alternatives.
+  - Ask probing questions to uncover requirements, edge cases, and gaps.
 
 All content, AI-generated or human-created, is reviewed for accuracy and readability by a GitLab team member.

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $super-sidebar-transition-delay: 0.4s;
 $super-sidebar-transition-duration: 0.2s;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration * 0.25;
@@ -786,29 +788,82 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     display: flex;
     gap: .5rem;
     height: calc(100vh - #{$calc-application-bars-height});
+    padding-block-end: .5rem;
+    padding-inline-end: .5rem;
+    overflow: clip;
+
+    .content-wrapper,
+    .vue-portal-target [data-testid="work-item-panel"] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .top-bar-fixed {
+      box-shadow: none;
+    }
+
+    .panel-header .top-bar-fixed,
+    .work-item-drawer-header {
+      position: static !important;
+      @apply gl-px-6 gl-bg-default;
+      border-bottom: 1px solid var(--super-sidebar-bg);
+    }
+
+    .work-item-drawer-header {
+      @apply -gl-mx-3;
+      width: calc(100% + 1rem);
+    }
+
+    .panel-content-inner,
+    .vue-portal-target .work-item-drawer-content {
+      height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
+      overflow-y: auto;
+      overflow-x: hidden;
+      scrollbar-color: var(--gl-color-neutral-400) var(--gl-background-color-default);
+      scrollbar-width: thin;
+
+      .container-fluid {
+        @apply gl-px-4 gl-pb-3;
+      }
+    }
+
+    .panel-content {
+      overflow: clip;
+      clip-path: inset(1px 1px 1px 1px);
+      transform: translate3d(0, 0, 0);
+      @apply gl-h-full gl-pb-0;
+    }
+  }
+
+  .panel-content-inner,
+  .vue-portal-target .work-item-drawer {
+    @apply gl-mx-3;
+  }
+
+  .vue-portal-target .work-item-drawer-content {
+    @apply gl-px-5 #{!important};
+  }
+
+  .work-item-drawer-header {
+    @apply gl-py-4;
+  }
+
+  .vue-portal-target {
+    @apply gl-h-full;
   }
 
   // Panel
   .paneled-view {
-    position: relative;
-    padding: 0;
-    overflow-y: auto;
-    transform: translate(0, 0);
-    @apply gl-rounded-[1rem];
-
-    // Breadcrumb
-    .top-bar-fixed {
-      box-shadow: none;
-      border-bottom: 1px solid var(--super-sidebar-bg);
-    }
+    overflow: clip;
+    @apply gl-p-0 gl-rounded-[1rem];
 
     // Work item drawer
     .work-item-drawer {
-      @apply gl-pt-0;
+      @apply gl-h-full gl-pt-0;
     }
 
-    .work-item-drawer [data-testid="work-item-detail"] > div,
-    [data-testid="work-item-router-view"] > [data-testid="work-item-detail"] > div {
+    .work-item-drawer .work-item-drawer-content > div,
+    .work-item-router-view > .work-item-detail > div {
       // «Hack» for nested sticky elements to work
       // Needed so the nested element can be sticky to the
       // parent panel container
@@ -816,20 +871,17 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
       display: ruby;
     }
 
-    // Work item drawer header
-    .work-item-drawer-header {
-      z-index: $top-bar-z-index;
-      position: sticky !important;
-      top: 0;
-      border-bottom: 1px solid var(--super-sidebar-bg);
-      @apply gl-py-4 gl-bg-default;
-    }
-
     // Issue sticky header
     .issue-sticky-header:not(.merge-request-sticky-header) {
       position: sticky;
-      width: calc(100% + #{$gl-spacing-scale-6 * 2});
-      @apply -gl-mx-6;
+      top: -1px !important;
+      width: 100%;
+      @apply gl-border-b-subtle;
+      @include translucent-glass-background;
+
+      .work-item-sticky-header-text {
+        @apply gl-px-0 gl-py-2;
+      }
     }
 
     .merge-request-sticky-header {
@@ -842,10 +894,15 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
       }
     }
 
+    // Issue boards height
+    .boards-app {
+      height: calc(#{$calc-application-viewport-height} - 1.25rem);
+    }
+
     // MR file change header
     .diff-file .file-title, .diff-file .file-title-flex-parent {
       @media (min-width: map-get($grid-breakpoints, md)) {
-        top: calc(#{$header-height} + #{$mr-sticky-header-height} - 1px);
+        top: calc(#{$mr-sticky-header-height} - 1px);
       }
     }
 
@@ -853,41 +910,40 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     .work-item-attributes-wrapper,
     .issuable-sidebar.is-merge-request .issuable-context-form {
       @include media-breakpoint-up(lg) {
-        top: calc(#{$header-height} + #{$mr-sticky-header-height} - 1px);
+        top: calc(#{$mr-sticky-header-height} - 1px);
+        @apply gl-pr-4 #{!important};
       }
     }
 
     // Issue sidebar
     @include media-breakpoint-up(md) {
       .work-item-attributes-wrapper {
-        top: calc(#{$header-height} + #{$work-item-sticky-header-height});
+        top: calc(#{$work-item-sticky-header-height});
       }
     }
 
     // Project sidebar
     @include media-breakpoint-up(lg) {
       .project-page-indicator:not(.hidden) + .project-page-layout .project-page-sidebar {
-        top: calc(#{$header-height} + #{$gl-spacing-scale-4});
+        top: calc(#{$gl-spacing-scale-4});
       }
     }
 
     // User profile sidebar
     @include media-breakpoint-up(lg) {
+      .merge-request-sticky-header::after,
       .user-profile .profile-header {
-        top: $header-height;
+        top: -1px;
       }
     }
 
-    // Sidebar fallback
-    .right-sidebar {
-      top: 0;
-    }
-
     // Sticky headers below top bar
+    .right-sidebar,
     .issue-sticky-header:not(.merge-request-sticky-header),
     .merge-request-sticky-header,
-    .settings-sticky-header {
-      top: calc(#{$top-bar-height} + 1px);
+    .settings-sticky-header,
+    .build-page .top-bar {
+      top: -1px;
     }
 
     // Sticky flash alert
@@ -917,6 +973,13 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   }
 }
 
+.application-chrome .gl-platform-linux .panels-container {
+  .panel-content-inner,
+  .vue-portal-target [data-testid="work-item-detail"] {
+    scrollbar-width: auto;
+  }
+}
+
 .application-chrome .global-search-modal .modal-content {
   border-radius: 0.75rem !important;
 
@@ -925,45 +988,44 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   }
 }
 
-// Experiment
-// Increased border radii for form elements and buttons
-:where(.application-chrome),
-:where(.page-with-panels) {
-  .gl-button,
-  .gl-button.gl-button,
-  .form-control,
-  .gl-form-input,
-  .gl-form-input.form-control,
-  .gl-form-select {
-    @apply gl-rounded-lg;
-  }
-}
-
-:where(.application-chrome) .topbar-signup-button {
-  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
-  --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);
-  --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-1000);
-  --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-1000);
-
-  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-800);
-  --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-950);
-  --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-1000);
-  --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-1000);
-}
-
-:where(.gl-dark.application-chrome) .topbar-signup-button  {
-  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-50);
-  --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-10);
-  --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-0);
-  --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-0);
-
-  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-50);
-  --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-10);
-  --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-0);
-  --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-0);
-}
-
 .page-with-panels {
+  :where(.right-sidebar-expanded) {
+    .content-wrapper {
+      padding-right: 0 !important;
+    }
+
+    .panel-content-inner {
+      @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
+        padding-right: $right-sidebar-width;
+      }
+    }
+  }
+
+  // Position fixed sidebar fix
+  .right-sidebar:not(.right-sidebar-merge-requests):not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) {
+    @apply gl-hidden #{!important};
+
+    &.right-sidebar-expanded {
+      @apply gl-block #{!important};
+    }
+
+    @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
+      @apply gl-block #{!important};
+    }
+  }
+
+  :where(.right-sidebar-collapsed:not(.issuable-bulk-update-sidebar)) {
+    .content-wrapper {
+      padding-right: 0 !important;
+    }
+
+    .panel-content-inner {
+      @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
+        padding-right: $right-sidebar-collapsed-width;
+      }
+    }
+  }
+
   // Layout
   .layout-page {
     display: flex;
@@ -983,6 +1045,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     }
 
     .panels-container {
+      @apply gl-pr-0;
       height: calc(100vh - #{$calc-application-bars-height} - 1rem);
     }
   }
@@ -1022,4 +1085,54 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   .page-with-super-sidebar-collapsed .super-sidebar {
     margin: 0;
   }
+}
+
+// Experiment
+// Increased border radii for form elements and buttons
+:where(.application-chrome),
+:where(.page-with-panels) {
+  .gl-button,
+  .gl-button.gl-button,
+  .form-control,
+  .gl-form-input,
+  .gl-form-input.form-control,
+  .gl-form-select {
+    @apply gl-rounded-lg;
+  }
+
+  // Increased border radii for other elements
+  .info-well,
+  .file-holder,
+  .table-holder {
+    @apply gl-rounded-lg #{!important};
+  }
+
+  .file-title-flex-parent, .file-holder .file-title-flex-parent {
+    border-top-left-radius: #{$gl-border-radius-lg - 1px};
+    border-top-right-radius: #{$gl-border-radius-lg - 1px};
+  }
+}
+
+:where(.application-chrome) .topbar-signup-button {
+  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
+  --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);
+  --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-1000);
+  --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-1000);
+
+  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-800);
+  --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-950);
+  --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-1000);
+  --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-1000);
+}
+
+:where(.gl-dark.application-chrome) .topbar-signup-button  {
+  --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-50);
+  --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-10);
+  --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-0);
+  --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-0);
+
+  --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-50);
+  --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-10);
+  --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-0);
+  --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-0);
 }

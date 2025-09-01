@@ -35,7 +35,8 @@ module Import
         end
 
         if skip_reassignment_confirmation?
-          Import::ReassignPlaceholderUserRecordsWorker.perform_async(import_source_user.id)
+          Import::ReassignPlaceholderUserRecordsWorker.perform_async(import_source_user.id,
+            'confirmation_skipped' => true)
           track_reassignment_event('reassign_placeholder_user_without_confirmation')
         else
           send_user_reassign_email

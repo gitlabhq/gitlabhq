@@ -13,6 +13,7 @@ module Ci
     include Ci::TrackEnvironmentUsage
     include EachBatch
     include Ci::Taggable
+    include ChronicDurationAttribute
 
     extend ::Gitlab::Utils::Override
 
@@ -152,6 +153,15 @@ module Ci
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+
+    chronic_duration_attr_reader :timeout_human_readable, :timeout
+
+    enum :timeout_source, {
+      unknown_timeout_source: 1,
+      project_timeout_source: 2,
+      runner_timeout_source: 3,
+      job_timeout_source: 4
+    }
 
     delegate :name, to: :project, prefix: true
 
@@ -312,6 +322,12 @@ module Ci
         true
       end
 
+      before_transition pending: :running do |build|
+        next if Feature.disabled?(:ci_use_new_job_update_timeout_state, build.project)
+
+        build.update_timeout_state
+      end
+
       after_transition created: :scheduled do |build|
         build.run_after_commit do
           Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
@@ -351,6 +367,8 @@ module Ci
       # rubocop:enable CodeReuse/ServiceClass
       #
       after_transition pending: :running do |build|
+        next if Feature.enabled?(:ci_use_new_job_update_timeout_state, build.project)
+
         build.ensure_metadata.update_timeout_state
       end
 

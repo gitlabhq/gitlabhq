@@ -41,13 +41,9 @@ module Ci
 
     scope :with_interruptible, -> { where(interruptible: true) }
 
-    enum :timeout_source, {
-      unknown_timeout_source: 1,
-      project_timeout_source: 2,
-      runner_timeout_source: 3,
-      job_timeout_source: 4
-    }
+    enum :timeout_source, ::Ci::Build.timeout_sources
 
+    # Remove this method when FF `ci_use_new_job_update_timeout_state` is removed
     def update_timeout_state
       timeout = ::Ci::Builds::TimeoutCalculator.new(build).applicable_timeout
       return unless timeout

@@ -186,7 +186,7 @@ ul.wiki-pages-list.content-list {
   }
 }
 
-.paneled-view .wiki-overview {
+.page-with-panels .paneled-view .wiki-overview {
   @include media-breakpoint-up(lg) {
     $overview-gap-width: 2rem;
     display: grid;
@@ -194,8 +194,6 @@ ul.wiki-pages-list.content-list {
     column-gap: $overview-gap-width;
 
     .right-sidebar {
-      position: sticky;
-      top: $top-bar-height;
       height: calc(100vh - #{$header-height} - #{$top-bar-height} - 0.5rem - 1px);
     }
   }

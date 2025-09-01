@@ -77,6 +77,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'partition query' do
     subject { build.reload }
 
@@ -196,11 +198,29 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     describe 'job status update subscription trigger' do
       %w[cancel! drop! run! skip! success!].each do |action|
-        context "when build receives #{action} event" do
+        shared_examples "when build receives #{action} event" do
           it 'triggers GraphQL subscription ciJobStatusUpdated' do
             expect(GraphqlTriggers).to receive(:ci_job_status_updated).with(build)
 
             build.public_send(action)
+          end
+        end
+
+        it_behaves_like "when build receives #{action} event"
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it_behaves_like "when build receives #{action} event"
+
+          context 'when FF `ci_use_new_job_update_timeout_state` is disabled' do
+            before do
+              stub_feature_flags(ci_use_new_job_update_timeout_state: false)
+            end
+
+            it_behaves_like "when build receives #{action} event"
           end
         end
       end
@@ -4098,24 +4118,44 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     shared_examples 'saves data on transition' do
       it 'saves timeout' do
-        expect { job.run! }.to change { job.reload.ensure_metadata.timeout }.from(nil).to(expected_timeout)
+        expect { job.run! }.to change { job.reload.timeout_value }.from(nil).to(expected_timeout)
       end
 
       it 'saves timeout_source' do
-        expect { job.run! }.to change { job.reload.ensure_metadata.timeout_source }.from('unknown_timeout_source').to(expected_timeout_source)
+        expect { job.run! }.to change { job.reload.timeout_source_value }.from('unknown_timeout_source').to(expected_timeout_source)
       end
 
-      context 'when Ci::BuildMetadata#update_timeout_state fails update' do
+      context 'when Ci::Build#update_timeout_state fails update' do
         before do
-          allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
+          allow_any_instance_of(described_class).to receive(:update_timeout_state).and_return(false)
         end
 
         it "doesn't save timeout" do
-          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout }
+          expect { run_job_without_exception }.not_to change { job.reload.timeout_value }
         end
 
         it "doesn't save timeout_source" do
-          expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+          expect { run_job_without_exception }.not_to change { job.reload.timeout_source_value }
+        end
+      end
+
+      context 'when FF `ci_use_new_job_update_timeout_state` is disabled' do
+        before do
+          stub_feature_flags(ci_use_new_job_update_timeout_state: false)
+        end
+
+        context 'when Ci::BuildMetadata#update_timeout_state fails update' do
+          before do
+            allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
+          end
+
+          it "doesn't save timeout" do
+            expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout }
+          end
+
+          it "doesn't save timeout_source" do
+            expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
+          end
         end
       end
     end
@@ -4129,6 +4169,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
+
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it_behaves_like 'saves data on transition'
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+          end
+
+          it_behaves_like 'saves data on transition'
+        end
+      end
     end
 
     context "when runner timeout doesn't override project timeout" do
@@ -4140,6 +4196,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       it_behaves_like 'saves data on transition'
+
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it_behaves_like 'saves data on transition'
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+          end
+
+          it_behaves_like 'saves data on transition'
+        end
+      end
     end
   end
 

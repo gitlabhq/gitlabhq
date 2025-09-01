@@ -37,7 +37,8 @@ RSpec.shared_context 'project navbar structure' do
         {
           nav_item: _('Automate'),
           nav_sub_items: [
-            _('Agent sessions')
+            _('Agent sessions'),
+            s_('AICatalog|Flows')
           ]
         }
       end,

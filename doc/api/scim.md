@@ -8,7 +8,7 @@ title: SCIM API
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
 

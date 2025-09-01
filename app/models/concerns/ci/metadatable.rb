@@ -132,10 +132,33 @@ module Ci
       ensure_metadata.enable_debug_trace! if can_write_metadata?
     end
 
+    def timeout_human_readable_value
+      (read_from_new_destination? && timeout_human_readable) || metadata&.timeout_human_readable
+    end
+
     def timeout_value
-      # TODO: need to add the timeout to p_ci_builds later
-      # See https://gitlab.com/gitlab-org/gitlab/-/work_items/538183#note_2542611159
-      try(:timeout) || metadata&.timeout
+      (read_from_new_destination? && timeout) || metadata&.timeout
+    end
+
+    # This method is called from within a Ci::Build state transition;
+    # it returns nil/true (success) or false (failure)
+    def update_timeout_state
+      timeout = ::Ci::Builds::TimeoutCalculator.new(self).applicable_timeout
+      return unless timeout
+
+      if can_write_metadata?
+        success = ensure_metadata.update(timeout: timeout.value, timeout_source: timeout.source)
+        return false unless success
+      end
+
+      # We don't use update because we're already in a Ci::Build transaction
+      write_attribute(:timeout, timeout.value)
+      write_attribute(:timeout_source, timeout.source)
+      valid?
+    end
+
+    def timeout_source_value
+      (read_from_new_destination? && timeout_source) || metadata&.timeout_source
     end
 
     def artifacts_exposed_as

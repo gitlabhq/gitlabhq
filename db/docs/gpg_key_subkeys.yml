@@ -8,5 +8,13 @@ description: Stores GPG subkeys
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14517
 milestone: '10.1'
 gitlab_schema: gitlab_main_user
+desired_sharding_key:
+  user_id:
+    references: users
+    backfill_via:
+      parent:
+        foreign_key: gpg_key_id
+        table: gpg_keys
+        sharding_key: user_id
+        belongs_to: gpg_key
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553457

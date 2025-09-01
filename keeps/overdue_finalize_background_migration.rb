@@ -154,7 +154,9 @@ module Keeps
         File.read(file).include?('queue_batched_background_migration')
       end.max
 
-      raise "Could not find migration for #{job_name}" unless result.present?
+      # Return nil for no-op migrations (those without queue_batched_background_migration)
+      # This will cause the housekeeper to skip processing this migration
+      return unless result.present?
 
       result
     rescue ::Gitlab::Housekeeper::Shell::Error

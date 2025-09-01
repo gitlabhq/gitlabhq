@@ -932,6 +932,7 @@ export default {
   <work-item-metadata-provider :full-path="workItemFullPath">
     <div
       ref="workItemDetail"
+      class="work-item-detail"
       data-testid="work-item-detail"
       @dragstart.prevent.stop
       @dragend.prevent.stop

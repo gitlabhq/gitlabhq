@@ -2,18 +2,27 @@
 
 # rubocop:disable Gitlab/BoundedContexts -- Shared ownership
 module JSONWebToken
-  class ProjectTokenClaims
+  class UserProjectTokenClaims
     def initialize(project:, user:)
       @project = project
       @user = user
     end
 
     def generate
+      project_claims.merge(user_claims)
+    end
+
+    def project_claims(key_prefix: '')
       {
-        namespace_id: namespace.id.to_s,
-        namespace_path: namespace.full_path,
         project_id: project.id.to_s,
         project_path: project.full_path,
+        namespace_id: namespace.id.to_s,
+        namespace_path: namespace.full_path
+      }.transform_keys { |key| :"#{key_prefix}#{key}" }
+    end
+
+    def user_claims
+      {
         user_id: user&.id.to_s,
         user_login: user&.username,
         user_email: user&.email,

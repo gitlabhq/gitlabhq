@@ -12,27 +12,181 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     processable.clear_memoization(:can_write_metadata?)
   end
 
+  describe '#timeout_human_readable_value' do
+    let_it_be_with_refind(:job) { create(:ci_build) }
+
+    subject(:timeout_human_readable_value) { job.timeout_human_readable_value }
+
+    it { is_expected.to be_nil }
+
+    context 'when metadata timeout is present' do
+      before do
+        job.ensure_metadata.write_attribute(:timeout, 60)
+      end
+
+      it { is_expected.to eq('1m') }
+
+      context 'when job timeout is present' do
+        before do
+          job.write_attribute(:timeout, 120)
+        end
+
+        it { is_expected.to eq('2m') }
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+          end
+
+          it { is_expected.to eq('1m') }
+        end
+      end
+    end
+  end
+
   describe '#timeout_value' do
-    using RSpec::Parameterized::TableSyntax
+    subject(:timeout_value) { processable.timeout_value }
 
-    let(:ci_processable) { build(:ci_processable, metadata: ci_build_metadata) }
-    let(:ci_build_metadata) { build(:ci_build_metadata, timeout: metadata_timeout) }
+    it { is_expected.to be_nil }
 
-    subject(:timeout_value) { ci_processable.timeout_value }
+    context 'when metadata timeout is present' do
+      before do
+        processable.ensure_metadata.write_attribute(:timeout, 60)
+      end
+
+      it { is_expected.to eq(60) }
+
+      context 'when job timeout is present' do
+        before do
+          processable.write_attribute(:timeout, 120)
+        end
+
+        it { is_expected.to eq(120) }
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+          end
+
+          it { is_expected.to eq(60) }
+        end
+      end
+    end
+  end
+
+  describe '#update_timeout_state' do
+    let(:calculator) { instance_double(::Ci::Builds::TimeoutCalculator) }
+
+    subject(:update_timeout_state) { processable.update_timeout_state }
 
     before do
-      allow(ci_processable).to receive_messages(timeout: build_timeout)
+      allow(::Ci::Builds::TimeoutCalculator).to receive(:new).with(processable).and_return(calculator)
     end
 
-    where(:build_timeout, :metadata_timeout, :expected_timeout) do
-      nil | nil | nil
-      nil | 100 | 100
-      200 | nil | 200
-      200 | 100 | 200
+    context 'when no timeouts defined anywhere' do
+      before do
+        allow(calculator).to receive(:applicable_timeout).and_return(nil)
+      end
+
+      it { is_expected.to be_nil }
+
+      it 'does not change job timeout nor metadata timeout values' do
+        expect { update_timeout_state }
+          .to not_change { processable.read_attribute(:timeout) }
+          .and not_change { processable.read_attribute(:timeout_source) }
+          .and not_change { processable.metadata.timeout }
+          .and not_change { processable.metadata.timeout_source }
+      end
     end
 
-    with_them do
-      it { is_expected.to eq(expected_timeout) }
+    context 'when at least a timeout is defined' do
+      before do
+        allow(calculator)
+          .to receive(:applicable_timeout)
+          .and_return(::Ci::Builds::Timeout.new(25, 4))
+      end
+
+      it { is_expected.to be(true) }
+
+      it 'updates job timeout values' do
+        expect { update_timeout_state }
+          .to change { processable.read_attribute(:timeout) }.from(nil).to(25)
+          .and change { processable.read_attribute(:timeout_source) }.from(nil).to(4)
+      end
+
+      it 'does not change metadata timeout values' do
+        expect { update_timeout_state }
+          .to not_change { processable.metadata.timeout }
+          .and not_change { processable.metadata.timeout_source }
+      end
+
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it { is_expected.to be(true) }
+
+        it 'updates metadata timeout values' do
+          expect { update_timeout_state }
+            .to change { processable.metadata.timeout }.from(nil).to(25)
+            .and change { processable.metadata.timeout_source }.from('unknown_timeout_source').to('job_timeout_source')
+        end
+
+        context 'when metadata timeout values fail to save' do
+          before do
+            allow(processable.metadata).to receive(:update).and_return(false)
+          end
+
+          it { is_expected.to be(false) }
+
+          it 'does not change job timeout values' do
+            expect { update_timeout_state }
+              .to not_change { processable.read_attribute(:timeout) }
+              .and not_change { processable.read_attribute(:timeout_source) }
+          end
+        end
+      end
+
+      context 'when job timeout values are invalid' do
+        before do
+          allow(processable).to receive(:valid?).and_return(false)
+        end
+
+        it { is_expected.to be(false) }
+      end
+    end
+  end
+
+  describe '#timeout_source_value' do
+    let_it_be_with_refind(:job) { create(:ci_build) }
+
+    subject(:timeout_source_value) { job.timeout_source_value }
+
+    it { is_expected.to eq('unknown_timeout_source') }
+
+    context 'when metadata does not exist' do
+      before do
+        job.delete
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when job timeout_source is present' do
+      before do
+        job.write_attribute(:timeout_source, 2)
+      end
+
+      it { is_expected.to eq('project_timeout_source') }
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it { is_expected.to eq('unknown_timeout_source') }
+      end
     end
   end
 

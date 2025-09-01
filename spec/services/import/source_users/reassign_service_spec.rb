@@ -42,7 +42,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
     shared_examples 'a success response that bypasses user confirmation' do
       it 'returns success', :aggregate_failures do
-        expect(Import::ReassignPlaceholderUserRecordsWorker).to receive(:perform_async).with(import_source_user.id)
+        expect(Import::ReassignPlaceholderUserRecordsWorker).to receive(:perform_async).with(import_source_user.id,
+          'confirmation_skipped' => true)
         expect { result }
           .to trigger_internal_events('reassign_placeholder_user_without_confirmation')
           .with(

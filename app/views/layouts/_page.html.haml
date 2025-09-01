@@ -13,32 +13,35 @@
   = render_if_exists "layouts/tanuki_bot_chat" if context
   = render_if_exists "layouts/session_expire_modal"
 
-  - if Feature.enabled?(:paneled_view, current_user)
+  - if project_studio_enabled?
     .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-gap-3' }
       .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative{ class: 'gl-@container/content-panels' }
-        .content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
-          -# Broadcast messages
-          .broadcast-wrapper
-            = dispensable_render_if_exists "shared/token_expiration_banner"
-            = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
+        #static-panel-portal.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
+          .panel-header
+            -# Broadcast messages
+            .broadcast-wrapper
+              = dispensable_render_if_exists "shared/token_expiration_banner"
+              = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
 
-          -# Top bar
-          - unless @hide_top_bar
-            = render "layouts/nav/top_bar", paneled_view: true
+            -# Top bar
+            - unless @hide_top_bar
+              = render "layouts/nav/top_bar", paneled_view: true
 
-          -# Alerts
-          = render 'layouts/alerts', alert_class: alert_class, context: context
+          .panel-content
+            .panel-content-inner
+              -# Alerts
+              = render 'layouts/alerts', alert_class: alert_class, context: context
 
-          %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-            %main.content{ id: "content-body", class: "gl-@container/panel", **page_itemtype }
-              -# Sticky alerts
-              = render "layouts/flash" unless @hide_flash
-              = yield :after_flash_content
-              = yield :before_content
-              = yield
-          = yield :after_content
-          -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
-          = render_if_exists "shared/footer/global_footer"
+              %div{ class: "#{container_class unless @no_container} #{@content_class}" }
+                %main.content{ id: "content-body", class: "gl-@container/panel", **page_itemtype }
+                  -# Sticky alerts
+                  = render "layouts/flash" unless @hide_flash
+                  = yield :after_flash_content
+                  = yield :before_content
+                  = yield
+              = yield :after_content
+              -# This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/jh-team/gitlab-cn/-/issues/81)
+            = render_if_exists "shared/footer/global_footer"
 
 
         #contextual-panel-portal.paneled-view.contextual-panel{

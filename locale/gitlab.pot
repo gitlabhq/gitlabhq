@@ -2527,6 +2527,9 @@ msgstr ""
 msgid "AICatalog|Delete flow"
 msgstr ""
 
+msgid "AICatalog|Delete flow (Coming soon)"
+msgstr ""
+
 msgid "AICatalog|Description"
 msgstr ""
 
@@ -6128,9 +6131,6 @@ msgid "Agent Information"
 msgstr ""
 
 msgid "Agent not found for provided id."
-msgstr ""
-
-msgid "Agent sessions"
 msgstr ""
 
 msgid "AiAgents|Agent Name"
@@ -28360,9 +28360,6 @@ msgid "FloC|Federated Learning of Cohorts (FLoC)"
 msgstr ""
 
 msgid "FloC|Participate in FLoC"
-msgstr ""
-
-msgid "Flow triggers"
 msgstr ""
 
 msgid "Focus file browser"
@@ -68711,6 +68708,9 @@ msgid "Usage this month"
 msgstr ""
 
 msgid "Usage trends"
+msgstr ""
+
+msgid "UsageBilling|Usage Billing"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

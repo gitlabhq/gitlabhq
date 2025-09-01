@@ -49,6 +49,7 @@ $work-item-overview-gap-width: 2rem;
     overflow-y: initial !important;
     margin-bottom: 0 !important;
     height: auto !important;
+    @apply gl-mt-5;
   }
 }
 

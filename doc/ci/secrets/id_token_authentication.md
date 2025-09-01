@@ -62,21 +62,25 @@ The token also includes custom claims provided by GitLab:
 
 | Field                   | When                                       | Description |
 |-------------------------|--------------------------------------------|-------------|
-| `namespace_id`          | Always                                     | Use this to scope to group or user level namespace by ID. |
-| `namespace_path`        | Always                                     | Use this to scope to group or user level namespace by path. |
-| `project_id`            | Always                                     | Use this to scope to project by ID. |
-| `project_path`          | Always                                     | Use this to scope to project by path. |
+| `project_id`            | Always                                     | ID of the project running the job. In a merge request pipeline, this is the ID of the source project. |
+| `project_path`          | Always                                     | Path of the project running the job. In a merge request pipeline, this is the path of the source project. |
+| `namespace_id`          | Always                                     | Namespace ID of the project running the job. In a merge request pipeline, this is the namespace ID of the source project. |
+| `namespace_path`        | Always                                     | Namespace path of the project running the job. In a merge request pipeline, this is the namespace path of the source project. |
 | `user_id`               | Always                                     | ID of the user executing the job. |
 | `user_login`            | Always                                     | Username of the user executing the job. |
 | `user_email`            | Always                                     | Email of the user executing the job. |
 | `user_access_level`     | Always                                     | Access level of the user executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432052) in GitLab 16.9. |
+| `job_project_id`        | Always                                     | ID of the project running the job. Use this to scope to the project by ID. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
+| `job_project_path`      | Always                                     | Path of the project running the job. Use this to scope to the project by path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
+| `job_namespace_id`      | Always                                     | Namespace ID of the project running the job. Use this to scope to group or user level namespace by ID. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
+| `job_namespace_path`    | Always                                     | Namespace path of the project running the job. Use this to scope to group or user level namespace by path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/563038) in GitLab 18.4. |
 | `user_identities`       | User Preference setting                    | List of the user's external identities ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0). |
 | `pipeline_id`           | Always                                     | ID of the pipeline. |
 | `pipeline_source`       | Always                                     | [Pipeline source](../jobs/job_rules.md#common-if-clauses-with-predefined-variables). |
 | `job_id`                | Always                                     | ID of the job. |
-| `ref`                   | Always                                     | Git ref for the job. |
+| `ref`                   | Always                                     | Git ref for the job. In a merge request pipeline, this is the source branch ref. |
 | `ref_type`              | Always                                     | Git ref type, either `branch` or `tag`. |
-| `ref_path`              | Always                                     | Fully qualified ref for the job. For example, `refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
+| `ref_path`              | Always                                     | Fully qualified ref for the job. For example, `refs/heads/main`. In a merge request pipeline, this is the source branch ref path. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075) in GitLab 16.0. |
 | `ref_protected`         | Always                                     | `true` if the Git ref is protected, `false` otherwise. |
 | `groups_direct`         | User is a direct member of 0 to 200 groups | The paths of the user's direct membership groups. Omitted if the user is a direct member of more than 200 groups. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435848) in GitLab 16.11 and put behind the `ci_jwt_groups_direct` [feature flag](../../administration/feature_flags/_index.md) in GitLab 17.3. |
 | `environment`           | Job specifies an environment               | Environment this job deploys to. |
@@ -86,8 +90,8 @@ The token also includes custom claims provided by GitLab:
 | `runner_id`             | Always                                     | ID of the runner executing the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `runner_environment`    | Always                                     | The type of runner used by the job. Can be either `gitlab-hosted` or `self-hosted`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
 | `sha`                   | Always                                     | The commit SHA for the job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.0. |
-| `ci_config_ref_uri`     | Always                                     | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
-| `ci_config_sha`         | Always                                     | Git commit SHA for the `ci_config_ref_uri`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. This claim is `null` unless the pipeline definition is located in the same project. |
+| `ci_config_ref_uri`     | Always                                     | The ref path to the top-level pipeline definition, for example, `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. If the pipeline definition is not located in the same project, or if the pipeline is a merge request pipeline from a forked project running in the target project, the claim is `null`. |
+| `ci_config_sha`         | Always                                     | Git commit SHA for the `ci_config_ref_uri`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404722) in GitLab 16.2. If the pipeline definition is not located in the same project, or if the pipeline is a merge request pipeline from a forked project running in the target project, the claim is `null`. |
 | `project_visibility`    | Always                                     | The [visibility](../../user/public_access.md) of the project where the pipeline is running. Can be `internal`, `private`, or `public`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418810) in GitLab 16.3. |
 
 ```json
