@@ -8565,10 +8565,11 @@ Input type: `MavenUpstreamCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmavenupstreamcreatecachevalidityhours"></a>`cacheValidityHours` | [`Int!`](#int) | Cache validity period. Defaults to 24 hours. |
+| <a id="mutationmavenupstreamcreatecachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. Defaults to 24 hours. |
 | <a id="mutationmavenupstreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmavenupstreamcreatedescription"></a>`description` | [`String`](#string) | Description of the upstream registry. |
 | <a id="mutationmavenupstreamcreateid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | ID of the upstream registry. |
+| <a id="mutationmavenupstreamcreatemetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="mutationmavenupstreamcreatename"></a>`name` | [`String!`](#string) | Name of upstream registry. |
 | <a id="mutationmavenupstreamcreatepassword"></a>`password` | [`String`](#string) | Password of the upstream registry. |
 | <a id="mutationmavenupstreamcreateurl"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
@@ -33354,6 +33355,7 @@ Represents the upstream registries of a Maven virtual registry.
 | <a id="mavenupstreamcachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
 | <a id="mavenupstreamdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
 | <a id="mavenupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="mavenupstreampassword"></a>`password` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Password to sign in to the upstream registry. |
 | <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |

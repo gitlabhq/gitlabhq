@@ -39881,7 +39881,7 @@ CREATE INDEX index_personal_access_tokens_on_organization_id ON personal_access_
 
 CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_access_tokens USING btree (token_digest);
 
-CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);
+CREATE INDEX index_personal_access_tokens_on_user_id_and_id ON personal_access_tokens USING btree (user_id, id);
 
 CREATE INDEX index_pipeline_metadata_on_name_text_pattern_pipeline_id ON ci_pipeline_metadata USING btree (name text_pattern_ops, pipeline_id);
 

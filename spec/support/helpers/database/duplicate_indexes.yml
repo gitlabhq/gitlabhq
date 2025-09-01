@@ -58,9 +58,6 @@ pages_domains:
   - index_pages_domains_on_project_id
   index_pages_domains_on_verified_at_and_enabled_until:
   - index_pages_domains_on_verified_at
-personal_access_tokens:
-  index_pat_on_user_id_and_expires_at:
-  - index_personal_access_tokens_on_user_id
 pm_affected_packages:
   i_affected_packages_unique_for_upsert:
   - index_pm_affected_packages_on_pm_advisory_id
