@@ -20,8 +20,8 @@ title: GitLab Duo Chat (Classic)
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for SaaS in GitLab 16.0.
 - Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/development_stages_support.md#beta) for GitLab Self-Managed in GitLab 16.8.
-- Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a beta for GitLab Self-Managed in GitLab 16.8.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.

@@ -102,6 +102,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def play
+    return access_denied! unless can?(current_user, :play_job, @build)
     return respond_422 unless @build.playable?
 
     job = @build.play(current_user, play_params[:job_variables_attributes])

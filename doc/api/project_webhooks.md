@@ -386,8 +386,8 @@ Supported attributes:
 
 | Attribute       | Type    | Required | Description |
 |:----------------|:--------|:---------|:------------|
-| `hook_id`       | integer | Yes      | ID of a project webhook. |
 | `hook_event_id` | integer | Yes      | ID of a project webhook event. |
+| `hook_id`       | integer | Yes      | ID of a project webhook. |
 
 Example response:
 
@@ -417,29 +417,29 @@ Supported attributes:
 |:-------------------------------|:------------------|:---------|:------------|
 | `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `url`                          | string            | Yes      | Project webhook URL. |
-| `name`                         | string            | No       | Name of the project webhook. |
-| `description`                  | string            | No       | Description of the webhook. |
+| `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
+| `custom_headers`               | array             | No       | Custom headers for the project webhook. |
+| `custom_webhook_template`      | string            | No       | Custom webhook template for the project webhook. |
 | `deployment_events`            | boolean           | No       | Trigger project webhook on deployment events. |
+| `description`                  | string            | No       | Description of the webhook. |
 | `enable_ssl_verification`      | boolean           | No       | Do SSL verification when triggering the webhook. |
 | `feature_flag_events`          | boolean           | No       | Trigger project webhook on feature flag events. |
 | `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
 | `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
+| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
+| `name`                         | string            | No       | Name of the project webhook. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
-| `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
-| `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                  | boolean           | No       | Trigger project webhook on push events. |
+| `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
-| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
+| `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads; the token isn't returned in the response. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki events. |
-| `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
-| `custom_webhook_template`      | string            | No       | Custom webhook template for the project webhook. |
-| `custom_headers`               | array             | No       | Custom headers for the project webhook. |
 
 ## Edit a project webhook
 
@@ -462,7 +462,9 @@ Supported attributes:
 | `hook_id`                      | integer           | Yes      | ID of the project webhook. |
 | `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `url`                          | string            | Yes      | Project webhook URL. |
-| `name`                         | string            | No       | Name of the project webhook. |
+| `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `custom_headers`               | array             | No       | Custom headers for the project webhook. |
+| `custom_webhook_template`      | string            | No       | Custom webhook template for the project webhook. |
 | `description`                  | string            | No       | Description of the project webhook. |
 | `confidential_issues_events`   | boolean           | No       | Trigger project webhook on confidential issue events. |
 | `confidential_note_events`     | boolean           | No       | Trigger project webhook on confidential note events. |
@@ -472,19 +474,17 @@ Supported attributes:
 | `issues_events`                | boolean           | No       | Trigger project webhook on issue events. |
 | `job_events`                   | boolean           | No       | Trigger project webhook on job events. |
 | `merge_requests_events`        | boolean           | No       | Trigger project webhook on merge request events. |
+| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
+| `name`                         | string            | No       | Name of the project webhook. |
 | `note_events`                  | boolean           | No       | Trigger project webhook on note events. |
 | `pipeline_events`              | boolean           | No       | Trigger project webhook on pipeline events. |
-| `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
-| `branch_filter_strategy`       | string            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                  | boolean           | No       | Trigger project webhook on push events. |
+| `push_events_branch_filter`    | string            | No       | Trigger project webhook on push events for matching branches only. |
 | `releases_events`              | boolean           | No       | Trigger project webhook on release events. |
-| `milestone_events`             | boolean           | No       | Trigger project webhook on milestone events. |
+| `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
 | `tag_push_events`              | boolean           | No       | Trigger project webhook on tag push events. |
 | `token`                        | string            | No       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`             | boolean           | No       | Trigger project webhook on wiki page events. |
-| `resource_access_token_events` | boolean           | No       | Trigger project webhook on project access token expiry events. |
-| `custom_webhook_template`      | string            | No       | Custom webhook template for the project webhook. |
-| `custom_headers`               | array             | No       | Custom headers for the project webhook. |
 
 ## Delete project webhook
 
@@ -559,8 +559,8 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key`     | string            | Yes      | Key of the custom header. |
 | `value`   | string            | Yes      | Value of the custom header. |
 
@@ -582,19 +582,13 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key`     | string            | Yes      | Key of the custom header. |
 
 On success, this endpoint returns the response code `204 No Content`.
 
 ## Set a URL variable
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
 
 ```plaintext
 PUT /projects/:id/hooks/:hook_id/url_variables/:key
@@ -604,20 +598,14 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key`     | string            | Yes      | Key of the URL variable. |
 | `value`   | string            | Yes      | Value of the URL variable. |
 
 On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a URL variable
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
 
 ```plaintext
 DELETE /projects/:id/hooks/:hook_id/url_variables/:key
@@ -627,8 +615,8 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer           | Yes      | ID of the project webhook. |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key`     | string            | Yes      | Key of the URL variable. |
 
 On success, this endpoint returns the response code `204 No Content`.

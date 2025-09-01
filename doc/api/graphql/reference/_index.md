@@ -10723,6 +10723,25 @@ Input type: `RefreshFindingTokenStatusInput`
 | <a id="mutationrefreshfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationrefreshfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Updated token status record for the given finding. |
 
+### `Mutation.refreshSecurityFindingTokenStatus`
+
+Input type: `RefreshSecurityFindingTokenStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshsecurityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatussecurityfindinguuid"></a>`securityFindingUuid` | [`String!`](#string) | UUID of the Security::Finding whose token status should be refreshed (MR context). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshsecurityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`SecurityFindingTokenStatus`](#securityfindingtokenstatus) | Updated token status record for the given Security::Finding. |
+
 ### `Mutation.refreshStandardsAdherenceChecks`
 
 Input type: `RefreshStandardsAdherenceChecksInput`
@@ -10741,6 +10760,25 @@ Input type: `RefreshStandardsAdherenceChecksInput`
 | <a id="mutationrefreshstandardsadherencechecksadherencechecksstatus"></a>`adherenceChecksStatus` | [`StandardsAdherenceChecksStatus`](#standardsadherencechecksstatus) | Progress of standards adherence checks. |
 | <a id="mutationrefreshstandardsadherencechecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrefreshstandardsadherencecheckserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.refreshVulnerabilityFindingTokenStatus`
+
+Input type: `RefreshVulnerabilityFindingTokenStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Global ID of the Vulnerability whose token status should be refreshed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Updated token status record for the given Vulnerabilities::Finding. |
 
 ### `Mutation.releaseAssetLinkCreate`
 
@@ -42020,6 +42058,19 @@ A security category.
 | <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
 | <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |
 | <a id="securitycategorytemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. |
+
+### `SecurityFindingTokenStatus`
+
+Represents the status of a secret token found in a security finding.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityfindingtokenstatuscreatedat"></a>`createdAt` | [`Time!`](#time) | When the token status was created. |
+| <a id="securityfindingtokenstatusid"></a>`id` | [`ID!`](#id) | ID of the finding token status. |
+| <a id="securityfindingtokenstatusstatus"></a>`status` | [`VulnerabilityFindingTokenStatusState!`](#vulnerabilityfindingtokenstatusstate) | Status of the token (unknown, active, inactive). |
+| <a id="securityfindingtokenstatusupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the token status was last updated. |
 
 ### `SecurityMetrics`
 

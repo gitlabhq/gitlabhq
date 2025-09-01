@@ -66,9 +66,9 @@ Get a system hook by its ID.
 GET /hooks/:id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the hook |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | The ID of the hook. |
 
 Example request:
 
@@ -106,17 +106,17 @@ POST /hooks
 
 | Attribute                   | Type    | Required | Description |
 |-----------------------------|---------|----------|-------------|
-| `url`                       | string  | yes      | The hook URL |
-| `name`                      | string  | no       | Name of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
-| `description`               | string  | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
-| `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
-| `push_events`               | boolean | no       | When true, the hook fires on push events |
-| `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
-| `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
-| `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
-| `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |
-| `branch_filter_strategy`    | string  | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches` |
+| `url`                       | string  | Yes      | The hook URL. |
+| `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `description`               | string  | No       | Description of the hook. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.) |
+| `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
+| `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |
+| `name`                      | string  | No       | Name of the hook. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1.) |
+| `push_events`               | boolean | No       | When true, the hook fires on push events. |
+| `push_events_branch_filter` | string  | No       | Trigger hook on push events for matching branches only. |
+| `repository_update_events`  | boolean | No       | Trigger hook on repository update events. |
+| `tag_push_events`           | boolean | No       | When true, the hook fires on new tags being pushed. |
+| `token`                     | string  | No       | Secret token to validate received payloads. Not returned in the response. |
 
 Example request:
 
@@ -156,16 +156,16 @@ PUT /hooks/:hook_id
 
 | Attribute                   | Type    | Required | Description |
 |-----------------------------|---------|----------|-------------|
-| `hook_id`                   | integer | Yes      | The ID of the system hook |
-| `url`                       | string  | no       | The hook URL |
-| `token`                     | string  | no       | Secret token to validate received payloads; this isn't returned in the response |
-| `push_events`               | boolean | no       | When true, the hook fires on push events |
-| `tag_push_events`           | boolean | no       | When true, the hook fires on new tags being pushed |
-| `merge_requests_events`     | boolean | no       | Trigger hook on merge request events |
-| `repository_update_events`  | boolean | no       | Trigger hook on repository update events |
-| `enable_ssl_verification`   | boolean | no       | Do SSL verification when triggering the hook |
-| `push_events_branch_filter` | string  | no       | Trigger hook on push events for matching branches only |
-| `branch_filter_strategy`    | string  | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches` |
+| `hook_id`                   | integer | Yes      | The ID of the system hook. |
+| `branch_filter_strategy`    | string  | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
+| `enable_ssl_verification`   | boolean | No       | Do SSL verification when triggering the hook. |
+| `merge_requests_events`     | boolean | No       | Trigger hook on merge request events. |
+| `push_events`               | boolean | No       | When true, the hook fires on push events. |
+| `push_events_branch_filter` | string  | No       | Trigger hook on push events for matching branches only. |
+| `repository_update_events`  | boolean | No       | Trigger hook on repository update events. |
+| `tag_push_events`           | boolean | No       | When true, the hook fires on new tags being pushed. |
+| `token`                     | string  | No       | Secret token to validate received payloads; this isn't returned in the response. |
+| `url`                       | string  | No       | The hook URL. |
 
 ## Test system hook
 
@@ -175,9 +175,9 @@ Executes the system hook with mock data.
 POST /hooks/:id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the hook |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | The ID of the hook. |
 
 Example request:
 
@@ -208,9 +208,9 @@ Deletes a system hook.
 DELETE /hooks/:id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of the hook |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `id`      | integer | Yes      | The ID of the hook. |
 
 Example request:
 
@@ -222,33 +222,21 @@ curl --request DELETE \
 
 ## Set a URL variable
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
-
 ```plaintext
 PUT /hooks/:hook_id/url_variables/:key
 ```
 
 Supported attributes:
 
-| Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `hook_id` | integer           | Yes      | ID of the system hook. |
-| `key`     | string            | Yes      | Key of the URL variable. |
-| `value`   | string            | Yes      | Value of the URL variable. |
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
+| `hook_id` | integer | Yes      | ID of the system hook. |
+| `key`     | string  | Yes      | Key of the URL variable. |
+| `value`   | string  | Yes      | Value of the URL variable. |
 
 On success, this endpoint returns the response code `204 No Content`.
 
 ## Delete a URL variable
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90310) in GitLab 15.2.
-
-{{< /history >}}
 
 ```plaintext
 DELETE /hooks/:hook_id/url_variables/:key

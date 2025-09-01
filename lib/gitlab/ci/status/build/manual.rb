@@ -21,7 +21,7 @@ module Gitlab
           private
 
           def illustration_content
-            if can?(user, :update_build, subject)
+            if can?(user, :play_job, subject)
               manual_job_action_message
             else
               generic_permission_failure_message

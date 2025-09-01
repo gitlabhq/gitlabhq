@@ -2334,6 +2334,16 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
     end
 
+    context 'when pattern includes non-ASCII characters' do
+      it 'finds and returns matching reference' do
+        mutable_repository.create_branch('Äpfel', 'master')
+
+        refs = mutable_repository.list_refs(['refs/heads/Äpfel'])
+
+        expect(refs.map { |r| Gitlab::Git.ref_name(r.name) }).to match_array(['Äpfel'])
+      end
+    end
+
     context 'with pointing_at_oids and peel_tags options' do
       let(:commit_id) { mutable_repository.commit.id }
       let!(:annotated_tag) { mutable_repository.add_tag('annotated-tag', user: user, target: commit_id, message: 'Tag message') }

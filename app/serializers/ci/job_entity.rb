@@ -79,7 +79,7 @@ module Ci
     end
 
     def playable?
-      job.playable? && can?(request.current_user, :update_build, job)
+      job.playable? && can?(request.current_user, :play_job, job)
     end
 
     def scheduled?

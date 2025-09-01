@@ -21,7 +21,7 @@ module Mutations
           replace_null_with_default: true,
           description: 'Variables to use when playing a manual job.'
 
-        authorize :update_build
+        authorize :play_job
 
         def resolve(id:, variables:)
           job = authorized_find!(id: id)

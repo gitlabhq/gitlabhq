@@ -159,30 +159,6 @@ RSpec.describe LabelsHelper do
     end
   end
 
-  describe 'manage_labels_title' do
-    let_it_be(:group) { create(:group) }
-
-    context 'with a group as subject' do
-      it 'returns "Manage group labels"' do
-        expect(manage_labels_title(group)).to eq _('Manage group labels')
-      end
-    end
-
-    context 'with a project as subject' do
-      let_it_be(:project) { create(:project, namespace: group) }
-
-      it 'returns "Manage project labels"' do
-        expect(manage_labels_title(project)).to eq _('Manage project labels')
-      end
-    end
-
-    context 'with no subject' do
-      it 'returns "Manage labels"' do
-        expect(manage_labels_title(nil)).to eq _('Manage labels')
-      end
-    end
-  end
-
   describe 'view_labels_title' do
     let_it_be(:group) { create(:group) }
 

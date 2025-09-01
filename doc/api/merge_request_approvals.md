@@ -755,9 +755,12 @@ These endpoints apply to individual merge requests. All endpoints require authen
 
 ### Retrieve approval state for a merge request
 
-Retrieves the approval state for a specified merge request. For detailed information
-about the users who have already approved, and whether an approval rule is satisfied, see
-[retrieve approval details for a merge request](#retrieve-approval-details-for-a-merge-request).
+Retrieves the approval state for a specified merge request.
+
+In the response, `approved_by` contains information about all approvers of the merge request,
+regardless of whether those approvals satisfy any approval rule. For more detailed information about
+the approval rules in a merge request, and whether the approvals received satisfy those rules, see
+the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request).
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
@@ -807,6 +810,8 @@ If a user has modified the approval rules for the merge request, the response in
 - `approval_rules_overwritten`: If `true`, indicates the default approval rules were modified.
 - `approved`: If `true`, indicates that the associated approval rule was approved.
 - `approved_by`: If defined, indicates the details of the user that approved the associated approval rule.
+  Users not matching an approval rule are not returned. To return all approving users, see the
+  [`/approvals` endpoint](#retrieve-approval-state-for-a-merge-request).
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state

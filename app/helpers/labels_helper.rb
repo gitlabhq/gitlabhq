@@ -165,17 +165,6 @@ module LabelsHelper
     end
   end
 
-  def manage_labels_title(subject)
-    case subject
-    when Group
-      _('Manage group labels')
-    when Project
-      _('Manage project labels')
-    else
-      _('Manage labels')
-    end
-  end
-
   def view_labels_title(subject)
     case subject
     when Group

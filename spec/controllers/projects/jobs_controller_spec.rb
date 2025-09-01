@@ -961,53 +961,22 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     let(:user) { developer }
 
     before do
-      project.add_developer(user)
-
       create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
 
       sign_in(user)
     end
 
-    context 'when job is playable' do
-      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+    context 'when user has permissions to play job' do
+      let(:user) { developer }
 
-      it 'redirects to the played job page' do
-        post_play
+      context 'when job is playable' do
+        let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
-      end
-
-      it 'transits to pending' do
-        post_play
-
-        expect(job.reload).to be_pending
-      end
-
-      context 'when job variables are specified' do
-        let(:variable_attributes) { [{ key: 'first', secret_value: 'first' }] }
-
-        it 'assigns the job variables' do
-          post_play
-
-          expect(job.reload.job_variables.map(&:key)).to contain_exactly('first')
-        end
-      end
-
-      context 'when job is bridge' do
-        let(:downstream_project) { create(:project) }
-        let(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
-
-        before do
-          downstream_project.add_developer(user)
-        end
-
-        it 'redirects to the pipeline page' do
+        it 'redirects to the played job page' do
           post_play
 
           expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(pipeline_path(pipeline))
-          builds_namespace_project_pipeline_path(id: pipeline.id)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
         end
 
         it 'transits to pending' do
@@ -1015,16 +984,63 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(job.reload).to be_pending
         end
+
+        context 'when job variables are specified' do
+          let(:variable_attributes) { [{ key: 'first', secret_value: 'first' }] }
+
+          it 'assigns the job variables' do
+            post_play
+
+            expect(job.reload.job_variables.map(&:key)).to contain_exactly('first')
+          end
+        end
+
+        context 'when job is bridge' do
+          let(:downstream_project) { create(:project) }
+          let(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+
+          before do
+            downstream_project.add_developer(user)
+          end
+
+          it 'redirects to the pipeline page' do
+            post_play
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(pipeline_path(pipeline))
+            builds_namespace_project_pipeline_path(id: pipeline.id)
+          end
+
+          it 'transits to pending' do
+            post_play
+
+            expect(job.reload).to be_pending
+          end
+        end
+      end
+
+      context 'when job is not playable' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'renders unprocessable_entity' do
+          post_play
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
       end
     end
 
-    context 'when job is not playable' do
-      let(:job) { create(:ci_build, pipeline: pipeline) }
+    context 'when user does not have permissions to play job' do
+      let(:user) { reporter }
 
-      it 'renders unprocessable_entity' do
-        post_play
+      context 'when job is playable' do
+        let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        it 'renders not_found' do
+          post_play
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

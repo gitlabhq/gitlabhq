@@ -96,6 +96,8 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
+    redirect_if_epic_params
+
     if index_html_request?
       set_sort_order
     else
@@ -495,6 +497,9 @@ class Projects::IssuesController < Projects::ApplicationController
     # issue type changes
     redirect_to project_issue_path(project, issue)
   end
+
+  # Overridden in EE
+  def redirect_if_epic_params; end
 end
 
 Projects::IssuesController.prepend_mod_with('Projects::IssuesController')
