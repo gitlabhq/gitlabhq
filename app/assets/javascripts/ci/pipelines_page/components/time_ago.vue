@@ -35,7 +35,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-flex-col gl-items-end lg:gl-items-start" :class="fontSize">
+  <div class="gl-flex gl-flex-col gl-items-end @lg/panel:gl-items-start" :class="fontSize">
     <p
       v-if="duration"
       class="gl-m-0 gl-inline-flex gl-items-center gl-whitespace-nowrap gl-text-subtle"

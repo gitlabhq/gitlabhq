@@ -50,18 +50,18 @@ describe('ConfidentialityBadge', () => {
   );
 
   describe('hideTextInSmallScreens', () => {
-    it('does not have `gl-sr-only` and `sm:gl-not-sr-only` when `hideTextInSmallScreens` is false', () => {
+    it('does not have `gl-sr-only` and `@sm/panel:gl-not-sr-only` when `hideTextInSmallScreens` is false', () => {
       wrapper = createComponent({ hideTextInSmallScreens: false });
 
       expect(findConfidentialityBadgeText().classes()).not.toContain('gl-sr-only');
-      expect(findConfidentialityBadgeText().classes()).not.toContain('sm:gl-not-sr-only');
+      expect(findConfidentialityBadgeText().classes()).not.toContain('@sm/panel:gl-not-sr-only');
     });
 
-    it('has `gl-sr-only` and `sm:gl-not-sr-only` when `hideTextInSmallScreens` is true', () => {
+    it('has `gl-sr-only` and `@sm/panel:gl-not-sr-only` when `hideTextInSmallScreens` is true', () => {
       wrapper = createComponent({ hideTextInSmallScreens: true });
 
       expect(findConfidentialityBadgeText().classes()).toContain('gl-sr-only');
-      expect(findConfidentialityBadgeText().classes()).toContain('sm:gl-not-sr-only');
+      expect(findConfidentialityBadgeText().classes()).toContain('@sm/panel:gl-not-sr-only');
     });
   });
 });

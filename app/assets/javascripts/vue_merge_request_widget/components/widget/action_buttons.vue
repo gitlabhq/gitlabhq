@@ -118,7 +118,7 @@ export default {
       :disabled="btn.loading"
       category="tertiary"
       size="small"
-      class="gl-float-left gl-hidden md:gl-inline-flex"
+      class="gl-float-left gl-hidden @md/panel:gl-inline-flex"
       @click="($event) => onClickAction(btn, $event)"
     >
       <template v-if="btn.text">

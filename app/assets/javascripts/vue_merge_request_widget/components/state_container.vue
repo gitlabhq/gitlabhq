@@ -94,7 +94,7 @@ export default {
         <div
           :class="{
             'gl-flex gl-items-center': actions.length,
-            'gl-flex-wrap gl-items-center gl-gap-3 md:gl-flex': !actions.length,
+            'gl-flex-wrap gl-items-center gl-gap-3 @md/panel:gl-flex': !actions.length,
           }"
           class="media-body gl-leading-normal"
         >
@@ -102,8 +102,8 @@ export default {
         </div>
         <div
           :class="{
-            'state-container-action-buttons gl-flex-wrap lg:gl-justify-end': !actions.length,
-            'gl-pt-3 md:gl-pt-0': hasActionsSlot,
+            'state-container-action-buttons gl-flex-wrap @lg/panel:gl-justify-end': !actions.length,
+            'gl-pt-3 @md/panel:gl-pt-0': hasActionsSlot,
           }"
           class="gl-font-size-0 gl-flex gl-gap-3"
         >
@@ -113,7 +113,7 @@ export default {
         </div>
         <div
           v-if="isCollapsible"
-          :class="{ 'md:gl-hidden': !collapseOnDesktop }"
+          :class="{ '@md/panel:gl-hidden': !collapseOnDesktop }"
           class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button

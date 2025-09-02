@@ -459,7 +459,7 @@ export default {
     'gl-py-4',
     'gl-flex',
     'gl-flex-col',
-    'sm:gl-items-start',
+    '@sm/panel:gl-items-start',
     'gl-gap-3',
   ],
   CONFLICT_TEXT,

@@ -33,6 +33,7 @@ describe('HelpCenter component', () => {
       stubs: { GlEmoji },
       provide: {
         isSaas: false,
+        isIconOnly: false,
         ...provide,
       },
     });

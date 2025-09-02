@@ -9,6 +9,7 @@ import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavio
 import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import {
   sidebarState,
   SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
@@ -56,9 +57,10 @@ describe('SuperSidebar component', () => {
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
+  const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
-  const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
+  const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
   let trackingSpy = null;
 
   const createWrapper = ({
@@ -198,6 +200,11 @@ describe('SuperSidebar component', () => {
       expect(findTrialWidget().exists()).toBe(false);
     });
 
+    it('does not render icon-only toggle', () => {
+      createWrapper();
+      expect(findIconOnlyToggle().exists()).toBe(false);
+    });
+
     it('does not have peek behaviors', () => {
       createWrapper();
 
@@ -301,6 +308,20 @@ describe('SuperSidebar component', () => {
       expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(true);
       await findSidebar().trigger('mouseleave');
       expect(findPeekBehavior().props('isMouseOverSidebar')).toBe(false);
+    });
+  });
+
+  describe('when the icon-only behavior is available', () => {
+    beforeEach(() => {
+      createWrapper({ provide: { projectStudioEnabled: true } });
+    });
+
+    it('renders the icon-only toggle', () => {
+      expect(findIconOnlyToggle().exists()).toBe(true);
+    });
+
+    it('does not render the context header text when in icon-only mode', () => {
+      expect(findContextHeader().element.textContent.trim()).toBe('');
     });
   });
 

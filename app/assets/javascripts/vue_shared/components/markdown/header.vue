@@ -591,7 +591,7 @@ export default {
                 triggers=""
               >
                 <strong>{{ __('New! Suggest changes directly') }}</strong>
-                <p class="mb-2">
+                <p class="!gl-mb-3">
                   {{
                     __(
                       'Suggest code changes which can be immediately applied in one click. Try it out!',

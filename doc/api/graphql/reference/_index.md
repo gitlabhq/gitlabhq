@@ -8393,6 +8393,26 @@ Input type: `LabelCreateInput`
 | <a id="mutationlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
 
+### `Mutation.labelUpdate`
+
+Input type: `LabelUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlabelupdatearchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
+| <a id="mutationlabelupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlabelupdateid"></a>`id` | [`LabelID!`](#labelid) | Global ID of the label to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlabelupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlabelupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlabelupdatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
+
 ### `Mutation.ldapAdminRoleLinkCreate`
 
 {{< details >}}

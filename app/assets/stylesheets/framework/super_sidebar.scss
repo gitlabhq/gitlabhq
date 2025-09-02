@@ -185,8 +185,11 @@ $command-palette-spacing: px-to-rem(14px);
   left: 0;
   background-color: var(--super-sidebar-bg);
   transform: translate3d(0, 0, 0);
-  width: $super-sidebar-width;
   z-index: $super-sidebar-z-index;
+
+  &:not(.super-sidebar-is-icon-only) {
+    width: $super-sidebar-width;
+  }
 
   @media (forced-colors: active) {
     border-right: 1px solid;
@@ -362,6 +365,11 @@ $command-palette-spacing: px-to-rem(14px);
 
 .super-sidebar-context-header {
   color: var(--super-sidebar-accent-color-fg);
+
+  &::before {
+  content: "\200b"; /* zero-width space to keep take height even when empty; */
+}
+
 }
 
 .super-sidebar-overlay {
@@ -1029,7 +1037,6 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   // Layout
   .layout-page {
     display: flex;
-    @apply gl-gap-3;
     align-items: stretch;
     justify-content: center;
     @apply gl-pl-0 gl-py-3 gl-pr-3;
@@ -1048,7 +1055,7 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
   }
 
   .ai-panel {
-    @apply gl-px-2 -gl-mx-2;
+    @apply gl-px-2 -gl-mr-2 gl-ml-1;
   }
 
   .panels-container {
@@ -1078,13 +1085,25 @@ html:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:ho
     }
   }
 
-  // Super sidebar
-  .page-with-super-sidebar-collapsed .super-sidebar-wrapper {
+  .super-sidebar-wrapper {
     width: 0;
   }
 
-  .page-with-super-sidebar-collapsed .super-sidebar {
-    margin: 0;
+  @media (min-width: $breakpoint-xl) {
+    .super-sidebar-wrapper {
+      width: auto;
+    }
+  }
+
+  .page-with-super-sidebar-collapsed {
+    .super-sidebar {
+      margin: 0;
+    }
+
+    .panels-container {
+      // When the sidebar is fully collapsed out of view, some margin is needed to not touch the window edge.
+      margin-left: 0.5rem;
+    }
   }
 }
 

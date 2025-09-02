@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -26,6 +26,7 @@ export default {
     GlBadge,
     NavItemLink,
     NavItemRouterLink,
+    GlTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,6 +35,7 @@ export default {
     pinnedItemIds: { default: { ids: [] } },
     panelSupportsPins: { default: false },
     panelType: { default: '' },
+    isIconOnly: { default: false },
   },
   props: {
     isInPinnedSection: {
@@ -228,6 +230,7 @@ export default {
 
 <template>
   <li
+    v-gl-tooltip.right.viewport="isIconOnly && !isFlyout && item.title"
     class="show-on-focus-or-hover--context hide-on-focus-or-hover--context transition-opacity-on-hover--context gl-relative"
     data-testid="nav-item"
     @mouseenter="isMouseIn = true"
@@ -253,7 +256,7 @@ export default {
       ></div>
       <div
         v-if="!isFlyout"
-        class="gl-flex gl-w-6 gl-shrink-0"
+        class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
         :class="{ 'gl-self-start': hasAvatar }"
       >
         <slot name="icon">
@@ -279,6 +282,7 @@ export default {
         </slot>
       </div>
       <div
+        v-show="!isIconOnly || isFlyout"
         class="gl-grow gl-text-default gl-break-anywhere"
         :class="{ 'gl-w-max': isFlyout }"
         data-testid="nav-item-link-label"
@@ -289,7 +293,10 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasEndSpace" class="gl-flex gl-min-w-6 gl-items-start gl-justify-end">
+      <span
+        v-if="hasEndSpace && !isIconOnly"
+        class="gl-flex gl-min-w-6 gl-items-start gl-justify-end"
+      >
         <gl-badge
           v-if="hasPill"
           variant="neutral"

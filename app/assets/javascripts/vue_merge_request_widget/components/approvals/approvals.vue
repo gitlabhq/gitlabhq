@@ -270,7 +270,7 @@ export default {
       <template v-else>
         <div class="gl-flex gl-flex-col">
           <div
-            class="gl-flex gl-flex-col gl-flex-wrap gl-items-baseline gl-gap-3 sm:gl-flex-row sm:gl-items-center"
+            class="gl-flex gl-flex-col gl-flex-wrap gl-items-baseline gl-gap-3 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
           >
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form

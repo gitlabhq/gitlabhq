@@ -33,10 +33,10 @@ export default {
   <div class="diff-file-container">
     <div class="diff-viewer">
       <div v-if="diffMode === $options.diffModes.replaced" class="two-up view row">
-        <div class="col-sm-6 deleted">
+        <div class="gl-col-sm-6 deleted">
           <download-viewer :path="oldPath" :project-path="projectPath" />
         </div>
-        <div class="col-sm-6 added">
+        <div class="gl-col-sm-6 added">
           <download-viewer :path="newPath" :project-path="projectPath" />
         </div>
       </div>

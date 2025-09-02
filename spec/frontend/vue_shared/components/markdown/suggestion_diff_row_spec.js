@@ -96,7 +96,7 @@ describe('SuggestionDiffRow', () => {
 
       const lineContent = wrapper.find('td.line_content');
 
-      expect(lineContent.classes()).toContain('d-table-cell');
+      expect(lineContent.classes()).toContain('!gl-table-cell');
       expect(lineContent.text()).toEqual('');
     });
 

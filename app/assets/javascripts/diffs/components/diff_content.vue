@@ -180,7 +180,7 @@ export default {
           :inline="isInlineView"
           :autosave-key="autosaveKey"
         />
-        <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="mt-3" />
+        <gl-loading-icon v-if="diffFile.renderingLines" size="lg" class="!gl-mt-5" />
       </template>
       <div
         v-else-if="isWhitespaceOnly"

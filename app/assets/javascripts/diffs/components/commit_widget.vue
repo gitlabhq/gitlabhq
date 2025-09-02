@@ -20,7 +20,7 @@ export default {
 </script>
 
 <template>
-  <div class="info-well mx-0 gl-max-w-full">
+  <div class="info-well !gl-mx-0 gl-max-w-full">
     <div class="well-segment">
       <ul class="gl-m-0 gl-list-none gl-p-0">
         <commit-item :commit="commit" :collapsible="collapsible" />

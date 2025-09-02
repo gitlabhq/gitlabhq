@@ -88,8 +88,7 @@ You are responsible for guarding against prompt injection when using these tools
 
 ## Available tools and capabilities
 
-The GitLab MCP server provides these capabilities. GitLab team members can view more information about the development of this feature
-in this confidential epic: `https://gitlab.com/groups/gitlab-org/-/epics/18413`
+The GitLab MCP server provides these capabilities. The development of this feature is tracked in [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
 
 ### `get_mcp_server_version`
 

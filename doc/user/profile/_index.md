@@ -345,6 +345,8 @@ To change your commit email:
 ## Change your primary email
 
 Your primary email is the default email address for your login, commit email, and notification email.
+If your primary email changes, your original primary email is added as a secondary email. This feature
+allows commits made with your original primary email to remain associated with your account.
 
 To change your primary email:
 

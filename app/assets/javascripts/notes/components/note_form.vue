@@ -452,7 +452,7 @@ export default {
               :disabled="isDisabled"
               category="primary"
               variant="confirm"
-              class="gl-mb-3 sm:gl-mr-3"
+              class="gl-mb-3 @sm/panel:gl-mr-3"
               data-testid="start-review-button"
               @click="handleAddToReview"
             >
@@ -464,7 +464,7 @@ export default {
               category="secondary"
               variant="confirm"
               data-testid="comment-now-button"
-              class="js-comment-button gl-mb-3 sm:gl-mr-3"
+              class="js-comment-button gl-mb-3 @sm/panel:gl-mr-3"
               @click="handleUpdate()"
             >
               {{ __('Add comment now') }}
@@ -487,7 +487,7 @@ export default {
               category="primary"
               variant="confirm"
               data-testid="reply-comment-button"
-              class="js-vue-issue-save js-comment-button gl-mb-3 sm:gl-mb-0 sm:gl-mr-3"
+              class="js-vue-issue-save js-comment-button gl-mb-3 @sm/panel:gl-mb-0 @sm/panel:gl-mr-3"
               @click="handleUpdate()"
             >
               {{ saveButtonTitle }}

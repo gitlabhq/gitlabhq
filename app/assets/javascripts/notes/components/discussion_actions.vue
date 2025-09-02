@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-with-resolve-btn clearfix">
+  <div class="discussion-with-resolve-btn gl-clearfix">
     <discussion-reply-placeholder @focus="$emit('showReplyForm')" />
 
     <div v-if="userCanResolveDiscussion" class="btn-group discussion-actions" role="group">

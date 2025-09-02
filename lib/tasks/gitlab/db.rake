@@ -241,8 +241,10 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Run database migrations and print `unattended_migrations_completed` if action taken'
     task unattended: :environment do
-      no_database = !ActiveRecord::Base.connection.schema_migration.table_exists?
-      needs_migrations = ActiveRecord::Base.connection.migration_context.needs_migration?
+      connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+
+      no_database = !connection_pool.schema_migration.table_exists?
+      needs_migrations = connection_pool.migration_context.needs_migration?
 
       if no_database || needs_migrations
         Rake::Task['gitlab:db:configure'].invoke
@@ -477,7 +479,9 @@ namespace :gitlab do
 
     desc 'Check if there have been user additions to the database'
     task active: :environment do
-      if ActiveRecord::Base.connection.migration_context.needs_migration?
+      connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+
+      if connection_pool.migration_context.needs_migration?
         puts "Migrations pending. Database not active"
         exit 1
       end

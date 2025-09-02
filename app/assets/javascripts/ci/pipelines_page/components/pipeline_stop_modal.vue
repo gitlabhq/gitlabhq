@@ -91,7 +91,7 @@ export default {
         class="vertical-align-middle"
       />
 
-      <span class="font-weight-bold">{{ __('Pipeline') }}</span>
+      <span class="!gl-font-bold">{{ __('Pipeline') }}</span>
 
       <a :href="pipeline.path" class="js-pipeline-path link-commit">#{{ pipeline.id }}</a>
       <template v-if="hasRef">
@@ -102,7 +102,7 @@ export default {
 
     <template v-if="pipeline.commit">
       <p>
-        <span class="font-weight-bold">{{ __('Commit') }}</span>
+        <span class="!gl-font-bold">{{ __('Commit') }}</span>
 
         <gl-link :href="pipeline.commit.commit_path" class="js-commit-sha commit-sha link-commit">
           {{ pipeline.commit.short_id }}

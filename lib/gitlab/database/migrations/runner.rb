@@ -42,7 +42,11 @@ module Gitlab
             # We're mirroring rails internal migration code, which requires that
             # ActiveRecord::Base has connected to the current database. The correct database is chosen by
             # within_context_for_database
-            ActiveRecord::Base.connection.migration_context # rubocop:disable Database/MultipleDatabases
+            if ::Gitlab.next_rails?
+              ActiveRecord::Base.connection_pool.migration_context # rubocop:disable Database/MultipleDatabases
+            else
+              ActiveRecord::Base.connection.migration_context # rubocop:disable Database/MultipleDatabases
+            end
           end
 
           # rubocop:disable Database/MultipleDatabases

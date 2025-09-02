@@ -20,7 +20,11 @@ RSpec.describe 'Migrations Validation', feature_category: :database do
 
   where(:migration) do
     Gitlab::Database.database_base_models.flat_map do |_, model|
-      model.connection.migration_context.migrations
+      if ::Gitlab.next_rails?
+        model.connection_pool.migration_context.migrations
+      else
+        model.connection.migration_context.migrations
+      end
     end.uniq
   end
 

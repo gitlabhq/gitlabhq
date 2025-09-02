@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <div class="discussion-reply-holder clearfix gl-flex">
+  <div class="discussion-reply-holder gl-flex gl-clearfix">
     <discussion-locked-widget
       v-if="!canCreateNote && isLoggedIn"
       :issuable-type="$options.i18n.COMMENT_FORM.mergeRequest"

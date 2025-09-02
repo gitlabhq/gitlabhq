@@ -174,7 +174,7 @@ export default {
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default md:gl-flex"
+      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default @md/panel:gl-flex"
       :class="{ 'gl-invisible': !isStickyHeaderVisible }"
     >
       <div
@@ -191,7 +191,7 @@ export default {
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default lg:gl-block"
+            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default @lg/panel:gl-block"
           ></a>
           <div class="gl-flex gl-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target} %{targetCopyButton}')">
@@ -268,7 +268,7 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-hidden gl-items-center gl-gap-3 lg:gl-flex">
+          <div class="gl-hidden gl-items-center gl-gap-3 @lg/panel:gl-flex">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
             <template v-if="isSignedIn">
               <todo-widget

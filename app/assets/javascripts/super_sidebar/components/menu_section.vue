@@ -1,6 +1,11 @@
 <script>
 import { kebabCase } from 'lodash';
-import { GlCollapse, GlIcon, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
+import {
+  GlCollapse,
+  GlIcon,
+  GlAnimatedChevronRightDownIcon,
+  GlOutsideDirective as Outside,
+} from '@gitlab/ui';
 import { NAV_ITEM_LINK_ACTIVE_CLASS } from '../constants';
 import NavItem from './nav_item.vue';
 import FlyoutMenu from './flyout_menu.vue';
@@ -13,6 +18,10 @@ export default {
     GlAnimatedChevronRightDownIcon,
     NavItem,
     FlyoutMenu,
+  },
+  directives: { Outside },
+  inject: {
+    isIconOnly: { default: false },
   },
   props: {
     item: {
@@ -42,7 +51,7 @@ export default {
   },
   data() {
     return {
-      isExpanded: Boolean(this.expanded || this.item.is_active),
+      isExpanded: Boolean(!this.isIconOnly && (this.expanded || this.item.is_active)),
       isMouseOverSection: false,
       isMouseOverFlyout: false,
       keepFlyoutClosed: false,
@@ -88,22 +97,42 @@ export default {
         this.isMouseOverFlyout = false;
       }
     },
+    isIconOnly(isIconOnly) {
+      if (isIconOnly) {
+        this.isExpanded = false;
+      }
+    },
   },
   methods: {
+    handleClick() {
+      if (this.isIconOnly) {
+        this.isMouseOverSection = true; // Allows touch devices to open the flyout menus by touch
+        return;
+      }
+      this.isExpanded = !this.isExpanded;
+    },
+    handleClickOutside() {
+      this.isMouseOverSection = false; // Allows touch devices to close the flyout menus by touch
+    },
     handlePointerover(e) {
       if (!this.hasFlyout) return;
 
       this.isMouseOverSection = e.pointerType === 'mouse';
     },
-    handlePointerleave() {
+    handlePointerleave(e) {
       if (!this.hasFlyout) return;
 
       this.keepFlyoutClosed = false;
+
       // delay state change. otherwise the flyout menu gets removed before it
       // has a chance to emit its mouseover event.
-      setTimeout(() => {
-        this.isMouseOverSection = false;
-      }, 5);
+      // checks pointer type to not mess with touch devices, which fire a pointerleave event before
+      // every click!
+      if (e.pointerType === 'mouse') {
+        setTimeout(() => {
+          this.isMouseOverSection = false;
+        }, 5);
+      }
     },
   },
 };
@@ -113,12 +142,13 @@ export default {
   <component :is="tag">
     <button
       :id="`menu-section-button-${itemId}`"
-      class="super-sidebar-nav-item gl-relative gl-mb-1 gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-px-3 gl-py-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
+      v-outside="handleClickOutside"
+      class="super-sidebar-nav-item gl-relative gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-px-3 gl-py-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
       v-bind="buttonProps"
-      @click="isExpanded = !isExpanded"
+      @click="handleClick"
       @pointerover="handlePointerover"
       @pointerleave="handlePointerleave"
     >
@@ -128,7 +158,7 @@ export default {
         aria-hidden="true"
         style="width: 3px; border-radius: 3px; margin-right: 1px"
       ></span>
-      <span class="gl-flex gl-w-6 gl-shrink-0">
+      <span class="gl-flex gl-h-6 gl-w-6 gl-shrink-0">
         <slot name="icon">
           <gl-icon
             v-if="item.icon"
@@ -138,11 +168,11 @@ export default {
         </slot>
       </span>
 
-      <span class="gl-truncate-end gl-grow">
+      <span v-show="!isIconOnly" class="gl-truncate-end gl-grow">
         {{ item.title }}
       </span>
 
-      <span class="gl-mr-1 gl-text-right gl-text-subtle">
+      <span v-if="!isIconOnly" class="gl-mr-1 gl-text-right gl-text-subtle">
         <gl-animated-chevron-right-down-icon :is-on="isExpanded" />
       </span>
     </button>
@@ -160,6 +190,7 @@ export default {
     />
 
     <gl-collapse
+      v-if="!isIconOnly"
       :id="itemId"
       v-model="isExpanded"
       class="gl-m-0 gl-list-none gl-p-0 gl-duration-medium gl-ease-ease"

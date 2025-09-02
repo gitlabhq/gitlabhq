@@ -25,7 +25,10 @@ export default {
 
 <template>
   <state-container status="failed" is-collapsible>
-    <span class="!gl-ml-0 gl-grow !gl-text-default md:gl-mr-3" data-testid="head-mismatch-content">
+    <span
+      class="!gl-ml-0 gl-grow !gl-text-default @md/panel:gl-mr-3"
+      data-testid="head-mismatch-content"
+    >
       <bold-text :message="$options.i18n.I18N_SHA_MISMATCH.warningMessage" />
     </span>
     <template #actions>

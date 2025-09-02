@@ -15,7 +15,7 @@ import {
 } from './config/webpack.constants';
 import { PDF_JS_WORKER_PUBLIC_PATH, PDF_JS_CMAPS_PUBLIC_PATH } from './config/pdfjs.constants';
 
-import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
+import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.cjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
 import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
 import { PageEntrypointsPlugin } from './config/helpers/vite_plugin_page_entrypoints.mjs';
@@ -96,6 +96,7 @@ export default defineConfig({
     ImagesPlugin(),
     StylePlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null, buildCQs: true }),
     CopyPlugin({
       patterns: copyFilesPatterns,
     }),

@@ -293,7 +293,7 @@ export default {
     size="md"
     no-focus-on-show
     modal-class="add-review-item-modal"
-    body-class="add-review-item pt-0"
+    body-class="add-review-item !gl-pt-0"
     :scrollable="true"
     :ok-title="__('Save changes')"
     modal-id="add-review-item"
@@ -304,7 +304,7 @@ export default {
     @close="handleModalClose"
     @hide="handleModalHide"
   >
-    <gl-tabs v-model="currentTabIndex" content-class="pt-0">
+    <gl-tabs v-model="currentTabIndex" content-class="!gl-pt-0">
       <gl-tab>
         <template #title>
           <gl-sprintf :message="__('Commits in %{branchName}')">
@@ -316,7 +316,7 @@ export default {
         <div class="gl-mt-3">
           <gl-filtered-search
             ref="filteredSearchInput"
-            class="flex-grow-1"
+            class="!gl-grow"
             :placeholder="__(`Search or filter commits`)"
             :available-tokens="availableTokens"
             @clear="handleSearchCommits"

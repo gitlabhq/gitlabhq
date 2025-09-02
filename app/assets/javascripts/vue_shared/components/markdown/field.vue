@@ -367,7 +367,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    class="js-vue-markdown-field md-area position-relative gfm-form"
+    class="js-vue-markdown-field md-area gfm-form !gl-relative"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header

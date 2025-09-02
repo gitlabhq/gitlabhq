@@ -1,4 +1,5 @@
 <script>
+import { computed } from 'vue';
 import { GlButton } from '@gitlab/ui';
 import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -6,7 +7,6 @@ import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   sidebarState,
   JS_TOGGLE_EXPAND_CLASS,
@@ -18,6 +18,7 @@ import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_colla
 import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
+import IconOnlyToggle from './icon_only_toggle.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
@@ -27,6 +28,7 @@ import ScrollScrim from './scroll_scrim.vue';
 export default {
   components: {
     GlButton,
+    IconOnlyToggle,
     UserBar,
     HelpCenter,
     SidebarMenu,
@@ -36,13 +38,18 @@ export default {
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
   },
-  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
+  mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
   inject: ['showTrialWidget', 'projectStudioEnabled'],
+  provide() {
+    return {
+      isIconOnly: computed(() => this.canIconOnly && this.isIconOnly),
+    };
+  },
   props: {
     sidebarData: {
       type: Object,
@@ -54,6 +61,8 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
+      canIconOnly: this.projectStudioEnabled,
+      isIconOnly: this.projectStudioEnabled,
     };
   },
   computed: {
@@ -68,6 +77,7 @@ export default {
         'super-sidebar-peek-hint': this.showPeekHint,
         'super-sidebar-peek': this.showOverlay,
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
+        'super-sidebar-is-icon-only': this.canIconOnly && this.isIconOnly,
       };
     },
     isAdmin() {
@@ -108,6 +118,11 @@ export default {
   },
   methods: {
     toggleSidebar() {
+      if (this.canIconOnly) {
+        this.isIconOnly = !this.isIconOnly;
+        return;
+      }
+
       this.track(isCollapsed() ? 'nav_show' : 'nav_hide', {
         label: 'nav_toggle_keyboard_shortcut',
         property: 'nav_sidebar',
@@ -167,6 +182,8 @@ export default {
       }
     },
     firstFocusableElement() {
+      if (this.projectStudioEnabled) return this.$refs.sidebarMenu.$el.querySelector('a');
+
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
@@ -234,11 +251,12 @@ export default {
           id="super-sidebar-context-header"
           class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
-          {{ sidebarData.current_context_header }}
+          {{ isIconOnly ? '' : sidebarData.current_context_header }}
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu
             v-if="menuItems.length"
+            ref="sidebarMenu"
             :items="menuItems"
             :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
@@ -252,9 +270,16 @@ export default {
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <div class="gl-p-2">
+
+        <help-center
+          v-if="canIconOnly"
+          ref="helpCenter"
+          :sidebar-data="sidebarData"
+          class="gl-p-2"
+        />
+        <div v-else class="gl-p-2">
           <div class="gl-flex gl-flex-col gl-justify-end">
-            <help-center ref="helpCenter" :sidebar-data="sidebarData" />
+            <help-center ref="helpCenter" :sidebar-data="sidebarData" class="gl-mr-2" />
 
             <gl-button
               v-if="isAdmin && !projectStudioEnabled"
@@ -269,6 +294,7 @@ export default {
             </gl-button>
           </div>
         </div>
+        <icon-only-toggle v-if="canIconOnly" @toggle="isIconOnly = !isIconOnly" />
       </div>
     </nav>
     <a
@@ -286,12 +312,12 @@ export default {
       setting up event listeners unnecessarily.
     -->
     <sidebar-peek-behavior
-      v-if="sidebarState.isPeekable && !sidebarState.isHoverPeek"
+      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isHoverPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onPeekChange"
     />
     <sidebar-hover-peek-behavior
-      v-if="sidebarState.isPeekable && !sidebarState.isPeek"
+      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onHoverPeekChange"
     />

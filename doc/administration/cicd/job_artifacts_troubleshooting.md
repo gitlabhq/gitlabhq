@@ -671,7 +671,11 @@ giving runners direct access to object storage.
 The request flow looks like:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Direct artifact download flow
+    accDescr: Runner authenticates, gets redirected to object storage, and downloads artifacts directly.
+
     autonumber
     participant C as Runner
     participant O as Object Storage
@@ -748,7 +752,11 @@ request to `/api/v4/jobs/:id/artifacts` returns the binary data
 directly.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Proxied artifact download flow
+    accDescr: Runner authenticates, GitLab fetches from object storage, and streams artifacts back.
+
     autonumber
     participant C as Runner
     participant O as Object Storage

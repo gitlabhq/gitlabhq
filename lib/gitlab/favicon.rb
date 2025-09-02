@@ -43,7 +43,17 @@ module Gitlab
       end
 
       def web_ide_favicon
-        path = 'favicon-web-ide.png'
+        file_name =
+          if Rails.env.development?
+            development_favicon
+          else
+            'favicon.png'
+          end
+
+        path = File.join(
+          'web_ide_favicons',
+          file_name
+        )
         ActionController::Base.helpers.image_path(path, host: host)
       end
 

@@ -20,14 +20,23 @@ RSpec.describe Database::MarkMigrationService, feature_category: :database do
 
   before do
     ctx = instance_double(ActiveRecord::MigrationContext, migrations: migrations)
-    allow(connection).to receive(:migration_context).and_return(ctx)
+
+    if ::Gitlab.next_rails?
+      allow(connection.pool).to receive(:migration_context).and_return(ctx)
+    else
+      allow(connection).to receive(:migration_context).and_return(ctx)
+    end
   end
 
   describe '#execute' do
     subject(:execute) { service.execute }
 
     def versions
-      connection.schema_migration.versions.count { |v| v == version.to_s }
+      if ::Gitlab.next_rails?
+        connection.pool.schema_migration.versions.count { |v| v == version.to_s }
+      else
+        connection.schema_migration.versions.count { |v| v == version.to_s }
+      end
     end
 
     it 'marks the migration as successful' do

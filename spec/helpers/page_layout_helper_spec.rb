@@ -291,7 +291,7 @@ RSpec.describe PageLayoutHelper do
       end
 
       it 'returns the favicon path for the web-ide' do
-        expect(helper.favicon).to match_asset_path 'assets/favicon-web-ide.png'
+        expect(helper.favicon).to match_asset_path 'assets/web_ide_favicons/favicon.png'
       end
     end
   end

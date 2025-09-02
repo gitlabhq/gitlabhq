@@ -57,7 +57,7 @@ export default {
       :class="{
         collapsed: !isExpanded(discussion),
       }"
-      class="discussion-notes diff-discussions position-relative"
+      class="discussion-notes diff-discussions !gl-relative"
     >
       <ul :data-discussion-id="discussion.id" class="notes">
         <template v-if="shouldCollapseDiscussions">

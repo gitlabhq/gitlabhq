@@ -12,7 +12,8 @@ module Gitlab
       def client
         @client ||= service_class.new(
           topology_service_address,
-          service_credentials
+          service_credentials,
+          interceptors: [MetadataInterceptor.new]
         )
       end
 

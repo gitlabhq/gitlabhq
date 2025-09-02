@@ -69,7 +69,12 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
 
       migrations_struct = Struct.new(:version)
       migrations = file_versions.map { |version| migrations_struct.new(version) }
-      allow(connection).to receive_message_chain(:migration_context, :migrations).and_return(migrations)
+
+      if ::Gitlab.next_rails?
+        allow(connection).to receive_message_chain(:pool, :migration_context, :migrations).and_return(migrations)
+      else
+        allow(connection).to receive_message_chain(:migration_context, :migrations).and_return(migrations)
+      end
     end
 
     let(:version1) { '20200123' }

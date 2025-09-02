@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitSignatures::GpgSignature do
+RSpec.describe CommitSignatures::GpgSignature, feature_category: :source_code_management do
   # This commit is seeded from https://gitlab.com/gitlab-org/gitlab-test
   # For instructions on how to add more seed data, see the project README
   let_it_be(:commit_sha) { '0beec7b5ea3f0fdbc95d0dd47f3c5bc275da8a33' }

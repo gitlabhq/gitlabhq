@@ -159,6 +159,8 @@ This number remains the same throughout your subscription period unless you purc
 
 The number of maximum users reflects the highest number of billable users on your system for the current license period.
 
+You can view and export your [license usage](../administration/license_usage.md).
+
 ### Users over subscription
 
 A GitLab subscription is valid for a specific number of seats.
@@ -271,49 +273,6 @@ If your subscription was activated with an activation code, the additional seats
 your instance immediately. If you're using a license file, you receive an updated file.
 To add the seats, [add the license file](../administration/license_file.md)
 to your instance.
-
-### Export license usage
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can export your license usage into a CSV file.
-
-This file contains the information GitLab uses to manually process
-[quarterly reconciliations](quarterly_reconciliation.md)
-and [renewals](manage_subscription.md#renew-subscription). If your instance is firewalled or an
-offline environment, you must provide GitLab with this information.
-
-{{< alert type="warning" >}}
-
-Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../administration/license_file.md#submit-license-usage-data).
-
-{{< /alert >}}
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Subscription**.
-1. In the upper-right corner, select **Export license usage file**.
-
-#### License usage file contents
-
-The license usage file includes the following information:
-
-- License key
-- Licensee email
-- License start date (UTC)
-- License end date (UTC)
-- Company
-- Timestamp the file was generated at and exported (UTC)
-- Table of historical user counts for each day in the period:
-  - Timestamp the count was recorded (UTC)
-  - Billable user count
-
-{{< alert type="note" >}}
-
-A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
-
-{{< /alert >}}
 
 ## GitLab.com billing and usage
 

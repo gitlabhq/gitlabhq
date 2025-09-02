@@ -35,8 +35,12 @@ This runbook guides you through a planned failover of a multi-node Geo site
 with one secondary. The following [40 RPS / 2,000 user reference architecture](../../../reference_architectures/2k_users.md) is assumed:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
-   subgraph main[Geo deployment]
+   accTitle: Geo planned-failover topology (multi-node)
+   accDescr: Multi-node Geo deployment for planned failover with primary and secondary sites. Each site has Rails, PostgreSQL, Gitaly, Redis, and monitoring nodes
+
+   subgraph main[Geo multi-node deployment architecture]
       subgraph Primary[Primary site, multi-node]
          Node_1[Rails node 1]
          Node_2[Rails node 2]
@@ -45,7 +49,7 @@ graph TD
          Node_5[Redis node]
          Node_6[Monitoring node]
       end
-      subgraph Secondary[Secondary site, multi-node]
+      subgraph Secondary[Secondary site]
          Node_7[Rails node 1]
          Node_8[Rails node 2]
          Node_9[PostgreSQL node]

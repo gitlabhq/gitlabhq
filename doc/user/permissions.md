@@ -157,6 +157,7 @@ Group permissions for [group features](group/_index.md):
 | View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
 | View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
 | [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
+| Archive group                                                                                |       |         |          |           |            |   ✓   |
 | Delete group                                                                                |       |         |          |           |            |   ✓   |
 | Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |
 | Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |

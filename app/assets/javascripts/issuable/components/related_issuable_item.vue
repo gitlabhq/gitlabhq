@@ -128,7 +128,7 @@ export default {
     class="item-body gl-flex gl-items-center gl-gap-3"
   >
     <div
-      class="item-contents py-xl-0 flex-xl-nowrap gl-flex gl-min-h-7 gl-grow gl-flex-wrap gl-items-center gl-gap-2 gl-px-3 gl-py-2"
+      class="item-contents gl-flex gl-min-h-7 gl-grow gl-flex-wrap gl-items-center gl-gap-2 gl-px-3 gl-py-2 @xl/panel:!gl-flex-nowrap @xl/panel:!gl-py-0"
     >
       <!-- Title area: Status icon (XL) and title -->
       <div class="item-title gl-flex gl-min-w-0 gl-gap-3">
@@ -160,11 +160,11 @@ export default {
       </div>
 
       <!-- Info area: meta, path, and assignees -->
-      <div class="item-info-area ml-xl-0 gl-ml-6 gl-flex gl-shrink-0 gl-grow gl-gap-3">
+      <div class="item-info-area gl-ml-6 gl-flex gl-shrink-0 gl-grow gl-gap-3 @xl/panel:!gl-ml-0">
         <!-- Meta area: path and attributes -->
         <!-- If there is no room beside the path, meta attributes are put ABOVE it (gl-flex-wrap-reverse). -->
         <!-- See design: https://gitlab-org.gitlab.io/gitlab-design/hosted/pedro/%2383-issue-mr-rows-cards-spec-previews/#artboard16 -->
-        <div class="item-meta gl-flex gl-flex-wrap-reverse gl-gap-3 md:gl-justify-between">
+        <div class="item-meta gl-flex gl-flex-wrap-reverse gl-gap-3 @md/panel:gl-justify-between">
           <!-- Path area: status icon (<XL), path, issue # -->
           <div class="item-path-area item-path-id gl-flex gl-flex-wrap gl-items-center gl-gap-3">
             <gl-tooltip :target="() => $refs.iconElement">
@@ -183,7 +183,7 @@ export default {
           <!-- Attributes area: CI, epic count, weight, milestone -->
           <!-- They have a different order on large screen sizes -->
           <div class="item-attributes-area gl-flex gl-items-center gl-gap-3">
-            <span v-if="hasPipeline" class="mr-ci-status order-md-last -gl-mr-2 md:gl-ml-3">
+            <span v-if="hasPipeline" class="mr-ci-status order-md-last -gl-mr-2 @md/panel:gl-ml-3">
               <ci-icon :status="pipelineStatus" />
             </span>
 
@@ -194,11 +194,11 @@ export default {
             />
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
-            <span v-if="weight > 0" class="order-md-1">
+            <span v-if="weight > 0" class="gl-order-md-1">
               <issue-weight :weight="weight" class="item-weight gl-items-center" />
             </span>
 
-            <span v-if="dueDate" class="order-md-1">
+            <span v-if="dueDate" class="gl-order-md-1">
               <issue-due-date
                 :date="dueDate"
                 :closed="Boolean(closedAt)"
@@ -210,7 +210,7 @@ export default {
             <issue-assignees
               v-if="hasAssignees"
               :assignees="assignees"
-              class="item-assignees order-md-2 gl-flex gl-shrink-0 gl-items-center gl-self-end"
+              class="item-assignees gl-order-md-2 gl-flex gl-shrink-0 gl-items-center gl-self-end"
             />
           </div>
         </div>

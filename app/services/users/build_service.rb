@@ -88,7 +88,7 @@ module Users
     def organization_access_level
       return organization_params[:organization_access_level] if organization_params.has_key?(:organization_access_level)
 
-      Organizations::OrganizationUser.default_organization_access_level(user_is_admin: @user.admin?)
+      Organizations::OrganizationUser.home_organization_access_level(user_is_admin: @user.admin?)
     end
 
     def assign_organization

@@ -103,7 +103,7 @@ describe('LabelsSelect', () => {
 
       it('generated label item template has correct title for tooltip', () => {
         expect($labelEl.find('a').attr('title')).toBe(
-          "<span class='font-weight-bold'>Scoped label</span><br>Foobar",
+          "<span class='!gl-font-bold'>Scoped label</span><br>Foobar",
         );
       });
 

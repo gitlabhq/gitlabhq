@@ -80,12 +80,11 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     all_versions = (applied_migrations_other_branches + applied_migrations_this_branch).map(&:version)
     migrations = applied_migrations_other_branches + applied_migrations_this_branch + pending_migrations
     internal_metadata = double(ActiveRecord::InternalMetadata)
+
     ctx = double(ActiveRecord::MigrationContext, get_all_versions: all_versions, migrations: migrations, schema_migration: ActiveRecord::SchemaMigration, internal_metadata: internal_metadata)
-
-    allow(ActiveRecord::Base.connection).to receive(:migration_context).and_return(ctx)
-
     names_this_branch = (applied_migrations_this_branch + pending_migrations).map { |m| "db/migrate/#{m.version}_#{m.name}.rb" }
-    allow(described_class).to receive(:migration_file_names_this_branch).and_return(names_this_branch)
+
+    allow(described_class).to receive_messages(migration_context: ctx, migration_file_names_this_branch: names_this_branch)
   end
 
   after do

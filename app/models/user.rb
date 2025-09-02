@@ -402,7 +402,7 @@ class User < ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
-  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
+  after_update_commit :update_home_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
   enum :layout, { fixed: 0, fluid: 1 }
@@ -2805,8 +2805,8 @@ class User < ApplicationRecord
     errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email_or_default)
   end
 
-  def update_default_organization_user
-    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
+  def update_home_organization_user
+    Organizations::OrganizationUser.update_home_organization_record_for(self, user_is_admin: admin?)
   end
 
   def public_email_verified

@@ -751,7 +751,7 @@ Settings.cron_jobs['performance_bar_stats'] ||= {}
 Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
-Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
 Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker']['cron'] ||= '0 0 * * *'
@@ -1155,6 +1155,7 @@ Settings.cell.topology_service_client['certificate_file'] ||= nil
 Settings.cell.topology_service_client['private_key_file'] ||= nil
 Settings.cell.topology_service_client['tls'] ||= {}
 Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.topology_service_client['tls']['enabled'].nil?
+Settings.cell.topology_service_client['metadata'] ||= {}
 
 #
 # GitLab KAS

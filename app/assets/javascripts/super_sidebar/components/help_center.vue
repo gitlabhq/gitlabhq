@@ -32,7 +32,7 @@ export default {
     privacy: __('Privacy statement'),
     whatsnewToast: __("What's new moved to Help."),
   },
-  inject: ['isSaas'],
+  inject: ['isSaas', 'isIconOnly'],
   props: {
     sidebarData: {
       type: Object,
@@ -219,7 +219,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mr-2 gl-flex gl-flex-col gl-gap-2 gl-pl-2">
+  <div class="gl-flex gl-flex-col gl-gap-2">
     <gl-button
       v-if="showWhatsNewNotification"
       class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-pr-3"
@@ -229,7 +229,11 @@ export default {
       data-track-action="click_button"
       data-track-label="whats_new"
       data-track-property="nav_whats_new"
-      button-text-classes="gl-w-full gl-flex gl-items-center gl-justify-between gl-font-semibold !gl-text-default"
+      :button-text-classes="{
+        'gl-w-full gl-flex gl-items-center gl-justify-between gl-font-semibold !gl-text-default':
+          !isIconOnly,
+        'gl-hidden': isIconOnly,
+      }"
       @click="showWhatsNew"
     >
       {{ $options.i18n.whatsnew }}
@@ -252,7 +256,7 @@ export default {
           category="tertiary"
           icon="question-o"
           class="super-sidebar-help-center-toggle !gl-justify-start gl-gap-3 !gl-py-2 gl-font-semibold"
-          button-text-classes="!gl-text-default"
+          :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           data-testid="sidebar-help-button"
         >
           {{ $options.i18n.help }}

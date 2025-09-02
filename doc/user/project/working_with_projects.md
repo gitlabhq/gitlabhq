@@ -391,72 +391,75 @@ To restore a project pending deletion:
 
 {{< /history >}}
 
-{{< alert type="note" >}}
+Archive a project to make it read-only and preserve its data for future reference.
 
-When a project is archived, its fork relationship is removed and any open merge requests from forks
-targeting this project are automatically closed.
+Archived projects:
 
-{{< /alert >}}
-
-When you archive a project, some features become read-only.
-These features are still accessible, but not writable.
-
-- Repository
-- Packages
-- Issues
-- Merge requests
-- Feature flags
-- Pull mirroring
-- All other project features
-
-Active pipeline schedules of archived projects don't become read-only.
-
-If the project has deployed Pages, they are removed along with any custom domains,
-and the Pages link is no longer accessible.
-
-Archived projects are:
-
-- Labeled with an `archived` badge on the project page.
-- Listed in the **Inactive** tab on the group page, **Your work** page, and **Explore** page.
-- Read-only.
+- Display an `Archived` badge on the project page
+- Appear in the **Inactive** tab on the group page, **Your work** page, and **Explore** page
+- Become read-only for most features (repository, packages, issues, merge requests, feature flags, pull mirroring, and others)
+- Have their fork relationships removed (open merge requests from forks are automatically closed)
+- Have their deployed Pages removed along with any custom domains
+- Stop running scheduled CI/CD pipelines
 
 Prerequisites:
 
-- [Deactivate](../../ci/pipelines/schedules.md#edit-a-pipeline-schedule) or delete any active pipeline schedules for the project.
-<!-- LP: Remove this prerequisite after the issue is resolved (when a project is archived, active pipeline schedules continue to run). -->
+- You must be an administrator or have the Owner role for the project.
 
 To archive a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the **Archive project** section, select **Archive project**.
-1. To confirm, select **OK**.
+1. In the **Archive project** section, select **Archive**.
+
+To archive a project from the **Your work** list view directly:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
+1. In the **Member** tab, find the project you want to archive and select ({{< icon name="ellipsis_v" >}}).
+1. Select **Archive**.
+
+This action is also available on other list pages.
 
 ### Unarchive a project
 
-When you unarchive a project, the read-only restriction is removed,
-and the project becomes available in project lists.
+Unarchive a project to: 
+
+- Remove read-only restrictions.
+- Return the project to the **Active** or **Member** tab in project lists.
+- Resume pull mirroring automatically.
+
+Projects that were archived as part of group archiving cannot be unarchived individually. You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
+
+{{< alert type="note" >}}
+
+Deployed Pages are not automatically restored. You must rerun the pipeline to restore Pages.
+
+{{< /alert >}}
 
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the project.
 
+To unarchive a project:
+
 1. Find the archived project.
    1. On the left sidebar, select **Search or go to**.
    1. Select **View all my projects**.
-   1. Select **Explore projects**.
-   1. In the **Sort projects** dropdown list, select **Show archived projects**.
-   1. In the **Filter by name** field, enter the project name.
-   1. Select the project link.
+   1. In the **Inactive** tab, select your project.
 1. On the left sidebar, select **Settings > General**.
 1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive project**.
-1. To confirm, select **OK**.
+1. In the **Unarchive project** section, select **Unarchive**.
 
-The deployed Pages are not restored and you must rerun the pipeline.
+To unarchive a project from the **Your work** list view directly:
 
-When a project is unarchived, its pull mirroring process will automatically resume.
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
+1. In the **Inactive** tab, find the project you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
+1. Select **Unarchive**.
+
+This action is also available on other list pages.
 
 ## Transfer a project
 

@@ -32,6 +32,7 @@ module BrowserConsoleHelpers
   # This is used for expect_page_to_have_no_console_errors
   BROWSER_CONSOLE_ERROR_FILTER = Regexp.union(
     [
+      /buttonTextClasses/, # TODO: Remove this filter with gitlab-ui version 121.0.1
       /gravatar\.com.*Failed to load resource/,
       /snowplowanalytics.*Failed to load resource/
     ]

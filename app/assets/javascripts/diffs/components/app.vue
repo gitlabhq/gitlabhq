@@ -793,7 +793,7 @@ export default {
           @clickFile="goToFile({ path: $event.path })"
           @toggleFolder="toggleTreeOpen"
         />
-        <div class="col-12 col-md-auto diff-files-holder">
+        <div class="gl-col-12 gl-col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert
             v-if="isBatchLoadingError"

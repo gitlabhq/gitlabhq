@@ -180,10 +180,15 @@ module BulkInsertSafe
         items.each_slice(batch_size).flat_map do |item_batch|
           attributes = _bulk_insert_item_attributes(item_batch, validate, &handle_attributes)
 
+          args = if ::Gitlab.next_rails?
+                   [insert_all_proxy_class.all, connection, attributes]
+                 else
+                   [insert_all_proxy_class, attributes]
+                 end
+
           ActiveRecord::InsertAll
               .new(
-                insert_all_proxy_class,
-                attributes,
+                *args,
                 on_duplicate: on_duplicate,
                 returning: returning,
                 unique_by: unique_by

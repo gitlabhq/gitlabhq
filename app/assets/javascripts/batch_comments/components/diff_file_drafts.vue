@@ -48,7 +48,7 @@ export default {
     <div
       v-for="(draft, index) in drafts"
       :key="draft.id"
-      class="discussion-notes diff-discussions position-relative"
+      class="discussion-notes diff-discussions !gl-relative"
     >
       <div class="notes">
         <design-note-pin

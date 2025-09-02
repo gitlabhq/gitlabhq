@@ -111,7 +111,7 @@ export default {
   <div
     :class="className"
     :style="cursorStyle"
-    class="position-absolute position-top-0 position-bottom-0 drag-handle"
+    class="position-top-0 position-bottom-0 drag-handle !gl-absolute"
     @mousedown="startDrag"
     @dblclick="resetSize"
   >

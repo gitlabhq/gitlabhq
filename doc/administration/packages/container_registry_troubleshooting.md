@@ -547,7 +547,7 @@ Running hooks in /etc/ca-certificates/update.d....done.
 To verify that the certificates are properly installed, run:
 
 ```shell
-mitmproxy --port 9000
+mitmproxy --listen-port 9000
 ```
 
 This command runs mitmproxy on port `9000`. In another window, run:
@@ -568,7 +568,7 @@ and then run Docker by hand. As root, run:
 ```shell
 export HTTP_PROXY="http://localhost:9000"
 export HTTPS_PROXY="http://localhost:9000"
-docker daemon --debug
+docker daemon --debug # or dockerd --debug
 ```
 
 This command launches the Docker daemon and proxies all connections through mitmproxy.

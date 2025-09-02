@@ -4,13 +4,6 @@ module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
-  def scope_avatar_classes(object)
-    %w[avatar-container rect-avatar s32].tap do |klasses|
-      klass = sidebar_attributes_for_object(object).fetch(:scope_avatar_class, nil)
-      klasses << klass if klass
-    end
-  end
-
   def organization_sidebar_context(organization, user, **args)
     Sidebars::Context.new(container: organization, current_user: user, **args)
   end

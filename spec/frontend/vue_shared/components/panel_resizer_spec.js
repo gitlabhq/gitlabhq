@@ -37,8 +37,8 @@ describe('Panel Resizer component', () => {
 
     expect(wrapper.element.tagName).toEqual('DIV');
     expect(wrapper.classes().sort()).toStrictEqual([
+      '!gl-absolute',
       'drag-handle',
-      'position-absolute',
       'position-bottom-0',
       'position-left-0',
       'position-top-0',
@@ -57,8 +57,8 @@ describe('Panel Resizer component', () => {
 
     expect(wrapper.element.tagName).toEqual('DIV');
     expect(wrapper.classes().sort()).toStrictEqual([
+      '!gl-absolute',
       'drag-handle',
-      'position-absolute',
       'position-bottom-0',
       'position-right-0',
       'position-top-0',

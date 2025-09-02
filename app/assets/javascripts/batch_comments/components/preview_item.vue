@@ -102,7 +102,7 @@ export default {
     <div
       class="review-comment-icon gl-inline-flex gl-items-center gl-justify-center gl-self-baseline gl-rounded-full gl-bg-strong"
     >
-      <gl-icon class="flex-shrink-0" :name="iconName" :size="14" />
+      <gl-icon class="!gl-shrink-0" :name="iconName" :size="14" />
     </div>
 
     <div class="gl-mt-2 gl-flex gl-flex-col gl-gap-2">

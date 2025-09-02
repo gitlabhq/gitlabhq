@@ -32,7 +32,7 @@ describe('Changed file icon', () => {
       isCentered: true,
     });
 
-    expect(wrapper.classes('ml-auto')).toBe(true);
+    expect(wrapper.classes('!gl-ml-auto')).toBe(true);
   });
 
   it('with isCentered false, does not center', () => {
@@ -40,7 +40,7 @@ describe('Changed file icon', () => {
       isCentered: false,
     });
 
-    expect(wrapper.classes('ml-auto')).toBe(false);
+    expect(wrapper.classes('!gl-ml-auto')).toBe(false);
   });
 
   it('with showTooltip false, does not show tooltip', () => {

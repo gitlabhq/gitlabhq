@@ -1931,51 +1931,50 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    context 'when after_update_commit :update_default_organization_user on default organization' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+    context 'when after_update_commit :update_home_organization_user on home organization' do
+      let_it_be(:organization) { create(:organization) }
 
       context 'when user is changed to an instance admin' do
-        let_it_be(:user) { create(:user, organization: default_organization) }
+        let_it_be(:user) { create(:user, organization: organization) }
 
         it 'changes user to owner in the organization' do
-          expect(default_organization.owner?(user)).to be(false)
+          expect(organization.owner?(user)).to be(false)
 
           user.update!(admin: true)
 
-          expect(default_organization.owner?(user)).to be(true)
+          expect(organization.owner?(user)).to be(true)
         end
 
         context 'when non admin attribute is updated' do
           it 'does not change the organization_user' do
-            expect(default_organization.owner?(user)).to be(false)
+            expect(organization.owner?(user)).to be(false)
 
             expect { user.update!(name: 'Bob') }.not_to change { Organizations::OrganizationUser.count }
-            expect(default_organization.owner?(user)).to be(false)
+            expect(organization.owner?(user)).to be(false)
           end
         end
       end
 
       context 'when user is changed from admin to regular user' do
         # Can't change access of the last organization owner therefore we need to create two admins
-        let_it_be(:user1) { create(:admin) }
-        let_it_be(:user2) { create(:admin) }
+        let_it_be(:user1) { create(:admin, organization: organization) }
+        let_it_be(:user2) { create(:admin, organization: organization) }
 
         it 'changes user to default access_level in organization' do
           user2.update!(admin: false)
 
-          expect(default_organization.owner?(user2)).to be(false)
-          expect(default_organization.user?(user2)).to be(true)
+          expect(organization.owner?(user2)).to be(false)
+          expect(organization.user?(user2)).to be(true)
         end
       end
 
-      context 'when user did not already exist in the default organization' do
-        let_it_be(:user) { create(:user, organizations: []) }
+      context 'when user did not already exist in the organization' do
+        let_it_be(:user) { create(:user, organization: organization, organizations: []) }
 
         it 'changes user to owner in the organization' do
-          expect(default_organization.user?(user)).to be(false)
-
+          expect(organization.user?(user)).to be(false)
           expect { user.update!(admin: true) }.to change { Organizations::OrganizationUser.count }
-          expect(default_organization.owner?(user)).to be(true)
+          expect(organization.owner?(user)).to be(true)
         end
       end
     end

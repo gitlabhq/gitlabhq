@@ -107,7 +107,7 @@ function createLink(data, selected, options, index) {
   link.href = getPropertyWithDefault(data, options, 'url', '#');
 
   if (options.icon) {
-    link.classList.add('gl-flex', 'align-items-center');
+    link.classList.add('gl-flex', '!gl-items-center');
   }
 
   if (options.trackSuggestionClickedLabel) {

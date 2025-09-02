@@ -62,6 +62,11 @@ describe('NavItem component', () => {
       },
     );
 
+    it('does not render a pill when in icon-only mode', () => {
+      createWrapper({ item: { title: 'Foo', pill_count: 123 }, provide: { isIconOnly: true } });
+      expect(findPill().exists()).toBe(false);
+    });
+
     describe('updating pill value', () => {
       const initialPillValue = '20%';
       const updatedPillValue = '50%';

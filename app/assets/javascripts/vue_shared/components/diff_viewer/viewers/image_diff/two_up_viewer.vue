@@ -41,7 +41,7 @@ export default {
       :render-info="true"
       inner-css-classes="frame deleted"
       :encode-path="encodePath"
-      class="wrap w-50"
+      class="wrap !gl-w-1/2"
     />
     <image-viewer
       :path="newPath"
@@ -49,7 +49,7 @@ export default {
       :render-info="true"
       :inner-css-classes="['frame', 'added']"
       :encode-path="encodePath"
-      class="wrap w-50"
+      class="wrap !gl-w-1/2"
     >
       <template #image-overlay="{ renderedWidth, renderedHeight }">
         <slot

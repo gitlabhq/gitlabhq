@@ -59,7 +59,12 @@ RSpec.describe Gitlab::Favicon, :request_store do
   describe '.web_ide_favicon' do
     subject { described_class.web_ide_favicon }
 
-    it { is_expected.to match_asset_path '/assets/favicon-web-ide.png' }
+    it { is_expected.to match_asset_path '/assets/web_ide_favicons/favicon.png' }
+
+    it 'has blue favicon for CE development web ide', unless: Gitlab.ee? do
+      stub_rails_env('development')
+      is_expected.to match_asset_path '/assets/web_ide_favicons/favicon-blue.png'
+    end
   end
 
   describe '.available_status_names' do

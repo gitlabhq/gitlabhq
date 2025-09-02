@@ -34,7 +34,11 @@ GitLab administrators can configure automatic GitLab Duo add-on seat assignment 
 The following diagram illustrates the workflow:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Workflow of GitLab Duo add-on seat management with LDAP
+    accDescr: Sequence diagram showing automatic GitLab Duo add-on seat management based on LDAP group membership. Users sign in, GitLab authenticates them, then enqueues a background job to sync seat assignment based on their group membership.
+
     participant User
     participant GitLab
     participant LDAP

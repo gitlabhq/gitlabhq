@@ -184,7 +184,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
         expect(favicon_link).to be_present
         expect(favicon_link['rel']).to eq('icon')
         expect(favicon_link['type']).to eq('image/png')
-        expect(favicon_link['href']).to match_asset_path '/assets/favicon-web-ide.png'
+        expect(favicon_link['href']).to match_asset_path '/assets/web_ide_favicons/favicon.png'
       end
     end
 
