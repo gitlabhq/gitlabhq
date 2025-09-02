@@ -399,6 +399,49 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
           expect { new_job }.not_to raise_error
         end
       end
+
+      context "when the retried bridge job has a resource group" do
+        let(:resource_group) { create(:ci_resource_group, project: project) }
+        let(:original_job) do
+          create(
+            :ci_bridge, :retryable,
+            :allowed_to_fail, description: 'bridge-job',
+            pipeline: pipeline,
+            resource_group: resource_group
+          )
+        end
+
+        it "passes the resource group to the newly created job via bridge job retry" do
+          service_response = service.execute(original_job)
+
+          expect { service_response }.not_to raise_error
+          expect(original_job.resource_group_id).to eq(service_response[:job].resource_group_id)
+        end
+
+        it 'prevents a new pipeline from running when retried bridge is running with same resource group' do
+          retried_bridge_job = service.execute(original_job)[:job]
+
+          resource_group.assign_resource_to(retried_bridge_job)
+          retried_bridge_job.update!(status: 'running')
+
+          new_bridge_job = create(
+            :ci_bridge, :waiting_for_resource,
+            pipeline: create(:ci_pipeline, project: project),
+            resource_group: resource_group
+          )
+
+          expect(new_bridge_job.status).to eq('waiting_for_resource')
+
+          retried_bridge_job.update!(status: 'success')
+          resource_group.release_resource_from(retried_bridge_job)
+
+          Ci::ResourceGroups::AssignResourceFromResourceGroupService.new(project, user).execute(resource_group)
+
+          new_bridge_job.reload
+
+          expect(new_bridge_job.status).to eq('pending')
+        end
+      end
     end
 
     context 'when the job to be retried is a build' do

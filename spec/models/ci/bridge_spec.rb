@@ -80,6 +80,19 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
+  describe '.clone_accessors' do
+    it 'returns the correct list of attributes to clone' do
+      expected_accessors = %i[
+        pipeline project ref tag options name
+        allow_failure stage_idx
+        yaml_variables when environment description needs_attributes
+        scheduling_type ci_stage partition_id resource_group
+      ]
+
+      expect(described_class.clone_accessors).to eq(expected_accessors)
+    end
+  end
+
   describe '#downstream_pipeline_params' do
     it 'returns an empty hash' do
       expect(bridge.downstream_pipeline_params).to eq({})

@@ -227,7 +227,6 @@ merge_requests:
 - todos
 - target_project
 - source_project
-- merge_data
 - merge_user
 - merge_request_diffs
 - merge_request_diff
@@ -294,10 +293,6 @@ merge_requests:
 - generated_ref_commits
 external_pull_requests:
 - project
-merge_data:
-- merge_request
-- project
-- merge_user
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits

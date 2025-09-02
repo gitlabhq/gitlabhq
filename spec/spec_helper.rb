@@ -228,6 +228,7 @@ RSpec.configure do |config|
 
   include StubCurrentOrganization
   include StubFeatureFlags
+  include StubProjectStudio
   include StubSnowplow
   include StubMember
   include VersionCheckHelpers

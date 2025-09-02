@@ -9,16 +9,10 @@ class AddFksToMergeRequestsMergeData < Gitlab::Database::Migration[2.3]
   TABLE_NAME = :merge_requests_merge_data
 
   def up
-    add_concurrent_partitioned_foreign_key TABLE_NAME, :merge_requests, column: :merge_request_id, on_delete: :cascade
-    add_concurrent_partitioned_foreign_key TABLE_NAME, :projects, column: :project_id, on_delete: :cascade
-    add_concurrent_partitioned_foreign_key TABLE_NAME, :users, column: :merge_user_id, on_delete: :nullify
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20468
   end
 
   def down
-    with_lock_retries do
-      remove_foreign_key TABLE_NAME, column: :merge_request_id
-      remove_foreign_key TABLE_NAME, column: :project_id
-      remove_foreign_key TABLE_NAME, column: :merge_user_id
-    end
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20468
   end
 end

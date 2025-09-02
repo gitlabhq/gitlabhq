@@ -1240,6 +1240,7 @@
 .caching:rules:rubocop-cache-update:
   rules:
     - !reference [.caching:rules:update-master-based-caches, rules]
+    - *if-rails-next-branch
     - <<: *if-default-branch-push
       changes:
         - '**/*.rb'

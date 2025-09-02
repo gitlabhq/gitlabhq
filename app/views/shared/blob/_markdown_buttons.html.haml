@@ -37,10 +37,6 @@
                             css_class: 'gl-hidden gl-mr-2',
                             data: { "md-command" => 'outdentLines', "md-shortcuts": '["mod+["]' },
                             title: sprintf(s_("MarkdownEditor|Outdent line (%{modifier_key}[)") % { modifier_key: modifier_key }) })
-= markdown_toolbar_button({ icon: "details-block",
-                            css_class: 'haml-markdown-button gl-mr-2',
-                            data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-select" => "Click to expand" },
-                            title: _("Add a collapsible section") })
 .gl-flex.gl-py-2.haml-markdown-button
   .gl-border-l.gl-ml-2.gl-pl-3
 = markdown_toolbar_button({ icon: "table", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |", "md-prepend" => true }, title: _("Add a table") })
@@ -48,3 +44,9 @@
   = render Pajamas::ButtonComponent.new(icon: 'paperclip', category: :tertiary, size: :small, button_options: { 'aria-label': _("Attach a file or image"), class: 'has-tooltip js-attach-file-button haml-markdown-button gl-mr-2', data: { testid: 'button-attach-file', container: 'body' } })
 - if supports_quick_actions
   = markdown_toolbar_button({ icon: "quick-actions", css_class: 'haml-markdown-button gl-mr-2', data: { "md-tag" => "/", "md-prepend" => true }, title: _("Add a quick action") })
+.gl-flex.gl-py-2.haml-markdown-button
+  .gl-border-l.gl-ml-2.gl-pl-3
+= markdown_toolbar_button({ icon: "details-block",
+  css_class: 'haml-markdown-button gl-mr-2',
+  data: { "md-tag" => "<details><summary>Click to expand</summary>\n{text}\n</details>", "md-select" => "Click to expand" },
+  title: _("Add a collapsible section") })

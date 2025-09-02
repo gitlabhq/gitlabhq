@@ -11,6 +11,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
   before_action :authorize_update_pipeline_schedule!, only: [:edit, :update]
   before_action :authorize_admin_pipeline_schedule!, only: [:take_ownership, :destroy]
+  before_action :push_realtime_schedule_feature_flag, only: [:index]
 
   feature_category :continuous_integration
   urgency :low
@@ -119,5 +120,9 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def authorize_admin_pipeline_schedule!
     access_denied! unless can?(current_user, :admin_pipeline_schedule, schedule)
+  end
+
+  def push_realtime_schedule_feature_flag
+    push_frontend_feature_flag(:ci_pipeline_schedules_status_realtime, @project)
   end
 end

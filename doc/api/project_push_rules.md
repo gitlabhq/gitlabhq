@@ -31,10 +31,38 @@ GET /projects/:id/push_rule
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute                       | Type    | Description |
+|---------------------------------|---------|-------------|
+| `author_email_regex`            | string  | All commit author emails must match this regular expression. |
+| `branch_name_regex`             | string  | All branch names must match this regular expression. |
+| `commit_committer_check`        | boolean | If `true`, users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`   | boolean | If `true`, users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
+| `commit_message_negative_regex` | string  | No commit message is allowed to match this regular expression. |
+| `commit_message_regex`          | string  | All commit messages must match this regular expression. |
+| `created_at`                    | string  | Date and time when the push rule was created. |
+| `deny_delete_tag`               | boolean | If `true`, denies deleting a tag. |
+| `file_name_regex`               | string  | All committed filenames must not match this regular expression. |
+| `id`                            | integer | ID of the push rule. |
+| `max_file_size`                 | integer | Maximum file size (MB). |
+| `member_check`                  | boolean | If `true`, restricts commits by author (email) to existing GitLab users. |
+| `prevent_secrets`               | boolean | If `true`, GitLab rejects any files that are likely to contain secrets. |
+| `project_id`                    | integer | ID of the project. |
+| `reject_non_dco_commits`        | boolean | If `true`, rejects commits when not DCO certified. |
+| `reject_unsigned_commits`       | boolean | If `true`, rejects commits when not signed. |
 
 If push rules were never configured for the project, this endpoint returns a response with value `null` instead of a `404` error.
+
+When disabled, some boolean attributes return `null` instead of `false`. For example:
+
+- `commit_committer_check`
+- `reject_unsigned_commits`
+- `reject_non_dco_commits`
 
 Example request:
 
@@ -66,12 +94,6 @@ Example response when push rules are configured with all settings disabled:
 }
 ```
 
-When disabled, some boolean attributes return `null` instead of `false`. For example:
-
-- `commit_committer_check`
-- `reject_unsigned_commits`
-- `reject_non_dco_commits`
-
 ## Add a project push rule
 
 Add a push rule to a specified project.
@@ -83,21 +105,76 @@ POST /projects/:id/push_rule
 Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
-|:--------------------------------|:------------------|:---------|:------------|
+|---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
+| `commit_committer_check`        | boolean           | No       | If `true`, users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`   | boolean           | No       | If `true`, users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this regular expression. |
-| `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |
+| `deny_delete_tag`               | boolean           | No       | If `true`, denies deleting a tag. |
 | `file_name_regex`               | string            | No       | All committed filenames must not match this regular expression. |
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
-| `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
-| `commit_committer_check`        | boolean           | No       | Users can only push commits to this repository if the committer email is one of their own verified emails. |
-| `commit_committer_name_check`   | boolean           | No       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
-| `reject_unsigned_commits`       | boolean           | No       | Reject commit when it's not signed. |
-| `reject_non_dco_commits`        | boolean           | No       | Reject commit when it's not DCO certified. |
+| `member_check`                  | boolean           | No       | If `true`, restricts commits by author (email) to existing GitLab users. |
+| `prevent_secrets`               | boolean           | No       | If `true`, GitLab rejects any files that are likely to contain secrets. |
+| `reject_non_dco_commits`        | boolean           | No       | If `true`, rejects commits when not DCO certified. |
+| `reject_unsigned_commits`       | boolean           | No       | If `true`, rejects commits when not signed. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute                       | Type    | Description |
+|---------------------------------|---------|-------------|
+| `author_email_regex`            | string  | All commit author emails must match this regular expression. |
+| `branch_name_regex`             | string  | All branch names must match this regular expression. |
+| `commit_committer_check`        | boolean | If `true`, users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`   | boolean | If `true`, users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
+| `commit_message_negative_regex` | string  | No commit message is allowed to match this regular expression. |
+| `commit_message_regex`          | string  | All commit messages must match this regular expression. |
+| `created_at`                    | string  | Date and time when the push rule was created. |
+| `deny_delete_tag`               | boolean | If `true`, denies deleting a tag. |
+| `file_name_regex`               | string  | All committed filenames must not match this regular expression. |
+| `id`                            | integer | ID of the push rule. |
+| `max_file_size`                 | integer | Maximum file size (MB). |
+| `member_check`                  | boolean | If `true`, restricts commits by author (email) to existing GitLab users. |
+| `prevent_secrets`               | boolean | If `true`, GitLab rejects any files that are likely to contain secrets. |
+| `project_id`                    | integer | ID of the project. |
+| `reject_non_dco_commits`        | boolean | If `true`, rejects commits when not DCO certified. |
+| `reject_unsigned_commits`       | boolean | If `true`, rejects commits when not signed. |
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/3/push_rule" \
+  --data "commit_message_regex=Fixes \\d+\\..*" \
+  --data "deny_delete_tag=false"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "created_at": "2012-10-12T17:04:47Z",
+  "commit_message_regex": "Fixes \\d+\\..*",
+  "commit_message_negative_regex": "",
+  "branch_name_regex": "",
+  "deny_delete_tag": false,
+  "member_check": false,
+  "prevent_secrets": false,
+  "author_email_regex": "",
+  "file_name_regex": "",
+  "max_file_size": 0,
+  "commit_committer_check": false,
+  "commit_committer_name_check": false,
+  "reject_unsigned_commits": false,
+  "reject_non_dco_commits": false
+}
+```
 
 ## Edit project push rule
 
@@ -110,21 +187,76 @@ PUT /projects/:id/push_rule
 Supported attributes:
 
 | Attribute                       | Type              | Required | Description |
-|:--------------------------------|:------------------|:---------|:------------|
+|---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this regular expression. |
 | `branch_name_regex`             | string            | No       | All branch names must match this regular expression. |
+| `commit_committer_check`        | boolean           | No       | If `true`, users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`   | boolean           | No       | If `true`, users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this regular expression. |
-| `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |
+| `deny_delete_tag`               | boolean           | No       | If `true`, denies deleting a tag. |
 | `file_name_regex`               | string            | No       | All committed filenames must not match this regular expression. |
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
-| `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
-| `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
-| `commit_committer_check`        | boolean           | No       | Users can only push commits to this repository if the committer email is one of their own verified emails. |
-| `commit_committer_name_check`   | boolean           | No       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
-| `reject_unsigned_commits`       | boolean           | No       | Reject commits when they are not signed. |
-| `reject_non_dco_commits`        | boolean           | No       | Reject commit when it's not DCO certified. |
+| `member_check`                  | boolean           | No       | If `true`, restricts commits by author (email) to existing GitLab users. |
+| `prevent_secrets`               | boolean           | No       | If `true`, GitLab rejects any files that are likely to contain secrets. |
+| `reject_non_dco_commits`        | boolean           | No       | If `true`, rejects commits when not DCO certified. |
+| `reject_unsigned_commits`       | boolean           | No       | If `true`, rejects commits when not signed. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute                       | Type    | Description |
+|---------------------------------|---------|-------------|
+| `author_email_regex`            | string  | All commit author emails must match this regular expression. |
+| `branch_name_regex`             | string  | All branch names must match this regular expression. |
+| `commit_committer_check`        | boolean | If `true`, users can only push commits to this repository if the committer email is one of their own verified emails. |
+| `commit_committer_name_check`   | boolean | If `true`, users can only push commits to this repository if the commit author name is consistent with their GitLab account name. |
+| `commit_message_negative_regex` | string  | No commit message is allowed to match this regular expression. |
+| `commit_message_regex`          | string  | All commit messages must match this regular expression. |
+| `created_at`                    | string  | Date and time when the push rule was created. |
+| `deny_delete_tag`               | boolean | If `true`, denies deleting a tag. |
+| `file_name_regex`               | string  | All committed filenames must not match this regular expression. |
+| `id`                            | integer | ID of the push rule. |
+| `max_file_size`                 | integer | Maximum file size (MB). |
+| `member_check`                  | boolean | If `true`, restricts commits by author (email) to existing GitLab users. |
+| `prevent_secrets`               | boolean | If `true`, GitLab rejects any files that are likely to contain secrets. |
+| `project_id`                    | integer | ID of the project. |
+| `reject_non_dco_commits`        | boolean | If `true`, rejects commits when not DCO certified. |
+| `reject_unsigned_commits`       | boolean | If `true`, rejects commits when not signed. |
+
+Example request:
+
+```shell
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/3/push_rule" \
+  --data "commit_message_regex=Fixes \\d+\\..*" \
+  --data "deny_delete_tag=true"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "created_at": "2012-10-12T17:04:47Z",
+  "commit_message_regex": "Fixes \\d+\\..*",
+  "commit_message_negative_regex": "",
+  "branch_name_regex": "",
+  "deny_delete_tag": true,
+  "member_check": false,
+  "prevent_secrets": false,
+  "author_email_regex": "",
+  "file_name_regex": "",
+  "max_file_size": 0,
+  "commit_committer_check": false,
+  "commit_committer_name_check": false,
+  "reject_unsigned_commits": false,
+  "reject_non_dco_commits": false
+}
+```
 
 ## Delete project push rule
 
@@ -137,5 +269,15 @@ DELETE /projects/:id/push_rule
 Supported attributes:
 
 | Attribute | Type              | Required | Description |
-|:----------|:------------------|:---------|:------------|
+|-----------|-------------------|----------|-------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/3/push_rule"
+```

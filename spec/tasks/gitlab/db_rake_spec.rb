@@ -677,55 +677,124 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'collation_checker' do
+    let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil, debug: true) }
+    let(:backup_connection) { instance_double(Backup::DatabaseConnection) }
+    let(:connection_double) { double(:connection) }
+
+    before do
+      allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      allow(Logger).to receive(:new).and_return(logger_double)
+
+      allow(Backup::DatabaseConnection).to receive(:new).and_return(backup_connection)
+      allow(backup_connection).to receive(:connection).and_return(connection_double)
+    end
+
     context 'with a single database' do
       before do
         skip_if_multiple_databases_are_setup
       end
 
-      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      it 'runs Gitlab::Database::CollationChecker for single database' do
+        expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+          connection_double,
+          'main',
+          logger_double,
+          1.gigabyte
+        ).and_return(double(run: {}))
 
-        expect(Gitlab::Database::CollationChecker).to receive(:run)
-          .with(logger: logger_double)
+        run_rake_task('gitlab:db:collation_checker')
+      end
+
+      it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+        stub_env('MAX_TABLE_SIZE', 10.gigabytes.to_s)
+
+        expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+          connection_double,
+          'main',
+          logger_double,
+          10.gigabytes
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:collation_checker')
       end
     end
 
     context 'with multiple databases' do
-      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
-
       before do
         skip_if_multiple_databases_not_setup(:ci)
-
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
       end
 
-      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
-        expect(Gitlab::Database::CollationChecker).to receive(:run)
-          .with(logger: logger_double)
+      it 'runs Gitlab::Database::CollationChecker for multiple databases' do
+        allow(Gitlab::Database::CollationChecker).to receive(:new)
+          .and_return(double(run: {}))
 
         run_rake_task('gitlab:db:collation_checker')
+
+        expect(Gitlab::Database::CollationChecker).to have_received(:new)
+          .with(connection_double, "main", logger_double, 1.gigabyte)
+
+        expect(Gitlab::Database::CollationChecker).to have_received(:new)
+          .with(connection_double, "ci", logger_double, 1.gigabyte)
+
+        if database_exists?('sec')
+          expect(Gitlab::Database::CollationChecker).to have_received(:new)
+            .with(connection_double, "sec", logger_double, 1.gigabyte)
+        end
+      end
+
+      it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+        stub_env('MAX_TABLE_SIZE', 15.gigabytes.to_s)
+
+        received_sizes = []
+        allow(Gitlab::Database::CollationChecker).to receive(:new) do |_, _, _, size|
+          received_sizes << size
+          double(run: {})
+        end
+
+        run_rake_task('gitlab:db:collation_checker')
+
+        expect(received_sizes.uniq).to eq([15.gigabytes])
       end
 
       context 'when the single database task is used' do
-        before do
-          skip_if_shared_database(:ci)
-        end
-
-        it 'calls Gitlab::Database::CollationChecker with the main database' do
-          expect(Gitlab::Database::CollationChecker).to receive(:run)
-            .with(database_name: 'main', logger: logger_double)
+        it 'runs Gitlab::Database::CollationChecker with the main database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new)
+            .with(
+              connection_double,
+              'main',
+              logger_double,
+              1.gigabyte
+            ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:collation_checker:main')
         end
 
-        it 'calls Gitlab::Database::CollationChecker with the ci database' do
-          expect(Gitlab::Database::CollationChecker).to receive(:run)
-            .with(database_name: 'ci', logger: logger_double)
+        it 'runs Gitlab::Database::CollationChecker with the ci database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('ci').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new)
+            .with(
+              connection_double,
+              'ci',
+              logger_double,
+              1.gigabyte
+            ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:collation_checker:ci')
+        end
+
+        it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+          stub_env('MAX_TABLE_SIZE', 12.gigabytes.to_s)
+
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+            connection_double,
+            'main',
+            logger_double,
+            12.gigabytes
+          ).and_return(double(run: {}))
+
+          run_rake_task('gitlab:db:collation_checker:main')
         end
       end
 

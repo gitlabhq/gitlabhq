@@ -49,278 +49,6 @@
       bundle exec ruby scripts/cache_metrics || true
       section_end "cache-analytics"
 
-.ruby-gems-cache:
-  # This key is dynamically overridden in case of rails-next pipelines in order to calculate key checksum
-  # based on Gemfile.next.lock instead due to 'files' key not supporting environment variables so variable
-  # BUNDLE_GEMFILE can't be used
-  #
-  # In order to properly merge final CI configuration, !reference has to be used as it is evaluated very last unlike
-  # native yaml anchors
-  key:
-    files:
-      - Gemfile.lock
-      - Gemfile.checksum
-    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
-  paths:
-    - vendor/ruby/
-  policy: pull
-
-.gitaly-binaries-cache: &gitaly-binaries-cache
-  key:
-    files:
-      - GITALY_SERVER_VERSION
-      - lib/gitlab/setup_helper.rb
-    prefix: "gitaly-${BUILD_OS}-${OS_VERSION}"
-  paths:
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/_build/bin/
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml.transactions
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml.transactions
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/internal/
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/Makefile
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect.config.toml
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect-db.config.toml
-  policy: pull-push
-
-.node-modules-cache: &node-modules-cache
-  key:
-    files:
-      - yarn.lock
-      - scripts/frontend/postinstall.js
-    prefix: node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
-  paths:
-    - node_modules/
-  policy: pull
-
-.assets-cache: &assets-cache
-  key: "assets-${NODE_ENV}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
-  paths:
-    - app/assets/javascripts/locale/**/app.js
-    - public/assets/
-    - ${GLCI_GITLAB_ASSETS_HASH_FILE}
-  policy: pull-push
-
-.assets-tmp-cache: &assets-tmp-cache
-  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}"
-  paths:
-    - tmp/cache
-  policy: pull
-  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
-
-# used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
-.assets-cache-pull: &assets-cache-pull
-  <<: *assets-cache
-  policy: pull
-
-.storybook-node-modules-cache: &storybook-node-modules-cache
-  key:
-    prefix: "storybook-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
-    files:
-      - storybook/yarn.lock
-  paths:
-    - storybook/node_modules/
-  policy: pull
-
-.storybook-node-modules-cache-pull-push: &storybook-node-modules-cache-pull-push
-  <<: *storybook-node-modules-cache
-  policy: pull-push
-
-.rubocop-cache: &rubocop-cache
-  key: "rubocop-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
-  paths:
-    - tmp/rubocop_cache/
-  policy: pull
-  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
-
-.rubocop-cache-push: &rubocop-cache-push
-  <<: *rubocop-cache
-  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
-  # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
-  policy: push
-
-.workhorse-cache: &workhorse-cache
-  key: "workhorse-${BUILD_OS}-${OS_VERSION}-${GLCI_WORKHORSE_HASH}"
-  paths:
-    # match only files, otherwise gitlab-workhorse folder changes metadata when recreated on cache restore
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-workhorse/*
-  policy: pull-push
-
-.zoekt-elasticsearch-indexer-cache: &zoekt-elasticsearch-indexer-cache
-  key:
-    prefix: zoekt-elasticsearch-indexer-${BUILD_OS}-${OS_VERSION}
-    files:
-      - GITLAB_ZOEKT_VERSION
-      - GITLAB_ELASTICSEARCH_INDEXER_VERSION
-  paths:
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-zoekt/bin
-    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-elasticsearch-indexer/bin
-  policy: pull-push
-
-.ruby-cache:
-  cache: !reference [.ruby-gems-cache]
-
-.ruby-cache-pull-push:
-  extends: .cache-analytics
-  cache:
-    key: !reference [.ruby-gems-cache, key]
-    paths: !reference [.ruby-gems-cache, paths]
-    policy: pull-push
-
-.setup-test-env-cache:
-  extends: .cache-analytics
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *gitaly-binaries-cache
-    - *workhorse-cache
-    - *zoekt-elasticsearch-indexer-cache # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
-
-.static-analysis-cache:
-  extends: .cache-analytics
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *node-modules-cache
-    - *rubocop-cache
-
-.rubocop-job-cache:
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *rubocop-cache
-
-.rubocop-job-cache-push:
-  cache:
-    - !reference [.ruby-gems-cache]  # We don't push this cache as it's pushed by `cache:ruby-gems` job
-    - *rubocop-cache-push
-
-.ruby-node-cache:
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *node-modules-cache
-
-.workhorse-go-cache: &workhorse-go-cache
-  key:
-    prefix: workhorse-go-dependencies
-    files:
-      - workhorse/go.sum
-  paths:
-    - .go/pkg/mod/
-  policy: pull-push
-
-# E2E related gem caching
-.qa-bundler-variables: &qa-bundler-variables
-  BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
-  BUNDLE_SILENCE_ROOT_WARNING: "true"
-  BUNDLE_PATH: vendor
-
-.qa-ruby-gems-cache: &qa-ruby-gems-cache
-  key:
-    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
-    files:
-      - qa/Gemfile.lock
-  paths:
-    - qa/vendor/ruby
-  policy: pull
-
-.qa-ruby-orchestrator-gems-cache: &qa-ruby-orchestrator-gems-cache
-  key:
-    prefix: "qa-orchestrator-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
-    files:
-      - qa/gems/gitlab-orchestrator/Gemfile.lock
-  paths:
-    - qa/gems/gitlab-orchestrator/vendor/ruby
-  policy: pull
-
-.cng-helm-cache: &cng-helm-cache
-  key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
-  paths:
-    - $CNG_HELM_REPOSITORY_CACHE
-  policy: pull
-
-.qa-cache:
-  variables: *qa-bundler-variables
-  cache:
-    - *qa-ruby-gems-cache
-
-.qa-cache-pull-push:
-  variables: *qa-bundler-variables
-  cache:
-    - <<: *qa-ruby-gems-cache
-      policy: pull-push
-
-.cng-qa-cache:
-  variables:
-    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
-    <<: *qa-bundler-variables
-  cache:
-    - *qa-ruby-gems-cache
-    - *cng-helm-cache
-
-.cng-qa-cache-push:
-  variables:
-    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
-    <<: *qa-bundler-variables
-  cache:
-    - *qa-ruby-gems-cache
-    - <<: *cng-helm-cache
-      policy: push
-
-.qa-orchestrator-cache:
-  variables: *qa-bundler-variables
-  cache:
-    - <<: *qa-ruby-orchestrator-gems-cache
-
-.qa-orchestrator-cache-pull-push:
-  variables: *qa-bundler-variables
-  cache:
-    - <<: *qa-ruby-orchestrator-gems-cache
-      policy: pull-push
-
-.yarn-cache:
-  cache:
-    - *node-modules-cache
-
-.yarn-cache-pull-push:
-  cache:
-    <<: *node-modules-cache
-    policy: pull-push
-
-.assets-compile-cache:
-  extends: .cache-analytics
-  cache:
-    - !reference [.ruby-gems-cache]
-    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
-    - *node-modules-cache
-    - *assets-cache
-
-.assets-compile-cache-pull: # this cache is used only for gdk:compile-test-assets which should only pull, never push
-  extends: .cache-analytics
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *node-modules-cache
-    - *assets-cache-pull
-    - *assets-tmp-cache
-
-.storybook-yarn-cache:
-  cache:
-    - *node-modules-cache
-    - *storybook-node-modules-cache
-
-.storybook-yarn-cache-pull-push:
-  cache:
-    - *node-modules-cache
-    - *storybook-node-modules-cache-pull-push
-
-.workhorse-job-cache:
-  cache:
-    - !reference [.ruby-gems-cache]
-    - *workhorse-go-cache
-
-.workhorse-job-cache-pull:
-  cache:
-    - !reference [.ruby-gems-cache]
-    - <<: *workhorse-go-cache
-      policy: pull
-
 .redis-services:
   services:
     - name: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:redis-cluster-${REDIS_CLUSTER_VERSION}
@@ -677,3 +405,278 @@
   id_tokens:
     GCP_ID_TOKEN:
       aud: https://iam.googleapis.com/projects/${GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID}/providers/${GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID}
+
+# ==================
+# Cache definitions
+# ==================
+.ruby-gems-cache:
+  # This key is dynamically overridden in case of rails-next pipelines in order to calculate key checksum
+  # based on Gemfile.next.lock instead due to 'files' key not supporting environment variables so variable
+  # BUNDLE_GEMFILE can't be used
+  #
+  # In order to properly merge final CI configuration, !reference has to be used as it is evaluated very last unlike
+  # native yaml anchors
+  key:
+    files:
+      - Gemfile.lock
+      - Gemfile.checksum
+    prefix: "ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+  paths:
+    - vendor/ruby/
+  policy: pull
+
+.gitaly-binaries-cache: &gitaly-binaries-cache
+  key:
+    files:
+      - GITALY_SERVER_VERSION
+      - lib/gitlab/setup_helper.rb
+    prefix: "gitaly-${BUILD_OS}-${OS_VERSION}"
+  paths:
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/_build/bin/
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/config.toml.transactions
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/gitaly2.config.toml.transactions
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/internal/
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/Makefile
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect.config.toml
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitaly/praefect-db.config.toml
+  policy: pull-push
+
+.node-modules-cache: &node-modules-cache
+  key:
+    files:
+      - yarn.lock
+      - scripts/frontend/postinstall.js
+    prefix: node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}-node-${NODE_VERSION}
+  paths:
+    - node_modules/
+  policy: pull
+
+.assets-cache: &assets-cache
+  key: "assets-${NODE_ENV}-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-gemfile-${BUNDLE_GEMFILE}-${GLCI_GITLAB_ASSETS_HASH}"
+  paths:
+    - app/assets/javascripts/locale/**/app.js
+    - public/assets/
+    - ${GLCI_GITLAB_ASSETS_HASH_FILE}
+  policy: pull-push
+
+.assets-tmp-cache: &assets-tmp-cache
+  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}"
+  paths:
+    - tmp/cache
+  policy: pull
+  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
+
+# used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
+.assets-cache-pull: &assets-cache-pull
+  <<: *assets-cache
+  policy: pull
+
+.storybook-node-modules-cache: &storybook-node-modules-cache
+  key:
+    prefix: "storybook-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
+    files:
+      - storybook/yarn.lock
+  paths:
+    - storybook/node_modules/
+  policy: pull
+
+.storybook-node-modules-cache-pull-push: &storybook-node-modules-cache-pull-push
+  <<: *storybook-node-modules-cache
+  policy: pull-push
+
+.rubocop-cache: &rubocop-cache
+  key: "rubocop-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+  paths:
+    - tmp/rubocop_cache/
+  policy: pull
+  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
+
+.rubocop-cache-push: &rubocop-cache-push
+  <<: *rubocop-cache
+  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
+  # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
+  policy: push
+
+.workhorse-cache: &workhorse-cache
+  key: "workhorse-${BUILD_OS}-${OS_VERSION}-${GLCI_WORKHORSE_HASH}"
+  paths:
+    # match only files, otherwise gitlab-workhorse folder changes metadata when recreated on cache restore
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-workhorse/*
+  policy: pull-push
+
+.zoekt-elasticsearch-indexer-cache: &zoekt-elasticsearch-indexer-cache
+  key:
+    prefix: zoekt-elasticsearch-indexer-${BUILD_OS}-${OS_VERSION}
+    files:
+      - GITLAB_ZOEKT_VERSION
+      - GITLAB_ELASTICSEARCH_INDEXER_VERSION
+  paths:
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-zoekt/bin
+    - ${GLCI_CACHED_SERVICES_FOLDER}/gitlab-elasticsearch-indexer/bin
+  policy: pull-push
+
+.ruby-cache:
+  cache: !reference [.ruby-gems-cache]
+
+.ruby-cache-pull-push:
+  extends: .cache-analytics
+  cache:
+    key: !reference [.ruby-gems-cache, key]
+    paths: !reference [.ruby-gems-cache, paths]
+    policy: pull-push
+
+.setup-test-env-cache:
+  extends: .cache-analytics
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *gitaly-binaries-cache
+    - *workhorse-cache
+    - *zoekt-elasticsearch-indexer-cache # gitlab-ci has a limit of max 4 caches, so these binaries are cached together
+
+.static-analysis-cache:
+  extends: .cache-analytics
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *node-modules-cache
+    - *rubocop-cache
+
+.rubocop-job-cache:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *rubocop-cache
+
+.rubocop-job-cache-push:
+  cache:
+    - !reference [.ruby-gems-cache]  # We don't push this cache as it's pushed by `cache:ruby-gems` job
+    - *rubocop-cache-push
+
+.ruby-node-cache:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *node-modules-cache
+
+.workhorse-go-cache: &workhorse-go-cache
+  key:
+    prefix: workhorse-go-dependencies
+    files:
+      - workhorse/go.sum
+  paths:
+    - .go/pkg/mod/
+  policy: pull-push
+
+.yarn-cache:
+  cache:
+    - *node-modules-cache
+
+.yarn-cache-pull-push:
+  cache:
+    <<: *node-modules-cache
+    policy: pull-push
+
+.assets-compile-cache:
+  extends: .cache-analytics
+  cache:
+    - !reference [.ruby-gems-cache]
+    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
+    - *node-modules-cache
+    - *assets-cache
+
+.assets-compile-cache-pull: # this cache is used only for gdk:compile-test-assets which should only pull, never push
+  extends: .cache-analytics
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *node-modules-cache
+    - *assets-cache-pull
+    - *assets-tmp-cache
+
+.storybook-yarn-cache:
+  cache:
+    - *node-modules-cache
+    - *storybook-node-modules-cache
+
+.storybook-yarn-cache-pull-push:
+  cache:
+    - *node-modules-cache
+    - *storybook-node-modules-cache-pull-push
+
+.workhorse-job-cache:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - *workhorse-go-cache
+
+.workhorse-job-cache-pull:
+  cache:
+    - !reference [.ruby-gems-cache]
+    - <<: *workhorse-go-cache
+      policy: pull
+
+# E2E related gem caching
+.qa-bundler-variables: &qa-bundler-variables
+  BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
+  BUNDLE_SILENCE_ROOT_WARNING: "true"
+  BUNDLE_PATH: vendor
+
+.qa-ruby-gems-cache: &qa-ruby-gems-cache
+  key:
+    prefix: "qa-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/Gemfile.lock
+  paths:
+    - qa/vendor/ruby
+  policy: pull
+
+.qa-ruby-orchestrator-gems-cache: &qa-ruby-orchestrator-gems-cache
+  key:
+    prefix: "qa-orchestrator-ruby-gems-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}"
+    files:
+      - qa/gems/gitlab-orchestrator/Gemfile.lock
+  paths:
+    - qa/gems/gitlab-orchestrator/vendor/ruby
+  policy: pull
+
+.cng-helm-cache: &cng-helm-cache
+  key: cng-helm-cache-${GITLAB_HELM_CHART_REF}
+  paths:
+    - $CNG_HELM_REPOSITORY_CACHE
+  policy: pull
+
+.qa-cache:
+  variables: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+
+.qa-cache-pull-push:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-gems-cache
+      policy: pull-push
+
+.cng-qa-cache:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - *cng-helm-cache
+
+.cng-qa-cache-push:
+  variables:
+    CNG_HELM_REPOSITORY_CACHE: $CI_PROJECT_DIR/qa/tmp/helm-cng
+    <<: *qa-bundler-variables
+  cache:
+    - *qa-ruby-gems-cache
+    - <<: *cng-helm-cache
+      policy: push
+
+.qa-orchestrator-cache:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+
+.qa-orchestrator-cache-pull-push:
+  variables: *qa-bundler-variables
+  cache:
+    - <<: *qa-ruby-orchestrator-gems-cache
+      policy: pull-push

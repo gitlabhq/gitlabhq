@@ -15,15 +15,15 @@ To get started, [install and configure the extension](setup.md).
 
 When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- [View issues and merge requests](#view-issues-and-merge-requests).
+- View issues and merge requests.
 - [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- Create and [review](#review-a-merge-request) merge requests.
+- Create and review merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
 - [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
-- [Create](#create-a-snippet) and manage snippets.
+- Create and manage snippets.
 - [Browse repositories](remote_urls.md#browse-a-repository-in-read-only-mode) without cloning them.
-- [View security findings](#view-security-findings).
-- [Perform SAST scanning](#perform-sast-scanning).
+- View security findings.
+- Perform SAST scanning.
 
 The GitLab Workflow extension also streamlines your VS Code workflow with AI-assisted features:
 
@@ -178,8 +178,8 @@ Select an issue or merge request to open it in a new VS Code tab.
 
 Use this extension to review, comment on, and approve merge requests without leaving VS Code:
 
-1. While viewing [issues and merge requests](#view-issues-and-merge-requests) in VS Code, select the
-   merge request you want to review. Its sidebar entry expands with more information.
+1. In the GitLab Workflow sidebar, expand **Issues and Merge Requests**, and select your project.
+1. Select the merge request you want to review. Its sidebar entry expands with more information.
 1. Under the merge request's number and title, select **Description** to read more about the merge request.
 1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
    GitLab shows diff comments inline in the tab. In the list, deleted files are marked in red:
@@ -320,7 +320,7 @@ To search the titles and description fields in your project:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
    - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Select your desired search type: `GitLab: Search project merge requests` or `GitLab: Search project issues`.
-1. Enter your text, using [filter tokens](#filter-searches-with-tokens) as needed.
+1. Enter your text, using filter tokens as needed.
 1. To confirm your search text, press <kbd>Enter</kbd>. To cancel, press <kbd>Escape</kbd>.
 
 GitLab opens the results in a browser tab.

@@ -100,7 +100,7 @@ module Ci
       %i[pipeline project ref tag options name
         allow_failure stage_idx
         yaml_variables when environment description needs_attributes
-        scheduling_type ci_stage partition_id].freeze
+        scheduling_type ci_stage partition_id resource_group].freeze
     end
 
     def retryable?

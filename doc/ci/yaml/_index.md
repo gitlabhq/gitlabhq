@@ -5221,8 +5221,8 @@ tests:
 
 In this example:
 
-- If the pipeline runs on a branch that is not the default branch, and therefore the rule matches the first condition, the `specs` job needs the `build-dev` job.
-- If the pipeline runs on the default branch, and therefore the rule matches the second condition, the `specs` job needs the `build-prod` job.
+- If the pipeline runs on a branch that is not the default branch, and therefore the rule matches the first condition, the `tests` job needs the `build-dev` job.
+- If the pipeline runs on the default branch, and therefore the rule matches the second condition, the `tests` job needs the `build-prod` job.
 
 **Additional details**:
 

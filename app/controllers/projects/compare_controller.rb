@@ -166,12 +166,24 @@ class Projects::CompareController < Projects::ApplicationController
   def define_commits
     strong_memoize(:commits) do
       if compare.present?
-        commits = compare.commits.with_markdown_cache
+        if Feature.enabled?(:limit_commit_markdown_preload, project)
+          commits = compare.commits
 
-        # Only fetch pipeline information when we have fewer than the display limit
-        commits = commits.with_latest_pipeline(head_ref) if commits.count < MergeRequestDiff::COMMITS_SAFE_SIZE
+          # Only fetch pipeline information when we have fewer than the display limit
+          commits = commits.with_latest_pipeline(head_ref) if commits.count < MergeRequestDiff::COMMITS_SAFE_SIZE
 
-        set_commits_for_rendering(commits)
+          limited, _ = limited_commits(commits, commits.count)
+
+          set_commits_for_rendering(Commit.preload_markdown_cache!(limited), commits_count: commits.count)
+
+        else
+          commits = compare.commits.with_markdown_cache
+
+          # Only fetch pipeline information when we have fewer than the display limit
+          commits = commits.with_latest_pipeline(head_ref) if commits.count < MergeRequestDiff::COMMITS_SAFE_SIZE
+
+          set_commits_for_rendering(commits)
+        end
       else
         []
       end

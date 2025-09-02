@@ -54,7 +54,7 @@ Using a template:
      - template: Jobs/SAST-IaC.gitlab-ci.yml
    ```
 
-Or using a CI component:
+Or using a CI/CD component:
 
    ```yaml
    include:
@@ -63,10 +63,10 @@ Or using a CI component:
 
 At this point, IaC scanning is enabled in your pipeline.
 If supported IaC source code is present, the default rules automatically scan for vulnerabilities when a pipeline runs.
-The corresponding job will appear under the test stage in your pipeline.
+The corresponding job appears under the test stage in your pipeline.
 
 You can see a working example in
-[IaC-Scanning Example Project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/kics/iac-getting-started).
+[IaC scanning example project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/kics/iac-getting-started).
 
 After completing these steps, you can:
 
@@ -79,14 +79,13 @@ After completing these steps, you can:
 You can review vulnerabilities in a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:
    - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
    - Status: Indicates whether the vulnerability has been triaged or resolved.
-   - Severity: Categorized into six levels based on impact.
-     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - Severity: [Learn more about severity levels](../vulnerabilities/severities.md).
    - Location: Shows the filename and line number where the issue was found.
      Selecting the file path opens the corresponding line in the code view.
    - Scanner: Identifies which analyzer detected the vulnerability.
@@ -153,29 +152,29 @@ Supported configuration formats:
 
 {{< /details >}}
 
-Currently, customizing the default IaC scanning rules is the only supported way
-to optimize IaC scanning in GitLab.
+You can customize IaC scanning by:
 
-The following customization options can be used separately, or together:
-
-- [Disable predefined rules](#disable-rules).
-- [Override predefined rules](#override-rules).
+- Disabling a rule for all files.
+- Disabling scanning of a file, entirely or only for a rule.
+- Overriding a rule's attributes.
 
 ### Ruleset definition
 
 Every IaC scanning rule is contained in a `ruleset` section, which contains:
 
-- A `type` field for the rule. For IaC Scanning, the identifier type is `kics_id`.
+- A `type` field for the rule. For IaC scanning, the identifier type is `kics_id`.
 - A `value` field for the rule identifier. KICS rule identifiers are alphanumeric strings.
   To find the rule identifier:
   - Find it in the [JSON report artifact](#reports-json-format).
-  - Search for the rule name in the [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/)
-    and copy the alphanumeric identifier that's shown. The rule name is shown on the
-    [Vulnerability Page](../vulnerabilities/_index.md) when a rule violation is detected.
+  - Search for the rule name in the
+    [list of KICS queries](https://docs.kics.io/latest/queries/all-queries/) and copy the
+    alphanumeric identifier that's shown. The rule name is shown on the
+    [vulnerability details page](../vulnerabilities/_index.md) when a rule violation is
+    detected.
 
 ### Disable rules
 
-You can disable specific IaC Scanning rules.
+You can disable specific IaC scanning rules.
 
 To disable analyzer rules:
 
@@ -205,23 +204,20 @@ the `kics` analyzer by matching the `type` and `value` of identifiers:
       value = "b03a748a-542d-44f4-bb86-9199ab4fd2d5"
 ```
 
-### Disable scanning using comments
+### Disable scanning of a file
 
-You can use [KICS annotations](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) to control how the KICS-based GitLab IaC Scanning analyzer scans your codebase. For example:
-
-- To skip scanning an entire file, you can add `# kics-scan ignore` as a comment at the top of the file.
-- To disable a specific rule in an entire file, you can add `# kics-scan disable=<kics_id>` as a comment at the top of the file.
-
-{{< alert type="note" >}}
+To disable scanning of a file, either entirely or for only a rule, use
+[KICS annotations](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) in that file.
 
 This feature is only available for some types of IaC files. See the [KICS documentation](https://docs.kics.io/latest/running-kics/#using_commands_on_scanned_files_as_comments) for a list of supported file types.
 
-{{< /alert >}}
+- To skip scanning an entire file, add `# kics-scan ignore` as a comment at the top of the file.
+- To disable a specific rule in an entire file, add `# kics-scan disable=<kics_id>` as a comment at the top of the file.
 
 ### Override rules
 
-You can override specific IaC scanning rules to customize them. For example, assign a rule a lower
-severity, or link to your own documentation about how to fix a finding.
+You can override specific IaC scanning rules to customize them. For example, assign a
+rule a lower severity, or link to your own documentation about how to fix a finding.
 
 To override rules:
 
@@ -252,7 +248,7 @@ In the following example `sast-ruleset.toml` file, rules are matched by the `typ
       severity = "Info"
 ```
 
-### Offline configuration
+## Offline configuration
 
 {{< details >}}
 
@@ -266,7 +262,7 @@ the internet. For instances in such an environment, IaC requires
 some configuration changes. The instructions in this section must be completed together with the
 instructions detailed in [offline environments](../offline_deployments/_index.md).
 
-#### Configure GitLab Runner
+### Configure GitLab Runner
 
 By default, a runner tries to pull Docker images from the GitLab container registry even if a local
 copy is available. You should use this default setting, to ensure Docker images remain current.
@@ -276,7 +272,7 @@ However, if no network connectivity is available, you must change the default Gi
 Configure the GitLab Runner CI/CD variable `pull_policy` to
 [`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
 
-#### Use local IaC analyzer image
+### Use local IaC analyzer image
 
 Use a local IaC analyzer image if you want to obtain the image from a local Docker
 registry instead of the GitLab container registry.
@@ -319,7 +315,7 @@ For example, you might need to avoid a regression in a later release.
 To use a specific analyzer version:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
+1. Select **Build** > **Pipeline editor**.
 1. Add the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable, after the line that includes the
    `SAST-IaC.gitlab-ci.yml` template.
 
@@ -395,7 +391,7 @@ The IaC scanner outputs a JSON report file in the existing SAST report format. F
 
 The JSON report file can be downloaded from:
 
-- The CI pipelines page.
+- The CI/CD pipelines page.
 - The pipelines tab on merge requests by
   [setting `artifacts: paths`](../../../ci/yaml/_index.md#artifactspaths) to `gl-sast-report.json`.
 
@@ -418,11 +414,8 @@ If a previously detected finding unexpectedly shows as `No longer detected`, it 
 be due to an update to the scanner. An update can disable rules that are found to
 be ineffective or false positives, and the findings are marked as `No longer detected`.
 
-In GitLab 15.3, [secret detection in the IaC scanner was disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/346181),
-so IaC findings in the "Passwords and Secrets" family show as `No longer detected`.
-
 ### Message `exec /bin/sh: exec format error` in job log
 
 You might get an error in the job log that states `exec /bin/sh: exec format error`. This issue
 occurs when attempting to run the IaC scanning analyzer on an architecture other than AMD64
-architecture. For details of IaC scanning prerequisites, see [Prerequisites](#getting-started).
+architecture. For details of IaC scanning prerequisites, see the [prerequisites](#getting-started).

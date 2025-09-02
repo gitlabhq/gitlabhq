@@ -172,7 +172,6 @@ Layout/ClassStructure:
     - 'ee/app/models/dast_site_validation.rb'
     - 'ee/app/models/elastic/migration_record.rb'
     - 'ee/app/models/epic_issue.rb'
-    - 'ee/app/models/geo/secondary_usage_data.rb'
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/models/groups/saved_reply.rb'
     - 'ee/app/models/integrations/github.rb'

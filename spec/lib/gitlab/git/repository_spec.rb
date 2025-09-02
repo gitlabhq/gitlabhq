@@ -2160,6 +2160,16 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       expect(lang[:label]).to eq('Ruby')
     end
+
+    context 'when branch name included non-ASCII characters' do
+      it 'returns correct results without failures' do
+        mutable_repository.create_branch('Äpfel', 'master')
+
+        lang = mutable_repository.languages('Äpfel').first
+
+        expect(lang[:label]).to eq('Ruby')
+      end
+    end
   end
 
   describe '#license' do

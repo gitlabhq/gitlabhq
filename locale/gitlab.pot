@@ -2488,6 +2488,9 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to remove flow %{name}?"
 msgstr ""
 
+msgid "AICatalog|Automate tasks and processes using AI Flows."
+msgstr ""
+
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr ""
 
@@ -2546,6 +2549,9 @@ msgid "AICatalog|Edit agent"
 msgstr ""
 
 msgid "AICatalog|Edit flow"
+msgstr ""
+
+msgid "AICatalog|Explore AI Catalog flows"
 msgstr ""
 
 msgid "AICatalog|Failed to add flow to target. Flow not found."
@@ -2717,6 +2723,9 @@ msgid "AICatalog|This flow specializes in... It can help you with... Best suited
 msgstr ""
 
 msgid "AICatalog|Tools"
+msgstr ""
+
+msgid "AICatalog|Use AI Flows in your project."
 msgstr ""
 
 msgid "AICatalog|User Prompt"
@@ -15439,6 +15448,9 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Collapsible section"
+msgstr ""
+
 msgid "Collation mismatches"
 msgstr ""
 
@@ -23410,9 +23422,6 @@ msgstr ""
 msgid "Details (default)"
 msgstr ""
 
-msgid "Details block"
-msgstr ""
-
 msgid "Details of violation-%{violationId}"
 msgstr ""
 
@@ -24265,6 +24274,9 @@ msgid "Due to inactivity, the %{project_name} (%{project_link}) project is sched
 msgstr ""
 
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
+msgstr ""
+
+msgid "Duo Agent Platform Service URL %{host} is not reachable.."
 msgstr ""
 
 msgid "Duo Agent Platform|Duo Agent Platform Settings have been saved"
@@ -29123,7 +29135,13 @@ msgstr ""
 msgid "Geo|Last event ID processed"
 msgstr ""
 
+msgid "Geo|Last synced at"
+msgstr ""
+
 msgid "Geo|Last synced: %{timeAgo}"
+msgstr ""
+
+msgid "Geo|Last verified at"
 msgstr ""
 
 msgid "Geo|Last verified: %{timeAgo}"
@@ -29241,6 +29259,9 @@ msgid "Geo|Queued"
 msgstr ""
 
 msgid "Geo|Re-verification interval"
+msgstr ""
+
+msgid "Geo|Registry ID"
 msgstr ""
 
 msgid "Geo|Registry ID: %{id}"
@@ -38992,9 +39013,6 @@ msgid "MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)"
 msgstr ""
 
 msgid "MarkdownEditor|Add strikethrough text (%{modifier_key}⇧X)"
-msgstr ""
-
-msgid "MarkdownEditor|Click to expand"
 msgstr ""
 
 msgid "MarkdownEditor|Close find and replace bar"
@@ -68178,6 +68196,9 @@ msgid "Unable to remove a reviewer at the moment, try again later"
 msgstr ""
 
 msgid "Unable to save iteration. Please try again"
+msgstr ""
+
+msgid "Unable to save this compliance framework. %{errors}. Please try again"
 msgstr ""
 
 msgid "Unable to save your changes. Please try again."

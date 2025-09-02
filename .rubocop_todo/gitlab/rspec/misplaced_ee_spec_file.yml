@@ -184,7 +184,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/models/remote_mirror_spec.rb'
     - 'ee/spec/models/remote_mirrors/attributes_spec.rb'
     - 'ee/spec/models/repository_spec.rb'
-    - 'ee/spec/models/sent_notification_spec.rb'
     - 'ee/spec/models/snippet_repository_spec.rb'
     - 'ee/spec/models/snippet_spec.rb'
     - 'ee/spec/models/upload_spec.rb'

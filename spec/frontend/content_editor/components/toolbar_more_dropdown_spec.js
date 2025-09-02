@@ -45,12 +45,12 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
     name                        | contentType          | command                    | params
     ${'Alert'}                  | ${'alert'}           | ${'insertAlert'}           | ${[]}
     ${'Code block'}             | ${'codeBlock'}       | ${'setNode'}               | ${['codeBlock']}
-    ${'Details block'}          | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
+    ${'Collapsible section'}    | ${'details'}         | ${'toggleList'}            | ${['details', 'detailsContent']}
     ${'Bullet list'}            | ${'bulletList'}      | ${'toggleList'}            | ${['bulletList', 'listItem']}
     ${'Ordered list'}           | ${'orderedList'}     | ${'toggleList'}            | ${['orderedList', 'listItem']}
     ${'Task list'}              | ${'taskList'}        | ${'toggleList'}            | ${['taskList', 'taskItem']}
-    ${'Mermaid diagram'}        | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'mermaid' }]}
-    ${'PlantUML diagram'}       | ${'diagram'}         | ${'setNode'}               | ${['diagram', { language: 'plantuml' }]}
+    ${'Mermaid diagram'}        | ${'diagram'}         | ${'insertMermaid'}         | ${[]}
+    ${'PlantUML diagram'}       | ${'diagram'}         | ${'insertPlantUML'}        | ${[]}
     ${'Table of contents'}      | ${'tableOfContents'} | ${'insertTableOfContents'} | ${[]}
     ${'Horizontal rule'}        | ${'horizontalRule'}  | ${'setHorizontalRule'}     | ${[]}
     ${'Create or edit diagram'} | ${'drawioDiagram'}   | ${'createOrEditDiagram'}   | ${[]}

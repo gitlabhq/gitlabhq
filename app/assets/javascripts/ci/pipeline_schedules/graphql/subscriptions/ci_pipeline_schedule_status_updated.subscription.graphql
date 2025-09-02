@@ -1,0 +1,16 @@
+subscription pipelineScheduleStatusUpdated($projectId: ProjectID!) {
+  ciPipelineScheduleStatusUpdated(projectId: $projectId) {
+    id
+    lastPipeline {
+      id
+      detailedStatus {
+        id
+        group
+        icon
+        label
+        text
+        detailsPath
+      }
+    }
+  }
+}

@@ -376,7 +376,6 @@ RSpec/RedundantMetatagType:
     - 'spec/models/ci/slsa/provenance_statement_spec.rb'
     - 'spec/models/cloud_connector/service_access_token_spec.rb'
     - 'spec/models/clusters/kubernetes_namespace_spec.rb'
-    - 'spec/models/concerns/loose_index_scan_spec.rb'
     - 'spec/models/concerns/packages/conan/package_fileable_spec.rb'
     - 'spec/models/container_expiration_policy_spec.rb'
     - 'spec/models/container_registry/data_repair_detail_spec.rb'

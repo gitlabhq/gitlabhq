@@ -2239,6 +2239,452 @@ Requires `noteable_type` field. Query with `noteable_type` in options. Sets `_so
 }
 ```
 
+### `by_iids`
+
+Filters documents by multiple IID values.
+
+**Required fields:**
+
+- `iids` - array of IID values to match
+
+```json
+{
+  "bool": {
+    "_name": "filters:iids",
+    "filter": {
+      "terms": {
+        "iid": [1, 2, 3]
+      }
+    }
+  }
+}
+```
+
+### `by_closed_at`
+
+Filters by closed date range. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `closed_after` - ISO date string for minimum closed date
+- `closed_before` - ISO date string for maximum closed date
+
+```json
+{
+  "bool": {
+    "_name": "filters:closed_after",
+    "must": {
+      "range": {
+        "closed_at": {
+          "gte": "2025-01-01T00:00:00Z"
+        }
+      }
+    }
+  }
+}
+```
+
+### `by_created_at`
+
+Filters by creation date range. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `created_after` - ISO date string for minimum creation date
+- `created_before` - ISO date string for maximum creation date
+
+```json
+{
+  "bool": {
+    "_name": "filters:created_after",
+    "must": {
+      "range": {
+        "created_at": {
+          "gte": "2025-01-01T00:00:00Z"
+        }
+      }
+    }
+  }
+}
+```
+
+### `by_updated_at`
+
+Filters by update date range. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `updated_after` - ISO date string for minimum update date
+- `updated_before` - ISO date string for maximum update date
+
+```json
+{
+  "bool": {
+    "_name": "filters:updated_after",
+    "must": {
+      "range": {
+        "updated_at": {
+          "gte": "2025-01-01T00:00:00Z"
+        }
+      }
+    }
+  }
+}
+```
+
+### `by_due_date`
+
+Filters by due date range. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `due_after` - ISO date string for minimum due date
+- `due_before` - ISO date string for maximum due date
+
+```json
+{
+  "bool": {
+    "_name": "filters:due_after",
+    "must": {
+      "range": {
+        "due_date": {
+          "gte": "2025-01-01T00:00:00Z"
+        }
+      }
+    }
+  }
+}
+```
+
+### `by_milestone`
+
+Filters by milestone title or milestone presence. At least one optional field must be provided.
+The milestone title filters (`milestone_title`, `not_milestone_title`) and milestone presence
+filters (`any_milestones`, `none_milestones`) are mutually exclusive.
+
+**Optional fields:**
+
+- `milestone_title` - array of milestone titles to include
+- `not_milestone_title` - array of milestone titles to exclude
+- `any_milestones` - boolean, filters for documents with any milestone
+- `none_milestones` - boolean, filters for documents with no milestone
+
+Example with `milestone_title`:
+
+```json
+{
+  "bool": {
+    "must": {
+      "terms": {
+        "_name": "filters:milestone_title",
+        "milestone_title": ["18.1", "18.2"]
+      }
+    }
+  }
+}
+```
+
+Example with `none_milestones`:
+
+```json
+{
+  "bool": {
+    "_name": "filters:none_milestones",
+    "must_not": {
+      "exists": {
+        "field": "milestone_title"
+      }
+    }
+  }
+}
+```
+
+### `by_milestone_state`
+
+Filters by milestone state with temporal conditions.
+
+**Required fields:**
+
+- `milestone_state_filters` - array containing one or more of: `:upcoming`, `:started`, `:not_upcoming`, `:not_started`
+
+Example for `:upcoming` filter:
+
+```json
+{
+  "bool": {
+    "_name": "filters:milestone_state_upcoming",
+    "must": [
+      {
+        "term": {
+          "milestone_state": "active"
+        }
+      },
+      {
+        "range": {
+          "milestone_start_date": {
+            "gt": "now/d"
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+Example for `:started` filter:
+
+```json
+{
+  "bool": {
+    "_name": "filters:milestone_state_started",
+    "must": [
+      {
+        "term": {
+          "milestone_state": "active"
+        }
+      },
+      {
+        "bool": {
+          "should": [
+            {
+              "range": {
+                "milestone_start_date": {
+                  "lte": "now/d"
+                }
+              }
+            },
+            {
+              "bool": {
+                "must_not": {
+                  "exists": {
+                    "field": "milestone_start_date"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "bool": {
+          "should": [
+            {
+              "range": {
+                "milestone_due_date": {
+                  "gte": "now/d"
+                }
+              }
+            },
+            {
+              "bool": {
+                "must_not": {
+                  "exists": {
+                    "field": "milestone_due_date"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "must_not": {
+      "bool": {
+        "must": [
+          {
+            "bool": {
+              "must_not": {
+                "exists": {
+                  "field": "milestone_start_date"
+                }
+              }
+            }
+          },
+          {
+            "bool": {
+              "must_not": {
+                "exists": {
+                  "field": "milestone_due_date"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### `by_assignees`
+
+Filters by assignee IDs with support for various matching modes. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `assignee_ids` - array of assignee IDs that must ALL be present
+- `not_assignee_ids` - array of assignee IDs to exclude
+- `or_assignee_ids` - array of assignee IDs where ANY can match
+- `none_assignees` - boolean, filters for documents with no assignees
+- `any_assignees` - boolean, filters for documents with any assignee
+
+Example with `assignee_ids` (ALL must match):
+
+```json
+{
+  "bool": {
+    "_name": "filters:assignee_ids",
+    "must": [
+      {
+        "term": {
+          "assignee_id": 123
+        }
+      },
+      {
+        "term": {
+          "assignee_id": 456
+        }
+      }
+    ]
+  }
+}
+```
+
+Example with `or_assignee_ids` (ANY can match):
+
+```json
+{
+  "bool": {
+    "must": {
+      "terms": {
+        "_name": "filters:or_assignee_ids",
+        "assignee_id": [123, 456, 789]
+      }
+    }
+  }
+}
+```
+
+Example with `none_assignees`:
+
+```json
+{
+  "bool": {
+    "_name": "filters:none_assignees",
+    "must_not": {
+      "exists": {
+        "field": "assignee_id"
+      }
+    }
+  }
+}
+```
+
+### `by_weight`
+
+Filters by issue weight (integer value). At least one optional field must be provided.
+
+**Optional fields:**
+
+- `weight` - exact weight value to match (integer)
+- `not_weight` - weight value to exclude (integer)
+- `none_weight` - boolean, filters for documents with no weight
+- `any_weight` - boolean, filters for documents with any weight
+
+```json
+{
+  "term": {
+    "weight": {
+      "_name": "filters:weight",
+      "value": 3
+    }
+  }
+}
+```
+
+### `by_health_status`
+
+Filters by health status field. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `health_status` - array of health status IDs to include
+- `not_health_status` - array of health status IDs to exclude
+- `none_health_status` - boolean, filters for documents with no health status
+- `any_health_status` - boolean, filters for documents with any health status
+
+```json
+{
+  "bool": {
+    "must": {
+      "terms": {
+        "_name": "filters:health_status",
+        "health_status": [1, 2]
+      }
+    }
+  }
+}
+```
+
+### `by_label_names`
+
+Filters by label names with support for various matching modes and scoped label wildcards. At least one optional field must be provided.
+
+**Optional fields:**
+
+- `label_names` - array of label names that must ALL be present
+- `not_label_names` - array of label names to exclude
+- `or_label_names` - array of label names where ANY can match
+- `none_label_names` - boolean, filters for documents with no labels
+- `any_label_names` - boolean, filters for documents with any label
+
+Supports scoped label wildcards like `"workflow::*"` to match all labels starting with `"workflow::"`. The wildcard is converted to a prefix query in Elasticsearch.
+
+Example with exact matches:
+
+```json
+{
+  "bool": {
+    "_name": "filters:label_names",
+    "must": [
+      {
+        "term": {
+          "label_names": "advanced search"
+        }
+      },
+      {
+        "term": {
+          "label_names": "GLQL"
+        }
+      }
+    ]
+  }
+}
+```
+
+Example with scoped label wildcard:
+
+```json
+{
+  "bool": {
+    "_name": "filters:or_label_names",
+    "should": [
+      {
+        "prefix": {
+          "label_names": "workflow::"
+        }
+      },
+      {
+        "term": {
+          "label_names": "backend"
+        }
+      }
+    ],
+    "minimum_should_match": 1
+  }
+}
+```
+
 ## Testing scopes
 
 Test any scope in the Rails console

@@ -35,6 +35,12 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
   context "with frontend file changes in MR" do
     let(:changed_files) { ['package.json'] }
 
+    # asset hash calculation has non-optional needs relationship so we ensure we run it on any app code related change
+    # to ensure it is always present
+    it "runs node modules cache update jobs and asset-hash job" do
+      expect(jobs).to include('cache:node-modules', 'cache:node-modules-production', 'cache:assets-hash')
+    end
+
     context "when MR is unlabeled and changes package.json" do
       let(:expected_job_name) { 'eslint-changed-files' }
 
@@ -56,6 +62,16 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     end
   end
 
+  context "with backend file changes in MR" do
+    let(:changed_files) { ['app/models/user.rb'] }
+
+    # asset hash calculation has non-optional needs relationship so we ensure we run it on any app code related change
+    # to ensure it is always present
+    it "runs ruby gem cache update jobs and asset-hash job" do
+      expect(jobs).to include('cache:ruby-gems', 'cache:ruby-gems-ubi', 'cache:assets-hash')
+    end
+  end
+
   context "when unlabeled MR is changing docs only" do
     let(:changed_files) { ['doc/tutorials/index.md'] }
     let(:expected_job_name) { 'eslint-docs' }
@@ -66,6 +82,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
 
     it 'does not include a tier' do
       expect(jobs).not_to include('pipeline-tier-1')
+    end
+
+    it "does not run cache update jobs" do
+      expect(jobs).not_to include('cache:ruby-gems', 'cache:node-modules')
     end
   end
 
@@ -123,6 +143,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       let(:target_branch)     { master_branch }
       let(:changed_files)     { ['package.json'] }
       let(:expected_job_name) { 'rspec-all frontend_fixture 1/7' }
+
+      it "runs cache update jobs" do
+        expect(jobs).to include('cache:ruby-gems', 'cache:node-modules', 'cache:node-modules-production')
+      end
 
       context 'when running MR pipeline in the context of the fork project' do
         let(:ci_project_namespace) { fork_project_mr_source.namespace.full_path }

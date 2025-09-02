@@ -43,7 +43,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       let_it_be(:downstream_project) { create(:project, :repository) }
 
       let_it_be_with_refind(:processable) do
-        create(:ci_bridge, :success,
+        create(:ci_bridge, :success, :resource_group,
           pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', stage_id: stage.id,
           environment: 'production')
       end

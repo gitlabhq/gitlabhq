@@ -90,7 +90,6 @@ class MergeRequest < ApplicationRecord
 
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
   has_one :metrics, inverse_of: :merge_request, autosave: true
-  has_one :merge_data, class_name: 'MergeRequests::MergeData', inverse_of: :merge_request, foreign_key: :merge_request_id
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request

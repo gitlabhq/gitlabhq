@@ -74,7 +74,6 @@ Rails/StrongParams:
     - 'app/controllers/groups/settings/slacks_controller.rb'
     - 'app/controllers/groups/shared_projects_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
-    - 'app/controllers/groups/work_items_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/health_controller.rb'
     - 'app/controllers/help_controller.rb'

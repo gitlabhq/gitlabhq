@@ -12,20 +12,25 @@ import {
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { reportToSentry } from '~/ci/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
+import pipelineScheduleStatusUpdatedSubscription from '../graphql/subscriptions/ci_pipeline_schedule_status_updated.subscription.graphql';
 import {
   ALL_SCOPE,
   SCHEDULES_PER_PAGE,
   DEFAULT_SORT_VALUE,
   TABLE_SORT_STORAGE_KEY,
 } from '../constants';
+import { updateScheduleNodes } from '../utils';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
@@ -80,6 +85,7 @@ export default {
     TakeOwnershipModal,
     PipelineScheduleEmptyState,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: {
     projectPath: {
       default: '',
@@ -88,6 +94,9 @@ export default {
       default: '',
     },
     newSchedulePath: {
+      default: '',
+    },
+    projectId: {
       default: '',
     },
   },
@@ -125,6 +134,55 @@ export default {
       error(error) {
         this.reportError(this.$options.i18n.schedulesFetchError, error);
       },
+      result({ data }) {
+        // we use a manual subscribeToMore call due to issues with
+        // the skip hook not working correctly for the subscription
+        // and previousData object being an empty {} on init
+        if (
+          data?.project?.pipelineSchedules?.nodes?.length > 0 &&
+          this.shouldUseRealtimeStatus &&
+          !this.isSubscribed
+        ) {
+          // Prevent duplicate subscriptions on refetch
+          this.isSubscribed = true;
+
+          this.$apollo.queries.schedules.subscribeToMore({
+            document: pipelineScheduleStatusUpdatedSubscription,
+            variables: {
+              projectId: convertToGraphQLId(TYPENAME_PROJECT, this.projectId),
+            },
+            updateQuery(
+              previousData,
+              {
+                subscriptionData: {
+                  data: { ciPipelineScheduleStatusUpdated },
+                },
+              },
+            ) {
+              if (ciPipelineScheduleStatusUpdated) {
+                const schedules = previousData?.project?.pipelineSchedules?.nodes || [];
+
+                const updatedNodes = updateScheduleNodes(
+                  schedules,
+                  ciPipelineScheduleStatusUpdated,
+                );
+
+                return {
+                  ...previousData,
+                  project: {
+                    ...previousData.project,
+                    pipelineSchedules: {
+                      ...previousData.project.pipelineSchedules,
+                      nodes: updatedNodes,
+                    },
+                  },
+                };
+              }
+              return previousData;
+            },
+          });
+        }
+      },
     },
   },
   data() {
@@ -148,6 +206,7 @@ export default {
       pagination: {
         ...defaultPagination,
       },
+      isSubscribed: false,
     };
   },
   computed: {
@@ -224,6 +283,9 @@ export default {
         this.sortBy = values.sortBy;
         this.sortDesc = values.sortDesc;
       },
+    },
+    shouldUseRealtimeStatus() {
+      return this.glFeatures?.ciPipelineSchedulesStatusRealtime;
     },
   },
   watch: {

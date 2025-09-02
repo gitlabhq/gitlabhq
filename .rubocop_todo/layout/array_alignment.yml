@@ -24,7 +24,6 @@ Layout/ArrayAlignment:
     - 'lib/gitlab/metrics/requests_rack_middleware.rb'
     - 'lib/gitlab/metrics/samplers/threads_sampler.rb'
     - 'lib/gitlab/reference_extractor.rb'
-    - 'lib/gitlab/sidekiq_middleware/size_limiter/validator.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/count_imported_projects_total_metric.rb'
     - 'lib/gitlab/visibility_level.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'

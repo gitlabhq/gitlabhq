@@ -207,7 +207,6 @@ Style/IfUnlessModifier:
     - 'ee/app/controllers/projects/integrations/zentao/issues_controller.rb'
     - 'ee/app/controllers/projects/push_rules_controller.rb'
     - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'
-    - 'ee/app/graphql/mutations/audit_events/external_audit_event_destinations/create.rb'
     - 'ee/app/graphql/mutations/boards/scoped_board_mutation.rb'
     - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/graphql/resolvers/analytics/devops_adoption/enabled_namespaces_resolver.rb'

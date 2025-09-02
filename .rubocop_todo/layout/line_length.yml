@@ -439,7 +439,6 @@ Layout/LineLength:
     - 'ee/app/finders/security/pipeline_vulnerabilities_finder.rb'
     - 'ee/app/graphql/ee/mutations/boards/lists/create.rb'
     - 'ee/app/graphql/mutations/analytics/devops_adoption/enabled_namespaces/bulk_enable.rb'
-    - 'ee/app/graphql/mutations/audit_events/external_audit_event_destinations/create.rb'
     - 'ee/app/graphql/mutations/boards/scoped_issue_board_arguments.rb'
     - 'ee/app/graphql/mutations/compliance_management/frameworks/destroy.rb'
     - 'ee/app/graphql/mutations/dast/profiles/update.rb'

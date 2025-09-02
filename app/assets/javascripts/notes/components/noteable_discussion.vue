@@ -14,6 +14,7 @@ import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -188,6 +189,9 @@ export default {
     isDiscussionInternal() {
       return this.discussion.notes[0]?.internal;
     },
+    commentLines() {
+      return this.getLinesForDiscussion({ discussion: this.discussion });
+    },
     discussionHolderClass() {
       return {
         'is-replying': this.isReplying,
@@ -216,6 +220,7 @@ export default {
       'removeConvertedDiscussion',
       'expandDiscussion',
     ]),
+    ...mapActions(useLegacyDiffs, ['getLinesForDiscussion']),
     showReplyForm(text) {
       this.isReplying = true;
 
@@ -378,6 +383,7 @@ export default {
                     :discussion="discussion"
                     :diff-file="diffFile"
                     :line="diffLine"
+                    :lines="commentLines"
                     :save-button-title="saveButtonTitle"
                     :autofocus="!hasDraft"
                     :autosave-key="autosaveKey"

@@ -118,6 +118,38 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
+    context 'with limited number of Redis calls' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'cfe32cf6' }
+      let(:to_ref) { 'ddd0f15a' }
+
+      it 'preloads only necessary commits' do
+        stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 10)
+
+        allow(Gitlab::MarkdownCache::Redis::Store).to receive(:new).exactly(20).times.and_call_original
+
+        control = RedisCommands::Recorder.new(pattern: 'markdown_cache') { show_request }
+
+        expect(control).not_to exceed_redis_command_calls_limit(:hmset, 10)
+      end
+
+      context "when feature flag is disabled" do
+        before do
+          stub_feature_flags(limit_commit_markdown_preload: false)
+        end
+
+        it 'preloads all commits' do
+          stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 10)
+
+          allow(Gitlab::MarkdownCache::Redis::Store).to receive(:new).at_least(21).times.and_call_original
+
+          control = RedisCommands::Recorder.new(pattern: 'markdown_cache') { show_request }
+
+          expect(control).not_to exceed_redis_command_calls_limit(:hmset, 10)
+        end
+      end
+    end
+
     context 'when refs have CI::Pipeline' do
       let(:from_project_id) { nil }
       let(:from_ref) { '08f22f25' }

@@ -37,9 +37,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
       end
 
       it 'shows elements' do
-        click_button 'More options'
-
         within_testid('create-options-dropdown') do
+          click_button "More options"
+
           expect(page).to have_button('Create merge request')
           expect(page).to have_button('Create branch')
 
@@ -83,7 +83,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         it 'creates a branch' do
-          click_button 'More options'
+          within_testid('create-options-dropdown') do
+            click_button "More options"
+          end
           click_button 'Create branch'
           within_modal do
             click_button 'Create branch'
@@ -113,7 +115,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
         end
 
         it 'creates a branch' do
-          click_button 'More options'
+          within_testid('create-options-dropdown') do
+            click_button "More options"
+          end
           click_button 'Create branch'
           within_modal do
             fill_in 'Branch name', with: branch_name
@@ -127,7 +131,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
           let(:source_branch) { 'feature' }
 
           it 'creates a branch' do
-            click_button 'More options'
+            within_testid('create-options-dropdown') do
+              click_button "More options"
+            end
             click_button 'Create branch'
             within_modal do
               fill_in 'Source (branch or tag)', with: source_branch
@@ -154,7 +160,9 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
         context 'when creating a branch' do
           it 'has error message' do
-            click_button 'More options'
+            within_testid('create-options-dropdown') do
+              click_button "More options"
+            end
             click_button 'Create branch'
             within_modal do
               fill_in 'Branch name', with: 'custom-branch-name w~th ^bad chars?'

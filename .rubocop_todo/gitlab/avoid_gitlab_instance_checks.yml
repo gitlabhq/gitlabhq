@@ -53,7 +53,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/models/ee/project.rb'
     - 'ee/app/models/ee/project_statistics.rb'
     - 'ee/app/models/ee/user.rb'
-    - 'ee/app/models/gitlab_subscriptions/add_on_purchase.rb'
     - 'ee/app/models/gitlab_subscriptions/upcoming_reconciliation.rb'
     - 'ee/app/policies/ee/global_policy.rb'
     - 'ee/app/policies/ee/group_policy.rb'

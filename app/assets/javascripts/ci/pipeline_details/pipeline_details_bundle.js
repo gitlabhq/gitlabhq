@@ -6,14 +6,12 @@ import { createPipelineHeaderApp } from './pipeline_header';
 import { apolloProvider } from './pipeline_shared_client';
 
 const SELECTORS = {
-  PIPELINE_HEADER: '#js-pipeline-header-vue',
+  PIPELINE_HEADER: '#js-pipeline-header',
   PIPELINE_TABS: '#js-pipeline-tabs',
 };
 
 export default async function initPipelineDetailsBundle() {
   const headerSelector = SELECTORS.PIPELINE_HEADER;
-
-  const headerApp = createPipelineHeaderApp;
 
   const headerEl = document.querySelector(headerSelector);
 
@@ -21,7 +19,7 @@ export default async function initPipelineDetailsBundle() {
     const { dataset: headerDataset } = headerEl;
 
     try {
-      headerApp(headerSelector, apolloProvider, headerDataset.graphqlResourceEtag);
+      createPipelineHeaderApp(headerSelector, apolloProvider, headerDataset.graphqlResourceEtag);
     } catch {
       createAlert({
         message: __('An error occurred while loading a section of this page.'),

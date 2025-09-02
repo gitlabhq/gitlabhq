@@ -47,7 +47,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'ee/app/models/concerns/audit_events/gcp_externally_destinationable.rb'
     - 'ee/app/models/dast/site_profile_secret_variable.rb'
     - 'ee/app/models/dependency_proxy/packages/setting.rb'
-    - 'ee/app/models/geo_node.rb'
     - 'ee/app/models/merge_requests/external_status_check.rb'
     - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/models/system_access/group_microsoft_application.rb'

@@ -625,14 +625,33 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Check for PostgreSQL collation mismatches and list affected indexes'
     task collation_checker: :environment do
-      Gitlab::Database::CollationChecker.run(logger: Logger.new($stdout))
+      max_table_size = ENV.fetch('MAX_TABLE_SIZE', Gitlab::Database::CollationChecker::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK).to_i
+
+      Gitlab::Database::EachDatabase.each_connection do |_, database_name|
+        backup_database_connection = Backup::DatabaseConnection.new(database_name)
+
+        Gitlab::Database::CollationChecker.new(
+          backup_database_connection.connection,
+          database_name,
+          Logger.new($stdout),
+          max_table_size
+        ).run
+      end
     end
 
     namespace :collation_checker do
       each_database(databases) do |database_name|
         desc "GitLab | DB | Check for PostgreSQL collation mismatches on the #{database_name} database"
         task database_name => :environment do
-          Gitlab::Database::CollationChecker.run(database_name: database_name, logger: Logger.new($stdout))
+          max_table_size = ENV.fetch('MAX_TABLE_SIZE', Gitlab::Database::CollationChecker::MAX_TABLE_SIZE_FOR_DUPLICATE_CHECK).to_i
+          backup_database_connection = Backup::DatabaseConnection.new(database_name)
+
+          Gitlab::Database::CollationChecker.new(
+            backup_database_connection.connection,
+            database_name,
+            Logger.new($stdout),
+            max_table_size
+          ).run
         end
       end
     end

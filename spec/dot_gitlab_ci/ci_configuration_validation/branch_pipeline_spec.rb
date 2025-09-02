@@ -49,6 +49,15 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
         end
 
         it_behaves_like 'default branch pipeline'
+
+        it 'runs dependency cache update jobs' do
+          expect(jobs).to include(
+            'cache:ruby-gems',
+            'cache:ruby-gems-ubi',
+            'cache:node-modules',
+            'cache:node-modules-production'
+          )
+        end
       end
 
       context 'with scheduled maintenance' do

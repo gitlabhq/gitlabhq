@@ -142,3 +142,5 @@ module Milestoneish
     {}
   end
 end
+
+Milestoneish.prepend_mod_with('Milestoneish')

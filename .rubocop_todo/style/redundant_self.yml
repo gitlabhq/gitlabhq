@@ -108,7 +108,6 @@ Style/RedundantSelf:
     - 'app/models/release_highlight.rb'
     - 'app/models/remote_mirror.rb'
     - 'app/models/repository.rb'
-    - 'app/models/sent_notification.rb'
     - 'app/models/service_desk_setting.rb'
     - 'app/models/snippet.rb'
     - 'app/models/terraform/state.rb'

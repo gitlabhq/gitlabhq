@@ -15,6 +15,7 @@ import deletePipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/muta
 import playPipelineScheduleMutation from '~/ci/pipeline_schedules/graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '~/ci/pipeline_schedules/graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '~/ci/pipeline_schedules/graphql/queries/get_pipeline_schedules.query.graphql';
+import pipelineScheduleStatusUpdatedSubscription from '~/ci/pipeline_schedules/graphql/subscriptions/ci_pipeline_schedule_status_updated.subscription.graphql';
 import { SCHEDULES_PER_PAGE, TABLE_SORT_STORAGE_KEY } from '~/ci/pipeline_schedules/constants';
 import {
   mockGetPipelineSchedulesGraphQLResponse,
@@ -28,6 +29,7 @@ import {
   mockPipelineSchedulesResponsePlanLimitReached,
   mockPipelineSchedulesResponseUnlimited,
   noPlanLimitResponse,
+  mockScheduleUpdateResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -52,6 +54,7 @@ describe('Pipeline schedules app', () => {
     .fn()
     .mockResolvedValue(mockPipelineSchedulesResponseUnlimited);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
+  const subscriptionHandler = jest.fn().mockResolvedValue(mockScheduleUpdateResponse);
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
   const deleteMutationHandlerFailed = jest.fn().mockRejectedValue(new Error('GraphQL error'));
@@ -65,16 +68,23 @@ describe('Pipeline schedules app', () => {
     .mockRejectedValue(new Error('GraphQL error'));
 
   const createMockApolloProvider = (
-    requestHandlers = [[getPipelineSchedulesQuery, successHandler]],
+    requestHandlers = [
+      [getPipelineSchedulesQuery, successHandler],
+      [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+    ],
   ) => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = (requestHandlers) => {
+  const createComponent = (requestHandlers, realtimeEnabled = true) => {
     wrapper = mountExtended(PipelineSchedules, {
       provide: {
         projectPath: 'gitlab-org/gitlab',
         newSchedulePath: '/root/ci-project/-/pipeline_schedules/new',
+        projectId: '23',
+        glFeatures: {
+          ciPipelineSchedulesStatusRealtime: realtimeEnabled,
+        },
       },
       mocks: {
         $toast,
@@ -152,7 +162,10 @@ describe('Pipeline schedules app', () => {
     });
 
     it('shows query error alert', async () => {
-      createComponent([[getPipelineSchedulesQuery, failedHandler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, failedHandler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
 
@@ -165,6 +178,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [deletePipelineScheduleMutation, deleteMutationHandlerFailed],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -180,6 +194,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [deletePipelineScheduleMutation, deleteMutationHandlerSuccess],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -228,6 +243,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [playPipelineScheduleMutation, playMutationHandlerFailed],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -243,6 +259,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [playPipelineScheduleMutation, playMutationHandlerSuccess],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -267,6 +284,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [takeOwnershipMutation, takeOwnershipMutationHandlerFailed],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -284,6 +302,7 @@ describe('Pipeline schedules app', () => {
       createComponent([
         [getPipelineSchedulesQuery, successHandler],
         [takeOwnershipMutation, takeOwnershipMutationHandlerSuccess],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
       ]);
 
       await waitForPromises();
@@ -329,7 +348,10 @@ describe('Pipeline schedules app', () => {
 
   describe('pipeline schedule tabs', () => {
     beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, successHandler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
     });
@@ -374,7 +396,10 @@ describe('Pipeline schedules app', () => {
 
   describe('Empty pipeline schedules response', () => {
     it('should show an empty state', async () => {
-      createComponent([[getPipelineSchedulesQuery, successEmptyHandler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successEmptyHandler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
 
@@ -397,7 +422,10 @@ describe('Pipeline schedules app', () => {
       });
 
       it('should not show empty state', async () => {
-        createComponent([[getPipelineSchedulesQuery, successEmptyHandler]]);
+        createComponent([
+          [getPipelineSchedulesQuery, successEmptyHandler],
+          [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+        ]);
 
         await waitForPromises();
 
@@ -410,7 +438,10 @@ describe('Pipeline schedules app', () => {
     const { pageInfo } = mockPipelineSchedulesResponseWithPagination.data.project.pipelineSchedules;
 
     beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, successHandlerWithPagination]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successHandlerWithPagination],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
     });
@@ -471,7 +502,10 @@ describe('Pipeline schedules app', () => {
           sortDesc: true,
         }),
       );
-      createComponent([[getPipelineSchedulesQuery, successHandler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
       await waitForPromises();
     });
 
@@ -504,7 +538,10 @@ describe('Pipeline schedules app', () => {
     const newSort = 'DESCRIPTION_ASC';
 
     beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, successHandler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successHandler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
       await findTable().vm.$emit('update-sorting', newSort, 'description', false);
@@ -534,7 +571,10 @@ describe('Pipeline schedules app', () => {
 
   describe('when update-sorting event is emitted', () => {
     beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, successHandlerWithPagination]]);
+      createComponent([
+        [getPipelineSchedulesQuery, successHandlerWithPagination],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
       await waitForPromises();
     });
 
@@ -560,7 +600,10 @@ describe('Pipeline schedules app', () => {
   `(
     'Alert should show: $alertExists and button should be disabled: $buttonDisabled when plan limit: $description',
     async ({ handler, buttonDisabled, alertExists }) => {
-      createComponent([[getPipelineSchedulesQuery, handler]]);
+      createComponent([
+        [getPipelineSchedulesQuery, handler],
+        [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+      ]);
 
       await waitForPromises();
 
@@ -568,4 +611,44 @@ describe('Pipeline schedules app', () => {
       expect(findPlanLimitReachedAlert().exists()).toBe(alertExists);
     },
   );
+
+  describe('subscription', () => {
+    describe('with feature flag enabled', () => {
+      it('calls subscription with correct variables', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({ projectId: 'gid://gitlab/Project/23' });
+      });
+
+      it('does not make redundant subscription calls for refetches', async () => {
+        createComponent([
+          [getPipelineSchedulesQuery, successHandler],
+          [deletePipelineScheduleMutation, deleteMutationHandlerSuccess],
+          [pipelineScheduleStatusUpdatedSubscription, subscriptionHandler],
+        ]);
+
+        await waitForPromises();
+
+        findTable().vm.$emit('showDeleteModal', mockPipelineScheduleNodes[0].id);
+
+        findDeleteModal().vm.$emit('deleteSchedule');
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('with feature flag disabled', () => {
+      it('does not call subscription', async () => {
+        createComponent([[getPipelineSchedulesQuery, successHandler]], false);
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).not.toHaveBeenCalled();
+      });
+    });
+  });
 });

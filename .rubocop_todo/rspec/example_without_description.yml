@@ -169,7 +169,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/services/ee/issues/update_service_spec.rb'
     - 'ee/spec/services/ee/members/create_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/post_merge_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/refresh_service_spec.rb'
     - 'ee/spec/services/ee/personal_access_tokens/revoke_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/create_company_lead_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/members/activity_service_spec.rb'
