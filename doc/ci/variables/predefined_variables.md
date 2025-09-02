@@ -85,7 +85,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_HAS_OPEN_REQUIREMENTS`                      | Pipeline     | Only available if the pipeline's project has an open [requirement](../../user/project/requirements/_index.md). `true` when available. |
 | `CI_JOB_GROUP_NAME`                             | Pipeline     | The shared name of a group of jobs, when using either [`parallel`](../yaml/_index.md#parallel) or [manually grouped jobs](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views). For example, if the job name is `rspec:test: [ruby, ubuntu]`, the `CI_JOB_GROUP_NAME` is `rspec:test`. It is the same as `CI_JOB_NAME` otherwise. Introduced in GitLab 17.10. |
 | `CI_JOB_ID`                                     | Job-only     | The internal ID of the job, unique across all jobs in the GitLab instance. |
-| `CI_JOB_IMAGE`                                  | Pipeline     | The name of the Docker image running the job. |
+| `CI_JOB_IMAGE`                                  | Job-only     | The name of the Docker image running the job. Only available when the job explicitly specifies a Docker image. |
 | `CI_JOB_MANUAL`                                 | Pipeline     | Only available if the job was started manually. `true` when available. |
 | `CI_JOB_NAME`                                   | Pipeline     | The name of the job. |
 | `CI_JOB_NAME_SLUG`                              | Pipeline     | `CI_JOB_NAME` in lowercase, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in paths. Introduced in GitLab 15.4. |

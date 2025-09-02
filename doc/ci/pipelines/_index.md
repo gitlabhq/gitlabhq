@@ -572,9 +572,9 @@ running pipeline job. This ref can be created even after the associated branch o
 deleted. It's therefore useful in some features such as [automatically stopping an environment](../environments/_index.md#stopping-an-environment),
 and [merge trains](merge_trains.md) that might run pipelines after branch deletion.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
 ## Troubleshooting
+
+<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
 ### Pipeline subscriptions continue after user deletion
 
@@ -584,3 +584,9 @@ continue to run with the user's original permissions. To prevent unauthorized pi
 immediately update pipeline subscription settings for the deleted user.
 
 <!--- end_remove -->
+
+### Pre-filled variables do not show up in **New Pipeline** page
+
+If the predefined variables for a pipeline are [defined in a separate file](../yaml/includes.md),
+they might not display in the **New Pipeline** page. You must have permission to
+access the separate file, or else the predefined variables cannot be displayed.

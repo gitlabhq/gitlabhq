@@ -170,7 +170,7 @@ The following are examples of valid sharding keys:
 
   ```yaml
   sharding_key:
-    user_id: user
+    user_id: users
   ```
 
 #### The sharding key must be immutable

@@ -2,6 +2,9 @@
 #   scripts/lint/unused_helper_methods.rb, however subsequent research shows
 #   them to be false positives, and should be ignored when running that script.
 #
+sort_value_stars_desc:
+  file: app/helpers/sorting_titles_values_helper.rb
+  reason: Used to build sorting dropdowns in app/helpers/sorting_helper.rb
 toggle_award_emoji_personal_snippet_path:
   file: app/helpers/routing/snippets_helper.rb
   reason: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb

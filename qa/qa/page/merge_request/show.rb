@@ -221,7 +221,7 @@ module QA
         end
 
         def click_diffs_tab
-          click_element('diffs-tab')
+          click_element('diffs-tab', skip_finished_loading_check: true)
         end
 
         def has_reports_tab?

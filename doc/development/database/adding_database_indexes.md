@@ -299,6 +299,10 @@ for new and updated records while the removal and fix are in progress.
 The details of the work might vary and require different approaches.
 Consult the Database team, reviewers, or maintainers to plan the work.
 
+### All unique indexes needs to be scoped
+
+For more information, see [Unique constraints in Cells](../../development/cells/_index.md#unique-constraints).
+
 ## Dropping unused indexes
 
 Unused indexes should be dropped because they increase [maintenance overhead](#maintenance-overhead), consume

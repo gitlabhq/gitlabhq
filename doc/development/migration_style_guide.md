@@ -862,6 +862,11 @@ combining it with other operations that don't require `disable_ddl_transaction!`
 
 Before adding an index, consider if one is necessary. The [Adding Database indexes](database/adding_database_indexes.md) guide contains more details to help you decide if an index is necessary and provides best practices for adding indexes.
 
+## Unique indexes
+
+For more information about unique index requirements in a Cells architecture,
+see [Unique constraints in Cells](cells/_index.md#unique-constraints).
+
 ## Testing for existence of indexes
 
 If a migration requires conditional logic based on the absence or presence of an index, you must test for existence of that index using its name. This helps avoids problems with how Rails compares index definitions, which can lead to unexpected results.

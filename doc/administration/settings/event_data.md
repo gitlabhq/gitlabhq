@@ -63,6 +63,23 @@ To enable or disable event-level data collection:
 1. To enable the setting, select the checkbox **Enable event tracking**. To disable the setting, clear the checkbox.
 1. Select **Save changes**.
 
+### Programmatically enabling or disabling event-level data collection
+
+This configuration only works for new instances during first-time installation.
+
+**For Omnibus installations:**
+
+Set `gitlab_rails['initial_gitlab_product_usage_data']` to `false` to disable usage data collection during installation.
+
+**For Kubernetes Operator deployments:**
+
+Set `global.appConfig.initialDefaults.gitlabProductUsageData` to `false` to disable event-level data collection.
+
+**Important notes:**
+
+- Initial defaults only apply during installation. Changing these settings later has no effect.
+- To enable or disable event data collection after installation, use the Administrator settings as described in the previous section.
+
 ### Event delivery timing
 
 Events are transmitted to GitLab almost immediately after they occur. The system collects events in small batches, sending data once 10 events have been gathered. This approach provides near real-time delivery while maintaining efficient network usage.

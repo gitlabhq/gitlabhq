@@ -80,6 +80,31 @@ Setting `require_sharding_key` to `true` means that tables assigned to that
 schema will require a `sharding_key` to be set.
 You will also need to configure the list of allowed `sharding_root_tables` that can be used as sharding keys for tables in this schema.
 
+## Database sequences
+
+We ensure uniqueness of database sequences, across all cells.
+This means the `id` columns of most tables will be unique.
+
+For technical implementation and architecture decisions, refer to:
+
+- [Cells: Cluster wide unique database sequences](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/008_database_sequences)
+- [Topology Service: Sequence Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/#sequence-service)
+
+## Unique constraints
+
+If you require data to be unique, it should be scoped to be unique per
+Organization, Group, Project, or User.
+With the existence of multiple cells which each has its own independent
+database, you can no longer rely on `UNIQUE` constraints.
+
+You have two options:
+
+1. Ensure the index is scoped to include their `sharding_key` as one of
+   the columns present in the index.
+1. For the rare case where an attribute must be unique globally, across all
+   organizations, use the upcoming
+   [Claim service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/#claim-service).
+
 ## Static data
 
 Problem: A database table is used to store static data.

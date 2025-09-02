@@ -2530,13 +2530,13 @@ msgstr ""
 msgid "AICatalog|Delete flow (Coming soon)"
 msgstr ""
 
+msgid "AICatalog|Delete node"
+msgstr ""
+
 msgid "AICatalog|Description"
 msgstr ""
 
 msgid "AICatalog|Description is required."
-msgstr ""
-
-msgid "AICatalog|Draft node"
 msgstr ""
 
 msgid "AICatalog|Edit"
@@ -31473,6 +31473,9 @@ msgid "GroupActivityMetrics|Merge requests created"
 msgstr ""
 
 msgid "GroupActivityMetrics|Recent activity"
+msgstr ""
+
+msgid "GroupActivityMetrics|Subscription"
 msgstr ""
 
 msgid "GroupImport|Failed to import group: %{error}"
