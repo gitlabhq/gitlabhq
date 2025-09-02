@@ -208,16 +208,36 @@ main quota. You can find pricing for additional storage on the
 
 To purchase additional storage for your group on GitLab.com:
 
+{{< tabs >}}
+
+{{< tab title="Group owner" >}}
+
 1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage quotas**.
 1. Select the **Storage** tab.
 1. Select **Buy storage**. You are taken to the Customers Portal.
-1. In the **Subscription details** section, enter the desired quantity of storage packs.
+1. In the **Subscription details** section, in the **Quantity** field, enter the desired quantity of storage packs.
 1. In the **Customer information** section, verify your address.
 1. In the **Billing information** section, select a payment method from the dropdown list.
-1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select the **Privacy Statement** and **Terms of Service** checkbox.
 1. Select **Buy storage**.
+
+{{< /tab >}}
+
+{{< tab title="Billing account manager" >}}
+
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the subscription card, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then **Buy more storage**.
+1. In the **Subscription details** section, in the **Quantity** field enter, the desired quantity of storage packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkbox.
+1. Select **Buy storage**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After your payment is processed, the extra storage is available for your group namespace.
 

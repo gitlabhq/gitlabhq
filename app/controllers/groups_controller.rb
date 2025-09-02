@@ -174,7 +174,10 @@ class GroupsController < Groups::ApplicationController
     if group.self_deletion_scheduled? &&
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
 
-      return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+      # Admin frontend uses this endpoint to force-delete groups
+      if Feature.enabled?(:disallow_immediate_deletion, current_user) && !current_user.can_admin_all_resources?
+        return access_denied!
+      end
 
       return destroy_immediately
     end

@@ -29,25 +29,47 @@ Additional compute minutes:
 
 ## Purchase compute minutes for a group
 
+You can purchase additional compute minutes for your group.
+You cannot transfer purchased compute minutes from one group to another,
+so be sure to select the correct group.
+
 Prerequisites:
 
 - You must have the Owner role for the group or be a billing account manager.
 - The billing account must be linked to the subscription for the group's namespace.
 
-You can purchase additional compute minutes for your group.
-You cannot transfer purchased compute minutes from one group to another,
-so be sure to select the correct group.
+To purchase compute minutes for a group:
+
+{{< tabs >}}
+
+{{< tab title="Group owner" >}}
 
 1. Sign in to GitLab.com.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage quotas**.
 1. Select **Pipelines**.
 1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
-1. Enter the desired quantity of compute minute packs.
+1. In the **Subscription details** section, in the **Quantity** field, enter the desired quantity of compute minute packs.
 1. In the **Customer information** section, verify your address.
 1. In the **Billing information** section, select a payment method from the dropdown list.
-1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select the **Privacy Statement** and **Terms of Service** checkbox.
 1. Select **Buy compute minutes**.
+
+{{< /tab >}}
+
+{{< tab title="Billing account manager" >}}
+
+1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the subscription card, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and then **Buy more compute minutes**.
+1. In the **Subscription details** section, in the **Quantity** field, enter the desired quantity of compute minute packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkbox.
+1. Select **Buy compute minutes**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 After your payment is processed, the additional compute minutes are added to your group
 namespace.

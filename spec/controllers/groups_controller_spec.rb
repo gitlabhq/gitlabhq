@@ -643,6 +643,19 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             end
           end
 
+          context 'when current user is an admin' do
+            let_it_be(:user) { admin_with_admin_mode }
+
+            it 'deletes the group immediately and redirects to root path' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
+
+              subject
+
+              expect(response).to redirect_to(root_path)
+              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+            end
+          end
+
           context 'when the :disallow_immediate_deletion feature flag is disabled' do
             before do
               stub_feature_flags(disallow_immediate_deletion: false)

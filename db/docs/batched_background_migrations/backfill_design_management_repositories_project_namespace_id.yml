@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillDesignManagementRepositoriesProjectNamespaceId
+description: Updates the design_management_repositories namespace_id column to be the corresponding project's project_namespace_id, then updates the child table which reads this value for its sharding key (design_management_repository_states)
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202696
+milestone: '18.4'
+queued_migration_version: 20250822065348
+finalized_by: # version of the migration that finalized this BBM

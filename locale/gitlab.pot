@@ -2485,6 +2485,9 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
 msgstr ""
 
+msgid "AICatalog|Are you sure you want to remove flow %{name}?"
+msgstr ""
+
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr ""
 
@@ -2527,9 +2530,6 @@ msgstr ""
 msgid "AICatalog|Delete flow"
 msgstr ""
 
-msgid "AICatalog|Delete flow (Coming soon)"
-msgstr ""
-
 msgid "AICatalog|Delete node"
 msgstr ""
 
@@ -2560,6 +2560,9 @@ msgstr ""
 msgid "AICatalog|Failed to execute agent."
 msgstr ""
 
+msgid "AICatalog|Failed to remove flow. %{error}"
+msgstr ""
+
 msgid "AICatalog|Flow added successfully to %{name}."
 msgstr ""
 
@@ -2579,6 +2582,9 @@ msgid "AICatalog|Flow nodes"
 msgstr ""
 
 msgid "AICatalog|Flow not found."
+msgstr ""
+
+msgid "AICatalog|Flow removed successfully from this project."
 msgstr ""
 
 msgid "AICatalog|Flow updated successfully."
@@ -2633,6 +2639,9 @@ msgid "AICatalog|Provide default instructions or context that will be included w
 msgstr ""
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
+msgstr ""
+
+msgid "AICatalog|Remove flow from this project"
 msgstr ""
 
 msgid "AICatalog|Run"

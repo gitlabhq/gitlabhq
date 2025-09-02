@@ -5598,11 +5598,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    shared_examples 'deletes project immediately' do
+    shared_examples 'deletes project immediately' do |admin_mode = false|
       it :aggregate_failures do
         expect(::Projects::DestroyService).to receive(:new).with(project, user, {}).and_call_original
 
-        delete api(path, user), params: params
+        delete api(path, user, admin_mode: admin_mode), params: params
         expect(response).to have_gitlab_http_status(:accepted)
       end
     end
@@ -5652,6 +5652,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           let(:error_message) { '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).' }
 
           it_behaves_like 'immediately delete project error'
+        end
+
+        context 'when current user is an admin' do
+          let_it_be(:user) { admin }
+
+          context 'when project is already marked for deletion' do
+            before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+              params.merge!(full_path: project.full_path)
+            end
+
+            it_behaves_like 'deletes project immediately', true
+          end
         end
 
         context 'when the :disallow_immediate_deletion feature flag is disabled' do

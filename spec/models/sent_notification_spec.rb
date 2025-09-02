@@ -63,9 +63,7 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       context 'when noteable is a DesignManagement::Design' do
         let(:noteable) { create(:design, issue: create(:issue, project: project)).reload }
 
-        # Using project.namespace_id here instead of project.project_namespace_id as that's the value the trigger
-        # sets for design_management_designs records in the DB. That shouls also be a valid sharding key.
-        it { is_expected.to eq(project.namespace_id) }
+        it { is_expected.to eq(project.project_namespace_id) }
       end
 
       context 'when noteable is a Issue' do
