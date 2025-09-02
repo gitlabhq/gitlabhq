@@ -5,6 +5,10 @@ import Suggestion from '@tiptap/suggestion';
 import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash';
 import { REFERENCE_TYPES } from '~/content_editor/constants/reference_types';
+import {
+  prioritizeCommandsWithFrequent,
+  recordFrequentCommandUsage,
+} from '~/editor/quick_action_suggestions';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
 import { COMMANDS } from '../constants';
 import CodeBlockHighlight from './code_block_highlight';
@@ -65,6 +69,14 @@ function createSuggestionPlugin({
         ];
       }
 
+      // Record frequent command usage for slash-commands
+      if (char === '/') {
+        const name = props?.name || props?.text;
+        if (typeof name === 'string' && name.length > 0) {
+          recordFrequentCommandUsage(name);
+        }
+      }
+
       // Try to expand the range forward to include as much of props.text as possible
       const expandedRange = expandRangeToIncludeText(range, props.text, tiptapEditor);
       tiptapEditor.chain().focus().insertContentAt(expandedRange, content).run();
@@ -82,7 +94,14 @@ function createSuggestionPlugin({
           limit,
           ...options,
         })
-        .search(query);
+        .search(query)
+        .then((data) => {
+          if (!query) {
+            return prioritizeCommandsWithFrequent(data);
+          }
+
+          return data;
+        });
     },
 
     render: () => {

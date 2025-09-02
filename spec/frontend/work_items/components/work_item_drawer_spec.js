@@ -76,7 +76,7 @@ describe('WorkItemDrawer', () => {
         isGroup,
         glFeatures: {
           workItemViewForIssues,
-          paneledView: false,
+          projectStudioEnabled: false,
         },
       },
       mocks: {

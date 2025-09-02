@@ -90,7 +90,7 @@ export default {
       return `calc(${getContentWrapperHeight()} + var(--top-bar-height))`;
     },
     paneledViewEnabled() {
-      return this.glFeatures.paneledView;
+      return this.glFeatures.projectStudioEnabled;
     },
   },
   watch: {
