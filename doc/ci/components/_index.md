@@ -93,9 +93,9 @@ The repository must contain:
 
 - A `README.md` Markdown file documenting the details of all the components in the repository.
 - A top level `templates/` directory that contains all the component configurations.
-  In this directory:
-  - For simple components, use single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
-  - For complex components, create subdirectories with a `template.yml` for each component,
+  In this directory, you can:
+  - Use single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
+  - Create subdirectories with a `template.yml` for each component,
     like `templates/secret-detection/template.yml`. Only the `template.yml` file is used by other projects
     using the component. Other files in these directories are not released with the component,
     but can be used for things like tests or building container images.
@@ -130,8 +130,8 @@ For example:
 
   ```plaintext
   ├── templates/
-  │   ├── my-simple-component.yml
-  │   └── my-complex-component/
+  │   ├── my-component.yml
+  │   └── my-other-component/
   │       ├── template.yml
   │       ├── Dockerfile
   │       └── test.sh
@@ -142,8 +142,9 @@ For example:
 
   In this example:
 
-  - The `my-simple-component` component's configuration is defined in a single file.
-  - The `my-complex-component` component's configuration contains multiple files in a directory.
+  - The `my-component` component's configuration is defined in a single file.
+  - The `my-other-component` component's configuration contains multiple files in a directory.
+    Only the `template.yml` file can be used by other projects using the component.
 
 ## Use a component
 

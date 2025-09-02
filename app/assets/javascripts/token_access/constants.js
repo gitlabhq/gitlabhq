@@ -11,6 +11,7 @@ export const RESOURCE_MERGE_REQUESTS = {
 export const RESOURCE_PACKAGES = { value: 'PACKAGES', text: s__('JobToken|Packages') };
 export const RESOURCE_PIPELINES = { value: 'PIPELINES', text: s__('JobToken|Pipelines') };
 export const RESOURCE_RELEASES = { value: 'RELEASES', text: s__('JobToken|Releases') };
+export const RESOURCE_REPOSITORIES = { value: 'REPOSITORIES', text: s__('JobToken|Repositories') };
 export const RESOURCE_SECURE_FILES = { value: 'SECURE_FILES', text: s__('JobToken|Secure files') };
 export const RESOURCE_TERRAFORM_STATE = {
   value: 'TERRAFORM_STATE',
@@ -85,6 +86,11 @@ export const POLICY_ADMIN_RELEASES = {
   text: READ_AND_WRITE,
   resource: RESOURCE_RELEASES,
 };
+export const POLICY_READ_REPOSITORIES = {
+  value: 'READ_REPOSITORIES',
+  text: READ,
+  resource: RESOURCE_REPOSITORIES,
+};
 export const POLICY_READ_SECURE_FILES = {
   value: 'READ_SECURE_FILES',
   text: READ,
@@ -135,6 +141,10 @@ export const POLICIES_BY_RESOURCE = [
   {
     resource: RESOURCE_RELEASES,
     policies: [POLICY_NONE, POLICY_READ_RELEASES, POLICY_ADMIN_RELEASES],
+  },
+  {
+    resource: RESOURCE_REPOSITORIES,
+    policies: [POLICY_NONE, POLICY_READ_REPOSITORIES],
   },
   {
     resource: RESOURCE_SECURE_FILES,

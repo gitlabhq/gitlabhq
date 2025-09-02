@@ -215,7 +215,8 @@ module Gitlab
       /^note$/,
       /^text$/,
       /^title$/,
-      /^hook$/
+      /^hook$/,
+      /^message$/
     ]
     config.filter_parameters += %i[
       certificate

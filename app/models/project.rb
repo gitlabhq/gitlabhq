@@ -1327,6 +1327,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def resource_parent
+    self
+  end
+
   def parent_loaded?
     association(:namespace).loaded?
   end

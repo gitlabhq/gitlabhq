@@ -17,6 +17,7 @@ module Ci
         :admin_pipelines,
         :read_releases,
         :admin_releases,
+        :read_repositories,
         :read_secure_files,
         :admin_secure_files,
         :read_terraform_state,

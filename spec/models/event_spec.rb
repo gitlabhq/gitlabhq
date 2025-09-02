@@ -1317,6 +1317,20 @@ RSpec.describe Event, feature_category: :user_profile do
 
         expect(action.action_name).to eq('imported')
       end
+
+      context 'when target_type is nil' do
+        it 'returns created for created event' do
+          action = build(:event, project: create(:project), action: :created)
+
+          expect(action.action_name).to eq('created')
+        end
+
+        it 'returns imported for imported event' do
+          action = build(:event, project: create(:project, :with_import_url), action: :created)
+
+          expect(action.action_name).to eq('imported')
+        end
+      end
     end
   end
 

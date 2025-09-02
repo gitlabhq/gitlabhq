@@ -29,6 +29,7 @@ module Import
     }.freeze
 
     included do
+      attribute :imported_from, :integer, limit: 2
       enum :imported_from, IMPORT_SOURCES, prefix: :imported_from
     end
 

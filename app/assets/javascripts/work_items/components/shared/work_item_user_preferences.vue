@@ -29,7 +29,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isGroup', 'isSignedIn'],
+  inject: ['isGroup', 'isSignedIn', 'isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -70,9 +70,10 @@ export default {
     },
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
-        return item.key === METADATA_KEYS.STATUS
-          ? !this.isEpicsList
-          : !this.isGroup || item.isPresentInGroup;
+        if (item.key === METADATA_KEYS.STATUS) {
+          return !this.isEpicsList;
+        }
+        return !this.isGroup || item.isPresentInGroup || this.isGroupIssuesList;
       });
     },
   },

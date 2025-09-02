@@ -12,6 +12,10 @@ RSpec.describe 'Group issues page', feature_category: :team_planning do
   let(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
   let(:path) { issues_group_path(group) }
 
+  before do
+    stub_feature_flags(work_items_group_issues_list: false)
+  end
+
   context 'with shared examples', :js do
     let(:issuable) { create(:issue, project: project, title: "this is my created issuable") }
 

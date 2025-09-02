@@ -1551,6 +1551,13 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
     let(:commit_id) { commit.id }
     let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}" }
 
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: [:repository] do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
+
     shared_examples_for 'ref commit' do
       it 'returns the ref last commit' do
         get api(route, current_user)
@@ -2597,6 +2604,14 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
     let(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
     let(:commit) { merged_mr.merge_request_diff.commits.last }
+
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests"),
+          params: { job_token: target_job.token }
+      end
+    end
 
     def perform_request(user)
       get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", user)

@@ -232,6 +232,11 @@ The following endpoints are available for CI/CD job tokens.
 | Releases: Read | `READ_RELEASES` | `GET /projects/:id/releases/permalink/latest(/)(*suffix_path)` | Get the latest project release |
 | Releases: Read | `READ_RELEASES` | `GET /projects/:id/releases` | List Releases |
 | Releases: Read | `READ_RELEASES` | `GET /projects/:id/repository/changelog` | Generates a changelog section for a release and returns it |
+| Repositories: Read | `READ_REPOSITORIES` | `GET /projects/:id/repository/branches` | Get a project repository branches |
+| Repositories: Read | `READ_REPOSITORIES` | `GET /projects/:id/repository/commits/:sha/merge_requests` | Get Merge Requests associated with a commit |
+| Repositories: Read | `READ_REPOSITORIES` | `GET /projects/:id/repository/commits/:sha` | Get a specific commit of a project |
+| Repositories: Read | `READ_REPOSITORIES` | `GET /projects/:id/repository/files/:file_path/raw` | Get raw file contents from the repository |
+| Repositories: Read | `READ_REPOSITORIES` | `GET /projects/:id/repository/tags` | Get a project repository tags |
 | Secure files: Read and write | `ADMIN_SECURE_FILES` | `DELETE /projects/:id/secure_files/:secure_file_id` | Remove a secure file |
 | Secure files: Read and write | `ADMIN_SECURE_FILES` | `POST /projects/:id/secure_files` | Create a secure file |
 | Secure files: Read | `READ_SECURE_FILES` | `GET /projects/:id/secure_files/:secure_file_id/download` | Download secure file |

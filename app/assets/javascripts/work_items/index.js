@@ -75,6 +75,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     calendarPath,
     maxAttachmentSize,
     canImportWorkItems,
+    isGroupIssuesList,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -115,6 +116,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       fullPath,
       isGroup,
       isProject: !isGroup,
+      isGroupIssuesList: parseBoolean(isGroupIssuesList),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),

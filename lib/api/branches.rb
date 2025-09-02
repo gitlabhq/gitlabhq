@@ -46,6 +46,9 @@ module API
 
         optional :page_token, type: String, desc: 'Name of branch to start the pagination from'
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/branches', urgency: :low do
         cache_action([user_project, :branches, current_user, declared_params], expires_in: 30.seconds) do
           repository = user_project.repository

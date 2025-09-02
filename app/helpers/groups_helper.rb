@@ -148,6 +148,13 @@ module GroupsHelper
     }
   end
 
+  def groups_show_app_data(group)
+    {
+      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      initial_sort: project_list_sort_by
+    }.to_json
+  end
+
   def group_readme_app_data(group_readme)
     {
       web_path: group_readme.present.web_path,

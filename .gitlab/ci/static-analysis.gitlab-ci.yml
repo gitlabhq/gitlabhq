@@ -32,12 +32,15 @@ static-analysis:
     - .static-analysis-base
     - .static-analysis-cache
     - .static-analysis:rules:static-analysis
+    - .use-pg16
   needs:
     - job: cache:ruby-gems
       optional: true
     - job: cache:node-modules
       optional: true
   parallel: 2
+  variables:
+    SETUP_DB: "true"
   script:
     - yarn_install_script
     - fail_on_warnings scripts/static-analysis

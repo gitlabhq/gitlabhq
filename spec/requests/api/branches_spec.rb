@@ -23,6 +23,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: :repository do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
+
     shared_examples_for 'repository branches' do
       RSpec::Matchers.define :has_up_to_merged_branch_names_count do |expected|
         match do |actual|

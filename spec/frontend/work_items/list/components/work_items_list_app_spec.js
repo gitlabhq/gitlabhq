@@ -210,6 +210,8 @@ describeSkipVue3(skipReason, () => {
         email: '',
         hasAnyWorkItems: false,
         projectImportJiraPath: '/project/import/jira',
+        isGroupIssuesList: false,
+        groupId: 'gid://gitlab/Group/1',
         ...provide,
       },
       propsData: {

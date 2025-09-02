@@ -98,6 +98,7 @@ describe('WorkItemUserPreferences', () => {
       provide: {
         isSignedIn: true,
         isGroup: false,
+        isGroupIssuesList: false,
         ...provide,
       },
     });

@@ -8912,6 +8912,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#resource_parent' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns self' do
+      expect(project.resource_parent).to eq(project)
+    end
+  end
+
   describe '#parent_loaded?' do
     let_it_be(:project) { create(:project) }
 

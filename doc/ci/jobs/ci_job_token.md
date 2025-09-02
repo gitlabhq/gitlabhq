@@ -37,6 +37,8 @@ CI/CD job tokens can access the following resources:
 
 | Resource                                                                                              | Notes |
 | ----------------------------------------------------------------------------------------------------- | ----- |
+| [Branches API](../../api/branches.md)                                                                 | Can access the `GET /projects/:id/repository/branches` endpoint. |
+| [Commits API](../../api/commits.md)                                                                   | Can access the `GET /projects/:id/repository/commits/:sha` and `GET /projects/:id/repository/commits/:sha/merge_requests` endpoints. |
 | [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
 | [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
 | [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
@@ -44,6 +46,7 @@ CI/CD job tokens can access the following resources:
 | [Container registry API](../../api/container_registry.md)                                             | Can authenticate only with the container registry associated with the job's project. |
 | [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
+| [Files API](../../api/repository_files.md)                                                            | Can access the `GET /projects/:id/repository/files/:file_path/raw` endpoint. |
 | [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
 | [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
 | [Merge requests API](../../api/merge_requests.md)                                                     | Can access the `GET /projects/:id/merge_requests` and `GET /projects/:id/merge_requests/:merge_request_iid` endpoints. |
@@ -54,6 +57,7 @@ CI/CD job tokens can access the following resources:
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
 | [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
+| [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` endpoint. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
 more granular.

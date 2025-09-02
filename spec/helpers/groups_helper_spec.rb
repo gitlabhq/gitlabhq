@@ -543,6 +543,24 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#groups_show_app_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:initial_sort) { 'created_asc' }
+
+    before do
+      allow(helper).to receive(:project_list_sort_by).and_return(initial_sort)
+    end
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.groups_show_app_data(group))).to eq(
+        {
+          'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
+          'initial_sort' => initial_sort
+        }
+      )
+    end
+  end
+
   describe '#show_group_readme?' do
     let_it_be_with_refind(:group) { create(:group, :public) }
     let_it_be(:current_user) { nil }

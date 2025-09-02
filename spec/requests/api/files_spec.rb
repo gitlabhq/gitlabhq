@@ -857,6 +857,13 @@ RSpec.describe API::Files, feature_category: :source_code_management do
   end
 
   describe 'GET /projects/:id/repository/files/:file_path/raw' do
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: :repository do
+      let(:request) do
+        get api(route(file_path) + '/raw'), params: { job_token: target_job.token }
+      end
+    end
+
     shared_examples_for 'repository raw files' do
       it_behaves_like 'when path is absolute' do
         subject { get api(route(absolute_path) + '/raw', current_user), params: params }

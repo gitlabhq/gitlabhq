@@ -36,6 +36,7 @@ import {
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   PARAM_FIRST_PAGE_SIZE,
@@ -106,6 +107,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -157,6 +159,7 @@ const statusMap = {
 export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
+  searchProjectsQuery,
   components: {
     GlLoadingIcon,
     GlButton,
@@ -176,6 +179,7 @@ export default {
     WorkItemByEmail,
     GlIcon,
     GlSkeletonLoader,
+    NewResourceDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -213,6 +217,8 @@ export default {
     'metadataLoading',
     'projectImportJiraPath',
     'newWorkItemEmailAddress',
+    'isGroupIssuesList',
+    'groupId',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -413,6 +419,7 @@ export default {
         hasEpicsFeature: this.hasEpicsFeature,
         hasOkrsFeature: this.hasOkrsFeature,
         hasQualityManagementFeature: this.hasQualityManagementFeature,
+        isGroupIssuesList: this.isGroupIssuesList,
       });
     },
     workItemDrawerEnabled() {
@@ -546,7 +553,7 @@ export default {
         },
       ];
 
-      if (this.isGroup) {
+      if (this.isGroup && !this.isGroupIssuesList) {
         tokens.push({
           type: TOKEN_TYPE_GROUP,
           icon: 'group',
@@ -765,6 +772,7 @@ export default {
         hasEpicsFeature: this.hasEpicsFeature,
         hasOkrsFeature: this.hasOkrsFeature,
         hasQualityManagementFeature: this.hasQualityManagementFeature,
+        isGroupIssuesList: this.isGroupIssuesList,
       });
     },
     urlFilterParams() {
@@ -819,6 +827,11 @@ export default {
     },
     parentId() {
       return this.apiFilterParams?.hierarchyFilters?.parentIds?.[0] || null;
+    },
+    newIssueDropdownQueryVariables() {
+      return {
+        fullPath: this.rootPageFullPath,
+      };
     },
   },
   watch: {
@@ -907,7 +920,7 @@ export default {
       if (this.isGroup && this.isEpicsList) {
         return `${__('Epics')} · ${middleCrumb} · GitLab`;
       }
-      if (this.isGroup) {
+      if (this.isGroup && !this.isGroupIssuesList) {
         return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
       return `${__('Issues')} · ${middleCrumb} · GitLab`;
@@ -1238,6 +1251,9 @@ export default {
 
       return findHierarchyWidget(workItem)?.parent?.id !== this.parentId;
     },
+    extractProjects(data) {
+      return data?.group?.projects?.nodes;
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1328,7 +1344,7 @@ export default {
               {{ __('Bulk edit') }}
             </gl-button>
             <create-work-item-modal
-              v-if="showNewWorkItem"
+              v-if="showNewWorkItem && !isGroupIssuesList"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1336,6 +1352,13 @@ export default {
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               @workItemCreated="refetchItems"
+            />
+            <new-resource-dropdown
+              v-if="showNewWorkItem && isGroupIssuesList"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
             />
             <work-item-list-actions
               :show-import-export-buttons="showImportExportButtons"
@@ -1365,7 +1388,7 @@ export default {
                 {{ __('Bulk edit') }}
               </gl-button>
               <create-work-item-modal
-                v-if="showNewWorkItem"
+                v-if="showNewWorkItem && !isGroupIssuesList"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1373,6 +1396,13 @@ export default {
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
+              />
+              <new-resource-dropdown
+                v-if="showNewWorkItem && isGroupIssuesList"
+                :query="$options.searchProjectsQuery"
+                :query-variables="newIssueDropdownQueryVariables"
+                :extract-projects="extractProjects"
+                :group-id="groupId"
               />
               <work-item-list-actions
                 :show-import-export-buttons="showImportExportButtons"

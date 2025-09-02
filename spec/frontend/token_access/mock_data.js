@@ -454,6 +454,17 @@ export const POLICIES_BY_RESOURCE = [
     ],
   },
   {
+    resource: { value: 'REPOSITORIES', text: 'Repositories' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_REPOSITORIES',
+        text: 'Read',
+        resource: { value: 'REPOSITORIES', text: 'Repositories' },
+      },
+    ],
+  },
+  {
     resource: { value: 'SECURE_FILES', text: 'Secure files' },
     policies: [
       { value: '', text: 'None' },

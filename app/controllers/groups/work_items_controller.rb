@@ -25,9 +25,10 @@ module Groups
       c.action_name.to_sym == :rss
     end
 
+    prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
     prepend_before_action(only: [:rss]) { authenticate_sessionless_user!(:rss) }
 
-    urgency :low, [:rss]
+    urgency :low, [:rss, :calendar]
 
     def index
       not_found unless ::Feature.enabled?(:work_item_planning_view, group)
@@ -46,6 +47,16 @@ module Groups
           @work_items = work_items_for_rss.non_archived
 
           render layout: 'xml'
+        end
+      end
+    end
+
+    def calendar
+      @work_items = work_items_for_calendar
+
+      respond_to do |format|
+        format.ics do
+          response.headers['Content-Type'] = 'text/plain' if request.referer&.start_with?(::Settings.gitlab.base_url)
         end
       end
     end

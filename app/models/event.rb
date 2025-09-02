@@ -187,7 +187,10 @@ class Event < ApplicationRecord
   end
 
   def created_project_action?
-    created_action? && !target && target_type.nil?
+    # TODO: Remove once https://gitlab.com/gitlab-org/gitlab/-/issues/565789 is complete
+    no_target_type = !target && target_type.nil?
+
+    (project? || no_target_type) && created_action?
   end
 
   def created_wiki_page?
@@ -228,6 +231,10 @@ class Event < ApplicationRecord
 
   def work_item?
     target_type == 'WorkItem'
+  end
+
+  def project?
+    target_type == 'Project'
   end
 
   def milestone

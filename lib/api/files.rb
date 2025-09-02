@@ -191,6 +191,9 @@ module API
           desc: 'Retrieve binary data for a file that is an lfs pointer',
           default: false
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
