@@ -95,6 +95,10 @@ module Gitlab
         end
       end
 
+      def workers_without_default
+        @workers_without_default ||= workers - DEFAULT_WORKERS.values
+      end
+
       def workers_for_all_queues_yml
         workers.each_with_object([[], [], []]) do |worker, array|
           if worker.jh?

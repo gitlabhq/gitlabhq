@@ -59,7 +59,10 @@ module Packages
 
     scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
     scope :with_name, ->(name) { where(name: name) }
-    scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
+
+    scope :with_name_like, ->(name, case_sensitive: false) do
+      where(arel_table[:name].matches(name, nil, case_sensitive))
+    end
 
     scope :with_case_insensitive_version, ->(version) do
       where('LOWER(version) = ?', version.downcase)

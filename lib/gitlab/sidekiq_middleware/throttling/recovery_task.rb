@@ -18,7 +18,7 @@ module Gitlab
           while @alive
             sleep(sleep_interval)
 
-            next unless Feature.enabled?(:sidekiq_throttling_middleware, :instance, type: :worker)
+            next if ::Feature.disabled?(:sidekiq_throttling_middleware, :instance, type: :worker)
 
             try_obtain_lease { recover_workers }
           end

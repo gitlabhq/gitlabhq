@@ -12,6 +12,9 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryService, feature_c
       def self.name
         'TestWorker'
       end
+      include ApplicationWorker
+
+      concurrency_limit -> { 20 }
     end)
   end
 
@@ -26,9 +29,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::Throttling::RecoveryService, feature_c
       allow(concurrency_limit_service).to receive(:current_limit).and_return(10)
       allow(concurrency_limit_service).to receive(:set_current_limit!)
       allow(tracker).to receive(:remove_from_throttled_list!)
-      allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:limit_for)
-                                                                          .with(worker: worker_klass)
-                                                                          .and_return(20)
     end
 
     context 'when worker needs throttling' do

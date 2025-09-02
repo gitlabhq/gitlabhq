@@ -55,14 +55,14 @@ module Gitlab
         end
 
         def report_metrics
-          worker_maps.workers.each do |w|
+          workers.each do |w|
             queue_size = concurrent_limit_service.queue_size(w.name)
             report_queue_size(w, queue_size)
 
             concurrent_worker_count = concurrent_limit_service.concurrent_worker_count(w.name)
             report_concurrent_workers(w, concurrent_worker_count)
 
-            max_limit = worker_maps.limit_for(worker: w)
+            max_limit = w.get_concurrency_limit
             report_max_limit(w, max_limit)
 
             current_limit = concurrent_limit_service.current_limit(w.name)
@@ -71,7 +71,7 @@ module Gitlab
         end
 
         def reset_metrics
-          worker_maps.workers.each do |w|
+          workers.each do |w|
             report_queue_size(w, 0)
             report_concurrent_workers(w, 0)
             report_max_limit(w, 0)
@@ -79,8 +79,8 @@ module Gitlab
           end
         end
 
-        def worker_maps
-          Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap
+        def workers
+          Gitlab::SidekiqConfig.workers_without_default.map(&:klass)
         end
 
         def concurrent_limit_service

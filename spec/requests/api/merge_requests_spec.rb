@@ -1150,6 +1150,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api(endpoint_path), params: { job_token: target_job.token }
+      end
+    end
+
     it_behaves_like 'merge requests list'
 
     context 'caching' do
@@ -1422,6 +1429,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
+
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}"), params: { job_token: target_job.token }
+      end
+    end
 
     context 'with oauth token that has ai_workflows scope' do
       let(:user) { create(:user) }

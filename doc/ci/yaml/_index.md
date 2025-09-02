@@ -6119,12 +6119,6 @@ trigger:
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
 [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 
-Additionally, use:
-
-- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
-- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
-  uses [`spec:inputs`](#specinputs).
-
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
@@ -6138,6 +6132,31 @@ trigger-child-pipeline:
   trigger:
     include: path/to/child-pipeline.gitlab-ci.yml
 ```
+
+**Additional details**:
+
+Use:
+
+- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
+  uses [`spec:inputs`](#specinputs).
+- `trigger:include:local` for a path to a child pipeline configuration file when:
+  - Combining [multiple child pipeline configuration files](../pipelines/downstream_pipelines.md#combine-multiple-child-pipeline-configuration-files).
+  - Combined with `trigger:include:inputs` to pass inputs to the child pipeline. For example:
+
+    ```yaml
+    staging-job:
+      trigger:
+        include:
+          - local: path/to/child-pipeline.yml
+            inputs:
+              environment: staging
+    ```
+
+- `trigger:include:project` to trigger a child pipeline [with a configuration file in a different project](../pipelines/downstream_pipelines.md#use-a-child-pipeline-configuration-file-in-a-different-project).
+  If the file contains additional [`include`](#include) entries, GitLab looks for the files
+  in the project running the pipeline, not the project hosting the file.
+- `trigger:include:template` to trigger a child pipeline with a CI/CD template.
 
 **Related topics**:
 

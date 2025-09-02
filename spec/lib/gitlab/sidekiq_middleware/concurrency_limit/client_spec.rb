@@ -26,39 +26,83 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Client, :clean_gitla
   end
 
   describe '#call' do
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(sidekiq_concurrency_limit_middleware: false)
+    shared_examples 'defers or schedules the job' do
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(sidekiq_concurrency_limit_middleware: false)
+        end
+
+        it 'schedules the job' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+
+          expect(TestConcurrencyLimitWorker.jobs.size).to eq(1)
+        end
       end
 
-      it 'schedules the job' do
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+      context 'when there are jobs in the queue' do
+        before do
+          allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:has_jobs_in_queue?)
+                                                                                             .and_return(true)
+        end
 
-        TestConcurrencyLimitWorker.perform_async('foo')
+        it 'defers the job' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:add_to_queue!).once
 
-        expect(TestConcurrencyLimitWorker.jobs.size).to eq(1)
+          TestConcurrencyLimitWorker.perform_async('foo')
+
+          expect(TestConcurrencyLimitWorker.jobs.size).to eq(0)
+        end
+
+        it 'does not defer scheduled jobs' do
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          TestConcurrencyLimitWorker.perform_in(10, 'foo')
+        end
       end
     end
 
-    context 'when there are jobs in the queue' do
+    context 'when sidekiq_concurrency_limit_middleware_v2 feature flag is disabled' do
       before do
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:has_jobs_in_queue?)
-          .and_return(true)
+        stub_feature_flags(sidekiq_concurrency_limit_middleware_v2: false)
       end
 
-      it 'defers the job' do
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:add_to_queue!).once
+      context 'for calling the right middleware' do
+        let(:middleware_instance) { instance_double(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Middleware) }
 
-        TestConcurrencyLimitWorker.perform_async('foo')
+        before do
+          allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Middleware)
+            .to receive(:new).with(Object, kind_of(Hash)).and_return(middleware_instance)
+        end
 
-        expect(TestConcurrencyLimitWorker.jobs.size).to eq(0)
+        it 'calls Middleware#schedule' do
+          expect(middleware_instance).to receive(:schedule)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+        end
       end
 
-      it 'does not defer scheduled jobs' do
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+      it_behaves_like 'defers or schedules the job'
+    end
 
-        TestConcurrencyLimitWorker.perform_in(10, 'foo')
+    context 'when sidekiq_concurrency_limit_middleware_v2 feature flag is enabled' do
+      context 'for calling the right middleware' do
+        let(:middleware_instance) { instance_double(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::MiddlewareV2) }
+
+        before do
+          allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::MiddlewareV2)
+            .to receive(:new).with(TestConcurrencyLimitWorker, kind_of(Hash)).and_return(middleware_instance)
+        end
+
+        it 'calls MiddlewareV2#schedule' do
+          expect(middleware_instance).to receive(:schedule)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+        end
       end
+
+      it_behaves_like 'defers or schedules the job'
     end
   end
 end

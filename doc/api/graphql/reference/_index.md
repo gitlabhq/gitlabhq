@@ -46651,6 +46651,7 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read Deployments. |
 | <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
 | <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |
+| <a id="cijobtokenscopepoliciesread_merge_requests"></a>`READ_MERGE_REQUESTS` | Read Merge Requests. |
 | <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read Packages. |
 | <a id="cijobtokenscopepoliciesread_pipelines"></a>`READ_PIPELINES` | Read Pipelines. |
 | <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read Releases. |

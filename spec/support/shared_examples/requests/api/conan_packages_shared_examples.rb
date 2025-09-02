@@ -86,6 +86,33 @@ RSpec.shared_examples 'conan search endpoint' do |scope: :project|
         expect(json_response['message']).to eq('400 Bad request - Too many wildcards in search term. Maximum is 5.')
       end
     end
+
+    context 'with ignorecase' do
+      let(:ignorecase) { 'False' }
+      let(:params) { { q: package.conan_recipe.capitalize, ignorecase: ignorecase } }
+
+      it { is_expected.to be_blank }
+
+      context 'with ignorecase set to `True`' do
+        let(:ignorecase) { 'True' }
+
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+      end
+
+      context 'with case matching name' do
+        before_all do
+          package.update_column(:name, package.name.capitalize)
+        end
+
+        it { is_expected.to contain_exactly(package.conan_recipe) }
+
+        context 'with ignorecase set to `True`' do
+          let(:ignorecase) { 'True' }
+
+          it { is_expected.to contain_exactly(package.conan_recipe) }
+        end
+      end
+    end
   end
 
   context 'with a private project' do

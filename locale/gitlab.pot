@@ -36776,6 +36776,9 @@ msgstr ""
 msgid "JobToken|Learn more about available %{linkStart}API endpoints%{linkEnd}."
 msgstr ""
 
+msgid "JobToken|Merge requests"
+msgstr ""
+
 msgid "JobToken|Packages"
 msgstr ""
 

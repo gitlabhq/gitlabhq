@@ -15,7 +15,8 @@ module Gitlab
         end
 
         # Reads the current limit value in Redis.
-        # Falls back on the max limit value set in WorkersMap if no limit is set in Redis.
+        # Falls back on the max limit value set by default in `worker.get_concurrency_limit`
+        # if no limit is set in Redis.
         # @return [Integer] The current limit value, or 0 if no limit is set
         def current_limit
           return 0 if worker_klass.nil?
@@ -27,7 +28,7 @@ module Gitlab
 
           return value unless value.nil?
 
-          limit_from_workers_map
+          default_limit
         end
 
         # Updates the current limit value in Redis
@@ -45,8 +46,8 @@ module Gitlab
         end
         strong_memoize_attr(:worker_klass)
 
-        def limit_from_workers_map
-          WorkersMap.limit_for(worker: worker_klass)
+        def default_limit
+          worker_klass.respond_to?(:get_concurrency_limit) ? worker_klass.get_concurrency_limit : 0
         end
 
         def with_redis(&block)

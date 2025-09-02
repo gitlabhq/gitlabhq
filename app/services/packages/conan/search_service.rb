@@ -37,6 +37,10 @@ module Packages
         params[:query]
       end
 
+      def ignorecase
+        params[:ignorecase]
+      end
+
       def wildcard_query?
         query == WILDCARD
       end
@@ -51,7 +55,7 @@ module Packages
 
       def search_packages
         ::Packages::Conan::PackageFinder
-          .new(current_user, { query: query }, project: project)
+          .new(current_user, { query: query, ignorecase: ignorecase }, project: project)
           .execute
           .map(&:conan_recipe)
       end

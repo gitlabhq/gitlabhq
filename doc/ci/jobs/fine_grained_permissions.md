@@ -89,6 +89,10 @@ The following endpoints are available for CI/CD job tokens.
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path` | Download a specific file from artifacts archive from a ref |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/jobs` | Get a projects jobs |
 | Jobs: Read | `READ_JOBS` | `GET /projects/:id/pipelines/:pipeline_id/jobs` | Get pipeline jobs |
+| Merge requests: Read | `READ_MERGE_REQUESTS` | `GET /projects/:id/merge_requests/:merge_request_iid` | Get single merge request |
+| Merge requests: Read | `READ_MERGE_REQUESTS` | `GET /projects/:id/merge_requests/:noteable_id/notes/:note_id` | Get a single merge request note |
+| Merge requests: Read | `READ_MERGE_REQUESTS` | `GET /projects/:id/merge_requests/:noteable_id/notes` | Get a list of merge request notes |
+| Merge requests: Read | `READ_MERGE_REQUESTS` | `GET /projects/:id/merge_requests` | List project merge requests |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name` | Delete repository tag |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id/tags` | Delete repository tags (in bulk) |
 | None |  | `DELETE /projects/:id/registry/repositories/:repository_id` | Delete repository |

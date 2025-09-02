@@ -10,6 +10,7 @@ module Ci
         :admin_environments,
         :read_jobs,
         :admin_jobs,
+        :read_merge_requests,
         :read_packages,
         :admin_packages,
         :read_pipelines,

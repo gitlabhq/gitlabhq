@@ -14,6 +14,7 @@ module Packages
         @current_user = current_user
         @name, @version, @username, _ = params[:query].to_s.split(%r{[@/]}).map { |q| sanitize_sql(q) }
         @project = project
+        @ignorecase = params[:ignorecase]
       end
 
       def execute
@@ -26,16 +27,24 @@ module Packages
 
       private
 
-      attr_reader :current_user, :name, :project, :version, :username
+      attr_reader :current_user, :name, :project, :version, :username, :ignorecase
 
       def sanitize_sql(query)
         sanitize_sql_like(query).tr(WILDCARD, SQL_WILDCARD) unless query.nil?
       end
 
       def packages
-        packages = base.installable.preload_conan_metadatum.with_name_like(name)
+        packages = by_name(base.installable.preload_conan_metadatum)
         packages = by_version(packages) if version.present?
         packages.limit_recent(MAX_PACKAGES_COUNT)
+      end
+
+      def by_name(packages)
+        if ignorecase == false
+          packages.with_name_like(name, case_sensitive: true)
+        else
+          packages.with_name_like(name)
+        end
       end
 
       def by_version(packages)

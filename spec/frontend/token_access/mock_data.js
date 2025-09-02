@@ -395,6 +395,17 @@ export const POLICIES_BY_RESOURCE = [
     ],
   },
   {
+    resource: { value: 'MERGE_REQUESTS', text: 'Merge requests' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_MERGE_REQUESTS',
+        text: 'Read',
+        resource: { value: 'MERGE_REQUESTS', text: 'Merge requests' },
+      },
+    ],
+  },
+  {
     resource: { value: 'PACKAGES', text: 'Packages' },
     policies: [
       { value: '', text: 'None' },

@@ -204,10 +204,38 @@ module WorkerAttributes
     end
 
     def concurrency_limit(max_jobs)
+      raise ArgumentError, 'max_jobs must be a Proc instance' if max_jobs && !max_jobs.is_a?(Proc)
+
+      set_class_attribute(:concurrency_limit, max_jobs)
       ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.set_limit_for(
         worker: self,
         max_jobs: max_jobs
       )
+    end
+
+    # Returns an integer value where:
+    # - positive value is returned to enforce a valid concurrency limit
+    # - 0 value is returned for workers without concurrency limits
+    # - negative value is returned for paused workers
+    def get_concurrency_limit
+      return 0 if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
+
+      limit = get_class_attribute(:concurrency_limit)&.call.to_i
+      return limit unless limit == 0
+      unless Feature.enabled?(:use_max_concurrency_limit_percentage_as_default_limit, Feature.current_request)
+        return limit
+      end
+
+      calculate_default_limit_from_max_percentage
+    end
+
+    def calculate_default_limit_from_max_percentage
+      max_replicas = ENV.fetch('SIDEKIQ_MAX_REPLICAS', '0').to_i
+      concurrency = ENV.fetch('SIDEKIQ_CONCURRENCY', '0').to_i
+      max_total_threads = max_replicas * concurrency
+      percentage = get_max_concurrency_limit_percentage
+
+      (percentage * max_total_threads).ceil
     end
 
     # If concurrency_limit attribute is not defined, this sets the maximum percentage of fleet

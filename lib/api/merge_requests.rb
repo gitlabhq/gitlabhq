@@ -307,6 +307,9 @@ module API
           desc: 'Returns the request having the given `iid`.',
           documentation: { is_array: true }
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_merge_requests,
+        allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         authorize! :read_merge_request, user_project
         validate_search_rate_limit! if declared_params[:search].present?
@@ -399,6 +402,9 @@ module API
         tags %w[merge_requests]
       end
       route_setting :mcp, tool_name: :get_merge_request, params: [:id, :merge_request_iid]
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_merge_requests,
+        allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
       get ':id/merge_requests/:merge_request_iid', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 

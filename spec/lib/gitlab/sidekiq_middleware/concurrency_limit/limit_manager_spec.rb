@@ -23,9 +23,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::LimitManager, :clean
   describe '#current_limit' do
     before do
       stub_const(worker_name, worker_class)
-      allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:limit_for)
-                                                                            .with(worker: worker_name.safe_constantize)
-                                                                            .and_return(10)
+      allow(worker_class).to receive(:get_concurrency_limit).and_return(10)
     end
 
     context 'when no value has been set before' do

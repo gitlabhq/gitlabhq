@@ -259,28 +259,29 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     end
 
     describe '.with_name_like' do
-      subject { described_class.with_name_like(name_term) }
+      where(:name_term, :case_sensitive, :result) do
+        'foobar' | false | [ref(:package1), ref(:package2)]
+        '%ar'    | false | [ref(:package1), ref(:package2)]
+        'foo%'   | false | [ref(:package1), ref(:package2)]
+        '%ooba%' | false | [ref(:package1), ref(:package2)]
 
-      context 'with downcase name' do
-        let(:name_term) { 'foobar' }
-
-        it { is_expected.to match_array([package1, package2]) }
+        'foobar' | true  | [ref(:package2)]
+        '%ar'    | true  | [ref(:package1), ref(:package2)]
+        '%Bar'   | true  | [ref(:package1)]
+        'foo%'   | true  | [ref(:package2)]
+        '%ooba%' | true  | [ref(:package2)]
+        '%ooBa%' | true  | [ref(:package1)]
+        'Foo%'   | true  | [ref(:package1)]
       end
 
-      context 'with prefix wildcard' do
-        let(:name_term) { '%ar' }
+      with_them do
+        subject { described_class.with_name_like(name_term, case_sensitive:) }
 
-        it { is_expected.to match_array([package1, package2]) }
+        it { is_expected.to match_array(result) }
       end
 
-      context 'with suffix wildcard' do
-        let(:name_term) { 'foo%' }
-
-        it { is_expected.to match_array([package1, package2]) }
-      end
-
-      context 'with surrounding wildcards' do
-        let(:name_term) { '%ooba%' }
+      context 'when case_sensitive is not set' do
+        subject { described_class.with_name_like('foobar') }
 
         it { is_expected.to match_array([package1, package2]) }
       end

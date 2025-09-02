@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab_redis_shared_state,
   feature_category: :scalability do
   include ExclusiveLeaseHelpers
-  let(:workers_with_limits) { [Import::ReassignPlaceholderUserRecordsWorker] * 5 }
+  let(:worker_class) { Import::ReassignPlaceholderUserRecordsWorker }
   let(:lease_key) { 'gitlab/metrics/samplers/concurrency_limit_sampler' }
   let(:sampler) { described_class.new }
 
@@ -24,23 +24,19 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
 
     context 'when lease can be obtained' do
       before do
-        allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
-          .to receive(:workers).and_return(workers_with_limits)
+        allow(Gitlab::SidekiqConfig).to receive(:workers_without_default).and_return(
+          [Gitlab::SidekiqConfig::Worker.new(worker_class, ee: false)]
+        )
         allow(sampler.exclusive_lease).to receive(:same_uuid?).and_return(true, false) # run sample once
       end
 
       it 'fetches data for each worker and sets gauge' do
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
-            .to receive(:workers).and_return(workers_with_limits)
-
         expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-          .to receive(:queue_size).exactly(workers_with_limits.size).times.and_return(1)
+          .to receive(:queue_size).once.and_return(1)
         expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-            .to receive(:concurrent_worker_count).exactly(workers_with_limits.size).times.and_return(1)
-        expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
-          .to receive(:limit_for).exactly(workers_with_limits.size).times.and_return(1)
+            .to receive(:concurrent_worker_count).once.and_return(1)
         expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
-          .to receive(:current_limit).exactly(workers_with_limits.size).times.and_return(1)
+          .to receive(:current_limit).once.and_return(1)
 
         queue_size_gauge_double = instance_double(Prometheus::Client::Gauge)
         expect(Gitlab::Metrics).to receive(:gauge)
@@ -49,10 +45,10 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
           .and_return(queue_size_gauge_double)
         expect(queue_size_gauge_double).to receive(:set)
           .with({ worker: anything, feature_category: anything }, 1)
-          .exactly(workers_with_limits.size).times
+          .once
         expect(queue_size_gauge_double).to receive(:set)
                                              .with({ worker: anything, feature_category: anything }, 0)
-                                             .exactly(workers_with_limits.size).times
+                                             .once
 
         concurrency_gauge_double = instance_double(Prometheus::Client::Gauge)
         expect(Gitlab::Metrics).to receive(:gauge)
@@ -61,10 +57,10 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
           .and_return(concurrency_gauge_double)
         expect(concurrency_gauge_double).to receive(:set)
           .with({ worker: anything, feature_category: anything }, 1)
-          .exactly(workers_with_limits.size).times
+          .once
         expect(concurrency_gauge_double).to receive(:set)
                                               .with({ worker: anything, feature_category: anything }, 0)
-                                              .exactly(workers_with_limits.size).times
+                                              .once
 
         limit_gauge_double = instance_double(Prometheus::Client::Gauge)
         expect(Gitlab::Metrics).to receive(:gauge)
@@ -72,11 +68,12 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
                                      .with(:sidekiq_concurrency_limit_max_concurrent_jobs, anything)
                                      .and_return(limit_gauge_double)
         expect(limit_gauge_double).to receive(:set)
-                                              .with({ worker: anything, feature_category: anything }, 1)
-                                              .exactly(workers_with_limits.size).times
+                                              .with({ worker: anything, feature_category: anything },
+                                                worker_class.get_concurrency_limit)
+                                              .once
         expect(limit_gauge_double).to receive(:set)
                                               .with({ worker: anything, feature_category: anything }, 0)
-                                              .exactly(workers_with_limits.size).times
+                                              .once
 
         current_limit_gauge_double = instance_double(Prometheus::Client::Gauge)
         expect(Gitlab::Metrics).to receive(:gauge)
@@ -85,10 +82,10 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
                                      .and_return(current_limit_gauge_double)
         expect(current_limit_gauge_double).to receive(:set)
                                               .with({ worker: anything, feature_category: anything }, 1)
-                                              .exactly(workers_with_limits.size).times
+                                              .once
         expect(current_limit_gauge_double).to receive(:set)
                                               .with({ worker: anything, feature_category: anything }, 0)
-                                              .exactly(workers_with_limits.size).times
+                                              .once
 
         sample
       end

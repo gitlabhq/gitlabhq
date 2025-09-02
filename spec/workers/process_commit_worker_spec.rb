@@ -766,7 +766,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   end
 
   it 'has a concurrency limit' do
-    expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: described_class)).to eq(1000)
+    expect(described_class.get_concurrency_limit).to eq(1000)
   end
 
   describe '#perform' do

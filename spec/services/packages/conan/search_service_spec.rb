@@ -10,7 +10,7 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
     let_it_be(:project1) { create(:project, :public, developers: user) }
     let_it_be(:project2) { create(:project, :public) }
 
-    let_it_be(:alpha_1_2_0) { create(:conan_package, project: project1, name: 'alpha', version: '1.2.0') }
+    let_it_be_with_reload(:alpha_1_2_0) { create(:conan_package, project: project1, name: 'alpha', version: '1.2.0') }
     let_it_be(:alpha_1_2_1) { create(:conan_package, project: project1, name: 'alpha', version: '1.2.1') }
     let_it_be(:alpha_2_0_0) { create(:conan_package, project: project1, name: 'alpha', version: '2.0.0') }
     let_it_be(:beta_1_2_0) { create(:conan_package, project: project1, name: 'beta', version: '1.2.0') }
@@ -62,6 +62,30 @@ RSpec.describe Packages::Conan::SearchService, feature_category: :package_regist
           expect(search_result.status).to eq :error
           expect(search_result.message).to eq(expected_error_message)
           expect(search_result.reason).to eq(:invalid_parameter)
+        end
+      end
+    end
+
+    context 'with ignorecase' do
+      let_it_be(:capitalized_name) { alpha_1_2_0.name.capitalize }
+
+      before_all do
+        alpha_1_2_0.update_column(:name, capitalized_name)
+      end
+
+      where(:ignorecase, :expected_packages) do
+        true  | [ref(:alpha_1_2_0), ref(:alpha_1_2_1), ref(:alpha_2_0_0)]
+        false | [ref(:alpha_1_2_0)]
+        nil   | [ref(:alpha_1_2_0), ref(:alpha_1_2_1), ref(:alpha_2_0_0)]
+      end
+
+      with_them do
+        subject(:search_result) do
+          described_class.new(project1, user, query: capitalized_name, ignorecase: ignorecase).execute
+        end
+
+        it 'returns matching packages' do
+          expect(search_result.payload[:results]).to match_array(expected_packages.map(&:conan_recipe))
         end
       end
     end

@@ -1204,7 +1204,6 @@ RSpec/NamedSubject:
     - 'spec/finders/keys_finder_spec.rb'
     - 'spec/finders/notes_finder_spec.rb'
     - 'spec/finders/packages/conan/package_file_finder_spec.rb'
-    - 'spec/finders/packages/conan/package_finder_spec.rb'
     - 'spec/finders/packages/debian/distributions_finder_spec.rb'
     - 'spec/finders/packages/go/package_finder_spec.rb'
     - 'spec/finders/packages/group_packages_finder_spec.rb'

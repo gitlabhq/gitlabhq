@@ -14499,6 +14499,12 @@ paths:
         type: string
         required: true
         example: Hello*
+      - in: query
+        name: ignorecase
+        description: Ignore case when searching (case-insensitive search)
+        type: boolean
+        required: false
+        example: 'False'
       responses:
         '200':
           description: Search for packages
@@ -15576,6 +15582,12 @@ paths:
         type: string
         required: true
         example: Hello*
+      - in: query
+        name: ignorecase
+        description: Ignore case when searching (case-insensitive search)
+        type: boolean
+        required: false
+        example: 'False'
       responses:
         '200':
           description: Search for packages
@@ -40718,6 +40730,12 @@ paths:
         type: string
         required: true
         example: Hello*
+      - in: query
+        name: ignorecase
+        description: Ignore case when searching (case-insensitive search)
+        type: boolean
+        required: false
+        example: 'False'
       responses:
         '200':
           description: Search for packages

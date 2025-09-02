@@ -26,7 +26,7 @@ module ConcurrencyLimit
 
     def schedule_workers
       workers.each do |worker|
-        limit = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
+        limit = worker.get_concurrency_limit
         queue_size = queue_size(worker)
 
         next unless queue_size > 0
@@ -40,7 +40,7 @@ module ConcurrencyLimit
       worker = worker_name.safe_constantize
       return unless worker
 
-      limit = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
+      limit = worker_limit(worker)
       queue_size = queue_size(worker)
       current = concurrent_worker_count(worker)
 
@@ -82,8 +82,16 @@ module ConcurrencyLimit
       Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.resume_processing!(worker.name, limit: limit)
     end
 
+    def worker_limit(worker)
+      if Feature.disabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
+        return worker.get_concurrency_limit
+      end
+
+      Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.current_limit(worker.name)
+    end
+
     def workers
-      Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.workers
+      Gitlab::SidekiqConfig.workers_without_default.map(&:klass)
     end
   end
 end

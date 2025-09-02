@@ -68,6 +68,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       :get_tags                               | :tags                              | []               | [:foo, :bar] | {} | [:foo, :bar]
       :get_deduplicate_strategy               | :deduplicate                       | :until_executing | [:none]      | {} | :none
       :get_max_concurrency_limit_percentage   | :max_concurrency_limit_percentage  | 0.25             | 0.5          | {} | 0.5
+      :get_concurrency_limit                  | :concurrency_limit                 | 0                | [-> { 5 }]   | {} | 5
 
       :get_deduplication_options              | :deduplicate                       | {}               | [:none, { including_scheduled: true }] | {} | { including_scheduled: true }
       :database_health_check_attrs            | :defer_on_database_health_signal   | nil              | [:gitlab_main, [:users], 1.minute]     | {} | { gitlab_schema: :gitlab_main, tables: [:users], delay_by: 1.minute, block: nil }
@@ -377,6 +378,126 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
         let(:percentage) { "asd" }
 
         it_behaves_like 'invalid argument'
+      end
+    end
+  end
+
+  describe '.concurrency_limit' do
+    subject(:concurrency_limit) { worker.concurrency_limit(max_jobs) }
+
+    context 'when max_jobs is not a proc' do
+      let(:max_jobs) { 1 }
+
+      it 'raises ArgumentError' do
+        expect { concurrency_limit }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe '.get_concurrency_limit' do
+    subject(:get_concurrency_limit) { worker.get_concurrency_limit }
+
+    context 'with concurrency_limit attribute defined' do
+      before do
+        worker.concurrency_limit -> { 1 }
+      end
+
+      it 'returns defined value' do
+        expect(get_concurrency_limit).to eq(1)
+      end
+
+      context 'when sidekiq_concurrency_limit_middleware feature flag is disabled' do
+        before do
+          stub_feature_flags(sidekiq_concurrency_limit_middleware: false)
+        end
+
+        it 'returns 0' do
+          expect(get_concurrency_limit).to eq(0)
+        end
+      end
+    end
+
+    context 'with concurrency_limit and max_concurrency_limit_percentage attributes defined' do
+      before do
+        worker.concurrency_limit -> { 60 }
+        worker.max_concurrency_limit_percentage 0.5
+      end
+
+      it 'returns the concurrency_limit value' do
+        expect(get_concurrency_limit).to eq(60)
+      end
+    end
+
+    context 'for worker class without concurrency_limit attribute' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:urgency, :sidekiq_max_replicas, :sidekiq_concurrency, :expected_concurrency_limit) do
+        :high      | 10 | 10 | 35
+        :high      | 0  | 10 | 0
+        :high      | 10 | 0  | 0
+        :high      | 0  | 0  | 0
+        :low       | 10 | 10 | 25
+        :low       | 0  | 10 | 0
+        :low       | 10 | 0  | 0
+        :low       | 0  | 0  | 0
+        :throttled | 10 | 10 | 15
+        :throttled | 0  | 10 | 0
+        :throttled | 10 | 0  | 0
+        :throttled | 0  | 0  | 0
+      end
+
+      with_them do
+        before do
+          worker.urgency urgency
+          stub_env("SIDEKIQ_MAX_REPLICAS", sidekiq_max_replicas)
+          stub_env("SIDEKIQ_CONCURRENCY", sidekiq_concurrency)
+        end
+
+        it 'returns expected limit' do
+          expect(get_concurrency_limit).to eq(expected_concurrency_limit)
+        end
+      end
+
+      context 'with max_concurrency_limit_percentage attribute' do
+        before do
+          stub_env("SIDEKIQ_MAX_REPLICAS", 10)
+          stub_env("SIDEKIQ_CONCURRENCY", 10)
+          worker.max_concurrency_limit_percentage 0.4
+        end
+
+        it 'returns expected limit' do
+          expect(get_concurrency_limit).to eq(40)
+        end
+      end
+
+      context 'with only SIDEKIQ_CONCURRENCY environment variable defined' do
+        before do
+          stub_env("SIDEKIQ_CONCURRENCY", 10)
+        end
+
+        it 'returns 0' do
+          expect(get_concurrency_limit).to eq(0)
+        end
+      end
+
+      context 'with only SIDEKIQ_MAX_REPLICAS environment variable defined' do
+        before do
+          stub_env("SIDEKIQ_MAX_REPLICAS", 10)
+        end
+
+        it 'returns 0' do
+          expect(get_concurrency_limit).to eq(0)
+        end
+      end
+
+      context 'when use_max_concurrency_limit_percentage_as_default_limit FF is disabled' do
+        before do
+          stub_feature_flags(use_max_concurrency_limit_percentage_as_default_limit: false)
+        end
+
+        it 'returns 0' do
+          expect(get_concurrency_limit).to eq(0)
+        end
       end
     end
   end

@@ -11,6 +11,7 @@ RSpec.describe ::Types::Ci::JobTokenScope::PoliciesEnum, feature_category: :secr
       ADMIN_ENVIRONMENTS
       READ_JOBS
       ADMIN_JOBS
+      READ_MERGE_REQUESTS
       READ_PACKAGES
       ADMIN_PACKAGES
       READ_PIPELINES

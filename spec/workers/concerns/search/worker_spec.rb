@@ -30,7 +30,7 @@ RSpec.describe Search::Worker, feature_category: :global_search do
     limit = 55
     expect(Search).to receive(:default_concurrency_limit).and_return(limit)
 
-    expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker_class)).to eq(limit)
+    expect(worker_class.get_concurrency_limit).to eq(limit)
   end
 
   it 'uses a logger built with Gitlab::Elasticsearch::Logger' do

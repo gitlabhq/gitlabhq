@@ -4,6 +4,10 @@ import { s__, __ } from '~/locale';
 export const RESOURCE_DEPLOYMENTS = { value: 'DEPLOYMENTS', text: s__('JobToken|Deployments') };
 export const RESOURCE_ENVIRONMENTS = { value: 'ENVIRONMENTS', text: s__('JobToken|Environments') };
 export const RESOURCE_JOBS = { value: 'JOBS', text: s__('JobToken|Jobs') };
+export const RESOURCE_MERGE_REQUESTS = {
+  value: 'MERGE_REQUESTS',
+  text: s__('JobToken|Merge requests'),
+};
 export const RESOURCE_PACKAGES = { value: 'PACKAGES', text: s__('JobToken|Packages') };
 export const RESOURCE_PIPELINES = { value: 'PIPELINES', text: s__('JobToken|Pipelines') };
 export const RESOURCE_RELEASES = { value: 'RELEASES', text: s__('JobToken|Releases') };
@@ -45,6 +49,11 @@ export const POLICY_ADMIN_JOBS = {
   value: 'ADMIN_JOBS',
   text: READ_AND_WRITE,
   resource: RESOURCE_JOBS,
+};
+export const POLICY_READ_MERGE_REQUESTS = {
+  value: 'READ_MERGE_REQUESTS',
+  text: READ,
+  resource: RESOURCE_MERGE_REQUESTS,
 };
 export const POLICY_READ_PACKAGES = {
   value: 'READ_PACKAGES',
@@ -110,6 +119,10 @@ export const POLICIES_BY_RESOURCE = [
   {
     resource: RESOURCE_JOBS,
     policies: [POLICY_NONE, POLICY_READ_JOBS, POLICY_ADMIN_JOBS],
+  },
+  {
+    resource: RESOURCE_MERGE_REQUESTS,
+    policies: [POLICY_NONE, POLICY_READ_MERGE_REQUESTS],
   },
   {
     resource: RESOURCE_PACKAGES,
