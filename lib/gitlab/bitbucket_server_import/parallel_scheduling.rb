@@ -8,6 +8,8 @@ module Gitlab
       attr_reader :project, :page_counter, :already_processed_cache_key,
         :job_waiter_cache_key, :job_waiter_remaining_cache_key
 
+      attr_accessor :enqueued_job_counter
+
       # The base cache key to use for tracking already processed objects.
       ALREADY_PROCESSED_CACHE_KEY =
         'bitbucket-server-importer/already-processed/%{project}/%{collection}'
@@ -31,6 +33,14 @@ module Gitlab
           format(JOB_WAITER_CACHE_KEY, project: project.id, collection: collection_method)
         @job_waiter_remaining_cache_key = format(JOB_WAITER_REMAINING_CACHE_KEY, project: project.id,
           collection: collection_method)
+
+        # The enqueued job counter is used to calculate job delays and distribute
+        # them over time. When the stage worker restarts, the counter resets to
+        # prevent jobs from being queued too far into the future. Such logic may
+        # result in more jobs being executed when the stage worker resumes. An
+        # alternative solution would complicate the delay logic, so for simplicity
+        # we accept more jobs being executed.
+        @enqueued_job_counter = 0
       end
 
       private

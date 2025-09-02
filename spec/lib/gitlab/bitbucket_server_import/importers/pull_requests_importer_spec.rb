@@ -22,11 +22,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
     let(:commit_sha) { 'aaaa1' }
 
     let(:page_hash_1) do
-      { limit: 50, page_offset: 1 }
+      { limit: 100, page_offset: 1 }
     end
 
     let(:page_hash_2) do
-      { limit: 50, page_offset: 2 }
+      { limit: 100, page_offset: 2 }
     end
 
     before do
@@ -79,11 +79,11 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
 
     context 'when page counter has been set' do
       let(:page_hash_1) do
-        { limit: 50, page_offset: 2 }
+        { limit: 100, page_offset: 2 }
       end
 
       let(:page_hash_2) do
-        { limit: 50, page_offset: 3 }
+        { limit: 100, page_offset: 3 }
       end
 
       before do
@@ -110,6 +110,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
     context 'when pull request was already processed' do
       before do
         Gitlab::Cache::Import::Caching.set_add(importer.already_processed_cache_key, 1)
+        Gitlab::Cache::Import::Caching.write(importer.job_waiter_remaining_cache_key, 1)
       end
 
       it 'does not schedule job for processed pull requests', :aggregate_failures do
@@ -120,6 +121,29 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
         expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
         expect(waiter.jobs_remaining).to eq(3)
         expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('3')
+      end
+    end
+
+    context 'when Sidekiq worker is resumed after having already processed merge requests' do
+      before do
+        Gitlab::Cache::Import::Caching.set_add(importer.already_processed_cache_key, 1)
+        Gitlab::Cache::Import::Caching.write(importer.job_waiter_remaining_cache_key, 1)
+      end
+
+      it 'disregards the already enqueued jobs while spreading remaining jobs' do
+        freeze_time do
+          allow(importer).to receive(:concurrent_import_jobs_limit).and_return(2)
+
+          expect(Gitlab::BitbucketServerImport::ImportPullRequestWorker)
+            .to receive(:perform_in).with(1.0, project.id, anything, anything).ordered
+
+          expect(Gitlab::BitbucketServerImport::ImportPullRequestWorker)
+            .to receive(:perform_in).with(31.0, project.id, anything, anything).ordered
+
+          waiter = importer.execute
+
+          expect(waiter.jobs_remaining).to eq(3)
+        end
       end
     end
 

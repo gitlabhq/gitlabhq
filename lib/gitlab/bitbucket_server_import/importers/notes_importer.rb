@@ -6,6 +6,10 @@ module Gitlab
       class NotesImporter
         include ParallelScheduling
 
+        # Cannot exceed BitBucket Server's maximum page limit (500)
+        # https://confluence.atlassian.com/bitbucketserver/configuration-properties-776640155.html#Configurationproperties-Paging
+        PER_PAGE = 100
+
         def execute
           bitbucket_server_notes_separate_worker_enabled =
             project.import_data&.data&.dig('bitbucket_server_notes_separate_worker')
@@ -57,7 +61,7 @@ module Gitlab
             page = page_counter.current
 
             log_message = "importing merge request #{merge_request.iid} notes, "
-            log_message += "page #{page} using batch-size #{concurrent_import_jobs_limit}"
+            log_message += "page #{page} using batch-size #{PER_PAGE}"
             loop do
               log_info(
                 import_stage: 'import_notes',
@@ -66,7 +70,7 @@ module Gitlab
 
               activities = client.activities(
                 project_key, repository_slug, merge_request.iid,
-                page_offset: page, limit: concurrent_import_jobs_limit
+                page_offset: page, limit: PER_PAGE
               ).to_a
 
               break if activities.empty?
@@ -104,11 +108,9 @@ module Gitlab
         end
 
         def enqueue_comment_import(merge_request, comment_type, comment)
-          job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
-
           return if already_processed?(comment)
 
-          job_delay = calculate_job_delay(job_waiter.jobs_remaining)
+          job_delay = calculate_job_delay(enqueued_job_counter)
 
           object_hash = {
             iid: merge_request.iid,
@@ -117,6 +119,10 @@ module Gitlab
             comment: comment.to_hash.deep_stringify_keys
           }
           sidekiq_worker_class_individual.perform_in(job_delay, project.id, object_hash, job_waiter.key)
+
+          self.enqueued_job_counter += 1
+
+          job_waiter.jobs_remaining = Gitlab::Cache::Import::Caching.increment(job_waiter_remaining_cache_key)
 
           mark_as_processed(comment)
         end
