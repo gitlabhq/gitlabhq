@@ -149,7 +149,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
 
       context 'when pull request was already processed' do
         before do
-          Gitlab::Cache::Import::Caching.set_add(importer.already_processed_cache_key, "100")
+          importer.send(:mark_as_processed, pull_request_1)
         end
 
         it 'does not schedule job for processed merge requests', :aggregate_failures do
@@ -408,6 +408,60 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
           .to match_array(%w[comment-5])
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
           .to match_array(%w[100 101])
+      end
+    end
+
+    describe 'job delay' do
+      let(:activities) { [merge_event, pr_comment, declined_event] }
+
+      before do
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return(activities)
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+      end
+
+      it 'spreads jobs according to the defined concurrent limit' do
+        freeze_time do
+          allow(importer).to receive(:concurrent_import_jobs_limit).and_return(2)
+
+          expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker)
+            .to receive(:perform_in).with(1.0, project.id, anything, anything).ordered
+
+          expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker)
+            .to receive(:perform_in).with(31.0, project.id, anything, anything).ordered
+
+          expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker)
+            .to receive(:perform_in).with(61.0, project.id, anything, anything).ordered
+
+          waiter = importer.execute
+
+          expect(waiter.jobs_remaining).to eq(3)
+        end
+      end
+
+      context 'when Sidekiq worker is resumed after having already processed activities' do
+        before do
+          Gitlab::Cache::Import::Caching.write(importer.job_waiter_remaining_cache_key, 1)
+          importer.send(:mark_as_processed, activities.first)
+        end
+
+        it 'disregards the already enqueued jobs while spreading remaining jobs' do
+          freeze_time do
+            allow(importer).to receive(:concurrent_import_jobs_limit).and_return(2)
+
+            expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker)
+              .to receive(:perform_in).with(1.0, project.id, anything, anything).ordered
+
+            expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker)
+              .to receive(:perform_in).with(31.0, project.id, anything, anything).ordered
+
+            waiter = importer.execute
+
+            expect(waiter.jobs_remaining).to eq(3)
+          end
+        end
       end
     end
   end
