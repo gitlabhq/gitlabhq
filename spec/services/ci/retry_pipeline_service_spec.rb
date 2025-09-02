@@ -397,7 +397,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       before do
         build = create(:ci_build, pipeline: pipeline, status: :failed)
         allow_next_instance_of(Ci::RetryJobService) do |service|
-          allow(service).to receive(:can?).with(user, :update_build, build).and_return(false)
+          allow(service).to receive(:can?).with(user, :retry_job, build).and_return(false)
         end
       end
 

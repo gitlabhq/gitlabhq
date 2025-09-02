@@ -103,7 +103,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
       'merge_request_commits_metadata.project_id',
-      'sbom_vulnerability_scans.project_id'
+      'sbom_vulnerability_scans.project_id',
+      'merge_requests_merge_data.project_id' # This is temporary to fix production incident
     ]
   end
 

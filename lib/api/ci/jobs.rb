@@ -161,7 +161,7 @@ module API
           authorize_update_builds!
 
           job = find_job!(params[:job_id])
-          authorize!(:update_build, job)
+          authorize!(:retry_job, job)
 
           response = ::Ci::RetryJobService.new(@project, current_user).execute(job)
 

@@ -19,6 +19,7 @@ title: AI impact analytics
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
 - Changed to support Amazon Q in GitLab 18.2.1.
+- Pipeline metrics table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550356) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -105,15 +106,9 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 This metric tracks the percentage of Duo users who select [**Troubleshoot** to analyze failed CI/CD jobs](../gitlab_duo_chat/examples.md#from-a-merge-request).
 
@@ -123,6 +118,15 @@ Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
 For more information, see [epic 15025](https://gitlab.com/groups/gitlab-org/-/epics/15025).
 
 {{< /alert >}}
+
+### Pipeline metrics
+
+The Pipeline metrics table displays metrics for the pipelines run in the selected project.
+
+- **Total pipeline runs**: Number of pipeline runs in the project.
+- **Median duration**: Median duration (in minutes) of a pipeline run.
+- **Success rate**: Percentage of pipeline runs that completed successfully.
+- **Failure rate**: Percentage of pipeline runs that completed with failures.
 
 ## View AI impact analytics
 

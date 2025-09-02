@@ -4,7 +4,7 @@ class DeploymentPolicy < BasePolicy
   delegate { @subject.project }
 
   condition(:can_retry_deployable) do
-    can?(:update_build, @subject.deployable)
+    can?(:retry_job, @subject.deployable)
   end
 
   condition(:has_deployable) do

@@ -907,6 +907,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        context 'when user does not have permissions' do
+          let(:user) { reporter }
+
+          it 'responds :not_found' do
+            post_retry
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
 
       context 'and the job is a build' do
@@ -917,6 +927,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
+        end
+
+        context 'when user does not have permissions' do
+          let(:user) { reporter }
+
+          it 'responds :not_found' do
+            post_retry
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 

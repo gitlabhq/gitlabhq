@@ -45,6 +45,12 @@ For additional information for Helm chart installations, see
 
 ## 18.3.0
 
+### GitLab Duo
+
+A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
+GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0. See 
+[issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
+
 ### Geo installations 18.3.0
 
 - The [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/545533) that caused `rake gitlab:geo:check` to incorrectly report a failure when installing a Geo secondary site has been fixed in 18.3.0.

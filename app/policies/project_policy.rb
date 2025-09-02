@@ -5,8 +5,8 @@ class ProjectPolicy < BasePolicy
 
   UPDATE_JOB_PERMISSIONS = [
     :update_build, # TODO: remove usages of this permission
-    :play_job
-    # :retry_job,
+    :play_job,
+    :retry_job
     # :unschedule_job,
     # :manage_job_artifacts
   ].freeze

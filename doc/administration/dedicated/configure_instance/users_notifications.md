@@ -45,9 +45,24 @@ To add a new user to Switchboard for your GitLab Dedicated instance:
 
 An invitation to use Switchboard is sent to the user.
 
-### Reset a Switchboard user password
+### Reset your password
 
-To reset your Switchboard password, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+To reset your Switchboard password:
+
+1. On the Switchboard sign-in page, enter your email address then select **Continue**.
+1. Select **Forgot your password?**.
+1. Select **Send verification code**.
+1. Check your email for the verification code.
+1. Enter the verification code then select **Continue**.
+1. Enter and confirm your new password.
+1. Select **Save password**.
+
+After your password is reset, you're automatically signed in to Switchboard.
+If multi-factor authentication (MFA) is set up for your account, you're prompted to enter your MFA verification code.
+
+### Reset multi-factor authentication
+
+To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). 
 The support team will help you regain access to your account.
 
 ## Email notifications

@@ -84,7 +84,7 @@ module Ci
     end
 
     def check_access!(job)
-      unless can?(current_user, :update_build, job)
+      unless can?(current_user, :retry_job, job)
         raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
       end
     end

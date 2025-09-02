@@ -75,7 +75,7 @@ module Ci
     end
 
     def retryable?
-      job.retryable? && can?(request.current_user, :update_build, job)
+      job.retryable? && can?(request.current_user, :retry_job, job)
     end
 
     def playable?
