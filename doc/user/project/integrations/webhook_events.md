@@ -2516,6 +2516,9 @@ Payload example:
     "confirmed_by_id": 1,
     "dismissed_at": null,
     "dismissed_by_id": null,
+    "resolved_at": null,
+    "resolved_by_id": null,
+    "auto_resolved": false,
     "resolved_on_default_branch": false,
     "created_at": "2025-01-08T00:46:14.413Z",
     "updated_at": "2025-01-08T00:46:14.413Z"

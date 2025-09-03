@@ -167,7 +167,8 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     context 'when metadata does not exist' do
       before do
-        job.delete
+        job.metadata.delete
+        job.reload
       end
 
       it { is_expected.to be_nil }
@@ -378,9 +379,9 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   end
 
   describe '#id_tokens=' do
-    let(:id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } } }
+    let(:new_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } } }
 
-    subject(:set_id_tokens) { processable.id_tokens = id_tokens }
+    subject(:set_id_tokens) { processable.id_tokens = new_id_tokens }
 
     it 'does not change metadata.id_tokens' do
       expect { set_id_tokens }
@@ -393,9 +394,94 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it 'sets the value into metadata.id_tokens' do
-        set_id_tokens
+        expect { set_id_tokens }
+          .to change { processable.metadata.id_tokens }
+          .from({}).to(new_id_tokens)
+      end
+    end
+  end
 
-        expect(processable.metadata.id_tokens).to eq(id_tokens)
+  describe '#exit_code' do
+    subject(:exit_code) { processable.exit_code }
+
+    it { is_expected.to be_nil }
+
+    context 'when metadata exit_code is present' do
+      before do
+        processable.metadata.write_attribute(:exit_code, 1)
+      end
+
+      it { is_expected.to eq(1) }
+
+      context 'when job exit_code is present' do
+        before do
+          processable.write_attribute(:exit_code, 2)
+        end
+
+        it { is_expected.to eq(2) }
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+          end
+
+          it { is_expected.to eq(1) }
+        end
+      end
+    end
+  end
+
+  describe '#exit_code=' do
+    let(:existing_exit_code) { 1 }
+    let(:new_exit_code) { nil }
+
+    subject(:set_exit_code) { processable.exit_code = new_exit_code }
+
+    before do
+      processable.write_attribute(:exit_code, existing_exit_code)
+      processable.metadata.write_attribute(:exit_code, existing_exit_code)
+    end
+
+    it 'does not change job exit_code nor metadata exit_code value' do
+      expect { set_exit_code }
+        .to not_change { processable.read_attribute(:exit_code) }
+        .and not_change { processable.metadata.exit_code }
+    end
+
+    context 'when the new exit_code is not nil' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:new_exit_code, :expected_exit_code) do
+        2     | 2
+        -3    | 0
+        0     | 0
+        500   | 500
+        40000 | 32767
+      end
+
+      with_them do
+        it 'updates job exit_code with the expected value' do
+          expect { set_exit_code }
+            .to change { processable.read_attribute(:exit_code) }
+            .from(existing_exit_code).to(expected_exit_code)
+        end
+
+        it 'does not change metadata exit_code value' do
+          expect { set_exit_code }
+            .to not_change { processable.metadata.exit_code }
+        end
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it 'updates metadata exit_code with the expected value' do
+            expect { set_exit_code }
+              .to change { processable.metadata.exit_code }
+              .from(existing_exit_code).to(expected_exit_code)
+          end
+        end
       end
     end
   end

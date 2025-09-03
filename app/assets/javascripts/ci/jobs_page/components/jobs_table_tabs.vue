@@ -3,7 +3,7 @@ import { GlBadge, GlTab, GlTabs, GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CancelJobs from '~/ci/admin/jobs_table/components/cancel_jobs.vue';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
-import { BUILD_KIND } from '../constants';
+import { BRIDGE_KIND } from '../constants';
 
 export default {
   components: {
@@ -50,7 +50,7 @@ export default {
           count: limitedCounterWithDelimiter(this.allJobsCount),
           scope: null,
           testId: 'jobs-all-tab',
-          showBadge: this.filters?.kind === BUILD_KIND,
+          showBadge: this.filters?.kind !== BRIDGE_KIND,
         },
         {
           text: s__('Jobs|Finished'),

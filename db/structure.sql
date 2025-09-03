@@ -17332,6 +17332,26 @@ CREATE SEQUENCE instance_integrations_id_seq
 
 ALTER SEQUENCE instance_integrations_id_seq OWNED BY instance_integrations.id;
 
+CREATE TABLE instance_model_selection_feature_settings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    feature smallint NOT NULL,
+    offered_model_ref text,
+    offered_model_name text,
+    CONSTRAINT check_2d921a9d8a CHECK ((char_length(offered_model_ref) <= 255)),
+    CONSTRAINT check_6159907afe CHECK ((char_length(offered_model_name) <= 255))
+);
+
+CREATE SEQUENCE instance_model_selection_feature_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE instance_model_selection_feature_settings_id_seq OWNED BY instance_model_selection_feature_settings.id;
+
 CREATE TABLE instance_type_ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
@@ -29617,6 +29637,8 @@ ALTER TABLE ONLY instance_audit_events_streaming_headers ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY instance_integrations ALTER COLUMN id SET DEFAULT nextval('instance_integrations_id_seq'::regclass);
 
+ALTER TABLE ONLY instance_model_selection_feature_settings ALTER COLUMN id SET DEFAULT nextval('instance_model_selection_feature_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY integrations ALTER COLUMN id SET DEFAULT nextval('integrations_id_seq'::regclass);
 
 ALTER TABLE ONLY internal_ids ALTER COLUMN id SET DEFAULT nextval('internal_ids_id_seq'::regclass);
@@ -32456,6 +32478,9 @@ ALTER TABLE ONLY instance_audit_events_streaming_headers
 
 ALTER TABLE ONLY instance_integrations
     ADD CONSTRAINT instance_integrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY instance_model_selection_feature_settings
+    ADD CONSTRAINT instance_model_selection_feature_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY instance_type_ci_runner_machines
     ADD CONSTRAINT instance_type_ci_runner_machines_pkey PRIMARY KEY (id, runner_type);
@@ -38609,6 +38634,8 @@ CREATE INDEX index_insights_on_project_id ON insights USING btree (project_id);
 CREATE INDEX index_inst_type_ci_runner_machines_on_contacted_at_desc_id_desc ON instance_type_ci_runner_machines USING btree (contacted_at DESC, id DESC);
 
 CREATE UNIQUE INDEX index_inst_type_ci_runner_machines_on_runner_id_type_system_xid ON instance_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
+
+CREATE UNIQUE INDEX index_instance_model_selection_feature_settings_on_feature ON instance_model_selection_feature_settings USING btree (feature);
 
 CREATE INDEX index_instance_type_ci_runner_machines_on_executor_type ON instance_type_ci_runner_machines USING btree (executor_type);
 
@@ -45746,9 +45773,6 @@ ALTER TABLE ONLY service_desk_settings
 ALTER TABLE ONLY work_item_type_custom_lifecycles
     ADD CONSTRAINT fk_03c6229585 FOREIGN KEY (lifecycle_id) REFERENCES work_item_custom_lifecycles(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY design_management_designs_versions
-    ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY work_item_type_custom_lifecycles
     ADD CONSTRAINT fk_0425cd8e8b FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -46037,9 +46061,6 @@ ALTER TABLE ONLY design_management_versions
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT fk_1df79abe52 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY boards
-    ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY zoekt_enabled_namespaces
     ADD CONSTRAINT fk_1effa65b25 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -46290,7 +46311,7 @@ ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_351dde3a84 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY approval_merge_request_rules_users
-    ADD CONSTRAINT fk_35e88790f5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_35e88790f5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_3654b61b03 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -46405,9 +46426,6 @@ ALTER TABLE ONLY geo_event_log
 
 ALTER TABLE ONLY merge_request_predictions
     ADD CONSTRAINT fk_42d3b3824f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY remote_mirrors
-    ADD CONSTRAINT fk_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_43af04cf6d FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -46660,9 +46678,6 @@ ALTER TABLE ONLY deployment_approvals
 
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT fk_61d52aa0e7 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY events
-    ADD CONSTRAINT fk_61fbf6ca48 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
@@ -47675,9 +47690,6 @@ ALTER TABLE ONLY bulk_import_entities
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_d1074a6e16 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY project_mirror_data
-    ADD CONSTRAINT fk_d1aad367d7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_d1c8c1da6a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -48014,9 +48026,6 @@ ALTER TABLE ONLY approval_policy_merge_request_bypass_events
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_f3b8fc5e4e FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY design_management_designs_versions
-    ADD CONSTRAINT fk_f4d25ba00c FOREIGN KEY (version_id) REFERENCES design_management_versions(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_f53706dbdd FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
 
@@ -48184,6 +48193,9 @@ ALTER TABLE p_duo_workflows_checkpoints
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_032b12996a FOREIGN KEY (oncall_rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY design_management_designs_versions
+    ADD CONSTRAINT fk_rails_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT fk_rails_0434b48643 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -48406,6 +48418,9 @@ ALTER TABLE ONLY project_ci_feature_usages
 
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_rails_1dfc868911 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY boards
+    ADD CONSTRAINT fk_rails_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_policy_merge_request_bypass_events
     ADD CONSTRAINT fk_rails_1ebbdcc530 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -48713,6 +48728,9 @@ ALTER TABLE ONLY analytics_cycle_analytics_value_stream_settings
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_rails_4378a2e8d7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY remote_mirrors
+    ADD CONSTRAINT fk_rails_43a9aa4ca8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY lfs_file_locks
     ADD CONSTRAINT fk_rails_43df7a0412 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -48979,6 +48997,9 @@ ALTER TABLE ONLY status_page_published_incidents
 
 ALTER TABLE ONLY group_ssh_certificates
     ADD CONSTRAINT fk_rails_61f9eafcdf FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT fk_rails_61fbf6ca48 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY container_repository_states
     ADD CONSTRAINT fk_rails_63436c99ce FOREIGN KEY (container_repository_id) REFERENCES container_repositories(id) ON DELETE CASCADE;
@@ -49871,6 +49892,9 @@ ALTER TABLE ONLY subscriptions
 ALTER TABLE ONLY operations_strategies
     ADD CONSTRAINT fk_rails_d183b6e6dd FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_mirror_data
+    ADD CONSTRAINT fk_rails_d1aad367d7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_rails_d1d26abc25 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
@@ -50167,6 +50191,9 @@ ALTER TABLE ONLY board_group_recent_visits
 
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_rails_f4c811fd28 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY design_management_designs_versions
+    ADD CONSTRAINT fk_rails_f4d25ba00c FOREIGN KEY (version_id) REFERENCES design_management_versions(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_export_parts
     ADD CONSTRAINT fk_rails_f50ca1aabf FOREIGN KEY (vulnerability_export_id) REFERENCES vulnerability_exports(id) ON DELETE CASCADE;

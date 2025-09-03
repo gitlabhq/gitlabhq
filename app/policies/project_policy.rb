@@ -166,6 +166,9 @@ class ProjectPolicy < BasePolicy
     public_project? || internal_access? || project_allowed_for_job_token_by_scope?
   end
 
+  desc "If the user is via CI job token and project visibility allows access"
+  condition(:job_token_repository) { job_token_access_allowed_to?(:repository) }
+
   desc "If the user is via CI job token and project container registry visibility allows access"
   condition(:job_token_container_registry) { job_token_access_allowed_to?(:container_registry) }
 
@@ -979,6 +982,10 @@ class ProjectPolicy < BasePolicy
 
   rule { public_or_internal & job_token_package_registry }.policy do
     enable :read_package
+    enable :read_project
+  end
+
+  rule { public_or_internal & job_token_repository }.policy do
     enable :read_project
   end
 

@@ -78,3 +78,4 @@ export const DEFAULT_PAGINATION = {
 };
 
 export const BUILD_KIND = 'BUILD';
+export const BRIDGE_KIND = 'BRIDGE';

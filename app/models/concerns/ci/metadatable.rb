@@ -20,8 +20,6 @@ module Ci
 
       accepts_nested_attributes_for :metadata
 
-      delegate :exit_code, to: :metadata, allow_nil: true
-
       before_validation :ensure_metadata, on: :create
 
       scope :with_project_and_metadata, -> do
@@ -177,6 +175,19 @@ module Ci
 
     def scoped_user_id
       (read_from_new_destination? && read_attribute(:scoped_user_id)) || options[:scoped_user_id]
+    end
+
+    def exit_code
+      (read_from_new_destination? && read_attribute(:exit_code)) || metadata&.exit_code
+    end
+
+    def exit_code=(value)
+      return unless value
+
+      safe_value = value.to_i.clamp(0, Gitlab::Database::MAX_SMALLINT_VALUE)
+
+      write_attribute(:exit_code, safe_value)
+      ensure_metadata.exit_code = safe_value if can_write_metadata?
     end
 
     private

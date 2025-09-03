@@ -269,6 +269,7 @@ This process is performed until the number of allowlist entries is 200 or fewer.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405369) in GitLab 16.6.
+- Access to the repository [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439158) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -278,6 +279,7 @@ Projects not in the allowlist can use a job token to authenticate with public or
 - Access the container registry.
 - Access the package registry.
 - Access releases, deployments, and environments.
+- Access the repository.
 
 You can limit access to these actions to only the projects on the allowlist by setting
 each feature to be only visible to project members.

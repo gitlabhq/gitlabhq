@@ -1,0 +1,11 @@
+---
+table_name: instance_model_selection_feature_settings
+classes:
+- Ai::ModelSelection::InstanceModelSelectionFeatureSetting
+feature_categories:
+- ai_abstraction_layer
+description: Stores instance-level AI model selection configurations for GitLab Duo features, allowing administrators to specify which models are offered for each AI feature across the entire GitLab instance
+introduced_by_url:
+milestone: '18.4'
+gitlab_schema: gitlab_main_cell_setting
+table_size: small

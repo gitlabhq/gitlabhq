@@ -3040,6 +3040,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :builds             | [:read_commit_status]
         :releases           | [:read_release]
         :environments       | [:read_environment]
+        :repository         | [:read_project]
       end
 
       with_them do
@@ -3052,24 +3053,40 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           current_user.set_ci_job_token_scope!(job)
 
           scope_project.update!(ci_inbound_job_token_scope_enabled: true)
+
+          # disable all features so that they don't interfere with each other:
+          ProjectFeature::FEATURES.each do |feature|
+            project.project_feature.update!("#{feature}_access_level": ProjectFeature::DISABLED)
+          end
         end
 
         it 'allows the permissions based on the feature access level' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::ENABLED)
-
+          update_access_level(project, feature, ProjectFeature::ENABLED)
           permissions.each { |p| expect_allowed(p) }
         end
 
         it 'disallows the permissions if feature access level is restricted' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::PRIVATE)
-
+          update_access_level(project, feature, ProjectFeature::PRIVATE)
           permissions.each { |p| expect_disallowed(p) }
         end
 
         it 'disallows the permissions if feature access level is disabled' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::DISABLED)
+          update_access_level(project, feature, ProjectFeature::DISABLED)
 
           permissions.each { |p| expect_disallowed(p) }
+        end
+
+        def update_access_level(project, feature, state)
+          # builds require repository access level to the same level:
+          project.project_feature.update!('repository_access_level': state) if feature == :builds
+
+          # environments require repository and builds to be set to the same state if enabled:
+          if feature == :environments
+            project.project_feature.update!('repository_access_level': state)
+            project.project_feature.update!('builds_access_level': state)
+          end
+
+          project.project_feature.update!("#{feature}_access_level": state)
         end
       end
     end

@@ -18828,11 +18828,24 @@ The connection type for [`MergeRequest`](#mergerequest).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergerequestconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="mergerequestconnectionedges"></a>`edges` | [`[MergeRequestEdge]`](#mergerequestedge) | A list of edges. |
 | <a id="mergerequestconnectionnodes"></a>`nodes` | [`[MergeRequest]`](#mergerequest) | A list of nodes. |
 | <a id="mergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
 | <a id="mergerequestconnectiontotaltimetomerge"></a>`totalTimeToMerge` | [`Float`](#float) | Total sum of time to merge, in seconds, for the collection of merge requests. |
+
+##### Fields with arguments
+
+###### `MergeRequestConnection.count`
+
+Limited count of collection. Returns limit + 1 for counts greater than the limit.
+
+Returns [`Int!`](#int).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergerequestconnectioncountlimit"></a>`limit` | [`Int`](#int) | Limit value to be applied to the count query. Default is 1000. |
 
 #### `MergeRequestDiffConnection`
 
@@ -41808,9 +41821,9 @@ Risk score information for a specific project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="riskscorebyprojectproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project!`](#project) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score belongs to the project. |
-| <a id="riskscorebyprojectrating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk rating for the project. |
-| <a id="riskscorebyprojectscore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score for the project. |
+| <a id="riskscorebyprojectproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score belongs to the project. |
+| <a id="riskscorebyprojectrating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk rating for the project. |
+| <a id="riskscorebyprojectscore"></a>`score` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score for the project. |
 
 ### `RootStorageStatistics`
 

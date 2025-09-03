@@ -115,15 +115,20 @@ To add a commit diff comment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
-1. By the line you want to comment on, hover over the line number and select **Comment** ({{< icon name="comment" >}}).
-   You can select multiple lines by dragging the **Comment** ({{< icon name="comment" >}}) icon.
+1. Start a comment:
+   - To comment on an entire file, find the file you want to comment on and,
+     in the file header, select **Comment on this file** ({{< icon name="comment" >}}).
+   - To comment on specific lines, find the line number you want to comment on. Hover over the line number,
+   then select **Comment** ({{< icon name="comment" >}}). To select more lines, drag the
+   **Comment** ({{< icon name="comment" >}}) icon.
 1. Enter your comment.
-1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
-   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
-1. To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
-   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. Submit your comment:
+   - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+     - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+     - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+   - To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
+     - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+     - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
 The comment displays on the merge request's **Overview** tab.
 

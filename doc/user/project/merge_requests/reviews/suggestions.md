@@ -31,6 +31,8 @@ merge request, authored by the user who suggested the changes.
         ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
      1. Select and drag your selection to include all desired lines. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
+   - To comment on an entire file instead of specific lines, in the header for the file,
+     select **Comment on this file** ({{< icon name="comment" >}}).
 1. In the comment toolbar, select **Insert suggestion** ({{< icon name="doc-code" >}}). GitLab
    inserts a pre-populated code block into your comment, like this:
 

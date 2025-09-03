@@ -5339,7 +5339,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it 'correctly sets the exit code' do
       expect { drop_with_exit_code }
-        .to change { build.reload.metadata&.exit_code }.from(nil).to(1)
+        .to change { build.reload.exit_code }.from(nil).to(1)
     end
 
     shared_examples 'drops the build without changing allow_failure' do
@@ -5435,7 +5435,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'wraps around to max size of a signed smallint' do
         expect { drop_with_exit_code }
-        .to change { build.reload.metadata&.exit_code }.from(nil).to(32767)
+        .to change { build.reload.exit_code }.from(nil).to(32767)
       end
     end
   end

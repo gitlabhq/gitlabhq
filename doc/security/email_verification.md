@@ -44,7 +44,10 @@ An account is locked when either:
 
 A locked account without 2FA is not unlocked automatically.
 
-After a successful sign in, an email with a six-digit verification code is sent.
+After a successful sign in, an email with a six-digit verification code is sent to your account's
+primary email address. If you cannot access your primary email address, you can instead send the
+verification code to any of your secondary email addresses.
+
 The verification code expires after 60 minutes.
 
 To unlock your account, sign in and enter the verification code. You can also

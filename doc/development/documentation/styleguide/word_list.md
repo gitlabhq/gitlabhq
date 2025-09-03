@@ -1722,7 +1722,7 @@ Do not use **merge request branch**. See [branch](#branch).
 
 ## merge requests
 
-Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it out on first use.
+Use lowercase for **merge requests**. Avoid the acronym **MR**, but if you must use it, spell it out on first use.
 
 ## Merge Request Summary
 

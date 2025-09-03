@@ -1647,6 +1647,54 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
               end
             end
           end
+
+          context 'and project is internal' do
+            let_it_be(:user) { create(:user) }
+            let_it_be(:top_level_group) { create(:group, name: 'top-level-group', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+            let_it_be(:main_project) { create(:project, :repository,  name: 'main', group: top_level_group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false) }
+            let_it_be(:project) { create(:project, :repository, name: 'internal', group: top_level_group, visibility_level: Gitlab::VisibilityLevel::INTERNAL, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false) }
+
+            let_it_be(:main_ci_build) { create(:ci_build, status: :running, project: main_project, user: user) }
+            let(:env) { { user: 'gitlab-ci-token', password: main_ci_build.token } }
+            let(:path) { "#{project.full_path}.git" }
+
+            before_all do
+              main_project.add_reporter(user)
+            end
+            context 'regular user with internal project' do
+              it_behaves_like 'pulls are allowed'
+
+              context 'when the internal project is not related to top_level_group' do
+                let(:project) { create(:project, :repository, name: 'internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL, package_registry_access_level: ProjectFeature::DISABLED, packages_enabled: false) }
+
+                it_behaves_like 'pulls are allowed'
+              end
+            end
+
+            context 'when user is not authenticated' do
+              let(:env) { {} }
+
+              it 'rejects pulls with 403 Forbidden' do
+                clone_get(path, **env)
+
+                expect(response).to have_gitlab_http_status(:unauthorized)
+                expect(response.body).to include("HTTP Basic: Access denied")
+              end
+            end
+
+            context 'with private repository and enabled package registry' do
+              let_it_be(:project) { create(:project, :repository, name: 'internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL, repository_access_level: ProjectFeature::PRIVATE, package_registry_access_level: ProjectFeature::ENABLED, packages_enabled: true) }
+
+              context 'regular user with internal project' do
+                it 'disallows pulls' do
+                  download(path, **env) do |response|
+                    expect(response).to have_gitlab_http_status(:forbidden)
+                    expect(response.body).to eq('You are not allowed to download code from this project.')
+                  end
+                end
+              end
+            end
+          end
         end
       end
 
