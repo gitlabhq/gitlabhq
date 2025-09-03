@@ -121,7 +121,7 @@ is not used.
 **Supported values**: These keywords can have custom defaults:
 
 - [`after_script`](#after_script)
-- [`artifacts`](#artifacts)
+- [`artifacts`](#artifacts), though due to [issue 404563](https://gitlab.com/gitlab-org/gitlab/-/issues/404563), the nested keyword `artifacts:expire_in` has no effect.
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)

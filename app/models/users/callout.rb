@@ -107,8 +107,8 @@ module Users
       product_usage_data_collection_changes: 103,
       dora_dashboard_migration_group: 104,
       dora_dashboard_migration_project: 105,
-      enable_duo_banner_admin_duo_settings_page: 106, # EE-only
-      enable_duo_banner_admin_dashboard: 107, # EE-only
+      # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
+      # 107 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       explore_duo_core_banner: 108, # EE-only
       merge_request_dashboard_display_preferences_popover: 109,
       vulnerability_archival: 110, # EE-only

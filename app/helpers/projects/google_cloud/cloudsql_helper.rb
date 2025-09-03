@@ -28,6 +28,9 @@ module Projects
 
       VERSIONS = {
         postgres: [
+          { value: 'POSTGRES_17', label: 'PostgreSQL 17' },
+          { value: 'POSTGRES_16', label: 'PostgreSQL 16' },
+          { value: 'POSTGRES_15', label: 'PostgreSQL 15' },
           { value: 'POSTGRES_14', label: 'PostgreSQL 14' },
           { value: 'POSTGRES_13', label: 'PostgreSQL 13' },
           { value: 'POSTGRES_12', label: 'PostgreSQL 12' },

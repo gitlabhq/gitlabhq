@@ -6226,9 +6226,6 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
-msgid "AiPowered|AI-native features now available in IDEs"
-msgstr ""
-
 msgid "AiPowered|Allow GitLab to process your code and project data for AI-powered features throughout this namespace. Your data will be sent to GitLab Duo for processing. Groups, subgroups, and projects can individually opt out if needed."
 msgstr ""
 
@@ -6263,9 +6260,6 @@ msgid "AiPowered|Capture detailed information about AI-related activities and re
 msgstr ""
 
 msgid "AiPowered|Change configuration"
-msgstr ""
-
-msgid "AiPowered|Code Suggestions and Chat are now available in supported IDEs as part of GitLab Duo Core for all users of your %{plan} plan."
 msgstr ""
 
 msgid "AiPowered|Configuration"
@@ -6305,9 +6299,6 @@ msgid "AiPowered|Early Access Program banner dismissed. You will not see it agai
 msgstr ""
 
 msgid "AiPowered|Enable AI logs"
-msgstr ""
-
-msgid "AiPowered|Enable GitLab Duo Core"
 msgstr ""
 
 msgid "AiPowered|Enabled"
@@ -6358,9 +6349,6 @@ msgstr ""
 msgid "AiPowered|Get started with GitLab Duo"
 msgstr ""
 
-msgid "AiPowered|Get started with GitLab Duo Core"
-msgstr ""
-
 msgid "AiPowered|GitLab Duo Agent Platform"
 msgstr ""
 
@@ -6382,9 +6370,6 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Core available to all users"
 msgstr ""
 
-msgid "AiPowered|GitLab Duo Core will be available to all users in your %{plan} plan, including Chat and Code Suggestions in supported IDEs. %{eligibilityLinkStart}Eligibility requirements apply%{eligibilityLinkEnd}. By enabling GitLab Duo, you accept the %{aiLinkStart}GitLab AI functionality terms%{aiLinkEnd}."
-msgstr ""
-
 msgid "AiPowered|GitLab Duo Pro or Enterprise"
 msgstr ""
 
@@ -6404,9 +6389,6 @@ msgid "AiPowered|Ideal for lowest latency. An IDE must be able to connect to htt
 msgstr ""
 
 msgid "AiPowered|Indirect connections through GitLab self-managed instance"
-msgstr ""
-
-msgid "AiPowered|Learn more"
 msgstr ""
 
 msgid "AiPowered|Local AI Gateway URL"
@@ -7565,9 +7547,6 @@ msgstr ""
 msgid "An error occurred while editing lock information, please try again."
 msgstr ""
 
-msgid "An error occurred while enabling GitLab Duo Core. Reload the page to try again."
-msgstr ""
-
 msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
@@ -7794,9 +7773,6 @@ msgid "An error occurred while subscribing to this page. Please try again later.
 msgstr ""
 
 msgid "An error occurred while triggering the job."
-msgstr ""
-
-msgid "An error occurred while trying to enable GitLab Duo Core. Reload the page to try again."
 msgstr ""
 
 msgid "An error occurred while trying to follow this user, please try again."
@@ -12667,6 +12643,9 @@ msgid "Cancelled"
 msgstr ""
 
 msgid "Cancelling Preview"
+msgstr ""
+
+msgid "Cannot activate: Maximum number of %{name} (%{count}) exceeded"
 msgstr ""
 
 msgid "Cannot assign a confidential epic to a non-confidential issue. Make the issue confidential and try again"
@@ -29787,9 +29766,6 @@ msgid "GitLab Duo Chat"
 msgstr ""
 
 msgid "GitLab Duo Chat with Amazon Q"
-msgstr ""
-
-msgid "GitLab Duo Core is now enabled."
 msgstr ""
 
 msgid "GitLab Duo code features"

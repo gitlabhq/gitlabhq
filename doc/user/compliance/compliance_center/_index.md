@@ -19,6 +19,10 @@ title: Compliance center
 
 {{< /history >}}
 
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group or project.
+
 The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
 
 The compliance center comprises the:

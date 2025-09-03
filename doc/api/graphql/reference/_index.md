@@ -49634,8 +49634,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumdora_dashboard_migration_project"></a>`DORA_DASHBOARD_MIGRATION_PROJECT` | Callout feature name for dora_dashboard_migration_project. |
 | <a id="usercalloutfeaturenameenumduo_amazon_q_alert"></a>`DUO_AMAZON_Q_ALERT` | Callout feature name for duo_amazon_q_alert. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
-| <a id="usercalloutfeaturenameenumenable_duo_banner_admin_dashboard"></a>`ENABLE_DUO_BANNER_ADMIN_DASHBOARD` | Callout feature name for enable_duo_banner_admin_dashboard. |
-| <a id="usercalloutfeaturenameenumenable_duo_banner_admin_duo_settings_page"></a>`ENABLE_DUO_BANNER_ADMIN_DUO_SETTINGS_PAGE` | Callout feature name for enable_duo_banner_admin_duo_settings_page. |
 | <a id="usercalloutfeaturenameenumexplore_duo_core_banner"></a>`EXPLORE_DUO_CORE_BANNER` | Callout feature name for explore_duo_core_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |

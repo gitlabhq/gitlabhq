@@ -85,7 +85,7 @@ services that you want to use during runtime:
 default:
   image: ruby:2.6
   services:
-    - postgres:11.7
+    - postgres:16.10
   before_script:
     - bundle install
 
@@ -124,7 +124,7 @@ For example, the following two definitions are equal:
   image: "registry.example.com/my/image:latest"
 
   services:
-    - postgresql:14.3
+    - postgresql:16.10
     - redis:latest
   ```
 
@@ -136,7 +136,7 @@ For example, the following two definitions are equal:
     name: "registry.example.com/my/image:latest"
 
   services:
-    - name: postgresql:14.3
+    - name: postgresql:16.10
     - name: redis:latest
   ```
 

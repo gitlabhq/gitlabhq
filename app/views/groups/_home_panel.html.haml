@@ -5,11 +5,6 @@
 .group-home-panel
 
   - unless @group.subgroup?
-    = render_if_exists 'groups/enable_duo_banner',
-      title: s_('AiPowered|AI-native features now available in IDEs'),
-      group: @group,
-      callouts_feature_name: 'enable_duo_banner_group_page'
-
     = render_if_exists 'shared/targeted_message_banner', group: @group
 
   .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-my-5
