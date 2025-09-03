@@ -86,21 +86,6 @@ RSpec.describe Projects::GroupLinks::CreateService, '#execute', feature_category
         end
       end
 
-      context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
-        before do
-          stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
-        end
-
-        it 'executes refresh_members_authorized_projects' do
-          expect(group)
-            .to receive(:refresh_members_authorized_projects)
-            .with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
-            .once
-
-          subject.execute
-        end
-      end
-
       context 'when sharing outside the hierarchy is disabled' do
         let_it_be(:shared_group_parent) do
           create(:group,

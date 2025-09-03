@@ -75,21 +75,6 @@ RSpec.describe Projects::GroupLinks::UpdateService, '#execute', feature_category
             change { Ability.allowed?(group_user, :developer_access, project) }
               .from(true).to(false))
         end
-
-        context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
-          before do
-            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
-          end
-
-          it 'executes refresh_members_authorized_projects' do
-            expect(group)
-              .to receive(:refresh_members_authorized_projects)
-              .with(priority: UserProjectAccessChangedService::LOW_PRIORITY)
-              .once
-
-            subject
-          end
-        end
       end
 
       context 'with only param not requiring authorization refresh' do

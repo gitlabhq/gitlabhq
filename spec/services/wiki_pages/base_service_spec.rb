@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe WikiPages::BaseService, feature_category: :wiki do
   let(:project) { double('project') }
-  let(:user) { double('user') }
+  let(:user) { build(:user, id: 1) }
   let(:page) { instance_double(WikiPage, template?: false) }
 
   before do

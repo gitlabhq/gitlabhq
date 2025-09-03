@@ -26,25 +26,6 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
       expect(page).not_to have_button(s_('GroupProjectArchiveSettings|Archive'))
       expect(page).not_to have_button(s_('GroupProjectUnarchiveSettings|Unarchive'))
     end
-
-    context 'when `archive_group` flag is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-
-        visit edit_project_path(project)
-      end
-
-      # This becomes a no-op as our policy prevents archiving projects that belongs to an archived group.
-      # The current version is not built to handle this scenario.
-      it 'cannot archive project' do
-        expect(page).to have_content('Archive project')
-
-        click_link _('Archive')
-        click_button _('Archive project')
-
-        expect(project.reload.archived?).to be(false)
-      end
-    end
   end
 
   context 'when group is not archived' do
@@ -61,27 +42,6 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
           _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
           tag_pair(tag.strong, :strong_open, :strong_close)
         ))
-      end
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-
-          visit edit_project_path(project)
-        end
-
-        it 'can archive project' do
-          expect(page).to have_content('Archive project')
-
-          click_link _('Archive')
-          click_button _('Archive project')
-
-          expect(page).to have_current_path(project_path(project))
-          expect(page.body).to include(safe_format(
-            _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
-            tag_pair(tag.strong, :strong_open, :strong_close)
-          ))
-        end
       end
     end
 
@@ -102,27 +62,6 @@ RSpec.describe 'Projects > Settings > User archives a project', :js, feature_cat
           _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
           tag_pair(tag.strong, :strong_open, :strong_close)
         ))
-      end
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-
-          visit edit_project_path(project)
-        end
-
-        it 'can unarchive project' do
-          expect(page).to have_content('Unarchive project')
-
-          click_link _('Unarchive')
-          click_button _('Unarchive project')
-
-          expect(page).to have_current_path(project_path(project))
-          expect(page.body).not_to include(safe_format(
-            _('This project is archived. Its data is %{strong_open}read-only%{strong_close}.'),
-            tag_pair(tag.strong, :strong_open, :strong_close)
-          ))
-        end
       end
     end
   end

@@ -1090,6 +1090,23 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.mavenUpstreamRegistry`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
+
+Returns [`MavenUpstream`](#mavenupstream).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymavenupstreamregistryid"></a>`id` | [`VirtualRegistriesPackagesMavenUpstreamID!`](#virtualregistriespackagesmavenupstreamid) | Global ID of the Maven upstream registry. |
+
 ### `Query.mavenVirtualRegistry`
 
 {{< details >}}
@@ -33417,6 +33434,7 @@ Represents the upstream registries of a Maven virtual registry.
 | <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="mavenupstreampassword"></a>`password` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Password to sign in to the upstream registry. |
+| <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection!`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
 | <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
@@ -51498,6 +51516,12 @@ An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
 A `VirtualRegistriesPackagesMavenRegistryID` is a global ID. It is encoded as a string.
 
 An example `VirtualRegistriesPackagesMavenRegistryID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Registry/1"`.
+
+### `VirtualRegistriesPackagesMavenUpstreamID`
+
+A `VirtualRegistriesPackagesMavenUpstreamID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesPackagesMavenUpstreamID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Upstream/1"`.
 
 ### `VulnerabilitiesExternalIssueLinkID`
 

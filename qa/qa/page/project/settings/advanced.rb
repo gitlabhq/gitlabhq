@@ -18,11 +18,6 @@ module QA
             element 'change-path-button'
           end
 
-          view 'app/views/projects/settings/_archive.html.haml' do
-            element 'archive-project-link'
-            element 'unarchive-project-link'
-          end
-
           view 'app/views/projects/_export.html.haml' do
             element 'export-project-link'
             element 'download-export-link'
@@ -93,7 +88,7 @@ module QA
           end
 
           def unarchive_project
-            click_element feature_flag_controlled_element(:archive_group, 'unarchive-button', 'unarchive-project-link')
+            click_element 'unarchive-button'
             click_confirmation_ok_button_if_present
           end
 

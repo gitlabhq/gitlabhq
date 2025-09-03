@@ -1,9 +1,0 @@
----
-name: project_authorizations_update_in_background_for_group_shares
-feature_issue_url:
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195368
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550977
-milestone: '18.3'
-group: group::authorization
-type: gitlab_com_derisk
-default_enabled: false
