@@ -15434,7 +15434,7 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
-msgid "Compare %{oldCommitId}…%{newCommitId}"
+msgid "Compare %{old_commit} to %{new_commit}"
 msgstr ""
 
 msgid "Compare Branches"

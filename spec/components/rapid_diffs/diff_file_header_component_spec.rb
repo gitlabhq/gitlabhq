@@ -35,17 +35,6 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     expect(page.find(icon_selector)['href']).to include('copy-to-clipboard')
   end
 
-  it "renders submodule info", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/489868' do
-    allow(diff_file).to receive(:submodule?).and_return(true)
-    allow_next_instance_of(SubmoduleHelper) do |instance|
-      allow(instance).to receive(:submodule_links).and_return(nil)
-    end
-    render_component
-    expect(page.find('[data-testid="rd-diff-file-header-submodule"] svg use')['href']).to include('folder-git')
-    expect(page).to have_css('h2', text: diff_file.blob.name)
-    expect(page).to have_css('h2', text: diff_file.blob.id[0..7])
-  end
-
   it "renders path change" do
     old = 'old/path'
     new = 'new/path'
@@ -79,6 +68,44 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     render_component
     selector = "[aria-label=\"Added #{diff_file.added_lines} lines. Removed #{diff_file.removed_lines} lines.\"]"
     expect(page.find(selector)).to have_text("+#{diff_file.added_lines} −#{diff_file.removed_lines}")
+  end
+
+  context 'with a submodule diff' do
+    let(:instance) { create_instance }
+    let(:submodule_link) { nil }
+    let(:submodule_diff_compare_data) { nil }
+
+    before do
+      allow(diff_file).to receive(:submodule?).and_return(true)
+      allow(instance).to receive(:helpers).and_wrap_original do |original_method, *args|
+        helpers = original_method.call(*args)
+        allow(helpers).to receive_messages(submodule_link: submodule_link)
+        allow(helpers).to receive_messages(submodule_diff_compare_data: { title: 'Compare a to b', href: '/compare' })
+        helpers
+      end
+    end
+
+    context "with submodule link" do
+      let(:submodule_link) { 'submodule-link' }
+
+      it "renders submodule info" do
+        render_inline(instance)
+        expect(page.find('[data-testid="rd-diff-file-header-submodule"] svg use')['href']).to include('folder-git')
+        expect(page.find('[data-testid="rd-diff-file-header-submodule"] h2')).to have_text('submodule-link')
+      end
+    end
+
+    context "with submodule diff compare data" do
+      let(:submodule_diff_compare_data) { { title: 'Compare a to b', href: '/compare' } }
+
+      it "renders submodule compare link" do
+        render_inline(instance)
+        link = page.find('[data-testid="rd-diff-file-submodule-compare"]')
+        expect(link).not_to be_nil
+        expect(link[:href]).to eq('/compare')
+        expect(link.text).to include('Compare a to b')
+      end
+    end
   end
 
   context "with blob diff" do
@@ -162,7 +189,11 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     end
   end
 
+  def create_instance(**args)
+    described_class.new(diff_file:, **args)
+  end
+
   def render_component(**args)
-    render_inline(described_class.new(diff_file:, **args))
+    render_inline(create_instance(**args))
   end
 end
