@@ -29,7 +29,11 @@ export const availableGraphQLGroupActions = ({
   }
 
   if (userPermissions.archiveGroup) {
-    availableActions.push(archived ? ACTION_UNARCHIVE : ACTION_ARCHIVE);
+    if (archived) {
+      availableActions.push(ACTION_UNARCHIVE);
+    } else if (gon.features?.archiveGroup) {
+      availableActions.push(ACTION_ARCHIVE);
+    }
   }
 
   if (userPermissions.removeGroup && isSelfDeletionScheduled) {

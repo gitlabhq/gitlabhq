@@ -70846,6 +70846,9 @@ msgstr ""
 msgid "VirtualRegistry|Select an upstream"
 msgstr ""
 
+msgid "VirtualRegistry|Something went wrong while adding the upstream to virtual registry. Try again."
+msgstr ""
+
 msgid "VirtualRegistry|Something went wrong while creating the upstream. Try again."
 msgstr ""
 
@@ -70877,6 +70880,9 @@ msgid "VirtualRegistry|Updated %{date}"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream URL"
+msgstr ""
+
+msgid "VirtualRegistry|Upstream added to virtual registry successfully."
 msgstr ""
 
 msgid "VirtualRegistry|Upstream cache cleared successfully."

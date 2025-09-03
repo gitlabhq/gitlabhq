@@ -1212,23 +1212,6 @@
 #################
 # Caching rules #
 #################
-.caching:rules:packages-cleanup:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    # The security mirror doesn't use the package registry
-    - <<: *if-security-schedule
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/packages/automated_cleanup.rb"
-      when: manual
-      allow_failure: true
-
 # rules for updating unprotected caches via maintenance schedule pipelines
 .caching:rules:update-master-based-caches:
   rules:
@@ -1277,11 +1260,6 @@
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
     - !reference [.build-images:rules:build-gdk-image, rules]
-
-.caching:rules:update-frontend-fixtures:
-  rules:
-    - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
-      changes: *code-backstage-patterns
 
 ######################
 # CI Templates Rules #
@@ -1724,6 +1702,15 @@
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - !reference [.frontend:rules:jest, rules]
+
+.frontend:rules:fixtures-packages-cleanup:
+  rules:
+    - *if-dot-com-ee-schedule-default-branch-maintenance
+
+.frontend:rules:update-frontend-fixtures:
+  rules:
+    - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+      changes: *code-backstage-patterns
 
 ################
 # Memory rules #

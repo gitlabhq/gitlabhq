@@ -22,7 +22,7 @@ const itCorrectlyFormatsWithActions = (formattedGroup, mockGroup) => {
     accessLevel: {
       integerValue: 50,
     },
-    availableActions: ['edit', 'archive', 'restore', 'leave', 'delete-immediately'],
+    availableActions: ['edit', 'restore', 'leave', 'delete-immediately'],
     children: [],
     childrenLoading: false,
     hasChildren: false,
@@ -55,7 +55,7 @@ describe('formatGraphQLGroup', () => {
     itCorrectlyFormatsWithActions(formattedGroup, mockGroup);
   });
 
-  it('correctly formats the group without edit, archive, delete, and leave permissions', () => {
+  it('correctly formats the group without edit, delete, and leave permissions', () => {
     const nonDeletableGroup = organizationGroups[1];
     const formattedGroup = formatGraphQLGroup(nonDeletableGroup);
 
@@ -76,7 +76,7 @@ describe('formatGraphQLGroups', () => {
     expect(formattedGroups).toHaveLength(organizationGroups.length);
   });
 
-  it('correctly formats the groups without edit, archive, delete, and leave permissions', () => {
+  it('correctly formats the groups without edit, delete, and leave permissions', () => {
     const nonDeletableGroup = organizationGroups[1];
     const formattedGroups = formatGraphQLGroups(organizationGroups);
     const nonDeletableFormattedGroup = formattedGroups[1];

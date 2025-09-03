@@ -3,16 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Slsa::PublishProvenanceWorker, feature_category: :artifact_security do
-  let_it_be(:build) { create(:ci_build, :artifacts, :finished) }
-  let_it_be(:provenance_statement) { create(:provenance_statement) }
   let(:worker) { described_class.new }
 
-  let(:file_contents) { statement_artifact.file.file.read }
-  let(:statement_artifact) { statement_artifacts.first }
-
-  before do
-    allow(Ci::Slsa::ProvenanceStatement).to receive(:from_build).with(build).and_return(provenance_statement)
-  end
+  include_context 'with build, pipeline and artifacts'
 
   describe '#perform' do
     subject(:perform) { worker.perform(build.id) }

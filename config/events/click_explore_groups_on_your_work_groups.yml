@@ -1,0 +1,15 @@
+---
+description: Click Explore groups on Your work > Groups
+internal_events: true
+action: click_explore_groups_on_your_work_groups
+identifiers:
+- user
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203490
+tiers:
+- free
+- premium
+- ultimate

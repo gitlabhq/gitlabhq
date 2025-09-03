@@ -69,22 +69,7 @@ RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :a
   describe '#from_build' do
     subject(:provenance_statement) { described_class.from_build(build) }
 
-    let_it_be(:user) { create(:user) }
-    let_it_be(:group, reload: true) { create_default(:group, :allow_runner_registration_token) }
-    let_it_be(:project, reload: true) { create_default(:project, :repository, group: group) }
-
-    let_it_be(:pipeline, reload: true) do
-      create_default(
-        :ci_pipeline,
-        project: project,
-        sha: project.commit.id,
-        ref: project.default_branch,
-        status: 'success'
-      )
-    end
-
-    let_it_be(:runner) { create(:ci_runner, :hosted_runner) }
-    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    include_context 'with build, pipeline and artifacts'
 
     context 'when a valid build is passed as a parameter' do
       let_it_be(:build) { create(:ci_build, :artifacts, :finished, runner_manager: runner_manager, pipeline: pipeline) }

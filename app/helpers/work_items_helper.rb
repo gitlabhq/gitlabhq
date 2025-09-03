@@ -41,6 +41,7 @@ module WorkItemsHelper
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
       can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
+      can_edit: can?(current_user, :admin_project, resource_parent).to_s,
       full_path: resource_parent.full_path,
       group_path: group&.full_path,
       issues_list_path: issues_path_for(resource_parent),

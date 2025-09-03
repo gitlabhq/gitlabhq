@@ -1,6 +1,4 @@
-- return unless Feature.enabled?(:archive_group, group)
-
 - if group.self_or_ancestors_archived?
   #js-unarchive-settings{ data: group_unarchive_settings_app_data(group) }
-- else
+- elsif Feature.enabled?(:archive_group, group.root_ancestor)
   #js-archive-settings{ data: group_archive_settings_app_data(group) }

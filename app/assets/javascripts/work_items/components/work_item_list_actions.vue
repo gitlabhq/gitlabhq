@@ -45,6 +45,9 @@ export default {
     canImportWorkItems: {
       default: false,
     },
+    canEdit: {
+      default: false,
+    },
   },
   props: {
     workItemCount: {
@@ -112,10 +115,13 @@ export default {
     hasSubscriptionOptions() {
       return this.rssPath || this.calendarPath;
     },
+    isJiraImportVisible() {
+      return Boolean(this.projectImportJiraPath) && this.canEdit;
+    },
     hasImportExportOptions() {
       return (
         this.showImportExportButtons &&
-        (Boolean(this.projectImportJiraPath) || this.showExportButton || this.canImportWorkItems)
+        (this.isJiraImportVisible || this.showExportButton || this.canImportWorkItems)
       );
     },
     shouldShowDropdown() {
@@ -151,7 +157,7 @@ export default {
   >
     <template v-if="hasImportExportOptions">
       <gl-disclosure-dropdown-item
-        v-if="projectImportJiraPath"
+        v-if="isJiraImportVisible"
         data-testid="import-from-jira-link"
         :item="importFromJira"
       />

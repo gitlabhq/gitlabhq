@@ -64,7 +64,8 @@ module Ci
     end
 
     def should_publish_provenance?(build)
-      Feature.enabled?(:slsa_provenance_statement, build.project) && build.artifacts?
+      Feature.enabled?(:slsa_provenance_statement, build.project) && build.artifacts? && \
+        build.yaml_variables.any? { |variable| variable[:key] == "GENERATE_PROVENANCE" }
     end
   end
 end

@@ -19,6 +19,14 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
     stub_application_setting(default_group_visibility: internal)
   end
 
+  it 'pushes `archive_group` feature flag' do
+    stub_feature_flags(archive_group: true)
+
+    visit admin_groups_path
+
+    expect(page).to have_pushed_frontend_feature_flags(archiveGroup: true)
+  end
+
   describe 'list' do
     context 'when admin_groups_vue feature flag is disabled' do
       before do

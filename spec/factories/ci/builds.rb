@@ -777,5 +777,15 @@ FactoryBot.define do
         build.build_runner_session(url: 'https://gitlab.example.com')
       end
     end
+
+    trait :slsa_artifacts do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :mocked_checksum, :slsa_archive, :public, job: build,
+          expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :mocked_checksum, :slsa_metadata, :public, job: build,
+          expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
   end
 end

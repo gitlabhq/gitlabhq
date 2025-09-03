@@ -2507,7 +2507,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it 'returns 403' do
         post api("/groups/#{group.id}/archive", user1)
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
   end
@@ -2564,17 +2564,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     context 'when authenticated as non-owner' do
       it 'returns 403' do
         post api("/groups/#{group.id}/unarchive", user2)
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-      end
-
-      it 'returns 403' do
-        post api("/groups/#{group.id}/unarchive", user1)
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end

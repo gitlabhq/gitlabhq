@@ -132,8 +132,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:archive_group, @subject.root_ancestor)
   end
 
-  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
-
   condition(:archived?, scope: :subject) { @subject.self_or_ancestors_archived? }
   condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
 
@@ -373,6 +371,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_package
     enable :admin_protected_environments
+    enable :archive_group
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control

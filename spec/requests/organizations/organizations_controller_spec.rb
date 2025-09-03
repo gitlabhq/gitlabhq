@@ -90,10 +90,24 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     it_behaves_like 'when the user is signed in'
   end
 
+  shared_examples 'controller that uses `archive_group` feature flag' do
+    let_it_be(:user) { create(:user, organizations: [organization]) }
+
+    it 'pushes `archive_group` feature flag' do
+      stub_feature_flags(archive_group: true)
+
+      sign_in(user)
+      gitlab_request
+
+      expect(response.body).to have_pushed_frontend_feature_flags(archiveGroup: true), response.body
+    end
+  end
+
   describe 'GET #show' do
     subject(:gitlab_request) { get organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+    it_behaves_like 'controller that uses `archive_group` feature flag'
   end
 
   describe 'GET #activity' do
@@ -270,6 +284,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     subject(:gitlab_request) { get groups_and_projects_organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+    it_behaves_like 'controller that uses `archive_group` feature flag'
   end
 
   describe 'GET #users' do

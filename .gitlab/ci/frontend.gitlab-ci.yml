@@ -168,7 +168,7 @@ upload-frontend-fixtures:
   extends:
     - .default-retry
     - .with-ruby-slim-image
-    - .caching:rules:update-frontend-fixtures
+    - .frontend:rules:update-frontend-fixtures
   stage: fixtures
   needs:
     - !reference [.with-fixtures-needs, needs]
@@ -178,6 +178,19 @@ upload-frontend-fixtures:
       fixtures_archive_doesnt_exist || { echo "Exiting early as package exists!"; exit 0; }
       create_fixtures_package
       upload_fixtures_package
+
+# Cleans up older fixtures packages
+cleanup-frontend-fixtures:
+  extends:
+    - .default-retry
+    - .with-ruby-slim-image
+    - .frontend:rules:fixtures-packages-cleanup
+  stage: fixtures
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/packages/automated_cleanup.rb
 
 graphql-schema-dump:
   variables:

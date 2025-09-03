@@ -92,7 +92,14 @@ describe('YourWorkGroupsApp', () => {
       firstTabRouteNames: [],
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
-      eventTracking: {},
+      eventTracking: {
+        filteredSearch: {
+          [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_groups',
+        },
+        pagination: 'click_pagination_on_your_work_groups',
+        tabs: 'click_tab_on_your_work_groups',
+        sort: 'click_sort_on_your_work_groups',
+      },
       tabCountsQuery: groupCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
       shouldUpdateActiveTabCountFromTabQuery: false,

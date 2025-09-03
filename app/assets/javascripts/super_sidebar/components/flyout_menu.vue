@@ -27,10 +27,16 @@ export const FLYOUT_PADDING = 12;
 export default {
   name: 'FlyoutMenu',
   components: { NavItem },
+  inject: ['isIconOnly'],
   props: {
     targetId: {
       type: String,
       required: true,
+    },
+    title: {
+      type: String,
+      required: false,
+      default: null,
     },
     items: {
       type: Array,
@@ -155,21 +161,27 @@ export default {
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >
-    <ul
-      class="gl-min-w-20 gl-max-w-34 gl-list-none gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
-      @mouseenter="showSVG = false"
+    <div
+      class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle gl-p-2 gl-pb-1 gl-shadow-md dark:gl-bg-strong"
     >
-      <nav-item
-        v-for="item of items"
-        :key="item.id"
-        :item="item"
-        :is-flyout="true"
-        :async-count="asyncCount"
-        @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
-        @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
-        @nav-link-click="$emit('nav-link-click')"
-      />
-    </ul>
+      <header v-if="isIconOnly && title" class="gl-px-5 gl-py-2 gl-text-sm gl-font-bold">
+        {{ title }}
+      </header>
+      <hr v-if="isIconOnly && title" class="-gl-mx-2 gl-my-2" />
+      <ul class="gl-min-w-20 gl-max-w-34 gl-list-none gl-p-0" @mouseenter="showSVG = false">
+        <nav-item
+          v-for="item of items"
+          :key="item.id"
+          :item="item"
+          :is-flyout="true"
+          :async-count="asyncCount"
+          @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
+          @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
+          @nav-link-click="$emit('nav-link-click')"
+        />
+      </ul>
+    </div>
+
     <svg
       v-if="targetRect && showSVG"
       :width="flyoutX"

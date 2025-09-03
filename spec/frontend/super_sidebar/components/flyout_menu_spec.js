@@ -10,15 +10,22 @@ describe('FlyoutMenu', () => {
   let wrapper;
   let autoUpdateCleanup;
 
-  const createComponent = () => {
+  const createComponent = (provide = {}) => {
     wrapper = mountExtended(FlyoutMenu, {
       attachTo: document.body,
       propsData: {
         targetId,
         items: [{ id: 1, title: 'item 1', link: 'https://example.com' }],
+        title: 'Foo',
+      },
+      provide: {
+        isIconOnly: false,
+        ...provide,
       },
     });
   };
+
+  const findHeader = () => wrapper.find('header');
 
   beforeEach(() => {
     autoUpdateCleanup = autoUpdate.mockReturnValue(jest.fn());
@@ -38,6 +45,23 @@ describe('FlyoutMenu', () => {
     createComponent();
     expect(wrapper.element.style.padding).toContain(`${FLYOUT_PADDING}px`);
     expect(wrapper.element.style.paddingLeft).toContain(`${FLYOUT_PADDING * 2}px`);
+  });
+
+  describe('header and separator', () => {
+    describe('when isIconOnly is false', () => {
+      it('does not render the header', () => {
+        createComponent();
+        expect(findHeader().exists()).toBe(false);
+      });
+    });
+
+    describe('when isIconOnly is true', () => {
+      it('renders the header', () => {
+        createComponent({ isIconOnly: true });
+        expect(findHeader().exists()).toBe(true);
+        expect(findHeader().text()).toBe('Foo');
+      });
+    });
   });
 
   it('cleans up', () => {

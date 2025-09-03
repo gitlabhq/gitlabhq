@@ -294,7 +294,11 @@ export default {
             </gl-button>
           </div>
         </div>
-        <icon-only-toggle v-if="canIconOnly" @toggle="isIconOnly = !isIconOnly" />
+        <icon-only-toggle
+          v-if="canIconOnly"
+          class="gl-hidden xl:gl-flex"
+          @toggle="isIconOnly = !isIconOnly"
+        />
       </div>
     </nav>
     <a

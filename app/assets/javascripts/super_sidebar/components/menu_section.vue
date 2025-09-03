@@ -180,6 +180,7 @@ export default {
     <flyout-menu
       v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && navItems.length > 0"
       :target-id="`menu-section-button-${itemId}`"
+      :title="item.title"
       :items="navItems"
       :async-count="asyncCount"
       @mouseover="isMouseOverFlyout = true"

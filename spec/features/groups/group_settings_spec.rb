@@ -358,8 +358,6 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
           tag_pair(tag.strong, :strong_open, :strong_close)
         ))
       end
-
-      it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'
     end
 
     context 'when ancestor is archived' do

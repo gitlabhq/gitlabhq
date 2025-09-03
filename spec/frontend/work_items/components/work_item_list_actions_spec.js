@@ -33,6 +33,7 @@ describe('WorkItemsListActions component', () => {
         rssPath: null,
         calendarPath: null,
         canImportWorkItems: false,
+        canEdit: false,
         ...injectedProperties,
       },
       propsData: {
@@ -54,9 +55,9 @@ describe('WorkItemsListActions component', () => {
   const findCalendarLink = () => wrapper.findByTestId('subscribe-calendar');
 
   describe('import/export options', () => {
-    describe('when projectImportJiraPath is provided', () => {
+    describe('when projectImportJiraPath is provided and canEdit is true', () => {
       beforeEach(() => {
-        wrapper = createComponent({ projectImportJiraPath });
+        wrapper = createComponent({ projectImportJiraPath, canEdit: true });
       });
 
       it('renders the dropdown', () => {
@@ -66,6 +67,16 @@ describe('WorkItemsListActions component', () => {
       it('renders the import from Jira dropdown item', () => {
         expect(findImportFromJiraLink().exists()).toBe(true);
         expect(findImportFromJiraLink().props('item').href).toBe(projectImportJiraPath);
+      });
+    });
+
+    describe('when projectImportJiraPath is provided but canEdit is false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({ projectImportJiraPath, canEdit: false });
+      });
+
+      it('does not render the import from Jira dropdown item', () => {
+        expect(findImportFromJiraLink().exists()).toBe(false);
       });
     });
 

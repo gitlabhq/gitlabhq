@@ -32,6 +32,15 @@ RSpec.describe 'Dashboard Groups page', :js, :with_organization_url_helpers, fea
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :dashboard_groups_path, :groups
 
+  it 'pushes `archive_group` feature flag' do
+    stub_feature_flags(archive_group: true)
+
+    sign_in(user)
+    visit dashboard_groups_path
+
+    expect(page).to have_pushed_frontend_feature_flags(archiveGroup: true)
+  end
+
   context 'when `Member` tab is selected' do
     before do
       expect(another_group).to be_persisted

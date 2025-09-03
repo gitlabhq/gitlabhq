@@ -27,6 +27,14 @@ export default {
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
   tabCountsQuery: groupCountsQuery,
+  eventTracking: {
+    filteredSearch: {
+      [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_groups',
+    },
+    pagination: 'click_pagination_on_your_work_groups',
+    tabs: 'click_tab_on_your_work_groups',
+    sort: 'click_sort_on_your_work_groups',
+  },
   name: 'YourWorkGroupsApp',
   components: { TabsWithList },
   props: {
@@ -52,5 +60,6 @@ export default {
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
     :should-update-active-tab-count-from-tab-query="false"
+    :event-tracking="$options.eventTracking"
   />
 </template>

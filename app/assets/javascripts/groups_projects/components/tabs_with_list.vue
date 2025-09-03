@@ -420,8 +420,19 @@ export default {
         property: pagination.startCursor === null ? 'next' : 'previous',
       });
     },
-    async onOffsetPageChange(page) {
-      await this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
+    async onOffsetPageChange(newPage) {
+      const currentPage = this.$route.query[QUERY_PARAM_PAGE];
+
+      await this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: newPage });
+
+      if (!this.eventTracking?.pagination) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.pagination, {
+        label: this.activeTab.value,
+        property: newPage > currentPage ? 'next' : 'previous',
+      });
     },
     onRefetch() {
       this.getTabCounts();

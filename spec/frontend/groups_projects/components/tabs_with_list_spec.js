@@ -807,12 +807,16 @@ describe('TabsWithList', () => {
   });
 
   describe('when offset page is changed', () => {
+    let trackEventSpy;
+
     beforeEach(async () => {
       await createComponent();
 
       findTabView().vm.$emit('offset-page-change', 2);
 
       await waitForPromises();
+
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
     });
 
     it('sets `page` query string', () => {
@@ -823,6 +827,38 @@ describe('TabsWithList', () => {
 
     it('passes page prop to TabView component', () => {
       expect(findTabView().props('page')).toBe(2);
+    });
+
+    describe('when going to previous page', () => {
+      beforeEach(async () => {
+        findTabView().vm.$emit('offset-page-change', 1);
+
+        await waitForPromises();
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: CONTRIBUTED_TAB.value, property: 'previous' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when going to next page', () => {
+      beforeEach(async () => {
+        findTabView().vm.$emit('offset-page-change', 3);
+
+        await waitForPromises();
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: CONTRIBUTED_TAB.value, property: 'next' },
+          undefined,
+        );
+      });
     });
   });
 

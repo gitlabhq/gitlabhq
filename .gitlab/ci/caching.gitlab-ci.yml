@@ -116,19 +116,3 @@ cache:assets-hash:
   artifacts:
     reports:
       dotenv: build.env
-
-#=================================
-# Cleanup
-#=================================
-# cleanup job which is responsible for custom caching implementation that is still used by workhorse and fixtures
-packages-cleanup:
-  extends:
-    - .default-retry
-    - .caching:rules:packages-cleanup
-    - .with-ruby-slim-image
-  stage: prepare
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/packages/automated_cleanup.rb
