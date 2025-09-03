@@ -50,22 +50,28 @@
         - if @diff_file.stored_externally? && @diff_file.external_storage == :lfs
           = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
     .rd-diff-file-info
-      .rd-diff-file-stats{ aria: { label: stats_label } }
-        - if @diff_file.binary?
-          - if @diff_file.new_file?
-            %span.rd-stats-added +#{pretty_print_bytes(@diff_file.new_blob.size)}
-          - elsif @diff_file.deleted_file?
-            %span.rd-stats-removed −#{pretty_print_bytes(@diff_file.old_blob.size)}
+      - if @diff_file.submodule?
+        - data = helpers.submodule_diff_compare_data(@diff_file)
+        - if data
+          = render ::Pajamas::ButtonComponent.new(href: data[:href], size: :small, button_options: { title: data[:tooltip], class: 'has-tooltip', data: { testid: 'rd-diff-file-submodule-compare' } }) do
+            = data[:title]
+      - else
+        .rd-diff-file-stats{ aria: { label: stats_label } }
+          - if @diff_file.binary?
+            - if @diff_file.new_file?
+              %span.rd-stats-added +#{pretty_print_bytes(@diff_file.new_blob.size)}
+            - elsif @diff_file.deleted_file?
+              %span.rd-stats-removed −#{pretty_print_bytes(@diff_file.old_blob.size)}
+            - else
+              - byte_diff = @diff_file.new_blob.size - @diff_file.old_blob.size
+              - if byte_diff > 0
+                %span.rd-stats-added +#{pretty_print_bytes(byte_diff)}
+              - elsif byte_diff < 0
+                %span.rd-stats-removed −#{pretty_print_bytes(byte_diff.abs)}
+              %span (#{pretty_print_bytes(@diff_file.new_blob.size)})
           - else
-            - byte_diff = @diff_file.new_blob.size - @diff_file.old_blob.size
-            - if byte_diff > 0
-              %span.rd-stats-added +#{pretty_print_bytes(byte_diff)}
-            - elsif byte_diff < 0
-              %span.rd-stats-removed −#{pretty_print_bytes(byte_diff.abs)}
-            %span (#{pretty_print_bytes(@diff_file.new_blob.size)})
-        - else
-          %span.rd-stats-added +#{@diff_file.added_lines}
-          %span.rd-stats-removed −#{@diff_file.removed_lines}
+            %span.rd-stats-added +#{@diff_file.added_lines}
+            %span.rd-stats-removed −#{@diff_file.removed_lines}
       - unless menu_items.empty?
         .rd-diff-file-options-menu
           %div{ data: { options_menu: true } }
