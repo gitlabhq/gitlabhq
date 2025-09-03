@@ -96,11 +96,6 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d Artifact"
-msgid_plural "%d Artifacts"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d Module"
 msgid_plural "%d Modules"
 msgstr[0] ""
@@ -2518,6 +2513,9 @@ msgstr ""
 msgid "AICatalog|Copy flow config"
 msgstr ""
 
+msgid "AICatalog|Copy user prompt"
+msgstr ""
+
 msgid "AICatalog|Create agent"
 msgstr ""
 
@@ -2726,9 +2724,6 @@ msgid "AICatalog|Tools"
 msgstr ""
 
 msgid "AICatalog|Use AI Flows in your project."
-msgstr ""
-
-msgid "AICatalog|User Prompt"
 msgstr ""
 
 msgid "AICatalog|User Prompt is required."
@@ -4711,6 +4706,15 @@ msgstr ""
 msgid "AdminMode|Step-up authentication failed."
 msgstr ""
 
+msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
+msgstr ""
+
+msgid "AdminProjects|Delete"
+msgstr ""
+
+msgid "AdminProjects|Delete Project %{projectName}?"
+msgstr ""
+
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr ""
 
@@ -5816,6 +5820,9 @@ msgid "AdminUsers|This user's access level is managed with LDAP. Remove user's m
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{name}"
+msgstr ""
+
+msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}."
@@ -12040,6 +12047,9 @@ msgstr ""
 msgid "ByAuthor|by"
 msgstr ""
 
+msgid "Bypass"
+msgstr ""
+
 msgid "Bypass blocking reviews"
 msgstr ""
 
@@ -15726,7 +15736,7 @@ msgstr ""
 msgid "Compare"
 msgstr ""
 
-msgid "Compare %{oldCommitId}…%{newCommitId}"
+msgid "Compare %{old_commit} to %{new_commit}"
 msgstr ""
 
 msgid "Compare Branches"
@@ -40268,6 +40278,9 @@ msgstr ""
 msgid "MergeChecks|Assign reviewers"
 msgstr ""
 
+msgid "MergeChecks|Bypass"
+msgstr ""
+
 msgid "MergeChecks|Enable \"Pipelines must succeed\" first."
 msgstr ""
 
@@ -58087,6 +58100,9 @@ msgstr ""
 msgid "SecurityOrchestration|All scanners"
 msgstr ""
 
+msgid "SecurityOrchestration|All selected policy requirements will be bypassed"
+msgstr ""
+
 msgid "SecurityOrchestration|All sources"
 msgstr ""
 
@@ -58153,6 +58169,12 @@ msgstr ""
 msgid "SecurityOrchestration|Branch: %{boldStart}%{branchName}%{boldEnd} was not found in project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."
 msgstr ""
 
+msgid "SecurityOrchestration|Bypass Policy Violation"
+msgstr ""
+
+msgid "SecurityOrchestration|Bypassed as"
+msgstr ""
+
 msgid "SecurityOrchestration|CI/CD template edition to be enforced. The default template is stable, but may not have all the features of the latest template."
 msgstr ""
 
@@ -58196,6 +58218,9 @@ msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
 msgid "SecurityOrchestration|Code push"
+msgstr ""
+
+msgid "SecurityOrchestration|Comments are required when bypassing policies."
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance and security policy group"
@@ -58319,6 +58344,9 @@ msgid "SecurityOrchestration|Edit scan execution policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Edit vulnerability management policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Emergency hotfix"
 msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
@@ -58605,6 +58633,9 @@ msgstr ""
 msgid "SecurityOrchestration|Open policy actions dropdown"
 msgstr ""
 
+msgid "SecurityOrchestration|Other"
+msgstr ""
+
 msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
@@ -58662,6 +58693,9 @@ msgstr ""
 msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} rule schedules"
 msgstr ""
 
+msgid "SecurityOrchestration|Policy false positive"
+msgstr ""
+
 msgid "SecurityOrchestration|Policy has reached the maximum of %{actionsCount} %{actions}"
 msgstr ""
 
@@ -58684,6 +58718,12 @@ msgid "SecurityOrchestration|Prevent users from skipping pipelines"
 msgstr ""
 
 msgid "SecurityOrchestration|Project cannot be deleted because it is linked as a security policy project"
+msgstr ""
+
+msgid "SecurityOrchestration|Provide a detailed justification for policy bypass."
+msgstr ""
+
+msgid "SecurityOrchestration|Reason for policy bypass"
 msgstr ""
 
 msgid "SecurityOrchestration|Reason for snoozing policy (optional)"
@@ -58773,6 +58813,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Scanner false positive"
+msgstr ""
+
 msgid "SecurityOrchestration|Schedule a new"
 msgstr ""
 
@@ -58830,6 +58873,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select a variable"
 msgstr ""
 
+msgid "SecurityOrchestration|Select bypass reasons"
+msgstr ""
+
 msgid "SecurityOrchestration|Select date"
 msgstr ""
 
@@ -58840,6 +58886,12 @@ msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|Select list type"
+msgstr ""
+
+msgid "SecurityOrchestration|Select policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Select policies to bypass"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
@@ -58924,6 +58976,9 @@ msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
 msgid "SecurityOrchestration|Template"
+msgstr ""
+
+msgid "SecurityOrchestration|The action will be logged in the audit log"
 msgstr ""
 
 msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."
@@ -70648,6 +70703,11 @@ msgstr ""
 msgid "VirtualRegistries|Virtual Registries"
 msgstr ""
 
+msgid "VirtualRegistry|%d artifact"
+msgid_plural "VirtualRegistry|%d artifacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "VirtualRegistry|%{count} artifact"
 msgid_plural "VirtualRegistry|%{count} artifacts"
 msgstr[0] ""
@@ -70662,6 +70722,9 @@ msgid "VirtualRegistry|%{hours} hour cache"
 msgid_plural "VirtualRegistry|%{hours} hours cache"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "VirtualRegistry|-- artifacts"
+msgstr ""
 
 msgid "VirtualRegistry|Add upstream"
 msgstr ""
@@ -70814,6 +70877,9 @@ msgid "VirtualRegistry|Name"
 msgstr ""
 
 msgid "VirtualRegistry|New maven virtual registry"
+msgstr ""
+
+msgid "VirtualRegistry|No artifacts to display."
 msgstr ""
 
 msgid "VirtualRegistry|No upstreams yet"
@@ -72176,6 +72242,9 @@ msgid "What does this command do?"
 msgstr ""
 
 msgid "What happens during repository cleanup?"
+msgstr ""
+
+msgid "What happens next?"
 msgstr ""
 
 msgid "What information is hidden?"

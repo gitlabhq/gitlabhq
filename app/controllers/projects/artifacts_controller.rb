@@ -13,7 +13,6 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_read_build!
   before_action :authorize_read_build_trace!, only: [:download]
   before_action :authorize_read_job_artifacts!, only: [:download, :browse, :raw]
-  before_action :authorize_update_build!, only: [:keep]
   before_action :authorize_destroy_artifacts!, only: [:destroy]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
@@ -92,6 +91,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def keep
+    return access_denied! unless can?(current_user, :keep_job_artifacts, build)
+
     build.keep_artifacts!
     redirect_to project_job_path(project, build)
   end

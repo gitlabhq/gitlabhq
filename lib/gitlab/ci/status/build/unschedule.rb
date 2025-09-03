@@ -10,7 +10,7 @@ module Gitlab
           end
 
           def has_action?
-            can?(user, :update_build, subject)
+            can?(user, :unschedule_job, subject)
           end
 
           def action_icon

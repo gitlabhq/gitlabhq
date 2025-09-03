@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::VisibilityLevelChecker do
+RSpec.describe Gitlab::VisibilityLevelChecker, feature_category: :permissions do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:override_params) { {} }
@@ -34,7 +34,7 @@ RSpec.describe Gitlab::VisibilityLevelChecker do
           end
         end
 
-        context 'for admin user' do
+        context 'for admin user', :enable_admin_mode do
           let(:user) { create(:user, :admin) }
 
           it 'returns false and a nil visibility level' do

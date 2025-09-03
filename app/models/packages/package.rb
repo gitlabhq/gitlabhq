@@ -195,26 +195,15 @@ module Packages
     end
 
     def versions
-      if Feature.enabled?(:packages_refactor_versions, project)
-        self.class.inheritance_column_to_class_map[package_type.to_sym]
-                  .constantize
-                  .for_projects(project)
-                  .preload_pipelines
-                  .including_tags
-                  .displayable
-                  .with_name(name)
-                  .where.not(version: version)
-                  .order(:version)
-      else
-        project.packages
-               .preload_pipelines
-               .including_tags
-               .displayable
-               .with_name(name)
-               .where.not(version: version)
-               .with_package_type(package_type)
-               .order(:version)
-      end
+      self.class.inheritance_column_to_class_map[package_type.to_sym]
+                .constantize
+                .for_projects(project)
+                .preload_pipelines
+                .including_tags
+                .displayable
+                .with_name(name)
+                .where.not(version: version)
+                .order(:version)
     end
 
     # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937

@@ -35,7 +35,7 @@ class BuildDetailsEntity < Ci::JobEntity
       fast_browse_project_job_artifacts_path(project, build)
     end
 
-    expose :keep_path, if: ->(*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
+    expose :keep_path, if: ->(*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :keep_job_artifacts, build) } do |build|
       fast_keep_project_job_artifacts_path(project, build)
     end
 

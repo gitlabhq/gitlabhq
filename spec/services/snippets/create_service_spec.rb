@@ -59,7 +59,7 @@ RSpec.describe Snippets::CreateService, feature_category: :source_code_managemen
         end
       end
 
-      context 'when user is an admin' do
+      context 'when user is an admin', :enable_admin_mode do
         it 'responds with success' do
           expect(subject).to be_success
         end

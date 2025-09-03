@@ -102,6 +102,20 @@ RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility 
     end
   end
 
+  context 'when db is in read-only mode' do
+    before do
+      allow(Gitlab::Database).to receive(:read_write?).and_return(false)
+    end
+
+    it 'prints info about fix, but does not actually do anything' do
+      expect(logger).to receive(:debug).with("> Fix Project[#{broken_project.id}].runners_token")
+      expect(broken_project).not_to receive(:save!)
+
+      expect { run! }.not_to change { broken_project.reload.runners_token_encrypted }.from('aaa')
+      expect { broken_project.runners_token }.to raise_error(TypeError)
+    end
+  end
+
   it 'prints progress along the way' do
     stub_const('Gitlab::Doctor::ResetTokens::PRINT_PROGRESS_EVERY', 1)
 
@@ -127,6 +141,8 @@ RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility 
 
     expect(logger).to receive(:debug).with(
       "> Something went wrong for Project[#{broken_project.id}].runners_token: Error message")
+    expect(logger).to receive(:debug).with(
+      "Something went wrong for Project[#{broken_project.id}]: no implicit conversion of nil into String")
     expect(logger).to receive(:debug).with("> Fix Project[#{project_with_cipher_error.id}].runners_token")
 
     expect(broken_project).to receive(:runners_token).and_raise("Error message")
@@ -134,5 +150,36 @@ RSpec.describe Gitlab::Doctor::ResetTokens, feature_category: :fleet_visibility 
 
     expect { run! }.to not_change { broken_project.reload.runners_token_encrypted }.from('aaa')
       .and change { project_with_cipher_error.reload.runners_token_encrypted }
+  end
+
+  context 'with multiple cipher error attributes' do
+    let(:application_setting_with_cipher_errors) do
+      create(:application_setting).tap do |setting|
+        setting.update_columns(
+          runners_registration_token_encrypted: 'aaa',
+          error_tracking_access_token_encrypted: 'bbb'
+        )
+      end
+    end
+
+    let(:model_names) { %w[ApplicationSetting] }
+    let(:token_names) { %w[runners_registration_token error_tracking_access_token] }
+
+    before do
+      allow(logger).to receive(:info)
+      allow(logger).to receive(:debug)
+    end
+
+    it 'fixes all attributes' do
+      expect { run! }.to change {
+        application_setting_with_cipher_errors.reload.runners_registration_token_encrypted
+      }.from('aaa')
+       .and change {
+         application_setting_with_cipher_errors.reload.error_tracking_access_token_encrypted
+       }.from('bbb')
+
+      expect { application_setting_with_cipher_errors.reload.runners_registration_token }.not_to raise_error
+      expect { application_setting_with_cipher_errors.reload.error_tracking_access_token }.not_to raise_error
+    end
   end
 end

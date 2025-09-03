@@ -9,10 +9,15 @@ module Projects
       def execute
         return {} unless project&.lfs_enabled?
 
-        Gitlab::Git::LfsChanges.new(project.repository)
-                               .all_pointers
-                               .map! { |blob| [blob.lfs_oid, blob.lfs_size] }
-                               .to_h
+        lfs_changes = if Feature.enabled?(:mirroring_lfs_optimization,
+          project) && params[:updated_revisions] != ['--all']
+                        Gitlab::Git::LfsChanges.new(project.repository,
+                          params[:updated_revisions]).new_pointers(not_in: [])
+                      else
+                        Gitlab::Git::LfsChanges.new(project.repository).all_pointers
+                      end
+
+        lfs_changes.map! { |blob| [blob.lfs_oid, blob.lfs_size] }.to_h
       end
     end
   end

@@ -22,6 +22,8 @@ export async function mountMergeRequestListsApp({
 
   const {
     autocompleteAwardEmojisPath,
+    mergeRequestSourceBranchesPath,
+    mergeRequestTargetBranchesPath,
     fullPath,
     namespaceId,
     hasAnyMergeRequests,
@@ -62,6 +64,8 @@ export async function mountMergeRequestListsApp({
     provide: {
       fullPath,
       autocompleteAwardEmojisPath,
+      mergeRequestSourceBranchesPath,
+      mergeRequestTargetBranchesPath,
       hasAnyMergeRequests: parseBoolean(hasAnyMergeRequests),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       initialSort,

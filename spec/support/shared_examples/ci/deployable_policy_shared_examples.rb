@@ -14,6 +14,9 @@ RSpec.shared_examples 'a deployable job policy' do |factory_type|
 
     it { expect(policy).to be_allowed :update_build }
     it { expect(policy).to be_allowed :retry_job }
+    it { expect(policy).to be_allowed :play_job }
+    it { expect(policy).to be_allowed :unschedule_job }
+    it { expect(policy).to be_allowed :keep_job_artifacts }
 
     context 'when job is oudated deployment job' do
       before do
@@ -22,6 +25,10 @@ RSpec.shared_examples 'a deployable job policy' do |factory_type|
 
       it { expect(policy).not_to be_allowed :update_build }
       it { expect(policy).not_to be_allowed :retry_job }
+      it { expect(policy).not_to be_allowed :play_job }
+      it { expect(policy).not_to be_allowed :unschedule_job }
+      it { expect(policy).not_to be_allowed :keep_job_artifacts }
+
       it { expect(policy).not_to be_allowed :cancel_build }
     end
   end

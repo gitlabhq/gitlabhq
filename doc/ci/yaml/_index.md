@@ -2016,9 +2016,8 @@ use the new cache, instead of rebuilding the dependencies.
 
 **Additional details**:
 
-- The cache `key` is computed as a SHA from the most recent commit that changed each listed file. If no commit changed any listed files, the fallback key is `default`.
+- The cache `key` is computed from the most recent commit that changed a file, not from the actual file content. This can cause unexpected cache misses with rebase-based workflows. [Issue 460235](https://gitlab.com/gitlab-org/gitlab/-/issues/460235) aims to correct this behavior.
 - Wildcard patterns like `**/package.json` can be used. Increasing the number of allowed paths is proposed in [issue 301161](https://gitlab.com/gitlab-org/gitlab/-/issues/301161).
-- Cache keys use Git commit history, not file contents. Identical files in different branches may have different cache keys and cannot share caches.
 
 ---
 
@@ -4017,7 +4016,7 @@ Leading and trailing hyphens or periods are not permitted.
 create-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
+    - echo "Pages accessible through ${CI_PAGES_URL}"
   pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$CI_COMMIT_BRANCH"
 ```

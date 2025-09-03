@@ -322,6 +322,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     it 'returns the correct data' do
       expected_data = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+        merge_request_target_branches_path: autocomplete_merge_request_target_branches_path,
+        merge_request_source_branches_path: autocomplete_merge_request_source_branches_path,
         full_path: project.full_path,
         is_public_visibility_restricted: 'false',
         is_signed_in: 'true',
@@ -340,6 +342,22 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       }
 
       expect(subject).to include(expected_data)
+    end
+
+    context 'with relative_url_root configured' do
+      let(:relative_url_root) { '/relative' }
+
+      before do
+        stub_config_setting(relative_url_root: relative_url_root)
+        allow(Rails.application.routes).to receive(:default_url_options).and_return(script_name: relative_url_root)
+      end
+
+      it 'returns relative paths' do
+        expect(subject[:merge_request_target_branches_path])
+          .to eq('/relative/-/autocomplete/merge_request_target_branches')
+        expect(subject[:merge_request_source_branches_path])
+          .to eq('/relative/-/autocomplete/merge_request_source_branches')
+      end
     end
   end
 

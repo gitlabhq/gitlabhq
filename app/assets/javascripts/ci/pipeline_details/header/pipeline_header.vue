@@ -339,7 +339,7 @@ export default {
 
     <gl-loading-icon v-if="loading" class="gl-mt-5 gl-text-center" size="md" />
 
-    <page-heading v-else inline-actions class="gl-mb-0 gl-gap-y-5 sm:gl-gap-y-3">
+    <page-heading v-else inline-actions class="gl-mb-0">
       <template #heading>
         <span v-if="pipelineName" data-testid="pipeline-name">
           {{ pipelineName }}

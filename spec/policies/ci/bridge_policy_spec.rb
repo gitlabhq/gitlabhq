@@ -13,7 +13,12 @@ RSpec.describe Ci::BridgePolicy do
     described_class.new(user, bridge)
   end
 
-  it_behaves_like 'a deployable job policy', :ci_bridge
+  it_behaves_like 'a deployable job policy', :ci_bridge do
+    before do
+      downstream_project.add_maintainer(user)
+      allow(job).to receive(:downstream_project).at_least(:once).and_return(downstream_project)
+    end
+  end
 
   describe '#play_job' do
     context 'when downstream project exists' do

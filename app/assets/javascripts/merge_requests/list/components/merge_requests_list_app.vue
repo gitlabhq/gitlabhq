@@ -130,6 +130,8 @@ export default {
   },
   inject: {
     autocompleteAwardEmojisPath: { default: '' },
+    mergeRequestTargetBranchesPath: { default: '' },
+    mergeRequestSourceBranchesPath: { default: '' },
     fullPath: { default: '' },
     hasAnyMergeRequests: { default: false },
     hasScopedLabelsFeature: { default: false },
@@ -574,8 +576,8 @@ export default {
   methods: {
     getBranchPath(branchType = 'other') {
       const typeUrls = {
-        source: '/-/autocomplete/merge_request_source_branches.json',
-        target: '/-/autocomplete/merge_request_target_branches.json',
+        source: this.mergeRequestSourceBranchesPath,
+        target: this.mergeRequestTargetBranchesPath,
         other: Api.buildUrl(Api.createBranchPath).replace(':id', encodeURIComponent(this.fullPath)),
       };
       const url = typeUrls[branchType];

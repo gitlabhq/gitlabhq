@@ -9,6 +9,26 @@ class Admin::ProjectsController < Admin::ApplicationController
   feature_category :groups_and_projects, [:index, :show, :transfer, :destroy, :edit, :update]
   feature_category :source_code_management, [:repository_check]
 
+  def index
+    return if Feature.enabled?(:admin_projects_vue, current_user)
+
+    params[:sort] ||= 'latest_activity_desc'
+    @sort = params[:sort]
+
+    params[:archived] = true if params[:last_repository_check_failed].present? && params[:archived].nil?
+
+    @projects = Admin::ProjectsFinder.new(params: params, current_user: current_user).execute
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("admin/projects/_projects", projects: @projects)
+        }
+      end
+    end
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def show
     if @group

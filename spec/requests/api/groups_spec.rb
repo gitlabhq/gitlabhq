@@ -2892,6 +2892,13 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
+    it_behaves_like 'restricted visibility level for API', 'group' do
+      let(:endpoint) { '/groups' }
+      let(:params_with_public_visibility) do
+        { name: 'test-group', path: 'test-group', visibility: 'public' }
+      end
+    end
+
     context "when authenticated as user without group permissions" do
       it "does not create group" do
         group = attributes_for_group_api

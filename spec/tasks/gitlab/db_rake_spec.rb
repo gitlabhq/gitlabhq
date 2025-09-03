@@ -721,7 +721,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     context 'with multiple databases' do
       before do
-        skip_if_multiple_databases_not_setup(:ci)
+        skip_if_shared_database(:ci)
       end
 
       it 'runs Gitlab::Database::CollationChecker for multiple databases' do

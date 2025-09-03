@@ -7,7 +7,7 @@ export default {
     GlBanner,
     UserCalloutDismisser,
   },
-  preferencesLink: '/-/profile/preferences',
+  preferencesLink: '/-/profile/preferences#behavior',
 };
 </script>
 

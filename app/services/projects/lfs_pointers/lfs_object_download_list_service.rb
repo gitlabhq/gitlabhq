@@ -51,7 +51,9 @@ module Projects
 
       # Retrieves all lfs pointers in the repository
       def lfs_pointers_in_repository
-        @lfs_pointers_in_repository ||= LfsListService.new(project).execute
+        @lfs_pointers_in_repository ||=
+          LfsListService.new(project, current_user,
+            { updated_revisions: params[:updated_revisions] }).execute
       end
 
       def existing_lfs_objects

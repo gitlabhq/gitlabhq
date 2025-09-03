@@ -147,20 +147,28 @@ module DiffHelper
     ].join(' ').html_safe
   end
 
-  def submodule_diff_compare_link(diff_file)
+  def submodule_diff_compare_data(diff_file)
     compare_url = submodule_links(diff_file.blob, diff_file.content_sha, diff_file.repository, diff_file)&.compare
-    return '' unless compare_url
+    return unless compare_url
 
-    link_text = [
-      _('Compare'),
-      ' ',
-      content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
-      '...',
-      content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
-    ].join('').html_safe
+    title = safe_format(
+      _('Compare %{old_commit} to %{new_commit}'),
+      old_commit: content_tag(:span, Commit.truncate_sha(diff_file.old_blob.id), class: 'commit-sha'),
+      new_commit: content_tag(:span, Commit.truncate_sha(diff_file.blob.id), class: 'commit-sha')
+    )
 
-    tooltip = _('Compare submodule commit revisions')
-    link_button_to link_text, compare_url, class: 'has-tooltip submodule-compare', title: tooltip
+    {
+      title: title,
+      href: compare_url,
+      tooltip: _('Compare submodule commit revisions')
+    }
+  end
+
+  def submodule_diff_compare_link(diff_file)
+    data = submodule_diff_compare_data(diff_file)
+    return '' unless data
+
+    link_button_to data[:title], data[:href], class: 'has-tooltip submodule-compare', title: data[:tooltip]
   end
 
   def diff_file_blob_raw_url(diff_file, only_path: false)

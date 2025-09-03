@@ -172,7 +172,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     shared_examples_for 'projects response without N + 1 queries' do |threshold|
-      let(:additional_project) { create(:project, :public) }
+      let_it_be(:additional_project) { create(:project, :public) }
 
       it 'avoids N + 1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -1353,6 +1353,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    it_behaves_like 'restricted visibility level for API', 'project' do
+      let(:endpoint) { path }
+      let(:params_with_public_visibility) do
+        { name: 'test-project', path: 'test-project', visibility: 'public' }
+      end
+    end
+
     it 'creates new project without path but with name and returns 201' do
       expect { post api(path, user), params: { name: 'Foo Project' } }
         .to change { Project.count }.by(1)
@@ -1802,29 +1809,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
-      end
-    end
-
-    context 'when a visibility level is restricted' do
-      let(:project_param) { attributes_for(:project, visibility: 'public') }
-
-      before do
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-      end
-
-      it 'does not allow a non-admin to use a restricted visibility level' do
-        post api(path, user), params: project_param
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['visibility_level'].first).to(
-          match('restricted by your GitLab administrator')
-        )
-      end
-
-      it 'allows an admin to override restricted visibility settings' do
-        post api(path, admin), params: project_param
-
-        expect(json_response['visibility']).to eq('public')
       end
     end
   end

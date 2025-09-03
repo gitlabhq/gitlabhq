@@ -58,7 +58,7 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
         end
       end
 
-      context 'when user is an admin' do
+      context 'when user is an admin', :enable_admin_mode do
         let(:updater) { admin }
 
         it 'responds with success' do

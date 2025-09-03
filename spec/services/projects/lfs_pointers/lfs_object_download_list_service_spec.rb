@@ -6,6 +6,7 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
   let(:default_endpoint) { "#{import_url}/info/lfs/objects/batch" }
   let(:group) { create(:group, lfs_enabled: true) }
   let!(:project) { create(:project, namespace: group, import_url: import_url, lfs_enabled: true) }
+  let(:user) { project.creator }
   let!(:lfs_objects_project) { create_list(:lfs_objects_project, 2, project: project) }
   let!(:existing_lfs_objects) { LfsObject.pluck(:oid, :size).to_h }
   let(:oids) { { 'oid1' => 123, 'oid2' => 125 } }
@@ -18,8 +19,9 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
 
   let(:all_oids) { existing_lfs_objects.merge(oids) }
   let(:remote_uri) { URI.parse(lfs_endpoint) }
+  let(:updated_revisions) { ['refs/remotes/upstream/dev_branch'] }
 
-  subject { described_class.new(project) }
+  subject { described_class.new(project, user, { updated_revisions: updated_revisions }) }
 
   before do
     allow(project.repository).to receive(:lfsconfig_for).and_return(nil)
@@ -39,6 +41,9 @@ RSpec.describe Projects::LfsPointers::LfsObjectDownloadListService, feature_cate
       it 'retrieves all lfs pointers in the project repository' do
         expect(Projects::LfsPointers::LfsDownloadLinkListService)
           .to receive(:new).with(project, remote_uri: URI.parse(default_endpoint))
+          .and_call_original
+        expect(Projects::LfsPointers::LfsListService).to receive(:new)
+          .with(project, user, { updated_revisions: updated_revisions })
           .and_call_original
         expect_any_instance_of(Projects::LfsPointers::LfsListService).to receive(:execute)
 

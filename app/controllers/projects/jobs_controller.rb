@@ -130,6 +130,8 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def unschedule
+    return access_denied! unless can?(current_user, :unschedule_job, @build)
+
     service_response = Ci::BuildUnscheduleService.new(@build, current_user).execute
 
     if service_response.success?
