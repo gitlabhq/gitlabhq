@@ -7,7 +7,6 @@ import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import GroupsStore from '../store/groups_store';
 import GroupsService from '../service/groups_service';
-import InactiveProjectsService from '../service/inactive_projects_service';
 import SharedGroupsService from '../service/shared_groups_service';
 import {
   ACTIVE_TAB_SUBGROUPS_AND_PROJECTS,
@@ -77,7 +76,7 @@ export default {
         key: ACTIVE_TAB_INACTIVE,
         emptyStateComponent: markRaw(InactiveProjectsEmptyState),
         lazy: this.$route.name !== ACTIVE_TAB_INACTIVE,
-        service: new InactiveProjectsService(this.groupId, this.initialSort),
+        service: new GroupsService(this.endpoints[ACTIVE_TAB_INACTIVE], this.initialSort),
         store: new GroupsStore(),
         sortingItems: OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS,
       },

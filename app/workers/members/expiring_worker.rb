@@ -16,8 +16,6 @@ module Members
     BATCH_LIMIT = 500
 
     def perform
-      return unless Feature.enabled?(:member_expiring_email_notification)
-
       limit_date = Member::DAYS_TO_EXPIRE.days.from_now.to_date
 
       expiring_members = Member.non_invite.non_request.non_minimal_access.expiring_and_not_notified(limit_date)

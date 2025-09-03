@@ -31,27 +31,11 @@ describe('ProjectsStore', () => {
       const store = new GroupsStore();
       jest.spyOn(store, 'formatGroupItem');
 
-      store.setGroups(mockGroups);
+      store.setGroups(mockGroups, false);
 
       expect(store.state.groups).toHaveLength(mockGroups.length);
-      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
+      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object), false);
       expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
-    });
-  });
-
-  describe('setSearchedGroups', () => {
-    it('should set searched groups to state', () => {
-      const store = new GroupsStore();
-      jest.spyOn(store, 'formatGroupItem');
-
-      store.setSearchedGroups(mockSearchedGroups);
-
-      expect(store.state.groups).toHaveLength(mockSearchedGroups.length);
-      expect(store.formatGroupItem).toHaveBeenCalledWith(expect.any(Object));
-      expect(Object.keys(store.state.groups[0]).indexOf('fullName')).toBeGreaterThan(-1);
-      expect(Object.keys(store.state.groups[0].children[0]).indexOf('fullName')).toBeGreaterThan(
-        -1,
-      );
     });
   });
 
@@ -96,6 +80,27 @@ describe('ProjectsStore', () => {
       expect(updatedGroupItem.isChildrenLoading).toBe(false);
       expect(updatedGroupItem.isBeingRemoved).toBe(false);
       expect(updatedGroupItem.microdata).toEqual({});
+    });
+
+    describe('when isOpenOverride is set', () => {
+      it('sets isOpen', () => {
+        const store = new GroupsStore();
+        const updatedGroupItem = store.formatGroupItem(mockSearchedGroups[0], false);
+
+        expect(updatedGroupItem.isOpen).toBe(false);
+      });
+    });
+
+    it('formats children', () => {
+      const store = new GroupsStore();
+      const updatedGroupItem = store.formatGroupItem(mockSearchedGroups[0]);
+      const [child] = updatedGroupItem.children;
+
+      expect(child.childrenCount).toBe(6);
+      expect(child.hasChildren).toBe(true);
+      expect(child.isChildrenLoading).toBe(false);
+      expect(child.isBeingRemoved).toBe(false);
+      expect(child.microdata).toEqual({});
     });
 
     it('with hideProjects', () => {

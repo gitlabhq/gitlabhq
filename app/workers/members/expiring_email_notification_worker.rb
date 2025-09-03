@@ -29,8 +29,7 @@ module Members
       member.expiry_notified_at.blank? &&
         member&.user.present? &&
         member.user.active? &&
-        member.user.human? &&
-        Feature.enabled?(:member_expiring_email_notification, member.source&.root_ancestor)
+        member.user.human?
     end
 
     private

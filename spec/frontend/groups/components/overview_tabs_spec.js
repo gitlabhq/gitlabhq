@@ -11,7 +11,6 @@ import SharedGroupsEmptyState from '~/groups/components/empty_states/shared_grou
 import InactiveProjectsEmptyState from '~/groups/components/empty_states/inactive_projects_empty_state.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
-import InactiveProjectsService from '~/groups/service/inactive_projects_service';
 import SharedGroupsService from '~/groups/service/shared_groups_service';
 import { createRouter } from '~/groups/init_overview_tabs';
 import eventHub from '~/groups/event_hub';
@@ -39,9 +38,9 @@ describe('OverviewTabs', () => {
   const defaultProvide = {
     groupId: '1',
     endpoints: {
-      subgroups_and_projects: '/groups/foobar/-/children.json',
+      subgroups_and_projects: '/groups/foobar/-/children.json?active=true',
       shared: '/groups/foobar/-/shared_projects.json',
-      archived: '/groups/foobar/-/children.json?archived=only',
+      inactive: '/groups/foobar/-/children.json?active=false',
     },
     newSubgroupPath: '/groups/new',
     newProjectPath: 'projects/new',
@@ -190,7 +189,10 @@ describe('OverviewTabs', () => {
     expect(tabPanel.findComponent(GroupsApp).props()).toMatchObject({
       action: ACTIVE_TAB_INACTIVE,
       store: new GroupsStore(),
-      service: new InactiveProjectsService(defaultProvide.groupId, defaultProvide.initialSort),
+      service: new GroupsService(
+        defaultProvide.endpoints[ACTIVE_TAB_INACTIVE],
+        defaultProvide.initialSort,
+      ),
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);

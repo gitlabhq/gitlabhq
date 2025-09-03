@@ -12,7 +12,7 @@ class CreateMergeRequestsMergeData < Gitlab::Database::Migration[2.3]
   MIN_ID = 1
 
   def up
-    create_table TABLE_NAME, id: false, options: 'PARTITION BY RANGE (merge_request_id)' do |t|
+    create_table TABLE_NAME, id: false, if_not_exists: true, options: 'PARTITION BY RANGE (merge_request_id)' do |t|
       t.bigint :merge_request_id, null: false, primary_key: true, default: nil, index: false
       t.bigint :project_id, null: false, index: true
       t.bigint :merge_user_id, index: true
