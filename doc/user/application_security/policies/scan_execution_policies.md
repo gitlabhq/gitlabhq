@@ -369,12 +369,7 @@ Define how scheduled scans are distributed over time with the `time_window` obje
 
 ### Optimize scheduled pipelines for projects at scale
 
-Consider performance when enabling scheduled scans across many projects.
-
-If the `scan_execution_pipeline_concurrency_control` feature flag is not enabled:
-
-- Scheduled pipelines run simultaneously across all projects and branches enforced by the policy.
-- The first scheduled pipeline execution in each project creates a security bot user responsible for executing the schedules for each project.
+When a policy enforces scheduled pipelines across multiple projects and branches, the pipelines run simultaneously. The first execution of a scheduled pipeline in each project creates a security bot user responsible for executing the schedules for that project.
 
 To optimize performance for projects at scale:
 
@@ -384,10 +379,7 @@ To optimize performance for projects at scale:
 
 ### Concurrency control
 
-GitLab applies concurrency control when:
-
-- The `scan_execution_pipeline_concurrency_control` feature flag is enabled
-- You set the `time_window` property
+GitLab applies concurrency control when you set the `time_window` property.
 
 The concurrency control distributes the scheduled pipelines according to the [`time_window` settings](#time_window-schema) defined in the policy.
 

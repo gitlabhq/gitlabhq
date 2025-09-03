@@ -21,7 +21,8 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
     create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
   end
 
-  let(:user) { create(:user) }
+  let(:developer) { create(:user) }
+  let(:user) { developer }
   let(:api_user) { user }
   let(:reporter) { create(:project_member, :reporter, project: project).user }
   let(:guest) { create(:project_member, :guest, project: project).user }
@@ -31,7 +32,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
   end
 
   before do
-    project.add_developer(user)
+    project.add_developer(developer)
   end
 
   shared_examples 'returns unauthorized' do
@@ -816,6 +817,14 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
       it 'keeps artifacts' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(job.reload.artifacts_expire_at).to be_nil
+      end
+
+      context 'when user does not have permissions' do
+        let(:user) { create(:user) }
+
+        it 'responds with :not_found' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

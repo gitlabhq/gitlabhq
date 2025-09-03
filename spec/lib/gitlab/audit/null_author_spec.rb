@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Audit::NullAuthor do
+RSpec.describe Gitlab::Audit::NullAuthor, feature_category: :compliance_management do
   subject { described_class }
 
   describe '.for' do
@@ -86,5 +86,11 @@ RSpec.describe Gitlab::Audit::NullAuthor do
 
   describe '#impersonated?' do
     it { expect(subject.new(id: 888, name: 'Guest').impersonated?).to be false }
+  end
+
+  describe '#to_global_id' do
+    subject(:null_author) { described_class.new id: -1, name: 'John Doe' }
+
+    it { expect(null_author.to_global_id).to eq('gid://gitlab/ComplianceManagement::NullAuthor/@id') }
   end
 end

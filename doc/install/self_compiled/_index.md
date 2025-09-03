@@ -310,8 +310,10 @@ In GitLab 18.0 and later, we [require PostgreSQL 16+](../requirements.md#postgre
    version requirement. You must add PostgreSQL's repository:
 
    ```shell
-   sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-   wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+   sudo curl --fail --silent --show-error --output /etc/apt/keyrings/postgresql.asc \
+             --url "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+   echo "deb [ signed-by=/etc/apt/keyrings/postgresql.asc ] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" |
+        sudo tee /etc/apt/sources.list.d/pgdg.list
    sudo apt-get update
    sudo apt-get -y install postgresql-16
    ```

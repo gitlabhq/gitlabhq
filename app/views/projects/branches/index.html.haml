@@ -17,7 +17,7 @@
     = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { item_active: @mode == 'stale', title: s_('Branches|Show stale branches') }
     = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: %w[overview active stale].exclude?(@mode), title: s_('Branches|Show all branches') }
 
-  .gl-flex.gl-items-center.gl-gap-3.gl-mt-3.sm:gl-mt-0.gl-ml-auto
+  .gl-flex.gl-items-center.gl-gap-3.gl-mt-3.gl-ml-auto{ class: '@sm/panel:gl-mt-0' }
     - if can_view_branch_rules?
       = render Pajamas::ButtonComponent.new(variant: :confirm, category: :tertiary, href: project_settings_repository_path(@project, anchor: 'js-branch-rules'), button_options: { data: { testid: "view-branch-rules" }}) do
         = s_('Branches|View branch rules')

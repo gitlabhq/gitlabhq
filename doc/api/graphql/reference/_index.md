@@ -40715,10 +40715,10 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectminimalaccessdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectminimalaccessid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectminimalaccessname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
 | <a id="projectminimalaccessnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
-| <a id="projectminimalaccessuserpermissions"></a>`userPermissions` | [`ProjectPermissions`](#projectpermissions) | Permissions for the current user on the project. |
+| <a id="projectminimalaccessuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 
 ### `ProjectNamespaceLinks`

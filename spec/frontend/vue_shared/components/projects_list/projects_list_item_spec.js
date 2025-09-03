@@ -240,6 +240,16 @@ describe('ProjectsListItem', () => {
     });
   });
 
+  describe('when there is no stars count stat data', () => {
+    it('does not render stars count', () => {
+      createComponent({
+        propsData: { project: { ...project, starCount: undefined } },
+      });
+
+      expect(findStarsStat().exists()).toBe(false);
+    });
+  });
+
   describe('when stars count stat emits hover and click events', () => {
     beforeEach(async () => {
       createComponent();

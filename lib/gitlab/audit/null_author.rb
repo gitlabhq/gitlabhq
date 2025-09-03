@@ -39,6 +39,10 @@ module Gitlab
         @name = name
       end
 
+      def to_global_id
+        "gid://gitlab/ComplianceManagement::NullAuthor/@id"
+      end
+
       def current_sign_in_ip
         nil
       end

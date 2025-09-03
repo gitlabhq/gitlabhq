@@ -36,9 +36,7 @@ unless system("git diff --quiet db/structure.sql")
   raise "The db/structure.sql is changed. Reset branch or commit changes."
 end
 
-unless system("git diff --quiet")
-  raise "There are uncommitted changes. Commit to continue."
-end
+raise "There are uncommitted changes. Commit to continue." unless system("git diff --quiet")
 
 $files_affected = []
 
@@ -60,7 +58,7 @@ def exec_cmd(*args, fail: nil)
 
   # truncate up-to 60 chars or first line
   command = args.shelljoin
-  truncated_command = command.truncate([command.lines.first.length+3, 120].min)
+  truncated_command = command.truncate([command.lines.first.length + 3, 120].min)
 
   puts ">> #{truncated_command}"
   return true if system(*args)
@@ -98,7 +96,13 @@ def foreign_key_matching?(definition, filters)
   filters.all? do |filter|
     definition.from_table.match?(filter) ||
       definition.to_table.match?(filter) ||
-      definition.column.match?(filter)
+      (if definition.column.is_a?(Array)
+         definition.column.any? do |col|
+           col.match?(filter)
+         end
+       else
+         definition.column.match?(filter)
+       end)
   end
 end
 
@@ -154,14 +158,16 @@ def generate_migration(definition)
   timestamp = Time.now.utc.strftime("%Y%m%d%H%M%S")
 
   # db/post_migrate/20220111221516_remove_projects_ci_pending_builds_fk.rb
+  column_name = definition.column.is_a?(Array) ? definition.column.join('_') : definition.column
+  column_camelcase = definition.column.is_a?(Array) ? definition.column.map(&:camelcase).join('') : definition.column.camelcase
 
-  migration_name = "db/post_migrate/#{timestamp}_remove_#{definition.to_table}_#{definition.from_table}_#{definition.column}_fk.rb"
+  migration_name = "db/post_migrate/#{timestamp}_remove_#{definition.to_table}_#{definition.from_table}_#{column_name}_fk.rb"
   puts "Writing #{migration_name}"
 
   content = <<-EOF.strip_heredoc
     # frozen_string_literal: true
 
-    class Remove#{definition.to_table.camelcase}#{definition.from_table.camelcase}#{definition.column.camelcase}Fk < Gitlab::Database::Migration[#{Gitlab::Database::Migration.current_version}]
+    class Remove#{definition.to_table.camelcase}#{definition.from_table.camelcase}#{column_camelcase}Fk < Gitlab::Database::Migration[#{Gitlab::Database::Migration.current_version}]
       milestone '#{Gitlab.current_milestone}'
       disable_ddl_transaction!
 
@@ -213,14 +219,27 @@ def add_test_to_specs(definition)
   spec_path = spec_from_clazz(clazz, definition)
   puts "Adding test to #{spec_path}..."
 
-  spec_test = <<-EOF.strip_heredoc.indent(2)
-    context 'with loose foreign key on #{definition.from_table}.#{definition.column}' do
-      it_behaves_like 'cleanup by a loose foreign key' do
-        let_it_be(:parent) { create(:#{definition.to_table.singularize}) }
-        let_it_be(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix("_id").singularize}: parent) }
+  # handle both single and composite foreign key columns
+  column_display = definition.column.is_a?(Array) ? definition.column.join(', ') : definition.column
+
+  if definition.column.is_a?(Array)
+    spec_test = <<-EOF.strip_heredoc.indent(2)
+      context 'with loose foreign key on #{definition.from_table}.#{column_display}' do
+        it 'has loose foreign key configuration' do
+          expect(described_class).to have_loose_foreign_key(:#{definition.to_table.singularize})
+        end
       end
-    end
-  EOF
+    EOF
+  else
+    spec_test = <<-EOF.strip_heredoc.indent(2)
+      context 'with loose foreign key on #{definition.from_table}.#{column_display}' do
+        it_behaves_like 'cleanup by a loose foreign key' do
+          let_it_be(:parent) { create(:#{definition.to_table.singularize}) }
+          let_it_be(:model) { create(:#{definition.from_table.singularize}, #{definition.column.delete_suffix('_id').singularize}: parent) }
+        end
+      end
+    EOF
+  end
 
   # append to end of file with empty line before
   lines = File.readlines(spec_path)
@@ -265,7 +284,8 @@ end
 
 columns("ID", "HAS_LFK", "FROM", "TO", "COLUMN", "ON_DELETE")
 all_foreign_keys.each_with_index do |definition, idx|
-  columns(idx, has_lfk?(definition) ? 'Y' : 'N', definition.from_table, definition.to_table, definition.column, definition.on_delete)
+  columns(idx, has_lfk?(definition) ? 'Y' : 'N', definition.from_table, definition.to_table, definition.column,
+    definition.on_delete)
 end
 puts
 

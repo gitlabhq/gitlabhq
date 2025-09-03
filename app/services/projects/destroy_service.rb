@@ -286,8 +286,8 @@ module Projects
         ::Ci::DestroySecureFileService.new(project, current_user).execute(secure_file)
       end
 
-      delete_commit_statuses
       destroy_orphaned_ci_job_artifacts!
+      delete_commit_statuses
     end
 
     # This method will delete all orphaned CI Job artifacts for the project, which are job artifacts

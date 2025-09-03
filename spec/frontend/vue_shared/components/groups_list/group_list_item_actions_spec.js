@@ -21,6 +21,8 @@ import {
 } from '~/vue_shared/components/groups_list/utils';
 import { createAlert } from '~/alert';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
 jest.mock('~/vue_shared/components/groups_list/utils', () => ({
   ...jest.requireActual('~/vue_shared/components/groups_list/utils'),
@@ -81,6 +83,24 @@ describe('GroupListItemActions', () => {
   });
 
   describe('when archive action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('should call trackEvent method', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      fireAction(ACTION_ARCHIVE);
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'archive_namespace_in_quick_action',
+        {
+          label: RESOURCE_TYPES.GROUP,
+          property: 'archive',
+        },
+        undefined,
+      );
+    });
+
     describe('when API call is successful', () => {
       it('calls archiveGroup, properly renders loading icon, and emits refetch event', async () => {
         archiveGroup.mockResolvedValueOnce();
@@ -127,6 +147,24 @@ describe('GroupListItemActions', () => {
   });
 
   describe('when unarchive action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('should call trackEvent method', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      fireAction(ACTION_UNARCHIVE);
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'archive_namespace_in_quick_action',
+        {
+          label: RESOURCE_TYPES.GROUP,
+          property: 'unarchive',
+        },
+        undefined,
+      );
+    });
+
     describe('when API call is successful', () => {
       it('calls unarchiveGroup, properly renders loading icon, and emits refetch event', async () => {
         unarchiveGroup.mockResolvedValueOnce();

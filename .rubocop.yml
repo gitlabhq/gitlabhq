@@ -1055,6 +1055,10 @@ Migration/PreventIndexCreation:
     - !ruby/regexp /\Adb\/(post_)?migrate\/2020.*\.rb\z/
     - !ruby/regexp /\Adb\/(post_)?migrate\/20210[1-6].*\.rb\z/
 
+Migration/PreventForeignKeyCreation:
+  Enabled: true
+  EnforcedSince: 20250116000000
+
 Migration/SchemaAdditionMethodsNoPost:
   Enabled: true
   Include:

@@ -13,6 +13,8 @@ import {
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
+import { InternalEvents } from '~/tracking';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import {
   renderArchiveSuccessToast,
   renderRestoreSuccessToast,
@@ -25,6 +27,7 @@ export default {
     GlLoadingIcon,
     ListActions,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     group: {
       type: Object,
@@ -89,11 +92,21 @@ export default {
       await archiveGroup(this.group.id);
       this.$emit('refetch');
       renderArchiveSuccessToast(this.group);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.GROUP,
+        property: 'archive',
+      });
     },
     async unarchive() {
       await unarchiveGroup(this.group.id);
       this.$emit('refetch');
       renderUnarchiveSuccessToast(this.group);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.GROUP,
+        property: 'unarchive',
+      });
     },
     async restore() {
       await restoreGroup(this.group.id);

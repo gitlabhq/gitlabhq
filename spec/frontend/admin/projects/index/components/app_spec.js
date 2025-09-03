@@ -32,7 +32,8 @@ import {
   ADMIN_PROJECTS_ROUTE_NAME,
   INACTIVE_TAB,
 } from '~/admin/projects/index/constants';
-import adminProjectsQuery from '~/admin/projects/index/graphql/queries/projects.query.graphql';
+import adminProjectsQuery from '~/admin/projects/index/graphql/queries/admin_projects.query.graphql';
+import projectsQuery from '~/admin/projects/index/graphql/queries/projects.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -56,6 +57,7 @@ describe('AdminProjectsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    features = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
@@ -65,6 +67,7 @@ describe('AdminProjectsApp', () => {
       propsData: defaultPropsData,
       apolloProvider,
       router,
+      provide: { glFeatures: { customAbilityReadAdminProjects: false, ...features } },
     });
   };
 
@@ -100,11 +103,29 @@ describe('AdminProjectsApp', () => {
     });
   });
 
+  describe('when customAbilityReadAdminProjects feature flag is enabled', () => {
+    it('uses getAdminProjectsNew query', async () => {
+      const adminProjectsQueryHandler = jest
+        .fn()
+        .mockResolvedValue({ projects: { count: 0, nodes: [], pageInfo: {} } });
+
+      await createComponent({
+        mountFn: mountExtended,
+        features: { customAbilityReadAdminProjects: true },
+        handlers: [[adminProjectsQuery, adminProjectsQueryHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(adminProjectsQueryHandler).toHaveBeenCalled();
+    });
+  });
+
   it('allows deleting immediately on Inactive tab', async () => {
     await createComponent({
       mountFn: mountExtended,
       handlers: [
-        [adminProjectsQuery, jest.fn().mockResolvedValue(adminInactiveProjectsGraphQlResponse)],
+        [projectsQuery, jest.fn().mockResolvedValue(adminInactiveProjectsGraphQlResponse)],
       ],
       route: { name: INACTIVE_TAB.value },
     });
@@ -120,7 +141,7 @@ describe('AdminProjectsApp', () => {
 
     await createComponent({
       mountFn: mountExtended,
-      handlers: [[adminProjectsQuery, jest.fn().mockResolvedValue(adminProjectsGraphQlResponse)]],
+      handlers: [[projectsQuery, jest.fn().mockResolvedValue(adminProjectsGraphQlResponse)]],
     });
     await waitForPromises();
 
@@ -142,7 +163,7 @@ describe('AdminProjectsApp', () => {
       mountFn: mountExtended,
       handlers: [
         [
-          adminProjectsQuery,
+          projectsQuery,
           jest.fn().mockResolvedValue({
             data: {
               projects: {

@@ -137,6 +137,7 @@ export default {
           :is="componentName(firstNote)"
           :note="componentData(firstNote)"
           :line="line || diffLine"
+          :discussion="discussion"
           :discussion-file="discussion.diff_file"
           :commit="commit"
           :help-page-path="helpPagePath"

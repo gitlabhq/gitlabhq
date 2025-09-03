@@ -1,0 +1,45 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
+#import "~/graphql_shared/fragments/project_interface.fragment.graphql"
+#import "~/admin/projects/index/graphql/fragments/admin_project.fragment.graphql"
+
+query getAdminProjectsNew(
+  $active: Boolean
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: String
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $visibilityLevel: VisibilityLevelsEnum
+  $programmingLanguageName: String
+  $namespacePath: ID
+) {
+  projects: adminProjects(
+    active: $active
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    sort: $sort
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+    visibilityLevel: $visibilityLevel
+    namespacePath: $namespacePath
+  ) {
+    count
+    nodes {
+      ...ProjectInterface
+      ...AdminProject
+      ... on Project {
+        ...Project
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

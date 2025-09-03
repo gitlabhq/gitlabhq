@@ -158,8 +158,6 @@ module API
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/473419')
 
-          authorize_update_builds!
-
           job = find_job!(params[:job_id])
           authorize!(:retry_job, job)
 
@@ -185,8 +183,6 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
-          authorize_update_builds!
-
           build = find_build!(params[:job_id])
           authorize!(:erase_build, build)
           break forbidden!('Job is not erasable!') unless build.erasable?

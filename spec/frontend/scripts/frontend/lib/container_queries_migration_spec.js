@@ -41,6 +41,14 @@ describe('migrateCSSUtils', () => {
     expect(migrateCSSUtils(input)).toBe(output);
   });
 
+  it('replaces Tailwind media query utils with important modifier', () => {
+    const input = '<div class="sm:!gl-flex-row md:!gl-items-center lg:gl-hidden">';
+    const output =
+      '<div class="@sm/panel:!gl-flex-row @md/panel:!gl-items-center @lg/panel:gl-hidden">';
+
+    expect(migrateCSSUtils(input)).toBe(output);
+  });
+
   // These aren't very relevant anymore as we have disabled the related migrations for now.
   it.each([
     '{ visible: true }',

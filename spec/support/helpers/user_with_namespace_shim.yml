@@ -563,7 +563,6 @@
 - spec/features/search/user_searches_for_merge_requests_spec.rb
 - spec/features/search/user_searches_for_milestones_spec.rb
 - spec/features/search/user_searches_for_wiki_pages_spec.rb
-- spec/features/search/user_uses_header_search_field_spec.rb
 - spec/features/search/user_uses_search_filters_spec.rb
 - spec/features/security/dashboard_access_spec.rb
 - spec/features/security/profile_access_spec.rb

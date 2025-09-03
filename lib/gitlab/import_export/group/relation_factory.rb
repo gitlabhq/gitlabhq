@@ -9,7 +9,9 @@ module Gitlab
           label: :group_label,
           parent: :epic,
           iterations_cadences: 'Iterations::Cadence',
-          user_contributions: :user
+          user_contributions: :user,
+          epic_lists: 'Boards::EpicList',
+          epic_boards: 'Boards::EpicBoard'
         }.freeze
 
         EXISTING_OBJECT_RELATIONS = %i[
@@ -21,6 +23,8 @@ module Gitlab
           labels
           group_label
           group_labels
+          iteration
+          iterations
         ].freeze
 
         RELATIONS_WITH_REWRITABLE_USERNAMES = %i[

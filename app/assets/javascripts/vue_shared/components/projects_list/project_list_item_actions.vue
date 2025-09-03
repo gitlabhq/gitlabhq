@@ -11,6 +11,8 @@ import {
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
+import { InternalEvents } from '~/tracking';
 import {
   renderArchiveSuccessToast,
   renderRestoreSuccessToast,
@@ -19,12 +21,13 @@ import {
 
 export default {
   name: 'ProjectListItemActions',
-  i18n: {
-    project: __('Project'),
-  },
   components: {
     GlLoadingIcon,
     ListActions,
+  },
+  mixins: [InternalEvents.mixin()],
+  i18n: {
+    project: __('Project'),
   },
   props: {
     project: {
@@ -81,11 +84,21 @@ export default {
       await archiveProject(this.project.id);
       this.$emit('refetch');
       renderArchiveSuccessToast(this.project);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.PROJECT,
+        property: 'archive',
+      });
     },
     async unarchive() {
       await unarchiveProject(this.project.id);
       this.$emit('refetch');
       renderUnarchiveSuccessToast(this.project);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.PROJECT,
+        property: 'unarchive',
+      });
     },
     async restore() {
       await restoreProject(this.project.id);

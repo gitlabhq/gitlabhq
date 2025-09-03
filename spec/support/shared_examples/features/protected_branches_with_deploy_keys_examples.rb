@@ -14,7 +14,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
 
     context 'when only one deploy key can push' do
       it "shows all dropdown sections in the 'Allowed to push' main dropdown, with only one deploy key" do
-        visit project_protected_branches_path(project)
+        visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
         click_button 'Add protected branch'
         find(".js-allowed-to-push").click
@@ -30,7 +30,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
       end
 
       it "shows all sections but not deploy keys in the 'Allowed to merge' main dropdown" do
-        visit project_protected_branches_path(project)
+        visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
         click_button 'Add protected branch'
         find(".js-allowed-to-merge").click
@@ -46,7 +46,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
       it "shows all sections in the 'Allowed to push' update dropdown" do
         create(:protected_branch, :no_one_can_push, project: project, name: 'master')
 
-        visit project_protected_branches_path(project)
+        visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
         within(".js-protected-branch-edit-form") do
           find(".js-allowed-to-push").click
@@ -66,7 +66,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
         end
 
         it 'displays a preselected deploy key' do
-          visit project_protected_branches_path(project)
+          visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
           within(".js-protected-branch-edit-form") do
             find(".js-allowed-to-push").click
@@ -87,7 +87,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
       end
 
       it "just shows all sections but not deploy keys in the 'Allowed to push' dropdown" do
-        visit project_protected_branches_path(project)
+        visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
         click_button 'Add protected branch'
         find(".js-allowed-to-push").click
@@ -103,7 +103,7 @@ RSpec.shared_examples 'deploy keys with protected branches' do
       it "just shows all sections but not deploy keys in the 'Allowed to push' update dropdown" do
         create(:protected_branch, :no_one_can_push, project: project, name: 'master')
 
-        visit project_protected_branches_path(project)
+        visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
         within(".js-protected-branch-edit-form") do
           find(".js-allowed-to-push").click

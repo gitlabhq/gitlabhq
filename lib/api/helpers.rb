@@ -440,10 +440,6 @@ module API
       authorize! :destroy_artifacts, user_project
     end
 
-    def authorize_update_builds!
-      authorize! :update_build, user_project
-    end
-
     def authorize_cancel_builds!
       authorize! :cancel_build, user_project
     end

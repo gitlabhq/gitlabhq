@@ -358,6 +358,25 @@ To create group links with an LDAP user filter:
 1. In the **LDAP Access** section, choose a [default role](../permissions.md) or [custom role](../custom_roles/_index.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
+### Remove group links
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Active synchronization**.
+1. Identify the group link you want to remove and select **Remove**.
+
+{{< alert type="note" >}}
+
+When you remove LDAP group syncing, the existing memberships and role assignment are retained.
+
+{{< /alert >}}
+
 ### Override user permissions
 
 {{< details >}}

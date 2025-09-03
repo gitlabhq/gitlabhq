@@ -2444,10 +2444,10 @@ msgstr ""
 msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
 msgstr ""
 
-msgid "AICatalog|Add this flow to a project or a group"
+msgid "AICatalog|Add this flow to a project"
 msgstr ""
 
-msgid "AICatalog|Add to project or group"
+msgid "AICatalog|Add to project"
 msgstr ""
 
 msgid "AICatalog|Agent created successfully."
@@ -2633,10 +2633,10 @@ msgstr ""
 msgid "AICatalog|Project"
 msgstr ""
 
-msgid "AICatalog|Project is required."
+msgid "AICatalog|Project ID"
 msgstr ""
 
-msgid "AICatalog|Project or Group ID"
+msgid "AICatalog|Project is required."
 msgstr ""
 
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
@@ -2660,13 +2660,13 @@ msgstr ""
 msgid "AICatalog|Search and select tools for this agent."
 msgstr ""
 
+msgid "AICatalog|Select a project for which you want to enable this flow."
+msgstr ""
+
 msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
-msgstr ""
-
-msgid "AICatalog|Select a project or group for which you want to enable this flow."
 msgstr ""
 
 msgid "AICatalog|Select agent"

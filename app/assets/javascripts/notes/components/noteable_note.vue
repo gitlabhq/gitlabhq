@@ -182,6 +182,9 @@ export default {
       }
       return '';
     },
+    commentLines() {
+      return this.getLinesForDiscussion({ discussion: this.discussion });
+    },
     actionText() {
       if (!this.commit) {
         return '';
@@ -281,6 +284,7 @@ export default {
       'updateAssignees',
       'setSelectedCommentPositionHover',
     ]),
+    ...mapActions(useLegacyDiffs, ['getLinesForDiscussion']),
     editHandler() {
       this.isEditing = true;
       this.setSelectedCommentPositionHover();
@@ -539,6 +543,7 @@ export default {
             :note="note"
             :can-edit="canEdit"
             :line="line"
+            :lines="commentLines"
             :file="diffFile"
             :is-editing="isEditing"
             :autosave-key="autosaveKey"

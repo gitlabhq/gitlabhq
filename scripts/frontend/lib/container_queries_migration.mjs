@@ -56,8 +56,8 @@ const UTILS_REPLACEMENTS = [
   },
   (content) => {
     return content.replace(
-      /(?<prefix>[^@])(?<breakpoint>sm|md|lg|xl):gl-/g,
-      '$<prefix>@$<breakpoint>/panel:gl-',
+      /(?<prefix>[^@])(?<breakpoint>sm|md|lg|xl):(?<important>!?)gl-/g,
+      '$<prefix>@$<breakpoint>/panel:$<important>gl-',
     );
   },
 ];

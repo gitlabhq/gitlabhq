@@ -389,6 +389,7 @@ export default {
       <uncollapsed-assignee-list
         :users="localAssignees"
         show-less-assignees-class="hover:!gl-bg-transparent"
+        class="gl-mt-2"
       />
     </template>
   </work-item-sidebar-dropdown-widget>

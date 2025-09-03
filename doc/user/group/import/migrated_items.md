@@ -40,6 +40,8 @@ Group items that are migrated to the destination GitLab instance include:
 - Boards
 - Board lists
 - Epics
+- Epic boards
+- Epic board lists
 - Group labels
 
   {{< alert type="note" >}}

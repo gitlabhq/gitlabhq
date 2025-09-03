@@ -330,7 +330,7 @@ Project permissions for [application security](application_security/secure_your_
 | Change vulnerability status <sup>1</sup>                                                                                            |       |         |          |           |     ✓      |   ✓   |
 | Create [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
 | Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
-| Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |            |   ✓   |
+| Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |     ✓      |   ✓   |
 
 **Footnotes**
 

@@ -1,14 +1,11 @@
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/graphql_shared/fragments/project_interface.fragment.graphql"
 
 fragment Project on Project {
-  id
-  fullPath
+  ...ProjectInterface
   archived
-  nameWithNamespace
-  webUrl
   topics
   forksCount
-  avatarUrl
   starCount
   visibility
   openMergeRequestsCount
@@ -28,11 +25,6 @@ fragment Project on Project {
   }
   forkingAccessLevel {
     stringValue
-  }
-  userPermissions {
-    archiveProject
-    removeProject
-    viewEditPage
   }
   maxAccessLevel {
     integerValue

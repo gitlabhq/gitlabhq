@@ -925,7 +925,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     shared_examples 'job retry API call handler' do
-      context 'authorized user with :update_build permission' do
+      context 'authorized user with :retry_job permission' do
         context 'when the job is a build' do
           it 'retries non-running job' do
             expect(response).to have_gitlab_http_status(:created)
@@ -1018,7 +1018,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context "when credit card validation is needed" do
         let_it_be(:subscription) { create(:gitlab_subscription, namespace: namespace, hosted_plan: free_plan) }
 
-        context 'user with :update_build permission' do
+        context 'user with :retry_job permission' do
           it "can't retry non-running job" do
             call_retry_job
 

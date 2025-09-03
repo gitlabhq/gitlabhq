@@ -336,9 +336,9 @@ To fix this, fetch the new GPG key:
 
 ```shell
 sudo apt install gpg-agent
-curl "https://gitlab-org.gitlab.io/omnibus-gitlab/gitlab_new_gpg.key" \
-     --output /tmp/omnibus_gitlab_gpg.key
-sudo apt-key add /tmp/omnibus_gitlab_gpg.key
+sudo curl --fail --silent --show-error \
+     --output /etc/apt/trusted.gpg.d/gitlab.asc \
+     --url "https://gitlab-org.gitlab.io/omnibus-gitlab/gitlab_new_gpg.key"
 ```
 
 You can now [update GitLab](#update-gitlab). For more information, read about the

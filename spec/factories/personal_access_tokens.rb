@@ -48,6 +48,19 @@ FactoryBot.define do
     end
   end
 
+  factory :granular_pat, parent: :personal_access_token do
+    transient do
+      namespace { nil }
+      permissions { nil }
+    end
+
+    granular { true }
+
+    after(:create) do |token, evaluator|
+      token.granular_scopes.create!(namespace: evaluator.namespace, permissions: Array(evaluator.permissions))
+    end
+  end
+
   factory :resource_access_token, parent: :personal_access_token do
     user { association :user, :project_bot }
 

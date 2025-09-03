@@ -15,7 +15,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_read_build!, except: [:test_report_summary]
   before_action :authorize_read_build_report_results!, only: [:test_report_summary]
   before_action :authorize_update_build!,
-    except: [:index, :show, :viewer, :raw, :trace, :erase, :cancel, :unschedule, :test_report_summary]
+    except: [:index, :show, :viewer, :raw, :trace, :play, :erase, :cancel, :unschedule, :test_report_summary]
   before_action :authorize_cancel_build!, only: [:cancel]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]

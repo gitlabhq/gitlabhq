@@ -87,6 +87,23 @@ describe('issue_note_body component', () => {
       expect(wrapper.findComponent(NoteForm).props('saveButtonTitle')).toBe(buttonText);
     });
 
+    it.each`
+      type         | value
+      ${'simple'}  | ${[]}
+      ${'complex'} | ${[{ line_code: 'a' }, { line_code: 'b' }]}
+    `('provides the correct lines to the note form ($type)', ({ value }) => {
+      createComponent({
+        isEditing: true,
+        autosaveKey,
+        restoreFromAutosave: true,
+        lines: value,
+      });
+
+      const form = wrapper.findComponent(NoteForm);
+
+      expect(form.props('lines')).toEqual(value);
+    });
+
     describe('isInternalNote', () => {
       beforeEach(() => {
         wrapper.setProps({ isInternalNote: true });

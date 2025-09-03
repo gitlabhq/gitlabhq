@@ -20,6 +20,8 @@ import {
   ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
 
 jest.mock('~/vue_shared/components/projects_list/utils', () => ({
   ...jest.requireActual('~/vue_shared/components/projects_list/utils'),
@@ -89,6 +91,24 @@ describe('ProjectListItemActions', () => {
   });
 
   describe('when archive action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('should call trackEvent method', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await fireAction(ACTION_ARCHIVE);
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'archive_namespace_in_quick_action',
+        {
+          label: RESOURCE_TYPES.PROJECT,
+          property: 'archive',
+        },
+        undefined,
+      );
+    });
+
     describe('when API call is successful', () => {
       it('calls archiveProject, properly sets loading state, and emits refetch event', async () => {
         archiveProject.mockResolvedValueOnce();
@@ -139,6 +159,24 @@ describe('ProjectListItemActions', () => {
   });
 
   describe('when unarchive action is fired', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('should call trackEvent method', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await fireAction(ACTION_UNARCHIVE);
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'archive_namespace_in_quick_action',
+        {
+          label: RESOURCE_TYPES.PROJECT,
+          property: 'unarchive',
+        },
+        undefined,
+      );
+    });
+
     describe('when API call is successful', () => {
       it('calls unarchiveProject, properly sets loading state, and emits refetch event', async () => {
         unarchiveProject.mockResolvedValueOnce();
