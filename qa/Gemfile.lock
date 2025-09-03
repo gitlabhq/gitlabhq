@@ -1,7 +1,7 @@
 PATH
   remote: ../gems/gitlab-utils
   specs:
-    gitlab-utils (0.1.0)
+    gitlab-utils (0.2.0)
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)

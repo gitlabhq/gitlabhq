@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTableLite, GlSkeletonLoader } from '@gitlab/ui';
+import { GlTableLite } from '@gitlab/ui';
 // fixture located in spec/frontend/fixtures/pipelines.rb
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,7 +12,7 @@ import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operatio
 import PipelineTriggerer from '~/ci/pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '~/ci/pipelines_page/components/pipeline_url.vue';
 import PipelinesTable from '~/ci/common/pipelines_table.vue';
-import PipelinesTimeago from '~/ci/pipelines_page/components/time_ago.vue';
+import PipelinesTimeago from '~/ci/pipelines_page/components/pipelines_timeago.vue';
 import {
   PIPELINE_ID_KEY,
   BUTTON_TOOLTIP_RETRY,
@@ -67,7 +67,7 @@ describe('Pipelines Table', () => {
     });
   };
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findAnimateSkeletonLoader = () => wrapper.find('.gl-animate-skeleton-loader');
   const findGlTableLite = () => wrapper.findComponent(GlTableLite);
   const findCiIcon = () => wrapper.findComponent(CiIcon);
   const findPipelineInfo = () => wrapper.findComponent(PipelineUrl);
@@ -248,8 +248,8 @@ describe('Pipelines Table', () => {
           expect(findTableRows()).toHaveLength(pipelines.length + 1);
         });
 
-        it('renders the skeleton loader', () => {
-          expect(findSkeletonLoader().exists()).toBe(true);
+        it('renders at least one skeleton loader', () => {
+          expect(findAnimateSkeletonLoader().exists()).toBe(true);
         });
       });
 
@@ -263,7 +263,7 @@ describe('Pipelines Table', () => {
         });
 
         it('does not render skeleton loader', () => {
-          expect(findSkeletonLoader().exists()).toBe(false);
+          expect(findAnimateSkeletonLoader().exists()).toBe(false);
         });
       });
     });

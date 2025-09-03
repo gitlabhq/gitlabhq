@@ -31,19 +31,6 @@ html {
   padding-bottom: $content-wrapper-padding;
 }
 
-.content-wrapper.paneled-view {
-  padding-top: 0;
-}
-
-/* Hide all .paneled-view elements when the last .paneled-view contains .fullscreen */
-.panels-container:has(~ .paneled-view .fullscreen) {
-  display: none;
-}
-
-.paneled-view:has(.fullscreen) {
-  flex-grow: 1;
-}
-
 .container {
   padding-top: 0;
   z-index: 5;
@@ -161,17 +148,6 @@ html {
     padding-right: 0;
   }
 }
-
-.paneled-view.contextual-panel {
-  position: absolute !important;
-  overflow-y: auto;
-  @apply gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden;
-  @apply gl-@container/panel @xl/content-panels:gl-w-1/2 gl-z-[252] gl-shadow-lg @xl/content-panels:gl-shadow-none gl-w-8/10 gl-right-0;
-  @apply @xl/content-panels:gl-relative #{!important};
-  height: 100%;
-  clip-path: inset(0 0 0 -15px round 1rem);
-}
-
 
 /*
  * These are used by the `Tab width` user preference in

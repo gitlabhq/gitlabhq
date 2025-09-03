@@ -229,10 +229,10 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
               stub_ci_pipeline_yaml_file(config)
             end
 
-            it 'is cancelable' do
+            it 'is not cancelable' do
               pipeline = execute_service.payload
 
-              expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_nil
+              expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_falsy
             end
           end
 
@@ -265,6 +265,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         context 'interruptible builds' do
           before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
             stub_ci_pipeline_yaml_file(YAML.dump(config))
           end
 
@@ -301,19 +302,21 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             }
           end
 
+          # Remove metadata interruptible with stop_writing_builds_metadata
           it 'properly configures interruptible status' do
             interruptible_status =
               pipeline_on_previous_commit
                 .builds
                 .joins(:metadata)
-                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible")
+                .joins(:job_definition)
+                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible", "#{Ci::JobDefinition.quoted_table_name}.interruptible")
 
             expect(interruptible_status).to contain_exactly(
-              ['build_1_1', true],
-              ['build_1_2', true],
-              ['build_2_1', true],
-              ['build_3_1', false],
-              ['build_4_1', nil]
+              ['build_1_1', true, true],
+              ['build_1_2', true, true],
+              ['build_2_1', true, true],
+              ['build_3_1', false, false],
+              ['build_4_1', nil, false]
             )
           end
 

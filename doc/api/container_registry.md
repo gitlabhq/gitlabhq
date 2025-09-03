@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Container registry API
+description: Manage your GitLab container registry with the REST API.
 ---
 
 {{< details >}}
@@ -14,7 +15,7 @@ title: Container registry API
 
 Use these API endpoints to work with the [GitLab container registry](../user/packages/container_registry/_index.md).
 
-You can authenticate with these endpoints from a CI/CD job by passing the [`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)
+To authenticate with these endpoints from a CI/CD job, pass the [`$CI_JOB_TOKEN`](../ci/jobs/ci_job_token.md)
 variable as the `JOB-TOKEN` header. The job token only has access to the container registry
 of the project that created the pipeline.
 
@@ -26,20 +27,19 @@ This controls who can view the container registry.
 PUT /projects/:id/
 ```
 
-| Attribute                         | Type           | Required | Description |
-|-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) accessible by the authenticated user. |
-| `container_registry_access_level` | string         | no       | The desired visibility of the container registry. One of `enabled` (default), `private`, or `disabled`. |
+| Attribute                         | Type              | Required | Description |
+|-----------------------------------|-------------------|----------|-------------|
+| `id`                              | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project accessible by the authenticated user. |
+| `container_registry_access_level` | string            | no       | The desired visibility of the container registry. One of `enabled` (default), `private`, or `disabled`. |
 
 Descriptions of the possible values for `container_registry_access_level`:
 
-- **enabled** (Default): The container registry is visible to everyone with access to the project.
+- `enabled` (Default): The container registry is visible to everyone with access to the project.
   If the project is public, the container registry is also public. If the project is internal or
   private, the container registry is also internal or private.
-- **private**: The container registry is visible only to project members with Reporter role or
-  higher. This behavior is similar to that of a private project with container registry visibility set
-  to **enabled**.
-- **disabled**: The container registry is disabled.
+- `private`: The container registry is visible only to project members with the Reporter role or
+  higher. This behavior is similar to that of a private project with container registry visibility enabled.
+- `disabled`: The container registry is disabled.
 
 See the [container registry visibility permissions](../user/packages/container_registry/_index.md#container-registry-visibility-permissions)
 for more details about the permissions that this setting grants to users.
@@ -82,7 +82,7 @@ GET /projects/:id/registry/repositories
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) accessible by the authenticated user. |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project accessible by the authenticated user. |
 | `tags`       | boolean        | no       | If the parameter is included as true, each repository includes an array of `"tags"` in the response. |
 | `tags_count` | boolean        | no       | If the parameter is included as true, each repository includes `"tags_count"` in the response . |
 
@@ -134,7 +134,7 @@ GET /groups/:id/registry/repositories
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) accessible by the authenticated user. |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group accessible by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -176,7 +176,7 @@ GET /registry/repositories/:id
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `id`         | integer/string | yes      | The ID of the registry repository accessible by the authenticated user. |
+| `id`         | integer or string | yes      | The ID of the registry repository accessible by the authenticated user. |
 | `tags`       | boolean        | no       | If the parameter is included as `true`, the response includes an array of `"tags"`. |
 | `tags_count` | boolean        | no       | If the parameter is included as `true`, the response includes `"tags_count"`. |
 | `size`       | boolean        | no       | If the parameter is included as `true`, the response includes `"size"`. This is the deduplicated size of all images within the repository. Deduplication eliminates extra copies of identical data. For example, if you upload the same image twice, the container registry stores only one copy. This field is only available on GitLab.com for repositories created after `2021-11-04`. |
@@ -222,7 +222,7 @@ DELETE /projects/:id/registry/repositories/:repository_id
 
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `repository_id` | integer        | yes      | The ID of registry repository. |
 
 ```shell
@@ -255,7 +255,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags
 
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) accessible by the authenticated user. |
+| `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project accessible by the authenticated user. |
 | `repository_id` | integer        | yes      | The ID of registry repository. |
 
 ```shell
@@ -290,7 +290,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) accessible by the authenticated user. |
+| `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project accessible by the authenticated user. |
 | `repository_id` | integer        | yes      | The ID of registry repository. |
 | `tag_name`      | string         | yes      | The name of tag. |
 
@@ -318,8 +318,9 @@ Example response:
 
 Delete a container registry repository tag.
 
-The endpoint returns a 403 error if the tag matches any protection rules in the project.
-For more information about tag protection rules, see [Protected container tags](../user/packages/container_registry/protected_container_tags.md).
+The endpoint returns a [`403 Forbidden`](rest/troubleshooting.md#status-codes) error if the tag matches any protection rules in the project.
+For more information about tag protection rules, see
+[Protected container tags](../user/packages/container_registry/protected_container_tags.md).
 
 ```plaintext
 DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
@@ -327,7 +328,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `repository_id` | integer        | yes      | The ID of registry repository. |
 | `tag_name`      | string         | yes      | The name of tag. |
 
@@ -352,12 +353,12 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `repository_id`     | integer        | yes      | The ID of registry repository. |
+| `keep_n`            | integer        | no       | The amount of latest tags of given name to keep. |
 | `name_regex`        | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. **Note**: `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
 | `name_regex_delete` | string         | yes      | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. This field is validated. |
 | `name_regex_keep`   | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value overrides any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` results in a no-op. |
-| `keep_n`            | integer        | no       | The amount of latest tags of given name to keep. |
 | `older_than`        | string         | no       | Tags to delete that are older than the given time, written in human readable form `1h`, `1d`, `1month`. |
 
 This API returns [HTTP response status code 202](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/202)
@@ -377,7 +378,8 @@ if successful, and performs the following operations:
 These operations are executed asynchronously and can take time to get executed.
 You can run this at most once an hour for a given container repository.
 
-This operation does not delete blobs. To reclaim disk space, [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
+This operation does not delete blobs. To reclaim disk space,
+[run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
 
 {{< alert type="warning" >}}
 
@@ -385,7 +387,8 @@ The number of tags deleted by this API is limited on GitLab.com
 because of the scale of the container registry there.
 If your container registry has a large number of tags to delete,
 only some of them are deleted, and you might need to call this API multiple times.
-To schedule tags for automatic deletion, use a [cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
+To schedule tags for automatic deletion, use a
+[cleanup policy](../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy) instead.
 
 {{< /alert >}}
 
@@ -465,7 +468,9 @@ These are different from project or personal access tokens in the GitLab applica
 GET ${CI_SERVER_URL}/jwt/auth?service=container_registry&scope=*
 ```
 
-You must specify the correct [scopes and actions](https://distribution.github.io/distribution/spec/auth/scope/) to retrieve a valid token:
+You must specify the correct
+[scopes and actions](https://distribution.github.io/distribution/spec/auth/scope/)
+to retrieve a valid token:
 
 ```shell
 $ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull

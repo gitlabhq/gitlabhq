@@ -1008,6 +1008,54 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'remove_project' do
+    context 'anonymous user' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_disallowed(:remove_project) }
+    end
+
+    context 'project member' do
+      %w[guest planner reporter developer maintainer].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_disallowed(:remove_project) }
+        end
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        before do
+          project.add_owner(owner)
+        end
+
+        it { is_expected.to be_allowed(:remove_project) }
+
+        context 'when project is marked for deletion' do
+          let_it_be(:project) { create(:project, :aimed_for_deletion, namespace: owner.namespace) }
+
+          it { is_expected.to be_allowed(:remove_project) }
+        end
+
+        context 'when project ancestor is marked for deletion' do
+          let_it_be(:ancestor) { create(:group_with_deletion_schedule) }
+          let_it_be(:project) { create(:project, group: ancestor) }
+
+          it { is_expected.to be_disallowed(:remove_project) }
+        end
+
+        context 'when project ancestor is marked for deletion and being deleted' do
+          let_it_be(:ancestor) { create(:group_with_deletion_schedule, deleted_at: Time.current) }
+          let_it_be(:project) { create(:project, group: ancestor) }
+
+          it { is_expected.to be_allowed(:remove_project) }
+        end
+      end
+    end
+  end
+
   describe 'create_task' do
     context 'when user is member of the project' do
       let(:current_user) { developer }

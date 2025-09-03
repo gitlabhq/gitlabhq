@@ -2310,6 +2310,10 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           presence: false
 
         before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
+
+        def self.name
+          'Issue'
+        end
       end
     end
 

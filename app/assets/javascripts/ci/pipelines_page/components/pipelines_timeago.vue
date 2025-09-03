@@ -4,21 +4,18 @@ import { formatTime } from '~/lib/utils/datetime_utility';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
+  name: 'PipelinesTimeago',
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  components: { GlIcon },
+  components: {
+    GlIcon,
+  },
   mixins: [timeagoMixin],
   props: {
     pipeline: {
       type: Object,
       required: true,
-    },
-    fontSize: {
-      type: String,
-      required: false,
-      default: 'gl-text-sm',
-      validator: (fontSize) => ['gl-text-sm', 'gl-font-md'].includes(fontSize),
     },
   },
   computed: {
@@ -26,7 +23,10 @@ export default {
       return this.pipeline?.details?.duration;
     },
     durationFormatted() {
-      return formatTime(this.duration * 1000);
+      if (typeof this.duration === 'number') {
+        return formatTime(this.duration * 1000);
+      }
+      return '';
     },
     finishedTime() {
       return this.pipeline?.details?.finished_at || this.pipeline?.finishedAt;
@@ -35,21 +35,13 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-flex-col gl-items-end @lg/panel:gl-items-start" :class="fontSize">
-    <p
-      v-if="duration"
-      class="gl-m-0 gl-inline-flex gl-items-center gl-whitespace-nowrap gl-text-subtle"
-      data-testid="duration"
-    >
+  <div class="gl-text-sm gl-text-subtle">
+    <p v-if="durationFormatted" class="gl-mb-0 gl-whitespace-nowrap" data-testid="duration">
       <gl-icon name="timer" class="gl-mr-2" :size="12" variant="subtle" />
       {{ durationFormatted }}
     </p>
 
-    <p
-      v-if="finishedTime"
-      class="gl-m-0 gl-inline-flex gl-items-center gl-whitespace-nowrap gl-text-subtle"
-      data-testid="finished-at"
-    >
+    <p v-if="finishedTime" class="gl-mb-0 gl-whitespace-nowrap" data-testid="finished-at">
       <gl-icon
         name="calendar"
         class="gl-mr-2"
@@ -57,7 +49,6 @@ export default {
         data-testid="calendar-icon"
         variant="subtle"
       />
-
       <time
         v-gl-tooltip
         :title="tooltipTitle(finishedTime)"

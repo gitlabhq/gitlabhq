@@ -4,7 +4,7 @@ export default {};
 
 <template>
   <div class="row gl-mt-5">
-    <div class="col-12">
+    <div class="gl-col-12">
       <h4 class="gl-mt-0">
         {{ __('Custom emoji') }}
       </h4>

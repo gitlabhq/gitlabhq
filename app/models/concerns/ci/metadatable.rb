@@ -20,7 +20,6 @@ module Ci
 
       accepts_nested_attributes_for :metadata
 
-      delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
       delegate :exit_code, to: :metadata, allow_nil: true
 
       before_validation :ensure_metadata, on: :create
@@ -101,11 +100,13 @@ module Ci
     end
 
     def interruptible
-      metadata&.interruptible
+      return job_definition.interruptible if read_from_new_destination? && job_definition
+
+      metadata&.read_attribute(:interruptible)
     end
 
     def interruptible=(value)
-      ensure_metadata.interruptible = value
+      ensure_metadata.interruptible = value if can_write_metadata?
     end
 
     def id_tokens

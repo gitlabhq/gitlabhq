@@ -2,6 +2,7 @@
 import { GlSearchBoxByType, GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import runnerProjectsQuery from '../graphql/show/runner_projects.query.graphql';
 import {
   I18N_CLEAR_FILTER_PROJECTS,
@@ -25,11 +26,17 @@ export default {
     RunnerAssignedItem,
     RunnerPagination,
     CrudComponent,
+    HelpPopover,
   },
   props: {
     runner: {
       type: Object,
       required: true,
+    },
+    showAccessHelp: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -54,7 +61,7 @@ export default {
         const { runner } = data;
         return {
           ownerProjectId: runner?.ownerProject?.id,
-          count: runner?.projectCount || 0,
+          count: runner?.projects?.count || 0,
           items: runner?.projects?.nodes || [],
           pageInfo: runner?.projects?.pageInfo || {},
         };
@@ -78,19 +85,6 @@ export default {
     loading() {
       return this.$apollo.queries.projects.loading;
     },
-    canReadRunnerProjects() {
-      if (this.loading || Boolean(this.search)) {
-        return true;
-      }
-
-      /*
-       * When runner.projectCount > 0 but runner.projects.nodes is empty the
-       * user might not have read access to the projects assigned to the runner
-       * (e.g. users with read_admin_cicd custom admin role). We do not want to
-       * render the list in this case.
-       */
-      return !(this.projects.count > 0 && this.projects.items.length < 1);
-    },
   },
   methods: {
     isOwner(projectId) {
@@ -113,12 +107,15 @@ export default {
 
 <template>
   <crud-component
-    v-if="canReadRunnerProjects"
     :title="s__('Runner|Assigned Projects')"
     :count="projects.count"
     icon="project"
     body-class="!gl-mx-0"
   >
+    <template v-if="showAccessHelp" #count>
+      <help-popover>{{ s__('Runners|Projects you have access to') }}</help-popover>
+    </template>
+
     <gl-search-box-by-type
       :is-loading="loading"
       :clear-button-title="$options.I18N_CLEAR_FILTER_PROJECTS"

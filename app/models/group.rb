@@ -1390,9 +1390,9 @@ class Group < Namespace
   end
 
   # Overriding of Namespaces::AdjournedDeletable method
-  override :all_scheduled_for_deletion_in_hierarchy_chain
-  def all_scheduled_for_deletion_in_hierarchy_chain
-    self_and_ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+  override :ancestors_scheduled_for_deletion
+  def ancestors_scheduled_for_deletion
+    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end
 

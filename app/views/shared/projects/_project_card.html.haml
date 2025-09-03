@@ -15,7 +15,7 @@
 - css_metadata_classes = "gl-flex gl-items-center !gl-ml-0 !gl-text-inherit icon-wrapper has-tooltip"
 - project_avatar_link_label = _("View %{project} project") % { project: project.name }
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-justify-between lg:gl-w-1/4 gl-grow gl-shrink-0 gl-mt-0' }, header_options: { class: 'gl-flex gl-grow gl-items-start gl-gap-5' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-justify-between @lg/panel:gl-w-1/4 gl-grow gl-shrink-0 gl-mt-0' }, header_options: { class: 'gl-flex gl-grow gl-items-start gl-gap-5' }) do |c|
   - c.with_header do
     - if avatar
       .project-avatar-container.gl-relative.gl-pb-4
@@ -39,10 +39,10 @@
         = visibility_level_content(project)
 
       - if show_last_commit_as_description
-        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm.gl-text-subtle
+        .description.gl-hidden.gl-mt-2.gl-text-sm.gl-text-subtle{ class: "@sm/panel:gl-block" }
           = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
       - elsif project.description.present?
-        .description.gl-hidden.sm:gl-block.gl-mt-2.gl-text-sm.gl-text-subtle
+        .description.gl-hidden.gl-mt-2.gl-text-sm.gl-text-subtle{ class: "@sm/panel:gl-block" }
           = markdown_field(project, :description)
 
       - if project.topics.any?

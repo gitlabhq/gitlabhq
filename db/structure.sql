@@ -5026,25 +5026,6 @@ CREATE TABLE merge_request_commits_metadata (
 )
 PARTITION BY RANGE (project_id);
 
-CREATE TABLE merge_requests_merge_data (
-    merge_request_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    merge_user_id bigint,
-    merge_params text,
-    merge_error text,
-    merge_jid text,
-    merge_commit_sha bytea,
-    merged_commit_sha bytea,
-    merge_ref_sha bytea,
-    squash_commit_sha bytea,
-    in_progress_merge_commit_sha bytea,
-    merge_status smallint DEFAULT 0 NOT NULL,
-    auto_merge_enabled boolean DEFAULT false NOT NULL,
-    squash boolean DEFAULT false NOT NULL,
-    CONSTRAINT check_d25e93fc19 CHECK ((char_length(merge_jid) <= 255))
-)
-PARTITION BY RANGE (merge_request_id);
-
 CREATE TABLE p_ai_active_context_code_enabled_namespaces (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -18974,6 +18955,25 @@ CREATE SEQUENCE merge_requests_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_requests_id_seq OWNED BY merge_requests.id;
+
+CREATE TABLE merge_requests_merge_data (
+    merge_request_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_user_id bigint,
+    merge_params text,
+    merge_error text,
+    merge_jid text,
+    merge_commit_sha bytea,
+    merged_commit_sha bytea,
+    merge_ref_sha bytea,
+    squash_commit_sha bytea,
+    in_progress_merge_commit_sha bytea,
+    merge_status smallint DEFAULT 0 NOT NULL,
+    auto_merge_enabled boolean DEFAULT false NOT NULL,
+    squash boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_d25e93fc19 CHECK ((char_length(merge_jid) <= 255))
+)
+PARTITION BY RANGE (merge_request_id);
 
 CREATE TABLE merge_trains (
     id bigint NOT NULL,

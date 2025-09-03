@@ -5,6 +5,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
+
 import {
   I18N_CLEAR_FILTER_PROJECTS,
   I18N_FILTER_PROJECTS,
@@ -14,7 +17,6 @@ import {
 import RunnerProjects from '~/ci/runner/components/runner_projects.vue';
 import RunnerAssignedItem from '~/ci/runner/components/runner_assigned_item.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { captureException } from '~/ci/runner/sentry_utils';
 
 import runnerProjectsQuery from '~/ci/runner/graphql/show/runner_projects.query.graphql';
@@ -35,15 +37,17 @@ describe('RunnerProjects', () => {
   let mockRunnerProjectsQuery;
 
   const findCrud = () => wrapper.findComponent(CrudComponent);
+  const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findGlSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findRunnerAssignedItems = () => wrapper.findAllComponents(RunnerAssignedItem);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
 
-  const createComponent = ({ mountFn = shallowMountExtended } = {}) => {
-    wrapper = mountFn(RunnerProjects, {
+  const createComponent = ({ props } = {}) => {
+    wrapper = shallowMountExtended(RunnerProjects, {
       apolloProvider: createMockApollo([[runnerProjectsQuery, mockRunnerProjectsQuery]]),
       propsData: {
         runner: mockRunner,
+        ...props,
       },
       stubs: {
         CrudComponent,
@@ -81,6 +85,22 @@ describe('RunnerProjects', () => {
       debounce: '500',
       placeholder: I18N_FILTER_PROJECTS,
     });
+  });
+
+  it('Shows a help popover', () => {
+    createComponent({
+      props: {
+        showAccessHelp: true,
+      },
+    });
+
+    expect(findHelpPopover().text()).toBe('Projects you have access to');
+  });
+
+  it('Hides help popover by default', () => {
+    createComponent();
+
+    expect(findHelpPopover().exists()).toBe(false);
   });
 
   describe('When there are projects assigned', () => {
@@ -186,30 +206,6 @@ describe('RunnerProjects', () => {
 
         expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
       });
-
-      describe('No results', () => {
-        beforeEach(() => {
-          runnerProjectsData.data.runner.projectCount = 1;
-          runnerProjectsData.data.runner.projects = {
-            nodes: [],
-            pageInfo: {
-              hasNextPage: false,
-              hasPreviousPage: false,
-              startCursor: '',
-              endCursor: '',
-            },
-          };
-
-          mockRunnerProjectsQuery.mockResolvedValueOnce(runnerProjectsData);
-
-          findGlSearchBoxByType().vm.$emit('input', 'my search');
-          return waitForPromises();
-        });
-
-        it('renders the list', () => {
-          expect(findCrud().exists()).toBe(true);
-        });
-      });
     });
   });
 
@@ -250,29 +246,6 @@ describe('RunnerProjects', () => {
 
     it('Shows a "None" label', () => {
       expect(wrapper.findByText(I18N_NO_PROJECTS_FOUND).exists()).toBe(true);
-    });
-  });
-
-  describe('When runner.projectCount > 0 but runner.projects.nodes is empty', () => {
-    beforeEach(() => {
-      runnerProjectsData.data.runner.projectCount = 1;
-      runnerProjectsData.data.runner.projects = {
-        nodes: [],
-        pageInfo: {
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: '',
-          endCursor: '',
-        },
-      };
-
-      mockRunnerProjectsQuery.mockResolvedValueOnce(runnerProjectsData);
-      createComponent();
-      return waitForPromises();
-    });
-
-    it('does not render anything', () => {
-      expect(findCrud().exists()).toBe(false);
     });
   });
 

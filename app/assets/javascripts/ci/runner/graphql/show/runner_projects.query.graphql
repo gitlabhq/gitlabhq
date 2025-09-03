@@ -14,7 +14,6 @@ query getRunnerProjects(
     ownerProject {
       id
     }
-    projectCount
     projects(
       search: $search
       sort: $sort
@@ -23,6 +22,7 @@ query getRunnerProjects(
       before: $before
       after: $after
     ) {
+      count
       nodes {
         id
         avatarUrl

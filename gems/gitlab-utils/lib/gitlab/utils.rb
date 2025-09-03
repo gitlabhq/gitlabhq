@@ -3,6 +3,7 @@
 require "addressable/uri"
 require "active_support/all"
 require "action_view"
+require "securerandom"
 
 module Gitlab
   module Utils
@@ -345,5 +346,42 @@ module Gitlab
       end
     end
     alias_method :deep_sort_hash, :deep_sort_hashes
+
+    # Generate a random v7 UUID (Universally Unique IDentifier).
+    # Ported from ruby 3.3.0's https://github.com/ruby/securerandom/commit/34ed1a2ec35dc8f00ff69665b373cef7484c937f
+    # TODO remove when we support min ruby 3.3.0
+    def uuid_v7(extra_timestamp_bits: 0) # rubocop:disable Metrics/AbcSize -- Ported as is
+      case (extra_timestamp_bits = Integer(extra_timestamp_bits))
+      when 0 # min timestamp precision
+        ms = Process.clock_gettime(Process::CLOCK_REALTIME, :millisecond)
+        rand = SecureRandom.random_bytes(10)
+        rand.setbyte(0, (rand.getbyte(0) & 0x0f) | 0x70) # version
+        rand.setbyte(2, (rand.getbyte(2) & 0x3f) | 0x80) # variant
+        format("%08x-%04x-%s", (ms & 0x0000_ffff_ffff_0000) >> 16, (ms & 0x0000_0000_0000_ffff),
+          rand.unpack("H4H4H12").join("-"))
+
+      when 12 # max timestamp precision
+        ms, ns = Process.clock_gettime(Process::CLOCK_REALTIME, :nanosecond)
+                   .divmod(1_000_000)
+        extra_bits = ns * 4096 / 1_000_000
+        rand = SecureRandom.random_bytes(8)
+        rand.setbyte(0, (rand.getbyte(0) & 0x3f) | 0x80) # variant
+        format("%08x-%04x-7%03x-%s", (ms & 0x0000_ffff_ffff_0000) >> 16, (ms & 0x0000_0000_0000_ffff), extra_bits,
+          rand.unpack("H4H12").join("-"))
+
+      when (0..12) # the generic version is slower than the special cases above
+        rand_a, rand_b1, rand_b2, rand_b3 = SecureRandom.random_bytes(10).unpack("nnnN")
+        rand_mask_bits = 12 - extra_timestamp_bits
+        ms, ns = Process.clock_gettime(Process::CLOCK_REALTIME, :nanosecond)
+                   .divmod(1_000_000)
+        format("%08x-%04x-%04x-%04x-%04x%08x",
+          (ms & 0x0000_ffff_ffff_0000) >> 16, (ms & 0x0000_0000_0000_ffff), 0x7000 |
+            ((ns * (1 << extra_timestamp_bits) / 1_000_000) << rand_mask_bits) |
+            (rand_a & ((1 << rand_mask_bits) - 1)), 0x8000 | (rand_b1 & 0x3fff), rand_b2, rand_b3)
+
+      else
+        raise ArgumentError, "extra_timestamp_bits must be in 0..12, got: #{extra_timestamp_bits}"
+      end
+    end
   end
 end

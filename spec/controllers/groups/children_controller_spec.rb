@@ -389,8 +389,8 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
         context 'when rendering hierarchies' do
           # When loading hierarchies we load the all the ancestors for matched projects
-          # in 3 separate queries
-          let(:extra_queries_for_hierarchies) { 3 }
+          # in 5 separate queries
+          let(:extra_queries_for_hierarchies) { 5 }
 
           def get_filtered_list
             get :index, params: { group_id: group.to_param, filter: 'filter' }, format: :json

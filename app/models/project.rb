@@ -3975,8 +3975,8 @@ class Project < ApplicationRecord
   end
 
   # Overriding of Namespaces::AdjournedDeletable method
-  override :all_scheduled_for_deletion_in_hierarchy_chain
-  def all_scheduled_for_deletion_in_hierarchy_chain
+  override :ancestors_scheduled_for_deletion
+  def ancestors_scheduled_for_deletion
     ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end

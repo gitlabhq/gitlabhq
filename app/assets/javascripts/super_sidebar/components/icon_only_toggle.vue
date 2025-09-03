@@ -33,7 +33,7 @@ export default {
   >
     <gl-button
       v-gl-tooltip.right="isIconOnly ? text : ''"
-      class="gl-m-2"
+      class="gl-mx-3 gl-my-2"
       :icon="icon"
       size="small"
       category="tertiary"

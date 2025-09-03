@@ -399,4 +399,60 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe '#interruptible' do
+    subject(:interruptible) { processable.interruptible }
+
+    context 'when metadata interruptible is present' do
+      before do
+        processable.job_definition = nil
+        processable.ensure_metadata.write_attribute(:interruptible, true)
+      end
+
+      it 'returns metadata interruptible' do
+        expect(interruptible).to be_truthy
+      end
+
+      context 'when job definition interruptible is present' do
+        before do
+          processable.ensure_metadata.write_attribute(:interruptible, nil)
+          processable.build_job_definition.write_attribute(:interruptible, false)
+        end
+
+        it 'returns job definition interruptible' do
+          expect(interruptible).to be false
+        end
+
+        context 'when FF `read_from_new_ci_destinations` is disabled' do
+          before do
+            stub_feature_flags(read_from_new_ci_destinations: false)
+            processable.ensure_metadata.write_attribute(:interruptible, true)
+            processable.job_definition.interruptible = false
+          end
+
+          it 'returns metadata interruptible' do
+            expect(interruptible).to be_truthy
+          end
+        end
+      end
+    end
+  end
+
+  describe '#interruptible=' do
+    it 'does not change metadata.interruptible' do
+      expect { processable.interruptible = true }
+        .to not_change { processable.metadata.interruptible }
+    end
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it 'sets the value into metadata.interruptible' do
+        expect { processable.interruptible = true }
+          .to change { processable.metadata.interruptible }
+      end
+    end
+  end
 end

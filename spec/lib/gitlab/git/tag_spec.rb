@@ -147,6 +147,26 @@ RSpec.describe Gitlab::Git::Tag, feature_category: :source_code_management do
         expect(signed_text).to eq(X509Helpers::User1.signed_tag_base_data)
         expect(signed_text).to be_a_binary_string
       end
+
+      context 'when fetching tag signatures exceeds timeout' do
+        before do
+          allow(described_class).to receive(:batch_signature_extraction).and_raise(GRPC::DeadlineExceeded)
+        end
+
+        it 'returns empty signature and message as signed text' do
+          signature, signed_text = subject
+
+          expect(signature).to be_empty
+          expect(signed_text).to be_empty
+          expect(signed_text).to be_a_binary_string
+        end
+
+        it 'tracks the exception' do
+          expect(Gitlab::ErrorTracking).to receive(:log_exception).with(a_kind_of(GRPC::DeadlineExceeded))
+
+          subject
+        end
+      end
     end
 
     context 'when the tag has no signature' do

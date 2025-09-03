@@ -33,7 +33,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string  | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of container repository protection rules.
 
@@ -90,10 +90,10 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
-| `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level required to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. |
+| `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the created container repository protection rule.
 
@@ -138,11 +138,11 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `protection_rule_id`              | integer        | Yes      | ID of the protection rule to be updated. |
-| `repository_path_pattern`         | string         | No       | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
-| `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. To unset the value, use an empty string `""`. |
 | `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level required to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. To unset the value, use an empty string `""`. |
+| `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level required to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. To unset the value, use an empty string `""`. |
+| `repository_path_pattern`         | string         | No       | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the updated protection rule.
 
@@ -185,7 +185,7 @@ Supported attributes:
 
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
-| `id`                 | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                 | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
 | `protection_rule_id` | integer        | Yes      | ID of the container repository protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
@@ -201,6 +201,7 @@ Can return the following status codes:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/repository/rules/1"
 ```

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
   let!(:user)         { create(:user) }
-  let!(:group)        { create(:group) }
+  let!(:group)        { create(:group_with_deletion_schedule, deleted_at: Time.current) }
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group) }
@@ -152,7 +152,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
       end
 
       expect { destroy_group(group, user, false) }
-        .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted")
+        .to raise_error(described_class::DestroyError, "Project #{project.id} can't be deleted")
     end
   end
 
@@ -163,7 +163,7 @@ RSpec.describe Groups::DestroyService, feature_category: :groups_and_projects do
 
     it 'returns a more descriptive error message' do
       expect { destroy_group(group, user, false) }
-      .to raise_error(Groups::DestroyService::DestroyError, "You can't delete this group because you're blocked.")
+      .to raise_error(described_class::DestroyError, "You can't delete this group because you're blocked.")
     end
   end
 

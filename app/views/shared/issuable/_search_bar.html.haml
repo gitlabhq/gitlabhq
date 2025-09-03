@@ -8,18 +8,18 @@
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.lg:gl-flex-row.gl-gap-3{ class: [block_css_class, filtered_search_class] }
-    .gl-flex.gl-flex-col.md:gl-flex-row.gl-grow.gl-w-full
+  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-col.gl-gap-3{ class: "@lg/panel:gl-flex-row #{block_css_class} #{filtered_search_class}" }
+    .gl-flex.gl-flex-col.gl-grow.gl-w-full{ class: "@md/panel:gl-flex-row" }
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
         - if @can_bulk_update
-          .check-all-holder.gl-hidden.sm:gl-block.hidden.gl-float-left.gl-mr-3.gl-leading-36
+          .check-all-holder.gl-hidden.gl-float-left.gl-mr-3.gl-leading-36{ class: "@sm/panel:gl-block" }
             = render Pajamas::CheckboxTagComponent.new(name: 'check-all-issues', value: nil) do |c|
               - c.with_label do
                 %span.gl-sr-only
                   = _('Select all')
-        .issues-other-filters.filtered-search-wrapper.gl-flex.gl-flex-col.md:gl-flex-row
+        .issues-other-filters.filtered-search-wrapper.gl-flex.gl-flex-col{ class: "@md/panel:gl-flex-row" }
           .filtered-search-box
             - if type != :boards
               - text = tag.span(sprite_icon('history')) + tag.span(_('Recent searches'), class: "gl-sr-only")
@@ -200,6 +200,6 @@
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'clear', icon_classes: "clear-search-icon", button_options: { class: 'clear-search hidden gl-self-center gl-mr-1 has-tooltip', title: _('Clear') })
-    .filter-dropdown-container.gl-flex.gl-flex-col.md:gl-flex-row.gl-items-start
+    .filter-dropdown-container.gl-flex.gl-flex-col.gl-items-start{ class: "@md/panel:gl-flex-row" }
       - if type != :productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

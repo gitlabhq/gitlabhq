@@ -10,31 +10,12 @@ class QueueBackfillMergeRequestCleanupSchedulesProjectId < Gitlab::Database::Mig
   SUB_BATCH_SIZE = 100
 
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :merge_request_cleanup_schedules,
-      :merge_request_id,
-      :project_id,
-      :merge_requests,
-      :target_project_id,
-      :merge_request_id,
-      job_interval: DELAY_INTERVAL,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because the original migration failed
+    #   fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198596
   end
 
   def down
-    delete_batched_background_migration(
-      MIGRATION,
-      :merge_request_cleanup_schedules,
-      :merge_request_id,
-      [
-        :project_id,
-        :merge_requests,
-        :target_project_id,
-        :merge_request_id
-      ]
-    )
+    # no-op because the original migration failed
+    #   fixed by: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198596
   end
 end

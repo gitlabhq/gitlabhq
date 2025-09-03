@@ -1,6 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -34,9 +33,7 @@ const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
 
 export default {
   name: 'PipelinesTable',
-  cellHeight: 50,
   components: {
-    GlSkeletonLoader,
     GlTableLite,
     PipelineFailedJobsWidget,
     PipelineMiniGraph,
@@ -74,9 +71,6 @@ export default {
     },
   },
   computed: {
-    isMobile() {
-      return ['md', 'sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
-    },
     tableFields() {
       return [
         {
@@ -135,9 +129,6 @@ export default {
     },
   },
   methods: {
-    cellWidth(ref) {
-      return this.$refs[ref]?.offsetWidth;
-    },
     displayFailedJobsWidget(item) {
       return !item.isLoading && this.useFailedJobsWidget;
     },
@@ -167,13 +158,6 @@ export default {
       return this.displayFailedJobsWidget(item) && this.failedJobsCount(item) > 0
         ? ''
         : '!gl-border-b';
-    },
-    setLoaderPosition(ref) {
-      if (this.isMobile) {
-        return this.cellWidth(ref) / 2;
-      }
-
-      return 0;
     },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
@@ -207,44 +191,29 @@ export default {
 
       <template #cell(status)="{ item }">
         <div v-if="item.isLoading" ref="status">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('status')">
-            <rect height="30" rx="4" ry="4" :width="cellWidth('status')" />
-          </gl-skeleton-loader>
+          <div class="gl-animate-skeleton-loader gl-h-7 gl-w-full gl-rounded-base"></div>
         </div>
         <pipeline-status-badge v-else :pipeline="item" />
       </template>
 
       <template #cell(pipeline)="{ item }">
-        <div v-if="item.isLoading" ref="pipeline">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('pipeline')">
-            <rect height="14" rx="4" ry="4" :width="cellWidth('pipeline')" />
-            <rect
-              height="10"
-              rx="4"
-              ry="4"
-              :width="cellWidth('pipeline') / 2"
-              :x="setLoaderPosition('pipeline')"
-              y="20"
-            />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-mb-2 gl-h-4 gl-w-full gl-rounded-base"></div>
+          <div class="gl-animate-skeleton-loader gl-h-4 gl-w-1/2 gl-rounded-base"></div>
         </div>
         <pipeline-url v-else :pipeline="item" :pipeline-id-type="pipelineIdType" />
       </template>
 
       <template #cell(triggerer)="{ item }">
-        <div v-if="item.isLoading" ref="triggerer" class="gl-ml-3">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('triggerer')">
-            <rect :height="34" rx="50" ry="50" :width="34" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading" class="gl-ml-3">
+          <div class="gl-animate-skeleton-loader gl-h-7 gl-w-7 gl-rounded-full"></div>
         </div>
         <pipeline-triggerer v-else :pipeline="item" />
       </template>
 
       <template #cell(stages)="{ item }">
-        <div v-if="item.isLoading" ref="stages">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('stages')">
-            <rect height="20" rx="10" ry="10" :width="cellWidth('stages')" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-h-6 gl-w-full gl-rounded-pill"></div>
         </div>
         <pipeline-mini-graph
           v-else
@@ -257,10 +226,8 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <div v-if="item.isLoading" ref="actions">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('actions')">
-            <rect height="20" rx="4" ry="4" :width="cellWidth('actions')" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-h-6 gl-w-full gl-rounded-lg"></div>
         </div>
         <pipeline-operations
           v-else

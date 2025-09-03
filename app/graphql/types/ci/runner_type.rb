@@ -87,7 +87,7 @@ module Types
       field :paused, GraphQL::Types::Boolean, null: false,
         description: 'Indicates the runner is paused and not available to run jobs.'
       field :project_count, GraphQL::Types::Int, null: true,
-        description: 'Number of projects that the runner is associated with.'
+        description: 'Number of projects that the runner is associated with. The count includes projects that might not be visible to the current user.'
       field :projects,
         ::Types::ProjectType.connection_type,
         null: true,

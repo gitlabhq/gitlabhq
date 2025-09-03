@@ -29,10 +29,13 @@ module Gitlab
         end
 
         def extract_signature_lazily(repository, tag_id)
-          BatchLoader.for(tag_id).batch(key: repository) do |tag_ids, loader, args|
+          # Return the default empty signature data in case of timeouts
+          BatchLoader.for(tag_id).batch(key: repository, default_value: [+''.b, +''.b]) do |tag_ids, loader, args|
             batch_signature_extraction(args[:key], tag_ids).each do |tag_id, signature_data|
               loader.call(tag_id, signature_data)
             end
+          rescue GRPC::DeadlineExceeded => e
+            Gitlab::ErrorTracking.log_exception(e)
           end
         end
 

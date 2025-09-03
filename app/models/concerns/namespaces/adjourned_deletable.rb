@@ -4,7 +4,7 @@
 # Support for delayed deletion is provided.
 #
 # The #self_deletion_in_progress? method needs to be defined.
-# The #all_scheduled_for_deletion_in_hierarchy_chain method can be overriden.
+# The #ancestors_scheduled_for_deletion method can be overriden.
 module Namespaces
   module AdjournedDeletable
     extend ActiveSupport::Concern
@@ -14,12 +14,12 @@ module Namespaces
       raise NotImplementedError
     end
 
-    # Returns an array of records that are scheduled for deletion in the hierarchy chain of the current record.
+    # Returns an array of the record's ancestors that are scheduled for deletion.
     # This method can be overriden.
-    def all_scheduled_for_deletion_in_hierarchy_chain
+    def ancestors_scheduled_for_deletion
       []
     end
-    private :all_scheduled_for_deletion_in_hierarchy_chain
+    private :ancestors_scheduled_for_deletion
 
     # Returns the date when the scheduled deletion was created.
     def self_deletion_scheduled_deletion_created_on
@@ -35,7 +35,7 @@ module Namespaces
     def first_scheduled_for_deletion_in_hierarchy_chain
       return self if self_deletion_scheduled?
 
-      all_scheduled_for_deletion_in_hierarchy_chain.first
+      ancestors_scheduled_for_deletion.first
     end
 
     # Returns true if the record or any of its ancestors is scheduled for deletion.

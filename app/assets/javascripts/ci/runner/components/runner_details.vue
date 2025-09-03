@@ -158,7 +158,7 @@ export default {
 
     <div class="gl-mt-6 gl-flex gl-flex-col gl-gap-5">
       <runner-groups v-if="isGroupRunner" :runner="runner" />
-      <runner-projects v-if="isProjectRunner" :runner="runner" />
+      <runner-projects v-if="isProjectRunner" :show-access-help="showAccessHelp" :runner="runner" />
       <runner-managers :runner="runner" />
       <runner-jobs :runner-id="runnerId" :show-access-help="showAccessHelp" />
     </div>

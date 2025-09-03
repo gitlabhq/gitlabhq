@@ -124,6 +124,12 @@ FactoryBot.define do
     trait :interruptible do
       after(:build) do |processable|
         processable.metadata.interruptible = true
+
+        next unless processable.job_definition
+
+        updated_config = processable.job_definition.config.merge(interruptible: true)
+        processable.job_definition.write_attribute(:config, updated_config)
+        processable.job_definition.write_attribute(:interruptible, true)
       end
     end
   end

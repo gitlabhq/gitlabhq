@@ -77,7 +77,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
         %i[pipeline project ref tag options name allow_failure stage_idx yaml_variables
            when environment coverage_regex description tag_list protected needs_attributes job_variables_attributes
            timeout timeout_source debug_trace_enabled
-           resource_group scheduling_type ci_stage partition_id id_tokens interruptible]
+           resource_group scheduling_type ci_stage partition_id id_tokens]
       end
 
       let(:reject_accessors) do
@@ -116,7 +116,7 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
            dast_site_profile dast_scanner_profile stage_id dast_site_profiles_build
            dast_scanner_profiles_build auto_canceled_by_partition_id execution_config_id execution_config
            build_source id_value inputs error_job_messages
-           job_definition job_definition_instance job_messages temp_job_definition].freeze
+           job_definition job_definition_instance job_messages temp_job_definition interruptible].freeze
       end
 
       before_all do
@@ -137,7 +137,8 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
     shared_examples_for 'clones the processable' do
       before_all do
-        processable.assign_attributes(stage_id: stage.id, interruptible: true)
+        processable.assign_attributes(stage_id: stage.id)
+        processable.metadata.interruptible = true
         processable.save!
 
         create(:ci_build_need, build: processable)
@@ -185,6 +186,27 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
           it 'clones the protected job attribute' do
             expect(new_processable.protected).to be_nil
             expect(new_processable.protected).to eq processable.protected
+          end
+        end
+
+        # Remove with stop_writing_builds_metadata
+        context 'when writing to builds metadata' do
+          before do
+            # Ci::Bridge doesn't implement interruptible
+            skip unless processable.class.clone_accessors.include?(:interruptible)
+
+            processable.clear_memoization(:read_from_new_destination?)
+            processable.clear_memoization(:can_write_metadata?)
+
+            stub_feature_flags(
+              stop_writing_builds_metadata: false,
+              read_from_new_ci_destinations: false
+            )
+          end
+
+          it 'clones the interruptible job attribute' do
+            expect(new_processable.interruptible).not_to be_nil
+            expect(new_processable.interruptible).to eq processable.interruptible
           end
         end
       end

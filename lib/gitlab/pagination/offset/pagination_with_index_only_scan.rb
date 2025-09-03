@@ -119,11 +119,13 @@ module Gitlab
                                 inner_table[column.attribute_name].eq(nil)
                               ])
 
-                              conditions = Arel::Nodes::Grouping.new([
-                                Arel::Nodes::Or.new(not_null_condition, null_condition)
-                              ])
+                              conditions = if Gitlab.next_rails?
+                                             Arel::Nodes::Or.new([not_null_condition, null_condition])
+                                           else
+                                             Arel::Nodes::Or.new(not_null_condition, null_condition)
+                                           end
 
-                              lateral_scope.where(conditions)
+                              lateral_scope.where(Arel::Nodes::Grouping.new([conditions]))
                             else
                               lateral_scope.where(eq_condition)
                             end
