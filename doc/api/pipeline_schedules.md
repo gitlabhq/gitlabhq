@@ -24,8 +24,8 @@ GET /projects/:id/pipeline_schedules
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `scope`   | string         | No       | The scope of pipeline schedules, must be one of: `active`, `inactive` |
+| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `scope`   | string         | No       | The scope of pipeline schedules, must be one of: `active`, `inactive`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules"
@@ -65,8 +65,8 @@ GET /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
@@ -186,11 +186,11 @@ POST /projects/:id/pipeline_schedules
 ```
 
 | Attribute       | Type           | Required | Description |
-|-----------------|----------------|----------|-------------|
+| --------------- | -------------- | -------- | ----------- |
 | `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
 | `description`   | string         | Yes      | The description of the pipeline schedule. |
 | `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `ref`           | string         | Yes      | The branch or tag name that is triggered. Both the short (for example: `main`) and full (for example: `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
+| `ref`           | string         | Yes      | The branch or tag name that triggers the pipeline. Accepts both short refs (for example: `main`) and full refs (for example: `refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, but the request will be rejected if the ref is ambiguous. |
 | `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
 | `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | `inputs`        | hash           | No       | An array of [inputs](../ci/inputs/_index.md#for-a-pipeline) to pass to the pipeline schedule. Each input contains a `name` and `value`. Values can be strings, arrays, numbers, or booleans. |
@@ -247,14 +247,14 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
 | Attribute              | Type           | Required | Description |
-|------------------------|----------------|----------|-------------|
+| ---------------------- | -------------- | -------- | ----------- |
 | `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 | `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated. |
 | `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`). |
 | `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
 | `description`          | string         | No       | The description of the pipeline schedule. |
-| `ref`                  | string         | No       | The branch or tag name that is triggered. Both the short (for example: `main`) and full (for example: `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
+| `ref`                  | string         | No       | The branch or tag name that triggers the pipeline. Accepts both short refs (for example: `main`) and full refs (for example: `refs/heads/main` or `refs/tags/main`). Short refs are automatically expanded to full refs, but the request will be rejected if the ref is ambiguous. |
 | `inputs`               | hash           | No       | An array of [inputs](../ci/inputs/_index.md) to pass to the pipeline schedule. Each input contains a `name` and `value`. To delete an existing input, include the `name` field and set `destroy` to `true`. Values can be strings, arrays, numbers, or booleans. |
 
 Example request:
@@ -314,8 +314,8 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/take_ownership
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/take_ownership"
@@ -359,8 +359,8 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13"
@@ -405,8 +405,8 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/play
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 Example request:
 
@@ -424,7 +424,7 @@ Example response:
 
 ## Pipeline schedule variables
 
-## Create a new pipeline schedule variable
+### Create a new pipeline schedule variable
 
 Create a new variable of a pipeline schedule.
 
@@ -434,11 +434,11 @@ POST /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `key`                  | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
-| `value`                | string         | Yes      | The `value` of a variable |
-| `variable_type`        | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `key`                  | string         | Yes      | The `key` of a variable; must have no more than 255 characters; only `A-Z`, `a-z`, `0-9`, and `_` are allowed. |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID .|
+| `value`                | string         | Yes      | The `value` of a variable. |
+| `variable_type`        | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NEW_VARIABLE" \
@@ -453,7 +453,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "key=NE
 }
 ```
 
-## Edit a pipeline schedule variable
+### Edit a pipeline schedule variable
 
 Updates the variable of a pipeline schedule.
 
@@ -463,11 +463,11 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `key`                  | string         | Yes      | The `key` of a variable |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
-| `value`                | string         | Yes      | The `value` of a variable |
-| `variable_type`        | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file` |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `key`                  | string         | Yes      | The `key` of a variable. |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID .|
+| `value`                | string         | Yes      | The `value` of a variable. |
+| `variable_type`        | string         | No       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -483,7 +483,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Delete a pipeline schedule variable
+### Delete a pipeline schedule variable
 
 Delete the variable of a pipeline schedule.
 
@@ -493,9 +493,9 @@ DELETE /projects/:id/pipeline_schedules/:pipeline_schedule_id/variables/:key
 
 | Attribute              | Type           | Required | Description |
 |------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `key`                  | string         | Yes      | The `key` of a variable |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID |
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `key`                  | string         | Yes      | The `key` of a variable. |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/29/pipeline_schedules/13/variables/NEW_VARIABLE"
@@ -507,3 +507,23 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
     "value": "updated value"
 }
 ```
+
+## Troubleshooting
+
+When working with the pipeline schedules API, you might encounter the following issues.
+
+### Short refs are expanded to full refs
+
+When you provide a short `ref`, it is automatically expanded to a full `ref`.
+This behavior is intended and ensures explicit resource identification.
+
+The API accepts both short refs (such as `main`) and full refs (such as `refs/heads/main` or `refs/tags/main`).
+
+### Ambiguous refs
+
+The API can't automatically expand a short `ref` to a full `ref` when:
+
+- Both a branch and a tag exist with the same name as your short `ref`.
+- No branch or tag exists with that name.
+
+To resolve this issue, provide the full `ref` to ensure the correct resource is identified.

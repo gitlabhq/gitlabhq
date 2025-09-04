@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 require './keeps/helpers/groups'
+require './keeps/helpers/reviewer_roulette'
 
 RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
+  let(:roulette) { instance_double(Keeps::Helpers::ReviewerRoulette) }
   let(:groups) do
     {
       'tenant_scale' => {
@@ -32,6 +34,7 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
   end
 
   before do
+    allow(Keeps::Helpers::ReviewerRoulette).to receive(:new).and_return(roulette)
     stub_request(:get, "https://about.gitlab.com/groups.json").to_return(status: 200, body: groups.to_json)
   end
 
@@ -68,46 +71,87 @@ RSpec.describe Keeps::Helpers::Groups, feature_category: :tooling do
   describe '#pick_reviewer' do
     let(:group) { groups['tenant_scale'] }
     let(:identifiers) { %w[example identifier] }
-    let(:expected_index) { Digest::SHA256.hexdigest(identifiers.join).to_i(16) % group['backend_engineers'].size }
+    let(:available_reviewers) { %w[be1 be3 be5] }
+    let(:expected_index) { Digest::SHA256.hexdigest(identifiers.join).to_i(16) % available_reviewers.size }
 
-    subject { described_class.new.pick_reviewer(group, identifiers) }
+    before do
+      allow(roulette).to receive(:reviewer_available?).and_return(false)
 
-    it { is_expected.to eq(group['backend_engineers'][expected_index]) }
+      available_reviewers.each do |reviewer|
+        allow(roulette).to receive(:reviewer_available?).with(reviewer).and_return(true)
+      end
+    end
+
+    subject(:pick_reviewer) { described_class.new.pick_reviewer(group, identifiers) }
+
+    it 'picks from available reviewers only' do
+      expect(pick_reviewer).to eq(available_reviewers[expected_index])
+    end
+
+    context 'when no reviewers are available' do
+      before do
+        allow(roulette).to receive(:reviewer_available?).and_return(false)
+      end
+
+      it { is_expected.to be_nil }
+    end
 
     context 'when given nil' do
       let(:group) { nil }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
   describe '#pick_reviewer_for_feature_category' do
     let(:group) { groups['tenant_scale'] }
     let(:identifiers) { %w[example identifier] }
-    let(:expected_index) { Digest::SHA256.hexdigest(identifiers.join).to_i(16) % group['backend_engineers'].size }
+    let(:available_reviewers) { %w[be1 be3 be5] }
+    let(:expected_index) { Digest::SHA256.hexdigest(identifiers.join).to_i(16) % available_reviewers.size }
     let(:category) { 'organization' }
     let(:fallback_feature_category) { nil }
+
+    before do
+      allow(roulette).to receive(:reviewer_available?).and_return(false)
+
+      available_reviewers.each do |reviewer|
+        allow(roulette).to receive(:reviewer_available?).with(reviewer).and_return(true)
+      end
+    end
 
     subject(:reviewer) do
       described_class.new.pick_reviewer_for_feature_category(category, identifiers,
         fallback_feature_category: fallback_feature_category)
     end
 
-    it 'finds a matching group and picks a reviewer from the group owning that feature category' do
-      expect(reviewer).to eq(group['backend_engineers'][expected_index])
+    it 'finds a matching group and picks a reviewer from available engineers only' do
+      expect(reviewer).to eq(available_reviewers[expected_index])
     end
 
-    context 'when the matching group does not have backend_engineers' do
+    context 'when the matching group does not have available backend_engineers' do
       let(:category) { 'category_b' }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
 
       context 'when a fallback_feature_category is passed' do
         let(:fallback_feature_category) { 'organization' }
 
         it 'returns a reviewer from that fallback_feature_category' do
-          expect(reviewer).to eq(group['backend_engineers'][expected_index])
+          expect(reviewer).to eq(available_reviewers[expected_index])
         end
+      end
+    end
+
+    context 'when no reviewers are available in the primary category' do
+      let(:fallback_feature_category) { 'organization' }
+
+      before do
+        allow(roulette).to receive(:reviewer_available?).and_return(false)
+        allow(roulette).to receive(:reviewer_available?).with('be2').and_return(true)
+      end
+
+      it 'falls back to the fallback category' do
+        expect(reviewer).to eq('be2')
       end
     end
   end

@@ -1606,7 +1606,6 @@ Layout/LineLength:
     - 'ee/spec/services/ee/system_notes/issuables_service_spec.rb'
     - 'ee/spec/services/ee/users/destroy_service_spec.rb'
     - 'ee/spec/services/ee/users/update_service_spec.rb'
-    - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/external_status_checks/update_service_spec.rb'
     - 'ee/spec/services/geo/blob_download_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'

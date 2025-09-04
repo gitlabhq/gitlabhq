@@ -76,7 +76,7 @@ sudo -u git -H psql -d gitlabhq_production
   the recommended approach is to use the database console locally on those servers. Refer to the details
   for Linux package.
 - Use the console that's part of your external third-party PostgreSQL service.
-- Run `gitlab-rails db-console` in the toolbox pod.
+- Run `gitlab-rails dbconsole` in the toolbox pod.
   - Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
 
 {{< /tab >}}

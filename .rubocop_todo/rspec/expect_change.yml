@@ -92,7 +92,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/ee/users/block_service_spec.rb'
     - 'ee/spec/services/ee/users/create_service_spec.rb'
     - 'ee/spec/services/ee/users/destroy_service_spec.rb'
-    - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/epics/transfer_service_spec.rb'
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/node_create_service_spec.rb'

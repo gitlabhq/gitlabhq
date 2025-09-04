@@ -168,7 +168,7 @@ to stop them from running:
 - Use [`rules`](../yaml/_index.md#rules) to skip tests that aren't needed. For example,
   skip backend tests when only the frontend code is changed.
 - Run non-essential [scheduled pipelines](schedules.md) less frequently.
-- Distribute [`cron` schedules](schedules.md#view-and-optimize-pipeline-schedules) evenly across time.
+- Distribute [`cron` schedules](schedules.md#distribute-pipeline-schedules-to-prevent-system-load) evenly across time.
 
 ### Fail fast
 

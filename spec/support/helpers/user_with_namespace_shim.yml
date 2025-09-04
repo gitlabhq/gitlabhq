@@ -244,7 +244,6 @@
 - ee/spec/services/ee/projects/remove_paid_features_service_spec.rb
 - ee/spec/services/ee/users/destroy_service_spec.rb
 - ee/spec/services/ee/users/migrate_records_to_ghost_user_service_spec.rb
-- ee/spec/services/epics/issue_promote_service_spec.rb
 - ee/spec/services/epics/transfer_service_spec.rb
 - ee/spec/services/namespaces/service_accounts/create_service_spec.rb
 - ee/spec/services/projects/create_from_template_service_spec.rb

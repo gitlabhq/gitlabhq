@@ -314,7 +314,11 @@
     // MR file change header
     .diff-file .file-title, .diff-file .file-title-flex-parent {
       @media (min-width: map-get($grid-breakpoints, md)) {
-        top: calc(#{$mr-sticky-header-height} - 1px) !important;
+        top: calc(#{$mr-sticky-header-height} - 2px) !important;
+
+        &.is-wiki {
+          top: -1px;
+        }
       }
     }
 
@@ -354,7 +358,8 @@
     .issue-sticky-header:not(.merge-request-sticky-header),
     .merge-request-sticky-header,
     .settings-sticky-header,
-    .build-page .top-bar {
+    .build-page .top-bar,
+    .rd-diff-file-header-sticky {
       top: -1px !important;
     }
 
@@ -371,6 +376,16 @@
     // Fix drawer height
     .gl-drawer {
       height: calc(100% - #{$header-height});
+    }
+
+    // MR: File tree sidebar alignment
+    .rd-app-sidebar {
+      top: calc(#{$mr-sticky-header-height} + 1rem + -1px) !important;
+    }
+
+    // Compare revision: File tree sidebar alignment
+    .rd-app .rd-app-sidebar {
+      top: calc(1rem + -1px) !important;
     }
   }
 

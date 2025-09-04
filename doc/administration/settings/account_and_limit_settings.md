@@ -342,17 +342,25 @@ When you require expiration dates for new access tokens:
 
 ## Personal access token prefix
 
-You can specify a prefix for personal access tokens. You might use a prefix
-to find tokens more quickly, or for use with automation tools.
+You can specify a prefix for personal access tokens. Benefits of using a custom prefix include:
 
-The default prefix is `glpat-` but administrators can change it.
+- Tokens are distinct and identifiable.
+- Leaked tokens are more easily identifiable during security scans.
+- Reduces the risk of token confusion between different instances.
 
+The default prefix for personal access tokens is `glpat-` but administrators can change it.
 [Project access tokens](../../user/project/settings/project_access_tokens.md) and
 [group access tokens](../../user/group/settings/group_access_tokens.md) also inherit this prefix.
 
-By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md) and
-[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom prefixes.
-Custom prefixes might cause an increase in false negatives. To use custom instance prefixes with your pipeline secret detection ruleset, consider [extending the pipeline configuration](../../user/application_security/secret_detection/pipeline/configure.md#ignore-patterns-and-paths).
+{{< alert type="warning" >}}
+
+By default, client-side secret detection, secret push protection, and pipeline secret detection do
+not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+However, you can
+[customize the analyzer ruleset](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+to detect these tokens by using pipeline secret detection.
+
+{{< /alert >}}
 
 ### Set a prefix
 
@@ -383,7 +391,22 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-You can set a custom prefix that is prepended to all tokens generated on your instance.
+You can set a custom prefix that is prepended to all tokens generated on your instance. Benefits of
+using a custom prefix include:
+
+- Tokens are distinct and identifiable.
+- Leaked tokens are more easily identifiable during security scans.
+- Reduces the risk of token confusion between different instances.
+
+{{< alert type="warning" >}}
+
+By default, client-side secret detection, secret push protection, and pipeline secret detection do
+not detect tokens that have a custom prefix. This might result in an increase in false negatives.
+However, you can
+[customize the analyzer ruleset](../../user/application_security/secret_detection/pipeline/configure.md#customize-analyzer-rulesets)
+to detect these tokens by using pipeline secret detection.
+
+{{< /alert >}}
 
 Custom token prefixes apply only to the following tokens:
 
@@ -405,21 +428,6 @@ To set a custom token prefix:
 1. Expand the **Account and limit** section.
 1. In the **Instance token prefix** field, enter your custom prefix.
 1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-By default, [secret push protection](../../user/application_security/secret_detection/secret_push_protection/_index.md), [client-side secret detection](../../user/application_security/secret_detection/client/_index.md) and
-[pipeline secret detection](../../user/application_security/secret_detection/pipeline/_index.md#detected-secrets) do not detect custom instance token prefixes. This may result in an increase in false negatives. To use custom instance prefixes with your pipeline secret detection ruleset, consider [extending the pipeline configuration](../../user/application_security/secret_detection/pipeline/configure.md#ignore-patterns-and-paths).
-
-{{< /alert >}}
-
-### Token prefix benefits
-
-Using custom token prefixes provides the following benefits:
-
-- Makes your tokens distinct and identifiable.
-- Helps identify leaked tokens during security scans.
-- Reduces the risk of token confusion between different instances.
 
 ## Limit the lifetime of access tokens
 

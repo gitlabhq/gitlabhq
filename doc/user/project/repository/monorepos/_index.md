@@ -153,7 +153,7 @@ repository.
 ### Reduce concurrent clones in CI/CD
 
 Reduce CI/CD pipeline concurrency by
-[staggering your scheduled pipelines](../../../../ci/pipelines/schedules.md#view-and-optimize-pipeline-schedules)
+[staggering your scheduled pipelines](../../../../ci/pipelines/schedules.md#distribute-pipeline-schedules-to-prevent-system-load)
 to run at different times. Even a few minutes apart can help.
 
 CI/CD loads are often concurrent, because pipelines are

@@ -17,13 +17,34 @@ $diff-file-header: 41px;
   .file-title-flex-parent {
     cursor: pointer;
 
+    @supports (container-type: scroll-state) {
+      container-type: scroll-state;
+      container-name: file-holder-wrapper;
+
+      @container file-holder-wrapper scroll-state(stuck: top) {
+        &::before,
+        &::after {
+          content: '';
+          @apply gl-absolute gl-top-0 gl-w-4 gl-h-4 gl-bg-inherit;
+        }
+
+        &::before {
+          @apply gl-left-0;
+        }
+
+        &::after {
+          @apply gl-right-0;
+        }
+      }
+    }
+
     .dropdown-menu {
       cursor: auto;
     }
 
     &:has(.gl-new-dropdown-toggle[aria-expanded="true"]) {
-   z-index: $zindex-dropdown-menu;
-  }
+      z-index: $zindex-dropdown-menu;
+    }
 
     @media (max-width: map.get($grid-breakpoints, sm)-1) {
       .file-header-content {

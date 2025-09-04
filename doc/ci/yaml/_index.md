@@ -6497,7 +6497,7 @@ Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (gl
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
   in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/_index.md).
 - [Manual pipeline variables](../variables/_index.md#use-pipeline-variables)
-  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
+  and [scheduled pipeline variables](../pipelines/schedules.md#create-a-pipeline-schedule)
   are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
   to forward these variables to downstream pipelines.
 

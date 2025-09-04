@@ -43,6 +43,11 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
     allow(keep).to receive(:can_remove_ff?).and_return(true)
 
+    reviewer_roulette = instance_double(Keeps::Helpers::ReviewerRoulette, reviewer_available?: true)
+    allow_next_instance_of(Keeps::Helpers::Groups) do |keeps_groups_helper|
+      allow(keeps_groups_helper).to receive(:roulette).and_return(reviewer_roulette)
+    end
+
     allow(milestones_helper)
       .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
         milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)

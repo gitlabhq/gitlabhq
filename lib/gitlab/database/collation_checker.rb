@@ -27,7 +27,6 @@ module Gitlab
       INDEXES_TO_SPOT_CHECK = {
         'main' => {
           'merge_request_diff_commit_users' => %w[
-            index_merge_request_diff_commit_users_on_name_and_email
             index_merge_request_diff_commit_users_on_org_id_name_email
           ],
           'topics' => ['index_topics_on_organization_id_and_name'],

@@ -12,3 +12,5 @@ sharding_key:
   project_id: projects
   namespace_id: namespaces
 table_size: large
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203421
+removed_in_milestone: '18.4'

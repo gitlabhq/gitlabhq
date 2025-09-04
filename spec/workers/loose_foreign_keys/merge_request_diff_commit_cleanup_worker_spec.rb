@@ -96,9 +96,6 @@ RSpec.describe LooseForeignKeys::MergeRequestDiffCommitCleanupWorker, feature_ca
       # Verify the diff commit exists before cleanup
       expect(MergeRequestDiffCommit.find(diff_commit.id)).to eq(diff_commit)
 
-      # Drop the foreign key constraint to simulate loose foreign key behavior
-      ApplicationRecord.connection.execute('ALTER TABLE merge_request_diff_commits DROP CONSTRAINT fk_rails_316aaceda3')
-
       # Actually delete the merge_request_diff - this should trigger the LFK mechanism
       # The LFK trigger should automatically create the deleted record
       diff.delete

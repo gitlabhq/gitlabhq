@@ -48,4 +48,30 @@ RSpec.describe Keeps::Helpers::ReviewerRoulette, feature_category: :tooling do
       expect { reviewer }.to raise_error(Keeps::Helpers::ReviewerRoulette::Error, message)
     end
   end
+
+  describe '#reviewer_available?' do
+    let(:username) { 'tiera' }
+
+    before do
+      stub_request(:get, described_class::STATS_JSON_URL).to_return(status: 200, body: stats)
+    end
+
+    subject(:available) { roulette.reviewer_available?(username) }
+
+    context 'when reviewer is available' do
+      it { is_expected.to be true }
+    end
+
+    context 'when reviewer is not available' do
+      let(:username) { 'dora' }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when reviewer does not exist' do
+      let(:username) { 'nonexistent_user' }
+
+      it { is_expected.to be false }
+    end
+  end
 end

@@ -67,20 +67,6 @@ module Gitlab
         # - For sbom_component_versions: 'deduplication_column' => 'version'
         #   Prevents duplicate version strings for the same component after deduplication
         'merge_request_diff_commit_users' => {
-          'index_merge_request_diff_commit_users_on_name_and_email' => {
-            'columns' => %w[name email],
-            'unique' => true,
-            'references' => [
-              {
-                'table' => 'merge_request_diff_commits',
-                'column' => 'committer_id'
-              },
-              {
-                'table' => 'merge_request_diff_commits',
-                'column' => 'commit_author_id'
-              }
-            ]
-          },
           'index_merge_request_diff_commit_users_on_org_id_name_email' => {
             'columns' => %w[organization_id name email],
             'unique' => true,

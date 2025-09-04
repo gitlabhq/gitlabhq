@@ -44,7 +44,6 @@ Migration/UpdateLargeTable:
   - :authentication_events
   - :ci_job_artifact_states
   - :ci_pipeline_messages
-  - :duo_workflows_checkpoints
   - :namespaces
   - :packages_package_files
   - :personal_access_tokens

@@ -1996,7 +1996,6 @@
 - './ee/spec/services/epics/descendant_count_service_spec.rb'
 - './ee/spec/services/epics/epic_links/destroy_service_spec.rb'
 - './ee/spec/services/epics/epic_links/update_service_spec.rb'
-- './ee/spec/services/epics/issue_promote_service_spec.rb'
 - './ee/spec/services/epics/transfer_service_spec.rb'
 - './ee/spec/services/epics/update_dates_service_spec.rb'
 - './ee/spec/services/external_status_checks/create_service_spec.rb'
