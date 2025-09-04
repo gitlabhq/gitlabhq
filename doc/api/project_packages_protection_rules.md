@@ -36,7 +36,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and a list of package protection rules.
 
@@ -89,7 +89,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                                  | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_name_pattern`                | string          | Yes      | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
 | `minimum_access_level_for_delete`     | string          | Yes      | Minimum GitLab access level required to delete a package. Valid values include `null`, `owner` or `admin`. If the value is `null`, the default minimum access level is `maintainer`. Must be provided when `minimum_access_level_for_push` is not set. Behind a feature flag named `packages_protected_packages_delete`. Disabled by default. |
@@ -133,7 +133,7 @@ Supported attributes:
 
 | Attribute                             | Type            | Required | Description                    |
 |---------------------------------------|-----------------|----------|--------------------------------|
-| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                                  | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_protection_rule_id`          | integer         | Yes      | ID of the package protection rule to be updated. |
 | `package_name_pattern`                | string          | No       | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | `package_type`                        | string          | No       | Package type protected by the protection rule. For example `npm`. |
@@ -175,7 +175,7 @@ Supported attributes:
 
 | Attribute                     | Type            | Required | Description                    |
 |-------------------------------|-----------------|----------|--------------------------------|
-| `id`                          | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_protection_rule_id`  | integer         | Yes      | ID of the package protection rule to be deleted. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).

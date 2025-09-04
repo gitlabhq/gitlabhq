@@ -27,7 +27,7 @@ GET /groups/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/boards"
@@ -148,7 +148,7 @@ GET /groups/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -273,7 +273,7 @@ POST /groups/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the new board. |
 
 ```shell
@@ -312,7 +312,7 @@ PUT /groups/:id/boards/:board_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id`                   | integer        | yes      | The ID of a board. |
 | `name`                       | string         | no       | The new name of the board. |
 | `hide_backlog_list`          | boolean        | no       | Hide the Open list. |
@@ -389,7 +389,7 @@ DELETE /groups/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -407,7 +407,7 @@ GET /groups/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -458,7 +458,7 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 
@@ -490,7 +490,7 @@ POST /groups/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `label_id` | integer | no | The ID of a label. |
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
@@ -534,7 +534,7 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`            | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 | `position` | integer | yes | The position of the list. |
@@ -567,7 +567,7 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 

@@ -659,13 +659,9 @@ Secrets management in Jenkins is usually handled with the `Secret` type field or
 Credentials Plugin. Credentials stored in the Jenkins settings can be exposed to
 jobs as environment variables by using the Credentials Binding plugin.
 
-For secrets management in GitLab, you can use one of the supported integrations
+For secrets management in GitLab, you can use one of the [supported integrations](../secrets/_index.md)
 for an external service. These services securely store secrets outside of your GitLab project,
-though you must have a subscription for the service:
-
-- [HashiCorp Vault](../secrets/hashicorp_vault.md)
-- [Azure Key Vault](../secrets/azure_key_vault.md)
-- [Google Cloud Secret Manager](../secrets/gcp_secret_manager.md)
+though you must have a subscription for the service.
 
 GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
 for other third party services that support OIDC.

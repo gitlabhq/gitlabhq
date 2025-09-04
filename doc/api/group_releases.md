@@ -40,7 +40,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `sort`    | string         | no       | The direction of the order. Possible values: `desc` or `asc`. |
 | `simple`  | boolean        | no       | If `true`, only returns limited fields for each release. |
 

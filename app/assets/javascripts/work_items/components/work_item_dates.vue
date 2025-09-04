@@ -4,7 +4,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { findStartAndDueDateWidget, newWorkItemId } from '~/work_items/utils';
 import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
-import { formatDate, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   NAME_TO_TEXT_LOWERCASE_MAP,
@@ -98,11 +98,13 @@ export default {
     },
     startDateValue() {
       return this.startDate
-        ? formatDate(this.startDate, 'mmm d, yyyy', true)
+        ? localeDateFormat.asDate.format(newDate(this.startDate))
         : s__('WorkItem|None');
     },
     dueDateValue() {
-      return this.dueDate ? formatDate(this.dueDate, 'mmm d, yyyy', true) : s__('WorkItem|None');
+      return this.dueDate
+        ? localeDateFormat.asDate.format(newDate(this.dueDate))
+        : s__('WorkItem|None');
     },
     optimisticResponse() {
       const workItemDatesWidget = findStartAndDueDateWidget(this.workItem);
@@ -246,14 +248,14 @@ export default {
         class="gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-3 gl-pt-2 @sm/panel:gl-flex-row @md/panel:gl-flex-col"
       >
         <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+          class="work-item-date-input gl-m-0 gl-flex gl-items-center gl-gap-3"
           :label="s__('WorkItem|Start')"
           :label-for="$options.startDateInputId"
           label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 @sm/panel:gl-min-w-fit @md/panel:gl-min-w-7 gl-break-words"
         >
           <gl-datepicker
             v-model="localStartDate"
-            class="gl-max-w-20"
+            class="work-item-datepicker gl-max-w-20"
             container="body"
             :disabled="isDatepickerDisabled"
             :input-id="$options.startDateInputId"
@@ -266,14 +268,14 @@ export default {
           />
         </gl-form-group>
         <gl-form-group
-          class="gl-m-0 gl-flex gl-flex-wrap gl-items-center gl-gap-3"
+          class="work-item-date-input gl-m-0 gl-flex gl-items-center gl-gap-3"
           :label="s__('WorkItem|Due')"
           :label-for="$options.dueDateInputId"
           label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 @sm/panel:gl-min-w-fit @md/panel:gl-min-w-7 gl-break-words"
         >
           <gl-datepicker
             v-model="localDueDate"
-            class="gl-max-w-20"
+            class="work-item-datepicker gl-max-w-20"
             container="body"
             :disabled="isDatepickerDisabled"
             :input-id="$options.dueDateInputId"

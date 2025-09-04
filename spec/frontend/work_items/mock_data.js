@@ -9106,7 +9106,32 @@ export const namespacePathsQueryResponse = {
     namespace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
       markdownPaths: {
-        markdownPreviewPath: '/flightjs/Flight/-/preview_markdown?target_type=WorkItem',
+        autocompleteSourcesPath: {
+          members:
+            '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
+          issues:
+            '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+          mergeRequests:
+            '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
+          labels:
+            '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
+          milestones:
+            '/flightjs/Flight/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=1',
+          commands:
+            '/flightjs/Flight/-/autocomplete_sources/commands?type=WorkItem&work_item_type_id=1',
+          snippets:
+            '/flightjs/Flight/-/autocomplete_sources/snippets?type=WorkItem&work_item_type_id=1',
+          contacts:
+            '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
+          wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
+          epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+          iterations:
+            '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
+          vulnerabilities:
+            '/flightjs/Flight/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=1',
+        },
+        markdownPreviewPath:
+          '/flightjs/Flight/-/preview_markdown?target_id=new-work-item-iid&target_type=WorkItem',
         uploadsPath: '/flightjs/Flight/uploads',
         __typename: 'ProjectNamespaceMarkdownPaths',
       },

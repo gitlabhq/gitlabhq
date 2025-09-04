@@ -33,7 +33,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -76,7 +76,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `enabled` | boolean        | Yes      | The state of the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to select. Set to `true` to select the **This project and any groups and projects in the allowlist** option, and set to `false` to select **All groups and projects**. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and no response body.
@@ -103,7 +103,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 This endpoint supports [offset-based pagination](rest/_index.md#offset-based-pagination).
 
@@ -170,7 +170,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_project_id` | integer        | Yes      | The ID of the project added to the CI/CD job token inbound allowlist. |
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the following response attributes:
@@ -211,7 +211,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_project_id` | integer        | Yes      | The ID of the project that is removed from the CI/CD job token inbound allowlist. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and no response body.
@@ -237,7 +237,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 This endpoint supports [offset-based pagination](rest/_index.md#offset-based-pagination).
 
@@ -276,7 +276,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |-------------------|----------------|----------|-------------|
-| `id`              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_group_id` | integer        | Yes      | The ID of the group added to the CI/CD job token groups allowlist. |
 
 If successful, returns [`201`](rest/troubleshooting.md#status-codes) and the following response attributes:
@@ -317,7 +317,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |-------------------|----------------|----------|-------------|
-| `id`              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_group_id` | integer        | Yes      | The ID of the group that is removed from the CI/CD job token groups allowlist. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and no response body.

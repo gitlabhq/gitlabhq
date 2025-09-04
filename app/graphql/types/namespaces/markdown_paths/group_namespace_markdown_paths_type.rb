@@ -23,7 +23,7 @@ module Types
           {
             members: url_helpers.members_group_autocomplete_sources_path(group, params),
             issues: url_helpers.issues_group_autocomplete_sources_path(group, params),
-            merge_requests: url_helpers.merge_requests_group_autocomplete_sources_path(group, params),
+            mergeRequests: url_helpers.merge_requests_group_autocomplete_sources_path(group, params),
             labels: url_helpers.labels_group_autocomplete_sources_path(group, params),
             milestones: url_helpers.milestones_group_autocomplete_sources_path(group, params),
             commands: url_helpers.commands_group_autocomplete_sources_path(group, params)

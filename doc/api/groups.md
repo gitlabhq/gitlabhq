@@ -31,7 +31,7 @@ Parameters:
 
 | Attribute                | Type           | Required | Description |
 |--------------------------|----------------|----------|-------------|
-| `id`                     | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                     | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `with_custom_attributes` | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only). |
 | `with_projects`          | boolean        | no       | Include details from projects that belong to the specified group (defaults to `true`). (Deprecated, [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797). To get the details of all projects in a group, use the [list a group's projects endpoint](#list-projects).) |
 
@@ -517,7 +517,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description |
 |-------------------------------|----------------|----------|-------------|
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `similarity` <sup>1</sup>, `star_count` or `last_activity_at` fields. Default is `created_at`. |
@@ -606,7 +606,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `archived`                    | boolean        | no       | Limit by archived status. |
 | `visibility`                  | string         | no       | Limit by visibility `public`, `internal`, or `private`. |
 | `order_by`                    | string         | no       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count` or `last_activity_at` fields. Default is `created_at`. |
@@ -756,7 +756,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `username`       | string         | no       | Return a user with a given username. |
 | `search`         | string         | no       | Return users with a matching name, email, or username. Use partial values to increase results. |
 | `active`         | boolean        | no       | Return only active users. |
@@ -852,7 +852,7 @@ Parameters:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`             | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `username`       | string         | no       | Return single user with a specific username. |
 | `search`         | string         | no       | Search users by name, email, username. |
 | `active`         | boolean        | no       | Return only active users. |
@@ -924,7 +924,7 @@ Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group. |
+| `id`                     | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group. |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed. |
 | `all_available`          | boolean           | no       | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for administrators). Attributes `owned` and `min_access_level` have precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only subgroup short paths are searched (not full paths). |
@@ -1003,7 +1003,7 @@ Parameters:
 
 | Attribute                | Type              | Required | Description |
 | ------------------------ | ----------------- | -------- | ----------- |
-| `id`                     | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group. |
+| `id`                     | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) of the immediate parent group. |
 | `skip_groups`            | array of integers | no       | Skip the group IDs passed. |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
 | `search`                 | string            | no       | Return the list of authorized groups matching the search criteria. Only descendant group short paths are searched (not full paths). |
@@ -1119,7 +1119,7 @@ Parameters:
 
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                                  | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `skip_groups`                         | array of integers | no       | Skip the specified group IDs. |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria. |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name`. |
@@ -1198,7 +1198,7 @@ Parameters:
 
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
-| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                                  | integer or string    | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria. |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles). |
 | `relation`                            | array of strings  | no       | Filter the groups by relation (direct or inherited). |
@@ -1393,7 +1393,7 @@ DELETE /groups/:id
 
 Parameters:
 
-| `id`                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                 | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `permanently_remove` | boolean/string | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. |
 | `full_path`          | string         | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
@@ -1417,7 +1417,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 ### Archive a group
 
@@ -1717,8 +1717,8 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 | ------------ | -------------- | -------- | ----------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `project_id` | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1737,7 +1737,7 @@ Creates a group invitation that adds a target group to a specified group.
 POST /groups/:id/share
 ```
 
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `group_id`     | integer        | yes      | The ID of the group to invite. |
 | `group_access` | integer        | yes      | The default [role (`access_level`)](members.md#roles) to assign to the invited group. |
 | `expires_at`   | date (ISO 8601) | no       | The date the group invitation expires. |
@@ -1755,7 +1755,7 @@ DELETE /groups/:id/share/:group_id
 
 | Attribute  | Type           | Required | Description |
 |------------|----------------|----------|-------------|
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `group_id` | integer        | yes      | The ID of the group to disinvite. |
 
 Returns `204` and no content on success.
@@ -1948,7 +1948,7 @@ GET /groups/:id/avatar
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | yes      | ID of the group. |
+| `id`      | integer or string | yes      | ID of the group. |
 
 Example:
 

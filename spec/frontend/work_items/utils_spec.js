@@ -1,6 +1,5 @@
 import {
   CREATION_CONTEXT_LIST_ROUTE,
-  NEW_WORK_ITEM_IID,
   STATE_CLOSED,
   STATE_OPEN,
   WIDGET_TYPE_DESCRIPTION,
@@ -30,7 +29,6 @@ import {
   convertTypeEnumToName,
   formatLabelForListbox,
   formatUserForListbox,
-  markdownPreviewPath,
   newWorkItemPath,
   getDisplayReference,
   isReference,
@@ -100,251 +98,78 @@ describe('formatUserForListbox', () => {
   });
 });
 
-describe('autocompleteDataSources when extensible reference filters enabled', () => {
-  beforeEach(() => {
-    gon.relative_url_root = '/foobar';
-    gon.features = { extensibleReferenceFilters: true };
-  });
+describe('autocompleteDataSources', () => {
+  const pathsWithSnakeCase = {
+    members: '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
+    issues: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+    mergeRequests:
+      '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
+    labels: '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
+    milestones:
+      '/flightjs/Flight/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=1',
+    commands: '/flightjs/Flight/-/autocomplete_sources/commands?type=WorkItem&work_item_type_id=1',
+    snippets: '/flightjs/Flight/-/autocomplete_sources/snippets?type=WorkItem&work_item_type_id=1',
+    contacts: '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
+    wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
+    epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+    iterations:
+      '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
+    vulnerabilities:
+      '/flightjs/Flight/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=1',
+  };
 
-  it('returns correct data sources for new work item in project context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/project/group/-/autocomplete_sources/${endpoint}?type=WorkItem&work_item_type_id=2`;
+  const pathsWithCamelCase = {
+    members: '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
+    issues: '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+    mergeRequests:
+      '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
+    labels: '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
+    milestones:
+      '/flightjs/Flight/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=1',
+    commands: '/flightjs/Flight/-/autocomplete_sources/commands?type=WorkItem&work_item_type_id=1',
+    snippets: '/flightjs/Flight/-/autocomplete_sources/snippets?type=WorkItem&work_item_type_id=1',
+    contacts: '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
+    wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
+    epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+    iterations:
+      '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
+    vulnerabilities:
+      '/flightjs/Flight/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=1',
+  };
 
-    expect(
-      autocompleteDataSources({
-        fullPath: 'project/group',
-        iid: NEW_WORK_ITEM_IID,
-        workItemTypeId: 2,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      issuesAlternative: buildUrl('issues'),
-      workItems: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      epicsAlternative: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      contacts: buildUrl('contacts'),
-      snippets: buildUrl('snippets'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
+  describe('default', () => {
+    it('returns paths', () => {
+      expect(autocompleteDataSources(pathsWithCamelCase)).toEqual({
+        ...pathsWithCamelCase,
+        statuses: true,
+      });
     });
   });
 
-  it('returns correct data sources', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/project/group/-/autocomplete_sources/${endpoint}?type=WorkItem&type_id=2`;
-
-    expect(autocompleteDataSources({ fullPath: 'project/group', iid: '2' })).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      issuesAlternative: buildUrl('issues'),
-      workItems: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      epicsAlternative: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      contacts: buildUrl('contacts'),
-      snippets: buildUrl('snippets'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
+  describe('when sources contains merge_requests property', () => {
+    it('returns paths with merge_requests converted to mergeRequests', () => {
+      expect(autocompleteDataSources(pathsWithSnakeCase)).toEqual({
+        ...pathsWithCamelCase,
+        statuses: true,
+      });
     });
   });
 
-  it('returns correct data sources for new work item in group context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/groups/group/-/autocomplete_sources/${endpoint}?type=WorkItem&work_item_type_id=2`;
+  describe('when extensibleReferenceFilters is enabled', () => {
+    it('returns paths with issuesAlternative and workItems included', () => {
+      gon.features = { extensibleReferenceFilters: true };
 
-    expect(
-      autocompleteDataSources({
-        fullPath: 'group',
-        iid: NEW_WORK_ITEM_IID,
-        isGroup: true,
-        workItemTypeId: 2,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      issuesAlternative: buildUrl('issues'),
-      workItems: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      epicsAlternative: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
+      expect(autocompleteDataSources(pathsWithCamelCase)).toEqual({
+        ...pathsWithCamelCase,
+        statuses: true,
+        epicsAlternative:
+          '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+        issuesAlternative:
+          '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+        workItems:
+          '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+      });
     });
-  });
-
-  it('returns correct data sources with group context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/groups/group/-/autocomplete_sources/${endpoint}?type=WorkItem&type_id=2`;
-
-    expect(
-      autocompleteDataSources({
-        fullPath: 'group',
-        iid: '2',
-        isGroup: true,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      issuesAlternative: buildUrl('issues'),
-      workItems: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      epicsAlternative: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
-    });
-  });
-});
-
-describe('autocompleteDataSources when extensible reference filters disabled', () => {
-  beforeEach(() => {
-    gon.relative_url_root = '/foobar';
-    gon.features = { extensibleReferenceFilters: false };
-  });
-
-  it('returns correct data sources for new work item in project context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/project/group/-/autocomplete_sources/${endpoint}?type=WorkItem&work_item_type_id=2`;
-
-    expect(
-      autocompleteDataSources({
-        fullPath: 'project/group',
-        iid: NEW_WORK_ITEM_IID,
-        workItemTypeId: 2,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      contacts: buildUrl('contacts'),
-      snippets: buildUrl('snippets'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
-    });
-  });
-
-  it('returns correct data sources', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/project/group/-/autocomplete_sources/${endpoint}?type=WorkItem&type_id=2`;
-
-    expect(autocompleteDataSources({ fullPath: 'project/group', iid: '2' })).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      contacts: buildUrl('contacts'),
-      snippets: buildUrl('snippets'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
-    });
-  });
-
-  it('returns correct data sources for new work item in group context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/groups/group/-/autocomplete_sources/${endpoint}?type=WorkItem&work_item_type_id=2`;
-
-    expect(
-      autocompleteDataSources({
-        fullPath: 'group',
-        iid: NEW_WORK_ITEM_IID,
-        isGroup: true,
-        workItemTypeId: 2,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
-    });
-  });
-
-  it('returns correct data sources with group context', () => {
-    const buildUrl = (endpoint) =>
-      `/foobar/groups/group/-/autocomplete_sources/${endpoint}?type=WorkItem&type_id=2`;
-
-    expect(
-      autocompleteDataSources({
-        fullPath: 'group',
-        iid: '2',
-        isGroup: true,
-      }),
-    ).toEqual({
-      commands: buildUrl('commands'),
-      labels: buildUrl('labels'),
-      members: buildUrl('members'),
-      issues: buildUrl('issues'),
-      mergeRequests: buildUrl('merge_requests'),
-      epics: buildUrl('epics'),
-      milestones: buildUrl('milestones'),
-      iterations: buildUrl('iterations'),
-      vulnerabilities: buildUrl('vulnerabilities'),
-      wikis: buildUrl('wikis'),
-      statuses: true,
-    });
-  });
-});
-
-describe('markdownPreviewPath', () => {
-  beforeEach(() => {
-    gon.relative_url_root = '/foobar';
-  });
-
-  it('returns correct data sources', () => {
-    expect(markdownPreviewPath({ fullPath: 'project/group', iid: '2' })).toBe(
-      '/foobar/project/group/-/preview_markdown?target_type=WorkItem&target_id=2',
-    );
-  });
-
-  it('returns correct data sources with group context', () => {
-    expect(markdownPreviewPath({ fullPath: 'group', iid: '2', isGroup: true })).toBe(
-      '/foobar/groups/group/-/preview_markdown?target_type=WorkItem&target_id=2',
-    );
-  });
-
-  it('returns correct data sources with NEW_WORK_ITEM_IID', () => {
-    expect(markdownPreviewPath({ fullPath: 'group', iid: NEW_WORK_ITEM_IID, isGroup: true })).toBe(
-      '/foobar/groups/group/-/preview_markdown?target_type=WorkItem',
-    );
   });
 });
 

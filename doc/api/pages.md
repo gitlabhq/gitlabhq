@@ -36,7 +36,7 @@ DELETE /projects/:id/pages
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/2/pages"
@@ -64,7 +64,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -138,7 +138,7 @@ Supported attributes:
 
 | Attribute                       | Type           | Required | Description                                                                                                         |
 | --------------------------------| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------|
-| `id`                            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                 |
+| `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)                                 |
 | `pages_unique_domain_enabled`   | boolean        | No       | Whether to use unique domain                                                                                        |
 | `pages_https_only`              | boolean        | No       | Whether to force HTTPs                                                                                              |
 | `pages_primary_domain`          | string         | No       | Set the primary domain from the existing assigned domains to redirect all Pages requests to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8. |

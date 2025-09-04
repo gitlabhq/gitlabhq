@@ -11,7 +11,6 @@ import {
   NAME_TO_ICON_MAP,
   NAME_TO_ROUTE_MAP,
   NEW_WORK_ITEM_GID,
-  NEW_WORK_ITEM_IID,
   STATE_CLOSED,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_AWARD_EMOJI,
@@ -172,155 +171,24 @@ export const getParentGroupName = (namespaceFullName) => {
   return parts.length > 1 ? parts[parts.length - 2].trim() : '';
 };
 
-const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
-  const domain = gon.relative_url_root || '';
-  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-
-  const typeId =
-    iid === NEW_WORK_ITEM_IID
-      ? `work_item_type_id=${getIdFromGraphQLId(workItemTypeId)}`
-      : `type_id=${iid}`;
-  return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&${typeId}`;
-};
-
-export const autocompleteDataSources = ({
-  fullPath,
-  iid,
-  workItemTypeId,
-  isGroup = false,
-  markdownPaths = {},
-}) => {
-  const fetchedPaths = markdownPaths;
+export const autocompleteDataSources = (autocompleteSourcesPaths = {}) => {
   const sources = {
-    labels: autocompleteSourcesPath({
-      autocompleteType: 'labels',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    members: autocompleteSourcesPath({
-      autocompleteType: 'members',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    commands: autocompleteSourcesPath({
-      autocompleteType: 'commands',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    issues: autocompleteSourcesPath({
-      autocompleteType: 'issues',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    mergeRequests: autocompleteSourcesPath({
-      autocompleteType: 'merge_requests',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    epics: autocompleteSourcesPath({
-      autocompleteType: 'epics',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    milestones: autocompleteSourcesPath({
-      autocompleteType: 'milestones',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    iterations: autocompleteSourcesPath({
-      autocompleteType: 'iterations',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    vulnerabilities: autocompleteSourcesPath({
-      autocompleteType: 'vulnerabilities',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    wikis: autocompleteSourcesPath({
-      autocompleteType: 'wikis',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
+    ...autocompleteSourcesPaths,
     statuses: true, // Include `statuses` as a property so GLFM autocompletion is enabled
-    ...fetchedPaths,
   };
 
-  const enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;
-  const extensibleReferenceFilters = enableExtensibleReferenceFilters
-    ? {
-        issuesAlternative: autocompleteSourcesPath({
-          autocompleteType: 'issues',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-        workItems: autocompleteSourcesPath({
-          autocompleteType: 'issues',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-        epicsAlternative: autocompleteSourcesPath({
-          autocompleteType: 'epics',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-      }
-    : {};
+  // TODO - remove in %18.5. Adding this temporarily for multi-version compatibility
+  if (autocompleteSourcesPaths.merge_requests) {
+    sources.mergeRequests = autocompleteSourcesPaths.merge_requests;
+  }
 
-  // contacts and snippets are only available in project scope
-  const projectOnlySources = !isGroup
-    ? {
-        contacts: autocompleteSourcesPath({
-          autocompleteType: 'contacts',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-        snippets: autocompleteSourcesPath({
-          autocompleteType: 'snippets',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-      }
-    : {};
+  if (gon.features?.extensibleReferenceFilters) {
+    sources.epicsAlternative = autocompleteSourcesPaths.epics;
+    sources.issuesAlternative = autocompleteSourcesPaths.issues;
+    sources.workItems = autocompleteSourcesPaths.issues;
+  }
 
-  return { ...sources, ...extensibleReferenceFilters, ...projectOnlySources };
-};
-
-export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
-  const domain = gon.relative_url_root || '';
-  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  const targetId = iid === NEW_WORK_ITEM_IID ? '' : `&target_id=${iid}`;
-  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem${targetId}`;
+  return sources;
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new

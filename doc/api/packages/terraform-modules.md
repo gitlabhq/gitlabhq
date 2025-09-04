@@ -248,7 +248,7 @@ GET /projects/:id/packages/terraform/modules/:module_name/:module_system/:module
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or URL-encoded path of the project. |
+| `id` | integer or string | yes | The ID or URL-encoded path of the project. |
 | `module_name` | string | yes | The module name. |
 | `module_system` | string | yes | The name of the module system or [provider](https://www.terraform.io/registry/providers). |
 | `module_version` | string | no | Specific module version to download. If omitted, the latest version is downloaded. |

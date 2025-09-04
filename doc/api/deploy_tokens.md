@@ -78,7 +78,7 @@ Parameters:
 
 | Attribute      | Type           | Required               | Description |
 |:---------------|:---------------|:-----------------------|:------------|
-| `id`           | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`           | integer or string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `active`       | boolean        | No | Limit by active status. |
 
 Example request:
@@ -119,7 +119,7 @@ Parameters:
 
 | Attribute  | Type           | Required               | Description |
 | ---------- | -------------- | ---------------------- | ----------- |
-| `id`       | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`       | integer or string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `token_id` | integer        | Yes | ID of the deploy token |
 
 Example request:
@@ -158,7 +158,7 @@ Parameters:
 
 | Attribute    | Type             | Required               | Description |
 | ------------ | ---------------- | ---------------------- | ----------- |
-| `id`         | integer/string   | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`         | integer or string   | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name`       | string           | Yes | New deploy token's name |
 | `scopes`     | array of strings | Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, `write_package_registry`, `read_virtual_registry`, or `write_virtual_registry`. |
 | `expires_at` | datetime         | No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
@@ -203,7 +203,7 @@ Parameters:
 
 | Attribute  | Type           | Required               | Description |
 | ---------- | -------------- | ---------------------- | ----------- |
-| `id`       | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`       | integer or string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `token_id` | integer        | Yes | ID of the deploy token |
 
 Example request:
@@ -231,7 +231,7 @@ Parameters:
 
 | Attribute      | Type           | Required               | Description |
 |:---------------|:---------------|:-----------------------|:------------|
-| `id`           | integer/string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`           | integer or string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `active`       | boolean        | No | Limit by active status. |
 
 Example request:
@@ -272,7 +272,7 @@ Parameters:
 
 | Attribute   | Type           | Required               | Description |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | integer/string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`        | integer or string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `token_id`  | integer        | Yes | ID of the deploy token |
 
 Example request:
@@ -311,7 +311,7 @@ Parameters:
 
 | Attribute    | Type | Required  | Description |
 | ------------ | ---- | --------- | ----------- |
-| `id`         | integer/string   | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`         | integer or string   | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `name`       | string           | Yes | New deploy token's name |
 | `scopes`     | array of strings | Yes | Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`. |
 | `expires_at` | datetime         | No | Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
@@ -356,7 +356,7 @@ Parameters:
 
 | Attribute   | Type           | Required               | Description |
 | ----------- | -------------- | ---------------------- | ----------- |
-| `id`        | integer/string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`        | integer or string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `token_id`  | integer        | Yes | ID of the deploy token |
 
 Example request:

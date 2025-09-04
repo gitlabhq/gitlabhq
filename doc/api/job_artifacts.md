@@ -50,7 +50,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | ----------- | -------------- | -------- | ----------- |
-| `id`        | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`    | integer        | Yes      | ID of a job. |
 | `job_token` | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
@@ -105,7 +105,7 @@ Supported attributes:
 
 | Attribute   | Type           | Required | Description |
 | ----------- | -------------- | -------- | ----------- |
-| `id`        | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job`       | string         | Yes      | The name of the job. |
 | `ref_name`  | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
 | `job_token` | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
@@ -148,7 +148,7 @@ Supported attributes:
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
 | `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
-| `id`            | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`        | integer        | Yes      | The unique job identifier. |
 | `job_token`     | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
@@ -193,7 +193,7 @@ Supported attributes:
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
 | `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
-| `id`            | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job`           | string         | Yes      | The name of the job. |
 | `ref_name`      | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
 | `job_token`     | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
@@ -220,7 +220,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the job details.
@@ -283,7 +283,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
@@ -322,7 +322,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`202 Accepted`](rest/troubleshooting.md#status-codes).
 

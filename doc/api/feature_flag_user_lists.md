@@ -44,7 +44,7 @@ control the pagination of results.
 
 | Attribute | Type           | Required | Description                                                                      |
 | --------- | -------------- | -------- | -------------------------------------------------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `search`  | string         | no       | Return user lists matching the search criteria.                                  |
 
 ```shell
@@ -87,7 +87,7 @@ POST /projects/:id/feature_flags_user_lists
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
 | `name`              | string           | yes        | The name of the list. |
 | `user_xids`         | string           | yes        | A comma-separated list of external user IDs. |
 
@@ -131,8 +131,8 @@ control the pagination of results.
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
-| `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+| `iid`               | integer or string   | yes        | The internal ID of the project's feature flag user list.                               |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -163,8 +163,8 @@ PUT /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
-| `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list.                               |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+| `iid`               | integer or string   | yes        | The internal ID of the project's feature flag user list.                               |
 | `name`              | string           | no         | The name of the list.                                                          |
 | `user_xids`         | string           | no         | A comma-separated list of external user IDs.                                                    |
 
@@ -204,8 +204,8 @@ DELETE /projects/:id/feature_flags_user_lists/:iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
-| `iid`               | integer/string   | yes        | The internal ID of the project's feature flag user list                                |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+| `iid`               | integer or string   | yes        | The internal ID of the project's feature flag user list                                |
 
 ```shell
 curl --request DELETE \

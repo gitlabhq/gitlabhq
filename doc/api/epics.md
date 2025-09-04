@@ -84,7 +84,7 @@ GET /groups/:id/epics?state=opened
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)               |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `author_username`   | string           | no         | Return epics created by the user with the given `username`. |
 | `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
@@ -228,8 +228,8 @@ GET /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --request GET \
@@ -313,7 +313,7 @@ POST /groups/:id/epics
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
@@ -324,7 +324,7 @@ POST /groups/:id/epics
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic |
-| `parent_id`         | integer/string   | no         | The ID of a parent epic |
+| `parent_id`         | integer or string   | no         | The ID of a parent epic |
 
 ```shell
 curl --request POST \
@@ -400,15 +400,15 @@ PUT /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic  |
 | `add_labels`        | string           | no         | Comma-separated label names to add to an issue. |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones |
 | `labels`            | string           | no         | Comma-separated label names for an issue. Set to an empty string to unassign all labels. |
-| `parent_id`         | integer/string   | no         | The ID of a parent epic. |
+| `parent_id`         | integer or string   | no         | The ID of a parent epic. |
 | `remove_labels`     | string           | no         | Comma-separated label names to remove from an issue. |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones |
@@ -491,8 +491,8 @@ DELETE /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --request DELETE \
@@ -512,7 +512,7 @@ POST /groups/:id/epics/:epic_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)  |
+| `id`        | integer or string | yes   | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```shell

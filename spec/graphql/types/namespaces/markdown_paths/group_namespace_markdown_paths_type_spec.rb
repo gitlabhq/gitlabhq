@@ -39,7 +39,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::GroupNamespaceMarkdownPathsType
         expect(result).to include(
           members: "/groups/#{group.full_path}/-/autocomplete_sources/members?type=WorkItem",
           issues: "/groups/#{group.full_path}/-/autocomplete_sources/issues?type=WorkItem",
-          merge_requests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem",
+          mergeRequests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem",
           labels: "/groups/#{group.full_path}/-/autocomplete_sources/labels?type=WorkItem",
           milestones: "/groups/#{group.full_path}/-/autocomplete_sources/milestones?type=WorkItem",
           commands: "/groups/#{group.full_path}/-/autocomplete_sources/commands?type=WorkItem"
@@ -55,7 +55,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::GroupNamespaceMarkdownPathsType
         expect(result).to include(
           members: "/groups/#{group.full_path}/-/autocomplete_sources/members?type=WorkItem&type_id=456",
           issues: "/groups/#{group.full_path}/-/autocomplete_sources/issues?type=WorkItem&type_id=456",
-          merge_requests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=456",
+          mergeRequests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=456",
           labels: "/groups/#{group.full_path}/-/autocomplete_sources/labels?type=WorkItem&type_id=456",
           milestones: "/groups/#{group.full_path}/-/autocomplete_sources/milestones?type=WorkItem&type_id=456",
           commands: "/groups/#{group.full_path}/-/autocomplete_sources/commands?type=WorkItem&type_id=456"
@@ -74,7 +74,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::GroupNamespaceMarkdownPathsType
           .to include(
             members: "/groups/#{group.full_path}/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=789",
             issues: "/groups/#{group.full_path}/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=789",
-            merge_requests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests" \
+            mergeRequests: "/groups/#{group.full_path}/-/autocomplete_sources/merge_requests" \
               "?type=WorkItem&work_item_type_id=789",
             labels: "/groups/#{group.full_path}/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=789",
             milestones: "/groups/#{group.full_path}/-/autocomplete_sources/milestones" \

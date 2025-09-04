@@ -1,5 +1,6 @@
 import { GlBreadcrumb, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { MountingPortal } from 'portal-vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import LegacyContainer from '~/vue_shared/new_namespace/components/legacy_container.vue';
 import WelcomePage from '~/vue_shared/new_namespace/components/welcome.vue';
@@ -19,6 +20,7 @@ describe('Experimental new namespace creation app', () => {
   const findNewTopLevelGroupAlert = () => wrapper.findComponent(NewTopLevelGroupAlert);
   const findSuperSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findAccountVerificationAlert = () => wrapper.findComponent(GlAlert);
+  const findMountingPortal = () => wrapper.findComponent(MountingPortal);
 
   const DEFAULT_PROPS = {
     title: 'Create something',
@@ -218,4 +220,27 @@ describe('Experimental new namespace creation app', () => {
       });
     });
   });
+
+  it.each`
+    projectStudioEnabled | expected
+    ${true}              | ${true}
+    ${false}             | ${false}
+  `(
+    'is properly positioned when paneled view is $projectStudioEnabled',
+    ({ projectStudioEnabled, expected }) => {
+      window.gon = {
+        features: {
+          projectStudioEnabled,
+        },
+      };
+
+      const panel = document.createElement('div');
+      panel.classList.add('panel-header');
+      document.body.appendChild(panel);
+
+      createComponent();
+
+      expect(findMountingPortal().exists()).toBe(expected);
+    },
+  );
 });

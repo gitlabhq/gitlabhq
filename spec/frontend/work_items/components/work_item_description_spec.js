@@ -18,8 +18,8 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
-import { autocompleteDataSources, newWorkItemId } from '~/work_items/utils';
-import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
+import { newWorkItemId } from '~/work_items/utils';
+import { ROUTES } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -157,114 +157,12 @@ describe('WorkItemDescription', () => {
 
   describe('editing description', () => {
     it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
-      const {
-        iid,
-        namespace: { fullPath },
-      } = workItemQueryResponse.data.workItem;
-
       await createComponent({ isEditing: true });
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
         renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({ fullPath, iid, markdownPaths }),
-      });
-    });
-
-    it('passes correct autocompletion data sources when it is a group work item', async () => {
-      const {
-        iid,
-        namespace: { fullPath },
-      } = workItemQueryResponse.data.workItem;
-
-      const workItemResponse = workItemByIidResponseFactory();
-
-      const groupWorkItem = {
-        data: {
-          workspace: {
-            __typename: 'Group',
-            id: 'gid://gitlab/Group/24',
-            workItem: {
-              ...workItemResponse.data.workspace.workItem,
-              namespace: {
-                id: 'gid://gitlab/Group/24',
-                fullPath: 'gitlab-org',
-                name: 'Gitlab Org',
-                fullName: 'Gitlab Org',
-                webUrl: 'http://127.0.0.1:3000/test-project-path',
-                __typename: 'Namespace',
-              },
-            },
-          },
-        },
-      };
-
-      createComponent({ isEditing: true, workItemResponse: groupWorkItem, isGroup: true });
-
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props()).toMatchObject({
-        supportsQuickActions: true,
-        renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({
-          fullPath,
-          iid,
-          isGroup: true,
-          markdownPaths,
-        }),
-      });
-    });
-
-    it('passes correct autocompletion data sources when it is a new group work item', async () => {
-      const workItemResponse = workItemByIidResponseFactory({
-        iid: NEW_WORK_ITEM_IID,
-        id: NEW_WORK_ITEM_GID,
-      });
-
-      const newGroupWorkItem = {
-        data: {
-          workspace: {
-            __typename: 'Group',
-            id: 'gid://gitlab/Group/24',
-            workItem: {
-              ...workItemResponse.data.workspace.workItem,
-              namespace: {
-                id: 'gid://gitlab/Group/24',
-                fullPath: 'gitlab-org',
-                name: 'Gitlab Org',
-                fullName: 'Gitlab Org',
-                webUrl: 'http://127.0.0.1:3000/test-project-path',
-                __typename: 'Namespace',
-              },
-            },
-          },
-        },
-      };
-
-      const {
-        namespace: { fullPath },
-      } = newGroupWorkItem.data.workspace.workItem;
-
-      createComponent({
-        isEditing: true,
-        isGroup: true,
-        workItemResponse: newGroupWorkItem,
-        workItemIid: NEW_WORK_ITEM_IID,
-        fullPath,
-      });
-
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props()).toMatchObject({
-        supportsQuickActions: true,
-        renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({
-          fullPath,
-          iid: NEW_WORK_ITEM_IID,
-          isGroup: true,
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/5',
-          markdownPaths,
-        }),
+        autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
       });
     });
 

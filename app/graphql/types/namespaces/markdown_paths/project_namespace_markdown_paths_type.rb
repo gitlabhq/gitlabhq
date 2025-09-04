@@ -21,7 +21,7 @@ module Types
           {
             members: url_helpers.members_project_autocomplete_sources_path(project, params),
             issues: url_helpers.issues_project_autocomplete_sources_path(project, params),
-            merge_requests: url_helpers.merge_requests_project_autocomplete_sources_path(project, params),
+            mergeRequests: url_helpers.merge_requests_project_autocomplete_sources_path(project, params),
             labels: url_helpers.labels_project_autocomplete_sources_path(project, params),
             milestones: url_helpers.milestones_project_autocomplete_sources_path(project, params),
             commands: url_helpers.commands_project_autocomplete_sources_path(project, params),

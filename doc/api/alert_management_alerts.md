@@ -24,7 +24,7 @@ POST /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 
 Example request:
@@ -58,7 +58,7 @@ GET /projects/:id/alert_management_alerts/:alert_iid/metric_images
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 
 Example request:
@@ -99,7 +99,7 @@ PUT /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 | `image_id`  | integer        | yes      | The ID of the image. |
 | `url`       | string         | no       | The URL to view more metrics information. |
@@ -135,7 +135,7 @@ DELETE /projects/:id/alert_management_alerts/:alert_iid/metric_images/:image_id
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `alert_iid` | integer        | yes      | The internal ID of a project's alert. |
 | `image_id`  | integer        | yes      | The ID of the image. |
 

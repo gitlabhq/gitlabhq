@@ -29,8 +29,8 @@ module QA
 
         @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (24 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
-        @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
-        @skip_verification = !!(ENV['SKIP_VERIFICATION'].to_s =~ /true|1|y/i)
+        @permanently_delete = Gitlab::Utils.to_boolean(ENV['PERMANENTLY_DELETE'], default: false)
+        @skip_verification = Gitlab::Utils.to_boolean(ENV['SKIP_VERIFICATION'], default: false)
         @type = nil
       end
 

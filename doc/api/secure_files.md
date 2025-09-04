@@ -32,7 +32,7 @@ Supported attributes:
 
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -95,7 +95,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -132,7 +132,7 @@ Supported attributes:
 |-----------------|----------------|----------|-------------|
 | `file`          | file           | Yes      | The file being uploaded (5 MB limit). |
 | `name`          | string         | Yes      | The name of the file being uploaded. The filename must be unique in the project. |
-| `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `project_id`    | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -171,7 +171,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -195,7 +195,7 @@ Supported attributes:
 | Attribute    | Type           | Required | Description |
 |--------------|----------------|----------|-------------|
 | `id`         | integer        | Yes      | The ID of a secure file. |
-| `project_id` | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `project_id` | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 Example request:
 

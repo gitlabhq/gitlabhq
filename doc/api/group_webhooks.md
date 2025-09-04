@@ -32,7 +32,7 @@ Supported attributes:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string  | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string  | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 
 Example request:
 
@@ -101,7 +101,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
 | `hook_id` | integer        | yes      | The ID of a group hook. |
 
 Example request:

@@ -1366,7 +1366,7 @@ Supported attributes:
 
 | Attribute                | Type             | Required | Description |
 |:-------------------------|:-----------------|:---------|:------------|
-| `id`                     | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`                     | integer or string   | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
 | `search`                 | string           | no       | Return the list of authorized groups matching the search criteria |
 | `min_access_level`       | integer          | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `relation`               | array of strings | no       | Filter the groups by relation (direct or inherited) |

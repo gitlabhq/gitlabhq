@@ -27,7 +27,7 @@ GET /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request GET \
@@ -115,7 +115,7 @@ GET /projects/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -196,7 +196,7 @@ POST /projects/:id/boards
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the new board. |
 
 ```shell
@@ -241,7 +241,7 @@ PUT /projects/:id/boards/:board_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id`                   | integer        | yes      | The ID of a board. |
 | `name`                       | string         | no       | The new name of the board. |
 | `hide_backlog_list`          | boolean        | no       | Hide the Open list. |
@@ -327,7 +327,7 @@ DELETE /projects/:id/boards/:board_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -347,7 +347,7 @@ GET /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 
 ```shell
@@ -409,7 +409,7 @@ GET /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id`| integer | yes | The ID of a board's list. |
 
@@ -446,7 +446,7 @@ POST /projects/:id/boards/:board_id/lists
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `label_id` | integer | no | The ID of a label. |
 | `assignee_id` | integer | no | The ID of a user. Premium and Ultimate only. |
@@ -495,7 +495,7 @@ PUT /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 | `position` | integer | yes | The position of the list. |
@@ -533,7 +533,7 @@ DELETE /projects/:id/boards/:board_id/lists/:list_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `board_id` | integer | yes | The ID of a board. |
 | `list_id` | integer | yes | The ID of a board's list. |
 

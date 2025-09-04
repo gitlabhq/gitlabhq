@@ -51,7 +51,7 @@ GET /projects/:id/protected_environments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -89,7 +89,7 @@ GET /projects/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name` | string | yes | The name of the protected environment |
 
 ```shell
@@ -126,7 +126,7 @@ POST /projects/:id/protected_environments
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                            | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | yes | Array of access levels allowed to deploy, with each described by a hash. |
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules). |
@@ -200,7 +200,7 @@ PUT /projects/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                            | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                          | string         | yes | The name of the environment. |
 | `deploy_access_levels`          | array          | no  | Array of access levels allowed to deploy, with each described by a hash. |
 | `approval_rules`                | array          | no  | Array of access levels allowed to approve, with each described by a hash. See [Multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules) for more information. |
@@ -379,7 +379,7 @@ DELETE /projects/:id/protected_environments/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name` | string | yes | The name of the protected environment. |
 
 ```shell

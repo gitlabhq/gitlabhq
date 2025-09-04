@@ -135,7 +135,7 @@ GET /projects/:id/error_tracking/client_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -171,7 +171,7 @@ POST /projects/:id/error_tracking/client_keys
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request POST \
@@ -201,7 +201,7 @@ DELETE /projects/:id/error_tracking/client_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `key_id`  | integer | yes | The ID of the client key. |
 
 ```shell

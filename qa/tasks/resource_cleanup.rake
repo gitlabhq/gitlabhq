@@ -45,7 +45,7 @@ end
 desc "Revokes user's personal access tokens"
 task :revoke_user_pats, [:dry_run] do |_, args|
   args.with_defaults(dry_run: false)
-  QA::Tools::RevokeUserPersonalAccessTokens.new(dry_run: !!(args[:dry_run].to_s =~ /true|1|y/i)).run
+  QA::Tools::RevokeUserPersonalAccessTokens.new(dry_run: Gitlab::Utils.to_boolean(args[:dry_run], default: false)).run
 end
 
 namespace :test_resources do

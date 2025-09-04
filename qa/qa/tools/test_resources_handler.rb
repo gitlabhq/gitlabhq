@@ -57,6 +57,8 @@ module QA
 
       def initialize(file_pattern = nil)
         @file_pattern = file_pattern
+        # Default to true to keep the existing behavior when $PERMANENTLY_DELETE isn't set
+        @permanently_delete = Gitlab::Utils.to_boolean(ENV['PERMANENTLY_DELETE'], default: true)
       end
 
       def run_delete
@@ -167,7 +169,11 @@ module QA
       # @param [Boolean] permanent Permanently delete resources instead of marking for deletion. Defaults to true
       # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes. Defaults to false
       # @return [Array<Array<String, Hash>>] Array of deletion results
-      def delete_resources(resources_hash, delayed_verification = false, permanent = true, skip_verification = false)
+      def delete_resources(
+        resources_hash,
+        delayed_verification = false,
+        permanent = @permanently_delete,
+        skip_verification = false)
         unverified_deletions = []
         results = []
 

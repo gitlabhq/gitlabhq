@@ -40,7 +40,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `username`       | string         | no       | Return a user with a given username. |
 | `search`         | string         | no       | Return users with a matching name, email, or username. Use partial values to increase results. |
 | `active`         | boolean        | no       | Return only active users. |
@@ -134,7 +134,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`        | integer        | yes      | ID of user account. |
 
 Example request:
@@ -219,7 +219,7 @@ Supported attributes:
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                                                                                                                              |
 |:--------------|:---------------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                          |
+| `id`          | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                          |
 | `user_id`     | integer        | yes      | ID of user account.                                                                                                                                                                                                                                                                      |
 | `hard_delete` | boolean        | no       | If `false`, deletes the user and moves their contributions [to a system-wide "Ghost User"](../user/profile/account/delete_account.md#associated-records). If `true`, deletes the user, their associated contributions, and any groups owned solely by the user. Default value: `false`.  |
 
@@ -255,7 +255,7 @@ Supported attributes:
 
 | Attribute        | Type           | Required | Description |
 |:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`             | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`        | integer        | yes      | ID of user account. |
 
 Example request:

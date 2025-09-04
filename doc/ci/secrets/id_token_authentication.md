@@ -142,7 +142,7 @@ the job's timeout if specified, or 5 minutes if no timeout is specified.
 
 You can use ID tokens for OIDC authentication with a third party service. For example:
 
-- [HashiCorp Vault](hashicorp_vault.md)
+- [HashiCorp Vault](hashicorp_vault_tutorial.md)
 - [Google Cloud Secret Manager](gcp_secret_manager.md#configure-gitlab-cicd-to-use-gcp-secret-manager-secrets)
 - [Azure Key Vault](azure_key_vault.md#use-azure-key-vault-secrets-in-a-cicd-job)
 

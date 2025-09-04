@@ -19,6 +19,7 @@ import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vu
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import workItemNoteQuery from '~/work_items/graphql/notes/work_item_note.query.graphql';
+import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -26,12 +27,12 @@ import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_ite
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
 import { DEFAULT_PAGE_SIZE_NOTES, WIDGET_TYPE_NOTES } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
   mockWorkItemNotesResponse,
   mockMoreWorkItemNotesResponse,
+  namespacePathsQueryResponse,
   workItemNotesCreateSubscriptionResponse,
   workItemNotesUpdateSubscriptionResponse,
   workItemNotesDeleteSubscriptionResponse,
@@ -90,12 +91,15 @@ describe('WorkItemNotes component', () => {
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
   const findCommentsSection = () => wrapper.find('.issuable-discussion');
 
+  const { markdownPaths } = namespacePathsQueryResponse.data.namespace;
+
   const workItemNoteQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNoteResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
     .fn()
     .mockResolvedValue(mockWorkItemNotesResponseWithComments());
+  const mockNamespacePathsHandler = jest.fn().mockResolvedValue(namespacePathsQueryResponse);
   const deleteWorkItemNoteMutationSuccessHandler = jest.fn().mockResolvedValue({
     data: { destroyNote: { note: null, __typename: 'DestroyNote' } },
   });
@@ -116,7 +120,6 @@ describe('WorkItemNotes component', () => {
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     canCreateNote = false,
-    isGroup = false,
     isDrawer = false,
     isModal = false,
     isWorkItemConfidential = false,
@@ -133,23 +136,31 @@ describe('WorkItemNotes component', () => {
     `);
     wrapper = shallowMount(WorkItemNotes, {
       attachTo: '#root',
-      apolloProvider: createMockApollo([
-        [workItemNoteQuery, workItemNoteQueryHandler],
-        [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
-        [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
-        [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
-        [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
-        [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
-      ]),
-      provide: {
-        isGroup,
-      },
+      apolloProvider: createMockApollo(
+        [
+          [workItemNoteQuery, workItemNoteQueryHandler],
+          [namespacePathsQuery, mockNamespacePathsHandler],
+          [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
+          [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
+          [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
+          [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
+          [workItemNoteDeletedSubscription, notesDeleteSubscriptionHandler],
+        ],
+        {},
+        {
+          typePolicies: {
+            Namespace: {
+              merge: true,
+            },
+          },
+        },
+      ),
       propsData: {
         fullPath: 'test-path',
-        uploadsPath: '/group/project/uploads',
         workItemId,
         workItemIid,
         workItemType: 'task',
+        workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
         isDrawer,
         isModal,
         isWorkItemConfidential,
@@ -184,8 +195,8 @@ describe('WorkItemNotes component', () => {
       expect(findCommentsSection().exists()).toBe(true);
     });
 
-    it('renders the comment form even when notes are loading', () => {
-      expect(findWorkItemAddNote().exists()).toBe(true);
+    it('does not render the comment form when markdownPaths is loading', () => {
+      expect(findWorkItemAddNote().exists()).toBe(false);
     });
 
     it('does not render system notes', () => {
@@ -408,14 +419,8 @@ describe('WorkItemNotes component', () => {
 
       expect(firstDiscussion.props()).toMatchObject({
         discussion: mockDiscussions[commentIndex],
-        autocompleteDataSources: autocompleteDataSources({
-          fullPath: 'test-path',
-          iid: mockWorkItemIid,
-        }),
-        markdownPreviewPath: markdownPreviewPath({
-          fullPath: 'test-path',
-          iid: mockWorkItemIid,
-        }),
+        autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
+        markdownPreviewPath: markdownPaths.markdownPreviewPath,
       });
     });
   });
@@ -598,18 +603,14 @@ describe('WorkItemNotes component', () => {
         },
       };
       createComponent({
-        isGroup: true,
         defaultWorkItemNotesQueryHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
       });
       await waitForPromises();
 
-      expect(findWorkItemAddNote().props('autocompleteDataSources')).toEqual(
-        autocompleteDataSources({
-          fullPath: 'test-path',
-          iid: mockWorkItemIid,
-          isGroup: true,
-        }),
-      );
+      expect(findWorkItemAddNote().props('autocompleteDataSources')).toEqual({
+        ...markdownPaths.autocompleteSourcesPath,
+        statuses: true,
+      });
     });
   });
 

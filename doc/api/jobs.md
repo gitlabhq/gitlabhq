@@ -241,7 +241,7 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 
 | Attribute         | Type                           | Required | Description |
 | ----------------- | ------------------------------ | -------- | ----------- |
-| `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs using the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
 | `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
@@ -423,7 +423,7 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 
 | Attribute     | Type                           | Required | Description |
 | ------------- | ------------------------------ | -------- | ----------- |
-| `id`          | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`          | integer or string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id` | integer                        | Yes      | ID of a pipeline. |
 | `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
@@ -678,7 +678,7 @@ GET /projects/:id/jobs/:job_id
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -762,7 +762,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -788,7 +788,7 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 | `force`   | boolean        | No       | [Forces cancellation](../ci/jobs/_index.md#force-cancel-a-job) of a job in `canceling` state when set to `true`. |
 
@@ -848,7 +848,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 ```shell
@@ -915,7 +915,7 @@ Parameters
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`  | integer        | Yes      | ID of a job. |
 
 Example of request
@@ -984,7 +984,7 @@ POST /projects/:id/jobs/:job_id/play
 
 | Attribute                  | Type            | Required | Description |
 |----------------------------|-----------------|----------|-------------|
-| `id`                       | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                       | integer or string  | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job_id`                   | integer         | Yes      | ID of a job. |
 | `job_variables_attributes` | array of hashes | No       | An array containing the custom variables available to the job. |
 

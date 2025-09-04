@@ -59160,7 +59160,7 @@ msgstr ""
 msgid "SecurityOrchestration|Unlinking a security project removes all policies stored in the linked security project. Save to confirm this action."
 msgstr ""
 
-msgid "SecurityOrchestration|Update scan policies"
+msgid "SecurityOrchestration|Update security policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Update via merge request"

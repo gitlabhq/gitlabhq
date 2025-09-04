@@ -33,7 +33,7 @@ Parameters:
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
 
 ```json
@@ -92,9 +92,9 @@ Supported attributes:
 
 | Attribute       | Type           | Required               | Description                                                                 |
 |-----------------|----------------|------------------------|-----------------------------------------------------------------------------|
-| `id`            | integer/string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid`     | integer        | Yes | Internal ID of a project's issue.                                           |
-| `issue_link_id` | integer/string | Yes | ID of an issue relationship.                                                |
+| `issue_link_id` | integer or string | Yes | ID of an issue relationship.                                                |
 
 Response body attributes:
 
@@ -189,10 +189,10 @@ POST /projects/:id/issues/:issue_iid/links
 
 | Attribute           | Type           | Required | Description                          |
 |---------------------|----------------|----------|--------------------------------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `issue_iid`         | integer        | yes      | The internal ID of a project's issue |
-| `target_project_id` | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) of a target project  |
-| `target_issue_iid`  | integer/string | yes      | The internal ID of a target project's issue |
+| `target_project_id` | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) of a target project  |
+| `target_issue_iid`  | integer or string | yes      | The internal ID of a target project's issue |
 | `link_type`         | string         | no       | The type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`). |
 
 ```shell
@@ -277,9 +277,9 @@ DELETE /projects/:id/issues/:issue_iid/links/:issue_link_id
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
 | `issue_iid` | integer | yes      | The internal ID of a project's issue |
-| `issue_link_id` | integer/string | yes      | The ID of an issue relationship |
+| `issue_link_id` | integer or string | yes      | The ID of an issue relationship |
 | `link_type` | string  | no | The type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to` |
 
 ```json

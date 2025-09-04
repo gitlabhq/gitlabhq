@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash';
 import { generateDescriptionAction } from 'ee_else_ce/ai/editor_actions/generate_description';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { __, s__ } from '~/locale';
@@ -218,6 +217,10 @@ export default {
       variables() {
         return {
           fullPath: this.fullPath,
+          iidForAutocompleteSources: this.workItemIid,
+          iidForMarkdownPreview:
+            this.workItemIid === NEW_WORK_ITEM_IID ? undefined : this.workItemIid,
+          workItemTypeId: this.workItem?.workItemType?.id,
         };
       },
       update(data) {
@@ -285,13 +288,6 @@ export default {
     lastEditedByPath() {
       return this.workItemDescription?.lastEditedBy?.webPath;
     },
-    isGroupWorkItem() {
-      return this.workItemNamespaceId.includes(TYPENAME_GROUP);
-    },
-    workItemNamespaceId() {
-      return this.workItem?.namespace?.id || '';
-    },
-
     saveButtonText() {
       return this.editMode ? __('Save changes') : __('Save');
     },
@@ -336,16 +332,7 @@ export default {
       return this.markdownPaths.markdownPreviewPath;
     },
     autocompleteDataSources() {
-      const isNewWorkItemInGroup = this.isGroup && this.workItemIid === NEW_WORK_ITEM_IID;
-      const sources = autocompleteDataSources({
-        fullPath: this.fullPath,
-        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
-        iid: this.workItemIid,
-        workItemTypeId: this.workItem?.workItemType?.id,
-        markdownPaths: this.markdownPaths,
-      });
-
-      return sources;
+      return autocompleteDataSources(this.markdownPaths.autocompleteSourcesPath);
     },
   },
   watch: {

@@ -653,7 +653,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
-| `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`             | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type` |
 | `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
@@ -741,7 +741,7 @@ POST /projects/:id/runners
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell
@@ -798,7 +798,7 @@ DELETE /projects/:id/runners/:runner_id
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|-------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `runner_id` | integer        | yes      | The ID of a runner |
 
 ```shell

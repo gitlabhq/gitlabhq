@@ -187,7 +187,7 @@ GET /projects/:id/deploy_keys
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys"
@@ -295,7 +295,7 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -330,7 +330,7 @@ POST /projects/:id/deploy_keys
 
 | Attribute    | Type | Required | Description |
 | -----------  | ---- | -------- | ----------- |
-| `id`         | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`         | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key`        | string   | yes | New deploy key |
 | `title`      | string   | yes | New deploy key's title |
 | `can_push`   | boolean  | no  | Can deploy key push to the project's repository |
@@ -366,7 +366,7 @@ PUT /projects/:id/deploy_keys/:key_id
 
 | Attribute  | Type | Required | Description |
 | ---------  | ---- | -------- | ----------- |
-| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`       | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 | `title`    | string  | no | New deploy key's title |
 
@@ -400,7 +400,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
@@ -419,7 +419,7 @@ POST /projects/:id/deploy_keys/:key_id/enable
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell

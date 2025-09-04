@@ -1,4 +1,5 @@
 <script>
+import { MountingPortal } from 'portal-vue';
 import { GlBreadcrumb, GlIcon, GlAlert } from '@gitlab/ui';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
@@ -19,6 +20,7 @@ export default {
     WelcomePage,
     LegacyContainer,
     SuperSidebarToggle,
+    MountingPortal,
   },
 
   inject: ['identityVerificationRequired', 'identityVerificationPath'],
@@ -94,6 +96,21 @@ export default {
     showSuperSidebarToggle() {
       return sidebarState.isCollapsed;
     },
+    isUsingPaneledView() {
+      return gon.features?.projectStudioEnabled;
+    },
+    wrapperComponentProps() {
+      return this.isUsingPaneledView
+        ? {
+            is: MountingPortal,
+            'mount-to': '.panel-header',
+            name: 'breadcrumbs',
+            append: true,
+          }
+        : {
+            is: 'div',
+          };
+    },
   },
 
   created() {
@@ -138,18 +155,25 @@ export default {
 
 <template>
   <div>
-    <div class="top-bar-fixed container-fluid" data-testid="top-bar">
+    <component :is="wrapperComponentProps.is" v-bind="wrapperComponentProps">
       <div
-        class="top-bar-container gl-flex gl-items-center gl-border-b-1 gl-border-b-default gl-border-b-solid"
+        class="top-bar-fixed container-fluid"
+        :class="{ 'gl-border-b gl-mx-0 gl-w-full': isUsingPaneledView }"
+        data-testid="top-bar"
       >
-        <super-sidebar-toggle
-          v-if="showSuperSidebarToggle"
-          class="gl-mr-2"
-          :class="$options.JS_TOGGLE_EXPAND_CLASS"
-        />
-        <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
+        <div
+          class="top-bar-container gl-flex gl-items-center gl-border-b-default gl-border-b-solid"
+          :class="isUsingPaneledView ? 'gl-border-b-0' : 'gl-border-b-1'"
+        >
+          <super-sidebar-toggle
+            v-if="showSuperSidebarToggle"
+            class="gl-mr-2"
+            :class="$options.JS_TOGGLE_EXPAND_CLASS"
+          />
+          <gl-breadcrumb :items="breadcrumbs" data-testid="breadcrumb-links" class="gl-grow" />
+        </div>
       </div>
-    </div>
+    </component>
 
     <template v-if="activePanel">
       <page-heading :heading="activePanel.title" data-testid="active-panel-template">

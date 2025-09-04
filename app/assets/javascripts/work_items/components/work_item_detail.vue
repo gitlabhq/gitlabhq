@@ -324,6 +324,9 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
+    workItemTypeId() {
+      return this.workItem.workItemType?.id;
+    },
     workItemAuthorId() {
       return getIdFromGraphQLId(this.workItem.author?.id);
     },
@@ -577,10 +580,6 @@ export default {
         showSidebar: this.showSidebar,
         truncationEnabled: this.truncationEnabled,
       };
-    },
-    uploadsPath() {
-      const rootPath = this.workItem?.namespace?.webUrl || '';
-      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
     },
     canAddDesign() {
       return this.workspacePermissions.createDesign;
@@ -1343,6 +1342,7 @@ export default {
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"
                 :work-item-type="workItemType"
+                :work-item-type-id="workItemTypeId"
                 :is-modal="isModal"
                 :is-drawer="isDrawer"
                 :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
@@ -1357,7 +1357,6 @@ export default {
                 :small-header-style="isModal"
                 :parent-id="parentWorkItemId"
                 :hide-fullscreen-markdown-button="isDrawer"
-                :uploads-path="uploadsPath"
                 @error="updateError = $event"
                 @openReportAbuse="openReportAbuseModal"
                 @startEditing="isAddingNotes = true"

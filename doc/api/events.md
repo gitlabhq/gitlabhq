@@ -269,7 +269,7 @@ Parameters:
 
 | Parameter     | Type            | Required | Description |
 | ------------- | --------------- | -------- | ----------- |
-| `project_id`  | integer/string  | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
+| `project_id`  | integer or string  | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
 | `action`      | string          | no       | If defined, returns events with the specified [action type](../user/profile/contributions_calendar.md#user-contribution-events). |
 | `target_type` | string          | no       | If defined, returns events with the specified [target type](#target-type). |
 | `before`      | date (ISO 8601) | no       | If defined, returns tokens created before the specified date. |
