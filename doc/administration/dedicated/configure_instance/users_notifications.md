@@ -81,7 +81,25 @@ Operational email addresses receive customer notifications, even if recipients:
 - Have not signed in to Switchboard.
 - Turn off email notifications.
 
-To stop receiving operational email notifications, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+### Manage operational email addresses
+
+To update the list of operational email addresses:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Contact information**.
+1. Under **Operational email addresses**:
+   - To add a new address:
+     1. Select **Add email address**.
+     1. Enter the email address.
+     1. Select **Save**.
+   - To edit an existing address:
+     1. Select the pencil ({{< icon name="pencil" >}}) next to the address.
+     1. Edit the email address.
+     1. Select **Save**.
+   - To delete an address:
+     1. Select the trash can ({{< icon name="remove" >}}) next to the address.
+     1. On the confirmation dialog, select **Delete**.
 
 ### Manage notification preferences
 

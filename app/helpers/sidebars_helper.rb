@@ -328,51 +328,6 @@ module SidebarsHelper
     ]
   end
 
-  def sidebar_attributes_for_object(object)
-    case object
-    when Project
-      sidebar_project_attributes
-    when Group
-      sidebar_group_attributes
-    when User
-      sidebar_user_attributes
-    else
-      {}
-    end
-  end
-
-  def sidebar_project_attributes
-    {
-      tracking_attrs: sidebar_project_tracking_attrs,
-      scope_avatar_class: 'project_avatar'
-    }
-  end
-
-  def sidebar_group_attributes
-    {
-      tracking_attrs: sidebar_group_tracking_attrs,
-      scope_avatar_class: 'group_avatar'
-    }
-  end
-
-  def sidebar_user_attributes
-    {
-      tracking_attrs: sidebar_user_profile_tracking_attrs
-    }
-  end
-
-  def sidebar_project_tracking_attrs
-    tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation')
-  end
-
-  def sidebar_group_tracking_attrs
-    tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation')
-  end
-
-  def sidebar_user_profile_tracking_attrs
-    tracking_attrs('user_side_navigation', 'render', 'user_side_navigation')
-  end
-
   def project_sidebar_context_data(project, user, current_ref, ref_type: nil)
     {
       current_user: user,

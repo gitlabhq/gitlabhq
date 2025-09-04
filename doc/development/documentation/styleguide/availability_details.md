@@ -127,7 +127,7 @@ For example:
 
 ### History
 
-The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history,
+The documentation site uses Hugo shortcodes to render the version history,
 for example:
 
 ```markdown

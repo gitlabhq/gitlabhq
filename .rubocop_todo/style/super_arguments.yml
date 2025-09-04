@@ -137,8 +137,6 @@ Style/SuperArguments:
     - 'lib/gitlab/database/migration_helpers/announce_database.rb'
     - 'lib/gitlab/database/migrations/milestone_mixin.rb'
     - 'lib/gitlab/database/postgresql_database_tasks/load_schema_versions_mixin.rb'
-    - 'lib/gitlab/database/schema_cache_with_renamed_table.rb'
-    - 'lib/gitlab/database/schema_cache_with_renamed_table_legacy.rb'
     - 'lib/gitlab/database/sha256_attribute.rb'
     - 'lib/gitlab/database/sha_attribute.rb'
     - 'lib/gitlab/database/x509_serial_number_attribute.rb'

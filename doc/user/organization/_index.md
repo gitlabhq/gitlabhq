@@ -2,7 +2,7 @@
 stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Organization
+title: Organizations
 description: Namespace hierarchy.
 ---
 
@@ -24,11 +24,11 @@ This feature is not ready for production use.
 
 {{< alert type="note" >}}
 
-Organization is in development.
+Organizations is in development.
 
 {{< /alert >}}
 
-Organization will be above the [top-level namespaces](../namespace/_index.md) for you to manage
+Organizations will be above the [top-level namespaces](../namespace/_index.md) for you to manage
 everything you do as a GitLab administrator, including:
 
 - Defining and applying settings to all of your groups, subgroups, and projects.

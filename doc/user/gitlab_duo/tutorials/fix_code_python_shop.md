@@ -1406,14 +1406,12 @@ For more information, see [Using Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfV
 - [GitLab Duo use cases](../use_cases.md)
 - [Get started with GitLab Duo](../../get_started/getting_started_gitlab_duo.md).
 - Blog post: [Streamline DevSecOps engineering workflows with GitLab Duo](https://about.gitlab.com/blog/2024/12/05/streamline-devsecops-engineering-workflows-with-gitlab-duo/)
-<!-- markdownlint-disable -->
+  <!-- Video published on 2024-04-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Chat](https://youtu.be/ZQBAuf-CTAY?si=0o9-xJ_ATTsL1oew)
-<!-- Video published on 2024-04-18 -->
+  <!-- Video published on 2024-01-24 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
-<!-- Video published on 2024-01-24 -->
+  <!-- Video published on 2025-03-18 -->
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)
-<!-- Video published on 2025-03-18 -->
-<!-- markdownlint-enable -->

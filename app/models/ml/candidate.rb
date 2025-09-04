@@ -64,6 +64,7 @@ module Ml
     alias_method :artifact=, :package=
 
     alias_attribute :iid, :internal_id
+    alias_method :iid=, :internal_id=
 
     delegate :package_name, to: :experiment
 

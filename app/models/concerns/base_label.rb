@@ -64,6 +64,7 @@ module BaseLabel # rubocop:disable Gitlab/BoundedContexts -- existing Label modu
         write_attribute(:title, sanitize_value(value))
       end
     end
+    alias_method :name=, :title=
 
     def description=(value)
       if value.blank?

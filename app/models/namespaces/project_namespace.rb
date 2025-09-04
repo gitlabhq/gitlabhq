@@ -21,6 +21,8 @@ module Namespaces
     # see ProjectNamespace#sync_attributes_from_project
     alias_method :namespace, :parent
     alias_attribute :namespace_id, :parent_id
+    alias_method :namespace_id=, :parent_id=
+
     has_one :project, inverse_of: :project_namespace
 
     delegate :execute_hooks, :execute_integrations, :group, to: :project, allow_nil: true

@@ -1767,8 +1767,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/database/query_analyzers/prevent_cross_database_modification.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/node.rb'
     - 'lib/gitlab/database/reindexing/reindex_action.rb'
-    - 'lib/gitlab/database/schema_cache_with_renamed_table.rb'
-    - 'lib/gitlab/database/schema_cache_with_renamed_table_legacy.rb'
     - 'lib/gitlab/database/with_lock_retries.rb'
     - 'lib/gitlab/database_importers/work_items/base_type_importer.rb'
     - 'lib/gitlab/dependency_linker/go_mod_linker.rb'
