@@ -43888,7 +43888,7 @@ Represents the vulnerability details location within a file in the project.
 | <a id="vulnerabilitydetailfilelocationdescription"></a>`description` | [`String`](#string) | Description of the field. |
 | <a id="vulnerabilitydetailfilelocationfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailfilelocationfilename"></a>`fileName` | [`String!`](#string) | File name. |
-| <a id="vulnerabilitydetailfilelocationlineend"></a>`lineEnd` | [`Int!`](#int) | End line number of the file location. |
+| <a id="vulnerabilitydetailfilelocationlineend"></a>`lineEnd` | [`Int`](#int) | End line number of the file location. |
 | <a id="vulnerabilitydetailfilelocationlinestart"></a>`lineStart` | [`Int!`](#int) | Start line number of the file location. |
 | <a id="vulnerabilitydetailfilelocationname"></a>`name` | [`String`](#string) | Name of the field. |
 
