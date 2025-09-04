@@ -25,6 +25,7 @@ GitLab provides support for the following secret management providers:
 1. [Vault by HashiCorp](#use-vault-secrets-in-a-ci-job)
 1. [Google Cloud Secret Manager](gcp_secret_manager.md)
 1. [Azure Key Vault](azure_key_vault.md)
+1. [AWS Secrets Manager](aws_secrets_manager.md)
 
 GitLab has selected [Vault by HashiCorp](https://www.vaultproject.io) as the
 first supported provider, and [KV-V2](https://developer.hashicorp.com/vault/docs/secrets/kv/kv-v2)

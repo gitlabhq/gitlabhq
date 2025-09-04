@@ -586,6 +586,59 @@ The Sidekiq dashboard contains:
   - Current memory usage, measured in MB
   - Peak memory usage, measured in MB
 
+### Database diagnostics
+
+{{< history >}}
+
+- Collation health check [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/555916) in GitLab 18.3.
+- Schema health check [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199796) in GitLab 18.3 with missing indexes, tables, foreign keys, and sequences checks.
+- Wrong sequence owners check [added to schema health check](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197521) in GitLab 18.4.
+
+{{< /history >}}
+
+The database diagnostics page consists of a number of checks that
+attempt to flag common problems with the database:
+
+- Index corruption caused by [change in PostgreSQL collations](https://gitlab.com/groups/gitlab-org/-/epics/8573)
+- [Schema discrepancies](https://gitlab.com/groups/gitlab-org/-/epics/3928)
+
+To run each check, select the run button for the check. Selecting the run button
+schedules a background job that will report information from the check to the page.
+
+#### Collation health check
+
+The collation health check attempts to detect PostgreSQL issues that
+result in corrupted indexes. This commonly happens if the previous
+operating system running PostgreSQL used a version of `glibc` earlier than
+version 2.28. For more information, see the documentation about
+[upgrading operating systems for PostgreSQL](postgresql/upgrading_os.md).
+
+Any issues are listed in a **Corrupted Indexes** section. If you have issues, you can
+[repair corrupted indexes](raketasks/maintenance.md#repair-corrupted-database-indexes).
+
+The collation health check also attempts to flag duplicates on commonly-affected tables:
+
+- `ci_refs`
+- `ci_resource_groups`
+- `environments`
+- `merge_request_diff_commit_users`
+- `sbom_components`
+- `tags`
+- `topics`
+
+For more information, see [issue 505982](https://gitlab.com/gitlab-org/gitlab/-/issues/505982).
+
+The dashboard lists the identical information shown in the
+[`gitlab:db:collation_checker` Rake task](raketasks/maintenance.md#detect-postgresql-collation-version-mismatches).
+
+#### Schema health check
+
+The schema health check compares the state of the database against the target schema and lists detected
+discrepancies. No automated schema repair tool is available.
+
+If you notice any false positives or have any questions about the results of the check, see the
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/567561).
+
 ### Logs
 
 The contents of these log files can help troubleshoot a problem. The content of each log file is

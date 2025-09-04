@@ -12694,6 +12694,9 @@ msgstr ""
 msgid "Cannot import because issues are not available in this project."
 msgstr ""
 
+msgid "Cannot link more than %{limit} merge requests to a vulnerability"
+msgstr ""
+
 msgid "Cannot load the diagram into the diagrams.net editor"
 msgstr ""
 

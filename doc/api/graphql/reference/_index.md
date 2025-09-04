@@ -13715,6 +13715,28 @@ Input type: `VulnerabilityIssueLinkCreateInput`
 | <a id="mutationvulnerabilityissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationvulnerabilityissuelinkcreateissuelinks"></a>`issueLinks` | [`[VulnerabilityIssueLink!]`](#vulnerabilityissuelink) | Created issue links. |
 
+### `Mutation.vulnerabilityLinkMergeRequest`
+
+Link a merge request to a vulnerability.
+
+Input type: `VulnerabilityLinkMergeRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitylinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequestmergerequestid"></a>`mergeRequestId` | [`MergeRequestID!`](#mergerequestid) | ID of the merge request. |
+| <a id="mutationvulnerabilitylinkmergerequestvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitylinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequestvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Updated vulnerability. |
+
 ### `Mutation.vulnerabilityResolve`
 
 Input type: `VulnerabilityResolveInput`
