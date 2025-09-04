@@ -1,0 +1,12 @@
+---
+api_type:
+attr: workspaces_oauth_application_id
+clusterwide: false
+column: workspaces_oauth_application_id
+db_type: bigint
+default:
+description: ID of the OAuth application used by the Workspaces HTTP Server in GitLab Agent Server(KAS)
+encrypted: false
+gitlab_com_different_than_default: true
+jihu: false
+not_null: false

@@ -40,6 +40,7 @@ Use the following endpoints to create and manage Maven virtual registries.
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `downloads_count` and `downloaded_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201790) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -877,7 +878,9 @@ Example response:
     "content_type": "application/xml",
     "upstream_etag": "\"686897696a7c876b7e\"",
     "created_at": "2024-05-30T12:28:27.855Z",
-    "updated_at": "2024-05-30T12:28:27.855Z"
+    "updated_at": "2024-05-30T12:28:27.855Z",
+    "downloads_count": 6,
+    "downloaded_at": "2024-06-05T14:58:32.855Z"
   }
 ]
 ```

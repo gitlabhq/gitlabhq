@@ -10554,6 +10554,7 @@ CREATE TABLE application_settings (
     resource_access_tokens_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     auto_duo_code_review_enabled boolean DEFAULT false NOT NULL,
     lock_auto_duo_code_review_enabled boolean DEFAULT false NOT NULL,
+    workspaces_oauth_application_id bigint,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -37087,6 +37088,8 @@ CREATE INDEX index_application_settings_on_usage_stats_set_by_user_id ON applica
 
 CREATE INDEX index_application_settings_web_ide_oauth_application_id ON application_settings USING btree (web_ide_oauth_application_id);
 
+CREATE INDEX index_application_settings_workspaces_oauth_application_id ON application_settings USING btree (workspaces_oauth_application_id);
+
 CREATE INDEX index_approval_group_rules_groups_on_group_id ON approval_group_rules_groups USING btree (group_id);
 
 CREATE INDEX index_approval_group_rules_on_approval_policy_rule_id ON approval_group_rules USING btree (approval_policy_rule_id);
@@ -46204,7 +46207,7 @@ ALTER TABLE ONLY members
     ADD CONSTRAINT fk_2f85abf8f1 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY push_event_payloads
-    ADD CONSTRAINT fk_2f8fdf5cac FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_2f8fdf5cac FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_group_links
     ADD CONSTRAINT fk_2fbc7071a3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
@@ -46595,6 +46598,9 @@ ALTER TABLE ONLY dast_scanner_profiles_builds
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_5d9b05a7e9 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY application_settings
+    ADD CONSTRAINT fk_5d9b886930 FOREIGN KEY (workspaces_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_requests_approval_rules_merge_requests
     ADD CONSTRAINT fk_5ddc4a2f7b FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
@@ -47776,7 +47782,7 @@ ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_df75a7c8b8 FOREIGN KEY (promoted_to_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY merge_request_cleanup_schedules
-    ADD CONSTRAINT fk_e0655f1a25 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_e0655f1a25 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_e1372c912e FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;

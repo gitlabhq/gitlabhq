@@ -449,7 +449,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
       with_them do
         before do
           worker.urgency urgency
-          stub_env("SIDEKIQ_MAX_REPLICAS", sidekiq_max_replicas)
+          stub_env("GITLAB_SIDEKIQ_MAX_REPLICAS", sidekiq_max_replicas)
           stub_env("SIDEKIQ_CONCURRENCY", sidekiq_concurrency)
         end
 
@@ -460,7 +460,7 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
 
       context 'with max_concurrency_limit_percentage attribute' do
         before do
-          stub_env("SIDEKIQ_MAX_REPLICAS", 10)
+          stub_env("GITLAB_SIDEKIQ_MAX_REPLICAS", 10)
           stub_env("SIDEKIQ_CONCURRENCY", 10)
           worker.max_concurrency_limit_percentage 0.4
         end
@@ -480,9 +480,9 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
         end
       end
 
-      context 'with only SIDEKIQ_MAX_REPLICAS environment variable defined' do
+      context 'with only GITLAB_SIDEKIQ_MAX_REPLICAS environment variable defined' do
         before do
-          stub_env("SIDEKIQ_MAX_REPLICAS", 10)
+          stub_env("GITLAB_SIDEKIQ_MAX_REPLICAS", 10)
         end
 
         it 'returns 0' do

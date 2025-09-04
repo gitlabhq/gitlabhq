@@ -387,6 +387,9 @@ RSpec.configure do |config|
       # For testing consistency, we default to the original query implementation in specs
       # until the new implementation is fully validated and the feature flag is removed.
       stub_feature_flags(use_user_group_member_roles: false)
+
+      # Enabled only when debugging
+      stub_feature_flags(track_struct_event_logger: false)
     else
       unstub_all_feature_flags
     end

@@ -2711,6 +2711,7 @@ Input type: `AiFeatureSettingUpdateInput`
 | <a id="mutationaifeaturesettingupdateaiselfhostedmodelid"></a>`aiSelfHostedModelId` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of the self-hosted model providing the AI setting. |
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdatefeatures"></a>`features` | [`[AiFeatures!]!`](#aifeatures) | Array of AI features being configured (for single or batch update). |
+| <a id="mutationaifeaturesettingupdateofferedmodelref"></a>`offeredModelRef` | [`String`](#string) | Identifier of the selected model for the feature. |
 | <a id="mutationaifeaturesettingupdateprovider"></a>`provider` | [`AiFeatureProviders!`](#aifeatureproviders) | Provider for AI setting. |
 
 #### Fields

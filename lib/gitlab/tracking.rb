@@ -28,6 +28,7 @@ module Gitlab
             user: user,
             **extra).to_context, *context
         ]
+        @tracker = nil if reset_tracker?
 
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
@@ -54,14 +55,37 @@ module Gitlab
 
       private
 
+      def reset_tracker?
+        return false unless ::Gitlab.staging?
+
+        # reset tracker if any of the features used for creation of tracker changed
+        feature_map = {
+          track_struct_event_logger: Feature.enabled?(:track_struct_event_logger, Feature.current_request),
+          snowplow_sync_emitter: Feature.enabled?(:snowplow_sync_emitter, Feature.current_request),
+          snowplow_emitter_batching_off: Feature.enabled?(:snowplow_emitter_batching_off, :instance)
+        }
+
+        no_feature_changes = feature_map == @feature_map
+
+        return false if no_feature_changes
+
+        @feature_map = feature_map
+        true
+      end
+
       def track_struct_event(destination, category, action, label:, property:, value:, contexts:)
         log_experiment = Feature.enabled?(:track_struct_event_logger, Feature.current_request) &&
           contexts.to_s.include?('experiment')
 
         if log_experiment
+          # rubocop:disable GitlabSecurity/PublicSend -- Used for debugging
+          emitters = destination.send(:tracker).instance_variable_get(:@emitters)
+          emitter = emitters.first
           Gitlab::AppLogger.info(
-            "[EXPERIMENT_DEBUG] called track_struct_event with: destination - #{destination.class}, category - #{category}, action - #{action}, label - #{label}, property - #{property}, value - #{value}"
+            "[EXPERIMENT_DEBUG] called track_struct_event with: category - #{category}, action - #{action}, label - #{label}, property - #{property}, value - #{value}, tracker info:  class - #{destination.class}, " \
+              "emitters count: #{emitters.count}, buffer size: #{emitter.instance_variable_get(:@buffer_size)}, buffer: #{emitter.instance_variable_get(:@buffer)}, queue size: #{emitter.instance_variable_get(:@queue)&.size}"
           )
+          # rubocop:enable GitlabSecurity/PublicSend
         end
 
         result = destination

@@ -208,7 +208,7 @@ In order of highest priority first, the component version can be:
   should be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
-- `~latest`, which always points to the latest semantic version
+- `~latest` or a partial semantic version, which selects the latest version within the specified pattern
   published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
   latest version at all times, which could include breaking changes. `~latest`
   does not include pre-releases, for example `1.0.1-rc`, which are not considered
@@ -218,7 +218,7 @@ You can use any version supported by the component, but using a version publishe
 to the CI/CD catalog is recommended. The version referenced with a commit SHA or branch name
 might not be published in the CI/CD catalog, but could be used for testing.
 
-#### Semantic version ranges
+#### Partial semantic versions
 
 {{< history >}}
 
@@ -226,50 +226,38 @@ might not be published in the CI/CD catalog, but could be used for testing.
 
 {{< /history >}}
 
-You can use a special format to specify the latest [semantic version](#semantic-versioning) in a range
-when referencing a CI/CD catalog component.
+You can use partial semantic version numbers and the keyword `~latest` when referencing
+a CI/CD catalog component to select the latest published version that matches your specification.
+
+These formats only work with published CI/CD catalog components, not with regular project components.
+This ensures that when you use formats like `1.2` or `~latest`, you only pull components that have been validated and published to the catalog, rather than potentially untested code from any repository.
 
 This approach offers significant benefits for both consumers and authors of components:
 
-- For users, using version ranges is an excellent way to automatically receive
+- For users, using partial versions is an excellent way to automatically receive
   minor or patch updates without risking breaking changes from major releases. This ensures
   your pipelines stay up-to-date with the latest bug fixes and security patches
   while maintaining stability.
-- For component authors, the use of version ranges allows major version releases
+- For component authors, partial version support allows major version releases
   without risk of immediately breaking existing pipelines. Users who have
-  specified version ranges continue to use the latest compatible minor or patch version,
+  specified partial versions continue to use the latest compatible minor or patch version,
   giving them time to update their pipelines at their own pace.
 
-To specify the latest release of:
+Use:
 
-- A minor version, use both the major and minor version numbers in the reference,
-  but not the patch version number. For example, use `1.1` to use the latest version
-  that starts with `1.1`, including `1.1.0` or `1.1.9`, but not `1.2.0`.
-- A major version, use only the major version number in the reference. For example,
-  use `1` to use the latest version that starts with `1.`, like `1.0.0` or `1.9.9`,
-  but not `2.0.0`.
-- All versions, use `~latest` to use the latest released version.
+- `1.2` to select the latest `1.2.*` version
+- `1` to select the latest `1.*.*` version
+- `~latest` to select the latest released version
 
-For example, a component is released in this exact order:
+For example, a component has versions: `1.0.0`, `1.1.0`, `1.1.1`, `1.2.0`, `2.0.0`, `2.0.1`, `2.1.0`
 
-1. `1.0.0`
-1. `1.1.0`
-1. `2.0.0`
-1. `1.1.1`
-1. `1.2.0`
-1. `2.1.0`
-1. `2.0.1`
+When referencing the component:
 
-In this example, referencing the component with:
+- `1` selects `1.2.0`
+- `1.1` selects `1.1.1`
+- `~latest` selects `2.1.0`
 
-- `1` would use the `1.2.0` version.
-- `1.1` would use the `1.1.1` version.
-- `~latest` would use the `2.1.0` version.
-
-Semantic version ranges only work with published CI/CD catalog components, not with regular project components.
-This ensures that when you use shorthand syntax like `1.2` or `~latest`, you only pull components that have been validated and published to the catalog, rather than potentially untested code from any repository.
-
-Pre-release versions are never fetched when referencing a version range. To fetch
+Pre-release versions are never fetched when using partial version selection. To fetch
 a pre-release version, specify the full version, for example `1.0.1-rc`.
 
 ## Write a component
@@ -912,7 +900,7 @@ you deliver to users, follow these best practices:
 
 ### `content not found` message
 
-You might receive an error message similar to the following when using the `~latest`
+You might receive an error message similar to the following when using the `~latest` or a partial semantic
 version qualifier to reference a component hosted by a [catalog project](#set-a-component-project-as-a-catalog-project):
 
 ```plaintext

@@ -230,7 +230,7 @@ module WorkerAttributes
     end
 
     def calculate_default_limit_from_max_percentage
-      max_replicas = ENV.fetch('SIDEKIQ_MAX_REPLICAS', '0').to_i
+      max_replicas = ENV.fetch('GITLAB_SIDEKIQ_MAX_REPLICAS', '0').to_i
       concurrency = ENV.fetch('SIDEKIQ_CONCURRENCY', '0').to_i
       max_total_threads = max_replicas * concurrency
       percentage = get_max_concurrency_limit_percentage
