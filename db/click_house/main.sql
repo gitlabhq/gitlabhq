@@ -35,12 +35,33 @@ CREATE TABLE ci_finished_builds
     `name` String DEFAULT '',
     `date` Date32 MATERIALIZED toStartOfMonth(finished_at),
     `runner_owner_namespace_id` UInt64 DEFAULT 0,
-    `stage_id` UInt64 DEFAULT 0
+    `stage_id` UInt64 DEFAULT 0,
+    PROJECTION build_stats_by_project_pipeline_name_stage
+    (
+        SELECT
+            project_id,
+            pipeline_id,
+            name,
+            stage_id,
+            countIf(status = 'success') AS success_count,
+            countIf(status = 'failed') AS failed_count,
+            countIf(status = 'canceled') AS canceled_count,
+            count() AS total_count,
+            sum(duration) AS sum_duration,
+            avg(duration) AS avg_duration,
+            quantile(0.95)(duration) AS p95_duration,
+            quantilesTDigest(0.5, 0.75, 0.9, 0.99)(duration) AS duration_quantiles
+        GROUP BY
+            project_id,
+            pipeline_id,
+            name,
+            stage_id
+    )
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY toYear(finished_at)
 ORDER BY (status, runner_type, project_id, finished_at, id)
-SETTINGS index_granularity = 8192, use_async_block_ids_cache = true;
+SETTINGS index_granularity = 8192, use_async_block_ids_cache = true, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE ci_finished_builds_aggregated_queueing_delay_percentiles
 (
@@ -80,12 +101,22 @@ CREATE TABLE ci_finished_pipelines
     `status` LowCardinality(String) DEFAULT '',
     `source` LowCardinality(String) DEFAULT '',
     `ref` String DEFAULT '',
-    `name` String DEFAULT ''
+    `name` String DEFAULT '',
+    PROJECTION by_path_source_ref_finished_at
+    (
+        SELECT *
+        ORDER BY
+            path,
+            source,
+            ref,
+            finished_at,
+            id
+    )
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY toYear(finished_at)
 ORDER BY id
-SETTINGS index_granularity = 8192;
+SETTINGS index_granularity = 8192, deduplicate_merge_projection_mode = 'rebuild';
 
 CREATE TABLE ci_finished_pipelines_daily
 (

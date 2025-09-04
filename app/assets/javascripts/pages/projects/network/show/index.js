@@ -36,14 +36,29 @@ const initRefSwitcher = () => {
 initRefSwitcher();
 
 (() => {
-  if (!$('.network-graph').length) return;
+  let networkGraph = null;
 
-  const networkGraph = new Network({
-    url: $('.network-graph').attr('data-url'),
-    commit_url: $('.network-graph').attr('data-commit-url'),
-    ref: $('.network-graph').attr('data-ref'),
-    commit_id: $('.network-graph').attr('data-commit-id'),
-  });
+  const initNetworkGraph = () => {
+    if (!$('.network-graph').length) return;
 
-  addShortcutsExtension(ShortcutsNetwork, networkGraph.branch_graph);
+    networkGraph = new Network({
+      url: $('.network-graph').attr('data-url'),
+      commit_url: $('.network-graph').attr('data-commit-url'),
+      ref: $('.network-graph').attr('data-ref'),
+      commit_id: $('.network-graph').attr('data-commit-id'),
+    });
+
+    addShortcutsExtension(ShortcutsNetwork, networkGraph.branch_graph);
+  };
+
+  const cleanupNetworkGraph = () => {
+    if (networkGraph) {
+      networkGraph.destroy();
+      networkGraph = null;
+    }
+  };
+
+  initNetworkGraph();
+
+  window.addEventListener('beforeunload', cleanupNetworkGraph);
 })();

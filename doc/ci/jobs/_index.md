@@ -227,6 +227,12 @@ To view jobs that ran in a project:
 
 You can filter the list by job status, source, name, and kind.
 
+{{< alert type="note" >}}
+
+The filter by name returns jobs created in the last 30 days. This retention period applies to both UI and API filtering.
+
+{{< /alert >}}
+
 By default, the filter shows only build jobs. To view trigger jobs, clear the filter, then select **Kind** > **Trigger**.
 
 {{< alert type="note" >}}
@@ -275,7 +281,7 @@ The source attribute can have the following values:
 - `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
 - `external_pull_request_event`: Job initiated by a pull request event in an external repository.
 - `merge_request_event`: Job initiated by a merge request event.
-- `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
+- `ondemand_dast_scan`: Job initiated by an on-demand DAST scan.
 - `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
 - `parent_pipeline`: Job initiated by a parent pipeline
 - `pipeline`: Job initiated by a user manually running a pipeline.

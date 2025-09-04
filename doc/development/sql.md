@@ -11,7 +11,7 @@ either using ActiveRecord/Arel or raw SQL queries.
 ## Using `LIKE` Statements
 
 The most common way to search for data is using the `LIKE` statement. For
-example, to get all issues with a title starting with "Draft:" you'd write the
+example, to get all issues with a title starting with `Draft:` you'd write the
 following query:
 
 ```sql

@@ -1402,8 +1402,7 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
       "default,mailers" # process that listens to default and mailers queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any
@@ -1443,8 +1442,7 @@ To handle these queue groups on two nodes:
      "global_search", # process that listens to global_search queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any
@@ -1471,8 +1469,7 @@ To handle these queue groups on two nodes:
       "default,mailers" # process that listens to default and mailers queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any

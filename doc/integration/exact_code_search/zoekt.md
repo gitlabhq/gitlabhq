@@ -119,6 +119,52 @@ To check indexing status:
 
    {{< /tabs >}}
 
+## Run a health check
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203671) in GitLab 18.4.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Run a health check to understand the status of your Zoekt infrastructure, including:
+
+- Online and offline nodes
+- Indexing and search settings
+- Search API endpoints
+- JSON web token generation
+
+To run a health check, execute the following task:
+
+```shell
+gitlab-rake gitlab:zoekt:health
+```
+
+This task provides:
+
+- The overall status: `HEALTHY`, `DEGRADED`, or `UNHEALTHY`
+- Recommendations for resolving detected issues
+- Exit codes for automation and monitoring integrations: `0=healthy`, `1=degraded`, or `2=unhealthy`
+
+### Run checks automatically
+
+To run health checks automatically every 10 seconds, execute the following task:
+
+```shell
+gitlab-rake "gitlab:zoekt:health[10]"
+```
+
+The output includes colored status indicators and shows:
+
+- Online and offline node counts, storage usage warnings, and connectivity issues
+- Core settings validation and namespace and repository indexing statuses
+- The overall status including a combined health assessment: `HEALTHY`, `DEGRADED`, or `UNHEALTHY`
+- Recommendations for resolving issues
+
 ## Pause indexing
 
 Prerequisites:

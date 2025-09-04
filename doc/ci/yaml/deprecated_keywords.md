@@ -273,7 +273,7 @@ keywords instead.
 
 `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path` are deprecated
 when used directly under `kubernetes`. To configure dashboard settings use `environment:kubernetes:dashboard:namespace` and `environment:kubernetes:dashboard:flux_resource_path`
-instead. For more information, see [`environment:kubernetes](_index.md#environmentkubernetes).
+instead. For more information, see [`environment:kubernetes`](_index.md#environmentkubernetes).
 
 {{< /alert >}}
 

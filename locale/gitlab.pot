@@ -531,6 +531,11 @@ msgid_plural "%d to-do items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d user"
+msgid_plural "%d users"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d vulnerability"
 msgid_plural "%d vulnerabilities"
 msgstr[0] ""
@@ -695,6 +700,9 @@ msgid "%{child_reference} has already been added to parent %{parent_reference}."
 msgstr ""
 
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
+msgstr ""
+
+msgid "%{commitMessage}, by %{authorName}. Opens in a new window."
 msgstr ""
 
 msgid "%{commit_author_link} authored %{commit_authored_timeago}"
@@ -9528,9 +9536,6 @@ msgid "Authored %{timeago}"
 msgstr ""
 
 msgid "Authored %{timeago} by %{author}"
-msgstr ""
-
-msgid "Authored by %{authorName}"
 msgstr ""
 
 msgid "Authorization code:"
@@ -25756,6 +25761,12 @@ msgid "Enforce two-factor authentication"
 msgstr ""
 
 msgid "Enforce two-factor authentication for all user sign-ins."
+msgstr ""
+
+msgid "EnforcementAtLimitAlert|To invite more users, you can reduce the number of users in your top-level group to %{pluralized_limit} or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
+msgstr ""
+
+msgid "EnforcementAtLimitAlert|Your top-level group %{namespace_name} has reached the %{free_limit}-user limit"
 msgstr ""
 
 msgid "Engine"
@@ -66847,11 +66858,6 @@ msgstr ""
 msgid "To get started, use the link below to confirm your account."
 msgstr ""
 
-msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
-msgid_plural "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "To keep this project going, create a new issue"
 msgstr ""
 
@@ -70748,11 +70754,6 @@ msgid_plural "VirtualRegistry|%{hours} hours"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "VirtualRegistry|%{hours} hour cache"
-msgid_plural "VirtualRegistry|%{hours} hours cache"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "VirtualRegistry|-- artifacts"
 msgstr ""
 
@@ -70765,10 +70766,15 @@ msgstr ""
 msgid "VirtualRegistry|Are you sure you want to delete %{strongOpen}%{name}%{strongClose}?"
 msgstr ""
 
-msgid "VirtualRegistry|Cache: %{size}"
+msgid "VirtualRegistry|Artifact cache: %{hours} hour"
+msgid_plural "VirtualRegistry|Artifact cache: %{hours} hours"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "VirtualRegistry|Artifact caching period"
 msgstr ""
 
-msgid "VirtualRegistry|Caching period"
+msgid "VirtualRegistry|Cache: %{size}"
 msgstr ""
 
 msgid "VirtualRegistry|Clear all caches"
@@ -70893,6 +70899,11 @@ msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registry was updated"
 msgstr ""
+
+msgid "VirtualRegistry|Metadata cache: %{hours} hour"
+msgid_plural "VirtualRegistry|Metadata cache: %{hours} hours"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "VirtualRegistry|Metadata caching period"
 msgstr ""
@@ -75653,9 +75664,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Your subscription with temporary extension expired!"
-msgstr ""
-
-msgid "Your top-level group %{namespace_name} has reached the %{free_limit} user limit"
 msgstr ""
 
 msgid "Your top-level group %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."

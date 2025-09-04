@@ -241,7 +241,7 @@ For such situations, we can specify which abilities should be skipped at `Type` 
 through `skip_type_authorization` on a given field. This option cascades down to all descendant fields as well.
 
 For a real-world example, see
-[field :discussions, Types::Notes::DiscussionType](https://gitlab.com/gitlab-org/gitlab/-/blob/84721e500a9a95e22bfd1b34c228db0053b793fb/app/graphql/types/work_items/widgets/notes_type.rb#L24).
+[`field :discussions, Types::Notes::DiscussionType`](https://gitlab.com/gitlab-org/gitlab/-/blob/84721e500a9a95e22bfd1b34c228db0053b793fb/app/graphql/types/work_items/widgets/notes_type.rb#L24).
 
 In that example, we have `DiscussionType` which specifies `authorize :read_note`. `Discussion` is composed of multiple `notes` of type `NoteType` and `NoteType` also specifies `authorize: :read_note`.
 Some of these `notes` may be system notes and may have some specific metadata of type `SystemNoteMetadataType`.

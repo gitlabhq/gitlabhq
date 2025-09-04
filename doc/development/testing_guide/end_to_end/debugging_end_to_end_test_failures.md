@@ -135,7 +135,7 @@ Nightly images are created by scheduled pipelines here: <https://dev.gitlab.org/
 You can look at the last pipeline by clicking the pipeline number for CE nightly or EE nightly under
 the "Last pipeline" column.
 
-In the pipeline view click a job under the "GitLab_com:package" column. The SHAs for GitLab Components
+In the pipeline view click a job under the `GitLab_com:package` column. The SHAs for GitLab Components
 are listed towards the end of the logs. The GitLab commit SHA is displayed as a value of `gitlab-rails`.
 
 ### Checking Docker images

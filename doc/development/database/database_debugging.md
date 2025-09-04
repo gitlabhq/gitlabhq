@@ -189,7 +189,7 @@ $ kill 87304
 $ kill 37709
 ```
 
-### db:migrate `database version is too old to be migrated` error
+### `db:migrate` error: `database version is too old to be migrated`
 
 Users receive this error when `db:migrate` detects that the current schema version
 is older than the `MIN_SCHEMA_VERSION` defined in the `Gitlab::Database` library

@@ -6075,7 +6075,7 @@ trigger-multi-project-pipeline:
 - [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
   to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
 - [Pipeline variables](../variables/_index.md#cicd-variable-precedence) are not passed
-  to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
+  to downstream pipelines by default. Use [`trigger:forward`](#triggerforward) to forward
   these variables to downstream pipelines.
 - [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
@@ -6498,7 +6498,7 @@ Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (gl
   in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/_index.md).
 - [Manual pipeline variables](../variables/_index.md#use-pipeline-variables)
   and [scheduled pipeline variables](../pipelines/schedules.md#create-a-pipeline-schedule)
-  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
+  are not passed to downstream pipelines by default. Use [`trigger:forward`](#triggerforward)
   to forward these variables to downstream pipelines.
 
 **Related topics**:

@@ -96,7 +96,7 @@ interface GitLabClientSDKOptions {
   Enabling this plugin will automatically capture the following context:
 
   For example,
-  [iglu:org.ietf/http_client_hints/jsonschema/1-0-0](https://github.com/snowplow/iglu-central/blob/master/schemas/org.ietf/http_client_hints/jsonschema/1-0-0)
+  [`iglu:org.ietf/http_client_hints/jsonschema/1-0-0`](https://github.com/snowplow/iglu-central/blob/master/schemas/org.ietf/http_client_hints/jsonschema/1-0-0)
   has the following configuration:
 
   ```json

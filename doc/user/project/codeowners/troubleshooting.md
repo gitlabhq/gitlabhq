@@ -133,15 +133,17 @@ To enter the new names, you must edit the file.
 Organizations using SAML SSO can [set usernames](../../../integration/saml.md#set-a-username) to
 prevent users from changing their usernames.
 
-## Incompatibility with Global SAML group memberships lock
+## Incompatibility with Global group memberships locks
 
 The Code Owners feature requires direct group memberships to projects.
-When the [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock)
-is enabled, it prevents groups from being invited as direct members to projects.
+When Global group memberships locks are enabled, they prevent groups from being invited as direct members to projects.
 This creates an incompatibility between the two features.
 
-If you enabled Global SAML group memberships lock, you can't use groups or subgroups as Code Owners.
-In this case, you have the following options:
+When the Global [SAML](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) or [LDAP](../../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock) group memberships lock is enabled, you can't use groups or subgroups as Code Owners.
+
+If you enabled either Global SAML or LDAP group memberships lock, you have the following options:
 
 - Use individual users as Code Owners instead of groups.
-- If using group-based Code Owners is a higher priority, disable the Global SAML group memberships lock.
+- If using group-based Code Owners is a higher priority, disable the Global group memberships lock.
+
+Support for inherited group members is proposed in [issue 288851](https://gitlab.com/gitlab-org/gitlab/-/issues/288851).

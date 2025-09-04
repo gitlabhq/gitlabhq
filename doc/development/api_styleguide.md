@@ -48,7 +48,7 @@ for a good example):
 
 - `desc` for the method summary. You should pass it a block for additional
   details such as:
-  - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: _This feature is gated by the :feature\_flag\_symbol feature flag._
+  - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
   - If the endpoint is deprecated, and if so, its planned removal date
 
 - `params` for the method parameters. This acts as description,

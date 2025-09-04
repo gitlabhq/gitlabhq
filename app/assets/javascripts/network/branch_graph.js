@@ -1,8 +1,9 @@
-/* eslint-disable func-names, consistent-return */
+/* eslint-disable consistent-return */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { ENTER_KEY, NUMPAD_ENTER_KEY } from '~/lib/utils/keys';
 import { __, sprintf } from '~/locale';
 import Raphael from './raphael';
 
@@ -16,6 +17,7 @@ export default class BranchGraph {
     this.scrollLeft = this.scrollLeft.bind(this);
     this.scrollUp = this.scrollUp.bind(this);
     this.scrollDown = this.scrollDown.bind(this);
+    this.scrollHandler = this.handleScroll.bind(this);
     this.preparedCommits = {};
     this.mtime = 0;
     this.mspace = 0;
@@ -26,6 +28,7 @@ export default class BranchGraph {
     this.unitTime = 30;
     this.unitSpace = 10;
     this.prev_start = -1;
+    this.isDestroyed = false;
     this.load();
   }
 
@@ -174,10 +177,57 @@ export default class BranchGraph {
     }
   }
 
-  bindEvents() {
-    const { element } = this;
+  handleScroll() {
+    if (this.isDestroyed) return;
 
-    return $(element).scroll(() => this.renderPartialGraph());
+    // Throttle scroll events
+    if (this.scrollTimeout) return;
+
+    // Tested with _.debounce, but the redraw was not as smooth or consistent
+    this.scrollTimeout = setTimeout(() => {
+      this.renderPartialGraph();
+      this.scrollTimeout = null;
+    }, 16); // 1000 milliseconds / 60 frames = 16.66... milliseconds per frame
+  }
+
+  bindEvents() {
+    if (this.isDestroyed) return;
+    this.element.on('scroll', this.scrollHandler);
+    return () => this.unbindEvents();
+  }
+
+  unbindEvents() {
+    if (this.element) {
+      this.element.off('scroll', this.scrollHandler);
+    }
+
+    if (this.scrollTimeout) {
+      clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = null;
+    }
+  }
+
+  destroy() {
+    this.isDestroyed = true;
+    this.unbindEvents();
+
+    // Clean up Raphael for GC
+    if (this.r) {
+      this.r.remove();
+      this.r = null;
+    }
+
+    // Clean up data structures for GC
+    this.preparedCommits = null;
+    this.parents = null;
+    this.commits = null;
+    this.element = null;
+    this.options = null;
+  }
+
+  removeTooltip() {
+    this.top.remove(this.tooltip);
+    return this.tooltip && this.tooltip.remove() && delete this.tooltip;
   }
 
   scrollDown() {
@@ -206,6 +256,21 @@ export default class BranchGraph {
 
   scrollTop() {
     return this.element.scrollTop(0);
+  }
+
+  /**
+   * Shows a tooltip for a commit at the specified position
+   * @param {Object} options - The tooltip configuration options
+   * @param {number} options.x - The x-coordinate for tooltip positioning
+   * @param {number} options.y - The y-coordinate for tooltip positioning
+   * @param {Object} options.commit - The commit object containing commit data
+   * @returns {Object} The tooltip element brought to front
+   */
+  showTooltip(options) {
+    const { x, y, commit } = options;
+    this.tooltip = this.r.commitTooltip(x + 5, y, commit);
+    this.top.push(this.tooltip.insertBefore(this.node));
+    return this.tooltip.toFront();
   }
 
   appendLabel(x, y, commit) {
@@ -245,25 +310,60 @@ export default class BranchGraph {
   }
 
   appendAnchor(x, y, commit) {
-    const { r, top, options } = this;
-    r.circle(x, y, 10)
-      .attr({
-        fill: '#000',
-        opacity: 0,
-        cursor: 'pointer',
-      })
-      .click(() => visitUrl(options.commit_url.replace('%s', commit.id), true))
-      .hover(
-        function () {
-          this.tooltip = r.commitTooltip(x + 5, y, commit);
-          top.push(this.tooltip.insertBefore(this));
-          return this.tooltip.toFront();
-        },
-        function () {
-          top.remove(this.tooltip);
-          return this.tooltip && this.tooltip.remove() && delete this.tooltip;
-        },
-      );
+    const { r, options } = this;
+    const circle = r.circle(x, y, 10);
+
+    circle.attr({
+      fill: '#000',
+      opacity: 0,
+      cursor: 'pointer',
+    });
+
+    const { node } = circle;
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'link');
+    node.setAttribute(
+      'aria-label',
+      sprintf(__('%{commitMessage}, by %{authorName}. Opens in a new window.'), {
+        commitMessage: commit.message.split('\n', 1)[0],
+        authorName: commit.author.name || commit.authorName,
+      }),
+    );
+
+    // Create a single unified event handler instead of multiple functions
+    // This reduces memory overhead from multiple function closures
+    const handleInteraction = (e) => {
+      const { type, key, keyCode } = e;
+      const normalizedEnterKey = ENTER_KEY || NUMPAD_ENTER_KEY;
+
+      switch (type) {
+        case 'focus':
+        case 'mouseover':
+          this.showTooltip({ x, y, commit });
+          break;
+        case 'blur':
+        case 'mouseout':
+          this.removeTooltip();
+          break;
+        case 'keydown':
+          if (key === normalizedEnterKey || keyCode === 13) {
+            visitUrl(options.commit_url.replace('%s', commit.id), true);
+          }
+          break;
+        case 'click':
+          visitUrl(options.commit_url.replace('%s', commit.id), true);
+          break;
+        default:
+          break;
+      }
+    };
+
+    // Add all event listeners using the same handler function
+    // This is more memory efficient than creating separate handler functions
+    const events = ['focus', 'blur', 'keydown', 'mouseover', 'mouseout', 'click'];
+    for (let i = 0; i < events.length; i += 1) {
+      node.addEventListener(events[i], handleInteraction);
+    }
   }
 
   drawDot(x, y, commit) {
@@ -275,27 +375,12 @@ export default class BranchGraph {
 
     const avatarBoxX = this.offsetX + this.unitSpace * this.mspace + 10;
     const avatarBoxY = y - 10;
-    const commitAuthorName = sprintf(__('Authored by %{authorName}'), {
-      authorName: commit.author.name,
-    });
-    const image = r.image(commit.author.icon, avatarBoxX, avatarBoxY, 20, 20);
+    r.image(commit.author.icon, avatarBoxX, avatarBoxY, 20, 20);
 
     r.rect(avatarBoxX, avatarBoxY, 20, 20).attr({
       stroke: this.colors[commit.space],
       'stroke-width': 2,
     });
-
-    /**
-     * Must set a constant when making multiple node() calls
-     * @see https://svgwg.org/svg2-draft/struct.html#TermCoreAttribute
-     *
-     * Tested and verified working in the following screen readers:
-     * MacOS - Safari, Chrome + VoiceOver
-     * Win11 - Chrome + NVDA, JAWS
-     */
-    image.node.setAttribute('aria-label', commitAuthorName);
-
-    image.node.setAttribute('role', 'img');
 
     return r
       .text(this.offsetX + this.unitSpace * this.mspace + 40, y, commit.message.split('\n')[0])

@@ -36,8 +36,8 @@ choose whichever panel component best suits your needs. However, to ensure consi
 with our design patterns, it's strongly recommended that you use one of the
 following components:
 
-- [GlDashboardPanel](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/dashboards-dashboards-panel--docs): The official Pajamas dashboard panel
-- [`extended_dashboard_panel.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-extended-dashboard-panel--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
+- [GlDashboardPanel](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-panel--docs): The official Pajamas dashboard panel
+- [`extended_dashboard_panel.vue`](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-customizable-dashboard-extended-dashboard-panel--docs): Extends `GlDashboardPanel` with easy alert styling and i18n strings
 
 ## Migration guide
 
@@ -53,7 +53,7 @@ and can keep existing visualizations. A typical migration path could look like t
 1. Ensure your new dashboard, panels, and visualizations render correctly.
 1. Remove the feature flag and your old dashboard.
 
-See the basic implementation on [GitLab UI](https://design.gitlab.com/storybook/?path=/docs/dashboards-dashboards-layout--docs)
+See the basic implementation on [Pajamas](https://design.gitlab.com/patterns/dashboards/#basic-implementation)
 for an example on how to render existing visualization components using the dashboard layout component.
 
 ### Example implementations

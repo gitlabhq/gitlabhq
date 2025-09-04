@@ -173,6 +173,7 @@ After you remove projects, the security dashboard and vulnerability report no lo
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196607) in GitLab 18.2. Enabled by default.
+- Feature flag `vulnerabilities_pdf_export` removed.
 
 {{< /history >}}
 

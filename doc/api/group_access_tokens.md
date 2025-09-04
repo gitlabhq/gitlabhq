@@ -190,7 +190,8 @@ token family are revoked. For more information, see [Automatic reuse detection](
 
 Prerequisites:
 
-- A personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes) or a group access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes). See [Self-rotate](#self-rotate).
+- To rotate another group access token, you must have a personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- To [self-rotate](#self-rotate) a group access token, the token must have the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 
 ```plaintext
 POST /groups/:id/access_tokens/:token_id/rotate

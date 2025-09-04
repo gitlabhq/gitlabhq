@@ -19,7 +19,7 @@ The purpose of this document is to provide guidance on:
 
 Introduce a new permission only when absolutely necessary. Always try to use an existing one first. For example, there's no need for a `read_issue_description` permission when we already have `read_issue`, and both require the same role. Similarly, with `create_pipeline` available, we don't need `create_build`.
 
-When introducing a new permission, always attempt to follow the naming conventions. Try to create a general permission, not a specific one. For example, it is better to add a permission `create_member_role` than `create_member_role_name`. If you're unsure, consult a Backend Engineer from the [Govern:Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) for advice or approval for exceptions.
+When introducing a new permission, always attempt to follow the naming conventions. Try to create a general permission, not a specific one. For example, it is better to add a permission `create_member_role` than `create_member_role_name`. If you're unsure, consult a Backend Engineer from the [Govern - Authorization team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) for advice or approval for exceptions.
 
 ### Naming Permissions
 

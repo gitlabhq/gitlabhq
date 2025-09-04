@@ -2463,6 +2463,7 @@ Input type: `AiCatalogAgentExecuteInput`
 | <a id="mutationaicatalogagentexecuteagentid"></a>`agentId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog agent to execute. |
 | <a id="mutationaicatalogagentexecuteagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific agent version to use. If not provided, the latest version will be used. |
 | <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentexecuteuserprompt"></a>`userPrompt` | [`String`](#string) | Optional user prompt. If provided, it will be used for agent execution; otherwise, the database-stored user_prompt will be used. |
 
 #### Fields
 
@@ -2471,6 +2472,7 @@ Input type: `AiCatalogAgentExecuteInput`
 | <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogagentexecuteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration file that can be used in Duo workflow service for flow execution. |
+| <a id="mutationaicatalogagentexecuteworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Created workflow. |
 
 ### `Mutation.aiCatalogAgentUpdate`
 

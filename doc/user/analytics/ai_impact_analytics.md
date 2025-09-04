@@ -49,19 +49,12 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 - **Assigned Duo seat engagement**: Percentage of users that are assigned a Duo seat and used at least one AI feature in the last 30 days.
 It is calculated as the number of users with Duo seats that use AI features divided by the total number of assigned Duo seats.
 - **Code Suggestions: Usage**: Percentage of users that engage with Code Suggestions every month.
-It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../profile/contributions_calendar.md#user-contribution-events).
-Only unique code contributors (users with `pushed` events) are included in the calculation.
+It is calculated as the number of monthly unique Code Suggestions users divided by total monthly unique code contributors (users with `pushed` events).
+For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
 - **Duo Chat: Usage**: Percentage of users that engage with GitLab Duo Chat every month.
 It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
-
-{{< alert type="note" >}}
-
-For tracking Code Suggestions events, GitLab collects data only from code editor extensions.
-[Epic 14203](https://gitlab.com/groups/gitlab-org/-/epics/14203) proposes support for the Web IDE as well.
-
-{{< /alert >}}
 
 ## Metric trends
 
@@ -78,46 +71,39 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 ### AI usage metrics
 
-**Code Suggestions: Usage**: Monthly user engagement with AI Code Suggestions.
-
-On GitLab.com, data updates every fives minutes.
-GitLab counts Code Suggestions usage only if the user has pushed code to the project in the current month.
-
-The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication Code Suggestion usage,
-because it eliminates factors such as developer experience level and project type or complexity.
-
-The baseline for the AI Usage trend is the total number of code contributors, not only users with GitLab Duo seats.
-This baseline gives a more accurate representation of AI usage by team members.
-
-To analyze the performance of teams that use AI versus teams that don't, you can create a custom
-[Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator)
-based on the AI impact view of projects and groups with and without GitLab Duo.
-
-{{< alert type="note" >}}
-
-Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
-For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
-
-{{< /alert >}}
-
-**Duo RCA: Usage**: Monthly user engagement with Duo Root Cause Analysis.
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
+- Duo RCA usage [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+- Duo RCA usage [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/543987) in GitLab 18.3.
+- Duo RCA usage [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/556726) in GitLab 18.4. Feature flag `duo_rca_usage_rate` removed.
 
 {{< /history >}}
 
-This metric tracks the percentage of Duo users who select [**Troubleshoot** to analyze failed CI/CD jobs](../gitlab_duo_chat/examples.md#from-a-merge-request).
+- **Code Suggestions: Usage**: Monthly user engagement with AI Code Suggestions.
 
-{{< alert type="note" >}}
+  On GitLab.com, data updates every fives minutes.
+  GitLab counts Code Suggestions usage only if the user has pushed code to the project in the current month.
 
-Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
-For more information, see [epic 15025](https://gitlab.com/groups/gitlab-org/-/epics/15025).
+  The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication Code Suggestion usage,
+  because it eliminates factors such as developer experience level and project type or complexity.
 
-{{< /alert >}}
+  The baseline for the AI Usage trend is the total number of code contributors, not only users with GitLab Duo seats.
+  This baseline gives a more accurate representation of AI usage by team members.
+
+  {{< alert type="note" >}}
+
+  Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
+
+  {{< /alert >}}
+
+- **Duo RCA: Usage**: Monthly user engagement with Duo Root Cause Analysis.
+  Tracks the percentage of Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
+
+  {{< alert type="note" >}}
+
+  Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
+
+  {{< /alert >}}
 
 ### Pipeline metrics
 
@@ -139,5 +125,4 @@ Prerequisites:
 1. Select **Analyze > Analytics Dashboards**.
 1. Select **AI impact analytics**.
 
-To retrieve AI impact metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/reference/_index.md).
-For an overview and sample queries, see [issue 512931](https://gitlab.com/gitlab-org/gitlab/-/issues/512931).
+To retrieve AI impact metrics, you can also use the `AiMetrics`, `AiUserMetrics`, and `AiUsageData` [GraphQL APIs](../../api/graphql/ai_impact_analytics.md).

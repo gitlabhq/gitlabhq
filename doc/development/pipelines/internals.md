@@ -585,6 +585,6 @@ We now have RSpec tests to verify changes to the CI configuration by simulating 
 
 With the help of `Ci::CreatePipelineService`, we are able to simulate pipeline creation with different attributes such as branch name, MR labels, pipeline source (scheduled v.s push), pipeline type (merge train v.s merged results), etc. This is the same service utilized by the GitLab CI Lint API for validating CI/CD configurations.
 
-These tests will automatically run for merge requests that update CI configurations. However, team members can opt to skip these tests by adding the label ~"pipeline:skip-ci-validation" to their merge requests.
+These tests will automatically run for merge requests that update CI configurations. However, team members can opt to skip these tests by adding the label `~"pipeline:skip-ci-validation"` to their merge requests.
 
 Running these tests locally is encouraged, as it provides the fastest feedback.

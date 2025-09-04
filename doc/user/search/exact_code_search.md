@@ -33,17 +33,16 @@ To provide feedback on this feature, leave a comment on
 With exact code search, you can use exact match and regular expression modes
 to search for code in all GitLab or in a specific project.
 
-Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
-and is used by default in groups where the feature is enabled.
+Exact code search is powered by Zoekt and is used by default
+in groups where the feature is enabled.
 
 ## Use exact code search
 
 Prerequisites:
 
 - Exact code search must be enabled:
-  - For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
-    exact code search is enabled by default in paid subscriptions.
-  - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
+  - For GitLab.com, exact code search is enabled by default in paid subscriptions.
+  - For GitLab Self-Managed, an administrator must
     [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
     [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
@@ -68,7 +67,7 @@ The following scopes are available for exact code search:
 
 1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
    On GitLab Self-Managed, an administrator can enable global search
-   with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag.
+   with the `zoekt_cross_namespace_search` feature flag.
 1. On GitLab.com, global search is not enabled.
 
 ## Zoekt search API
@@ -80,9 +79,8 @@ The following scopes are available for exact code search:
 
 {{< /history >}}
 
-With the Zoekt search API, you can use the [search API](../../api/search.md) for exact code search.
-If you want to use [advanced search](advanced_search.md) or basic search instead, see
-[specify a search type](_index.md#specify-a-search-type).
+With the Zoekt search API, you can use the search API for exact code search.
+To use advanced search or basic search instead, [specify a search type](_index.md#specify-a-search-type).
 
 ## Global code search
 
@@ -153,7 +151,5 @@ This table shows some example queries for exact match and regular expression mod
 - You can use exact code search only on the default branch of a project.
   For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).
 - Multiple matches on a single line are counted as one result.
-  For more information, see [issue 514526](https://gitlab.com/gitlab-org/gitlab/-/issues/514526).
 - If you encounter results where newlines are not displayed correctly,
-  you must update `gitlab-zoekt` to version 1.5.0 or later.
-  For more information, see [issue 516937](https://gitlab.com/gitlab-org/gitlab/-/issues/516937).
+  update `gitlab-zoekt` to version 1.5.0 or later.
