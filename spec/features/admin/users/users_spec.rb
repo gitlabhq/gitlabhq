@@ -544,14 +544,14 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
     end
 
     it 'lists groups' do
-      within(:css, '.gl-mb-3 + .gl-card') do
-        expect(page).to have_content 'Groups'
+      within('#groups') do
+        expect(page).to have_content 'Groups 1'
         expect(page).to have_link group.name, href: admin_group_path(group)
       end
     end
 
     it 'allows navigation to the group details' do
-      within(:css, '.gl-mb-3 + .gl-card') do
+      within('#groups') do
         click_link group.name
       end
       expect(page).to have_content group.name
@@ -559,7 +559,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
     end
 
     it 'shows the group access level' do
-      within(:css, '.gl-mb-3 + .gl-card') do
+      within('#groups') do
         expect(page).to have_content 'Developer'
       end
     end

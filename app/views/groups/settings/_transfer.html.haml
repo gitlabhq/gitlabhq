@@ -1,3 +1,4 @@
+- return unless can?(current_user, :change_group, @group)
 - form_id = "transfer-group-form"
 - initial_data = { button_text: s_('GroupSettings|Transfer group'), group_full_path: @group.full_path, group_name: @group.name, group_id: @group.id, target_form_id: form_id, is_paid_group: group.paid?.to_s }
 

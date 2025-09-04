@@ -37118,7 +37118,7 @@ msgstr ""
 msgid "Joined %{user_created_time}"
 msgstr ""
 
-msgid "Joined projects (%{projects_count})"
+msgid "Joined projects"
 msgstr ""
 
 msgid "Jul"

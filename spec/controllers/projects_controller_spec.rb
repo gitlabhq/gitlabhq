@@ -1209,6 +1209,30 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       it_behaves_like 'project namespace is not changed', s_('TransferProject|Please select a new namespace for your project.')
     end
 
+    context 'when the project is archived' do
+      let(:new_namespace) { create(:group) }
+
+      before do
+        project.update!(archived: true)
+      end
+
+      it 'does not change the project namespace' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer, params: {
+          namespace_id: old_namespace.path, new_namespace_id: new_namespace.id, id: project.path
+        }, format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when new namespace is the same as the current namespace' do
       let(:new_namespace_id) { project.namespace.id }
 

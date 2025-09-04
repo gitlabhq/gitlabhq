@@ -6173,6 +6173,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
+
+      context 'when the project is archived' do
+        before do
+          project.update!(archived: true)
+          group.add_owner(user)
+        end
+
+        it 'returns forbidden' do
+          put api(path, user), params: { namespace: group.id }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
     end
 
     context 'when authenticated as developer' do

@@ -18,6 +18,8 @@ module Types
 
       graphql_name 'GroupInterface'
 
+      connection_type_class Types::CountableConnectionType
+
       # rubocop:disable Layout/LineLength -- otherwise description is creating unnecessary newlines.
       description 'Returns either a "Group" type for users with :read_group permission, or a "GroupMinimalAccess" type for users with only :read_group_metadata permission.'
       # rubocop:enable Layout/LineLength
@@ -38,6 +40,9 @@ module Types
         type: GraphQL::Types::String,
         null: true,
         description: 'Avatar URL of the group.'
+      field :user_permissions, Types::PermissionTypes::Group,
+        description: 'Permissions for the current user on the group.',
+        method: :itself
 
       def self.resolve_type(_object, _context)
         ::Types::GroupType

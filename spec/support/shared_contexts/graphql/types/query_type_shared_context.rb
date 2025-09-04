@@ -4,6 +4,7 @@ RSpec.shared_context 'with FOSS query type fields' do
   # extracted these fields into a shared variable so that we can define FOSS fields once and use them on EE spec as well
   let(:expected_foss_fields) do
     [
+      :admin_groups,
       :admin_projects,
       :board_list,
       :ci_application_settings,

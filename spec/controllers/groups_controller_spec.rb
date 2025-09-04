@@ -1228,6 +1228,28 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
     end
 
+    context 'when transferring an archived group' do
+      let(:group) { create(:group, :public) }
+      let(:new_parent_group) { create(:group, :public) }
+
+      before do
+        group.update!(archived: true)
+        group.add_owner(user)
+        new_parent_group.add_owner(user)
+
+        put :transfer,
+          params: {
+            id: group.to_param,
+            new_parent_group_id: new_parent_group.id
+          }
+      end
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(group.reload.parent).to be_nil
+      end
+    end
+
     context 'when the user is not allowed to transfer the group' do
       let(:new_parent_group) { create(:group, :public) }
       let(:group) { create(:group, :public) }

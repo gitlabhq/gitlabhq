@@ -30,15 +30,23 @@ export default async function initPipelineDetailsBundle() {
   const tabsEl = document.querySelector(SELECTORS.PIPELINE_TABS);
 
   if (tabsEl) {
+    let validityChecksEnabled;
+
     const { dataset } = tabsEl;
     const dismissalDescriptions = JSON.parse(dataset.dismissalDescriptions || '{}');
     const { createAppOptions } = await import('ee_else_ce/ci/pipeline_details/pipeline_tabs');
     const { createPipelineTabs } = await import('./pipeline_tabs');
     const { routes } = await import('ee_else_ce/ci/pipeline_details/routes');
 
+    try {
+      validityChecksEnabled = JSON.parse(dataset.validityChecksEnabled);
+    } catch {
+      validityChecksEnabled = 'false';
+    }
+
     const securityRoute = routes.find((route) => route.path === '/security');
     if (securityRoute) {
-      securityRoute.props = { dismissalDescriptions };
+      securityRoute.props = { dismissalDescriptions, validityChecksEnabled };
     }
 
     const router = new VueRouter({

@@ -8,8 +8,6 @@ module Types
 
     implements ::Types::Namespaces::GroupInterface
 
-    connection_type_class Types::CountableConnectionType
-
     authorize :read_group
 
     expose_permissions Types::PermissionTypes::Group

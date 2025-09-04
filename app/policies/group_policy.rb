@@ -160,6 +160,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :admin_work_item
     prevent :award_achievement
     prevent :award_emoji
+    prevent :change_group
     prevent :change_new_user_signups_cap
     prevent :change_prevent_sharing_groups_outside_hierarchy
     prevent :change_seat_control
@@ -378,6 +379,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_package
     enable :admin_protected_environments
     enable :archive_group
+    enable :change_group
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control

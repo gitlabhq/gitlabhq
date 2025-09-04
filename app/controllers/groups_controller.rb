@@ -20,7 +20,8 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:update, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :export, :download_export]
+  before_action :authorize_change_group!, only: [:transfer]
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]

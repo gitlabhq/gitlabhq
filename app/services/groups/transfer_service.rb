@@ -158,7 +158,7 @@ module Groups
     end
 
     def valid_policies?
-      return false unless can?(current_user, :admin_group, @group)
+      return false unless can?(current_user, :change_group, @group)
 
       if @new_parent_group
         can?(current_user, :create_subgroup, @new_parent_group)

@@ -2,7 +2,7 @@
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title _("Groups and projects"), @user.name, _("Users")
-- show_empty_state = !@user_groups.any? && !@personal_projects.present? && !@joined_projects.present?
+- show_empty_state = !@user_group_members.any? && !@personal_projects.present? && !@joined_projects.present?
 
 = render 'admin/users/head'
 
@@ -10,16 +10,17 @@
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
     title: _('No groups or projects found'))
 - else
-  - if @user_groups.any?
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
-      - c.with_header do
-        %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
-          = _('Groups')
+  - if @user_group_members.any?
+    = render ::Layouts::CrudComponent.new(_('Groups'),
+      icon: 'group',
+      count: @user_group_members.total_count,
+      is_collapsible: true,
+      body_options: { class: '!gl-my-0 !gl-mx-0'}) do |c|
       - c.with_body do
-        %ul.gl-list-none.gl-p-0.gl-m-0
+        %ul.gl-p-0.gl-m-0
           - @user_group_members.includes(:source).find_each do |group_member|
             - group = group_member.group
-            %li.group_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-items-baseline.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
+            %li.group_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
               %strong= link_to group.name, admin_group_path(group)
               - if group_member.access_level != Gitlab::Access::MINIMAL_ACCESS
                 &nbsp;&ndash; access to
@@ -28,20 +29,25 @@
               = render_if_exists 'admin/users/custom_role_badge', member: group_member, css_class: 'gl-ml-3'
               - unless group_member.owner?
                 = link_button_to nil, group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), confirm_btn_variant: 'danger', testid: 'remove-user' }, aria: { label: _('Remove') }, method: :delete, remote: true, class: 'gl-ml-3 gl-self-end', title: _('Remove user from group'), variant: :danger, size: :small, icon: 'remove'
+      - unless @user_group_members.total_count <= Kaminari.config.default_per_page
+        - c.with_footer do
+          = paginate @user_group_members, param_name: 'groups_page', theme: 'gitlab'
 
   .gl-grid.sm:gl-grid-cols-2.gl-gap-5
     - if @personal_projects.present?
       = render 'admin/users/projects', projects: @personal_projects
     - if @joined_projects.present?
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
-        - c.with_header do
-          %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
-            = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
+      = render ::Layouts::CrudComponent.new(_('Joined projects'),
+        icon: 'project',
+        count: @joined_projects.total_count,
+        is_collapsible: true,
+        body_options: { class: '!gl-my-0 !gl-mx-0'},
+        options: { style: 'max-height: fit-content' }) do |c|
         - c.with_body do
-          %ul.gl-list-none.gl-p-0.gl-m-0
+          %ul.gl-p-0.gl-m-0
             - @joined_projects.sort_by(&:full_name).each do |project|
               - member = project.team.find_member(@user.id)
-              %li.project_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-items-baseline.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
+              %li.project_member.gl-flex.gl-px-5.gl-py-3.gl-break-words.gl-border-b-1.gl-border-b-solid.gl-border-b-section.last:gl-border-b-0
                 = link_to admin_project_path(project), class: dom_class(project) do
                   = project.full_name
 
@@ -51,4 +57,7 @@
 
                   - if member.respond_to? :project
                     = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
+        - unless @joined_projects.total_count <= Kaminari.config.default_per_page
+          - c.with_footer do
+            = paginate @joined_projects, param_name: 'projects_page', theme: 'gitlab'
 -# rubocop: enable CodeReuse/ActiveRecord

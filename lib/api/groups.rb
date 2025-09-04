@@ -642,7 +642,7 @@ module API
       end
       post ':id/transfer', feature_category: :groups_and_projects do
         group = find_group!(params[:id])
-        authorize! :admin_group, group
+        authorize! :change_group, group
 
         new_parent_group = find_group!(params[:group_id]) if params[:group_id].present?
 

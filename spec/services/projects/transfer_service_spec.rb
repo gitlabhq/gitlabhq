@@ -524,6 +524,20 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
     end
   end
 
+  context 'when the project is archived' do
+    before do
+      project.update!(archived: true)
+    end
+
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include("You don't have permission to transfer this project.")
+    end
+  end
+
   context 'target namespace containing the same project path' do
     before do
       group.add_owner(user)

@@ -35,10 +35,9 @@ class Admin::UsersController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def projects
-    @personal_projects = user.personal_projects.includes(:topics)
-    @joined_projects = user.projects.joined(@user).includes(:topics)
-    @user_groups = user.groups.or(user.minimal_access_groups)
-    @user_group_members = user.group_members.or(user.minimal_access_group_members)
+    @personal_projects = user.personal_projects.includes(:topics).page(safe_params[:personal_projects_page]).per(10)
+    @joined_projects = user.projects.joined(@user).includes(:topics).page(safe_params[:projects_page])
+    @user_group_members = user.group_members.or(user.minimal_access_group_members).page(safe_params[:groups_page])
   end
 
   def keys
@@ -465,6 +464,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def filter_users
     User.filter_items(params[:filter]).order_name_asc
+  end
+
+  def safe_params
+    params.permit(:personal_projects_page, :projects_page, :groups_page)
   end
 end
 

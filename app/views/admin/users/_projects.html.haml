@@ -8,11 +8,16 @@
         projects_limit: 5, stars: true, avatar: false, compact_mode: true
 
 - if local_assigns.has_key?(:projects) && projects.present?
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }) do |c|
-    - c.with_header do
-      %h2.gl-text-base.gl-text-default.gl-leading-reset.gl-my-0.gl-font-normal
-        = _('Personal projects')
+  = render ::Layouts::CrudComponent.new(_('Personal projects'),
+    icon: 'project',
+    count: projects.total_count,
+    is_collapsible: true,
+    body_options: { class: '!gl-my-0'},
+    options: { style: 'max-height: fit-content' }) do |c|
     - c.with_body do
       = render 'shared/projects/list',
         projects: projects.sort_by(&:star_count).reverse,
-        projects_limit: 10, stars: true, avatar: false, compact_mode: true
+        projects_limit: projects.total_count, stars: true, avatar: false, compact_mode: true
+    - unless projects.total_count <= 10
+      - c.with_footer do
+        = paginate projects, param_name: 'personal_projects_page', theme: 'gitlab'

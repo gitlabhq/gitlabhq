@@ -11,6 +11,11 @@ module Types
       super + [:ai_workflows]
     end
 
+    field :admin_groups,
+      null: true,
+      experiment: { milestone: '18.4' },
+      resolver: Resolvers::Namespaces::AdminGroupsResolver,
+      description: "Find groups visible to the current admin."
     field :admin_projects, Types::Projects::ProjectInterface.connection_type,
       null: true,
       experiment: { milestone: '18.4' },

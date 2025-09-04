@@ -578,6 +578,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         admin_work_item
         award_achievement
         award_emoji
+        change_group
         change_new_user_signups_cap
         change_prevent_sharing_groups_outside_hierarchy
         change_seat_control

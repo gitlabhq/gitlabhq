@@ -92,6 +92,35 @@ Returns [`[AddOnPurchase!]`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="queryaddonpurchasesnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-ons were purchased for. |
 
+### `Query.adminGroups`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Find groups visible to the current admin.
+
+Returns [`GroupInterfaceConnection`](#groupinterfaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryadmingroupsactive"></a>`active` | [`Boolean`](#boolean) | When `nil` (default value), returns all groups. When `true`, returns only groups that are not pending deletion. When `false`, only returns groups that are pending deletion. |
+| <a id="queryadmingroupsallavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
+| <a id="queryadmingroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="queryadmingroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="queryadmingroupsownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
+| <a id="queryadmingroupsparentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
+| <a id="queryadmingroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="queryadmingroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="queryadmingroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+
 ### `Query.adminMemberRole`
 
 {{< details >}}
@@ -18043,6 +18072,7 @@ The connection type for [`GroupInterface`](#groupinterface).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupinterfaceconnectionedges"></a>`edges` | [`[GroupInterfaceEdge]`](#groupinterfaceedge) | A list of edges. |
 | <a id="groupinterfaceconnectionnodes"></a>`nodes` | [`[GroupInterface]`](#groupinterface) | A list of nodes. |
 | <a id="groupinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -32198,6 +32228,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupminimalaccessfullname"></a>`fullName` | [`String!`](#string) | Full name of the group. |
 | <a id="groupminimalaccessid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupminimalaccessname"></a>`name` | [`String!`](#string) | Name of the group. |
+| <a id="groupminimalaccessuserpermissions"></a>`userPermissions` | [`GroupPermissions`](#grouppermissions) | Permissions for the current user on the group. |
 | <a id="groupminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 ### `GroupNamespaceLinks`
@@ -52332,6 +52363,7 @@ Implementations:
 | <a id="groupinterfacefullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
 | <a id="groupinterfaceid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupinterfacename"></a>`name` | [`String`](#string) | Name of the group. |
+| <a id="groupinterfaceuserpermissions"></a>`userPermissions` | [`GroupPermissions`](#grouppermissions) | Permissions for the current user on the group. |
 | <a id="groupinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 #### `LabelInterface`

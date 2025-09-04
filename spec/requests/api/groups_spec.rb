@@ -3589,6 +3589,18 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
       end
 
+      context 'when the group is archived' do
+        before do
+          group.update!(archived: true)
+        end
+
+        it 'fails with forbidden' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       context 'when the ID of a non-existent group is mentioned as the new parent group' do
         let(:params) { { group_id: non_existing_record_id } }
 
