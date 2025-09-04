@@ -1,6 +1,6 @@
 <script>
 import { computed } from 'vue';
-import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
@@ -30,31 +30,45 @@ const FILTER_OPTIONS = [
   {
     value: null,
     text: s__('Todos|All'),
+    description: s__('Todos|All your pending to-do items across GitLab.'),
   },
   {
     value: TODO_ACTION_TYPE_ASSIGNED,
     text: s__('Todos|Assigned'),
+    description: s__('Todos|Items assigned to you.'),
   },
   {
     value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
     text: s__('Todos|Mentioned'),
+    description: s__('Todos|Items where you were mentioned (@username).'),
   },
   {
     value: TODO_ACTION_TYPE_BUILD_FAILED,
     text: s__('Todos|Build failed'),
+    description: s__('Todos|Merge requests with failed pipelines.'),
   },
   {
     value: TODO_ACTION_TYPE_UNMERGEABLE,
     text: s__('Todos|Unmergeable'),
+    description: s__(
+      'Todos|Merge requests that cannot be merged due to conflicts or other issues.',
+    ),
   },
   {
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
     text: s__('Todos|Review requested'),
+    description: s__('Todos|Merge requests that require your review or approval.'),
   },
 ];
 
 export default {
-  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, BaseWidget },
+  components: {
+    TodoItem,
+    GlCollapsibleListbox,
+    GlSkeletonLoader,
+    BaseWidget,
+    GlIcon,
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -78,6 +92,10 @@ export default {
   computed: {
     todoTrackingContext() {
       return { source: 'personal_homepage' };
+    },
+    selectedFilterText() {
+      const selectedOption = FILTER_OPTIONS.find((option) => option.value === this.filter);
+      return selectedOption ? selectedOption.text : s__('Todos|All');
     },
   },
   apollo: {
@@ -126,9 +144,32 @@ export default {
 <template>
   <base-widget @visible="reload">
     <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('To-do items') }}</h2>
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('To-do items') }}</h2>
+        <gl-icon
+          v-gl-tooltip.hover
+          :title="s__('Todos|Filter your to-do items to focus on what needs your attention.')"
+          name="information-o"
+          class="gl-text-gray-400"
+          :size="14"
+        />
+      </div>
 
-      <gl-collapsible-listbox v-if="!hasError" v-model="filter" :items="$options.FILTER_OPTIONS" />
+      <gl-collapsible-listbox
+        v-if="!hasError"
+        v-model="filter"
+        :items="$options.FILTER_OPTIONS"
+        :toggle-text="selectedFilterText"
+      >
+        <template #list-item="{ item }">
+          <div class="gl-flex gl-w-full gl-flex-col gl-gap-1">
+            <div class="gl-font-weight-semibold gl-text-default">{{ item.text }}</div>
+            <div class="gl-line-height-normal gl-text-sm gl-text-subtle">
+              {{ item.description }}
+            </div>
+          </div>
+        </template>
+      </gl-collapsible-listbox>
     </div>
 
     <p v-if="hasError" class="gl-mb-3">

@@ -12,12 +12,7 @@ describe('whats new actions', () => {
     useLocalStorageSpy();
 
     it('should commit openDrawer', async () => {
-      await testAction(actions.openDrawer, 'digest-hash', {}, [{ type: types.OPEN_DRAWER }]);
-
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        'display-whats-new-notification',
-        'digest-hash',
-      );
+      await testAction(actions.openDrawer, {}, {}, [{ type: types.OPEN_DRAWER }]);
     });
   });
 

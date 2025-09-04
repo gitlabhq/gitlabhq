@@ -5,8 +5,6 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import HelpCenter from '~/super_sidebar/components/help_center.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
-import { useLocalStorageSpy, useWithoutLocalStorage } from 'helpers/local_storage_helper';
-import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import { mockTracking } from 'helpers/tracking_helper';
 import { sidebarData } from '../mock_data';
 
@@ -117,18 +115,6 @@ describe('HelpCenter component', () => {
       ]);
     });
 
-    describe('when localStorage is disabled', () => {
-      useWithoutLocalStorage();
-
-      beforeEach(() => {
-        createWrapper();
-      });
-
-      it('renders component without errors', () => {
-        expect(findDropdown().exists()).toBe(true);
-      });
-    });
-
     describe('compare plans URL', () => {
       it('uses the compare_plans_url provided in sidebarData', () => {
         const customSidebarData = {
@@ -157,24 +143,6 @@ describe('HelpCenter component', () => {
     it('passes custom offset to the dropdown', () => {
       expect(findDropdown().props('dropdownOffset')).toEqual({
         mainAxis: 4,
-      });
-    });
-
-    describe('with matching version digest in local storage', () => {
-      useLocalStorageSpy();
-
-      beforeEach(() => {
-        window.localStorage.setItem(STORAGE_KEY, 1);
-        createWrapper(sidebarData);
-      });
-
-      it('renders menu items', () => {
-        expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
-
-        expect(findDropdownGroup(1).props('group').items).toEqual([
-          expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
-          expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
-        ]);
       });
     });
 
@@ -291,6 +259,7 @@ describe('HelpCenter component', () => {
             mostRecentReleaseItemsCount: sidebarData.whats_new_most_recent_release_items_count,
           },
           expect.any(Function),
+          expect.any(Function),
         );
       });
 
@@ -331,8 +300,6 @@ describe('HelpCenter component', () => {
       });
 
       describe('when setting is enabled', () => {
-        useLocalStorageSpy();
-
         beforeEach(() => {
           createWrapper({
             ...sidebarData,
@@ -353,19 +320,22 @@ describe('HelpCenter component', () => {
             expect(findNotificationCount().exists()).toBe(true);
           });
         });
+      });
 
-        describe('with matching version digest in local storage', () => {
-          beforeEach(() => {
-            window.localStorage.setItem(STORAGE_KEY, 1);
-            createWrapper({
-              ...sidebarData,
-              display_whats_new: true,
-            });
-          });
+      describe('with all articles read', () => {
+        beforeEach(() => {
+          createWrapper({ ...sidebarData, whats_new_read_articles: [1, 2] });
+        });
 
-          it('does not render notification count', () => {
-            expect(findNotificationCount().exists()).toBe(false);
-          });
+        it('renders menu items, does not render notification count', () => {
+          expect(findNotificationCount().exists()).toBe(false);
+
+          expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
+
+          expect(findDropdownGroup(1).props('group').items).toEqual([
+            expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
+            expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
+          ]);
         });
       });
     });

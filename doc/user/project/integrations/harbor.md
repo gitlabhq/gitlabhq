@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Harbor
+description: Configure Harbor as an open-source container registry for your GitLab project to manage artifacts across platforms.
 ---
 
 {{< details >}}

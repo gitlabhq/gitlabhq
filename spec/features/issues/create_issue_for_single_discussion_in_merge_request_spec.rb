@@ -12,6 +12,10 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   def resolve_discussion_selector
     title = 'Create issue to resolve thread'
     url = new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
@@ -38,57 +42,45 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
     end
 
     context 'resolving the thread' do
-      before do
-        find('button[data-testid="resolve-discussion-button"]').click
-      end
+      it 'hides and shows the link for creating a new issue' do
+        within_testid('reply-wrapper') do
+          expect(page).to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
 
-      it 'hides the link for creating a new issue' do
-        expect(page).not_to have_css resolve_discussion_selector
-      end
+          click_button 'Resolve thread'
 
-      it 'shows the link for creating a new issue when unresolving a thread' do
-        page.within '.diff-content' do
+          expect(page).not_to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
+
           click_button 'Reopen thread'
+
+          expect(page).to have_link('Create issue to resolve thread', href: new_project_issue_path(project, discussion_to_resolve: discussion.id, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
         end
-
-        expect(page).to have_css resolve_discussion_selector
       end
-    end
-
-    it 'has a link to create a new issue for a thread' do
-      expect(page).to have_css resolve_discussion_selector
     end
 
     context 'creating the issue' do
       before do
-        find(resolve_discussion_selector, match: :first).click
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
       end
 
-      it 'has a hidden field for the thread' do
-        discussion_field = find('#discussion_to_resolve', visible: false)
+      it 'creates an issue to resolve thread' do
+        within_testid('reply-wrapper') do
+          click_link('Create issue to resolve thread')
+        end
 
-        expect(discussion_field.value).to eq(discussion.id.to_s)
+        expect(find_field('Title').value).to include(merge_request.title)
+        expect(find_field('Description').value).to include(discussion.first_note.note)
+        expect(page).to have_text("Creating this issue will resolve the thread in !#{merge_request.iid}")
+
+        # Actually creates an issue for the project
+        expect { click_button 'Create issue' }.to change { project.issues.reload.size }.by(1)
+
+        # Resolves the discussion in the merge request
+        discussion.first_note.reload
+        expect(discussion.resolved?).to be(true)
+
+        # Issue title includes MR title
+        expect(page).to have_content(%(Follow-up from "#{merge_request.title}"))
       end
-
-      it_behaves_like 'creating an issue for a thread'
-    end
-  end
-
-  describe 'as a reporter' do
-    before do
-      project.add_reporter(user)
-      sign_in user
-      visit new_project_issue_path(
-        project,
-        merge_request_to_resolve_discussions_of: merge_request.iid,
-        discussion_to_resolve: discussion.id
-      )
-    end
-
-    it 'shows a notice to ask someone else to resolve the threads' do
-      expect(page).to have_content("The thread at #{merge_request.to_reference} "\
-                                   "(discussion #{discussion.first_note.id}) will stay open. "\
-                                   "Ask someone with permission to resolve it.")
     end
   end
 end

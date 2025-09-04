@@ -364,7 +364,7 @@ export default {
 
     <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-flex">
       <div
-        class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 sm:gl-flex-nowrap"
+        class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
       >
         <pipelines-filtered-search
           class="gl-flex gl-max-w-full gl-flex-grow"
@@ -373,7 +373,7 @@ export default {
         />
         <gl-collapsible-listbox
           v-model="visibilityPipelineIdType"
-          class="gl-grow sm:gl-grow-0"
+          class="gl-grow @sm/panel:gl-grow-0"
           toggle-class="gl-grow"
           :toggle-text="selectedPipelineKeyOption.text"
           :items="$options.pipelineKeyOptions"

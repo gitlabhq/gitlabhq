@@ -4,7 +4,6 @@ import GitlabVersionCheckBadge from 'jh_else_ce/gitlab_version_check/components/
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { __ } from '~/locale';
-import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
 import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS } from '../constants';
 
@@ -42,6 +41,7 @@ export default {
   data() {
     return {
       showWhatsNewNotification: this.shouldShowWhatsNewNotification(),
+      whatsNewMostRecentReleaseUnreadCount: this.calculateWhatsNewMostRecentReleaseUnreadCount(),
       toggleWhatsNewDrawer: null,
     };
   },
@@ -166,11 +166,20 @@ export default {
   },
   methods: {
     shouldShowWhatsNewNotification() {
-      if (!localStorage || !this.sidebarData.display_whats_new) {
-        return false;
+      return (
+        this.sidebarData.display_whats_new &&
+        this.calculateWhatsNewMostRecentReleaseUnreadCount() > 0
+      );
+    },
+    calculateWhatsNewMostRecentReleaseUnreadCount() {
+      if (!this.sidebarData.display_whats_new) {
+        return 0;
       }
 
-      return localStorage.getItem(STORAGE_KEY) !== this.sidebarData.whats_new_version_digest;
+      return (
+        this.sidebarData.whats_new_most_recent_release_items_count -
+        this.sidebarData.whats_new_read_articles.length
+      );
     },
 
     async showWhatsNew() {
@@ -188,6 +197,7 @@ export default {
             mostRecentReleaseItemsCount: this.sidebarData.whats_new_most_recent_release_items_count,
           },
           this.hideWhatsNewNotification,
+          this.updateWhatsNewNotificationBadge,
         );
       } else {
         this.toggleWhatsNewDrawer();
@@ -195,10 +205,14 @@ export default {
     },
 
     hideWhatsNewNotification() {
-      if (this.showWhatsNewNotification) {
+      if (this.showWhatsNewNotification && this.whatsNewMostRecentReleaseUnreadCount === 0) {
         this.showWhatsNewNotification = false;
         this.$toast.show(this.$options.i18n.whatsnewToast);
       }
+    },
+
+    updateWhatsNewNotificationBadge(unreadCount) {
+      this.whatsNewMostRecentReleaseUnreadCount = unreadCount;
     },
 
     trackingAttrs(label) {
@@ -240,7 +254,7 @@ export default {
 
       <gl-badge variant="neutral" aria-hidden="true" data-testid="notification-count">
         <span class="gl-m-1 gl-min-w-3">
-          {{ sidebarData.whats_new_most_recent_release_items_count }}
+          {{ whatsNewMostRecentReleaseUnreadCount }}
         </span>
       </gl-badge>
     </gl-button>

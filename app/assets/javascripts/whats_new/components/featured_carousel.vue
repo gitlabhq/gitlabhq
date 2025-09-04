@@ -56,11 +56,11 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-mb-3 gl-ml-3 gl-flex gl-items-center gl-justify-between">
+  <div class="gl-p-3 gl-pb-5">
+    <div class="gl-mb-5 gl-flex gl-h-6 gl-items-center gl-justify-between">
       <div class="gl-flex gl-items-center gl-gap-3">
         <gl-icon name="compass" :size="16" />
-        <h5>{{ $options.i18n.featuredUpdates }}</h5>
+        <h5 class="gl-m-0">{{ $options.i18n.featuredUpdates }}</h5>
       </div>
       <div class="gl-flex gl-items-center gl-gap-2">
         <gl-button
@@ -68,6 +68,7 @@ export default {
           :disabled="isPreviousDisabled"
           :style="{ border: 'none' }"
           data-testid="card-carousel-previous-button"
+          :aria-label="__('Previous card')"
           @click="previousCard"
         >
           <gl-icon name="chevron-lg-left" />
@@ -79,6 +80,7 @@ export default {
           :disabled="isNextDisabled"
           :style="{ border: 'none' }"
           data-testid="card-carousel-next-button"
+          :aria-label="__('Next card')"
           @click="nextCard"
         >
           <gl-icon name="chevron-lg-right" />
@@ -93,7 +95,6 @@ export default {
       >
         <div class="gl-w-full gl-flex-shrink-0">
           <featured-card
-            class="gl-m-3"
             :title="$options.i18n.granularCardTitle"
             :description="$options.i18n.granularCardDescription"
             :button-link="$options.GRANULAR_CARD_URL"
@@ -103,7 +104,6 @@ export default {
         </div>
         <div class="gl-w-full gl-flex-shrink-0">
           <featured-card
-            class="gl-m-3"
             :title="$options.i18n.duoProCardTitle"
             :description="$options.i18n.duoProCardDescription"
             :button-link="$options.GITLAB_DUO_PRO_CARD_URL"

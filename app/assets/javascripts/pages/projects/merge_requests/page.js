@@ -35,6 +35,7 @@ const initMrStickyHeader = () => {
 
     const {
       iid,
+      canResolveDiscussion,
       projectPath,
       title,
       tabs,
@@ -71,6 +72,7 @@ const initMrStickyHeader = () => {
         return h('sticky-header', {
           props: {
             tabs: tabData.tabs,
+            canResolveDiscussion: parseBoolean(canResolveDiscussion),
             isImported: parseBoolean(imported),
             isDraft: parseBoolean(isDraft),
           },

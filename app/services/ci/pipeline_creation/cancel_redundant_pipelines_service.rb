@@ -121,7 +121,14 @@ module Ci
 
       def conservative_cancelable_pipeline_pks
         cancelable_status_pipeline_pks.each_slice(PK_BATCH_SIZE).with_object([]) do |pks_batch, conservative_pks|
-          conservative_pks.concat(::Ci::Pipeline.primary_key_in(pks_batch).conservative_interruptible.pluck_primary_key)
+          pipelines = ::Ci::Pipeline.primary_key_in(pks_batch)
+          pipelines = if Feature.enabled?(:ci_read_interruptible_from_job_definitions, project)
+                        pipelines.conservative_interruptible
+                      else
+                        pipelines.legacy_conservative_interruptible
+                      end
+
+          conservative_pks.concat(pipelines.pluck_primary_key)
         end
       end
       strong_memoize_attr :conservative_cancelable_pipeline_pks

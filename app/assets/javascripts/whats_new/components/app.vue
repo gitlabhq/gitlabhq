@@ -46,6 +46,11 @@ export default {
       required: false,
       default: () => {},
     },
+    updateHelpMenuUnreadBadge: {
+      type: Function,
+      required: false,
+      default: () => {},
+    },
   },
   computed: {
     ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching', 'readArticles']),
@@ -54,6 +59,11 @@ export default {
     },
     whatsNewFeaturedCarouselEnabled() {
       return this.glFeatures.whatsNewFeaturedCarousel;
+    },
+  },
+  watch: {
+    readArticles(newVal) {
+      this.updateHelpMenuUnreadBadge(this.mostRecentReleaseItemsCount - newVal.length);
     },
   },
   created() {

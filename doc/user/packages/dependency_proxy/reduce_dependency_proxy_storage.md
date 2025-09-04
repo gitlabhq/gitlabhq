@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Reduce dependency proxy storage for container images
+description: Manage blob storage in the GitLab Dependency Proxy with cleanup policies, API cache clearing, and TTL settings.
 ---
 
 {{< details >}}

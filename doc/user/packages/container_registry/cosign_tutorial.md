@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Annotate container images with build provenance data'
+description: Use Cosign to annotate and sign container images with build provenance data in GitLab CI/CD pipelines.
 ---
 
 Annotations provide valuable metadata about the build process. This information is used for auditing and traceability. In a security incident, having detailed provenance data can significantly speed up the investigation and remediation process.

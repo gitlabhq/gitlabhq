@@ -45139,6 +45139,15 @@ Returns [`[WorkItemWidget!]`](#workitemwidget).
 | <a id="workitemclosingmergerequestid"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
 | <a id="workitemclosingmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
 
+### `WorkItemDateFieldValue`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdatefieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
+| <a id="workitemdatefieldvaluevalue"></a>`value` | [`Date`](#date) | Date value of the custom field. |
+
 ### `WorkItemDescriptionTemplate`
 
 #### Fields
@@ -49752,7 +49761,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumpipeline_schedules_inputs_adoption_banner"></a>`PIPELINE_SCHEDULES_INPUTS_ADOPTION_BANNER` | Callout feature name for pipeline_schedules_inputs_adoption_banner. |
 | <a id="usercalloutfeaturenameenumpipl_compliance_alert"></a>`PIPL_COMPLIANCE_ALERT` | Callout feature name for pipl_compliance_alert. |
 | <a id="usercalloutfeaturenameenumpreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
-| <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
 | <a id="usercalloutfeaturenameenumproduct_usage_data_collection_changes"></a>`PRODUCT_USAGE_DATA_COLLECTION_CHANGES` | Callout feature name for product_usage_data_collection_changes. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
@@ -53226,6 +53234,7 @@ Implementations:
 
 Implementations:
 
+- [`WorkItemDateFieldValue`](#workitemdatefieldvalue)
 - [`WorkItemNumberFieldValue`](#workitemnumberfieldvalue)
 - [`WorkItemSelectFieldValue`](#workitemselectfieldvalue)
 - [`WorkItemTextFieldValue`](#workitemtextfieldvalue)
@@ -54493,6 +54502,7 @@ Input type for filtering projects by vulnerability count and severity.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcustomfieldvalueinputtypecustomfieldid"></a>`customFieldId` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="workitemwidgetcustomfieldvalueinputtypedatevalue"></a>`dateValue` | [`Date`](#date) | Value for custom fields with date type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypenumbervalue"></a>`numberValue` | [`Float`](#float) | Value for custom fields with number type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypeselectedoptionids"></a>`selectedOptionIds` | [`[IssuablesCustomFieldSelectOptionID!]`](#issuablescustomfieldselectoptionid) | Global IDs of the selected options for custom fields with select type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypetextvalue"></a>`textValue` | [`String`](#string) | Value for custom fields with text type. |

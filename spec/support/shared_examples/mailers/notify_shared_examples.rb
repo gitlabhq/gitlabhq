@@ -232,14 +232,6 @@ RSpec.shared_examples 'an unsubscribeable thread' do |group_level = false|
   describe 'reply_key' do
     unless group_level
       it { is_expected.to have_header('X-GitLab-Reply-Key', SentNotification::PARTITIONED_REPLY_KEY_REGEX) }
-
-      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
-        before do
-          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
-        end
-
-        it { is_expected.to have_header('X-GitLab-Reply-Key', SentNotification::LEGACY_REPLY_KEY_REGEX) }
-      end
     end
   end
 end

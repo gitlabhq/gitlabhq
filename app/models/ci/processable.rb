@@ -67,13 +67,31 @@ module Ci
       where('NOT EXISTS (?)', needs)
     end
 
-    scope :interruptible, -> do
+    scope :with_metadata_interruptible_true, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_interruptible)
     end
 
-    scope :not_interruptible, -> do
+    scope :with_interruptible_true, -> do
+      where_exists(
+        Ci::JobDefinitionInstance
+          .joins(:job_definition)
+          .scoped_job
+          .merge(Ci::JobDefinition.with_interruptible_true)
+      )
+    end
+
+    scope :with_metadata_interruptible_false, -> do
       joins(:metadata).where.not(
         Ci::BuildMetadata.table_name => { id: Ci::BuildMetadata.scoped_build.with_interruptible.select(:id) }
+      )
+    end
+
+    scope :with_interruptible_false, -> do
+      where_not_exists(
+        Ci::JobDefinitionInstance
+           .joins(:job_definition)
+           .scoped_job
+           .merge(Ci::JobDefinition.with_interruptible_true)
       )
     end
 

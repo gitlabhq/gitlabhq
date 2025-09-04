@@ -12,7 +12,8 @@ import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.v
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
-const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
+// Query should correspond to the `stacked` value of this table: `lg`.
+const HIDE_WHEN_STACKED = '@max-lg/panel:!gl-hidden';
 
 /**
  * Pipelines Table
@@ -90,7 +91,7 @@ export default {
         {
           key: 'triggerer',
           label: s__('Pipeline|Created by'),
-          tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
+          tdClass: [this.tdClasses, HIDE_WHEN_STACKED],
           columnClass: 'gl-w-3/20',
           thAttr: { 'data-testid': 'triggerer-th' },
         },

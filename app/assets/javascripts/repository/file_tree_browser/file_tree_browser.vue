@@ -60,7 +60,7 @@ export default {
 <template>
   <file-browser-height
     :style="{ '--tree-width': `${treeWidth}px` }"
-    class="repository-tree-list repository-tree-list-responsive gl-mt-5 gl-px-4"
+    class="repository-tree-list repository-tree-list-responsive gl-mt-4 gl-px-4"
   >
     <panel-resizer
       class="max-lg:gl-hidden"

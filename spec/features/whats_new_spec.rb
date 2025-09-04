@@ -44,32 +44,50 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       expect(page).not_to have_button(text: "What's new")
     end
 
-    it 'shows notification count and removes it once viewed' do
-      visit root_dashboard_path
+    describe 'with notification count in the sidebar' do
+      before do
+        redis_set_key = "whats_new:#{ReleaseHighlight.most_recent_version_digest}:user:#{user.id}:read_articles"
 
-      within_testid('super-sidebar') do
-        find_by_testid('sidebar-help-button').click
-
-        within_testid('disclosure-content') { expect(page).not_to have_button(text: "What's new") }
-
-        find_by_testid('sidebar-help-button').click
-
-        has_testid?('notification-count', visible: true)
-
-        click_on "What's new"
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.sadd(redis_set_key, *(2..ReleaseHighlight.most_recent_item_count))
+        end
       end
 
-      find('.whats-new-drawer .gl-drawer-close-button').click
+      it 'shows the count and removes it once all articles are read' do
+        visit root_dashboard_path
 
-      expect(find('.gl-toast')).to have_content("What's new moved to Help.")
+        within_testid('super-sidebar') do
+          find_by_testid('sidebar-help-button').click
 
-      within_testid('super-sidebar') do
-        expect(page).not_to have_button(text: "What's new")
-        has_testid?('notification-count', visible: false)
+          within_testid('disclosure-content') { expect(page).not_to have_button(text: "What's new") }
 
-        find_by_testid('sidebar-help-button').click
+          find_by_testid('sidebar-help-button').click
 
-        within_testid('disclosure-content') { expect(page).to have_button(text: "What's new") }
+          has_testid?('notification-count', visible: true)
+
+          click_on "What's new"
+        end
+
+        within '.whats-new-drawer' do
+          find_by_testid('unread-article-icon').click
+
+          find_by_testid('whats-new-article-close').click
+
+          wait_for_all_requests
+
+          find('.gl-drawer-close-button').click
+        end
+
+        expect(find('.gl-toast')).to have_content("What's new moved to Help.")
+
+        within_testid('super-sidebar') do
+          expect(page).not_to have_button(text: "What's new")
+          has_testid?('notification-count', visible: false)
+
+          find_by_testid('sidebar-help-button').click
+
+          within_testid('disclosure-content') { expect(page).to have_button(text: "What's new") }
+        end
       end
     end
 

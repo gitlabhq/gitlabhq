@@ -1,3 +1,4 @@
+import Vue, { computed, nextTick } from 'vue';
 import { GlCollapse, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
@@ -7,6 +8,7 @@ import { stubComponent } from 'helpers/stub_component';
 
 describe('MenuSection component', () => {
   let wrapper;
+  const provideState = Vue.observable({ isIconOnly: false });
 
   const findButton = () => wrapper.find('button');
   const findCollapse = () => wrapper.findComponent(GlCollapse);
@@ -18,11 +20,12 @@ describe('MenuSection component', () => {
     findChevron().attributes('is-on') || findChevron().attributes('ison');
 
   const createWrapper = (item, otherProps, provide = {}) => {
+    provideState.isIconOnly = provide.isIconOnly ?? false;
+
     wrapper = shallowMountExtended(MenuSection, {
       propsData: { item: { items: [], ...item }, ...otherProps },
       provide: {
-        isIconOnly: false,
-        ...provide,
+        isIconOnly: computed(() => provideState.isIconOnly),
       },
       stubs: {
         GlCollapse: stubComponent(GlCollapse, {
@@ -82,10 +85,22 @@ describe('MenuSection component', () => {
     });
 
     describe('when in icon-only mode', () => {
-      it('is not expanded nor expandable', () => {
+      it('does not show as expanded nor is expandable', () => {
         createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
         expect(findChevron().exists()).toBe(false);
         expect(findCollapse().exists()).toBe(false);
+      });
+    });
+
+    describe('when coming out of icon-only mode', () => {
+      it('shows expanded as expanded again', async () => {
+        createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
+        expect(findCollapse().exists()).toBe(false);
+
+        provideState.isIconOnly = false;
+        await nextTick();
+
+        expect(findCollapse().exists()).toBe(true);
       });
     });
   });

@@ -4584,6 +4584,148 @@ CREATE TABLE audit_events (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE backup_finding_evidences (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_finding_flags (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_finding_identifiers (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_finding_links (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_finding_remediations (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_finding_signatures (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    finding_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_findings (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerabilities (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerability_external_issue_links (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerability_issue_links (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerability_merge_request_links (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerability_state_transitions (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
+CREATE TABLE backup_vulnerability_user_mentions (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
 CREATE TABLE batched_background_migration_job_transition_logs (
     id bigint NOT NULL,
     batched_background_migration_job_id bigint NOT NULL,
@@ -17710,7 +17852,8 @@ CREATE TABLE issue_tracker_data (
     project_id bigint,
     group_id bigint,
     organization_id bigint,
-    CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
+    CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1)),
+    CONSTRAINT check_f02a3f53bf CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
 );
 
 CREATE SEQUENCE issue_tracker_data_id_seq
@@ -31541,6 +31684,45 @@ ALTER TABLE ONLY award_emoji
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
 
+ALTER TABLE ONLY backup_finding_evidences
+    ADD CONSTRAINT backup_finding_evidences_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_finding_flags
+    ADD CONSTRAINT backup_finding_flags_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_finding_identifiers
+    ADD CONSTRAINT backup_finding_identifiers_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_finding_links
+    ADD CONSTRAINT backup_finding_links_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_finding_remediations
+    ADD CONSTRAINT backup_finding_remediations_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_finding_signatures
+    ADD CONSTRAINT backup_finding_signatures_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_findings
+    ADD CONSTRAINT backup_findings_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerabilities
+    ADD CONSTRAINT backup_vulnerabilities_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerability_external_issue_links
+    ADD CONSTRAINT backup_vulnerability_external_issue_links_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerability_issue_links
+    ADD CONSTRAINT backup_vulnerability_issue_links_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerability_merge_request_links
+    ADD CONSTRAINT backup_vulnerability_merge_request_links_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerability_state_transitions
+    ADD CONSTRAINT backup_vulnerability_state_transitions_pkey PRIMARY KEY (original_record_identifier, date);
+
+ALTER TABLE ONLY backup_vulnerability_user_mentions
+    ADD CONSTRAINT backup_vulnerability_user_mentions_pkey PRIMARY KEY (original_record_identifier, date);
+
 ALTER TABLE ONLY badges
     ADD CONSTRAINT badges_pkey PRIMARY KEY (id);
 
@@ -37219,6 +37401,56 @@ CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji
 CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree (role_external_id);
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
+
+CREATE INDEX index_backup_finding_evidences_on_fk ON ONLY backup_finding_evidences USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_evidences_on_project_id ON ONLY backup_finding_evidences USING btree (project_id);
+
+CREATE INDEX index_backup_finding_flags_on_fk ON ONLY backup_finding_flags USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_flags_on_project_id ON ONLY backup_finding_flags USING btree (project_id);
+
+CREATE INDEX index_backup_finding_identifiers_on_fk ON ONLY backup_finding_identifiers USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_identifiers_on_project_id ON ONLY backup_finding_identifiers USING btree (project_id);
+
+CREATE INDEX index_backup_finding_links_on_fk ON ONLY backup_finding_links USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_links_on_project_id ON ONLY backup_finding_links USING btree (project_id);
+
+CREATE INDEX index_backup_finding_remediations_on_fk ON ONLY backup_finding_remediations USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_remediations_on_project_id ON ONLY backup_finding_remediations USING btree (project_id);
+
+CREATE INDEX index_backup_finding_signatures_on_fk ON ONLY backup_finding_signatures USING btree (finding_id);
+
+CREATE INDEX index_backup_finding_signatures_on_project_id ON ONLY backup_finding_signatures USING btree (project_id);
+
+CREATE INDEX index_backup_findings_on_fk ON ONLY backup_findings USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_findings_on_project_id ON ONLY backup_findings USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerabilities_on_project_id ON ONLY backup_vulnerabilities USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerability_external_issue_links_on_fk ON ONLY backup_vulnerability_external_issue_links USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_external_issue_links_on_project_id ON ONLY backup_vulnerability_external_issue_links USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerability_issue_links_on_fk ON ONLY backup_vulnerability_issue_links USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_issue_links_on_project_id ON ONLY backup_vulnerability_issue_links USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerability_merge_request_links_on_fk ON ONLY backup_vulnerability_merge_request_links USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_merge_request_links_on_project_id ON ONLY backup_vulnerability_merge_request_links USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerability_state_transitions_on_fk ON ONLY backup_vulnerability_state_transitions USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_state_transitions_on_project_id ON ONLY backup_vulnerability_state_transitions USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerability_user_mentions_on_fk ON ONLY backup_vulnerability_user_mentions USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_user_mentions_on_project_id ON ONLY backup_vulnerability_user_mentions USING btree (project_id);
 
 CREATE INDEX index_badges_on_group_id ON badges USING btree (group_id);
 

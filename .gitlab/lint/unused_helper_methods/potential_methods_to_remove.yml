@@ -61,7 +61,5 @@ approve_access_request_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
 resend_invite_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
-commit_tags_links:
-  file: app/helpers/commits_helper.rb
 sort_title_stars:
   file: app/helpers/sorting_titles_values_helper.rb

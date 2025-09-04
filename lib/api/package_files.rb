@@ -16,6 +16,15 @@ module API
     helpers ::API::Helpers::PackagesHelpers
     helpers ::API::Helpers::Packages::Npm
 
+    helpers do
+      def enqueue_sync_helm_metadata_cache_worker(package_file)
+        channel = package_file.helm_channel
+        return unless channel
+
+        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(user_project.id, channel) # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file is deleted
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'ID or URL-encoded path of the project'
       requires :package_id, type: Integer, desc: 'ID of a package'
@@ -99,7 +108,7 @@ module API
 
           enqueue_sync_npm_metadata_cache_worker(user_project, package.name) if package.npm?
 
-          package.sync_helm_metadata_cache if package.helm?
+          enqueue_sync_helm_metadata_cache_worker(package_file) if package.helm?
         end
       end
     end

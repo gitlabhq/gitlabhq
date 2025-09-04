@@ -19,6 +19,7 @@ $settings-sticky-header-height: 3rem;
 $settings-sticky-header-z-index: 98;
 $settings-sticky-footer-height: 3rem;
 $settings-sticky-footer-z-index: #{$settings-sticky-header-z-index + 1};
+$paneled-layout-ultra-wide-breakpoint: 2560px;
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨

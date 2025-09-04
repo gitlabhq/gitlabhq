@@ -473,6 +473,10 @@ $command-palette-spacing: px-to-rem(14px);
 .global-search-modal {
   padding: 3rem 0.5rem 0;
 
+  .modal-content {
+    border-radius: 0.5rem !important;
+  }
+
   &.gl-modal .modal-dialog {
     align-items: flex-start;
   }
@@ -506,10 +510,6 @@ $command-palette-spacing: px-to-rem(14px);
   // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
   .gl-search-box-by-type-clear.btn-sm {
     padding: 0.5rem !important;
-  }
-
-  .modal-content {
-    border-radius: $gl-border-radius-large !important;
   }
 
   .gl-search-box-by-type-input-borderless {

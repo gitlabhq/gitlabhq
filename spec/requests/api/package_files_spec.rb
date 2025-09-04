@@ -192,10 +192,31 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       let_it_be(:package_file) { create(:helm_package_file, package: package, channel: channel) }
       let(:package_file_id) { package_file.id }
 
-      subject(:execute) { api_request }
+      before_all do
+        project.add_maintainer(user)
+      end
 
-      it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
-        subject(:execute) { api_request }
+      it 'enqueue a worker to sync a helm metadata cache', :aggregate_failures do
+        expect(Packages::Helm::CreateMetadataCacheWorker)
+          .to receive(:perform_async).with(project.id, channel)
+
+        api_request
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+
+      context 'when package_file does not have helm_file_metadatum' do
+        before do
+          package_file.helm_file_metadatum.destroy!
+        end
+
+        it 'does not enqueue a worker', :aggregate_failures do
+          expect(Packages::Helm::CreateMetadataCacheWorker).not_to receive(:perform_async)
+
+          api_request
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
       end
     end
 

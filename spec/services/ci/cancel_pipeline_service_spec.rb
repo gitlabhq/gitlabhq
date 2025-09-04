@@ -111,6 +111,25 @@ RSpec.describe Ci::CancelPipelineService, :aggregate_failures, feature_category:
             %w[bridge3 success]
           ])
         end
+
+        context 'when using the metadata queries' do
+          before do
+            stub_feature_flags(ci_read_interruptible_from_job_definitions: false)
+          end
+
+          it 'cancels only interruptible jobs' do
+            expect(response).to be_success
+            expect(pipeline.all_jobs.pluck(:name, :status)).to match_array([
+              %w[build1 running],
+              %w[build2 created],
+              %w[build3 success],
+              %w[build4 canceled],
+              %w[bridge1 running],
+              %w[bridge2 canceled],
+              %w[bridge3 success]
+            ])
+          end
+        end
       end
 
       context 'when pipeline has child pipelines' do

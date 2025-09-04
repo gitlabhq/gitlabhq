@@ -15,7 +15,7 @@ $bottom-padding: $gl-spacing-scale-6;
   --file-tree-min-height: 300px;
   --file-tree-bottom-padding: #{rem-to-px($bottom-padding)};
   position: sticky;
-  top: calc(var(--application-header-height) + #{$gl-spacing-scale-5});
+  top: calc(var(--application-header-height) + #{$gl-spacing-scale-4});
   min-height: var(--file-tree-min-height);
   flex: none;
 

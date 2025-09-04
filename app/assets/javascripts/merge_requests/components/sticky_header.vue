@@ -82,6 +82,11 @@ export default {
     blocksMerge: { default: false },
   },
   props: {
+    canResolveDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isImported: {
       type: Boolean,
       required: false,
@@ -269,7 +274,11 @@ export default {
             </li>
           </ul>
           <div class="gl-hidden gl-items-center gl-gap-3 @lg/panel:gl-flex">
-            <discussion-counter :blocks-merge="blocksMerge" hide-options />
+            <discussion-counter
+              :blocks-merge="blocksMerge"
+              :can-resolve-discussion="canResolveDiscussion"
+              hide-options
+            />
             <template v-if="isSignedIn">
               <todo-widget
                 :issuable-id="issuableId"

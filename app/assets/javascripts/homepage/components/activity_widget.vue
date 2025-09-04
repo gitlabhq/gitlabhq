@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -19,16 +19,21 @@ const FILTER_OPTIONS = [
   {
     value: null,
     text: s__('HomepageActivityWidget|Your activity'),
+    description: s__(
+      'HomepageActivityWidget|Your contributions, like commits and work on issues and merge requests.',
+    ),
     scope: TRACKING_SCOPE_YOUR_ACTIVITY,
   },
   {
     value: 'starred',
     text: s__('HomepageActivityWidget|Starred projects'),
+    description: s__('HomepageActivityWidget|Activity in projects you have starred.'),
     scope: TRACKING_SCOPE_STARRED_PROJECTS,
   },
   {
     value: 'followed',
     text: s__('HomepageActivityWidget|Followed users'),
+    description: s__('HomepageActivityWidget|Activity from users you follow.'),
     scope: TRACKING_SCOPE_FOLLOWED_USERS,
   },
 ];
@@ -38,9 +43,11 @@ export default {
     GlSkeletonLoader,
     GlCollapsibleListbox,
     BaseWidget,
+    GlIcon,
   },
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
   props: {
@@ -56,6 +63,12 @@ export default {
       hasError: false,
       filter: this.getPersistedFilter(),
     };
+  },
+  computed: {
+    selectedFilterText() {
+      const selectedOption = FILTER_OPTIONS.find((option) => option.value === this.filter);
+      return selectedOption ? selectedOption.text : s__('HomepageActivityWidget|Your activity');
+    },
   },
   watch: {
     filter: {
@@ -144,10 +157,37 @@ export default {
 <template>
   <base-widget @visible="reload">
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h2 class="gl-heading-4 gl-m-0">{{ __('Activity') }}</h2>
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <h2 class="gl-heading-4 gl-m-0">{{ __('Activity') }}</h2>
+        <gl-icon
+          v-gl-tooltip.hover
+          :title="
+            s__(
+              'HomepageActivityWidget|Filter your activity feed to see different types of events.',
+            )
+          "
+          name="information-o"
+          class="gl-text-subtle"
+          :size="14"
+        />
+      </div>
 
-      <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
+      <gl-collapsible-listbox
+        v-model="filter"
+        :items="$options.FILTER_OPTIONS"
+        :toggle-text="selectedFilterText"
+      >
+        <template #list-item="{ item }">
+          <div class="gl-flex gl-w-full gl-flex-col gl-gap-1">
+            <div class="gl-font-weight-semibold gl-text-default">{{ item.text }}</div>
+            <div class="gl-line-height-normal gl-text-sm gl-text-subtle">
+              {{ item.description }}
+            </div>
+          </div>
+        </template>
+      </gl-collapsible-listbox>
     </div>
+
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
       <rect width="160" height="3" rx="1" x="8" y="2" />
@@ -171,7 +211,7 @@ export default {
     <p v-else-if="!activityFeedHtml" data-testid="empty-state">
       {{
         s__(
-          'Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here.',
+          'HomepageActivityWidget|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here.',
         )
       }}
     </p>

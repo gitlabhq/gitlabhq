@@ -22,5 +22,10 @@ module Ci
     validates :project, presence: true
     validates :job, presence: true
     validates :job_definition, presence: true
+
+    scope :scoped_job, -> do
+      where(arel_table[:job_id].eq(Ci::Processable.arel_table[:id]))
+      .where(arel_table[:partition_id].eq(Ci::Processable.arel_table[:partition_id]))
+    end
   end
 end

@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Protected container tags
+description: Control who can push or delete container tags with role-based protection rules using regex patterns.
 ---
 
 {{< details >}}

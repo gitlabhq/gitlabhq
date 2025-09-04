@@ -82,7 +82,7 @@ module Users
       # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
       duo_chat_callout: 80, # EE-only
       # 81 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146322
-      product_analytics_dashboard_feedback: 82, # EE-only
+      # 82 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203697
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
       # 85 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169248

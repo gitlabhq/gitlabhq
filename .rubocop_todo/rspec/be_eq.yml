@@ -1342,7 +1342,6 @@ RSpec/BeEq:
     - 'spec/support/shared_examples/ci/retryable_shared_examples.rb'
     - 'spec/support/shared_examples/controllers/is_ambiguous_ref_examples.rb'
     - 'spec/support/shared_examples/features/deploy_token_shared_examples.rb'
-    - 'spec/support/shared_examples/features/resolving_discussions_in_issues_shared_examples.rb'
     - 'spec/support/shared_examples/finders/issues_finder_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/mutations/boards/update_list_shared_examples.rb'
     - 'spec/support/shared_examples/graphql/mutations/boards_create_shared_examples.rb'

@@ -1,0 +1,97 @@
+/*
+ * DS experiments
+ */
+
+ :where(.application-chrome) {
+
+  // Increased border radii for form elements and buttons
+  .gl-button,
+  .gl-button.gl-button,
+  .form-control,
+  .gl-form-input,
+  .gl-form-input.form-control,
+  .gl-form-select,
+  .input-group-text,
+  &.application-chrome .filtered-search-box {
+    @apply gl-rounded-lg;
+  }
+
+  // Filtered search button
+  .filtered-search-history-dropdown-toggle-button.gl-button,
+  .input-group-prepend .btn {
+    @apply gl-rounded-l-lg #{!important};
+  }
+
+  .input-group-append .btn {
+    @apply gl-rounded-r-lg #{!important};
+  }
+
+  // Increased border radii for more components
+  .info-well,
+  .file-holder,
+  .table-holder {
+    @apply gl-rounded-lg #{!important};
+  }
+
+  .file-title-flex-parent, .file-holder .file-title-flex-parent {
+    border-top-left-radius: #{$gl-border-radius-lg - 1px};
+    border-top-right-radius: #{$gl-border-radius-lg - 1px};
+  }
+
+  // Increased border radii for GlModal
+  .gl-modal .modal-content {
+    @apply gl-rounded-[1rem] #{!important};
+  }
+
+  // Increased border radii for drawers
+  .gl-drawer {
+    @apply gl-rounded-l-[1rem];
+
+    .gl-drawer-body-scrim::after {
+      @apply gl-rounded-bl-[1rem];
+    }
+  }
+
+  // Increased border radii for GlAlert
+  .gl-alert {
+    @apply gl-rounded-lg;
+  }
+
+  // Increased border radii for GlCard
+  .gl-card {
+    @apply gl-rounded-lg;
+  }
+
+  .gl-card-header {
+    @apply gl-rounded-t-lg;
+  }
+
+  .gl-card-footer {
+    @apply gl-rounded-b-lg;
+  }
+
+  .topbar-signup-button {
+    --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
+    --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);
+    --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-1000);
+    --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-1000);
+
+    --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-800);
+    --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-950);
+    --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-1000);
+    --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-1000);
+  }
+
+  &.gl-dark .topbar-signup-button  {
+    --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-50);
+    --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-10);
+    --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-0);
+    --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-0);
+
+    --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-50);
+    --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-10);
+    --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-0);
+    --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-0);
+  }
+
+ }

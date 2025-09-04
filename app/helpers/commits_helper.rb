@@ -89,14 +89,6 @@ module CommitsHelper
     gl_badge_tag(text, { variant: :info, icon: 'tag' }, { href: url, class: 'gl-font-monospace' })
   end
 
-  # Returns the sorted links to tags, separated by a comma
-  def commit_tags_links(project, tags)
-    sorted = VersionSorter.rsort(tags)
-    sorted.map do |tag|
-      commit_tag_link(project_ref_path(project, tag), tag)
-    end.join(' ').html_safe
-  end
-
   def commit_blob
     @repo.blob_at(@ref, @path)
   end

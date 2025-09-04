@@ -48,7 +48,14 @@ module Ci
       if @safe_cancellation
         # Only build and bridge (trigger) jobs can be interruptible.
         # We do not cancel GenericCommitStatuses because they can't have the `interruptible` attribute.
-        cancel_jobs(pipeline.processables.cancelable.interruptible)
+        jobs = pipeline.processables.cancelable
+        jobs = if Feature.enabled?(:ci_read_interruptible_from_job_definitions, pipeline.project)
+                 jobs.with_interruptible_true
+               else
+                 jobs.with_metadata_interruptible_true
+               end
+
+        cancel_jobs(jobs)
       else
         cancel_jobs(pipeline.cancelable_statuses)
       end

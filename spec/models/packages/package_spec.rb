@@ -100,8 +100,6 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     subject(:for_projects) { described_class.for_projects(projects.select(:id)) }
 
     it 'returns package1 and package2' do
-      expect(projects).not_to receive(:any?)
-
       expect(for_projects).to match_array([package1, package2])
     end
   end

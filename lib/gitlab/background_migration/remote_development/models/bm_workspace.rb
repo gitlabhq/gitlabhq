@@ -10,7 +10,7 @@ module Gitlab
 
           self.table_name = 'workspaces'
 
-          belongs_to :agent, class_name: "Clusters::Agent", foreign_key: "cluster_agent_id", inverse_of: :workspaces
+          belongs_to :agent, class_name: "BmAgent", foreign_key: "cluster_agent_id", inverse_of: :workspaces
 
           # @return [Boolean]
           def desired_state_running?

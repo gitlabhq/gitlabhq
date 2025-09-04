@@ -18,7 +18,13 @@ describe('DiscussionCounter component', () => {
   let wrapper;
 
   const createComponent = (propsData) => {
-    wrapper = mount(DiscussionCounter, { pinia, propsData });
+    wrapper = mount(DiscussionCounter, {
+      pinia,
+      propsData: {
+        canResolveDiscussion: true,
+        ...propsData,
+      },
+    });
   };
 
   beforeEach(() => {
@@ -109,6 +115,15 @@ describe('DiscussionCounter component', () => {
 
         expect(resolveAllLink.attributes('href')).toBe(resolveDiscussionsPath);
       });
+    });
+
+    it('does not show resolve all with new issue link when user has no permission', async () => {
+      addNote({ resolvable: true });
+      createComponent({ blocksMerge: true, canResolveDiscussion: false });
+
+      await wrapper.findComponent(GlDisclosureDropdown).trigger('click');
+
+      expect(wrapper.find('[data-testid="resolve-all-with-issue-link"]').exists()).toBe(false);
     });
   });
 

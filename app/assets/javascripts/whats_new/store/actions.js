@@ -1,19 +1,14 @@
 import axios from '~/lib/utils/axios_utils';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
-import { STORAGE_KEY } from '../utils/notification';
 import * as types from './mutation_types';
 
 export default {
   closeDrawer({ commit }) {
     commit(types.CLOSE_DRAWER);
   },
-  openDrawer({ commit }, versionDigest) {
+  openDrawer({ commit }) {
     commit(types.OPEN_DRAWER);
-
-    if (versionDigest) {
-      localStorage.setItem(STORAGE_KEY, versionDigest);
-    }
   },
   fetchItems({ commit, state }, { page, versionDigest } = { page: null, versionDigest: null }) {
     if (state.fetching) {

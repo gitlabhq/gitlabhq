@@ -33,12 +33,8 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
 
   class_methods do
     def reply_key
-      if Feature.enabled?(:sent_notifications_partitioned_reply_key, :instance)
-        # Adding leading 0 to make the key size stable. 25 is the max we can get with 16 bytes
-        SecureRandom.random_number(2**(REPLY_KEY_BYTE_SIZE * 8)).to_s(INTEGER_CONVERT_BASE).rjust(25, '0')
-      else
-        SecureRandom.hex(REPLY_KEY_BYTE_SIZE)
-      end
+      # Adding leading 0 to make the key size stable. 25 is the max we can get with 16 bytes
+      SecureRandom.random_number(2**(REPLY_KEY_BYTE_SIZE * 8)).to_s(INTEGER_CONVERT_BASE).rjust(25, '0')
     end
 
     def for(reply_key)
@@ -46,11 +42,7 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
       return unless matches
 
       if matches[:reply_key]
-        if Feature.enabled?(:sent_notifications_partitioned_reply_key, :instance)
-          ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
-        else
-          find_by(reply_key: matches[:reply_key])
-        end
+        ::PartitionedSentNotification.find_by(partition: matches[:partition], reply_key: matches[:reply_key])
       else
         find_by(reply_key: matches[:legacy_key])
       end
@@ -81,9 +73,7 @@ module SentNotificationsShared # rubocop:disable Gitlab/BoundedContexts -- Tempo
         create(attrs)
       end
 
-      if !legacy_record.persisted? || Feature.disabled?(:sent_notifications_partitioned_reply_key, :instance)
-        return legacy_record
-      end
+      return legacy_record unless legacy_record.persisted?
 
       # This is temporary until we only use the new partitioned table. As a first step will continue to write
       # only to the original table and let the trigger write to the parttioned table. When reads look good, we

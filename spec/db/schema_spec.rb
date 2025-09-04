@@ -227,6 +227,19 @@ RSpec.describe 'Database schema',
       security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
       dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
       vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
+      backup_finding_evidences: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_finding_flags: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_finding_identifiers: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_finding_links: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_finding_remediations: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_finding_signatures: %w[finding_id], # having a FK on this table prevents partitions from being detached
+      backup_findings: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerabilities: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_external_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_merge_request_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       vulnerability_reads: %w[cluster_agent_id namespace_id], # namespace_id is a denormalization of `project.namespace`
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries

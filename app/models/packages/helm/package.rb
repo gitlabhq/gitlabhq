@@ -8,9 +8,17 @@ module Packages
       validates :name, format: { with: Gitlab::Regex.helm_package_regex }
       validates :version, format: { with: Gitlab::Regex.helm_version_regex }
 
-      def sync_helm_metadata_cache
-        channel = package_files.first.helm_file_metadatum.channel
-        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(project_id, channel)
+      def sync_helm_metadata_caches(user)
+        metadata = ::Packages::Helm::FileMetadatum.for_package_files(package_files)
+        .select_distinct_channel
+
+        return if metadata.blank?
+
+        ::Packages::Helm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
+          metadata,
+          arguments_proc: ->(metadatum) { [project_id, metadatum.channel] },
+          context_proc: ->(_) { { project: project, user: user } }
+        )
       end
     end
   end

@@ -30,16 +30,34 @@ These access levels are recognized:
 
 {{< /history >}}
 
-Gets a list of [protected tags](../user/project/protected_tags.md) from a project.
+Get a list of [protected tags](../user/project/protected_tags.md) from a project.
 This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.
 
 ```plaintext
 GET /projects/:id/protected_tags
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+Supported attributes:
+
+| Attribute | Type              | Required | Description                                                                      |
+|-----------|-------------------|----------|----------------------------------------------------------------------------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                         | Type    | Description |
+|---------------------------------------------------|---------|-------------|
+| `create_access_levels`                            | array   | Array of create access level configurations. |
+| `create_access_levels[].access_level`             | integer | Access level for creating tags. |
+| `create_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `create_access_levels[].deploy_key_id`            | integer | ID of the deploy key with create access. |
+| `create_access_levels[].group_id`                 | integer | ID of the group with create access. Premium and Ultimate only. |
+| `create_access_levels[].id`                       | integer | ID of the create access level configuration. |
+| `create_access_levels[].user_id`                  | integer | ID of the user with create access. Premium and Ultimate only. |
+| `name`                                            | string  | Name of the protected tag. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -65,23 +83,40 @@ Example response:
         "deploy_key_id": 1
       }
     ]
-  },
-  ...
+  }
 ]
 ```
 
-## Get a single protected tag or wildcard protected tag
+## Get a protected tag or wildcard protected tag
 
-Gets a single protected tag or wildcard protected tag.
+Get a single protected tag or wildcard protected tag.
 
 ```plaintext
 GET /projects/:id/protected_tags/:name
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `name` | string | yes | The name of the tag or wildcard. |
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`    | string            | Yes      | Name of the tag or wildcard. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                         | Type    | Description |
+|---------------------------------------------------|---------|-------------|
+| `create_access_levels`                            | array   | Array of create access level configurations. |
+| `create_access_levels[].access_level`             | integer | Access level for creating tags. |
+| `create_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `create_access_levels[].deploy_key_id`            | integer | ID of the deploy key with create access. |
+| `create_access_levels[].group_id`                 | integer | ID of the group with create access. Premium and Ultimate only. |
+| `create_access_levels[].id`                       | integer | ID of the create access level configuration. |
+| `create_access_levels[].user_id`                  | integer | ID of the user with create access. Premium and Ultimate only. |
+| `name`                                            | string  | Name of the protected tag. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -103,7 +138,7 @@ Example response:
 }
 ```
 
-## Protect repository tags
+## Protect a repository tag
 
 {{< history >}}
 
@@ -111,12 +146,37 @@ Example response:
 
 {{< /history >}}
 
-Protects a single repository tag, or several project repository
+Protect a single repository tag, or several project repository
 tags, using a wildcard protected tag.
 
 ```plaintext
 POST /projects/:id/protected_tags
 ```
+
+Supported attributes:
+
+| Attribute             | Type              | Required | Description |
+|-----------------------|-------------------|----------|-------------|
+| `id`                  | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`                | string            | Yes      | Name of the tag or wildcard. |
+| `allowed_to_create`   | array             | No       | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `create_access_level` | integer           | No       | Access levels allowed to create. Default is `40` (Maintainer role). |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                         | Type    | Description |
+|---------------------------------------------------|---------|-------------|
+| `create_access_levels`                            | array   | Array of create access level configurations. |
+| `create_access_levels[].access_level`             | integer | Access level for creating tags. |
+| `create_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `create_access_levels[].deploy_key_id`            | integer | ID of the deploy key with create access. |
+| `create_access_levels[].group_id`                 | integer | ID of the group with create access. Premium and Ultimate only. |
+| `create_access_levels[].id`                       | integer | ID of the create access level configuration. |
+| `create_access_levels[].user_id`                  | integer | ID of the user with create access. Premium and Ultimate only. |
+| `name`                                            | string  | Name of the protected tag. |
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -136,13 +196,6 @@ curl --request POST \
    "name" : "*-stable"
 }'
 ```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `name` | string | yes | The name of the tag or wildcard. |
-| `allowed_to_create`   | array  | no | Array of access levels allowed to create tags, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
-| `create_access_level` | string | no | Access levels allowed to create. Default: `40`, for Maintainer role. |
 
 Example response:
 
@@ -175,7 +228,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&allowed_to_create%5B%5D%5Buser_id%5D=10&allowed_to_create%5B%5D%5Bgroup_id%5D=20"
 ```
 
-The example response includes:
+This example response includes:
 
 - A protected tag with name `"*-stable"`.
 - `create_access_levels` with ID `1` for user with ID `10`.
@@ -205,22 +258,28 @@ The example response includes:
 
 ## Unprotect repository tags
 
-Unprotects the given protected tag or wildcard protected tag.
+Unprotect the given protected tag or wildcard protected tag.
 
 ```plaintext
 DELETE /projects/:id/protected_tags/:name
 ```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`    | string            | Yes      | Name of the tag. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable"
 ```
-
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `name` | string | yes | The name of the tag. |
 
 ## Related topics
 

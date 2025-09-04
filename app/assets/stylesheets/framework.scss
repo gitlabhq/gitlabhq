@@ -7,7 +7,10 @@
 
 @import 'bootstrap_migration';
 @import 'framework/layout';
+
+// Project Studio
 @import 'framework/application-chrome';
+@import 'framework/ds_experiments';
 
 @import 'framework/animations';
 @import 'framework/vue_transitions';

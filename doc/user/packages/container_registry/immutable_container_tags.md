@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Immutable container tags
+description: To prevent container tags from change or deletion, create immutable tag rules.
 ---
 
 {{< details >}}

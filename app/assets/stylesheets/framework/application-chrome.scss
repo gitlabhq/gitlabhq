@@ -81,69 +81,18 @@
   }
 
   // Quick search overlay search input
-  .global-search-modal .modal-content .gl-search-box-by-type-input-borderless {
-    @apply gl-rounded-lg;
+  &.page-with-panels .global-search-modal .modal-content {
+    @apply gl-rounded-[1rem] #{!important};
+
+    .gl-search-box-by-type-input-borderless {
+      @apply gl-rounded-[0.75rem];
+    }
   }
 
   // Organization switcher adjustment (light mode only)
   &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
     background-color: var(--gl-color-alpha-dark-4);
     @apply gl-border-default;
-  }
-
-  // Experiments
-
-  // Increased border radii for form elements and buttons
-  .gl-button,
-  .gl-button.gl-button,
-  .form-control,
-  .gl-form-input,
-  .gl-form-input.form-control,
-  .gl-form-select,
-  .input-group-text {
-    @apply gl-rounded-lg;
-  }
-
-  // Increased border radii for more components
-  .info-well,
-  .file-holder,
-  .table-holder {
-    @apply gl-rounded-lg #{!important};
-  }
-
-  .file-title-flex-parent, .file-holder .file-title-flex-parent {
-    border-top-left-radius: #{$gl-border-radius-lg - 1px};
-    border-top-right-radius: #{$gl-border-radius-lg - 1px};
-  }
-
-  // Modals
-  .gl-modal .modal-content,
-  &.page-with-panels .global-search-modal .modal-content {
-    @apply gl-rounded-[0.75rem] #{!important};
-  }
-
-  .topbar-signup-button {
-    --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
-    --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);
-    --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-1000);
-    --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-1000);
-
-    --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-800);
-    --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-950);
-    --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-1000);
-    --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-1000);
-  }
-
-  &.gl-dark .topbar-signup-button  {
-    --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-50);
-    --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-10);
-    --gl-button-confirm-primary-background-color-focus: var(--gl-color-neutral-0);
-    --gl-button-confirm-primary-background-color-active: var(--gl-color-neutral-0);
-
-    --gl-button-confirm-primary-border-color-default: var(--gl-color-neutral-50);
-    --gl-button-confirm-primary-border-color-hover: var(--gl-color-neutral-10);
-    --gl-button-confirm-primary-border-color-focus: var(--gl-color-neutral-0);
-    --gl-button-confirm-primary-border-color-active: var(--gl-color-neutral-0);
   }
 
 }
@@ -235,7 +184,31 @@
       background-color: var(--super-sidebar-nav-item-current-bg) !important;
       color: var(--super-sidebar-accent-color-fg) !important;
     }
+  }
 
+  .ai-panel-header-actions {
+    border-left: 1px solid var(--super-sidebar-bg);
+    @apply gl-pl-3;
+  }
+
+  .paneled-view:has(.ai-panel-maximized) {
+    flex-grow: 1;
+  }
+
+  // Hiding all other panels when DAP is maximized
+  .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+    display: none;
+  }
+
+  // Preserving other panels when DAP is maximized on bigger screens
+  @media(min-width: #{$paneled-layout-ultra-wide-breakpoint}) {
+    .paneled-view:has(.ai-panel-maximized) {
+      width: auto;
+    }
+
+    .panels-container:has(~ .paneled-view .ai-panel-maximized) {
+      display: flex;
+    }
   }
 
   // Panel header

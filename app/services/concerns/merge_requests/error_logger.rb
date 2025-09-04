@@ -2,7 +2,7 @@
 
 module MergeRequests
   module ErrorLogger
-    def log_error(exception:, message:, save_message_on_model: false)
+    def log_error(exception:, message:, save_message_on_model: false, track_exception: true)
       reference = merge_request.to_reference(full: true)
       data = {
         class: self.class.name,
@@ -14,7 +14,7 @@ module MergeRequests
 
       if exception
         Gitlab::ApplicationContext.with_context(user: current_user) do
-          Gitlab::ErrorTracking.track_exception(exception, data)
+          Gitlab::ErrorTracking.track_exception(exception, data) if track_exception
         end
 
         data[:"exception.message"] = exception.message

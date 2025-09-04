@@ -615,7 +615,7 @@ Project permissions for [container registry](packages/_index.md):
 
 **Footnotes**:
 
-1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions).
+1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). The Guest role does not have viewing or pulling permissions in private projects.
 
 Project permissions for [package registry](packages/_index.md):
 

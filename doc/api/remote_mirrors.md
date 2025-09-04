@@ -29,11 +29,34 @@ display and update them.
 
 ## List a project's remote mirrors
 
-Returns an array of remote mirrors and their statuses:
+Get an array of remote mirrors and their statuses for a project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors
 ```
+
+Supported attributes:
+
+| Attribute | Type              | Required | Description                                                                      |
+|-----------|-------------------|----------|----------------------------------------------------------------------------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).       |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                   | Type    | Description |
+|-----------------------------|---------|-------------|
+| `auth_method`               | string  | Authentication method used for the mirror. |
+| `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `id`                        | integer | ID of the remote mirror. |
+| `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
+| `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
+| `last_successful_update_at` | string  | Timestamp of the last successful mirror update. ISO 8601 format. |
+| `last_update_at`            | string  | Timestamp of the last mirror attempt. ISO 8601 format. |
+| `last_update_started_at`    | string  | Timestamp when the last mirror attempt started. ISO 8601 format. |
+| `only_protected_branches`   | boolean | If `true`, only protected branches are mirrored. |
+| `update_status`             | string  | Status of the mirror update. Possible values: `none`, `scheduled`, `started`, `finished`, `failed`. |
+| `url`                       | string  | Mirror URL with credentials scrubbed for security. |
 
 Example request:
 
@@ -64,11 +87,34 @@ Example response:
 
 ## Get a single project's remote mirror
 
-Returns a remote mirror and its statuses:
+Get a single remote mirror and its status for a project.
 
 ```plaintext
 GET /projects/:id/remote_mirrors/:mirror_id
 ```
+
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `mirror_id` | integer           | Yes      | ID of the remote mirror. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                   | Type    | Description |
+|-----------------------------|---------|-------------|
+| `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `id`                        | integer | ID of the remote mirror. |
+| `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
+| `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
+| `last_successful_update_at` | string  | Timestamp of the last successful mirror update. ISO 8601 format. |
+| `last_update_at`            | string  | Timestamp of the last mirror attempt. ISO 8601 format. |
+| `last_update_started_at`    | string  | Timestamp when the last mirror attempt started. ISO 8601 format. |
+| `only_protected_branches`   | boolean | If `true`, only protected branches are mirrored. |
+| `update_status`             | string  | Status of the mirror update. Possible values: `none`, `scheduled`, `started`, `finished`, `failed`. |
+| `url`                       | string  | Mirror URL with credentials scrubbed for security. |
 
 Example request:
 
@@ -110,17 +156,17 @@ GET /projects/:id/remote_mirrors/:mirror_id/public_key
 
 Supported attributes:
 
-| Attribute        | Type           | Required | Description |
-|:-----------------|:---------------|:---------|:------------|
-| `id`             | integer/string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
-| `mirror_id`      | integer        | Yes      | Remote mirror ID. |
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `mirror_id` | integer           | Yes      | ID of the remote mirror. |
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
-response attributes:
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
 
-| Attribute    | Type     | Description |
-|:-------------|:---------|:------------|
-| `public_key` |  string  | Public key of the remote mirror. |
+| Attribute   | Type   | Description                        |
+|-------------|--------|------------------------------------|
+| `public_key`| string | Public key of the remote mirror.  |
 
 Example request:
 
@@ -152,21 +198,41 @@ project pull mirroring API.
 
 {{< /history >}}
 
-Push mirroring is disabled by default. To enable it, include the optional parameter
-`enabled` when you create the mirror:
+Create a push mirror for a project. Push mirroring is disabled by default. To enable it, include the optional parameter
+`enabled` when you create the mirror.
 
 ```plaintext
 POST /projects/:id/remote_mirrors
 ```
 
-| Attribute                 | Type    | Required   | Description                                         |
-| :----------               | :-----  | :--------- | :------------                                       |
-| `url`                     | String  | yes        | The target URL to which the repository is mirrored. |
-| `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
-| `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
-| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
-| `mirror_branch_regex`     | String  | no         | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. Premium and Ultimate only. |
-| `auth_method`             | String  | no         | Determines the mirror authentication method (`ssh_public_key` or `password`). |
+Supported attributes:
+
+| Attribute                 | Type              | Required | Description |
+|---------------------------|-------------------|----------|-------------|
+| `id`                      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `url`                     | string            | Yes      | Target URL to which the repository is mirrored. |
+| `auth_method`             | string            | No       | Mirror authentication method. Accepted values: `ssh_public_key`, `password`. |
+| `enabled`                 | boolean           | No       | If `true`, the mirror is enabled. |
+| `keep_divergent_refs`     | boolean           | No       | If `true`, divergent refs are kept when mirroring. |
+| `mirror_branch_regex`     | string            | No       | Regular expression for branch names to mirror. Only branches with names matching the regex are mirrored. Requires `only_protected_branches` to be disabled. Premium and Ultimate only. |
+| `only_protected_branches` | boolean           | No       | If `true`, only protected branches are mirrored. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                   | Type    | Description |
+|-----------------------------|---------|-------------|
+| `auth_method`               | string  | Authentication method used for the mirror. |
+| `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `id`                        | integer | ID of the remote mirror. |
+| `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
+| `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
+| `last_successful_update_at` | string  | Timestamp of the last successful mirror update. ISO 8601 format. |
+| `last_update_at`            | string  | Timestamp of the last mirror attempt. ISO 8601 format. |
+| `last_update_started_at`    | string  | Timestamp when the last mirror attempt started. ISO 8601 format. |
+| `only_protected_branches`   | boolean | If `true`, only protected branches are mirrored. |
+| `update_status`             | string  | Status of the mirror update. Possible values: `none`, `scheduled`, `started`, `finished`, `failed`. |
+| `url`                       | string  | Mirror URL with credentials scrubbed for security. |
 
 Example request:
 
@@ -203,21 +269,41 @@ Example response:
 
 {{< /history >}}
 
-Toggle a remote mirror on or off, or change which types of branches are
-mirrored:
+Update a remote mirror's configuration. Toggle a remote mirror on or off, or change which types of branches are
+mirrored.
 
 ```plaintext
 PUT /projects/:id/remote_mirrors/:mirror_id
 ```
 
-| Attribute                 | Type    | Required   | Description                                         |
-| :----------               | :-----  | :--------- | :------------                                       |
-| `mirror_id`               | Integer | yes        | The remote mirror ID.                               |
-| `enabled`                 | Boolean | no         | Determines if the mirror is enabled.                |
-| `keep_divergent_refs`     | Boolean | no         | Determines if divergent refs are skipped.           |
-| `only_protected_branches` | Boolean | no         | Determines if only protected branches are mirrored. |
-| `mirror_branch_regex`     | String  | no         |  Determines if only the branch whose name matches the regex is mirrored. It does not work with `only_protected_branches` enabled. Premium and Ultimate only. |
-| `auth_method`             | String  | no         | Determines the mirror authentication method (`ssh_public_key` or `password`). |
+Supported attributes:
+
+| Attribute                 | Type              | Required | Description |
+|---------------------------|-------------------|----------|-------------|
+| `id`                      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `mirror_id`               | integer           | Yes      | ID of the remote mirror. |
+| `auth_method`             | string            | No       | Mirror authentication method. Accepted values: `ssh_public_key`, `password`. |
+| `enabled`                 | boolean           | No       | If `true`, the mirror is enabled. |
+| `keep_divergent_refs`     | boolean           | No       | If `true`, divergent refs are kept when mirroring. |
+| `mirror_branch_regex`     | string            | No       | Regular expression for branch names to mirror. Only branches with names matching the regex are mirrored. Does not work with `only_protected_branches` enabled. Premium and Ultimate only. |
+| `only_protected_branches` | boolean           | No       | If `true`, only protected branches are mirrored. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                   | Type    | Description |
+|-----------------------------|---------|-------------|
+| `auth_method`               | string  | Authentication method used for the mirror. |
+| `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `id`                        | integer | ID of the remote mirror. |
+| `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
+| `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
+| `last_successful_update_at` | string  | Timestamp of the last successful mirror update. ISO 8601 format. |
+| `last_update_at`            | string  | Timestamp of the last mirror attempt. ISO 8601 format. |
+| `last_update_started_at`    | string  | Timestamp when the last mirror attempt started. ISO 8601 format. |
+| `only_protected_branches`   | boolean | If `true`, only protected branches are mirrored. |
+| `update_status`             | string  | Status of the mirror update. Possible values: `none`, `scheduled`, `started`, `finished`, `failed`. |
+| `url`                       | string  | Mirror URL with credentials scrubbed for security. |
 
 Example request:
 
@@ -262,12 +348,12 @@ POST /projects/:id/remote_mirrors/:mirror_id/sync
 
 Supported attributes:
 
-| Attribute   | Type              | Required | Description                                                                          |
-|-------------|-------------------|----------|--------------------------------------------------------------------------------------|
-| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `mirror_id` | Integer           | Yes      | The remote mirror ID.                                                                |
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `mirror_id` | integer           | Yes      | ID of the remote mirror. |
 
-If successful, returns [`204`](rest/troubleshooting.md#status-codes).
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 Example request:
 
@@ -277,10 +363,6 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/sync"
 ```
 
-Example response:
-
-An empty response with an HTTP response code 204.
-
 ## Delete a remote mirror
 
 Delete a remote mirror.
@@ -289,9 +371,14 @@ Delete a remote mirror.
 DELETE /projects/:id/remote_mirrors/:mirror_id
 ```
 
-| Attribute   | Type    | Required   | Description       |
-| :---------- | :-----  | :--------- |:------------------|
-| `mirror_id` | Integer | yes        | Remote mirror ID. |
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `mirror_id` | integer           | Yes      | ID of the remote mirror. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 
 Example request:
 

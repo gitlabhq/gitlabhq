@@ -8,10 +8,10 @@ module Gitlab
         class BmWorkspaceAgentConfig < ::Gitlab::Database::Migration[2.3]::MigrationRecord
           include WorkspaceOperations::BmStates
 
-          self.table_name = 'workspace_agent_configs'
+          self.table_name = 'workspaces_agent_configs'
 
           belongs_to :agent,
-            class_name: 'Clusters::Agent', foreign_key: 'cluster_agent_id',
+            class_name: 'BmAgent', foreign_key: 'cluster_agent_id',
             inverse_of: :unversioned_latest_workspaces_agent_config
         end
         # rubocop:enable Migration/BatchedMigrationBaseClass

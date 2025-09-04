@@ -36,6 +36,7 @@ module Ci
 
     scope :for_project, ->(project_id) { where(project_id: project_id) }
     scope :for_checksum, ->(checksum) { where(checksum: checksum) }
+    scope :with_interruptible_true, -> { where(interruptible: true) }
 
     def self.fabricate(config:, project_id:, partition_id:)
       sanitized_config, checksum = sanitize_and_checksum(config)

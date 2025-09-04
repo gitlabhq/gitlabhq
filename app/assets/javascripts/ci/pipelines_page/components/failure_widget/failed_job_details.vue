@@ -105,7 +105,7 @@ export default {
       class="row gl-my-3 gl-flex gl-flex-wrap gl-items-center gl-gap-y-4"
       data-testid="widget-row"
     >
-      <div class="gl-col-4 gl-flex !gl-items-center gl-text-default">
+      <div class="gl-col-4 gl-flex gl-items-center gl-text-default">
         <ci-icon :status="job.detailedStatus" />
         <gl-link
           class="gl-ml-2 !gl-text-default !gl-no-underline"

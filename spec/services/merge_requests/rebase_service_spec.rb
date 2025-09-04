@@ -110,15 +110,41 @@ RSpec.describe MergeRequests::RebaseService, feature_category: :source_code_mana
       end
 
       it 'logs the error' do
-        expect(service).to receive(:log_error).with(exception: exception, message: described_class::REBASE_ERROR, save_message_on_model: true).and_call_original
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception,
-          {
-            class: described_class.to_s,
-            merge_request: merge_request_ref,
-            merge_request_id: merge_request.id,
-            message: described_class::REBASE_ERROR,
-            save_message_on_model: true
-          }).and_call_original
+        expect(service).to receive(:log_error).with(exception: exception, message: described_class::REBASE_ERROR, save_message_on_model: true, track_exception: true).and_call_original
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+
+        service.execute(merge_request)
+      end
+    end
+
+    context 'when GitError occurs' do
+      let(:git_exception) { Gitlab::Git::Repository::GitError.new('Git operation failed') }
+      let(:merge_request_ref) { merge_request.to_reference(full: true) }
+
+      before do
+        allow(repository).to receive(:gitaly_operation_client).and_raise(git_exception)
+      end
+
+      it 'saves a generic error message' do
+        service.execute(merge_request)
+
+        expect(merge_request.reload.merge_error).to eq(described_class::REBASE_ERROR)
+      end
+
+      it 'returns an error' do
+        expect(service.execute(merge_request)).to match(
+          status: :error, message: described_class::REBASE_ERROR
+        )
+      end
+
+      it 'logs the error but does not track GitError in Sentry' do
+        expect(service).to receive(:log_error).with(
+          exception: git_exception,
+          message: described_class::REBASE_ERROR,
+          save_message_on_model: true,
+          track_exception: false
+        ).and_call_original
+        expect(Gitlab::ErrorTracking).not_to receive(:track_exception)
 
         service.execute(merge_request)
       end

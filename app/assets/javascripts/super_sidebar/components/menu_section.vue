@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      isExpanded: Boolean(!this.isIconOnly && (this.expanded || this.item.is_active)),
+      isExpanded: Boolean(this.expanded || this.item.is_active),
       isMouseOverSection: false,
       isMouseOverFlyout: false,
       keepFlyoutClosed: false,
@@ -88,6 +88,9 @@ export default {
     isMouseOver() {
       return this.isMouseOverSection || this.isMouseOverFlyout;
     },
+    showExpanded() {
+      return !this.isIconOnly && this.isExpanded;
+    },
   },
   watch: {
     isExpanded(newIsExpanded) {
@@ -95,11 +98,6 @@ export default {
       this.keepFlyoutClosed = !this.newIsExpanded;
       if (!newIsExpanded) {
         this.isMouseOverFlyout = false;
-      }
-    },
-    isIconOnly(isIconOnly) {
-      if (isIconOnly) {
-        this.isExpanded = false;
       }
     },
   },
@@ -173,12 +171,12 @@ export default {
       </span>
 
       <span v-if="!isIconOnly" class="gl-mr-1 gl-text-right gl-text-subtle">
-        <gl-animated-chevron-right-down-icon :is-on="isExpanded" />
+        <gl-animated-chevron-right-down-icon :is-on="showExpanded" />
       </span>
     </button>
 
     <flyout-menu
-      v-if="hasFlyout && isMouseOver && !isExpanded && !keepFlyoutClosed && navItems.length > 0"
+      v-if="hasFlyout && isMouseOver && !showExpanded && !keepFlyoutClosed && navItems.length > 0"
       :target-id="`menu-section-button-${itemId}`"
       :title="item.title"
       :items="navItems"

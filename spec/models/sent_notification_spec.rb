@@ -136,14 +136,6 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       let(:reply_key) { sent_notification.reply_key }
 
       it { is_expected.to eq(sent_notification) }
-
-      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
-        before do
-          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
-        end
-
-        it { is_expected.to eq(sent_notification) }
-      end
     end
 
     context 'when reply key uses partitioned table format' do
@@ -153,14 +145,6 @@ RSpec.describe SentNotification, :request_store, feature_category: :shared do
       end
 
       it { is_expected.to eq(sent_notification) }
-
-      context 'when sent_notifications_partitioned_reply_key FF is disabled' do
-        before do
-          stub_feature_flags(sent_notifications_partitioned_reply_key: false)
-        end
-
-        it { is_expected.to eq(sent_notification) }
-      end
     end
   end
 

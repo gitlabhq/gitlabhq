@@ -134,6 +134,25 @@ relationship to the change, such as:
 - Its ordering in the diff.
 - The raw diff output itself.
 
+```ruby
+#<MergeRequestDiffFile:0x00007fd1ef7c9048
+  merge_request_diff_id: 28,
+  relative_order: 0,
+  new_file: true,
+  renamed_file: false,
+  deleted_file: false,
+  too_large: false,
+  a_mode: "0",
+  b_mode: "100644",
+  new_path: "files/ruby/feature.rb",
+  old_path: "files/ruby/feature.rb",
+  diff:
+   "@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to create a merge conflict\n+class Conflict\n+end\n",
+  binary: false,
+  external_diff_offset: nil,
+  external_diff_size: nil>
+```
+
 #### External diff storage
 
 By default, diff data of a `MergeRequestDiffFile` is stored in `diff` column in
@@ -158,22 +177,16 @@ This class provides verification information for Geo replication, but otherwise
 is not used for user-facing diffs.
 
 ```ruby
-#<MergeRequestDiffFile:0x00007fd1ef7c9048
+#<MergeRequestDiffDetail:0x0000795b4de5d860
   merge_request_diff_id: 28,
-  relative_order: 0,
-  new_file: true,
-  renamed_file: false,
-  deleted_file: false,
-  too_large: false,
-  a_mode: "0",
-  b_mode: "100644",
-  new_path: "files/ruby/feature.rb",
-  old_path: "files/ruby/feature.rb",
-  diff:
-   "@@ -0,0 +1,4 @@\n+# This file was changed in feature branch\n+# We put different code here to make merge conflict\n+class Conflict\n+end\n",
-  binary: false,
-  external_diff_offset: nil,
-  external_diff_size: nil>
+  verification_retry_at: Wed, 06 Aug 2022 06:35:52.000000000 UTC +00:00,
+  verified_at: Wed, 06 Aug 2022 06:38:59.000000000 UTC +00:00,
+  verification_retry_count: 1,
+  verification_checksum: e079a831cab27bcda7d81cd9b48296d0c3dd93df,
+  verification_failure: nil,
+  verification_state: 1,
+  verification_started_at: Wed, 06 Aug 2022 06:35:52.000000000 UTC +00:00,
+  project_id: 9>,
 ```
 
 ## Flow

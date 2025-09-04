@@ -27,12 +27,17 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/index.yaml' do
+    subject(:api_request) { get api(url) }
+
     let(:project_id) { project.id }
     let(:channel) { 'stable' }
     let(:url) { "/projects/#{project_id}/packages/helm/#{channel}/index.yaml" }
 
-    it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
-      subject(:execute) { get api(url) }
+    it 'enqueue a worker to sync a helm metadata cache' do
+      expect(Packages::Helm::CreateMetadataCacheWorker)
+        .to receive(:perform_async).with(project_id, channel)
+
+      api_request
     end
 
     context 'with a project id' do
@@ -48,8 +53,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     context 'with dot in channel' do
       let(:channel) { 'with.dot' }
 
-      subject { get api(url) }
-
       before do
         project.update!(visibility: 'public')
       end
@@ -58,8 +61,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     end
 
     context 'when helm metadata has appVersion' do
-      subject(:api_request) { get api(url) }
-
       where(:app_version, :expected_app_version) do
         '4852e000'  | "\"4852e000\""
         '1.0.0'     | "\"1.0.0\""
@@ -88,8 +89,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
     end
 
     context 'when metadata cache exists' do
-      subject(:api_request) { get api(url) }
-
       let_it_be(:channel) { 'stable' }
       let_it_be(:metadata_cache) { create(:helm_metadata_cache, project: project, channel: channel) }
 

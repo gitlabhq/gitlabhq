@@ -1,0 +1,13 @@
+---
+table_name: backup_finding_remediations
+classes:
+  - Vulnerabilities::Backups::FindingRemediation
+feature_categories:
+  - vulnerability_management
+description: Stores the data of archived vulnerability finding remediations
+introduced_by_url:
+milestone: '18.4'
+gitlab_schema: gitlab_sec
+sharding_key:
+  project_id: projects
+table_size: small

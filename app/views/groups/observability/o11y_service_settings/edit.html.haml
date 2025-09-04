@@ -3,6 +3,8 @@
 
 %h1.gl-sr-only= @breadcrumb_title
 
+- add_page_specific_style 'page_bundles/settings'
+
 = render ::Layouts::SettingsBlockComponent.new(s_('Observability|Observability Service Configuration'),
   id: 'o11y-service-settings',
   expanded: true) do |c|

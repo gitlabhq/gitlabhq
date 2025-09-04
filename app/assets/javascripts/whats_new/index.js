@@ -4,7 +4,7 @@ import store from './store';
 
 let whatsNewApp;
 
-export default (dataset = {}, withClose) => {
+export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {
@@ -23,6 +23,7 @@ export default (dataset = {}, withClose) => {
             markAsReadPath,
             mostRecentReleaseItemsCount,
             withClose,
+            updateHelpMenuUnreadBadge,
           },
         });
       },

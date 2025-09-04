@@ -16317,7 +16317,7 @@ msgstr ""
 msgid "ComplianceFrameworks|Set compliance pipeline configuration for projects that use this framework. %{linkStart}How do I create the configuration?%{linkEnd}"
 msgstr ""
 
-msgid "ComplianceFrameworks|Show only selected"
+msgid "ComplianceFrameworks|Show only currently selected"
 msgstr ""
 
 msgid "ComplianceFrameworks|Subgroup"
@@ -32895,10 +32895,22 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
+msgid "HomepageActivityWidget|Activity from users you follow."
+msgstr ""
+
+msgid "HomepageActivityWidget|Activity in projects you have starred."
+msgstr ""
+
+msgid "HomepageActivityWidget|Filter your activity feed to see different types of events."
+msgstr ""
+
 msgid "HomepageActivityWidget|Followed users"
 msgstr ""
 
 msgid "HomepageActivityWidget|Starred projects"
+msgstr ""
+
+msgid "HomepageActivityWidget|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
 msgstr ""
 
 msgid "HomepageActivityWidget|Your activity"
@@ -32907,10 +32919,10 @@ msgstr ""
 msgid "HomepageActivityWidget|Your activity feed is not available. Please refresh the page to try again."
 msgstr ""
 
-msgid "Homepage|Go to preferences"
+msgid "HomepageActivityWidget|Your contributions, like commits and work on issues and merge requests."
 msgstr ""
 
-msgid "Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
+msgid "Homepage|Go to preferences"
 msgstr ""
 
 msgid "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can update your user preferences."
@@ -39177,6 +39189,9 @@ msgstr ""
 msgid "Max size of this project's repository. %{repository_size_limit_link}."
 msgstr ""
 
+msgid "Maximize Duo Panel"
+msgstr ""
+
 msgid "Maximum 20 characters"
 msgstr ""
 
@@ -40897,6 +40912,9 @@ msgstr ""
 msgid "Minimal Access"
 msgstr ""
 
+msgid "Minimize Duo Panel"
+msgstr ""
+
 msgid "Minimum GitLab Language Server client version"
 msgstr ""
 
@@ -42573,6 +42591,9 @@ msgid "Newest first"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "Next card"
 msgstr ""
 
 msgid "Next commit"
@@ -44437,7 +44458,7 @@ msgstr ""
 msgid "Observability|The ID of the group for this o11y service configuration."
 msgstr ""
 
-msgid "Observability|The Name of your o11y service instance."
+msgid "Observability|The name of your o11y service instance."
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"
@@ -49024,6 +49045,9 @@ msgstr ""
 msgid "Preview suppressed by a .gitattributes entry or the file's encoding is unsupported."
 msgstr ""
 
+msgid "Previous card"
+msgstr ""
+
 msgid "Previous commit"
 msgstr ""
 
@@ -49198,9 +49222,6 @@ msgstr ""
 msgid "ProductAnalytics|GitLab-managed provider"
 msgstr ""
 
-msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
-msgstr ""
-
 msgid "ProductAnalytics|I agree to event collection and processing in this region."
 msgstr ""
 
@@ -49238,9 +49259,6 @@ msgid "ProductAnalytics|Set up Product Analytics to track how your product is pe
 msgstr ""
 
 msgid "ProductAnalytics|Snowplow configurator connection string"
-msgstr ""
-
-msgid "ProductAnalytics|Tell us what you think!"
 msgstr ""
 
 msgid "ProductAnalytics|The Product Analytics Beta on GitLab.com is offered only in the Google Cloud Platform zone %{zone}."
@@ -51882,7 +51900,13 @@ msgstr ""
 msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
 msgstr ""
 
+msgid "Property 'mountSources' of component '%{component}' is not yet supported"
+msgstr ""
+
 msgid "Property 'overrideCommand' of component '%{name}' must be a boolean (true or false)"
+msgstr ""
+
+msgid "Property 'sourceMapping' of component '%{component}' is not yet supported"
 msgstr ""
 
 msgid "Protect"
@@ -67010,6 +67034,9 @@ msgstr ""
 msgid "Todos|All"
 msgstr ""
 
+msgid "Todos|All your pending to-do items across GitLab."
+msgstr ""
+
 msgid "Todos|Approval required"
 msgstr ""
 
@@ -67055,6 +67082,9 @@ msgstr ""
 msgid "Todos|Filter to-do items"
 msgstr ""
 
+msgid "Todos|Filter your to-do items to focus on what needs your attention."
+msgstr ""
+
 msgid "Todos|For one hour"
 msgstr ""
 
@@ -67080,6 +67110,12 @@ msgid "Todos|Issue"
 msgstr ""
 
 msgid "Todos|It's how you always know what to work on next."
+msgstr ""
+
+msgid "Todos|Items assigned to you."
+msgstr ""
+
+msgid "Todos|Items where you were mentioned (@username)."
 msgstr ""
 
 msgid "Todos|Label priority"
@@ -67115,6 +67151,15 @@ msgid "Todos|Mentioned"
 msgstr ""
 
 msgid "Todos|Merge request"
+msgstr ""
+
+msgid "Todos|Merge requests that cannot be merged due to conflicts or other issues."
+msgstr ""
+
+msgid "Todos|Merge requests that require your review or approval."
+msgstr ""
+
+msgid "Todos|Merge requests with failed pipelines."
 msgstr ""
 
 msgid "Todos|Merge train removed"
@@ -68795,6 +68840,9 @@ msgstr ""
 msgid "UsageBilling|Current month usage"
 msgstr ""
 
+msgid "UsageBilling|Increase monthly commitment"
+msgstr ""
+
 msgid "UsageBilling|Purchase a monthly commitment"
 msgstr ""
 
@@ -68805,6 +68853,9 @@ msgid "UsageBilling|Usage by user"
 msgstr ""
 
 msgid "UsageBilling|Usage trends"
+msgstr ""
+
+msgid "UsageBilling|You can increase your commitment amount to extend your monthly allocation of tokens."
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

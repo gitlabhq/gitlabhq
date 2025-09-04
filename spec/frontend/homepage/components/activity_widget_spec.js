@@ -143,9 +143,24 @@ describe('ActivityWidget', () => {
     createWrapper();
 
     expect(findActivityFeedSelector().props('items')).toEqual([
-      { text: 'Your activity', value: null, scope: 'Your activity' },
-      { text: 'Starred projects', value: 'starred', scope: 'Starred projects' },
-      { text: 'Followed users', value: 'followed', scope: 'Followed users' },
+      {
+        text: 'Your activity',
+        value: null,
+        scope: 'Your activity',
+        description: 'Your contributions, like commits and work on issues and merge requests.',
+      },
+      {
+        text: 'Starred projects',
+        value: 'starred',
+        scope: 'Starred projects',
+        description: 'Activity in projects you have starred.',
+      },
+      {
+        text: 'Followed users',
+        value: 'followed',
+        scope: 'Followed users',
+        description: 'Activity from users you follow.',
+      },
     ]);
   });
 
