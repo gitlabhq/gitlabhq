@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Slsa::Attestation, feature_category: :artifact_security do
+RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
   describe "validations" do
-    subject { create(:slsa_attestation) }
+    subject { create(:supply_chain_attestation) }
 
     it { is_expected.to belong_to(:project) }
 

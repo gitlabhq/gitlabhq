@@ -239,6 +239,8 @@ Array inputs must be formatted as JSON, for example `["array-input-1", "array-in
 when manually passing inputs for:
 
 - [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token).
+- The [pipelines API](../../api/pipelines.md#create-a-new-pipeline).
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
 - [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
 

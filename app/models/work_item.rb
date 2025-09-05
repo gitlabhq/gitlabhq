@@ -393,9 +393,9 @@ class WorkItem < Issue
   end
 
   def max_depth_reached?(child_type)
-    restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
-      work_item_type_id,
-      child_type.id
+    restriction = ::WorkItems::SystemDefined::HierarchyRestriction.find_by(
+      parent_type_id: work_item_type_id,
+      child_type_id: child_type.id
     )
     return false unless restriction&.maximum_depth
 
@@ -472,8 +472,8 @@ class WorkItem < Issue
   def validate_child_restrictions(child_links)
     return if child_links.empty?
 
-    child_type_ids = child_links.joins(:work_item).select(self.class.arel_table[:work_item_type_id]).distinct
-    restrictions = ::WorkItems::HierarchyRestriction.where(
+    child_type_ids = child_links.joins(:work_item).distinct.pluck('issues.work_item_type_id') # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- Limited number of work item types
+    restrictions = ::WorkItems::SystemDefined::HierarchyRestriction.where(
       parent_type_id: work_item_type_id,
       child_type_id: child_type_ids
     )
@@ -488,9 +488,9 @@ class WorkItem < Issue
   end
 
   def validate_depth(parent_link, child_links)
-    restriction = ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
-      work_item_type_id,
-      work_item_type_id
+    restriction = ::WorkItems::SystemDefined::HierarchyRestriction.find_by(
+      parent_type_id: work_item_type_id,
+      child_type_id: work_item_type_id
     )
     return unless restriction&.maximum_depth
 
@@ -511,7 +511,7 @@ class WorkItem < Issue
   end
 
   def hierarchy_supports_parent?
-    ::WorkItems::HierarchyRestriction.find_by_child_type_id(work_item_type_id).present?
+    ::WorkItems::SystemDefined::HierarchyRestriction.find_by(child_type_id: work_item_type_id).present?
   end
 end
 

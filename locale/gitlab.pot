@@ -77823,9 +77823,6 @@ msgstr[1] ""
 msgid "parent already has maximum number of children."
 msgstr ""
 
-msgid "parent must be in the same project or group as child."
-msgstr ""
-
 msgid "password"
 msgstr ""
 

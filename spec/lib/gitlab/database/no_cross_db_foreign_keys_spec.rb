@@ -41,8 +41,12 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'appearance_uploads.project_id',                              # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
       'appearance_uploads.namespace_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
       'appearance_uploads.organization_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
-      'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/560712
+
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/560435
+      'dingtalk_tracker_data.integration_id',
+
       # https://gitlab.com/gitlab-org/gitlab/-/issues/560712
+      'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
       'audit_events_streaming_http_instance_namespace_filters.audit_events_instance_external_audit_event_destination_id'
     ]
 

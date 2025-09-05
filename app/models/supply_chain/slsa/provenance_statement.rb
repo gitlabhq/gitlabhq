@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Ci
+module SupplyChain
   module Slsa
     class ProvenanceStatement
       include ActiveModel::Serializers::JSON

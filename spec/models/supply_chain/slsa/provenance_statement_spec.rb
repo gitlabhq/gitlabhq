@@ -4,7 +4,7 @@ require 'spec_helper'
 
 SLSA_PROVENANCE_V1_SCHEMA = 'app/validators/json_schemas/slsa/in_toto_v1/provenance_v1.json'
 
-RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :artifact_security do
+RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifact_security do
   let(:parsed) { Gitlab::Json.parse(subject.to_json) }
 
   describe 'when ProvenanceStatement is correctly instantiated' do

@@ -66,10 +66,8 @@ module Gitlab
 
         def self.find_or_create_type(name)
           type = ::WorkItems::Type.find_by_name(name)
-          if type
-            type.clear_reactive_cache!
-            return type
-          end
+
+          return type if type
 
           Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
           ::WorkItems::Type.find_by_name(name)

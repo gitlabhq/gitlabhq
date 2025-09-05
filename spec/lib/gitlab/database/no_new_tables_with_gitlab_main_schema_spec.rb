@@ -20,10 +20,8 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
       'abuse_report_uploads',                                   # gitlab_main_clusterwide now deprecated
       'admin_roles',                                            # gitlab_main_clusterwide now deprecated
       'audit_events_instance_amazon_s3_configurations',         # gitlab_main_clusterwide now deprecated
-      'instance_audit_events',                                  # gitlab_main_clusterwide now deprecated
       'instance_integrations',                                  # gitlab_main_clusterwide now deprecated
       'ldap_admin_role_links',                                  # gitlab_main_clusterwide now deprecated
-      'user_audit_events',                                      # gitlab_main_clusterwide now deprecated
       'user_permission_export_upload_uploads'                   # gitlab_main_clusterwide now deprecated
     ]
   end

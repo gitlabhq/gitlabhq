@@ -10,7 +10,7 @@ class CreateSlsaAttestations < Gitlab::Database::Migration[2.3]
       if_not_exists: true
     }
 
-    create_table :slsa_attestations, **opts do |t|
+    create_table :slsa_attestations, **opts do |t| # rubocop:disable Migration/EnsureFactoryForTable -- class moved to SupplyChain::Attestation
       t.timestamps_with_timezone null: false
       t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }
       t.bigint :build_id, index: true

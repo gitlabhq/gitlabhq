@@ -24,11 +24,11 @@ module Types
           description: 'Allowed parent types for the work item type.'
 
         def allowed_child_types(parent:)
-          parent.allowed_child_types(cache: true, authorize: true, resource_parent: context[:resource_parent])
+          parent.allowed_child_types(authorize: true, resource_parent: context[:resource_parent])
         end
 
         def allowed_parent_types(parent:)
-          parent.allowed_parent_types(cache: true, authorize: true, resource_parent: context[:resource_parent])
+          parent.allowed_parent_types(authorize: true, resource_parent: context[:resource_parent])
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

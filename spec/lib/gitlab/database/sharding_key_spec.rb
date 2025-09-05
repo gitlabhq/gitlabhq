@@ -88,6 +88,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
       'project_audit_events.project_id',
       'group_audit_events.group_id',
+      'user_audit_events.user_id',
       # aggregated table, a worker ensures eventual consistency
       'analytics_cycle_analytics_issue_stage_events.group_id',
       # aggregated table, a worker ensures eventual consistency

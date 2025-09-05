@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :slsa_attestation, class: 'Ci::Slsa::Attestation' do
+  factory :supply_chain_attestation, class: 'SupplyChain::Attestation' do
     project factory: :project
     build factory: [:ci_build, :success]
     predicate_kind { :provenance }

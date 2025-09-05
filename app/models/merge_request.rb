@@ -601,13 +601,9 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:optimize_merge_requests_banned_users_query, :instance)
-      # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
-      # loading of all banned user IDs for certain queries
-      where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
-    else
-      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
-    end
+    # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
+    # loading of all banned user IDs for certain queries
+    where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
   }
 
   scope :merged_without_state_event_source, -> {

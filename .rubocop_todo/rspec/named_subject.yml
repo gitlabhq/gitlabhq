@@ -2453,7 +2453,6 @@ RSpec/NamedSubject:
     - 'spec/models/users/namespace_commit_email_spec.rb'
     - 'spec/models/web_ide_terminal_spec.rb'
     - 'spec/models/wiki_page/meta_spec.rb'
-    - 'spec/models/work_items/type_spec.rb'
     - 'spec/models/x509_certificate_spec.rb'
     - 'spec/models/zoom_meeting_spec.rb'
     - 'spec/policies/concerns/policy_actor_spec.rb'

@@ -13,6 +13,7 @@ lock_gitlab_schemas:
   - gitlab_main_org
   - gitlab_main_cell
   - gitlab_main_cell_local
+  - gitlab_main_jh
   - gitlab_pm
   - gitlab_sec
 klass: Ci::ApplicationRecord

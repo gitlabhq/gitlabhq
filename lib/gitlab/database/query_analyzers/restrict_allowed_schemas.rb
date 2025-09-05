@@ -23,6 +23,7 @@ module Gitlab
           gitlab_main_cell: :gitlab_main,
           gitlab_main_org: :gitlab_main,
           gitlab_main_cell_local: :gitlab_main,
+          gitlab_main_jh: :gitlab_main,
           gitlab_ci_cell_local: :gitlab_ci,
           gitlab_main_cell_setting: :gitlab_main,
           gitlab_main_user: :gitlab_main
