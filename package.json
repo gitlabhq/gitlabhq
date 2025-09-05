@@ -50,7 +50,7 @@
     "webpack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.vendor.config.js",
     "webpack-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" NODE_ENV=production webpack --config config/webpack.config.js",
-    "vite-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=8000}\" NODE_ENV=production vite build"
+    "vite-prod": "yarn run tailwindcss:build && yarn run tailwindcss:cqs:build && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=8000}\" NODE_ENV=production vite build"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",

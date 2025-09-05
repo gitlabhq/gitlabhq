@@ -69,7 +69,7 @@ will stop working.
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job                                                                                                                              | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation)                                                                                                               | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting)                                                                                                                                           | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
-| [Access to Dependency List page](../dependency_list/_index.md)                                                                                                                                                    | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
+| [Access to dependency list page](../dependency_list/_index.md)                                                                                                                                                    | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 
 ## Getting started
 
@@ -863,7 +863,7 @@ These reports must follow a format defined in the
 
 In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
 
-This report can be viewed in the [Dependency List](../dependency_list/_index.md).
+This report can be viewed in the [dependency list](../dependency_list/_index.md).
 
 You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 

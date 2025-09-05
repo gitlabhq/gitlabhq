@@ -15,7 +15,7 @@
       "jh/images/*"
     ],
     "skipProxy": true,
-    "publicOutputDir": "vite-dev",
+    "publicOutputDir": "assets/vite",
     "devServerConnectTimeout": 3
   }
 }

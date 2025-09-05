@@ -11,12 +11,12 @@
   resolution_role: Developer
   manual_task: true
   body: |  # (required) Don't change this line.
-    In GitLab 18.0, we will update SAST and IaC Scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
+    In GitLab 18.0, we will update SAST and IaC scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
 
     This change affects the CI/CD templates for:
 
     - SAST: `SAST.gitlab-ci.yml`.
-    - IaC Scanning: `SAST-IaC.gitlab-ci.yml`.
+    - IaC scanning: `SAST-IaC.gitlab-ci.yml`.
 
     We already updated the `latest` templates `SAST.latest.gitlab-ci.yml` and `SAST-IaC.latest.gitlab-ci.yml`. See [stable and latest templates](https://docs.gitlab.com/user/application_security/sast/#stable-vs-latest-sast-templates) for more details on these template versions.
 

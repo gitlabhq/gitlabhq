@@ -2,6 +2,7 @@
 
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    include Ci::ProcessablePolicy
     include Ci::DeployablePolicy
 
     delegate(:project) { @subject.project }
@@ -38,10 +39,6 @@ module Ci
 
     condition(:branch_allows_collaboration) do
       @subject.project.branch_allows_collaboration?(@user, @subject.ref)
-    end
-
-    condition(:archived, scope: :subject) do
-      @subject.archived?(log: true)
     end
 
     condition(:artifacts_public, scope: :subject) do
@@ -99,9 +96,13 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref) }.policy do
+    rule { ~can?(:jailbreak) & protected_ref }.policy do
       prevent(*ProjectPolicy::UPDATE_JOB_PERMISSIONS)
       prevent(*ProjectPolicy::CLEANUP_JOB_PERMISSIONS)
+    end
+
+    rule { archived }.policy do
+      prevent :create_build_terminal
     end
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build

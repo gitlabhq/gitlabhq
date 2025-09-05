@@ -86,7 +86,7 @@ export default defineConfig({
        */
       {
         find: /^gitlab-(sans|mono)\//,
-        replacement: 'node_modules/@gitlab/fonts/gitlab-$1/',
+        replacement: '@gitlab/fonts/gitlab-$1/',
       },
     ],
   },
@@ -120,12 +120,13 @@ export default defineConfig({
     IS_JH: IS_JH
       ? JSON.stringify('typeof window !== "undefined" && window.gon && window.gon.jh')
       : JSON.stringify(false),
+    'process.platform': JSON.stringify(''),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
     'window.IS_VITE': JSON.stringify(true),
     'window.VUE_DEVTOOLS_CONFIG.openInEditorHost': JSON.stringify(
-      `${viteGDKConfig.https?.enabled ? 'https' : 'http'}://${viteGDKConfig.public_host}:${viteGDKConfig.port}/vite-dev/`,
+      `${viteGDKConfig.https?.enabled ? 'https' : 'http'}://${viteGDKConfig.public_host}:${viteGDKConfig.port}/assets/vite/`,
     ),
     'process.env.PDF_JS_WORKER_PUBLIC_PATH': JSON.stringify(PDF_JS_WORKER_PUBLIC_PATH),
     'process.env.PDF_JS_CMAPS_UBLIC_PATH': JSON.stringify(PDF_JS_CMAPS_PUBLIC_PATH),

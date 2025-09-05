@@ -20,7 +20,7 @@ To see vulnerabilities in response, user should be authorized to read
 ## List project dependencies
 
 Get a list of project dependencies. This API partially mirroring
-[Dependency List](../user/application_security/dependency_list/_index.md) feature.
+[dependency list](../user/application_security/dependency_list/_index.md) feature.
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
 supported by Gemnasium.
 

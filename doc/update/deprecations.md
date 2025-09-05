@@ -1387,7 +1387,7 @@ Specifically, the following analyzers will no longer be updated after the GitLab
 - DAST: version 5
 - DAST API: version 4
 - Fuzz API: version 4
-- IaC Scanning: version 5
+- IaC scanning: version 5
 - Pipeline Secret Detection: version 6
 - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `kics`
@@ -3293,11 +3293,9 @@ The table below lists the deprecated metrics and their respective replacements. 
 </div>
 
 Today in GitLab you can see a list of all of the licenses your project and the components that
-use that license on the License List. As of 16.8, the License List
-is deprecated and scheduled to be removed in 17.0 as a breaking change.
-With the release of the [Group Dependency List](https://docs.gitlab.com/user/application_security/dependency_list/)
-and the ability to filter by license on the project and group Dependency List, you can now
-access all of the licenses your project or group is using on the Dependency List.
+use that license on the License List. As of 16.8, the License List is deprecated and scheduled
+to be removed in 17.0 as a breaking change. You can now access all of the licenses your project
+or group is using on the dependency list, including the ability to filter by license.
 
 </div>
 
@@ -3720,7 +3718,7 @@ the GitLab 17.0 release:
 - DAST: version 4
 - DAST API: version 3
 - Fuzz API: version 3
-- IaC Scanning: version 4
+- IaC scanning: version 4
 - Secret Detection: version 5
 - Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `brakeman`
@@ -5560,7 +5558,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Dependency Scanning: version 3
 - Dynamic Application Security Testing (DAST): version 3
 - DAST API: version 2
-- IaC Scanning: version 3
+- IaC scanning: version 3
 - License Scanning: version 4
 - Secret Detection: version 4
 - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
@@ -5604,7 +5602,7 @@ The following templates will be updated:
 - DAST: [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
 - DAST API: [`DAST-API.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
 - Dependency Scanning: [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
-- IaC Scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
+- IaC scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
 - SAST: [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
 - Secret Detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
 
@@ -8249,12 +8247,12 @@ This change has been cancelled.
 
 {{< /alert >}}
 
-In GitLab 18.0, we will update SAST and IaC Scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
+In GitLab 18.0, we will update SAST and IaC scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
 
 This change affects the CI/CD templates for:
 
 - SAST: `SAST.gitlab-ci.yml`.
-- IaC Scanning: `SAST-IaC.gitlab-ci.yml`.
+- IaC scanning: `SAST-IaC.gitlab-ci.yml`.
 
 We already updated the `latest` templates `SAST.latest.gitlab-ci.yml` and `SAST-IaC.latest.gitlab-ci.yml`. See [stable and latest templates](https://docs.gitlab.com/user/application_security/sast/#stable-vs-latest-sast-templates) for more details on these template versions.
 

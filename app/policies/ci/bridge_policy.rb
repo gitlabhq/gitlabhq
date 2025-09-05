@@ -2,6 +2,7 @@
 
 module Ci
   class BridgePolicy < CommitStatusPolicy
+    include Ci::ProcessablePolicy
     include Ci::DeployablePolicy
 
     condition(:can_update_downstream_branch) do

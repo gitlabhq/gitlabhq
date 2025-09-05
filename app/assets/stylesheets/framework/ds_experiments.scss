@@ -2,9 +2,12 @@
  * DS experiments
  */
 
+
+ // Increased border radii
+
  :where(.application-chrome) {
 
-  // Increased border radii for form elements and buttons
+  // Form elements and buttons
   .gl-button,
   .gl-button.gl-button,
   .form-control,
@@ -16,6 +19,12 @@
     @apply gl-rounded-lg;
   }
 
+  // Decrease spacing between buttons
+  // to align with optical spacing
+  .gl-gap-3:has(> .gl-button) {
+    @apply gl-gap-[0.375rem]; // 6px
+  }
+
   // Filtered search button
   .filtered-search-history-dropdown-toggle-button.gl-button,
   .input-group-prepend .btn {
@@ -24,18 +33,6 @@
 
   .input-group-append .btn {
     @apply gl-rounded-r-lg #{!important};
-  }
-
-  // Increased border radii for more components
-  .info-well,
-  .file-holder,
-  .table-holder {
-    @apply gl-rounded-lg #{!important};
-  }
-
-  .file-title-flex-parent, .file-holder .file-title-flex-parent {
-    border-top-left-radius: #{$gl-border-radius-lg - 1px};
-    border-top-right-radius: #{$gl-border-radius-lg - 1px};
   }
 
   // Increased border radii for GlModal
@@ -70,6 +67,59 @@
     @apply gl-rounded-b-lg;
   }
 
+  // Increased border radii for more components
+  .info-well,
+  .file-holder,
+  .table-holder {
+    @apply gl-rounded-lg #{!important};
+  }
+
+  // Tree
+  table.tree-table tbody tr:last-child {
+    td, th {
+      &:first-child {
+        border-bottom-left-radius: calc(#{$gl-border-radius-lg} - 1px) !important;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: calc(#{$gl-border-radius-lg} - 1px) !important;
+      }
+    }
+  }
+
+  // File title
+  .file-title-flex-parent, .file-holder .file-title-flex-parent {
+    border-top-left-radius: #{$gl-border-radius-lg - 1px} !important;
+    border-top-right-radius: #{$gl-border-radius-lg - 1px} !important;
+  }
+
+  // Discussion file comment
+  .discussion-body .diff-file .file-title {
+    @apply gl-rounded-none #{!important};
+  }
+
+  // Issue boards
+  // Profile readme
+  // User calendar
+  .board > .gl-rounded-base,
+  .profile-readme.read-more-container.gl-rounded-base,
+  .read-more-trigger.gl-rounded-base,
+  .user-calendar.gl-rounded-base {
+    @apply gl-rounded-lg;
+  }
+
+  // Readme
+  .read-more-trigger.gl-rounded-b-base {
+    @apply gl-rounded-b-lg;
+  }
+
+}
+
+// Neutralize design tokens
+
+:where(.application-chrome) {
+
+  // Sign up button
   .topbar-signup-button {
     --gl-button-confirm-primary-background-color-default: var(--gl-color-neutral-800);
     --gl-button-confirm-primary-background-color-hover: var(--gl-color-neutral-950);

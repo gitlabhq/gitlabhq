@@ -332,7 +332,7 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 1. Including Android.
 
 The SAST CI/CD template also includes an analyzer job that can scan Kubernetes manifests and Helm charts; this job is off by default.
-See [Enabling Kubesec analyzer](#enabling-kubesec-analyzer) or consider [IaC Scanning](../iac_scanning/_index.md), which supports additional platforms, instead.
+See [Enabling Kubesec analyzer](#enabling-kubesec-analyzer) or consider [IaC scanning](../iac_scanning/_index.md), which supports additional platforms, instead.
 
 To learn more about SAST analyzers that are no longer supported, see [Analyzers that have reached End of Support](analyzers.md#analyzers-that-have-reached-end-of-support).
 

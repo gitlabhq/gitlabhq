@@ -117,7 +117,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
     describe 'the worker-src directive' do
       it 'can be loaded from local origins' do
-        expect(worker_src).to eq("'self' http://localhost/assets/ blob: data: https://gdk.test:3443/vite-dev/")
+        expect(worker_src).to eq("'self' http://localhost/assets/ blob: data: https://gdk.test:3443/assets/vite/")
       end
     end
 
@@ -147,11 +147,11 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         end
 
         def dev_server_path
-          "#{origin}/vite-dev"
+          "#{origin}/assets/vite"
         end
 
         def dev_server_socket_path
-          "#{ws_protocol}://#{ViteRuby.config.host_with_port}/vite-dev"
+          "#{ws_protocol}://#{ViteRuby.config.host_with_port}/assets/vite"
         end
 
         before do
@@ -261,28 +261,28 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
     describe 'Websocket connections' do
       it 'with insecure domain' do
         stub_config_setting(host: 'example.com', https: false)
-        expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ ws://example.com")
+        expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ ws://example.com")
       end
 
       it 'with secure domain' do
         stub_config_setting(host: 'example.com', https: true)
-        expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ wss://example.com")
+        expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ wss://example.com")
       end
 
       it 'with custom port' do
         stub_config_setting(host: 'example.com', port: '1234')
-        expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ ws://example.com:1234")
+        expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ ws://example.com:1234")
       end
 
       it 'with custom port and secure domain' do
         stub_config_setting(host: 'example.com', https: true, port: '1234')
-        expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ wss://example.com:1234")
+        expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ wss://example.com:1234")
       end
 
       it 'when port is included in HTTP_PORTS' do
         described_class::HTTP_PORTS.each do |port|
           stub_config_setting(host: 'example.com', https: true, port: port)
-          expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ wss://example.com")
+          expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ wss://example.com")
         end
       end
     end
@@ -401,9 +401,9 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
 
         it 'does not include CDN host in CSP' do
           expect(script_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.script_src)
-          expect(style_src).to eq("#{::Gitlab::ContentSecurityPolicy::Directives.style_src} https://gdk.test:3443/vite-dev/")
-          expect(font_src).to eq("'self' https://gdk.test:3443/vite-dev/")
-          expect(worker_src).to eq("#{::Gitlab::ContentSecurityPolicy::Directives.worker_src} https://gdk.test:3443/vite-dev/")
+          expect(style_src).to eq("#{::Gitlab::ContentSecurityPolicy::Directives.style_src} https://gdk.test:3443/assets/vite/")
+          expect(font_src).to eq("'self' https://gdk.test:3443/assets/vite/")
+          expect(worker_src).to eq("#{::Gitlab::ContentSecurityPolicy::Directives.worker_src} https://gdk.test:3443/assets/vite/")
           expect(frame_src).to eq(::Gitlab::ContentSecurityPolicy::Directives.frame_src)
         end
       end
@@ -437,7 +437,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         end
 
         it 'adds new sentry path to CSP' do
-          expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ ws://gitlab.example.com dummy://sentry.example.com")
+          expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ ws://gitlab.example.com dummy://sentry.example.com")
         end
       end
 
@@ -451,7 +451,7 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         end
 
         it 'config is backwards compatible, does not add sentry path to CSP' do
-          expect(connect_src).to eq("'self' wss://gdk.test:3443/vite-dev/ https://gdk.test:3443/vite-dev/ ws://gitlab.example.com")
+          expect(connect_src).to eq("'self' wss://gdk.test:3443/assets/vite/ https://gdk.test:3443/assets/vite/ ws://gitlab.example.com")
         end
       end
     end

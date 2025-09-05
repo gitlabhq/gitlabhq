@@ -103,7 +103,7 @@ build-vite-prod:
   artifacts:
     expire_in: 1h
     paths:
-      - public/vite-dev/
+      - public/assets/vite/
 
 gdk:compile-test-assets:
   extends:

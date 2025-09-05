@@ -3221,7 +3221,6 @@ RSpec/FeatureCategory:
     - 'spec/policies/award_emoji_policy_spec.rb'
     - 'spec/policies/base_policy_spec.rb'
     - 'spec/policies/blob_policy_spec.rb'
-    - 'spec/policies/ci/bridge_policy_spec.rb'
     - 'spec/policies/clusters/agent_policy_spec.rb'
     - 'spec/policies/clusters/agent_token_policy_spec.rb'
     - 'spec/policies/clusters/agents/activity_event_policy_spec.rb'

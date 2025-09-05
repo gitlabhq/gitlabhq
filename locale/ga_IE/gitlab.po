@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-08-23 10:31\n"
+"PO-Revision-Date: 2025-08-27 11:01\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -935,21 +935,6 @@ msgstr "%{author} dúirt %{time}"
 
 msgid "%{author} has created a merge request that you can approve."
 msgstr "Chruthaigh %{author} iarratas cumaisc is féidir leat a cheadú."
-
-msgid "%{bStart}Customers are not affected:%{bEnd} we never log customer usage of Duo Chat (unless specifically requested by the customer)"
-msgstr "%{bStart}Ní dhéantar difear do chustaiméirí:%{bEnd} ní logálann muid úsáid chustaiméirí ar Duo Chat riamh (mura n-iarrann an custaiméir go sonrach é)"
-
-msgid "%{bStart}Privacy safeguards:%{bEnd} Your name and user ID are not logged as structured fields"
-msgstr "%{bStart}Cosaint príobháideachta:%{bEnd} Ní logáiltear d'ainm agus d'aitheantas úsáideora mar réimsí struchtúrtha"
-
-msgid "%{bStart}Purpose:%{bEnd} This data helps us improve Duo Chat and will never be used for performance evaluation. Note: The in-app feedback form states 'GitLab team members cannot see the AI content.' This does not apply for team members' interactions with the chat."
-msgstr "%{bStart}Cuspóir:%{bEnd} Cuidíonn an fhaisnéis seo linn Duo Chat a fheabhsú agus ní úsáidfear í choíche chun meastóireacht a dhéanamh ar fheidhmíocht. Tabhair faoi deara: Deir an fhoirm aiseolais san aip 'Ní féidir le baill foirne GitLab an t-ábhar AI a fheiceáil.' Ní bhaineann sé seo le hidirghníomhaíochtaí bhaill foirne leis an gcomhrá."
-
-msgid "%{bStart}What's logged:%{bEnd} Your questions, contexts (files, issues, MRs, etc.), and Duo's responses"
-msgstr "%{bStart}Cad atá logáilte:%{bEnd} Do cheisteanna, comhthéacsanna (comhaid, saincheisteanna, MRanna, srl.), agus freagraí Duo"
-
-msgid "%{bStart}Which interfaces are affected:%{bEnd} usage of Duo Chat in Web and IDEs as well as Duo Agentic Chat in Web and IDEs"
-msgstr "%{bStart}Cé na comhéadain atá buailte:%{bEnd} úsáid Duo Chat sa Ghréasán agus in IDEanna chomh maith le Duo Agentic Chat sa Ghréasán agus in IDEanna"
 
 msgid "%{board_target} not found"
 msgstr "%{board_target} níor aimsíodh"
@@ -2612,6 +2597,14 @@ msgstr[2] "%d seachtainí fágtha"
 msgstr[3] "%d seachtainí fágtha"
 msgstr[4] "%d seachtainí fágtha"
 
+msgid "1 work item selected"
+msgid_plural "%d work items selected"
+msgstr[0] "1 mhír oibre roghnaithe"
+msgstr[1] "%d mír oibre roghnaithe"
+msgstr[2] "%d mír oibre roghnaithe"
+msgstr[3] "%d mír oibre roghnaithe"
+msgstr[4] "%d mír oibre roghnaithe"
+
 msgid "1 year remaining"
 msgid_plural "%d years remaining"
 msgstr[0] "1 bhliain fágtha"
@@ -2968,11 +2961,20 @@ msgstr "Nód dréachta"
 msgid "AICatalog|A public agent can be made private only if it is not used."
 msgstr "Ní féidir gníomhaire poiblí a dhéanamh príobháideach ach amháin mura n-úsáidtear é."
 
+msgid "AICatalog|A public flow can be made private only if it is not used."
+msgstr "Ní féidir sreabhadh poiblí a dhéanamh príobháideach ach amháin mura bhfuil sé in úsáid."
+
 msgid "AICatalog|AI Catalog"
 msgstr "Catalóg AI"
 
 msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
 msgstr "Comhlánaíonn gníomhairí AI tascanna speisialaithe. Bíonn siad gníomhach nuair a chuirtear san áireamh i Sreabhadh iad."
+
+msgid "AICatalog|Add this flow to a project or a group"
+msgstr "Cuir an sreabhadh seo le tionscadal nó le grúpa"
+
+msgid "AICatalog|Add to project or group"
+msgstr "Cuir le tionscadal nó grúpa"
 
 msgid "AICatalog|Agent created successfully."
 msgstr "Cruthaíodh an gníomhaire go rathúil."
@@ -3022,6 +3024,9 @@ msgstr "Roghnaigh ainm cuimhneacháin do do shreabhadh AI."
 msgid "AICatalog|Choose who can view and interact with this agent after it is published to the public AI catalog."
 msgstr "Roghnaigh cé a fhéadfaidh an gníomhaire seo a fheiceáil agus idirghníomhú leis tar éis é a fhoilsiú sa chatalóg phoiblí AI."
 
+msgid "AICatalog|Choose who can view and interact with this flow after it is published to the public AI catalog."
+msgstr "Roghnaigh cé a fhéadfaidh an sreabhadh seo a fheiceáil agus idirghníomhú leis tar éis é a fhoilsiú chuig an gcatalóg phoiblí AI."
+
 msgid "AICatalog|Connect AI agents to automate complicated tasks."
 msgstr "Ceangail gníomhairí AI chun tascanna casta a uathoibriú."
 
@@ -3061,6 +3066,9 @@ msgstr "Gníomhaire a chur in eagar"
 msgid "AICatalog|Edit flow"
 msgstr "Cuir sreabhadh in eagar"
 
+msgid "AICatalog|Failed to add flow to target. Flow not found."
+msgstr "Theip ar shreabhadh a chur leis an sprioc. Níor aimsíodh an sreabhadh."
+
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr "Theip ar an ngníomhaire a scriosadh. %{error}"
 
@@ -3070,11 +3078,20 @@ msgstr "Theip ar an sreabhadh a scriosadh. %{error}"
 msgid "AICatalog|Failed to execute agent."
 msgstr "Theip ar an ngníomhaire a fhorghníomhú."
 
+msgid "AICatalog|Flow added successfully to %{name}."
+msgstr "Cuireadh an sreabhadh le %{name} go rathúil."
+
+msgid "AICatalog|Flow could not be added: %{flowName}"
+msgstr "Níorbh fhéidir an sreabhadh a chur leis: %{flowName}"
+
 msgid "AICatalog|Flow created successfully."
 msgstr "Cruthaíodh an sreabhadh go rathúil."
 
 msgid "AICatalog|Flow deleted successfully."
 msgstr "Scriosadh an sreabhadh go rathúil."
+
+msgid "AICatalog|Flow node"
+msgstr "Nód sreafa"
 
 msgid "AICatalog|Flow nodes"
 msgstr "Nóid sreafa"
@@ -3127,6 +3144,9 @@ msgstr "Tionscadal"
 msgid "AICatalog|Project is required."
 msgstr "Tá tionscadal ag teastáil."
 
+msgid "AICatalog|Project or Group ID"
+msgstr "Aitheantas Tionscadail nó Grúpa"
+
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr "Cuir treoracha nó comhthéacs réamhshocraithe ar fáil a chuirfear san áireamh le gach idirghníomhaíocht úsáideora."
 
@@ -3151,11 +3171,20 @@ msgstr "Roghnaigh tionscadal a mbeidh do ghníomhaire AI bainteach leis."
 msgid "AICatalog|Select a project for your AI flow to be associated with."
 msgstr "Roghnaigh tionscadal le go mbeidh do shreabhadh AI bainteach leis."
 
+msgid "AICatalog|Select a project or group for which you want to enable this flow."
+msgstr "Roghnaigh tionscadal nó grúpa ar mhaith leat an sreabhadh seo a chumasú dó."
+
 msgid "AICatalog|Select agent"
 msgstr "Roghnaigh gníomhaire"
 
 msgid "AICatalog|Select tools that this agent will have access to."
 msgstr "Roghnaigh uirlisí a mbeidh rochtain ag an ngníomhaire seo orthu."
+
+msgid "AICatalog|Selected flow"
+msgstr "Sreabhadh roghnaithe"
+
+msgid "AICatalog|Steps"
+msgstr "Céimeanna"
 
 msgid "AICatalog|System prompt"
 msgstr "Pras Córas"
@@ -3178,6 +3207,9 @@ msgstr "Níorbh fhéidir an gníomhaire a nuashonrú. Déan iarracht eile."
 msgid "AICatalog|The flow could not be added. Try again."
 msgstr "Níorbh fhéidir an sreabhadh a chur leis. Déan iarracht eile."
 
+msgid "AICatalog|The flow could not be enabled. Try again. %{error}"
+msgstr "Níorbh fhéidir an sreabhadh a chumasú. Déan iarracht eile. %{error}"
+
 msgid "AICatalog|The flow could not be updated. Try again."
 msgstr "Níorbh fhéidir an sreabhadh a nuashonrú. Déan iarracht eile."
 
@@ -3186,6 +3218,9 @@ msgstr "Is féidir an gníomhaire seo a dhéanamh príobháideach mura n-úsáid
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr "Speisialtóireacht an ghníomhaire seo i... Is féidir leis cabhrú leat le... Is fearr a oireann do..."
+
+msgid "AICatalog|This flow can be made private if it is not used."
+msgstr "Is féidir an sreabhadh seo a dhéanamh príobháideach mura bhfuil sé in úsáid."
 
 msgid "AICatalog|This flow specializes in... It can help you with... Best suited for..."
 msgstr "Speisialtóireacht sa sreabhadh seo i... Is féidir leis cabhrú leat le... Is fearr a oireann do..."
@@ -4945,6 +4980,9 @@ msgstr "Múnla"
 msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
 msgstr "Gnéithe eile GitLab Duo"
 
+msgid "AdminAIPoweredFeatures|Select a model version for full control of your configuration, or GitLab Default for GitLab to manage the selection."
+msgstr "Roghnaigh leagan samhla chun do chumraíocht a rialú go hiomlán, nó Réamhshocrú GitLab do GitLab chun an roghnúchán a bhainistiú."
+
 msgid "AdminAIPoweredFeatures|Select a self-hosted model"
 msgstr "Roghnaigh samhail féin-óstach"
 
@@ -6553,6 +6591,9 @@ msgstr "Ardchuardach"
 msgid "Advanced Settings"
 msgstr "Ardsocruithe"
 
+msgid "Advanced editor"
+msgstr "Eagarthóir ardleibhéil"
+
 msgid "Advanced export options"
 msgstr "Roghanna onnmhairithe"
 
@@ -6805,6 +6846,9 @@ msgstr "Dáta deiridh: %{endDate}"
 msgid "AiPowered|Enroll in the Early Access Program"
 msgstr "Cláraigh sa Chlár Rochtana Luath"
 
+msgid "AiPowered|Enter the URL for your Duo Agent Platform service. This endpoint is used for GitLab Duo Agent Platform requests. %{br} The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\"."
+msgstr "Cuir isteach an URL do do sheirbhís Ardán Duo Agent. Úsáidtear an pointe deiridh seo le haghaidh iarratais Ardán Duo Agent GitLab. %{br} Ní mór don URL a bheith ina URL iomlán, lena n-áirítear an prótacal \"http://\" nó \"https://\". Mar shampla \"http://EXAMPLE-URL\"."
+
 msgid "AiPowered|Enter the URL for your local AI Gateway. This endpoint is used for GitLab Duo Self-Hosted requests.%{br}The URL must be a complete URL, including either the \"http://\" or \"https://\" protocol. For example \"http://EXAMPLE-URL\".%{br}For more information, see how to %{linkStart}install the GitLab AI Gateway.%{linkEnd}"
 msgstr "Cuir isteach an URL do do Thairseach AI áitiúil. Úsáidtear an críochphointe seo le haghaidh iarratais Féin-Óstáilte GitLab Duo.%{br}Ní mór URL iomlán a bheith san URL, lena n-áirítear an prótacal \"http://\" nó \"https://\". Mar shampla \"http://EXAMPLE-URL\".%{br}Le haghaidh tuilleadh eolais, féach conas %{linkStart}GitLab AI Gateway a shuiteáil.%{linkEnd}"
 
@@ -6894,6 +6938,9 @@ msgstr "URL Gateway AI Áitiúil"
 
 msgid "AiPowered|Local AI gateway URL"
 msgstr "URL geata áitiúil AI"
+
+msgid "AiPowered|Local Duo Agent Platform Service URL"
+msgstr "URL Seirbhíse Ardáin Gníomhaire Duo Áitiúil"
 
 msgid "AiPowered|Lock tooltip icon"
 msgstr "Deilbhín leid ghlasála"
@@ -7748,6 +7795,9 @@ msgstr "Níl gnéithe ar fáil. Is féidir le haon ghrúpa, foghrúpa nó tionsc
 msgid "AmazonQ|GitLab Duo with Amazon Q"
 msgstr "GitLab Duo le Amazon Q"
 
+msgid "AmazonQ|GitLab Duo with Amazon Q - Subscription ends on %{formatted_date}"
+msgstr "GitLab Duo le Amazon Q - Críochnaíonn an síntiús ar %{formatted_date}"
+
 msgid "AmazonQ|GitLab Duo with Amazon Q has been successfully disconnected"
 msgstr "Tá GitLab Duo le Amazon Q dícheangailte go rathúil"
 
@@ -7870,6 +7920,9 @@ msgstr "Laistigh de do chuntas AWS, cruthaigh ról IAM do Amazon Q agus don sol�
 
 msgid "AmazonQ|Your Amazon Q connection is missing or has been deleted. You'll need to reconnect to use this feature. Please see [Set up GitLab Duo with Amazon Q](https://docs.gitlab.com/user/duo_amazon_q/setup/#setup) for how to reconnect your Amazon Q developer plugin."
 msgstr "Tá do nasc Amazon Q ar iarraidh nó scriosadh é. Beidh ort athcheangal a dhéanamh chun an ghné seo a úsáid. Féach [Socraigh GitLab Duo le Amazon Q](https://docs.gitlab.com/user/duo_amazon_q/setup/#setup) le haghaidh conas do bhreiseán forbróra Amazon Q a athcheangal."
+
+msgid "AmazonQ|Your GitLab Duo with Amazon Q subscription has ended"
+msgstr "Tá deireadh le do shíntiús GitLab Duo le Amazon Q"
 
 msgid "AmazonQ|dev"
 msgstr "dev"
@@ -8519,6 +8572,9 @@ msgstr "Féach ar na deais atá ar fáil"
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
 msgstr "Féach ar méadrachtaí amháin d'úsáideoirí a thug toiliú le rianú gníomhaíochta."
+
+msgid "Analytics|You have insufficient %{linkStart}permissions%{linkEnd} to view this panel."
+msgstr "Níl go leor %{linkStart}ceadanna%{linkEnd} agat chun an painéal seo a fheiceáil."
 
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr "Déan anailís ar do spleáchais le haghaidh leochaileachtaí aitheanta."
@@ -9720,9 +9776,6 @@ msgstr "Ní mór ceann amháin ar a laghad de group_id nó project_id a shonrú"
 msgid "At risk"
 msgstr "I mbaol"
 
-msgid "At this moment, it is only possible to move work items to projects."
-msgstr "Faoi láthair, ní féidir ach míreanna oibre a bhogadh chuig tionscadail."
-
 msgid "Attach a file or image"
 msgstr "Ceangail comhad nó íomhá"
 
@@ -10098,6 +10151,9 @@ msgstr "Údaraíodh %{timeago}"
 
 msgid "Authored %{timeago} by %{author}"
 msgstr "Údaraíodh %{timeago} ag %{author}"
+
+msgid "Authored by %{authorName}"
+msgstr "Údaraithe ag %{authorName}"
 
 msgid "Authorization code:"
 msgstr "Cód údaraithe:"
@@ -13253,6 +13309,9 @@ msgstr "Ní féidir an creat réamhshocraithe a scriosadh"
 
 msgid "Cannot delete the default organization"
 msgstr "Ní féidir an eagraíocht réamhshocraithe a scriosadh"
+
+msgid "Cannot find target namespace."
+msgstr "Ní féidir ainmspás sprice a aimsiú."
 
 msgid "Cannot have more than %{maximum_path_exclusions} path exclusions for secret push protection per project"
 msgstr "Ní féidir níos mó ná %{maximum_path_exclusions} eisiaimh cosáin a bheith agat le haghaidh cosaint bhrú rúnda in aghaidh an tionscadail"
@@ -27802,6 +27861,9 @@ msgstr "Rith a chur chun cinn"
 msgid "ExperimentTracking|Run"
 msgstr "Rith"
 
+msgid "Experimental"
+msgstr "Turgnamhach"
+
 msgid "Experiments"
 msgstr "Turgnaimh"
 
@@ -30515,9 +30577,6 @@ msgstr "Bot Tacaíochta GitLab"
 msgid "GitLab Team"
 msgstr "GitLab Foireann"
 
-msgid "GitLab Team Member Notice: Chat Logging Active"
-msgstr "Fógra do Chomhalta Foirne GitLab: Logáil Comhrá Gníomhach"
-
 msgid "GitLab University"
 msgstr "Ollscoil GitLab"
 
@@ -31003,6 +31062,9 @@ msgstr "https://gitpod.example.com"
 
 msgid "Give feedback"
 msgstr "Tabhair aiseolas"
+
+msgid "Give us feedback"
+msgstr "Tabhair aiseolas dúinn"
 
 msgid "Give us some feedback"
 msgstr "Tabhair roinnt aiseolais dúinn"
@@ -33437,6 +33499,9 @@ msgstr "Dia duit %{username}!"
 
 msgid "Hi %{username},"
 msgstr "Dia duit %{username},"
+
+msgid "Hi, %{name}"
+msgstr "Haigh, %{name}"
 
 msgid "Hidden"
 msgstr "I bhfolach"
@@ -50434,6 +50499,9 @@ msgstr "SAML do %{group_name} Gníomhach"
 msgid "Profiles|SSH Key: %{title}"
 msgstr "Eochair SSH: %{title}"
 
+msgid "Profiles|Scheduled pipelines you own"
+msgstr "Píblínte sceidealaithe atá i do sheilbh"
+
 msgid "Profiles|Select a service to sign in with."
 msgstr "Roghnaigh seirbhís chun síniú isteach leis."
 
@@ -50539,6 +50607,9 @@ msgstr "Athraíodh ainm úsáideora"
 msgid "Profiles|Using emoji in names seems fun, but please try to set a status message instead"
 msgstr "Is cosúil gur spraoi a úsáid emoji in ainmneacha, ach déan iarracht teachtaireacht stádais a shocrú ina ionad"
 
+msgid "Profiles|View, edit, or transfer ownership of your active scheduled pipelines."
+msgstr "Féach ar do phíblínte sceidealaithe gníomhacha, cuir in eagar iad nó aistrigh úinéireacht orthu."
+
 msgid "Profiles|Warning! Insecure key. %{message}"
 msgstr "Rabhadh! Eochair neamhshlán. %{message}"
 
@@ -50559,6 +50630,9 @@ msgstr "Is féidir leat do avatar a uaslódáil anseo"
 
 msgid "Profiles|You can upload your avatar here or change it at %{gravatar_link}"
 msgstr "Is féidir leat d'avatar a uaslódáil anseo nó é a athrú ag %{gravatar_link}"
+
+msgid "Profiles|You do not own any active scheduled pipelines."
+msgstr "Níl aon phíblínte sceidealaithe gníomhacha i do sheilbh."
 
 msgid "Profiles|You don't have access to delete this user."
 msgstr "Níl rochtain agat an t-úsáideoir seo a scriosadh."
@@ -57573,6 +57647,9 @@ msgstr "Scriosadh Sceidealta Ag - %{permanent_deletion_time}"
 msgid "Scheduled a rebase of branch %{branch}."
 msgstr "Sceideáilte athbhunú brainse %{branch}."
 
+msgid "Scheduled pipelines"
+msgstr "Píblínte sceidealaithe"
+
 msgid "Scheduled pipelines cannot run more frequently than once per %{limit} minutes. A pipeline configured to run more frequently only starts after %{limit} minutes have elapsed since the last time it ran."
 msgstr "Ní féidir píblínte sceidealta rith níos minice ná uair amháin in aghaidh %{limit} nóiméad. Ní thosaíonn píblíne atá cumraithe le rith níos minice ach tar éis %{limit} nóiméad a bheith caite ón uair dheireanach a rith sé."
 
@@ -58835,6 +58912,9 @@ msgstr "%{allLabel} %{projectCount} %{projectLabel} sa ghrúpa seo"
 msgid "SecurityOrchestration|%{boldStart}Add branches%{boldEnd} first before selection."
 msgstr "%{boldStart} Cuir brainse %{boldEnd} leis ar dtús roimh roghnú."
 
+msgid "SecurityOrchestration|%{boldStart}Experiment:%{boldEnd} Try our new advanced policy editor for a more intuitive experience."
+msgstr "%{boldStart}Turgnamh:%{boldEnd} Bain triail as ár n-eagarthóir beartais chun cinn nua le haghaidh eispéireas níos iomasaí."
+
 msgid "SecurityOrchestration|%{boldStart}Send a bot message%{boldEnd} as comment to merge request creator."
 msgstr "%{boldStart} Seol teachtaireacht bota %{boldEnd} mar thrácht chun cruthaitheoir iarratais a chumasc."
 
@@ -59046,6 +59126,9 @@ msgstr "Uathoibriú %{strongStart}bainistiú leochaileachta%{strongEnd} sreabhad
 
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr "Reathaithe roghnaithe go huathoibríoch"
+
+msgid "SecurityOrchestration|Back to standard editor"
+msgstr "Ar ais chuig an eagarthóir caighdeánach"
 
 msgid "SecurityOrchestration|Branch exceptions (%{count})"
 msgstr "Eisceachtaí brainse (%{count})"
@@ -59933,6 +60016,9 @@ msgstr "Chun do chuardach a leathnú, athraigh scagairí thuas nó roghnaigh tio
 
 msgid "SecurityOrchestration|Trigger"
 msgstr "Truicear"
+
+msgid "SecurityOrchestration|Try advanced editor"
+msgstr "Bain triail as an eagarthóir ardleibhéil"
 
 msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr "Múch an modh réamhshocraithe chun scóip a chur in eagar."
@@ -60829,6 +60915,9 @@ msgstr "Ní féidir %{invalidProjectsMessage} a chur leis: %{errorMessage}"
 
 msgid "SecurityReports|Undo dismiss"
 msgstr "Cealaigh dífhostú"
+
+msgid "SecurityReports|Validity Check"
+msgstr "Seiceáil Bailíochta"
 
 msgid "SecurityReports|Validity check"
 msgstr "Seiceáil bailíochta"
@@ -63530,6 +63619,9 @@ msgstr "Stádas"
 msgid "Status (optional)"
 msgstr "Stádas (roghnach)"
 
+msgid "Status alert"
+msgstr "Foláireamh stádais"
+
 msgid "Status checks"
 msgstr "Seiceálacha stádais"
 
@@ -66228,6 +66320,9 @@ msgstr "Bhí fadhb ann an socrú déantáin is déanaí a fháil."
 msgid "There was a problem fetching the latest minimum override role."
 msgstr "Bhí fadhb ann maidir leis an íosról sáraithe is déanaí a fháil."
 
+msgid "There was a problem fetching the parent items."
+msgstr "Bhí fadhb ann agus na míreanna tuismitheora á n-aisghabháil."
+
 msgid "There was a problem fetching the pipeline summary."
 msgstr "Bhí fadhb ag fáil achoimre na píblíne."
 
@@ -66641,6 +66736,9 @@ msgstr "Athraíodh an comhad seo le haghaidh inléiteachta, agus ní féidir gla
 
 msgid "This form is disabled in preview"
 msgstr "Tá an fhoirm seo díchumasaithe sa réamhamharc"
+
+msgid "This graph shows commit history with branches and merges arranged from newest to oldest. Each dot represents a commit, with lines showing how code changes flow between different branches."
+msgstr "Taispeánann an graf seo stair na dtiomnuithe le brainsí agus cumaisc eagraithe ón gceann is nuaí go dtí an ceann is sine. Seasann gach ponc do thiomnú, le línte a thaispeánann conas a shreabhann athruithe cóid idir brainsí éagsúla."
 
 msgid "This group"
 msgstr "An grúpa seo"
@@ -68292,6 +68390,9 @@ msgstr "Scoránaigh imoibriú emoji"
 msgid "Toggle file browser"
 msgstr "Scoránaigh brabhsálaí comhad"
 
+msgid "Toggle file tree browser visibility"
+msgstr "Scoránaigh infheictheacht brabhsálaí crann comhad"
+
 msgid "Toggle focus mode"
 msgstr "Scoránaigh mód fócas"
 
@@ -69229,6 +69330,9 @@ msgstr "Tionscadal gan chartlann"
 
 msgid "Unarchiving the project restores its members' ability to make commits, and create issues, comments, and other entities. %{strong_start}After you unarchive the project, it displays in the search and on the dashboard.%{strong_end} %{link_start}Learn more.%{link_end}"
 msgstr "Déanann an tionscadal a dhícharlanadh cumas a chomhaltaí gealltanais a dhéanamh, agus saincheisteanna, tráchtanna agus eintiteas eile a chruthú. %{strong_start} Tar éis duit an tionscadal a dhíchartlann, taispeánann sé sa chuardach agus ar an deais. %{strong_end} %{link_start} Foghlaim níos mó. %{link_end}"
+
+msgid "Unassign"
+msgstr "Díshannadh"
 
 msgid "Unassign all"
 msgstr "Díshannadh gach rud"
@@ -71744,8 +71848,14 @@ msgstr "Glan an taisce"
 msgid "VirtualRegistry|Clear cache for %{upstreamName}?"
 msgstr "Glan an taisce do %{upstreamName}?"
 
+msgid "VirtualRegistry|Connection successful."
+msgstr "Ceangal rathúil."
+
 msgid "VirtualRegistry|Create Maven registry"
 msgstr "Cruthaigh clárlann Maven"
+
+msgid "VirtualRegistry|Create new upstream"
+msgstr "Cruthaigh sruthshruth nua"
 
 msgid "VirtualRegistry|Create registry"
 msgstr "Cruthaigh clárlann"
@@ -71786,6 +71896,12 @@ msgstr "Theip ar an taisce clárlainne a ghlanadh. Déan iarracht arís."
 msgid "VirtualRegistry|Failed to clear upstream cache. Try again."
 msgstr "Theip ar an taisce suas an sruth a ghlanadh. Déan iarracht arís."
 
+msgid "VirtualRegistry|Failed to connect %{msg}"
+msgstr "Theip ar cheangal %{msg}"
+
+msgid "VirtualRegistry|Failed to connect."
+msgstr "Theip ar an nascadh."
+
 msgid "VirtualRegistry|Failed to delete cache entry."
 msgstr "Theip ar an iontráil taisce a scriosadh."
 
@@ -71803,6 +71919,9 @@ msgstr "Theip ar shuíomh an tsrutha a nuashonrú. Déan iarracht eile."
 
 msgid "VirtualRegistry|Get started with virtual registries"
 msgstr "Tosaigh le clárlanna fíorúla"
+
+msgid "VirtualRegistry|Link existing upstream"
+msgstr "Nasc suas srutha atá ann cheana féin"
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
 msgstr "Bainistigh pacáistí thar ilfhoinsí agus sruthlínigh sreafaí oibre forbartha. %{learn_more_link}"
@@ -73139,9 +73258,6 @@ msgstr "Meáchan - %{maxIssueWeight}"
 msgid "Weight conflict warning"
 msgstr "Rabhadh coinbhleachta meáchain"
 
-msgid "Welcome %{name},"
-msgstr "Fáilte %{name},"
-
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr "Fáilte ar ais! Díghníomhaíodh do chuntas mar gheall ar neamhghníomhaíocht ach tá sé athghníomhachtaithe anois."
 
@@ -73820,6 +73936,12 @@ msgstr "Cuir suas le 10 mír leis ag an am."
 msgid "WorkItem|All activity"
 msgstr "Gach gníomhaíocht"
 
+msgid "WorkItem|An error occurred while exporting issues."
+msgstr "Tharla earráid agus saincheisteanna á n-easpórtáil."
+
+msgid "WorkItem|An error occurred while exporting work items."
+msgstr "Tharla earráid agus míreanna oibre á n-easpórtáil."
+
 msgid "WorkItem|An error occurred while getting work item counts."
 msgstr "Tharla earráid agus comhaireamh míreanna oibre á fháil."
 
@@ -74015,6 +74137,9 @@ msgstr "Cruthaigh réimse"
 msgid "WorkItem|Create lifecycle"
 msgstr "Cruthaigh saolré"
 
+msgid "WorkItem|Create new work item by email"
+msgstr "Cruthaigh mír oibre nua trí ríomhphost"
+
 msgid "WorkItem|Created %{timeago}"
 msgstr "Cruthaíodh %{timeago}"
 
@@ -74084,11 +74209,20 @@ msgstr "Stádas a chur in eagar"
 msgid "WorkItem|Edit work item"
 msgstr "Cuir mír oibre in eagar"
 
+msgid "WorkItem|Email a new work item to this project"
+msgstr "Seol mír oibre nua chuig an tionscadal seo le ríomhphost"
+
 msgid "WorkItem|Email participants"
 msgstr "Seol ríomhphost chuig rannpháirtithe"
 
 msgid "WorkItem|Emoji reactions"
 msgstr "Imoibrithe Emoji"
+
+msgid "WorkItem|Enter the work item description"
+msgstr "Cuir isteach cur síos ar an mír oibre"
+
+msgid "WorkItem|Enter the work item title"
+msgstr "Cuir isteach teideal na míre oibre"
 
 msgid "WorkItem|Epic"
 msgstr "Eipiciúil"
@@ -74104,6 +74238,15 @@ msgstr "%{workItemName} atá ann cheana"
 
 msgid "WorkItem|Existing task"
 msgstr "Tasc atá ann cheana"
+
+msgid "WorkItem|Export as CSV"
+msgstr "Easpórtáil mar CSV"
+
+msgid "WorkItem|Export issues"
+msgstr "Fadhbanna onnmhairithe"
+
+msgid "WorkItem|Export work items"
+msgstr "Easpórtáil míreanna oibre"
 
 msgid "WorkItem|Failed to archive custom field %{fieldName}."
 msgstr "Theip ar chartlannú réimse saincheaptha %{fieldName}."
@@ -74155,6 +74298,9 @@ msgstr "Stair amháin"
 
 msgid "WorkItem|How do I use custom fields?"
 msgstr "Conas a úsáidim réimsí saincheaptha?"
+
+msgid "WorkItem|Import from Jira"
+msgstr "Iompórtáil ó Jira"
 
 msgid "WorkItem|In progress"
 msgstr "Ar siúl"
@@ -74517,6 +74663,9 @@ msgstr "Roghnaigh cineálacha"
 msgid "WorkItem|Select which type you would like to change this item to."
 msgstr "Roghnaigh cén cineál ar mhaith leat an mhír seo a athrú chuige."
 
+msgid "WorkItem|Send email"
+msgstr "Seol ríomhphost"
+
 msgid "WorkItem|Show all ancestors"
 msgstr "Taispeáin gach sinsear"
 
@@ -74679,6 +74828,9 @@ msgstr "Téacs"
 msgid "WorkItem|The %{workItemType} was closed automatically when a branch was merged."
 msgstr "Dúnadh an %{workItemType} go huathoibríoch nuair a cumascaíodh brainse."
 
+msgid "WorkItem|The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."
+msgstr "Cruthófar an easpórtáil CSV sa chúlra. Nuair a bheidh sé críochnaithe, seolfar chuig %{email} é i gceangaltán."
+
 msgid "WorkItem|The current key result"
 msgstr "An príomhthoradh reatha"
 
@@ -74687,6 +74839,12 @@ msgstr "An cuspóir reatha"
 
 msgid "WorkItem|The current task"
 msgstr "An tasc reatha"
+
+msgid "WorkItem|The subject is used as the title of the new work item, and the message is the description. %{quickActionsLinkStart}Quick actions%{quickActionsLinkEnd} and styling with %{markdownLinkStart}Markdown%{markdownLinkEnd} are supported."
+msgstr "Úsáidtear an t-ábhar mar theideal don mhír oibre nua, agus is é an teachtaireacht an cur síos. Tacaítear le %{quickActionsLinkStart}Gníomhartha tapa%{quickActionsLinkEnd} agus stíliú le %{markdownLinkStart}Markdown%{markdownLinkEnd}."
+
+msgid "WorkItem|There was an error when resetting email token."
+msgstr "Tharla earráid agus an comhartha ríomhphoist á athshocrú."
 
 msgid "WorkItem|These existing items have a similar title and may represent potential duplicates."
 msgstr "Tá teideal comhchosúil ag na hítimí reatha seo agus b’fhéidir gur dúbailt ionchasacha iad."
@@ -74708,6 +74866,9 @@ msgstr "Ní féidir an gníomh seo a chealú."
 
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
 msgstr "Níl aon réimsí saincheaptha gníomhacha ag an ngrúpa seo. Cruthaigh réimse saincheaptha chun sonraí atá tábhachtach do d'fhoireann a rianú."
+
+msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHelpLinkEnd} generated just for you. Anyone who has it can create work items as if they were you. If that happens, %{resetLinkStart}reset this token%{resetLinkEnd}."
+msgstr "Seo seoladh %{emailsHelpLinkStart}ríomhphoist príobháideach %{emailsHelpLinkEnd}a gineadh díreach duitse. Is féidir le duine ar bith a bhfuil sé aige míreanna oibre a chruthú amhail is dá mba tusa féin iad. Má tharlaíonn sé sin, %{resetLinkStart}athshocróidh sé an comhartha seo%{resetLinkEnd}."
 
 msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr "Tá an mhír seo i bhfolach mar go bhfuil cosc ​​curtha ar a húdar."
@@ -74807,6 +74968,9 @@ msgstr "Míreanna oibre"
 
 msgid "WorkItem|Yes, close %{workItemType}"
 msgstr "Sea, dún %{workItemType}"
+
+msgid "WorkItem|You can create a new work item inside this project by sending an email to the following email address:"
+msgstr "Is féidir leat mír oibre nua a chruthú laistigh den tionscadal seo trí ríomhphost a sheoladh chuig an seoladh ríomhphoist seo a leanas:"
 
 msgid "WorkItem|You cannot add another child %{workItemType}. You’ve reached the maximum number of nested levels."
 msgstr "Ní féidir leat leanbh eile %{workItemType} a chur leis. Tá an líon uasta leibhéil neadaithe bainte amach agat."
@@ -77141,6 +77305,9 @@ msgstr "Íoslódáil an paiste chun é a chur i bhfeidhm de láimh"
 
 msgid "ciReport|Dynamic Application Security Testing (DAST)"
 msgstr "Tástáil Slándála Feidhmchláir Dinimiciúil (DAST)"
+
+msgid "ciReport|Error while fetching enabled scans. Please try again later."
+msgstr "Earráid agus scananna cumasaithe á n-aisghabháil. Déan iarracht arís ar ball."
 
 msgid "ciReport|Explain vulnerability"
 msgstr "Mínigh leochaileacht"

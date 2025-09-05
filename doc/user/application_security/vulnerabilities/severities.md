@@ -107,7 +107,7 @@ All fuzz testing results are reported as Unknown. They should be reviewed and tr
 | [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)   | {{< icon name="check-circle" >}} Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
 | [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) | {{< icon name="check-circle" >}} Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
 
-## IaC Scanning
+## IaC scanning
 
 |  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
 |----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|

@@ -1,5 +1,6 @@
 <script>
 import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -7,6 +8,8 @@ import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/con
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
+import { buildApiUrl } from '~/api/api_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
@@ -42,11 +45,12 @@ export default {
     PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
+    DuoWorkflowAction,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   inject: {
     useFailedJobsWidget: {
       default: false,
@@ -128,6 +132,9 @@ export default {
 
       return pipelines;
     },
+    agentInvokePath() {
+      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
+    },
   },
   methods: {
     displayFailedJobsWidget(item) {
@@ -162,6 +169,22 @@ export default {
     },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
+    },
+    isFailed(item) {
+      return item.details.status.group === 'failed';
+    },
+    mergeRequestPath(item) {
+      if (item.merge_request?.path) {
+        return `${gon.gitlab_url}${item.merge_request.path}`;
+      }
+      return null;
+    },
+    showDuoWorkflowAction(item) {
+      return (
+        this.isFailed(item) &&
+        this.mergeRequestPath(item) &&
+        this.glFeatures.aiDuoAgentFixPipelineButton
+      );
     },
   },
   TBODY_TR_ATTR: {
@@ -236,7 +259,20 @@ export default {
           @cancel-pipeline="onCancelPipeline"
           @refresh-pipelines-table="onRefreshPipelinesTable"
           @retry-pipeline="onRetryPipeline"
-        />
+        >
+          <template #duo-workflow-action>
+            <duo-workflow-action
+              v-if="showDuoWorkflowAction(item)"
+              :duo-workflow-invoke-path="agentInvokePath"
+              :project-id="item.project.id"
+              :project-path="getProjectPath(item)"
+              :goal="mergeRequestPath(item)"
+              :title="__('Fix with Duo')"
+              workflow-definition="fix_pipeline/experimental"
+              size="medium"
+            />
+          </template>
+        </pipeline-operations>
       </template>
 
       <template #row-details="{ item }">

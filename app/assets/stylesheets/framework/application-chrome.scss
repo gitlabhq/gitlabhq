@@ -6,6 +6,13 @@
 
 :where(.application-chrome) {
 
+  // Variable overrides
+  @include media-breakpoint-up(xl) {
+    &.page-with-panels .page-with-super-sidebar {
+      --application-bar-left: 0px; // stylelint-disable-line length-zero-no-unit
+    }
+  }
+
   // Application chrome background
   body {
     background-color: var(--super-sidebar-bg);
@@ -227,7 +234,9 @@
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
     @apply gl-bg-default gl-shadow-none;
-    @apply gl-static gl-px-5 #{!important};
+    @apply gl-relative gl-px-5 #{!important};
+    z-index: 99;
+    border-bottom: 1px solid var(--super-sidebar-bg);
   }
 
   // Scrollbar offset
@@ -269,31 +278,41 @@
       @apply gl-h-full gl-pt-0;
     }
 
-    .work-item-drawer .work-item-drawer-content > div,
-    .work-item-router-view > .work-item-detail > div {
-      // «Hack» for nested sticky elements to work
-      // Needed so the nested element can be sticky to the
-      // parent panel container
-      // Once refactored and moved up in hierarchy this can be removed.
-      display: ruby;
-    }
-
     // Issue sticky header
     .issue-sticky-header:not(.merge-request-sticky-header) {
-      @apply gl-sticky gl-w-full gl-border-b-subtle;
+      @apply gl-w-full gl-border-b-subtle;
       top: -1px !important;
 
       .work-item-sticky-header-text {
-        @apply gl-px-0 gl-py-2;
+        @apply @xl/panel:gl-px-4 gl-py-2;
+      }
+    }
+
+    .work-item-drawer .issue-sticky-header:not(.merge-request-sticky-header) {
+      top: calc(#{$header-height} + 1px) !important;
+
+      .work-item-sticky-header-text {
+        @apply gl-px-6;
       }
     }
 
     // Merge request sticky header
     .merge-request-sticky-header {
-      @apply gl-sticky gl-w-full gl-bg-default;
+      @apply gl-w-full gl-bg-default;
+      top: 1px !important; // Fix flickering
+
+      // Fixes for Firefox as it doesn't support (container-type: scroll-state)
+      // see https://caniuse.com/?search=scroll-state
+      html:not(.gl-browser-firefox) & {
+        @apply gl-sticky;
+      }
 
       .issue-sticky-header-text {
-        @apply gl-px-0;
+        @apply gl-px-6 @xl/panel:gl-px-4;
+      }
+
+      &::after {
+        display: none;
       }
     }
 
@@ -338,7 +357,6 @@
 
     // User profile sidebar
     @include media-breakpoint-up(lg) {
-      .merge-request-sticky-header::after,
       .user-profile .profile-header {
         top: -1px !important;
       }
@@ -347,7 +365,6 @@
     // Sticky headers below top bar
     .right-sidebar,
     .issue-sticky-header:not(.merge-request-sticky-header),
-    .merge-request-sticky-header,
     .settings-sticky-header,
     .build-page .top-bar,
     .rd-diff-file-header-sticky {
@@ -423,26 +440,6 @@
     .panel-content-inner,
     .vue-portal-target [data-testid="work-item-detail"] {
       scrollbar-width: auto;
-    }
-  }
-
-  // Fixes for Firefox as it doesn't support (container-type: scroll-state)
-  // see https://caniuse.com/?search=scroll-state
-  .gl-browser-firefox .paneled-view {
-    .merge-request-sticky-header-wrapper {
-      // «Hack» for nested sticky elements to work
-      // Needed so the nested element can be sticky to the
-      // parent panel container
-      // Once refactored and moved up in hierarchy this can be removed.
-      display: ruby;
-    }
-
-    .merge-request-details {
-      margin-top: -#{$mr-sticky-header-height}; // Height of sticky header
-    }
-
-    .merge-request-sticky-header:not(.issue-sticky-header) {
-      @apply gl-static;
     }
   }
 

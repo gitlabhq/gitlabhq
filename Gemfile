@@ -175,7 +175,7 @@ gem 'gitlab-topology-service-client', '~> 0.1',
   feature_category: :cell
 
 # Duo Workflow
-gem 'gitlab-duo-workflow-service-client', '~> 0.2',
+gem 'gitlab-duo-workflow-service-client', '~> 0.3',
   path: 'vendor/gems/gitlab-duo-workflow-service-client',
   feature_category: :agent_foundations
 
@@ -229,7 +229,7 @@ gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :share
 gem 'google-apis-iam_v1', '~> 0.73.0', feature_category: :shared
 gem 'google-apis-serviceusage_v1', '~> 0.28.0', feature_category: :shared
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0', feature_category: :shared
-gem 'google-apis-androidpublisher_v3', '~> 0.85.0', feature_category: :shared
+gem 'google-apis-androidpublisher_v3', '~> 0.86.0', feature_category: :shared
 
 gem 'googleauth', '~> 1.14', feature_category: :shared
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared
@@ -436,6 +436,10 @@ gem 'io-event', '~> 1.12', require: false, feature_category: :shared
 # Security report schemas used to validate CI job artifacts of security jobs
 gem 'gitlab-security_report_schemas', '0.1.3.min15.0.0.max15.2.3', feature_category: :vulnerability_management
 
+# Frontend bundling
+gem 'vite_rails', '~> 3.0.17', feature_category: :shared
+gem 'vite_ruby', '~> 3.9.0', feature_category: :shared
+
 # OpenTelemetry
 group :opentelemetry do
   # Core OpenTelemetry gems
@@ -540,11 +544,6 @@ group :development, :test do
   gem 'sigdump', '~> 0.2.4', require: 'sigdump/setup', feature_category: :shared
 
   gem 'pact', '~> 1.64', feature_category: :shared
-
-  # For now we only use vite in development / test, and not for production builds
-  # See: https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/106
-  gem 'vite_rails', '~> 3.0.17', feature_category: :shared
-  gem 'vite_ruby', '~> 3.9.0', feature_category: :shared
 
   gem 'gitlab-housekeeper', path: 'gems/gitlab-housekeeper', feature_category: :tooling
 

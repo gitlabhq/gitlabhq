@@ -294,6 +294,44 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
     end
 
+    describe 'rules for archived jobs' do
+      let_it_be(:project, reload: true) { create(:project, :repository) }
+
+      let(:build) { create(:ci_build, user: user, pipeline: pipeline, ref: 'feature') }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when job is not archived' do
+        it 'allows update and cleanup job permissions' do
+          ::ProjectPolicy::UPDATE_JOB_PERMISSIONS.each do |perm|
+            expect(policy).to be_allowed(perm)
+          end
+
+          ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each do |perm|
+            expect(policy).to be_allowed(perm)
+          end
+        end
+      end
+
+      context 'when job is archived' do
+        before do
+          allow(build).to receive(:archived?).and_return(true)
+        end
+
+        it 'prevents update job permissions while allowing cleanup job permissions' do
+          (::ProjectPolicy::UPDATE_JOB_PERMISSIONS - [:update_build]).each do |perm|
+            expect(policy).to be_disallowed(perm)
+          end
+
+          ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each do |perm|
+            expect(policy).to be_allowed(perm)
+          end
+        end
+      end
+    end
+
     describe 'rules for protected ref' do
       let(:project) { create(:project, :repository) }
       let(:build) { create(:ci_build, ref: 'some-ref', pipeline: pipeline) }

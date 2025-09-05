@@ -6897,7 +6897,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when namespace does not exist' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+      let_it_be(:organization) { create(:organization) }
       let(:user) { described_class.new attributes_for(:user) }
 
       it 'builds a new namespace using assigned organization' do

@@ -2521,6 +2521,9 @@ msgstr ""
 msgid "AICatalog|Copy flow config"
 msgstr ""
 
+msgid "AICatalog|Copy of"
+msgstr ""
+
 msgid "AICatalog|Copy user prompt"
 msgstr ""
 
@@ -2546,6 +2549,15 @@ msgid "AICatalog|Description"
 msgstr ""
 
 msgid "AICatalog|Description is required."
+msgstr ""
+
+msgid "AICatalog|Duplicate"
+msgstr ""
+
+msgid "AICatalog|Duplicate agent"
+msgstr ""
+
+msgid "AICatalog|Duplicate this agent with all its settings and configuration."
 msgstr ""
 
 msgid "AICatalog|Edit"
@@ -28363,6 +28375,9 @@ msgid "First name is required."
 msgstr ""
 
 msgid "First seen"
+msgstr ""
+
+msgid "Fix with Duo"
 msgstr ""
 
 msgid "Fixed"

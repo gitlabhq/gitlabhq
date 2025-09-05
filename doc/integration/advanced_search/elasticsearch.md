@@ -533,8 +533,8 @@ To monitor the status of background jobs:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background jobs**.
-1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer` and `elastic_wiki_indexer` queues to drop to `0`.
-   These queues contain jobs to index code and wiki data for projects and groups.
+1. On the Sidekiq dashboard, select **Busy** and wait for all of the indexing jobs to complete.
+   These jobs index code and wiki data for projects and groups.
 
 ### Enable search with advanced search
 

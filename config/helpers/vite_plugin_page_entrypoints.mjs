@@ -47,6 +47,8 @@ export function PageEntrypointsPlugin() {
         },
       };
     },
+    // Vite dev server can not recognize entrypoint names from the URL
+    // so we create a virtual file that imports the real entrypoint file
     load(id) {
       if (!id.startsWith('pages.')) {
         return undefined;

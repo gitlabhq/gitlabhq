@@ -6609,6 +6609,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  it_behaves_like 'loose foreign key with custom delete limit' do
+    let(:from_table) { "p_ci_pipelines" }
+    let(:delete_limit) { 100 }
+  end
+
   describe '#merge_blocked_by_other_mrs?' do
     it 'returns false when there is no blocking merge requests' do
       expect(subject.merge_blocked_by_other_mrs?).to be_falsy

@@ -18,16 +18,40 @@ RSpec.describe ViteHelper, feature_category: :tooling do
       before do
         allow(helper.controller).to receive(:controller_path).and_return(path)
         allow(helper.controller).to receive(:action_name).and_return(action)
+        allow(ViteRuby.instance.manifest).to receive(:path_for).and_return("/some/path")
       end
 
       it { expect(helper.vite_page_entrypoint_paths).to eq(result) }
     end
 
     context 'with js_action_name instance variable set' do
-      it 'accepts custom action name' do
+      before do
         allow(helper.controller).to receive(:controller_path).and_return('some_path')
         allow(helper.controller).to receive(:action_name).and_return('new')
+        allow(ViteRuby.instance.manifest).to receive(:path_for).and_return("/some/path")
+      end
+
+      it 'accepts custom action name' do
         expect(helper.vite_page_entrypoint_paths('new_2')).to eq(%w[pages.some_path.js pages.some_path.new_2.js])
+      end
+    end
+
+    context 'with missing entrypoint' do
+      before do
+        allow(helper.controller).to receive(:controller_path).and_return('some_path')
+        allow(helper.controller).to receive(:action_name).and_return('new')
+        allow(ViteRuby.instance.manifest).to receive(:path_for).and_raise(
+          ViteRuby::MissingEntrypointError.new(
+            file_name: 'some/path.js',
+            last_build: ViteRuby::Build.new,
+            manifest: ViteRuby.instance.manifest,
+            config: ViteRuby.instance.config
+          )
+        )
+      end
+
+      it 'returns empty assets' do
+        expect(helper.vite_page_entrypoint_paths).to eq([])
       end
     end
   end
@@ -55,13 +79,13 @@ RSpec.describe ViteHelper, feature_category: :tooling do
         allow(helper).to receive(:vite_enabled?).and_return(true)
 
         allow(ViteRuby.instance.manifest).to receive(:path_for)
-                                               .with("stylesheets/styles.#{path}.scss", type: :stylesheet)
-                                               .and_return("/vite-dev/stylesheets/styles.#{path}.scss.css")
+                                               .with("styles/#{path}.css", type: :stylesheet)
+                                               .and_return("/assets/vite/styles/#{path}.css")
       end
 
       it 'uses vite_stylesheet_tag' do
         expect(link_tag[:rel]).to eq('stylesheet')
-        expect(link_tag[:href]).to eq('/vite-dev/stylesheets/styles.application.scss.css')
+        expect(link_tag[:href]).to eq('/assets/vite/styles/application.css')
       end
     end
   end
@@ -84,7 +108,7 @@ RSpec.describe ViteHelper, feature_category: :tooling do
       before do
         allow(helper).to receive(:vite_enabled?).and_return(true)
         allow(ViteRuby.instance.manifest).to receive(:path_for)
-                                               .with("stylesheets/styles.#{path}.scss")
+                                               .with("styles/#{path}.css")
                                                .and_return(out_path)
       end
 
