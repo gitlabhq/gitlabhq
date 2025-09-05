@@ -37,6 +37,8 @@ jest.mock('~/super_sidebar/utils', () => ({
 
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
+const dapWidgetStubTestId = 'dap-widget';
+const DapWidgetStub = { template: `<div data-testid="${dapWidgetStubTestId}" />` };
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -57,6 +59,7 @@ describe('SuperSidebar component', () => {
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
+  const findDapWidget = () => wrapper.findByTestId(dapWidgetStubTestId);
   const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
@@ -74,6 +77,7 @@ describe('SuperSidebar component', () => {
       provide: {
         showTrialWidget: false,
         projectStudioEnabled: false,
+        showDuoAgentPlatformWidget: false,
         ...provide,
       },
       propsData: {
@@ -81,6 +85,7 @@ describe('SuperSidebar component', () => {
       },
       stubs: {
         TrialWidget: TrialWidgetStub,
+        DuoAgentPlatformWidget: DapWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
       attachTo: document.body,
@@ -198,6 +203,12 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(findTrialWidget().exists()).toBe(false);
+    });
+
+    it('does not render Duo agent platform widget', () => {
+      createWrapper();
+
+      expect(findDapWidget().exists()).toBe(false);
     });
 
     it('does not render icon-only toggle', () => {
@@ -342,6 +353,16 @@ describe('SuperSidebar component', () => {
 
     it('renders trial widget', () => {
       expect(findTrialWidget().exists()).toBe(true);
+    });
+  });
+
+  describe('when a Duo agent platform widget is active', () => {
+    beforeEach(() => {
+      createWrapper({ provide: { showDuoAgentPlatformWidget: true } });
+    });
+
+    it('renders Duo agent platform widget', () => {
+      expect(findDapWidget().exists()).toBe(true);
     });
   });
 

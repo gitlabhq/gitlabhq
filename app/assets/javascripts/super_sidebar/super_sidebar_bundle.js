@@ -49,6 +49,22 @@ const getTrialStatusWidgetData = (sidebarData) => {
   };
 };
 
+const getDuoAgentPlatformWidgetData = (sidebarData) => {
+  if (sidebarData.duoAgentWidgetProvide) {
+    const { actionPath, stateProgression } = sidebarData.duoAgentWidgetProvide;
+
+    return {
+      showDuoAgentPlatformWidget: true,
+      actionPath,
+      stateProgression,
+    };
+  }
+
+  return {
+    showDuoAgentPlatformWidget: false,
+  };
+};
+
 export const getSuperSidebarData = () => {
   const el = document.querySelector('.js-super-sidebar');
   if (!el) return false;
@@ -138,6 +154,7 @@ export const initSuperSidebar = async ({
       currentPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
+      ...getDuoAgentPlatformWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,

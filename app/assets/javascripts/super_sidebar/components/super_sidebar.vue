@@ -37,6 +37,8 @@ export default {
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    DuoAgentPlatformWidget: () =>
+      import('jh_else_ee/contextual_sidebar/components/duo_agent_platform_widget.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -47,7 +49,7 @@ export default {
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialWidget', 'projectStudioEnabled'],
+  inject: ['showTrialWidget', 'projectStudioEnabled', 'showDuoAgentPlatformWidget'],
   provide() {
     return {
       isIconOnly: computed(() => this.canIconOnly && this.isIconOnly),
@@ -273,7 +275,11 @@ export default {
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-
+        <div v-if="showDuoAgentPlatformWidget" class="gl-p-2">
+          <duo-agent-platform-widget
+            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
+          />
+        </div>
         <help-center
           v-if="canIconOnly"
           ref="helpCenter"

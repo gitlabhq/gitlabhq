@@ -56,7 +56,8 @@ GET /projects/:id/debian_distributions
 | `suite`    | string         | no       | Filter with a specific `suite`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions"
 ```
 
 Example response:
@@ -97,7 +98,8 @@ GET /projects/:id/debian_distributions/:codename
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
 ```
 
 Example response:
@@ -136,7 +138,8 @@ GET /projects/:id/debian_distributions/:codename/key.asc
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable/key.asc"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable/key.asc"
 ```
 
 Example response:
@@ -181,7 +184,9 @@ POST /projects/:id/debian_distributions
 | `architectures`               | string array   | no       | The new Debian distribution's list of architectures. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=sid"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions?codename=sid"
 ```
 
 Example response:
@@ -228,7 +233,9 @@ PUT /projects/:id/debian_distributions/:codename
 | `architectures`               | string array   | no       | The Debian distribution's new list of architectures. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
 ```
 
 Example response:
@@ -267,5 +274,7 @@ DELETE /projects/:id/debian_distributions/:codename
 | `codename` | string         | yes      | The Debian distribution's codename. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/debian_distributions/unstable"
 ```

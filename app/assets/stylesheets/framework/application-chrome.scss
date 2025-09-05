@@ -108,9 +108,8 @@
 
   // Organization switcher adjustment (light mode only)
   &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
-    @apply gl-bg-alpha-dark-8 gl-border-default;
+    @apply gl-bg-alpha-dark-6 gl-border-default;
   }
-
 }
 
 /*
@@ -233,8 +232,7 @@
   // Panel header
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
-    @apply gl-bg-default gl-shadow-none;
-    @apply gl-relative gl-px-5 #{!important};
+    @apply gl-bg-transparent gl-shadow-none gl-relative gl-px-5 #{!important};
     z-index: 99;
     border-bottom: 1px solid var(--super-sidebar-bg);
   }
@@ -266,6 +264,12 @@
   // Work item spacing adjustment
   .vue-portal-target .work-item-drawer-content {
     @apply gl-px-5 #{!important};
+  }
+
+  // Work item modal footer
+  #create-work-item-modal {
+    container-type: inline-size;
+    container-name: panel;
   }
 
   // Content adjustments within panels
@@ -481,7 +485,9 @@
     // bottom color
     --_shade-4: hsla(from var(--theme-color) calc(h + 30) calc(s + 20) l / 40%);
 
-    --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
+    // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
+    // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
+    --theme-background-color: var(--gl-background-color-default);
     --theme-border-color: hsl(from var(--theme-color) h 24 90);
 
     body {
@@ -529,7 +535,9 @@
     // bottom color
     --_shade-5: hsla(from var(--theme-color) h s l / 55%);
 
-    --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 4%);
+    // Temporarily unship this change as it introduced some regressions, see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204009
+    // --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 1%);
+    --theme-background-color: var(--gl-background-color-default);
     --theme-border-color: hsl(from var(--theme-color) h 12 25);
 
     body {

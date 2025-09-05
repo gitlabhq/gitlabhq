@@ -54,25 +54,21 @@ GET groups/:id/-/packages/pypi/files/:sha256/:file_identifier
 | `file_identifier` | string | yes      | The PyPI package file's name. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"
 ```
 
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz" >> my.pypi.package-0.0.1.tar.gz
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz" >> my.pypi.package-0.0.1.tar.gz
 ```
 
 This writes the downloaded file to `my.pypi.package-0.0.1.tar.gz` in the current
 directory.
 
 ## Group-level simple API index
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
-
-{{< /history >}}
 
 Returns a list of packages in the group as an HTML file:
 
@@ -85,7 +81,8 @@ GET groups/:id/-/packages/pypi/simple
 | `id` | string | yes | The ID or full path of the group. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple"
 ```
 
 Example response:
@@ -106,7 +103,8 @@ Example response:
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple" >> simple_index.html
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple" >> simple_index.html
 ```
 
 This writes the downloaded file to `simple_index.html` in the current directory.
@@ -125,7 +123,8 @@ GET groups/:id/-/packages/pypi/simple/:package_name
 | `package_name` | string | yes      | The name of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple/my.pypi.package"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple/my.pypi.package"
 ```
 
 Example response:
@@ -146,7 +145,8 @@ Example response:
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple/my.pypi.package" >> simple.html
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/groups/1/-/packages/pypi/simple/my.pypi.package" >> simple.html
 ```
 
 This writes the downloaded file to `simple.html` in the current directory.
@@ -167,25 +167,21 @@ GET projects/:id/packages/pypi/files/:sha256/:file_identifier
 | `file_identifier` | string | yes | The PyPI package filename. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"
 ```
 
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz" >> my.pypi.package-0.0.1.tar.gz
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz" >> my.pypi.package-0.0.1.tar.gz
 ```
 
 This writes the downloaded file to `my.pypi.package-0.0.1.tar.gz` in the current
 directory.
 
 ## Project-level simple API index
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
-
-{{< /history >}}
 
 Returns a list of packages in the project as an HTML file:
 
@@ -198,7 +194,8 @@ GET projects/:id/packages/pypi/simple
 | `id` | string | yes | The ID or full path of the project. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple"
 ```
 
 Example response:
@@ -219,7 +216,8 @@ Example response:
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple" >> simple_index.html
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple" >> simple_index.html
 ```
 
 This writes the downloaded file to `simple_index.html` in the current directory.
@@ -238,7 +236,8 @@ GET projects/:id/packages/pypi/simple/:package_name
 | `package_name` | string | yes | The name of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple/my.pypi.package"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple/my.pypi.package"
 ```
 
 Example response:
@@ -259,7 +258,8 @@ Example response:
 To write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple/my.pypi.package" >> simple.html
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi/simple/my.pypi.package" >> simple.html
 ```
 
 This writes the downloaded file to `simple.html` in the current directory.
@@ -283,5 +283,5 @@ curl --request POST \
      --form 'name=my.pypi.package' \
      --form 'version=1.3.7' \
      --user <username>:<personal_access_token> \
-     "https://gitlab.example.com/api/v4/projects/1/packages/pypi"
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/pypi"
 ```

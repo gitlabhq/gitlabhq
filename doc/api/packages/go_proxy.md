@@ -48,7 +48,8 @@ GET projects/:id/packages/go/:module_name/@v/list
 | `module_name`  | string | yes      | The name of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/list"
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/list"
 ```
 
 Example output:
@@ -72,7 +73,8 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.info
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.info"
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.info"
 ```
 
 Example output:
@@ -99,13 +101,15 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.mod
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod"
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod"
 ```
 
 Write to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod" >> foo.mod
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.mod" >> foo.mod
 ```
 
 This writes to `foo.mod` in the current directory.
@@ -125,13 +129,15 @@ GET projects/:id/packages/go/:module_name/@v/:module_version.zip
 | `module_version`  | string | yes      | The version of the Go module. |
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip"
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip"
 ```
 
 Write to a file:
 
 ```shell
-curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip" >> foo.zip
+curl --header "Private-Token: <personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/go/my-go-module/@v/1.0.0.zip" >> foo.zip
 ```
 
 This writes to `foo.zip` in the current directory.

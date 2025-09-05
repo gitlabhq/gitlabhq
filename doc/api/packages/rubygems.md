@@ -71,7 +71,8 @@ GET projects/:id/packages/rubygems/gems/:file_name
 | `file_name`  | string | yes      | The name of the `.gem` file. |
 
 ```shell
-curl --header "Authorization:<personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/gems/my_gem-1.0.0.gem"
+curl --header "Authorization:<personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/gems/my_gem-1.0.0.gem"
 ```
 
 Write the output to file:
@@ -96,7 +97,8 @@ GET projects/:id/packages/rubygems/api/v1/dependencies
 | `gems`    | string | no       | Comma-separated list of gems to fetch dependencies for. |
 
 ```shell
-curl --header "Authorization:<personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,foo"
+curl --header "Authorization:<personal_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/dependencies?gems=my_gem,foo"
 ```
 
 This endpoint returns a marshalled array of hashes for all versions of the requested gems. Because the
@@ -151,5 +153,5 @@ POST projects/:id/packages/rubygems/api/v1/gems
 curl --request POST \
      --upload-file path/to/my_gem_file.gem \
      --header "Authorization:<personal_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/gems"
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/rubygems/api/v1/gems"
 ```
