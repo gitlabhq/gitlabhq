@@ -1,6 +1,6 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon, GlToggle } from '@gitlab/ui';
-import Tracking from '~/tracking';
+import { InternalEvents } from '~/tracking';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
@@ -14,7 +14,7 @@ export default {
     GlIcon,
     GlToggle,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [InternalEvents.mixin()],
   inject: ['isImpersonating', 'projectStudioEnabled'],
   data() {
     return {
@@ -46,6 +46,11 @@ export default {
   methods: {
     toggleSetting(val) {
       this.loading = true;
+
+      // Track the opt-in or opt-out event
+      const eventName = val ? 'opt_in_project_studio' : 'opt_out_project_studio';
+      this.trackEvent(eventName);
+
       this.$apollo
         .mutate({
           mutation: setProjectStudioEnabled,

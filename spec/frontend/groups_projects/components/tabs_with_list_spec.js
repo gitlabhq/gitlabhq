@@ -6,7 +6,8 @@ import projectCountsGraphQlResponse from 'test_fixtures/graphql/projects/your_wo
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import TabView from '~/groups_projects/components/tab_view.vue';
-import { createRouter } from '~/projects/your_work';
+import { createRouter as projectsYourWorkCreateRouter } from '~/projects/your_work';
+import { createRouter as groupsShowCreateRouter } from '~/groups/show';
 import { stubComponent } from 'helpers/stub_component';
 import {
   ROOT_ROUTE_NAME,
@@ -20,6 +21,7 @@ import {
   MEMBER_TAB,
   INACTIVE_TAB,
 } from '~/projects/your_work/constants';
+import { SUBGROUPS_AND_PROJECTS_TAB, GROUPS_SHOW_TABS } from '~/groups/show/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -126,6 +128,7 @@ describe('TabsWithList', () => {
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
+    createRouter = projectsYourWorkCreateRouter,
   } = {}) => {
     mockApollo = createMockApollo([
       [projectCountsQuery, projectsCountHandler],
@@ -673,7 +676,7 @@ describe('TabsWithList', () => {
 
         await nextTick();
 
-        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[2].value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/personal');
       });
 
       it('tracks event', () => {
@@ -700,7 +703,7 @@ describe('TabsWithList', () => {
 
         await nextTick();
 
-        expect(router.push).toHaveBeenCalledWith({ name: CONTRIBUTED_TAB.value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/contributed');
       });
     });
 
@@ -724,7 +727,28 @@ describe('TabsWithList', () => {
           expect(router.currentRoute.href).toBe('/gitlab/');
         }
 
-        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[3].value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/member');
+      });
+    });
+
+    describe('when there is a route param with `/` in it', () => {
+      beforeEach(async () => {
+        await createComponent({
+          propsData: {
+            tabs: GROUPS_SHOW_TABS,
+          },
+          createRouter: groupsShowCreateRouter,
+          route: { name: SUBGROUPS_AND_PROJECTS_TAB.value, params: { group: 'foo/bar/baz' } },
+        });
+        router.push = jest.fn();
+
+        findGlTabs().vm.$emit('input', 1);
+
+        await nextTick();
+      });
+
+      it('converts route param to an array', () => {
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/inactive');
       });
     });
   });

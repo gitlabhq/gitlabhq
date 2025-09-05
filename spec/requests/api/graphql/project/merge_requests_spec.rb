@@ -619,7 +619,7 @@ RSpec.describe 'getting merge request listings nested in a project', feature_cat
 
         queries = query_recorder.log
         expect(queries).not_to include(match(/SELECT COUNT\(\*\) FROM "merge_requests"/))
-        expect(queries).to include(match(/SELECT COUNT\(\*\) FROM \(SELECT 1 AS one FROM "merge_request_metrics"/))
+        expect(queries).to include(match(/SELECT COUNT\(\*\) FROM "merge_request_metrics"/))
       end
 
       context 'when total_time_to_merge and count is queried' do

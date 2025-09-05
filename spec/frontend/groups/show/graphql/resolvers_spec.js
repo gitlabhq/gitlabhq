@@ -86,8 +86,8 @@ describe('groups show resolver', () => {
         issuesAccessLevel: { stringValue: 'disabled' },
         forkingAccessLevel: { stringValue: 'disabled' },
         userPermissions: {
-          archiveProject: false,
-          removeProject: false,
+          archiveProject: true,
+          removeProject: true,
           viewEditPage: true,
         },
         maxAccessLevel: { integerValue: 0 },
@@ -125,8 +125,8 @@ describe('groups show resolver', () => {
         issuesAccessLevel: { stringValue: 'disabled' },
         forkingAccessLevel: { stringValue: 'disabled' },
         userPermissions: {
-          archiveProject: false,
-          removeProject: false,
+          archiveProject: true,
+          removeProject: true,
           viewEditPage: true,
         },
         maxAccessLevel: { integerValue: 0 },
@@ -198,8 +198,8 @@ describe('groups show resolver', () => {
             issuesAccessLevel: { stringValue: 'disabled' },
             forkingAccessLevel: { stringValue: 'disabled' },
             userPermissions: {
-              archiveProject: false,
-              removeProject: false,
+              archiveProject: true,
+              removeProject: true,
               viewEditPage: true,
             },
             maxAccessLevel: { integerValue: 0 },
@@ -271,8 +271,8 @@ describe('groups show resolver', () => {
                 issuesAccessLevel: { stringValue: 'disabled' },
                 forkingAccessLevel: { stringValue: 'disabled' },
                 userPermissions: {
-                  archiveProject: false,
-                  removeProject: false,
+                  archiveProject: true,
+                  removeProject: true,
                   viewEditPage: true,
                 },
                 maxAccessLevel: { integerValue: 0 },

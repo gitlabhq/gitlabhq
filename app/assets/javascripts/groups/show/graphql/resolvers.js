@@ -62,14 +62,14 @@ const formatSubgroupsAndProjects = (item) => {
     nameWithNamespace: item.full_name,
     lastActivityAt: item.last_activity_at,
     starCount: item.star_count,
+    userPermissions: {
+      archiveProject: item.can_archive,
+      removeProject: item.can_remove,
+      viewEditPage: item.can_edit,
+    },
     // All properties below are not yet supported by `/children.json` endpoint
     // We set them to defaults so that we don't get Apollo errors when
     // formatting as GraphQL.
-    userPermissions: {
-      archiveProject: false,
-      removeProject: false,
-      viewEditPage: item.can_edit,
-    },
     group: null,
     topics: [],
     isCatalogResource: false,

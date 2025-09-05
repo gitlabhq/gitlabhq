@@ -76,6 +76,16 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
       expect(json[:permission_integer]).to be(40)
     end
 
+    it 'allows an owner to delete the project' do
+      object.add_owner(user)
+
+      expect(json[:can_remove]).to be_truthy
+    end
+
+    it 'does not allow a maintainer to delete the project' do
+      expect(json[:can_remove]).to be_falsy
+    end
+
     it_behaves_like 'group child json'
   end
 

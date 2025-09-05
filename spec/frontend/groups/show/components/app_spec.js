@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { GlPagination } from '@gitlab/ui';
 import childrenResponse from 'test_fixtures/groups/children.json';
+import inactiveChildrenResponse from 'test_fixtures/groups/inactive_children.json';
 import GroupsShowApp from '~/groups/show/components/app.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
@@ -16,6 +17,7 @@ import {
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  INACTIVE_TAB,
 } from '~/groups/show/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
@@ -53,8 +55,6 @@ describe('GroupsShowApp', () => {
   const defaultRoute = {
     name: SUBGROUPS_AND_PROJECTS_TAB.value,
   };
-
-  const [mockProject, , mockGroup] = childrenResponse;
 
   const createComponent = async ({
     mountFn = shallowMountExtended,
@@ -110,72 +110,110 @@ describe('GroupsShowApp', () => {
     });
   });
 
-  it('renders project with relative URL that supports relative_url_root', async () => {
-    window.gon = { relative_url_root: '/gitlab' };
-    mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+  describe('when on Subgroups and projects tab', () => {
+    const [mockProject, , mockGroup] = childrenResponse;
 
-    await createComponent({ mountFn: mountExtended });
-    await waitForPromises();
+    it('renders project with relative URL that supports relative_url_root', async () => {
+      window.gon = { relative_url_root: '/gitlab' };
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
 
-    expect(wrapper.findByRole('link', { name: mockProject.name }).attributes('href')).toBe(
-      `/gitlab/${mockProject.full_path}`,
-    );
-  });
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
 
-  it('renders group with relative URL that supports relative_url_root', async () => {
-    window.gon = { relative_url_root: '/gitlab' };
-    mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
-
-    await createComponent({ mountFn: mountExtended });
-    await waitForPromises();
-
-    expect(wrapper.findByRole('link', { name: mockGroup.name }).attributes('href')).toBe(
-      `/gitlab/${mockGroup.full_path}`,
-    );
-  });
-
-  it('correctly renders `Edit` action on project', async () => {
-    mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
-    await createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    const listItem = findProjectsListItem(mockProject);
-
-    await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
-
-    expect(listItem.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
-      mockProject.edit_path,
-    );
-  });
-
-  it('correctly renders `Edit` action on group', async () => {
-    mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
-    await createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    const listItem = findGroupsListItem(mockGroup);
-
-    await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
-
-    expect(listItem.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
-      mockGroup.edit_path,
-    );
-  });
-
-  it('uses offset pagination', async () => {
-    mockAxios.onGet(endpoint).replyOnce(200, childrenResponse, {
-      'X-PER-PAGE': 20,
-      'X-PAGE': 1,
-      'X-TOTAL': 25,
-      'X-TOTAL-PAGES': 2,
-      'X-NEXT-PAGE': 2,
-      'X-PREV-PAGE': null,
+      expect(wrapper.findByRole('link', { name: mockProject.name }).attributes('href')).toBe(
+        `/gitlab/${mockProject.full_path}`,
+      );
     });
-    await createComponent({ mountFn: mountExtended });
-    await waitForPromises();
 
-    expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
+    it('renders group with relative URL that supports relative_url_root', async () => {
+      window.gon = { relative_url_root: '/gitlab' };
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+
+      expect(wrapper.findByRole('link', { name: mockGroup.name }).attributes('href')).toBe(
+        `/gitlab/${mockGroup.full_path}`,
+      );
+    });
+
+    it('correctly renders `Edit` action on project', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+      await createComponent({ mountFn: mountExtended });
+
+      await waitForPromises();
+
+      const listItem = findProjectsListItem(mockProject);
+
+      await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(listItem.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+        mockProject.edit_path,
+      );
+    });
+
+    it('correctly renders `Edit` action on group', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+      await createComponent({ mountFn: mountExtended });
+
+      await waitForPromises();
+
+      const listItem = findGroupsListItem(mockGroup);
+
+      await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(listItem.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+        mockGroup.edit_path,
+      );
+    });
+
+    it('uses offset pagination', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse, {
+        'X-PER-PAGE': 20,
+        'X-PAGE': 1,
+        'X-TOTAL': 25,
+        'X-TOTAL-PAGES': 2,
+        'X-NEXT-PAGE': 2,
+        'X-PREV-PAGE': null,
+      });
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
+    });
+  });
+
+  describe('when on the Inactive tab', () => {
+    const route = { name: INACTIVE_TAB.value };
+    const [mockGroup] = inactiveChildrenResponse;
+    const {
+      children: [mockSubgroup, mockProject],
+    } = mockGroup;
+
+    it('renders inactive subgroups and projects', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, inactiveChildrenResponse);
+      await createComponent({ mountFn: mountExtended, route });
+      await waitForPromises();
+      await wrapper.findByTestId('nested-groups-project-list-item-toggle-button').trigger('click');
+
+      expect(wrapper.findByRole('link', { name: mockGroup.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockSubgroup.name }).exists()).toBe(true);
+      expect(wrapper.findByRole('link', { name: mockProject.name }).exists()).toBe(true);
+    });
+
+    it('uses offset pagination', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse, {
+        'X-PER-PAGE': 20,
+        'X-PAGE': 1,
+        'X-TOTAL': 25,
+        'X-TOTAL-PAGES': 2,
+        'X-NEXT-PAGE': 2,
+        'X-PREV-PAGE': null,
+      });
+      await createComponent({ mountFn: mountExtended, route });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
+    });
   });
 });

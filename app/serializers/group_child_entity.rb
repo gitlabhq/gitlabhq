@@ -82,9 +82,7 @@ class GroupChildEntity < Grape::Entity
     end
   end
 
-  expose :can_remove, unless: ->(_instance, _options) { project? } do |group|
-    can?(request.current_user, :admin_group, group)
-  end
+  expose :can_remove?, as: :can_remove
 
   expose :number_users_with_delimiter, unless: ->(_instance, _options) { project? } do |instance|
     number_with_delimiter(instance.member_count)
@@ -152,6 +150,16 @@ class GroupChildEntity < Grape::Entity
 
     ability = project? ? :archive_project : :archive_group
     can?(request.current_user, ability, object)
+  end
+
+  def can_remove?
+    return false unless request.try(:current_user)
+
+    if project?
+      can?(request.current_user, :remove_project, object)
+    else
+      can?(request.current_user, :admin_group, object)
+    end
   end
 
   def marked_for_deletion_on

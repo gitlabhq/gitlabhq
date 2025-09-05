@@ -2,7 +2,7 @@
 
 module Types
   # rubocop: disable Graphql/AuthorizeTypes
-  class MergeRequestConnectionType < Types::LimitedCountableConnectionType
+  class MergeRequestConnectionType < Types::CountableConnectionType
     field :total_time_to_merge,
       GraphQL::Types::Float,
       null: true,

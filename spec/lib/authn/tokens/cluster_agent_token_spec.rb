@@ -13,8 +13,10 @@ RSpec.describe Authn::Tokens::ClusterAgentToken, feature_category: :system_acces
   context 'with valid cluster agent token' do
     let(:plaintext) { cluster_agent_token.token }
     let(:valid_revocable) { cluster_agent_token }
+    let_it_be(:default_prefix) { ::Clusters::AgentToken::TOKEN_PREFIX }
 
     it_behaves_like 'finding the valid revocable'
+    it_behaves_like 'contains instance prefix when enabled'
 
     describe '#revoke!', :enable_admin_mode do
       it 'revokes the token' do

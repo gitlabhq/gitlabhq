@@ -67,6 +67,18 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
 
       expect(response).to be_successful
     end
+
+    context 'when there are subgroups and projects that are pending deletion' do
+      let_it_be(:inactive_subgroup) { create(:group_with_deletion_schedule, parent: group) }
+      let_it_be(:inactive_nested_subgroup) { create(:group, parent: inactive_subgroup, name: 'foo bar baz') }
+      let_it_be(:inactive_project) { create(:project, namespace: inactive_subgroup) }
+
+      it 'groups/inactive_children.json' do
+        get :index, format: :json, params: { group_id: group.full_path, active: false }
+
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe API::Groups, '(JavaScript fixtures)', type: :request do

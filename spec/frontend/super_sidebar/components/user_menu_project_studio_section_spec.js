@@ -4,6 +4,7 @@ import UserMenuProjectStudioSection from '~/super_sidebar/components/user_menu_p
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -25,6 +26,8 @@ describe('UserMenuProjectStudioSection', () => {
   const findToggleItem = () => wrapper.findByTestId('toggle-project-studio-link');
   const findFeedbackItem = () => wrapper.findByTestId('project-studio-feedback-link');
   const findToggle = () => wrapper.findComponent(GlToggle);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = (provide = {}) => {
     wrapper = mountExtended(UserMenuProjectStudioSection, {
@@ -103,6 +106,60 @@ describe('UserMenuProjectStudioSection', () => {
         },
         update: expect.any(Function),
       });
+    });
+
+    it('tracks opt-in event when enabling project studio', async () => {
+      const mutateSpy = jest.fn().mockResolvedValue(setProjectStudioEnabledMutationResponse);
+      wrapper.vm.$apollo.mutate = mutateSpy;
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggleItem().trigger('click');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('opt_in_project_studio', {}, undefined);
+    });
+
+    it('tracks opt-out event when disabling project studio', async () => {
+      createComponent({ projectStudioEnabled: true });
+      const mutateSpy = jest.fn().mockResolvedValue(setProjectStudioEnabledMutationResponse);
+      wrapper.vm.$apollo.mutate = mutateSpy;
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggleItem().trigger('click');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('opt_out_project_studio', {}, undefined);
+    });
+
+    it('tracks event before making the mutation call', async () => {
+      const mutateSpy = jest.fn().mockResolvedValue(setProjectStudioEnabledMutationResponse);
+      wrapper.vm.$apollo.mutate = mutateSpy;
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggleItem().trigger('click');
+
+      // Track should be called immediately, before the async mutation
+      expect(trackEventSpy).toHaveBeenCalledWith('opt_in_project_studio', {}, undefined);
+
+      await waitForPromises();
+
+      expect(mutateSpy).toHaveBeenCalled();
+    });
+
+    it('still tracks event even if mutation fails', async () => {
+      const error = new Error('Mutation failed');
+      const mutateSpy = jest.fn().mockRejectedValue(error);
+      wrapper.vm.$apollo.mutate = mutateSpy;
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      findToggleItem().trigger('click');
+      await waitForPromises();
+
+      expect(trackEventSpy).toHaveBeenCalledWith('opt_in_project_studio', {}, undefined);
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong. Please try again.',
+      });
+      expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
 
     // eslint-disable-next-line jest/no-disabled-tests

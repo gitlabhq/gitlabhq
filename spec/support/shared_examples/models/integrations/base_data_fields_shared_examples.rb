@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.shared_examples Integrations::BaseDataFields do
+  using RSpec::Parameterized::TableSyntax
+
   subject(:model) { described_class.new }
 
   describe 'associations' do
@@ -84,6 +86,30 @@ RSpec.shared_examples Integrations::BaseDataFields do
         expect(model.errors.full_messages).to contain_exactly(
           'one of project_id, group_id or organization_id must be present'
         )
+      end
+    end
+
+    where(:project_id, :group_id, :organization_id, :valid) do
+      1    | nil  | nil | true
+      nil  | 1    | nil | true
+      nil  | nil  | 1   | true
+      nil  | nil  | nil | false
+      1    | 1    | 1   | false
+      nil  | 1    | 1   | false
+      1    | 1    | nil | false
+      1    | nil  | 1   | false
+    end
+
+    with_them do
+      it 'validates data_fields sharding key presence' do
+        model.assign_attributes(
+          project_id: project_id,
+          group_id: group_id,
+          organization_id: organization_id,
+          integration: build(:integration)
+        )
+
+        expect(model.valid?).to eq(valid)
       end
     end
   end

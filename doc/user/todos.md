@@ -16,7 +16,7 @@ description: Task management, actions, and access changes.
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
 
-You can use the To-Do List to track [actions](#actions-that-create-to-do-items)
+You can use the To-Do List to track actions
 related to the work you do in GitLab. When people contact you or your attention is
 needed, a to-do item appears in your To-Do List.
 
@@ -75,8 +75,8 @@ Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
-- A [merge request review](project/merge_requests/reviews/_index.md) is requested.
-- You're [mentioned](discussions/_index.md#mentions) in the description or
+- A merge request review is requested.
+- You're mentioned in the description or
   comment of an issue, merge request, or epic.
 - You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
@@ -88,7 +88,7 @@ Some of the actions that add a to-do item to your To-Do List:
 - A merge request is removed from a [merge train](../ci/pipelines/merge_trains.md), and you're the user that added it.
 - A member access request is raised for a group or project you're an owner of.
 
-[In GitLab 17.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28355), you receive a new to-do notification every time someone mentions you, even in the same issue or merge request.
+In GitLab 17.8 and later, you receive a new to-do notification every time someone mentions you, even in the same issue or merge request.
 
 For other actions that create to-do items like assignments or review requests,
 you receive only one notification per action type, even if that action occurs multiple times in the same issue or merge request.
@@ -109,13 +109,13 @@ You can manually add an item to your To-Do List.
 
 1. Go to your:
 
-   - [Issue](project/issues/_index.md)
-   - [Merge request](project/merge_requests/_index.md)
-   - [Epic](group/epics/_index.md)
-   - [Design](project/issues/design_management.md)
-   - [Incident](../operations/incident_management/incidents.md)
-   - [Objective or key result](okrs.md)
-   - [Task](tasks.md)
+   - Issue
+   - Merge request
+   - Epic
+   - Design
+   - Incident
+   - Objective or key result
+   - Task
 
 1. In the upper-right corner, select **Add a to-do item** ({{< icon name="todo-add" >}}).
 
@@ -153,16 +153,16 @@ To-do items are marked as done if you:
 - Close the to-do item's object.
 - Create a comment.
 - Edit the description.
-- Resolve a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design).
+- Resolve a design discussion thread.
 - Accept or deny a project or group membership request.
 
 To-do items are **not** marked as done if you:
 
-- Add a linked item (like a [linked issue](project/issues/related_issues.md)).
-- Add a child item (like [child epic](group/epics/manage_epics.md#multi-level-child-epics) or [task](tasks.md)).
-- Add a [time entry](project/time_tracking.md).
+- Add a linked item (like a linked issue).
+- Add a child item (like child epic or task).
+- Add time tracking.
 - Assign yourself.
-- Change the [health status](project/issues/managing_issues.md#health-status).
+- Change the health status of an issue.
 
 If someone else closes, merges, or takes action on an issue, merge request, or
 epic, your to-do item remains pending.
@@ -183,7 +183,7 @@ If you marked a to-do item as done by mistake, you can re-add it from the **Done
 1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
 <!-- When the feature flag global_topbar is removed, refer only to the button icon -->
 1. At the top, select **Done**.
-1. [Find the to-do item](#filter-the-to-do-list) you want to re-add.
+1. Find the to-do item you want to re-add.
 1. Next to this to-do item, select **Undo** {{< icon name="redo" >}}.
 
 The to-do item is now visible in the **To Do** tab of the To-Do List.
@@ -259,3 +259,13 @@ GitLab deletes the related to-do items.
 
 This process occurs in the hour after their access changes. Deletion is delayed to
 prevent data loss, in case the user's access was accidentally revoked.
+
+## Related topics
+
+- [Issues](project/issues/_index.md)
+- [Merge requests](project/merge_requests/_index.md)
+- [Epics](group/epics/_index.md)
+- [Designs](project/issues/design_management.md)
+- [Incidents](../operations/incident_management/incidents.md)
+- [Objective or key results](okrs.md)
+- [Tasks](tasks.md)

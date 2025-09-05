@@ -13,20 +13,13 @@ class QueueBackfillWorkspaceAgentkStates < Gitlab::Database::Migration[2.3]
 
   # @return [Void]
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :workspaces,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      job_interval: DELAY_INTERVAL
-    )
+    # no-op -- The migration logic has some bug. This change is done to prevent the deployed migration to run.
     nil
   end
 
   # @return [Void]
   def down
-    delete_batched_background_migration(MIGRATION, :workspaces, :id, [])
+    # no-op
     nil
   end
 end

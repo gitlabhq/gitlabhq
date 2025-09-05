@@ -22,18 +22,29 @@ const subgroupsAndProjectsFormatter = (items) =>
     }),
   );
 
-export const SUBGROUPS_AND_PROJECTS_TAB = {
+const baseTab = {
   query: subgroupsAndProjectsQuery,
   queryPath: 'subgroupsAndProjects',
   paginationType: PAGINATION_TYPE_OFFSET,
   formatter: subgroupsAndProjectsFormatter,
   listComponent: NestedGroupsProjectsList,
-  variables: { active: true },
-  text: __('Subgroups and projects'),
-  value: 'subgroups_and_projects',
   queryErrorMessage: __(
     "Your subgroups and projects couldn't be loaded. Refresh the page to try again.",
   ),
+};
+
+export const SUBGROUPS_AND_PROJECTS_TAB = {
+  ...baseTab,
+  variables: { active: true },
+  text: __('Subgroups and projects'),
+  value: 'subgroups_and_projects',
+};
+
+export const INACTIVE_TAB = {
+  ...baseTab,
+  variables: { active: false },
+  text: __('Inactive'),
+  value: 'inactive',
 };
 
 export const SORT_OPTION_NAME = {
@@ -53,7 +64,7 @@ export const SORT_OPTION_UPDATED = {
 
 export const SORT_OPTIONS = [SORT_OPTION_NAME, SORT_OPTION_CREATED, SORT_OPTION_UPDATED];
 
-export const GROUPS_SHOW_TABS = [SUBGROUPS_AND_PROJECTS_TAB];
+export const GROUPS_SHOW_TABS = [SUBGROUPS_AND_PROJECTS_TAB, INACTIVE_TAB];
 
 export const BASE_ROUTE = '/(groups)?/:group*';
 

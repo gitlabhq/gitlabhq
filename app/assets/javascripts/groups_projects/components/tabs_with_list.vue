@@ -339,7 +339,17 @@ export default {
       this.activeTabIndex = index;
 
       const tab = this.tabs[index] || this.tabs[0];
-      this.$router.push({ name: tab.value });
+
+      // Group and project paths can have `/` in them but Vue router converts them to %2F
+      // Resolve the route then convert back to `/` before pushing
+      const resolvedRoute = this.$router.resolve({
+        name: tab.value,
+        params: this.$route.params,
+      });
+      // Vue router 3 and Vue router 4 have different formats for resolved routes
+      const path = resolvedRoute.route ? resolvedRoute.route.path : resolvedRoute.path;
+
+      this.$router.push(decodeURIComponent(path));
 
       if (!this.eventTracking?.tabs) {
         return;
