@@ -44,11 +44,9 @@ class Admin::ProjectsFinder
     params[:abandoned].present? ? items.abandoned : items
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_last_repository_check_failed(items)
-    params[:last_repository_check_failed].present? ? items.where(last_repository_check_failed: true) : items
+    params[:last_repository_check_failed].present? ? items.last_repository_check_failed : items
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_archived(items)
     if params[:archived] == 'only'

@@ -111,7 +111,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
+  <div class="gl-mb-6 gl-mt-5 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
     <button
       type="button"
       class="gl-display-inline-block gl-relative gl-border-none gl-bg-transparent gl-p-0"

@@ -60,6 +60,16 @@
     }
   }
 
+  // Super sidebar active item
+  .super-sidebar-nav-item {
+    @apply gl-rounded-lg #{!important};
+
+    // Hide indicator
+    .active-indicator {
+      display: none;
+    }
+  }
+
   // Search button
   .gl-dark .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
     @apply gl-bg-alpha-light-8;

@@ -105,6 +105,7 @@ class ProjectsFinder < UnionFinder
     collection = by_updated_at(collection)
     collection = by_marked_for_deletion_on(collection)
     collection = by_aimed_for_deletion(collection)
+    collection = by_last_repository_check_failed(collection)
     by_repository_storage(collection)
   end
 
@@ -322,6 +323,13 @@ class ProjectsFinder < UnionFinder
     return items if params[:active].nil?
 
     params[:active] ? items.self_and_ancestors_active : items.self_or_ancestors_inactive
+  end
+
+  def by_last_repository_check_failed(items)
+    return items if params[:last_repository_check_failed].nil?
+    return items.last_repository_check_failed if params[:last_repository_check_failed]
+
+    items.last_repository_check_not_failed
   end
 
   def finder_params

@@ -84,11 +84,6 @@ module CommitsHelper
     crumbs.html_safe
   end
 
-  # Returns a link formatted as a commit tag link
-  def commit_tag_link(url, text)
-    gl_badge_tag(text, { variant: :info, icon: 'tag' }, { href: url, class: 'gl-font-monospace' })
-  end
-
   def commit_blob
     @repo.blob_at(@ref, @path)
   end

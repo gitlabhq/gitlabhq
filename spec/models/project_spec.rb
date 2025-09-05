@@ -876,6 +876,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'includes projects in archived hierarchy'
       it_behaves_like 'includes projects in hierarchy marked for deletion'
     end
+
+    describe '.last_repository_check_failed' do
+      let_it_be(:project_repository_check_failed) { create(:project, :public, :last_repository_check_failed) }
+      let_it_be(:project_repository_check_success) { create(:project, :public, last_repository_check_failed: false) }
+      let_it_be(:project_repository_check_nil) { create(:project, :public, last_repository_check_failed: nil) }
+
+      subject { described_class.last_repository_check_failed }
+
+      it { is_expected.to contain_exactly(project_repository_check_failed) }
+    end
+
+    describe '.last_repository_check_not_failed' do
+      let_it_be(:project_repository_check_failed) { create(:project, :public, :last_repository_check_failed) }
+      let_it_be(:project_repository_check_success) { create(:project, :public, last_repository_check_failed: false) }
+      let_it_be(:project_repository_check_nil) { create(:project, :public, last_repository_check_failed: nil) }
+
+      subject { described_class.last_repository_check_not_failed }
+
+      it { is_expected.to contain_exactly(project_repository_check_success, project_repository_check_nil) }
+    end
   end
 
   describe 'modules' do

@@ -59,6 +59,10 @@ module Resolvers
       required: false,
       description: 'Filter projects by visibility level.'
 
+    argument :last_repository_check_failed, GraphQL::Types::Boolean,
+      required: false,
+      description: "Return only projects where the last repository check failed. Only available for administrators."
+
     before_connection_authorization do |projects, current_user|
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
     end
@@ -66,8 +70,11 @@ module Resolvers
     def resolve_with_lookahead(**args)
       validate_args!(args)
 
+      params = finder_params(args)
+      params = sanitize_params(params)
+
       projects = ProjectsFinder
-        .new(current_user: current_user, params: finder_params(args), project_ids_relation: parse_gids(args[:ids]))
+        .new(current_user: current_user, params: params, project_ids_relation: parse_gids(args[:ids]))
         .execute
 
       apply_lookahead(projects)
@@ -109,12 +116,23 @@ module Resolvers
         marked_for_deletion_on: args[:marked_for_deletion_on],
         visibility_level: args[:visibility_level],
         active: args[:active],
+        last_repository_check_failed: args[:last_repository_check_failed],
         organization: ::Current.organization
       }
     end
 
+    def sanitize_params(params)
+      sanitized_params = params.dup
+      sanitized_params.delete(:last_repository_check_failed) unless user_is_admin?
+      sanitized_params
+    end
+
     def parse_gids(gids)
       gids&.map { |gid| GitlabSchema.parse_gid(gid, expected_type: ::Project).model_id }
+    end
+
+    def user_is_admin?
+      context[:current_user].present? && context[:current_user].can_admin_all_resources?
     end
   end
 end

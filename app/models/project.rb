@@ -991,6 +991,9 @@ class Project < ApplicationRecord
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
   }
 
+  scope :last_repository_check_failed, -> { where(last_repository_check_failed: true) }
+  scope :last_repository_check_not_failed, -> { where(last_repository_check_failed: [false, nil]) }
+
   enum :auto_cancel_pending_pipelines, { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,

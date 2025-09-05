@@ -661,3 +661,17 @@ Alternatively, you can use the `gitlab:zoekt:info` Rake task.
 
 If the number of online nodes is lower than the number of configured nodes or is zero when nodes are configured,
 you might have connectivity issues between GitLab and your Zoekt nodes.
+
+### Error: `TaskRequest responded with [401]`
+
+In your Zoekt indexer logs, you might see `TaskRequest responded with [401]`.
+This error indicates that the Zoekt indexer is failing to authenticate with GitLab.
+
+To resolve this issue, verify that `gitlab-shell-secret` is correctly configured
+and matches between your GitLab instance and Zoekt indexer.
+For example, the output of the following command must match
+`gitlab-shell-secret` in your `gitlab.rb`:
+
+```shell
+kubectl get secret gitlab-shell-secret -o jsonpath='{.data.secret}' -n your_zoekt_namespace | base64 -d
+```
