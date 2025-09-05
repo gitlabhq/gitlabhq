@@ -195,6 +195,59 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     prevent :update_o11y_settings
     prevent :update_runners_registration_token
     prevent :upload_file
+    prevent :admin_tag
+    prevent :push_code
+    prevent :push_to_delete_protected_branch
+    prevent :request_access
+    prevent :upload_file
+    prevent :resolve_note
+    prevent :create_merge_request_from
+    prevent :create_merge_request_in
+    prevent :award_emoji
+    prevent :create_incident
+    prevent :admin_software_license_policy
+    prevent :create_test_case
+    prevent :admin_ai_catalog_item
+    prevent :set_issue_created_at
+    prevent :set_issue_updated_at
+    prevent :set_epic_created_at
+    prevent :set_epic_updated_at
+    prevent :set_note_created_at
+    prevent :admin_namespace
+    prevent :change_visibility_level
+    prevent :admin_integrations
+    prevent :admin_cicd_variables
+    prevent :admin_protected_environments
+    prevent :manage_merge_request_settings
+    prevent :create_deploy_token
+    prevent :destroy_deploy_token
+    prevent :register_group_runners
+    prevent :update_runners_registration_token
+    prevent :admin_runners
+    prevent :admin_package
+    prevent :admin_push_rules
+    prevent :admin_cluster
+    prevent :add_cluster
+    prevent :create_cluster
+    prevent :update_cluster
+    prevent :create_jira_connect_subscription
+    prevent :create_epic
+    prevent :update_epic
+    prevent :admin_epic
+    prevent :destroy_epic
+    prevent :create_iteration
+    prevent :admin_iteration
+    prevent :create_iteration_cadence
+    prevent :admin_iteration_cadence
+    prevent :rollover_issues
+    prevent :admin_custom_field
+    prevent :create_wiki
+    prevent :admin_wiki
+    prevent :admin_merge_request
+    prevent :admin_vulnerability
+    prevent :modify_security_policy
+    prevent :admin_compliance_framework
+    prevent :admin_compliance_pipeline_configuration
   end
 
   rule { archived & archive_group_enabled & ~group_scheduled_for_deletion }.policy do

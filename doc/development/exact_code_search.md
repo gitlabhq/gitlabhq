@@ -8,7 +8,7 @@ title: Exact code search development guidelines
 This page includes information about developing and working with exact code search, which is powered by Zoekt.
 
 For how to enable exact code search and perform the initial indexing, see the
-[integration documentation](../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+[integration documentation](../integration/zoekt/_index.md#enable-exact-code-search).
 
 ## Set up your development environment
 

@@ -28,7 +28,7 @@ module Ci
     private
 
     def preload_associations_for_drop(commit_status_batch)
-      Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(preloaded_relations)
+      ::Ci::Preloaders::CommitStatusPreloader.new(commit_status_batch).execute(preloaded_relations)
     end
 
     # overridden in EE

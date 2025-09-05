@@ -101,8 +101,7 @@
 
   // Organization switcher adjustment (light mode only)
   &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
-    background-color: var(--gl-color-alpha-dark-4);
-    @apply gl-border-default;
+    @apply gl-bg-alpha-dark-8 gl-border-default;
   }
 
 }
@@ -159,6 +158,11 @@
       .container-fluid {
         @apply gl-px-4 gl-pb-3;
       }
+
+      // Hide alert wrapper if it's empty
+      > .alert-wrapper:not(:has(*)) {
+        @apply gl-hidden;
+      }
     }
   }
 
@@ -177,22 +181,20 @@
   }
 
   // AI panel
-  .paneled-view.ai-panel {
+  .paneled-view.ai-panels {
     @apply gl-px-2 -gl-mx-2;
 
     .ai-panel-header {
       z-index: $top-bar-z-index;
       @apply gl-sticky #{!important};
       @apply gl-top-0 gl-py-3 gl-pl-5 gl-pr-3;
-      border-bottom: 1px solid var(--super-sidebar-bg);
     }
 
     .ai-nav-icon-active,
-    .ai-nav-icon:hover,
-    .ai-nav-icon:focus,
-    .ai-nav-icon:active {
-      background-color: var(--super-sidebar-nav-item-current-bg) !important;
-      color: var(--super-sidebar-accent-color-fg) !important;
+    .ai-nav-icon-active:hover,
+    .ai-nav-icon:hover {
+      background-color: var(--super-sidebar-nav-item-current-bg);
+      color: var(--super-sidebar-accent-color-fg);
     }
   }
 
@@ -226,7 +228,6 @@
   .work-item-drawer-header {
     @apply gl-bg-default gl-shadow-none;
     @apply gl-static gl-px-5 #{!important};
-    border-bottom: 1px solid var(--super-sidebar-bg);
   }
 
   // Scrollbar offset
@@ -466,3 +467,132 @@
   }
 
 }
+
+/*
+ * Themes
+ */
+
+ :where(.application-chrome) {
+  // Light mode
+  &:not(.gl-dark) {
+    // default color to mute the gradient
+    --_shade-1: hsla(from var(--theme-color) h 25 95 / 90%);
+    // alternative color
+    --_shade-2: hsl(from var(--theme-color) calc(h + 60) calc(s + 20) l);
+    // original color
+    --_shade-3: hsl(from var(--theme-color) h calc(s + 20) l);
+    // bottom color
+    --_shade-4: hsla(from var(--theme-color) calc(h + 30) calc(s + 20) l / 40%);
+
+    --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 2%);
+    --theme-border-color: hsl(from var(--theme-color) h 24 90);
+
+    body {
+      background:
+        linear-gradient(var(--_shade-1)),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 50vw),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
+        linear-gradient(-10deg, var(--_shade-4), transparent 70%),
+        var(--gl-background-color-default);
+    }
+
+    .ai-panel,
+    .super-sidebar,
+    .super-topbar {
+      --super-sidebar-bg: var(--theme-background-color);
+      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 24);
+      --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
+      --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h s l / 16%);
+      --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 90);
+      --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 2));
+      --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
+    }
+
+    .ai-panel .ai-nav-icon-active,
+    .ai-panel .ai-nav-icon-active:hover,
+    .ai-panel .ai-nav-icon:hover {
+      background-color: var(--super-sidebar-nav-item-current-bg);
+    }
+
+    .ai-panel .ai-nav-icon-active {
+      color: var(--super-sidebar-accent-color-fg);
+    }
+  }
+
+  // Dark mode
+  &.gl-dark {
+    // default color to mute the gradient
+    --_shade-1: hsla(from var(--gl-background-color-default) h s l / 75%);
+    // background
+    --_shade-2: hsl(from var(--theme-color) h 15 20);
+    // alternative color
+    --_shade-3: hsla(from var(--theme-color) calc(h + 30) s l / 70%);
+    // original color
+    --_shade-4: hsla(from var(--theme-color) h s l / 100%);
+    // bottom color
+    --_shade-5: hsla(from var(--theme-color) h s l / 55%);
+
+    --theme-background-color: color-mix(in srgb, var(--gl-background-color-default), var(--theme-color) 4%);
+    --theme-border-color: hsl(from var(--theme-color) h 12 25);
+
+    body {
+      background:
+        linear-gradient(var(--_shade-1)),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-4), transparent 50vw),
+        radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
+        linear-gradient(-10deg, var(--_shade-5), transparent),
+        var(--_shade-2);
+    }
+
+    .ai-panel,
+    .super-sidebar,
+    .super-topbar {
+      --super-sidebar-bg: var(--theme-background-color);
+      --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 26%);
+      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 92);
+      --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h calc(s - 30) l / 16%);
+      --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 85);
+      --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 20));
+      --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 32%);
+    }
+
+    .super-sidebar .badge {
+      background-color: var(--super-sidebar-accent-color-badge) !important;
+    }
+
+    .ai-panel .ai-nav-icon-active,
+    .ai-panel .ai-nav-icon-active:hover,
+    .ai-panel .ai-nav-icon:hover {
+      color: var(--super-sidebar-accent-color-fg);
+      background-color: var(--super-sidebar-nav-item-current-bg);
+    }
+  }
+
+  .super-topbar,
+  .super-sidebar,
+  .super-sidebar .bottom-scrim,
+  .super-sidebar .top-scrim {
+    background: transparent !important;
+  }
+
+  .bottom-scrim-visible,
+  .top-scrim-visible {
+    border-color: var(--theme-border-color);
+  }
+
+  .panel-header .top-bar-fixed,
+  .work-item-drawer-header,
+  .ai-panel-header {
+    border-bottom: 1px solid var(--theme-border-color);
+  }
+
+  .top-bar-fixed,
+  .static-panel,
+  .contextual-panel,
+  .ai-panel,
+  .settings-sticky-header,
+  .settings-sticky-header::before,
+  .settings-sticky-footer {
+    background-color: var(--theme-background-color) !important;
+  }
+ }

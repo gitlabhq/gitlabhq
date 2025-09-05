@@ -561,20 +561,36 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         activate_group_member
         add_cluster
         admin_achievement
+        admin_ai_catalog_item
         admin_build
+        admin_cicd_variables
         admin_cluster
+        admin_compliance_framework
+        admin_compliance_pipeline_configuration
+        admin_custom_field
+        admin_epic
         admin_group_member
+        admin_integrations
         admin_issue
         admin_issue_board
         admin_issue_board_list
+        admin_iteration
+        admin_iteration_cadence
         admin_label
         admin_member_access_request
+        admin_merge_request
         admin_milestone
+        admin_namespace
         admin_note
         admin_package
         admin_pipeline
+        admin_protected_environments
         admin_push_rules
         admin_runners
+        admin_software_license_policy
+        admin_tag
+        admin_vulnerability
+        admin_wiki
         admin_work_item
         award_achievement
         award_emoji
@@ -587,7 +603,13 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         create_cluster
         create_custom_emoji
         create_deploy_token
+        create_epic
+        create_incident
+        create_iteration
+        create_iteration_cadence
         create_jira_connect_subscription
+        create_merge_request_from
+        create_merge_request_in
         create_note
         create_observability_access_request
         create_package
@@ -595,18 +617,31 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         create_resource_access_tokens
         create_runners
         create_subgroup
+        create_test_case
+        create_wiki
         import_projects
         invite_group_members
+        manage_merge_request_settings
+        modify_security_policy
+        push_code
+        push_to_delete_protected_branch
         register_group_runners
         reopen_issue
         request_access
         resolve_note
+        rollover_issues
+        set_epic_created_at
+        set_epic_updated_at
+        set_issue_created_at
+        set_issue_updated_at
         set_new_issue_metadata
         set_new_work_item_metadata
+        set_note_created_at
         set_show_diff_preview_in_email
         transfer_projects
         update_cluster
         update_default_branch_protection
+        update_epic
         update_git_access_protocol
         update_issue
         update_max_artifacts_size
@@ -618,6 +653,8 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
     let(:destroy_abilities) do
       %i[
+        destroy_deploy_token
+        destroy_epic
         delete_custom_emoji
         delete_o11y_settings
         destroy_issue

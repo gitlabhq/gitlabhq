@@ -24917,6 +24917,27 @@ CREATE SEQUENCE security_policy_settings_id_seq
 
 ALTER SEQUENCE security_policy_settings_id_seq OWNED BY security_policy_settings.id;
 
+CREATE TABLE security_project_tracked_contexts (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    context_type smallint DEFAULT 1 NOT NULL,
+    state smallint DEFAULT 1 NOT NULL,
+    is_default boolean DEFAULT false NOT NULL,
+    context_name text NOT NULL,
+    CONSTRAINT check_032d33c1cc CHECK ((char_length(context_name) <= 1024))
+);
+
+CREATE SEQUENCE security_project_tracked_contexts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_project_tracked_contexts_id_seq OWNED BY security_project_tracked_contexts.id;
+
 CREATE TABLE security_scans (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -30394,6 +30415,8 @@ ALTER TABLE ONLY security_policy_requirements ALTER COLUMN id SET DEFAULT nextva
 
 ALTER TABLE ONLY security_policy_settings ALTER COLUMN id SET DEFAULT nextval('security_policy_settings_id_seq'::regclass);
 
+ALTER TABLE ONLY security_project_tracked_contexts ALTER COLUMN id SET DEFAULT nextval('security_project_tracked_contexts_id_seq'::regclass);
+
 ALTER TABLE ONLY security_scans ALTER COLUMN id SET DEFAULT nextval('security_scans_id_seq'::regclass);
 
 ALTER TABLE ONLY security_training_providers ALTER COLUMN id SET DEFAULT nextval('security_training_providers_id_seq'::regclass);
@@ -33797,6 +33820,9 @@ ALTER TABLE ONLY security_policy_requirements
 ALTER TABLE ONLY security_policy_settings
     ADD CONSTRAINT security_policy_settings_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY security_project_tracked_contexts
+    ADD CONSTRAINT security_project_tracked_contexts_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT security_scans_pkey PRIMARY KEY (id);
 
@@ -37060,6 +37086,8 @@ CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_size_bytes ON zoekt_repositories USING btree (zoekt_index_id, size_bytes);
 
 CREATE INDEX idx_zoekt_repositories_on_zoekt_index_id_and_state_with_schema ON zoekt_repositories USING btree (zoekt_index_id, state) INCLUDE (schema_version);
+
+CREATE INDEX idx_zoekt_repositories_project_state_schema ON zoekt_repositories USING btree (project_identifier, state, schema_version);
 
 CREATE INDEX import_export_upload_uploads_checksum_idx ON import_export_upload_uploads USING btree (checksum);
 
@@ -40892,6 +40920,8 @@ CREATE INDEX index_security_policy_requirements_on_namespace_id ON security_poli
 CREATE INDEX index_security_policy_settings_on_csp_namespace_id ON security_policy_settings USING btree (csp_namespace_id);
 
 CREATE UNIQUE INDEX index_security_policy_settings_on_organization_id ON security_policy_settings USING btree (organization_id);
+
+CREATE UNIQUE INDEX index_security_project_tracked_contexts_on_project_context ON security_project_tracked_contexts USING btree (project_id, context_name, context_type);
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 

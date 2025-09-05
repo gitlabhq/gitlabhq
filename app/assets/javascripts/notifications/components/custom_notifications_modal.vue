@@ -48,9 +48,6 @@ export default {
     };
   },
   methods: {
-    open() {
-      this.$refs.modal.show();
-    },
     buildEvents(events) {
       const eventKeys = Object.keys(events).filter((key) => key in this.$options.i18n.eventNames);
       const rawEvents = eventKeys.map((key) => ({

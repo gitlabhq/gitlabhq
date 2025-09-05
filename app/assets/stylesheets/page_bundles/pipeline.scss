@@ -275,20 +275,6 @@
     }
   }
 
-  .linked-pipeline-container[aria-expanded=true] {
-    @media (max-width: $breakpoint-sm) {
-      width: 100%;
-
-      > div {
-        border-bottom-left-radius: 0;
-      }
-
-      > div > button {
-        border-bottom-right-radius: 0 !important;
-      }
-    }
-  }
-
   .linked-pipelines-column,
   .pipeline-show-container,
   .pipeline-links-container {

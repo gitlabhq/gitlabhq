@@ -767,6 +767,10 @@ security_inventory_filters:
   - table: projects
     column: project_id
     on_delete: async_delete
+security_project_tracked_contexts:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 security_scans:
   - table: p_ci_builds
     column: build_id

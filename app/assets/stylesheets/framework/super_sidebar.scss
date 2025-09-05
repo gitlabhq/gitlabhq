@@ -24,7 +24,7 @@ $command-palette-spacing: px-to-rem(14px);
 
 .super-topbar,
 .super-sidebar,
-.page-with-panels {
+.application-chrome {
   --super-sidebar-bg: var(--gl-background-color-strong);
   --super-sidebar-accent-color-fg: var(--gl-color-blue-800);
   --super-sidebar-accent-color-bg: var(--gl-color-blue-100);
@@ -44,30 +44,34 @@ $command-palette-spacing: px-to-rem(14px);
   --super-sidebar-nav-item-current-bg: var(--super-sidebar-accent-color-bg);
 
   --super-sidebar-hr-mix-blend-mode: multiply;
+}
 
-  .gl-dark & {
-    --super-sidebar-bg: var(--gl-background-color-subtle);
+.gl-dark .super-topbar,
+.gl-dark .super-sidebar,
+.gl-dark.application-chrome {
+  --super-sidebar-bg: var(--gl-background-color-subtle);
 
-    --super-sidebar-accent-color-fg: var(--gl-color-blue-200);
-    --super-sidebar-accent-color-bg: var(--gl-color-neutral-950);
+  --super-sidebar-accent-color-fg: var(--gl-color-blue-200);
+  --super-sidebar-accent-color-bg: var(--gl-color-neutral-950);
 
-    --super-sidebar-search-bar-button-bg: var(--gl-color-alpha-light-16);
-    --super-sidebar-user-bar-button-bg: var(--gl-color-alpha-light-8);
-    --super-sidebar-user-bar-button-border-color: transparent;
-    --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-16);
-    --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-24);
-    --super-sidebar-user-bar-notification-dot: var(--gl-color-blue-200);
+  --super-sidebar-search-bar-button-bg: var(--gl-color-alpha-light-16);
+  --super-sidebar-user-bar-button-bg: var(--gl-color-alpha-light-8);
+  --super-sidebar-user-bar-button-border-color: transparent;
+  --super-sidebar-user-bar-button-hover-bg: var(--gl-color-alpha-light-16);
+  --super-sidebar-user-bar-button-active-bg: var(--gl-color-alpha-light-24);
+  --super-sidebar-user-bar-notification-dot: var(--gl-color-blue-200);
 
-    --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-light-16);
-    --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-light-24);
-    --super-sidebar-nav-item-current-bg: rgb(from var(--super-sidebar-accent-color-fg) r g b / 15%);
+  --super-sidebar-nav-item-hover-bg: var(--gl-color-alpha-light-16);
+  --super-sidebar-nav-item-active-bg: var(--gl-color-alpha-light-24);
+  --super-sidebar-nav-item-current-bg: rgb(from var(--super-sidebar-accent-color-fg) r g b / 15%);
 
-    --super-sidebar-hr-mix-blend-mode: color-dodge;
-
-  }
+  --super-sidebar-hr-mix-blend-mode: color-dodge;
 }
 
 @mixin super-sidebar-theme(
+  $theme-color,
+  $theme-accent-color,
+  $theme-notification-color,
   $background,
   $accent-color-fg,
   $accent-color-bg,
@@ -76,7 +80,10 @@ $command-palette-spacing: px-to-rem(14px);
 ) {
   .super-topbar,
   .super-sidebar,
-  &.page-with-panels {
+  &.application-chrome {
+    --theme-color: #{$theme-color};
+    --theme-accent-color: #{$theme-accent-color};
+    --theme-notification-color: #{$theme-notification-color};
     --super-sidebar-bg: #{$background};
     --super-sidebar-accent-color-fg: #{$accent-color-fg};
     --super-sidebar-accent-color-bg: #{$accent-color-bg};
@@ -87,6 +94,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-indigo {
   @include super-sidebar-theme(
+    $theme-color: var(--gl-color-purple-500),
+    $theme-accent-color: var(--gl-color-purple-500),
+    $theme-notification-color: var(--gl-color-purple-500),
     $background: var(--gl-color-purple-50),
     $accent-color-fg: var(--gl-color-purple-800),
     $accent-color-bg: var(--gl-color-purple-100),
@@ -95,6 +105,9 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
+      $theme-color: var(--gl-color-purple-500),
+      $theme-accent-color: var(--gl-color-purple-500),
+      $theme-notification-color: var(--gl-color-purple-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-purple-200),
       $accent-color-bg: var(--gl-background-color-subtle),
@@ -105,6 +118,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-blue {
   @include super-sidebar-theme(
+    $theme-color: var(--gl-color-blue-500),
+    $theme-accent-color: var(--gl-color-blue-500),
+    $theme-notification-color: var(--gl-color-blue-500),
     $background: var(--gl-color-blue-50),
     $accent-color-fg: var(--gl-color-blue-900),
     $accent-color-bg: var(--gl-color-blue-100),
@@ -113,6 +129,9 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
+      $theme-color: var(--gl-color-blue-500),
+      $theme-accent-color: var(--gl-color-blue-500),
+      $theme-notification-color: var(--gl-color-blue-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-blue-100),
       $accent-color-bg: var(--gl-background-color-subtle),
@@ -124,6 +143,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-green {
   @include super-sidebar-theme(
+    $theme-color: var(--gl-color-green-500),
+    $theme-accent-color: var(--gl-color-green-500),
+    $theme-notification-color: var(--gl-color-green-500),
     $background: var(--gl-color-green-50),
     $accent-color-fg: var(--gl-color-green-900),
     $accent-color-bg: var(--gl-color-green-100),
@@ -132,6 +154,9 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
+      $theme-color: var(--gl-color-green-500),
+      $theme-accent-color: var(--gl-color-green-500),
+      $theme-notification-color: var(--gl-color-green-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-green-200),
       $accent-color-bg: var(--gl-background-color-subtle),
@@ -142,6 +167,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-red {
   @include super-sidebar-theme(
+    $theme-color: var(--gl-color-red-500),
+    $theme-accent-color: var(--gl-color-red-500),
+    $theme-notification-color: var(--gl-color-red-500),
     $background: var(--gl-color-red-50),
     $accent-color-fg: var(--gl-color-red-800),
     $accent-color-bg: var(--gl-color-red-100),
@@ -150,6 +178,9 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
+      $theme-color: var(--gl-color-red-500),
+      $theme-accent-color: var(--gl-color-red-500),
+      $theme-notification-color: var(--gl-color-red-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-red-200),
       $accent-color-bg: var(--gl-background-color-subtle),
@@ -160,6 +191,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .ui-gray {
   @include super-sidebar-theme(
+    $theme-color: var(--gl-color-neutral-500),
+    $theme-accent-color: var(--gl-color-neutral-500),
+    $theme-notification-color: var(--gl-color-neutral-500),
     $background: var(--gl-background-color-strong),
     $accent-color-fg: var(--gl-color-neutral-800),
     $accent-color-bg: var(--gl-color-neutral-100),
@@ -168,12 +202,21 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
+      $theme-color: var(--gl-color-neutral-500),
+      $theme-accent-color: var(--gl-color-neutral-500),
+      $theme-notification-color: var(--gl-color-blue-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-neutral-100),
       $accent-color-bg: var(--gl-background-color-subtle),
       $accent-notification-dot: var(--gl-color-neutral-200),
     );
   }
+}
+
+.ui-neutral {
+  --theme-color: var(--gl-color-neutral-500);
+  --theme-accent-color: var(--gl-color-blue-500);
+  --theme-notification-color: var(--gl-color-blue-500);
 }
 
 .super-sidebar {

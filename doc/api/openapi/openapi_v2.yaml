@@ -8101,13 +8101,14 @@ paths:
       - in: query
         name: scope
         description: 'Returns merge requests for the given scope: `created_by_me`,
-          `assigned_to_me` or `all`'
+          `assigned_to_me`, `reviews_for_me` or `all`'
         type: string
         enum:
         - created-by-me
         - assigned-to-me
         - created_by_me
         - assigned_to_me
+        - reviews_for_me
         - all
         required: false
       - in: query
@@ -17972,13 +17973,14 @@ paths:
       - in: query
         name: scope
         description: 'Returns merge requests for the given scope: `created_by_me`,
-          `assigned_to_me` or `all`'
+          `assigned_to_me`, `reviews_for_me` or `all`'
         type: string
         enum:
         - created-by-me
         - assigned-to-me
         - created_by_me
         - assigned_to_me
+        - reviews_for_me
         - all
         required: false
       - in: query
@@ -26962,13 +26964,14 @@ paths:
       - in: query
         name: scope
         description: 'Returns merge requests for the given scope: `created_by_me`,
-          `assigned_to_me` or `all`'
+          `assigned_to_me`, `reviews_for_me` or `all`'
         type: string
         enum:
         - created-by-me
         - assigned-to-me
         - created_by_me
         - assigned_to_me
+        - reviews_for_me
         - all
         required: false
       - in: query
@@ -43884,7 +43887,7 @@ paths:
       - in: query
         name: scope
         description: 'Returns merge requests for the given scope: `created_by_me`,
-          `assigned_to_me` or `all`'
+          `assigned_to_me`, `reviews_for_me` or `all`'
         type: string
         default: created_by_me
         enum:
@@ -43892,6 +43895,7 @@ paths:
         - assigned-to-me
         - created_by_me
         - assigned_to_me
+        - reviews_for_me
         - all
         required: false
       - in: query

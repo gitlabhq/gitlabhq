@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Preloaders::RunnerPolicyPreloader, feature_category: :fleet_visibility do
+RSpec.describe Ci::Preloaders::RunnerPolicyPreloader, feature_category: :fleet_visibility do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:group) { create(:group, owners: [user]) }
   let_it_be_with_reload(:project) { create(:project, group: group, owners: [user]) }

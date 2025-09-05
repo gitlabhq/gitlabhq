@@ -37,7 +37,6 @@ export default {
     'app/assets/javascripts/notes/components/noteable_discussion.vue',
     'app/assets/javascripts/notes/components/noteable_note.vue',
     'app/assets/javascripts/notes/components/notes_app.vue',
-    'app/assets/javascripts/notifications/components/custom_notifications_modal.vue',
     'app/assets/javascripts/organizations/groups_and_projects/components/app.vue',
     'app/assets/javascripts/organizations/shared/components/new_edit_form.vue',
     'app/assets/javascripts/packages_and_registries/container_registry/explorer/components/delete_modal.vue',

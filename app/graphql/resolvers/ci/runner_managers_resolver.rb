@@ -19,7 +19,7 @@ module Resolvers
             ::Ci::RunnerManagersFinder
               .new(runner: runner_ids, params: args.slice(:system_id, :status))
               .execute
-          ::Preloaders::RunnerManagerPolicyPreloader.new(runner_managers, current_user).execute
+          ::Ci::Preloaders::RunnerManagerPolicyPreloader.new(runner_managers, current_user).execute
 
           runner_managers_by_runner_id = runner_managers.group_by(&:runner_id)
 

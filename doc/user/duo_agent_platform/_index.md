@@ -26,10 +26,20 @@ With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, hel
 research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
 
-For more details, view this blog post about [what's next for intelligent DevSecOps](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/).
-
 The Agent Platform is made up of [GitLab Duo Chat (Agentic)](../gitlab_duo_chat/agentic_chat.md)
 and [flows](flows/_index.md), which are available in the GitLab UI and IDEs.
+
+{{< alert type="note" >}}
+
+The Agent Platform public beta requires GitLab 18.2 or later. For the best experience and access to the latest agents and flows, use the latest version of GitLab.
+
+{{< /alert >}}
+
+For more details, view these blog posts about:
+
+- [What's next for intelligent DevSecOps](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/)
+- [GitLab Duo Agent Platform Public Beta: Next-gen AI orchestration and more](https://about.gitlab.com/blog/gitlab-duo-agent-platform-public-beta/)
+- [GitLab 18.3: Expanding AI orchestration in software engineering](https://about.gitlab.com/blog/gitlab-18-3-expanding-ai-orchestration-in-software-engineering/)
 
 ## Prerequisites
 

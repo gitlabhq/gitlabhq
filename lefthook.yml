@@ -233,3 +233,8 @@ auto-fix:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached | while read file;do git diff --unified=1 $(git merge-base origin/master HEAD) $file | grep -Fqe '_(' && echo $file;done; true
       glob: '*.{haml,rb,js,vue}'
       run: tooling/bin/gettext_extractor locale/gitlab.pot
+    graphql_docs_compile:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD) --cached
+      glob: '{,ee/}app/graphql/**/*.rb'
+      run: bundle exec rake gitlab:graphql:compile_docs

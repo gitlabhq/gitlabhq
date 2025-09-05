@@ -32,10 +32,6 @@ export default {
     GlPopover,
     GlSprintf,
   },
-  styles: {
-    flatLeftBorder: ['!gl-rounded-bl-none', '!gl-rounded-tl-none'],
-    flatRightBorder: ['!gl-rounded-br-none', '!gl-rounded-tr-none'],
-  },
   props: {
     columnTitle: {
       type: String,
@@ -83,13 +79,7 @@ export default {
           };
         }
       }
-
       return {};
-    },
-    buttonBorderClasses() {
-      return this.isUpstream
-        ? ['!gl-border-r-0', ...this.$options.styles.flatRightBorder]
-        : ['!gl-border-l-0', ...this.$options.styles.flatLeftBorder];
     },
     buttonShadowClass() {
       return this.isExpandBtnFocus ? '' : '!gl-shadow-none';
@@ -97,16 +87,25 @@ export default {
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;
     },
-    cardClasses() {
-      return this.isDownstream
-        ? this.$options.styles.flatRightBorder
-        : this.$options.styles.flatLeftBorder;
-    },
     expandedIcon() {
       if (this.isUpstream) {
         return this.expanded ? 'chevron-lg-right' : 'chevron-lg-left';
       }
       return this.expanded ? 'chevron-lg-left' : 'chevron-lg-right';
+    },
+    buttonBorderClasses() {
+      // rounded classes in corners are needed to show a correct outlines when the button is focused
+      if (this.expanded) {
+        return {
+          // when expanded in sm viewports show fewer rounded corners
+          '!gl-rounded-tr-lg @sm/panel:!gl-rounded-r-lg': this.isDownstream,
+          '!gl-rounded-tl-lg @sm/panel:!gl-rounded-l-lg': this.isUpstream,
+        };
+      }
+      return {
+        '!gl-rounded-r-lg': this.isDownstream,
+        '!gl-rounded-l-lg': this.isUpstream,
+      };
     },
     expandBtnText() {
       return this.expanded ? __('Collapse jobs') : __('Expand jobs');
@@ -262,10 +261,11 @@ export default {
 <template>
   <div
     ref="linkedPipeline"
-    class="linked-pipeline-container !gl-flex gl-h-full gl-w-full sm:gl-w-auto"
+    class="gl-border gl-flex gl-h-full gl-w-full gl-rounded-lg gl-bg-section @sm/panel:gl-w-auto"
     :class="{
       'gl-flex-row-reverse': isUpstream,
       'gl-flex-row': !isUpstream,
+      'gl-rounded-b-none @sm/panel:gl-rounded-b-lg': expanded,
     }"
     data-testid="linked-pipeline-container"
     :aria-expanded="expanded"
@@ -288,8 +288,11 @@ export default {
       </div>
     </gl-popover>
     <div
-      class="gl-border gl-flex gl-w-full gl-flex-col gl-gap-y-2 gl-rounded-lg gl-border-l-section gl-bg-section gl-p-3"
-      :class="cardClasses"
+      class="gl-border gl-flex gl-w-full gl-flex-col gl-gap-y-2 gl-border-0 gl-border-section gl-p-3"
+      :class="{
+        'gl-border-r-1': isDownstream,
+        'gl-border-l-1': isUpstream,
+      }"
     >
       <div class="gl-flex gl-w-26 gl-gap-x-3">
         <ci-icon
@@ -347,7 +350,7 @@ export default {
         :id="buttonId"
         v-gl-tooltip
         :title="expandBtnText"
-        class="!gl-border !gl-rounded-lg !gl-bg-section"
+        class="!gl-rounded-none !gl-border-0 !gl-bg-transparent"
         :class="[`js-pipeline-expand-${pipeline.id}`, buttonBorderClasses, buttonShadowClass]"
         :icon="expandedIcon"
         :aria-label="expandBtnText"

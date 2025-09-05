@@ -6107,7 +6107,7 @@
 - './spec/models/pool_repository_spec.rb'
 - './spec/models/postgresql/detached_partition_spec.rb'
 - './spec/models/postgresql/replication_slot_spec.rb'
-- './spec/models/preloaders/commit_status_preloader_spec.rb'
+- './spec/models/ci/preloaders/commit_status_preloader_spec.rb'
 - './spec/models/preloaders/environments/deployment_preloader_spec.rb'
 - './spec/models/preloaders/group_policy_preloader_spec.rb'
 - './spec/models/preloaders/labels_preloader_spec.rb'

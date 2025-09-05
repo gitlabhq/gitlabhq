@@ -1,12 +1,13 @@
 - breadcrumb_title _('Artifacts')
 - @breadcrumb_link = browse_project_job_artifacts_path(@project, @build)
 - page_title @path, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
-- add_page_specific_style 'page_bundles/tree'
-
-= render "projects/jobs/header"
-
 - add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
 - add_to_breadcrumbs("##{@build.id}", project_job_path(@project, @build))
+
+- add_page_specific_style 'page_bundles/tree'
+
+= render "header"
+
 
 .tree-holder
   = render 'projects/artifacts/file_navigation', project: @project, build: @build, path: @path

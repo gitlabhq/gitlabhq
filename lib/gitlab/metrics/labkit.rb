@@ -6,6 +6,8 @@ module Gitlab
       extend ActiveSupport::Concern
 
       class_methods do
+        include Gitlab::Utils::StrongMemoize
+
         def client
           ::Labkit::Metrics::Client
         end
@@ -15,7 +17,7 @@ module Gitlab
         end
 
         def reset_registry!
-          @prometheus_metrics_enabled = nil
+          clear_memoization(:prometheus_metrics_enabled?)
           client.reset!
         end
 
@@ -44,13 +46,14 @@ module Gitlab
         end
 
         def error_detected!
-          @prometheus_metrics_enabled = nil
+          clear_memoization(:prometheus_metrics_enabled?)
           client.disable!
         end
 
         def prometheus_metrics_enabled?
-          prometheus_metrics_enabled_memoized
+          client.enabled? && Gitlab::CurrentSettings.prometheus_metrics_enabled
         end
+        strong_memoize_attr :prometheus_metrics_enabled?
 
         private
 
@@ -60,11 +63,6 @@ module Gitlab
           else
             null_metric
           end
-        end
-
-        def prometheus_metrics_enabled_memoized
-          @prometheus_metrics_enabled ||=
-            (client.enabled? && Gitlab::CurrentSettings.prometheus_metrics_enabled) || false
         end
       end
     end

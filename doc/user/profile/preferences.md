@@ -33,6 +33,8 @@ To change the appearance:
 1. In the **Mode** section, select an option.
 1. Select **Save changes**.
 
+<!-- When new navigation is released and feature flag `paneled_view` is removed, change **Navigation** to **Theme** -->
+
 ## Change the navigation theme
 
 {{< history >}}
@@ -393,7 +395,7 @@ For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epi
 Prerequisites:
 
 - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+  [enable exact code search](../../integration/zoekt/_index.md#enable-exact-code-search).
 
 To disable [exact code search](../search/exact_code_search.md) in user preferences:
 

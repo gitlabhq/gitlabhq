@@ -177,6 +177,14 @@ You can use push options to skip [secret push protection](../../user/application
 |--------------------------------|-------------|---------|
 | `secret_push_protection.skip_all` | Do not perform secret push protection for any commit in this push. | `git push -o secret_push_protection.skip_all` |
 
+### Push options for security policy
+
+You can use push options to [bypass security policies](../../user/application_security/policies/merge_request_approval_policies.md#access-token-and-service-account-exceptions).
+
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
+| `security_policy.bypass_reason` | Set the bypass reason for the security policy. | `git push -o security_policy.bypass_reason="Hot fix"` |
+
 ### Push options for GitGuardian integration
 
 You can use the same [push option for Secret push protection](#push-options-for-secret-push-protection) to skip GitGuardian secret detection.

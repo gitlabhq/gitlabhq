@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Preloaders::CommitStatusPreloader do
+RSpec.describe Ci::Preloaders::CommitStatusPreloader, feature_category: :continuous_integration do
   let_it_be(:pipeline) { create(:ci_pipeline) }
 
   let_it_be(:build1) { create(:ci_build, :tags, pipeline: pipeline) }

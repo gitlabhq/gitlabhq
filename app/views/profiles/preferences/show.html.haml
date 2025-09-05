@@ -18,8 +18,6 @@
 - @force_desktop_expanded_sidebar = true
 
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
-  = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
-
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Mode'),
     id: 'appearance',
     options: { class: 'js-preferences-form' }) do |c|
@@ -30,6 +28,35 @@
         = f.gitlab_ui_radio_component :color_mode_id, mode.id,
           mode.name,
           radio_options: { checked: user_color_mode_id == mode.id }
+
+  - if project_studio_enabled?
+    = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Theme'),
+      id: 'application-theme',
+      options: { class: 'js-preferences-form application-theme' }) do |c|
+      - c.with_description do
+        = s_('Preferences|Select the accent color for the application interface.')
+      - c.with_body do
+        .application-theme.row
+          - Gitlab::Themes.each do |theme|
+            %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
+              .preview{ class: theme.css_class }
+              = f.gitlab_ui_radio_component :theme_id, theme.id,
+                theme.name,
+                radio_options: { checked: user_theme_id == theme.id }
+  - else
+    = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation'),
+      id: 'navigation-theme',
+      options: { class: 'js-preferences-form application-theme' }) do |c|
+      - c.with_description do
+        = s_('Preferences|Choose the navigation theme.')
+      - c.with_body do
+        .application-theme.row
+          - Gitlab::Themes.each do |theme|
+            %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
+              .preview{ class: theme.css_class }
+              = f.gitlab_ui_radio_component :theme_id, theme.id,
+                theme.name,
+                radio_options: { checked: user_theme_id == theme.id }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlighting'),
     id: 'syntax-highlighting-theme',
@@ -66,19 +93,7 @@
     - c.with_body do
       #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
 
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation'),
-    id: 'navigation-theme',
-    options: { class: 'js-preferences-form application-theme' }) do |c|
-    - c.with_description do
-      = s_('Preferences|Choose the navigation theme.')
-    - c.with_body do
-      .application-theme.row
-        - Gitlab::Themes.each do |theme|
-          %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
-            .preview{ class: theme.css_class }
-            = f.gitlab_ui_radio_component :theme_id, theme.id,
-              theme.name,
-              radio_options: { checked: user_theme_id == theme.id }
+  = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Behavior'),
     id: 'behavior',

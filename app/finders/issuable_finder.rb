@@ -282,6 +282,8 @@ class IssuableFinder
       items.where(author_id: current_user.id)
     when 'assigned_to_me'
       items.assigned_to(current_user)
+    when 'reviews_for_me'
+      items.review_requested_to(current_user)
     else
       items
     end

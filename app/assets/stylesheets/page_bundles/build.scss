@@ -50,29 +50,6 @@
   }
 }
 
-.build-header {
-  .page-content-header {
-    padding: 10px 0 9px;
-  }
-
-  .header-content {
-    a {
-      color: var(--gl-text-color-default);
-
-      &:hover {
-        color: var(--blue-600, $blue-600);
-        text-decoration: none;
-      }
-    }
-  }
-
-  .avatar {
-    float: none;
-    margin-right: 2px;
-    margin-left: 2px;
-  }
-}
-
 .right-sidebar.build-sidebar {
   padding: 0;
   top: $calc-application-header-height;

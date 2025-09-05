@@ -43,8 +43,8 @@ Prerequisites:
 - Exact code search must be enabled:
   - For GitLab.com, exact code search is enabled by default in paid subscriptions.
   - For GitLab Self-Managed, an administrator must
-    [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
-    [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+    [install Zoekt](../../integration/zoekt/_index.md#install-zoekt) and
+    [enable exact code search](../../integration/zoekt/_index.md#enable-exact-code-search).
 
 To use exact code search:
 

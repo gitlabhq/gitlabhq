@@ -69,7 +69,7 @@ module Types
         ]
         preloaded_relations << :needs if include_needs
 
-        Preloaders::CommitStatusPreloader.new(jobs).execute(preloaded_relations)
+        ::Ci::Preloaders::CommitStatusPreloader.new(jobs).execute(preloaded_relations)
 
         jobs.group_by(&:stage_id)
       end

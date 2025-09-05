@@ -775,6 +775,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
+      it "returns authentication error when scope is reviews_for_me" do
+        get api("/merge_requests"), params: { scope: 'reviews_for_me' }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
       it "returns authentication error  when scope is created-by-me" do
         get api("/merge_requests"), params: { scope: 'created-by-me' }
 
@@ -1041,6 +1047,24 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         get api('/merge_requests', user2), params: { scope: 'created-by-me' }
 
+        expect_response_contain_exactly(merge_request3.id)
+      end
+
+      it 'returns an array of merge requests where I am a reviewer' do
+        # Create a merge request where user2 is a reviewer
+        merge_request3 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+        merge_request3.update!(reviewer_ids: [user2.id])
+
+        # Create a merge request where someone else is a reviewer (should not be returned)
+        merge_request4 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'another-branch')
+        merge_request4.update!(reviewer_ids: [user.id])
+
+        # Create a merge request with no reviewers (should not be returned)
+        create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'no-reviewer-branch')
+
+        get api('/merge_requests', user2), params: { scope: 'reviews_for_me' }
+
+        # Should only return the merge request where user2 is a reviewer
         expect_response_contain_exactly(merge_request3.id)
       end
 

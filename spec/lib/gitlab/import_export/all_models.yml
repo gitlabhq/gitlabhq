@@ -956,6 +956,7 @@ project:
 - project_requirement_compliance_statuses
 - analyzer_statuses
 - configured_ai_catalog_items
+- security_project_tracked_contexts
 award_emoji:
 - awardable
 - user
