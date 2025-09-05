@@ -138,6 +138,11 @@ RSpec.describe 'Database schema',
       merge_requests_compliance_violations: %w[target_project_id],
       merge_request_diffs: %w[project_id],
       merge_request_diff_files: %w[project_id],
+      # merge_request_diff_files_99208b8fac is the temporary table for the
+      # merge_request_diff_files partitioning backfill. It will get foreign keys
+      # after the partitioning is finished.
+      #
+      merge_request_diff_files_99208b8fac: %w[merge_request_diff_id project_id],
       merge_request_diff_commits: %w[project_id commit_author_id committer_id merge_request_commits_metadata_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
