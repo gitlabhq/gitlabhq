@@ -16,7 +16,7 @@ update-static-analysis-cache:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache-push
-    - .shared:rules:update-cache
+    - .caching:rules:update-master-based-caches
   stage: prepare
   script:
     # Silence cop offenses for rules with "grace period".

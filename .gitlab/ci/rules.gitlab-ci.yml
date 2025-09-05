@@ -1073,23 +1073,6 @@
       changes: *db-patterns
       when: always
 
-################
-# Shared rules #
-################
-.shared:rules:update-cache:
-  rules:
-    - <<: *if-schedule-maintenance
-    - <<: *if-security-schedule
-    - <<: *if-foss-schedule
-    - <<: *if-merge-request-labels-update-caches
-
-# This rule is used by new cache implementation which updates cache automatically when cache is invalidated by changes
-.shared:rules:update-cache-v2:
-  rules:
-    - <<: *if-merge-train
-      when: never
-    - when: always
-
 ######################
 # Build images rules #
 ######################
@@ -1241,27 +1224,27 @@
       when: manual
       allow_failure: true
 
-# rules for gem cache population
-.caching:rules:gem-cache:
+# rules for updating unprotected caches via maintenance schedule pipelines, like rubocop cache
+.caching:rules:update-master-based-caches:
   rules:
-    # populate cache in merge-train pipeline to ensure cache for non protected branches will exist in case 2 separate
-    # merge requests updating gems are being merged at the same time
+    - <<: *if-schedule-maintenance
+    - <<: *if-security-schedule
+    - <<: *if-foss-schedule
+    - <<: *if-merge-request-labels-update-caches
+
+# This rule is used by pull-push cache jobs to ensure pipeline always has cache populated
+.caching:rules:update-cache:
+  rules:
     - <<: *if-merge-train
-      changes: *gem-change-patterns
-    - <<: *if-merge-request
-      changes: *gem-change-patterns
-    - <<: *if-sync-changes-on-stable-branches
-      changes: *gem-change-patterns
-    - <<: *if-default-branch-push
-      changes: *gem-change-patterns
-    - *if-merge-request-labels-update-caches
+      when: never
+    - when: always
 
 # e2e runners are only available in .com and in gitlab-org grouped projects
 .caching:rules:e2e-gem-cache-e2e-runners:
   rules:
     - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
-    - !reference [.shared:rules:update-cache-v2, rules]
+    - !reference [.caching:rules:update-cache, rules]
 
 ######################
 # CI Templates Rules #

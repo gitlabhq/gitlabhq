@@ -3,7 +3,7 @@
   stage: sync
   extends:
     - .default-retry
-    - .shared:rules:update-cache-v2
+    - .caching:rules:update-cache
   variables:
     GIT_DEPTH: 1
     GIT_STRATEGY: fetch
@@ -16,7 +16,6 @@ cache:ruby-gems:
     - .with-ruby-slim-image
     - .cache-pull-push-base
     - .ruby-cache-pull-push
-    - .caching:rules:gem-cache
   stage: sync
   variables:
     BUNDLE_WITHOUT: ""
