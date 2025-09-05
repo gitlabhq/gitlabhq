@@ -21,6 +21,33 @@ import { joinPaths } from '~/lib/utils/url_utility';
 const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree|commits)|/blob)/${ref}/?(.*)`);
 
 /**
+ * Parses a selected ref and generates router navigation parameters for Vue Router.
+ * Handles symbolic refs (refs/heads/*, refs/tags/*) and URL encoding.
+ *
+ * @param {string} selectedRef - The selected ref from the ref dropdown.
+ * @param {Object} currentRoute - The current Vue Router route object.
+ * @returns {Object} Object containing path and query for router navigation.
+ */
+export function generateRouterParams(selectedRef, currentRoute) {
+  const encodedHash = '%23';
+
+  const matches = selectedRef.match(/^refs\/(heads|tags)\/(.+)/) || [];
+  const [, refType = null, actualRef = selectedRef] = matches;
+
+  const query = { ...currentRoute.query };
+  if (refType) {
+    query.ref_type = refType.toLowerCase();
+  } else {
+    delete query.ref_type;
+  }
+
+  const encodedRef = encodeURI(actualRef).replace(/#/g, encodedHash);
+  const path = `/${encodedRef}/${currentRoute.params.path || ''}`;
+
+  return { path, query };
+}
+
+/**
  * Generates a ref destination path based on the selected ref and current path.
  * A user could either be in the project root, a directory on the blob view, or commits view.
  * @param {string} projectRootPath - The root path for a project.

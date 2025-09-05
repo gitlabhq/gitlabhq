@@ -46983,6 +46983,9 @@ msgstr ""
 msgid "Personal homepage"
 msgstr ""
 
+msgid "Personal homepage (default)"
+msgstr ""
+
 msgid "Personal namespaces"
 msgstr ""
 
@@ -73005,6 +73008,9 @@ msgstr ""
 msgid "WorkItem|Add status"
 msgstr ""
 
+msgid "WorkItem|Add to"
+msgstr ""
+
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr ""
 
@@ -73339,6 +73345,9 @@ msgid "WorkItem|Failed to load custom fields."
 msgstr ""
 
 msgid "WorkItem|Failed to load default lifecycle"
+msgstr ""
+
+msgid "WorkItem|Failed to load lifecycles."
 msgstr ""
 
 msgid "WorkItem|Failed to load statuses."
@@ -73886,6 +73895,9 @@ msgid "WorkItem|Start from a default configuration"
 msgstr ""
 
 msgid "WorkItem|Starting statuses"
+msgstr ""
+
+msgid "WorkItem|Status name is too long. Use maximum 32 characters."
 msgstr ""
 
 msgid "WorkItem|Statuses"
@@ -75411,6 +75423,9 @@ msgid "Your Chain of Custody CSV export for the group %{group_link} has been add
 msgstr ""
 
 msgid "Your Chain of Custody CSV export for the group %{group_name} has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your Contributed Projects"
 msgstr ""
 
 msgid "Your Contributed Projects (default)"

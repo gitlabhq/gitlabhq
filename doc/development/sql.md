@@ -182,12 +182,10 @@ SELECT projects.path, merge_requests.user_id FROM "projects"...
 When the raw SQL query is parameterized (needs escaping):
 
 ```ruby
-include ActiveRecord::ConnectionAdapters::Quoting
-
 """
 SELECT
-  #{quote_table_name('projects')}.#{quote_column_name('path')},
-  #{quote_table_name('merge_requests')}.#{quote_column_name('user_id')}
+  #{Gitlab::Database.quote_table_name('projects')}.#{Gitlab::Database.quote_column_name('path')},
+  #{Gitlab::Database.quote_table_name('merge_requests')}.#{Gitlab::Database.quote_column_name('user_id')}
 FROM ...
 """
 ```

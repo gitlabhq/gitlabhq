@@ -86,7 +86,6 @@ export const TIPTAP_AUTOFOCUS_OPTIONS = [true, false, 'start', 'end', 'all'];
 export const COMMANDS = {
   ASSIGN: '/assign',
   ASSIGN_REVIEWER: '/assign_reviewer',
-  CC: '/cc',
   LABEL: '/label',
   MILESTONE: '/milestone',
   REASSIGN: '/reassign',

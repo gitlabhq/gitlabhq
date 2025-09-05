@@ -424,6 +424,45 @@ class User < ApplicationRecord
     homepage: 12
   }
 
+  # Override enum setter for `dashboard` to support flipped mapping for rollout
+  def dashboard=(value)
+    if should_use_flipped_dashboard_mapping_for_rollout?
+      numeric_value = dashboard_enum_mapping[value.to_s]
+      super(numeric_value)
+    else
+      super(value)
+    end
+  end
+
+  # Returns the effective dashboard value for routing purposes
+  # For GitLab team members with feature flag enabled, flips homepage/projects values
+  def effective_dashboard_for_routing
+    return dashboard unless should_use_flipped_dashboard_mapping_for_rollout?
+
+    case dashboard
+    when 'projects'
+      'homepage'
+    when 'homepage'
+      'projects'
+    else
+      dashboard
+    end
+  end
+
+  def dashboard_enum_mapping
+    return self.class.dashboards unless should_use_flipped_dashboard_mapping_for_rollout?
+
+    self.class.dashboards.dup.merge(
+      projects: self.class.dashboards[:homepage],
+      homepage: self.class.dashboards[:projects]
+    ).with_indifferent_access
+  end
+
+  # Determines if this user should use flipped dashboard enum mapping
+  def should_use_flipped_dashboard_mapping_for_rollout?
+    Feature.enabled?(:personal_homepage, self)
+  end
+
   # User's Project preference
   enum :project_view, { readme: 0, activity: 1, files: 2, wiki: 3 }
 

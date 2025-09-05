@@ -87,12 +87,15 @@ describe('parse', () => {
   "variables": {
     "after": {
       "type": "String",
+      "value": undefined,
     },
     "before": {
       "type": "String",
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
+      "value": undefined,
     },
   },
 }
@@ -164,12 +167,15 @@ assignee = currentUser()`),
   "variables": {
     "after": {
       "type": "String",
+      "value": undefined,
     },
     "before": {
       "type": "String",
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
+      "value": undefined,
     },
   },
 }
@@ -242,12 +248,15 @@ query: assignee = currentUser()
   "variables": {
     "after": {
       "type": "String",
+      "value": undefined,
     },
     "before": {
       "type": "String",
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
+      "value": undefined,
     },
   },
 }

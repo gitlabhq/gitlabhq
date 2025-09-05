@@ -52,5 +52,18 @@ RSpec.describe Gitlab::MultiDestinationLogger do
 
       subject.info('Hello World')
     end
+
+    describe '#add' do
+      it 'passes the method to loggers' do
+        expect_next_instance_of(LoggerA) do |instance|
+          expect(instance).to receive(:add).and_call_original
+        end
+        expect_next_instance_of(LoggerB) do |instance|
+          expect(instance).to receive(:add).and_call_original
+        end
+
+        subject.add(::Logger::INFO) { 'Hello!' }
+      end
+    end
   end
 end

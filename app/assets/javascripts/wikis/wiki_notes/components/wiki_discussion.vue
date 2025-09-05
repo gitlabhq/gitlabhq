@@ -137,7 +137,7 @@ export default {
 
         <li
           v-if="!collapsed"
-          class="note-footer discussion-reply-holder clearfix gl-px-5 gl-pb-4 gl-pt-2"
+          class="note-footer discussion-reply-holder gl-px-5 gl-pb-4 gl-pt-2 gl-clearfix"
         >
           <ul v-for="reply in replies" :key="reply.id" class="gl-m-0 gl-list-none gl-p-0">
             <wiki-note

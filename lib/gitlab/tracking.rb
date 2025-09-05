@@ -83,7 +83,7 @@ module Gitlab
           emitter = emitters.first
           Gitlab::AppLogger.info(
             "[EXPERIMENT_DEBUG] called track_struct_event with: category - #{category}, action - #{action}, label - #{label}, property - #{property}, value - #{value}, tracker info:  class - #{destination.class}, " \
-              "emitters count: #{emitters.count}, buffer size: #{emitter.instance_variable_get(:@buffer_size)}, buffer: #{emitter.instance_variable_get(:@buffer)}, queue size: #{emitter.instance_variable_get(:@queue)&.size}"
+              "emitters count: #{emitters.count}, emitter class: #{emitter.class}, buffer size: #{emitter.instance_variable_get(:@buffer_size)}, buffer: #{emitter.instance_variable_get(:@buffer)}, queue size: #{emitter.instance_variable_get(:@queue)&.size}"
           )
           # rubocop:enable GitlabSecurity/PublicSend
         end

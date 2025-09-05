@@ -6,7 +6,7 @@ class WorkItem < Issue
   include Import::HasImportSource
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
-    :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
+    :title, :reopen, :close, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
     :subscribe, :unsubscribe, :confidential, :award, :react, :move, :clone, :copy_metadata,
     :duplicate, :promote_to_incident, :board_move, :convert_to_ticket, :zoom, :remove_zoom
   ].freeze

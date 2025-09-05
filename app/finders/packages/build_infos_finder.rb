@@ -2,8 +2,6 @@
 
 module Packages
   class BuildInfosFinder
-    include ActiveRecord::ConnectionAdapters::Quoting
-
     MAX_PAGE_SIZE = 100
 
     def initialize(package_ids, params)

@@ -957,14 +957,6 @@ export const MOCK_COMMANDS = [
     params: [],
   },
   {
-    name: 'cc',
-    aliases: [],
-    description: 'CC',
-    warning: '',
-    icon: '',
-    params: ['@user'],
-  },
-  {
     name: 'relate',
     aliases: [],
     description: 'Mark this issue as related to another issue',

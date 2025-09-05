@@ -16,6 +16,7 @@ $work-item-overview-gap-width: 2rem;
 
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-modal .work-item-view,
+:where(.page-with-panels) .work-item-view, // when it's in a panel, treat work items like drawers
 .work-item-drawer .work-item-view:not(:has(.design-detail)) {
   container-name: work-item-view;
   container-type: inline-size;

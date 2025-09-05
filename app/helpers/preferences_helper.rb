@@ -10,7 +10,13 @@ module PreferencesHelper
   end
 
   def dashboard_value
-    current_user.dashboard
+    # For homepage rollout with flipped mapping, show the effective preference
+    # that matches what they actually see, not the raw database value
+    if current_user.should_use_flipped_dashboard_mapping_for_rollout?
+      current_user.effective_dashboard_for_routing
+    else
+      current_user.dashboard
+    end
   end
 
   # Returns an Array usable by a select field for more user-friendly option text
@@ -23,15 +29,26 @@ module PreferencesHelper
     dashboards -= ['homepage'] unless Feature.enabled?(:personal_homepage, current_user)
 
     # Move homepage to first position if it's available
+    # For homepage rollout with flipped mapping, homepage becomes their default (value 0)
     dashboards.unshift('homepage') if dashboards.delete('homepage')
 
     dashboards.map do |key|
       {
         # Use `fetch` so `KeyError` gets raised when a key is missing
-        text: localized_dashboard_choices.fetch(key),
+        text: localized_dashboard_choices_for_user.fetch(key),
         value: key
       }
     end
+  end
+
+  # Maps `dashboard` values to more user-friendly option text for current user
+  def localized_dashboard_choices_for_user
+    return localized_dashboard_choices unless current_user.should_use_flipped_dashboard_mapping_for_rollout?
+
+    localized_dashboard_choices.dup.tap do |choices|
+      choices[:projects] = _("Your Contributed Projects")
+      choices[:homepage] = _("Personal homepage (default)")
+    end.freeze
   end
 
   # Maps `dashboard` values to more user-friendly option text

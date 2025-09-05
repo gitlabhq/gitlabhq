@@ -5,8 +5,8 @@ import {
   GlTooltipDirective,
   GlIcon,
 } from '@gitlab/ui';
-import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
-import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
+import { generateRouterParams } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { __ } from '~/locale';
 import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
@@ -36,9 +36,11 @@ export default {
     'rootRef',
     'browseFilesPath',
     'commitsFeedPath',
-    'path',
   ],
   computed: {
+    currentPath() {
+      return this.$route.params.path || '';
+    },
     dropdownItems() {
       return [
         {
@@ -70,7 +72,8 @@ export default {
   },
   methods: {
     onRefChange(selectedRef) {
-      visitUrl(generateRefDestinationPath(this.projectRootPath, this.escapedRef, selectedRef));
+      const { path, query } = generateRouterParams(selectedRef, this.$route);
+      this.$router.push({ path, query });
     },
   },
 };
@@ -97,9 +100,9 @@ export default {
 
       <div class="gl-flex gl-items-baseline gl-gap-3">
         <open-mr-badge
-          v-if="path"
+          v-if="currentPath"
           :project-path="projectFullPath"
-          :blob-path="path"
+          :blob-path="currentPath"
           :current-ref="escapedRef"
         />
         <gl-disclosure-dropdown

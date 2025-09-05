@@ -1,8 +1,8 @@
 - emails_disabled = group.emails_disabled?
 
 %li
-  .md:gl-flex.gl-justify-between.gl-items-center
-    .gl-mb-2.md:gl-mb-0
+  .gl-justify-between.gl-items-center{ class: '@md/panel:gl-flex' }
+    .gl-mb-2{ class: '@md/panel:gl-mb-0' }
       %span.gl-mr-2
         = notification_icon(notification_icon_level(setting, emails_disabled))
 

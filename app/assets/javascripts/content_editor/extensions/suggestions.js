@@ -236,7 +236,6 @@ export default Node.create({
           [COMMANDS.ASSIGN]: '@',
           [COMMANDS.UNASSIGN]: '@',
           [COMMANDS.REASSIGN]: '@',
-          [COMMANDS.CC]: '@',
           [COMMANDS.ASSIGN_REVIEWER]: '@',
           [COMMANDS.UNASSIGN_REVIEWER]: '@',
           [COMMANDS.REASSIGN_REVIEWER]: '@',

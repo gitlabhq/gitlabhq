@@ -52,6 +52,12 @@ of quotation marks, automatically.
 
 ## Issues, merge requests, and epics
 
+{{< history >}}
+
+- `/cc` quick action [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/369571) in GitLab 18.3.
+
+{{< /history >}}
+
 The following quick actions are applicable to descriptions, discussions, and
 threads. Some quick actions might not be available to all subscription tiers.
 
@@ -74,7 +80,6 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/blocked_by <item1> <item2>`                                                                   | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Mark the item as blocked by other items. The `<item>` value should be in the format of `#item`, `group/project#item`, or the full URL. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0). |
 | `/blocks <item1> <item2>`                                                                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Mark the item as blocking other items. The `<item>` value should be in the format of `#item`, `group/project#item`, or the full URL. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214232) in GitLab 16.0). |
 | `/board_move ~column`                                                                           | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Move issue to column on the board. The project must have only one issue board. |
-| `/cc @user`                                                                                     | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Mention a user. This command performs no action. You can instead type `CC @user` or only `@user`. |
 | `/clear_health_status`                                                                          | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | Clear [health status](issues/managing_issues.md#health-status). |
 | `/clear_weight`                                                                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Clear weight. |
 | `/clone <path/to/group_or_project> [--with_notes]`                                                       | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |  {{< icon name="check-circle" >}} Yes  | Clone the work item to a given group or project, or the current one if no arguments are given. Copies as much data as possible as long as the target contains equivalent objects like labels, milestones, or epics. Does not copy comments or system notes unless `--with_notes` is provided as an argument. |

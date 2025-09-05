@@ -118,7 +118,7 @@ export default {
       v-if="showAuthorBadge"
       v-gl-tooltip
       data-testid="wiki-note-user-author-badge"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="__('This user is the author of this page.')"
     >
       {{ __('Author') }}
@@ -127,7 +127,7 @@ export default {
       v-if="showMemberBadge"
       v-gl-tooltip
       data-testid="wiki-note-user-access-role-badge"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}

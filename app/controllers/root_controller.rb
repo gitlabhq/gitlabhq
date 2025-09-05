@@ -48,7 +48,7 @@ class RootController < Dashboard::ProjectsController
   end
 
   def redirect_logged_user
-    case current_user.dashboard
+    case current_user.effective_dashboard_for_routing
     when 'projects'
       redirect_to(dashboard_projects_path) if Feature.enabled?(:personal_homepage, current_user)
     when 'stars'

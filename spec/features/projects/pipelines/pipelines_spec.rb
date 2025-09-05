@@ -111,7 +111,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         context 'when canceling support is disabled' do
-          it 'indicates that pipeline can be canceled' do
+          it 'indicates that pipeline can be canceled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514469' do
             expect(page).to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end

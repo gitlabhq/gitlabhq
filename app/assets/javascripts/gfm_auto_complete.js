@@ -480,7 +480,6 @@ class GfmAutoComplete {
       ASSIGN_REVIEWER: '/assign_reviewer',
       UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
-      CC: '/cc',
       REQUEST_REVIEW: '/request_review',
     };
     let assignees = [];
@@ -520,7 +519,7 @@ class GfmAutoComplete {
         matcher(flag, subtext) {
           const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
 
-          // Check if @ is followed by '/assign', '/reassign', '/unassign' or '/cc' commands.
+          // Check if @ is followed by '/assign', '/reassign' or '/unassign' commands.
           command = subtextNodes.find((node) => {
             if (Object.values(MEMBER_COMMAND).includes(node)) {
               return node;

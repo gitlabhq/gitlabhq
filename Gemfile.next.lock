@@ -327,7 +327,7 @@ GEM
     awrence (1.2.1)
     aws-eventstream (1.3.0)
     aws-partitions (1.1001.0)
-    aws-sdk-cloudformation (1.133.0)
+    aws-sdk-cloudformation (1.134.0)
       aws-sdk-core (~> 3, >= 3.225.0)
       aws-sigv4 (~> 1.5)
     aws-sdk-core (3.226.3)
@@ -2436,4 +2436,4 @@ DEPENDENCIES
   yard (~> 0.9)
 
 BUNDLED WITH
-   2.7.1
+   2.6.5

@@ -3,7 +3,6 @@
 module Boards
   class BaseItemsListService < Boards::BaseService
     include Gitlab::Utils::StrongMemoize
-    include ActiveRecord::ConnectionAdapters::Quoting
 
     def execute
       items = init_collection

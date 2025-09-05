@@ -228,6 +228,7 @@ Limitations:
 - Single-region deployment only.
 - No SLA commitment.
 - Cannot run newer versions than production.
+- GitLab Duo Core is not available.
 
 ## Unavailable features
 

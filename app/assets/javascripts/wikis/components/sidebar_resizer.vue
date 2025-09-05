@@ -1,4 +1,5 @@
 <script>
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
@@ -25,6 +26,16 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.updateWidths);
+
+    // We're manually calling this on mount for Desktop
+    // screens to  ensure that element gets `padding-right`
+    // set on it for form elements to align properly
+    // when inside paneled container.
+    if (bp.isDesktop()) {
+      this.$nextTick(() => {
+        this.updateWidths();
+      });
+    }
 
     this.$options.sidebar.classList.remove('gl-hidden');
   },

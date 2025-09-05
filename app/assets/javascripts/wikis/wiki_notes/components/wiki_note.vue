@@ -288,7 +288,7 @@ export default {
             :email-participant="note.externalAuthor"
             :is-internal-note="note.internal"
           >
-            <span class="gl-hidden sm:gl-inline">&middot;</span>
+            <span class="gl-hidden @sm/panel:gl-inline">&middot;</span>
           </note-header>
           <note-actions
             :class="{ '-gl-mr-5': replyNote }"

@@ -307,7 +307,7 @@ export default {
                 category="primary"
                 variant="confirm"
                 data-testid="wiki-note-save-button"
-                class="js-vue-issue-save js-comment-button gl-w-full sm:gl-w-fit"
+                class="js-vue-issue-save js-comment-button gl-w-full @sm/panel:gl-w-fit"
                 @click="handleSave"
               >
                 {{ saveButtonTitle }}
@@ -315,7 +315,7 @@ export default {
               <gl-button
                 :disabled="isSubmitting"
                 data-testid="wiki-note-cancel-button"
-                class="note-edit-cancel js-close-discussion-note-form gl-w-full sm:gl-w-fit"
+                class="note-edit-cancel js-close-discussion-note-form gl-w-full @sm/panel:gl-w-fit"
                 category="secondary"
                 variant="default"
                 @click="handleCancel"
@@ -343,7 +343,7 @@ export default {
                 variant="confirm"
                 data-testid="wiki-note-comment-button"
                 tracking-label="wiki-comment-button"
-                class="js-vue-issue-save js-comment-button gl-mr-3 gl-w-full sm:gl-w-fit"
+                class="js-vue-issue-save js-comment-button gl-mr-3 gl-w-full @sm/panel:gl-w-fit"
                 @click="handleSave"
               >
                 {{ saveButtonTitle }}

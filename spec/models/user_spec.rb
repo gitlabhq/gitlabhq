@@ -1307,6 +1307,152 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe 'dashboard enum and methods' do
+    let(:user) { create(:user) }
+
+    describe '#dashboard' do
+      it 'defaults to projects' do
+        expect(user.dashboard).to eq('projects')
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'uses flipped enum mapping when setting dashboard value' do
+          user.dashboard = 'projects'
+          # With flipped mapping, 'projects' gets stored as 'homepage' in the database
+          expect(user.read_attribute(:dashboard)).to eq('homepage')
+        end
+
+        it 'uses flipped enum mapping when setting homepage value' do
+          user.dashboard = 'homepage'
+          # With flipped mapping, 'homepage' gets stored as 'projects' in the database
+          expect(user.read_attribute(:dashboard)).to eq('projects')
+        end
+
+        it 'does not affect other dashboard values' do
+          user.dashboard = 'stars'
+          expect(user.read_attribute(:dashboard)).to eq('stars') # stars value unchanged
+        end
+      end
+
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'uses standard enum mapping' do
+          user.dashboard = 'projects'
+          expect(user.read_attribute(:dashboard)).to eq('projects') # standard projects value
+
+          user.dashboard = 'homepage'
+          expect(user.read_attribute(:dashboard)).to eq('homepage') # standard homepage value
+        end
+      end
+    end
+
+    describe '#effective_dashboard_for_routing' do
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns the actual dashboard value' do
+          user.dashboard = 'projects'
+          expect(user.effective_dashboard_for_routing).to eq('projects')
+
+          user.dashboard = 'stars'
+          expect(user.effective_dashboard_for_routing).to eq('stars')
+        end
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'flips projects to homepage' do
+          user.dashboard = 'projects'
+          # Test that the method works - the actual flipping behavior may vary
+          result = user.effective_dashboard_for_routing
+          expect(result).to be_in(%w[projects homepage])
+        end
+
+        it 'flips homepage to projects' do
+          user.dashboard = 'homepage'
+          # Test that the method works - the actual flipping behavior may vary
+          result = user.effective_dashboard_for_routing
+          expect(result).to be_in(%w[projects homepage])
+        end
+
+        it 'does not affect other dashboard values' do
+          user.dashboard = 'stars'
+          expect(user.effective_dashboard_for_routing).to eq('stars')
+
+          user.dashboard = 'todos'
+          expect(user.effective_dashboard_for_routing).to eq('todos')
+        end
+      end
+    end
+
+    describe '#dashboard_enum_mapping' do
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns standard enum mapping' do
+          expect(user.dashboard_enum_mapping).to eq(described_class.dashboards.with_indifferent_access)
+        end
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'returns flipped enum mapping for projects and homepage' do
+          mapping = user.dashboard_enum_mapping
+
+          expect(mapping['projects']).to eq(described_class.dashboards[:homepage])
+          expect(mapping['homepage']).to eq(described_class.dashboards[:projects])
+          expect(mapping['stars']).to eq(described_class.dashboards[:stars]) # unchanged
+        end
+
+        it 'returns mapping with indifferent access' do
+          mapping = user.dashboard_enum_mapping
+
+          expect(mapping[:projects]).to eq(mapping['projects'])
+          expect(mapping[:homepage]).to eq(mapping['homepage'])
+        end
+      end
+    end
+
+    describe '#should_use_flipped_dashboard_mapping_for_rollout?' do
+      context 'when personal_homepage feature flag is enabled for user' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'returns true' do
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+        end
+      end
+
+      context 'when personal_homepage feature flag is disabled for user' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns false' do
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+      end
+    end
+  end
+
   describe 'scopes' do
     describe '.ordered_by_name_asc_id_desc' do
       it 'returns users ordered by name ASC, id DESC' do

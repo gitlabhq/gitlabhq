@@ -119,9 +119,9 @@ export default {
       return Boolean(this.projectImportJiraPath) && this.canEdit;
     },
     hasImportExportOptions() {
-      return (
+      return Boolean(
         this.showImportExportButtons &&
-        (this.isJiraImportVisible || this.showExportButton || this.canImportWorkItems)
+          (this.isJiraImportVisible || this.showExportButton || this.canImportWorkItems),
       );
     },
     shouldShowDropdown() {

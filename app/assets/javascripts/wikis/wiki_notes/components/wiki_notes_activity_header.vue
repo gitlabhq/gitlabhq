@@ -11,7 +11,9 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-flex-col gl-justify-between gl-pt-5 sm:gl-flex-row sm:gl-items-center">
+  <div
+    class="gl-flex gl-flex-col gl-justify-between gl-pt-5 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+  >
     <h2 class="gl-heading-2 gl-mb-0 gl-mt-5">{{ $options.i18n.headerText }}</h2>
     <wiki-discussion-sorter />
   </div>

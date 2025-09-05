@@ -1,13 +1,17 @@
-import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
+import {
+  generateRefDestinationPath,
+  generateRouterParams,
+} from '~/repository/utils/ref_switcher_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'spec/test_constants';
 import { refWithSpecialCharMock, encodedRefWithSpecialCharMock } from '../mock_data';
 
 const projectRootPath = 'root/Project1';
-const currentRef = 'main';
-const selectedRef = 'feature';
 
 describe('generateRefDestinationPath', () => {
+  const currentRef = 'main';
+  const selectedRef = 'feature';
+
   it.each`
     currentPath                                                         | result
     ${projectRootPath}                                                  | ${`${projectRootPath}/-/tree/${selectedRef}`}
@@ -63,5 +67,72 @@ describe('generateRefDestinationPath', () => {
     expect(generateRefDestinationPath(projectRootPath, currentRef, refWithSpecialCharMock)).toBe(
       `${TEST_HOST}/${result}`,
     );
+  });
+});
+
+describe('generateRouterParams', () => {
+  const mockRoute = {
+    params: { path: 'src/components' },
+    query: { search: 'test' },
+  };
+
+  it.each`
+    selectedRef               | expectedPath                                          | expectedQuery
+    ${'feature-branch'}       | ${'/feature-branch/src/components'}                   | ${{ search: 'test' }}
+    ${'refs/heads/feature-branch'} | ${'/feature-branch/src/components'} | ${{
+  search: 'test',
+  ref_type: 'heads',
+}}
+    ${'refs/tags/v1.0.0'} | ${'/v1.0.0/src/components'} | ${{
+  search: 'test',
+  ref_type: 'tags',
+}}
+    ${refWithSpecialCharMock} | ${`/${encodedRefWithSpecialCharMock}/src/components`} | ${{ search: 'test' }}
+  `(
+    'with $selectedRef generates correct router params',
+    ({ selectedRef, expectedPath, expectedQuery }) => {
+      const result = generateRouterParams(selectedRef, mockRoute);
+
+      expect(result).toEqual({
+        path: expectedPath,
+        query: expectedQuery,
+      });
+    },
+  );
+
+  it('handles route without path param', () => {
+    const routeWithoutPath = { params: {}, query: { search: 'test' } };
+    const result = generateRouterParams('main', routeWithoutPath);
+
+    expect(result).toEqual({
+      path: '/main/',
+      query: { search: 'test' },
+    });
+  });
+
+  it('removes ref_type from query when switching to non-symbolic ref', () => {
+    const routeWithRefType = {
+      params: { path: 'src' },
+      query: { ref_type: 'heads', search: 'test' },
+    };
+    const result = generateRouterParams('main', routeWithRefType);
+
+    expect(result).toEqual({
+      path: '/main/src',
+      query: { search: 'test' },
+    });
+  });
+
+  it('preserves existing query params when adding ref_type', () => {
+    const routeWithMultipleParams = {
+      params: { path: 'src' },
+      query: { search: 'test', sort: 'name', filter: 'js' },
+    };
+    const result = generateRouterParams('refs/heads/feature', routeWithMultipleParams);
+
+    expect(result).toEqual({
+      path: '/feature/src',
+      query: { search: 'test', sort: 'name', filter: 'js', ref_type: 'heads' },
+    });
   });
 });

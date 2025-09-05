@@ -503,6 +503,18 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
   end
 
+  describe '.quote_table_name' do
+    it 'quotes the given table name' do
+      expect(described_class.quote_table_name('table name')).to eq '"table name"'
+    end
+  end
+
+  describe '.quote_column_name' do
+    it 'quotes the given column name' do
+      expect(described_class.quote_column_name('column name')).to eq '"column name"'
+    end
+  end
+
   describe '.all_uncached' do
     let(:base_model) do
       Class.new do
