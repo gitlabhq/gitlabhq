@@ -97,8 +97,7 @@ module Ci
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
     rule { ~can?(:jailbreak) & protected_ref }.policy do
-      prevent(*ProjectPolicy::UPDATE_JOB_PERMISSIONS)
-      prevent(*ProjectPolicy::CLEANUP_JOB_PERMISSIONS)
+      prevent(*all_job_write_abilities)
     end
 
     rule { archived }.policy do
@@ -110,7 +109,7 @@ module Ci
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :cancel_build
 
-      enable(*ProjectPolicy::UPDATE_JOB_PERMISSIONS)
+      enable(*all_job_update_abilities)
     end
 
     rule { can?(:update_build) & terminal & owner_of_job }.enable :create_build_terminal

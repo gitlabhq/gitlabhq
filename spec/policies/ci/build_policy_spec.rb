@@ -304,12 +304,12 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
 
       context 'when job is not archived' do
-        it 'allows update and cleanup job permissions' do
-          ::ProjectPolicy::UPDATE_JOB_PERMISSIONS.each do |perm|
+        it 'allows update and cleanup job abilities' do
+          described_class.all_job_update_abilities.each do |perm|
             expect(policy).to be_allowed(perm)
           end
 
-          ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each do |perm|
+          described_class.all_job_cleanup_abilities.each do |perm|
             expect(policy).to be_allowed(perm)
           end
         end
@@ -320,12 +320,12 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
           allow(build).to receive(:archived?).and_return(true)
         end
 
-        it 'prevents update job permissions while allowing cleanup job permissions' do
-          (::ProjectPolicy::UPDATE_JOB_PERMISSIONS - [:update_build]).each do |perm|
+        it 'prevents user facing update job abilities while allowing cleanup job abilities' do
+          described_class.job_user_facing_update_abilities.each do |perm|
             expect(policy).to be_disallowed(perm)
           end
 
-          ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each do |perm|
+          described_class.all_job_cleanup_abilities.each do |perm|
             expect(policy).to be_allowed(perm)
           end
         end

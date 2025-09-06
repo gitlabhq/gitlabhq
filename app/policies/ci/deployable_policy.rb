@@ -5,6 +5,8 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
+      include Ci::JobAbilities
+
       prepend_mod_with('Ci::DeployablePolicy') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       condition(:has_outdated_deployment, scope: :subject) do
@@ -12,8 +14,7 @@ module Ci
       end
 
       rule { has_outdated_deployment }.policy do
-        prevent(*ProjectPolicy::UPDATE_JOB_PERMISSIONS)
-        prevent(*ProjectPolicy::CLEANUP_JOB_PERMISSIONS)
+        prevent(*all_job_write_abilities)
       end
     end
   end

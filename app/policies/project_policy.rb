@@ -2,19 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   include ArchivedAbilities
-
-  UPDATE_JOB_PERMISSIONS = [
-    :update_build, # TODO: remove usages of this permission
-    :play_job,
-    :retry_job,
-    :unschedule_job,
-    :keep_job_artifacts
-  ].freeze
-
-  CLEANUP_JOB_PERMISSIONS = [
-    :cancel_build,
-    :erase_build
-  ].freeze
+  include ::Ci::JobAbilities
 
   # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
   desc "Project-based pipeline visibility enabled"
@@ -658,7 +646,7 @@ class ProjectPolicy < BasePolicy
     enable :read_secure_files
     enable :update_sentry_issue
 
-    enable(*UPDATE_JOB_PERMISSIONS)
+    enable(*all_job_update_abilities)
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -864,8 +852,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    prevent(*UPDATE_JOB_PERMISSIONS)
-    prevent(*CLEANUP_JOB_PERMISSIONS)
+    prevent(*all_job_write_abilities)
 
     prevent :read_build
     prevent :create_build

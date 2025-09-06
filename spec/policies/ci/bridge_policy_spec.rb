@@ -39,16 +39,16 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
 
         describe 'rules for archived jobs' do
           # :erase_build is not applicable to Ci::Bridge and :update_build is not used in Ci::Bridge
-          let(:cleanup_permissions) { ::ProjectPolicy::CLEANUP_JOB_PERMISSIONS - [:erase_build] }
-          let(:update_permissions) { ::ProjectPolicy::UPDATE_JOB_PERMISSIONS - [:update_build] }
+          let(:cleanup_abilities) { described_class.all_job_cleanup_abilities - [:erase_build] }
+          let(:update_abilities) { described_class.job_user_facing_update_abilities }
 
           context 'when job is not archived' do
-            it 'allows update and cleanup job permissions' do
-              update_permissions.each do |perm|
+            it 'allows update and cleanup job abilities' do
+              update_abilities.each do |perm|
                 expect(policy).to be_allowed(perm)
               end
 
-              cleanup_permissions.each do |perm|
+              cleanup_abilities.each do |perm|
                 expect(policy).to be_allowed(perm)
               end
             end
@@ -59,12 +59,12 @@ RSpec.describe Ci::BridgePolicy, feature_category: :continuous_integration do
               allow(bridge).to receive(:archived?).and_return(true)
             end
 
-            it 'prevents update job permissions while allowing cleanup job permissions' do
-              update_permissions.each do |perm|
+            it 'prevents update job abilities while allowing cleanup job abilities' do
+              update_abilities.each do |perm|
                 expect(policy).to be_disallowed(perm)
               end
 
-              cleanup_permissions.each do |perm|
+              cleanup_abilities.each do |perm|
                 expect(policy).to be_allowed(perm)
               end
             end

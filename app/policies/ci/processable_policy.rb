@@ -5,16 +5,14 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
+      include Ci::JobAbilities
+
       condition(:archived, scope: :subject) do
         @subject.archived?(log: true)
       end
 
       rule { archived }.policy do
-        # We exclude `update_build` because it's used as an internal abstraction that is used to
-        # influence other permissions, like `erase_build`, etc.
-        # Preventing `update_build` would cause other permissions like `erase_build` to be prevented.
-        user_facing_update_permissions = ::ProjectPolicy::UPDATE_JOB_PERMISSIONS - [:update_build]
-        prevent(*user_facing_update_permissions)
+        prevent(*job_user_facing_update_abilities)
       end
     end
   end
