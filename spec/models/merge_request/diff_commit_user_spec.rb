@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_workflow do
-  let_it_be(:organization_id) { create(:organization, id: 1).id }
+  let_it_be(:organization_id) { create(:organization).id }
 
   describe 'validations' do
     it 'requires that names are less than 512 characters long' do

@@ -101,7 +101,6 @@
 - :prometheus
 - :quarantine
 - :query_analyzers
-- :rd_fast
 - :redis
 - :reestablished_active_record_base
 - :request_store
