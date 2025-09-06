@@ -70,8 +70,8 @@ RSpec.describe ProtectableDropdown do
     end
   end
 
-  describe '#hash' do
-    subject { dropdown.hash }
+  describe '#array' do
+    subject { dropdown.array }
 
     context 'for branches' do
       let(:ref_type) { :branches }

@@ -53463,6 +53463,9 @@ msgstr ""
 msgid "Remove parent item"
 msgstr ""
 
+msgid "Remove permission"
+msgstr ""
+
 msgid "Remove priority"
 msgstr ""
 
@@ -57284,6 +57287,9 @@ msgstr ""
 msgid "Secrets|Are you sure you want to delete secret %{secretName}? This action cannot be undone, and the secret cannot be recovered."
 msgstr ""
 
+msgid "Secrets|Are you sure you want to remove permissions for %{principalName}?"
+msgstr ""
+
 msgid "Secrets|Are you sure you want to update secret %{secretName}? Saving these changes can cause disruptions, such as loss of access to connected services or failed deployments."
 msgstr ""
 
@@ -57329,6 +57335,9 @@ msgstr ""
 msgid "Secrets|Failed to create Secrets manager permission. Please try again."
 msgstr ""
 
+msgid "Secrets|Failed to delete secrets manager permission. Please try again."
+msgstr ""
+
 msgid "Secrets|Failed to fetch secrets manager permissions. Please try again later."
 msgstr ""
 
@@ -57350,10 +57359,16 @@ msgstr ""
 msgid "Secrets|New secret"
 msgstr ""
 
+msgid "Secrets|Permissions for secrets manager removed."
+msgstr ""
+
 msgid "Secrets|Please wait while we provision the Secrets Manager for you. Refresh at will."
 msgstr ""
 
 msgid "Secrets|Provisioning in progress"
+msgstr ""
+
+msgid "Secrets|Remove secrets manager permission?"
 msgstr ""
 
 msgid "Secrets|Rotation period"
