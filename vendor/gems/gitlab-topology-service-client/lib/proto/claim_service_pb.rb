@@ -39,7 +39,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :owner, :message, 3, "gitlab.cells.topology_service.OwnerRecord", json_name: "owner"
     end
     add_message "gitlab.cells.topology_service.ClaimInfo" do
-      optional :id, :int64, 1, json_name: "id"
+      proto3_optional :uuid, :string, 1, json_name: "uuid"
       optional :details, :message, 2, "gitlab.cells.topology_service.ClaimDetails", json_name: "details"
       proto3_optional :cell_info, :message, 3, "gitlab.cells.topology_service.CellInfo", json_name: "cellInfo"
     end
@@ -47,6 +47,12 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :details, :message, 1, "gitlab.cells.topology_service.ClaimDetails", json_name: "details"
     end
     add_message "gitlab.cells.topology_service.CreateClaimResponse" do
+      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimInfo", json_name: "claim"
+    end
+    add_message "gitlab.cells.topology_service.GetClaimRequest" do
+      optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimRecord", json_name: "claim"
+    end
+    add_message "gitlab.cells.topology_service.GetClaimResponse" do
       optional :claim, :message, 1, "gitlab.cells.topology_service.ClaimInfo", json_name: "claim"
     end
   end
@@ -65,6 +71,8 @@ module Gitlab
       ClaimInfo = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.ClaimInfo").msgclass
       CreateClaimRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.CreateClaimRequest").msgclass
       CreateClaimResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.CreateClaimResponse").msgclass
+      GetClaimRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.GetClaimRequest").msgclass
+      GetClaimResponse = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("gitlab.cells.topology_service.GetClaimResponse").msgclass
     end
   end
 end

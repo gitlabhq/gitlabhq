@@ -246,7 +246,6 @@
   // Panel content
   .panel-content {
     @apply gl-overflow-clip gl-h-full gl-pb-0;
-    clip-path: inset(1px 1px 1px 1px);
     transform: translate3d(0, 0, 0);
   }
 

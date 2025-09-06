@@ -8,5 +8,4 @@ description: Separate table for merge_request_diffs containing Geo verification 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34248
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550703
 table_size: small

@@ -10,9 +10,9 @@
   // Form elements and buttons
   .gl-button,
   .gl-button.gl-button,
-  .form-control,
+  .form-control:not(.gl-search-box-by-type-input-borderless),
   .gl-form-input,
-  .gl-form-input.form-control,
+  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless),
   .gl-form-select,
   .input-group-text,
   &.application-chrome .filtered-search-box {

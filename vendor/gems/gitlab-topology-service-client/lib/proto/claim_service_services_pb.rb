@@ -19,6 +19,7 @@ module Gitlab
 
           rpc :GetCells, ::Gitlab::Cells::TopologyService::GetCellsRequest, ::Gitlab::Cells::TopologyService::GetCellsResponse
           rpc :CreateClaim, ::Gitlab::Cells::TopologyService::CreateClaimRequest, ::Gitlab::Cells::TopologyService::CreateClaimResponse
+          rpc :GetClaim, ::Gitlab::Cells::TopologyService::GetClaimRequest, ::Gitlab::Cells::TopologyService::GetClaimResponse
         end
 
         Stub = Service.rpc_stub_class
