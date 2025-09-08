@@ -426,6 +426,10 @@
     }
   }
 
+  .right-sidebar.right-sidebar-collapsed.issues-bulk-update {
+    @apply gl-border-l-0;
+  }
+
   :where(.right-sidebar-collapsed:not(.issuable-bulk-update-sidebar)) {
     .content-wrapper {
       @apply gl-pr-0 #{!important};

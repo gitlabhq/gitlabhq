@@ -241,13 +241,15 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
         end
       end
 
-      describe 'newReleasesPath, newProjectImortJiraPath' do
+      describe 'releasesPath, projectImportJiraPath, rssPath, calendarPath' do
         let(:query_fields) do
           <<~QUERY
           linkPaths {
             ... on ProjectNamespaceLinks {
               releasesPath
               projectImportJiraPath
+              rssPath
+              calendarPath
             }
           }
           QUERY
@@ -255,28 +257,76 @@ RSpec.describe 'Query', feature_category: :groups_and_projects do
 
         let(:query_string) { graphql_query_for(:namespace, { 'fullPath' => test_project.full_path }, query_fields) }
 
-        it 'returns the new project link paths' do
+        it 'returns the project link paths' do
           post_graphql(query_string, current_user: current_user)
 
           link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
           expect(link_paths).to include(
             'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
-            'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project)
+            'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project),
+            'rssPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :atom),
+            'calendarPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :ics)
           )
         end
 
         context 'when user is anonymous' do
           let(:current_user) { nil }
 
-          it 'still returns the new project link paths' do
+          it 'still returns the project link paths' do
             post_graphql(query_string, current_user: current_user)
 
             link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
 
             expect(link_paths).to include(
               'releasesPath' => ::Gitlab::Routing.url_helpers.project_releases_path(test_project),
-              'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project)
+              'projectImportJiraPath' => ::Gitlab::Routing.url_helpers.project_import_jira_path(test_project),
+              'rssPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :atom),
+              'calendarPath' => ::Gitlab::Routing.url_helpers.project_work_items_path(test_project, format: :ics)
+            )
+          end
+        end
+      end
+
+      describe 'group namespace link paths' do
+        let_it_be(:test_group) { create(:group, :public) }
+        let_it_be(:target_namespace) { test_group }
+
+        let(:query_fields) do
+          <<~QUERY
+          linkPaths {
+            ... on GroupNamespaceLinks {
+              rssPath
+              calendarPath
+            }
+          }
+          QUERY
+        end
+
+        let(:query_string) { graphql_query_for(:namespace, { 'fullPath' => test_group.full_path }, query_fields) }
+
+        it 'returns the group link paths' do
+          post_graphql(query_string, current_user: current_user)
+
+          link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
+
+          expect(link_paths).to include(
+            'rssPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :atom),
+            'calendarPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :ics)
+          )
+        end
+
+        context 'when user is anonymous' do
+          let(:current_user) { nil }
+
+          it 'still returns the group link paths' do
+            post_graphql(query_string, current_user: current_user)
+
+            link_paths = graphql_dig_at(graphql_data, :namespace, :link_paths)
+
+            expect(link_paths).to include(
+              'rssPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :atom),
+              'calendarPath' => ::Gitlab::Routing.url_helpers.group_work_items_path(test_group, format: :ics)
             )
           end
         end

@@ -244,6 +244,18 @@ RSpec.describe Ci::BuildRunnerPresenter, feature_category: :continuous_integrati
       it 'returns its value' do
         expect(git_depth).to eq(1)
       end
+
+      context 'when there are multiple GIT_DEPTH variables' do
+        before do
+          create(:ci_variable, key: 'GIT_DEPTH', value: 2, project: build.project)
+        end
+
+        # The need for this spec indicates an architectural problem with lib/gitlab/ci/variables/builder.rb
+        # Tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/567742
+        it 'returns the higher precedence value' do
+          expect(git_depth).to eq(1)
+        end
+      end
     end
 
     it 'defaults to git depth setting for the project' do

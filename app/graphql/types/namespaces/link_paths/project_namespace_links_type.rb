@@ -58,6 +58,14 @@ module Types
           url_helpers.project_import_jira_path(project)
         end
 
+        def rss_path
+          url_helpers.project_work_items_path(project, format: :atom)
+        end
+
+        def calendar_path
+          url_helpers.project_work_items_path(project, format: :ics)
+        end
+
         private
 
         def project

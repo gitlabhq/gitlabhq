@@ -32,11 +32,7 @@ module Ci
     end
 
     def git_depth
-      if git_depth_variable
-        git_depth_variable[:value]
-      else
-        project.ci_default_git_depth
-      end.to_i
+      (git_depth_value || project.ci_default_git_depth).to_i
     end
 
     def repo_object_format
@@ -162,9 +158,9 @@ module Ci
       "+#{pipeline.persistent_ref.path}:#{pipeline.persistent_ref.path}"
     end
 
-    def git_depth_variable
-      strong_memoize(:git_depth_variable) do
-        variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }
+    def git_depth_value
+      strong_memoize(:git_depth_value) do
+        variables&.to_hash&.dig("GIT_DEPTH")
       end
     end
   end

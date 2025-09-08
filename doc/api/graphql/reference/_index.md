@@ -30293,8 +30293,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
 
 ##### `Group.approvalPolicies`
 
@@ -32229,6 +32229,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupnamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="groupnamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="groupnamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="groupnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -32243,6 +32244,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupnamespacelinksquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="groupnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="groupnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="groupnamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="groupnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="groupnamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -38325,8 +38327,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
 
 ##### `Project.alertManagementAlert`
 
@@ -40786,6 +40788,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectnamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="projectnamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="projectnamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="projectnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -40803,6 +40806,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="projectnamespacelinksreleasespath"></a>`releasesPath` | [`String`](#string) | Project releases path. |
 | <a id="projectnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="projectnamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="projectnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="projectnamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -43819,6 +43823,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usernamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="usernamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="usernamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="usernamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -43833,6 +43838,7 @@ fields relate to interactions between the two entities.
 | <a id="usernamespacelinksquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="usernamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="usernamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="usernamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="usernamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="usernamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -43905,6 +43911,7 @@ Returns [`String`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userstatusavailability"></a>`availability` | [`AvailabilityEnum!`](#availabilityenum) | User availability status. |
+| <a id="userstatusclearstatusat"></a>`clearStatusAt` | [`Time`](#time) | Timestamp when the status should be automatically cleared. |
 | <a id="userstatusemoji"></a>`emoji` | [`String`](#string) | String representation of emoji. |
 | <a id="userstatusmessage"></a>`message` | [`String`](#string) | User status message. |
 | <a id="userstatusmessagehtml"></a>`messageHtml` | [`String`](#string) | HTML of the user status message. |
@@ -52488,6 +52495,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceslinkpathscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="namespaceslinkpathscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="namespaceslinkpathsemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="namespaceslinkpathsepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -52502,6 +52510,7 @@ Implementations:
 | <a id="namespaceslinkpathsquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="namespaceslinkpathsregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="namespaceslinkpathsreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="namespaceslinkpathsrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="namespaceslinkpathssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="namespaceslinkpathsuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 

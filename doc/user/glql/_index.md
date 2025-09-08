@@ -28,7 +28,7 @@ Use it to filter and embed content from anywhere in the platform, using familiar
 Embed queries in Markdown code blocks.
 An embedded view is the rendered output of a GLQL source code block.
 
-Share your feedback in the [GLQL beta feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
+Share your feedback in the [embedded views, powered by GLQL, feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509792).
 
 ## Query syntax
 

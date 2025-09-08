@@ -59979,6 +59979,9 @@ msgstr ""
 msgid "SecurityReports|Project"
 msgstr ""
 
+msgid "SecurityReports|Project %{project}, risk score: %{riskScore}"
+msgstr ""
+
 msgid "SecurityReports|Project was not found or you do not have permission to add this project to Security Dashboards."
 msgstr ""
 

@@ -28,6 +28,14 @@ module Types
         def new_comment_template
           url_helpers.new_comment_template_paths(group)
         end
+
+        def rss_path
+          url_helpers.group_work_items_path(group, format: :atom)
+        end
+
+        def calendar_path
+          url_helpers.group_work_items_path(group, format: :ics)
+        end
       end
     end
   end

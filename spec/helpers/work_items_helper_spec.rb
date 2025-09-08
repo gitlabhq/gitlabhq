@@ -88,7 +88,9 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             issues_list_path: issues_group_path(group),
             labels_manage_path: group_labels_path(group),
             project_namespace_full_path: group.full_path,
-            default_branch: nil
+            default_branch: nil,
+            rss_path: group_work_items_path(group, format: :atom),
+            calendar_path: group_work_items_path(group, format: :ics)
           }
         )
       end
