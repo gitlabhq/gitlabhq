@@ -36,13 +36,6 @@ To add a new event you must first declare the corresponding event in the `Intern
 See [Internal Event Quick Start guide](../internal_analytics/internal_event_instrumentation/quick_start.md#defining-event-and-metrics)
 After you have defined the event, you must register it for AI tracking:
 
-1. Register the extra tracker in your `InternalEvent` definition:
-
-   ```yaml
-   extra_trackers:
-     - tracking_class: Gitlab::Tracking::AiTracking
-   ```
-
 1. Add the event name and unique ID to `Gitlab::Tracking::AiTracking`:
 
    ```ruby
@@ -83,7 +76,6 @@ If you like to be guided by example you can check [MR 199111](https://gitlab.com
 
 To remove your event from the AI usage tracking system:
 
-1. Remove the extra tracker from `your_event.yml` definition.
 1. Remove all transformation blocks from the `AiTracking` definition.
 1. Change the event definition to `deprecated_events(troubleshoot_job: 7)`, which will reserve ID and name for old data.
 1. Regenerate the GraphQL docs with `bundle exec rake gitlab:graphql:compile_docs`.

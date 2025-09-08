@@ -134,12 +134,12 @@ production: &base
     ##   4 - Blue
     ##   5 - Green
     ##   9 - Red
-    # default_theme: 1 # default: 1
+    # default_theme: 3 # default: 3
     ## Default color mode ID
     ##   1 - Light
     ##   2 - Dark
     ##   3 - Automatic
-    # default_color_mode: 1 # default: 1
+    # default_color_mode: 3 # default: 3
 
     ## Custom html header tags
     # In some cases some custom header tags are needed

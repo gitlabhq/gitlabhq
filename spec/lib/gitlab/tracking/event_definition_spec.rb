@@ -150,10 +150,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       stub_const('Gitlab::Tracking::DummyTracking', dummy_tracking_class)
     end
 
-    it 'returns an empty hash when no extra tracking classes are set' do
-      expect(described_class.new(nil, {}).extra_trackers).to eq([])
-    end
-
     it 'returns the hash with extra tracking class and props when they are set' do
       extra_trackers = {
         extra_trackers:
@@ -166,8 +162,8 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       }
       config = attributes.merge(extra_trackers)
 
-      expect(described_class.new(nil, config).extra_trackers)
-        .to eq({ dummy_tracking_class => { protected_properties: [:prop] } })
+      expect(described_class.new(nil, config).extra_trackers[dummy_tracking_class])
+        .to eq({ protected_properties: [:prop] })
     end
 
     it 'returns the hash with extra tracking class with empty array when props are not set' do
@@ -181,8 +177,8 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       }
       config = attributes.merge(extra_trackers)
 
-      expect(described_class.new(nil, config).extra_trackers)
-        .to eq({ dummy_tracking_class => { protected_properties: [] } })
+      expect(described_class.new(nil, config).extra_trackers[dummy_tracking_class])
+        .to eq({ protected_properties: [] })
     end
   end
 

@@ -2473,6 +2473,9 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Always use latest version"
+msgstr ""
+
 msgid "AICatalog|Anyone can view and use the agent without authorization. Only maintainers and owners of this project can edit or delete the agent."
 msgstr ""
 
@@ -2753,6 +2756,9 @@ msgid "AICatalog|User prompt"
 msgstr ""
 
 msgid "AICatalog|User prompt is required."
+msgstr ""
+
+msgid "AICatalog|Version"
 msgstr ""
 
 msgid "AICatalog|Visibility level is required."
@@ -17223,6 +17229,9 @@ msgid "ComplianceStandardsAdherence|Fuzz testing running"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|GitLab license level Ultimate"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Go to project settings"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Group by"

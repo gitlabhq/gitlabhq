@@ -81,9 +81,7 @@ module Gitlab
       end
 
       def extra_trackers
-        return [] unless @attributes[:extra_trackers]
-
-        @attributes[:extra_trackers].to_h do |item|
+        @attributes.fetch(:extra_trackers, []).to_h do |item|
           [
             item[:tracking_class].constantize,
             { protected_properties: item[:protected_properties]&.keys || [] }
@@ -113,3 +111,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Tracking::EventDefinition.prepend_mod
