@@ -27,7 +27,7 @@ module Gitlab
 
     # Get formatted GitHub import URL. If github.com is in the import URL, this will return nil and octokit will use the default github.com API URL
     def self.formatted_import_url(project)
-      url = URI.parse(project.import_url)
+      url = URI.parse(project.unsafe_import_url)
 
       unless url.host == 'github.com'
         url.user = nil

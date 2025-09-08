@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport, feature_category: :importers do
   context 'github.com' do
-    let(:project) { double(:project, import_url: 'http://t0ken@github.com/user/repo.git', id: 1, group: nil) }
+    let(:project) { double(:project, unsafe_import_url: 'http://t0ken@github.com/user/repo.git', id: 1, group: nil) }
 
     it 'returns a new Client with a custom token' do
       import_data = double(:import_data)
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
   end
 
   context 'GitHub Enterprise' do
-    let(:project) { double(:project, import_url: 'http://t0ken@github.another-domain.com/repo-org/repo.git', group: nil) }
+    let(:project) { double(:project, unsafe_import_url: 'http://t0ken@github.another-domain.com/repo-org/repo.git', group: nil) }
 
     it 'returns a new Client with a custom token' do
       import_data = double(:import_data)

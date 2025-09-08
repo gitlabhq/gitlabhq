@@ -157,7 +157,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
         ]
 
         expect(repository).to receive(:fetch_remote).with(
-          project.import_url,
+          project.unsafe_import_url,
           refmap: expected_refmap,
           prune: false
         )
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :
           ]
 
           expect(repository).to receive(:fetch_remote).with(
-            project.import_url,
+            project.unsafe_import_url,
             refmap: expected_refmap,
             prune: false
           )

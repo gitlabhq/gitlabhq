@@ -29132,9 +29132,6 @@ msgstr ""
 msgid "Geo|Filter Geo sites"
 msgstr ""
 
-msgid "Geo|Geo Replication - %{siteName}"
-msgstr ""
-
 msgid "Geo|Geo Settings"
 msgstr ""
 
@@ -29142,6 +29139,9 @@ msgid "Geo|Geo allows you to choose specific groups or storage shards to replica
 msgstr ""
 
 msgid "Geo|Geo can replicate objects stored in Object Storage (AWS S3, or other compatible object storage)."
+msgstr ""
+
+msgid "Geo|Geo replication - %{siteName}"
 msgstr ""
 
 msgid "Geo|Geo sites"
@@ -29172,6 +29172,9 @@ msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We a
 msgstr ""
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
+msgstr ""
+
+msgid "Geo|If you believe this is an error, see the %{linkStart}Geo troubleshooting%{linkEnd} documentation."
 msgstr ""
 
 msgid "Geo|If you want to make changes, you must visit the primary site."
@@ -29243,7 +29246,7 @@ msgstr ""
 msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
-msgid "Geo|No %{itemTitle} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgid "Geo|No %{itemTitle} exist"
 msgstr ""
 
 msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
@@ -29517,9 +29520,6 @@ msgid "Geo|The database is currently %{db_lag} behind the primary site."
 msgstr ""
 
 msgid "Geo|The site is currently %{minutes_behind} behind the primary site."
-msgstr ""
-
-msgid "Geo|There are no %{itemTitle} to show"
 msgstr ""
 
 msgid "Geo|There are no %{replicable_type} to show"

@@ -16,12 +16,12 @@
   // Application chrome background
   body {
     background-color: var(--super-sidebar-bg);
+  }
 
-    // Disable global bootstrap modal backdrop when using panels
-    &.modal-open {
-      .modal-backdrop {
-        display: none;
-      }
+  // Disable global bootstrap modal backdrop when using panels
+  .modal-open:has(.panel-content .modal.show) {
+    .modal-backdrop {
+      display: none;
     }
   }
 

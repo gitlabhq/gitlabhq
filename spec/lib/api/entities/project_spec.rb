@@ -33,6 +33,33 @@ RSpec.describe ::API::Entities::Project do
     end
   end
 
+  describe 'import_url' do
+    let(:unsafe_import_url) { 'http://user:pass@example.test' }
+    let(:safe_import_url) { 'http://example.test' }
+
+    subject(:import_url) { json[:import_url] }
+
+    before do
+      project.import_url = unsafe_import_url
+    end
+
+    context 'when user cannot admin project' do
+      before_all do
+        project.add_developer(current_user)
+      end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when a user can admin project' do
+      before_all do
+        project.add_maintainer(current_user)
+      end
+
+      it { is_expected.to eq(safe_import_url) }
+    end
+  end
+
   describe '.service_desk_address', feature_category: :service_desk do
     let_it_be(:project) { create(:project, :public) }
 

@@ -545,7 +545,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     it 'stores import data and URL' do
       expect(imported_project.import_data).to be_persisted
       expect(imported_project.import_data.data).to eq(import_data[:data])
-      expect(imported_project.import_url).to eq('http://import-url')
+      expect(imported_project.unsafe_import_url).to eq('http://import-url')
     end
 
     it 'tracks for imported project' do

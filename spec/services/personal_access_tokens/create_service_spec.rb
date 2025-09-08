@@ -13,6 +13,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       expect(token.expires_at).to eq(params[:expires_at])
       expect(token.organization).to eq(organization)
       expect(token.user).to eq(user)
+      expect(token.user_type).to eq(user.user_type)
     end
 
     it 'logs the event' do

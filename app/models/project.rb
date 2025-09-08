@@ -642,9 +642,9 @@ class Project < ApplicationRecord
   validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
-                                       ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
-                                       enforce_user: true }, if: [:external_import?, :import_url_changed?]
+  validates :unsafe_import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                              ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
+                                              enforce_user: true }, if: :validate_unsafe_import_url?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
@@ -1694,7 +1694,7 @@ class Project < ApplicationRecord
   #
   # @return [String] Sanitized import URL.
   def safe_import_url(masked: true)
-    url = Gitlab::UrlSanitizer.new(import_url)
+    url = Gitlab::UrlSanitizer.new(unsafe_import_url)
     masked ? url.masked_url : url.sanitized_url
   end
 
@@ -1720,18 +1720,17 @@ class Project < ApplicationRecord
   #
   # @see #safe_import_url
   #
-  # @example project.import_url #=> "https://user:secretpassword@example.com"
+  # @example project.unsafe_import_url #=> "https://user:secretpassword@example.com"
   #
   # @return [String] Unsanitized import URL.
-  def import_url
-    if import_data && super.present?
-      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
-      import_url.full_url
+  def unsafe_import_url
+    if import_data && import_url.present?
+      Gitlab::UrlSanitizer.new(import_url, credentials: import_data.credentials).full_url
     else
-      super
+      import_url
     end
   rescue StandardError
-    super
+    import_url
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
@@ -1748,7 +1747,7 @@ class Project < ApplicationRecord
   end
 
   def external_import?
-    import_url.present?
+    safe_import_url.present?
   end
 
   def notify_project_import_complete?
@@ -3981,6 +3980,10 @@ class Project < ApplicationRecord
   override :ancestors_scheduled_for_deletion
   def ancestors_scheduled_for_deletion
     ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+  end
+
+  def validate_unsafe_import_url?
+    import_url.present? && import_url_changed?
   end
 end
 

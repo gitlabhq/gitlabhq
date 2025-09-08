@@ -22,6 +22,8 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
         expect(new_token.token).not_to eq(token.token)
         expect(new_token.expires_at).to eq(Time.zone.today + 1.week)
         expect(new_token.user).to eq(token.user)
+        expect(new_token.user_type).to eq(token.user_type)
+        expect(new_token.group_id).to eq(token.group_id)
         expect(new_token.user.namespace).to eq(token.user.namespace)
         expect(new_token.organization).to eq(token.organization)
         expect(new_token.description).to eq(token.description)

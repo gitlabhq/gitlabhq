@@ -233,6 +233,7 @@ variables:
   CI_FETCH_REPO_GIT_STRATEGY: "none"
   FORCE_COLOR: 1
   CLICOLOR_FORCE: 1
+  GITALY_TESTING_LOG_LEVEL: "debug"
 
   # File paths used in predictive testing flow
   GLCI_PREDICTIVE_FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json

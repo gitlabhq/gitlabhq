@@ -31,7 +31,7 @@ RSpec.describe Gitlab::ManifestImport::ProjectCreator, feature_category: :import
       project = Project.last
 
       expect(project.full_path).to eq(File.join(group.path, 'device/common'))
-      expect(project.import_url).to eq('https://android-review.googlesource.com/device/common')
+      expect(project.unsafe_import_url).to eq('https://android-review.googlesource.com/device/common')
       expect(project.import_source).to eq('https://android-review.googlesource.com/device/common')
     end
   end

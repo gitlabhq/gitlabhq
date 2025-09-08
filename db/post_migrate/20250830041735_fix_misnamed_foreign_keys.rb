@@ -97,7 +97,9 @@ class FixMisnamedForeignKeys < Gitlab::Database::Migration[2.3]
       next unless foreign_key_exists?(table, name: old_name)
       next if foreign_key_exists?(table, name: new_name)
 
-      rename_constraint(table, old_name, new_name)
+      with_lock_retries do
+        rename_constraint(table, old_name, new_name)
+      end
     end
   end
 

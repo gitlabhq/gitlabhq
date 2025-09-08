@@ -199,7 +199,7 @@ svc_user = User.find_by(username: 'ourServiceUser')
 token = 'githubAccessToken'
 
 Project.where(mirror: true).each do |project|
-  import_url = project.import_url
+  import_url = project.unsafe_import_url
 
   # The url we want is https://token@project/path.git
   repo_url = if import_url.include?('@')

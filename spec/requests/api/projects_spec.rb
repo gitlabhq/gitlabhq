@@ -5591,14 +5591,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    shared_examples 'immediately delete project error' do
+    shared_examples 'immediately delete project error' do |admin_mode = false, expected_http_status = :bad_request|
       it :aggregate_failures do
         expect(::Projects::DestroyService).not_to receive(:new)
         expect(::Projects::MarkForDeletionService).not_to receive(:new)
 
-        delete api(path, user), params: params
+        delete api(path, user, admin_mode: admin_mode), params: params
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(expected_http_status)
         expect(Gitlab::Json.parse(response.body)['message']).to eq(error_message)
       end
     end
@@ -5648,6 +5648,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             end
 
             it_behaves_like 'deletes project immediately', true
+
+            context 'when admin_mode is false' do
+              let(:error_message) { '404 Project Not Found' }
+
+              it_behaves_like 'immediately delete project error', false, :not_found
+            end
           end
         end
 

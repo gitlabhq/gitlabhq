@@ -1,5 +1,5 @@
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
-- import_url = Gitlab::UrlSanitizer.new(f.object.import_url)
+- import_url = Gitlab::UrlSanitizer.new(f.object.unsafe_import_url)
 
 .import-url-data
   .info-well.gl-mt-5

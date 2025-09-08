@@ -579,10 +579,25 @@ A suffix is added to the cache key, with the exception of the [global fallback c
 As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:
 
-| Branch name | Cache key |
-|-------------|-----------|
-| `main`      | `main-protected` |
+| Branch name | Cache key               |
+|-------------|-------------------------|
+| `main`      | `main-protected`        |
 | `feature`   | `feature-non_protected` |
+
+##### Cache suffix with tag triggers
+
+When a pipeline is triggered by a tag (like `$CI_COMMIT_TAG`), the cache suffix (`-protected` or `-non_protected`)
+is determined by the tag's protection status, not the branch where the pipeline executes.
+
+This behavior ensures consistent security boundaries, because the triggering reference determines cache access permissions.
+
+As an example, assuming that we have tags triggering pipelines on different branches, then the following table represents the cache suffix:
+
+| Trigger type                | Tag protection | Branch                  | Cache suffix applied |
+|-----------------------------|----------------|-------------------------|----------------------|
+| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected`     |
+| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`         |
+| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected`     |
 
 ##### Use the same cache for all branches
 

@@ -101,12 +101,13 @@ module Projects
 
     def import_repository
       refmap = importer_class.try(:refmap) if has_importer?
+      import_url = project.unsafe_import_url
 
       if refmap
         project.ensure_repository
-        project.repository.fetch_as_mirror(project.import_url, refmap: refmap, resolved_address: resolved_address)
+        project.repository.fetch_as_mirror(import_url, refmap: refmap, resolved_address: resolved_address)
       else
-        project.repository.import_repository(project.import_url, resolved_address: resolved_address)
+        project.repository.import_repository(import_url, resolved_address: resolved_address)
       end
     rescue ::Gitlab::Git::CommandError => e
       # Expire cache to prevent scenarios such as:
@@ -158,7 +159,7 @@ module Projects
     end
 
     def unknown_url?
-      project.import_url == Project::UNKNOWN_IMPORT_URL
+      project.unsafe_import_url == Project::UNKNOWN_IMPORT_URL
     end
 
     def importer_imports_repository?
@@ -168,7 +169,7 @@ module Projects
     def get_resolved_address
       Gitlab::HTTP_V2::UrlBlocker
         .validate!(
-          project.import_url,
+          project.unsafe_import_url,
           schemes: Project::VALID_IMPORT_PROTOCOLS,
           ports: Project::VALID_IMPORT_PORTS,
           allow_localhost: allow_local_requests?,

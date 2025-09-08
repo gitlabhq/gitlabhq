@@ -1110,21 +1110,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project = build(:project, import_url: 'http://localhost:9000/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Requests to localhost are not allowed')
       end
 
       it 'does not allow import_url pointing to the local network' do
         project = build(:project, import_url: 'https://192.168.1.1')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Requests to the local network are not allowed')
       end
 
       it "does not allow import_url with invalid ports for new projects" do
         project = build(:project, import_url: 'http://github.com:25/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Only allowed ports are 80, 443, and any over 1024')
       end
 
       it "does not allow import_url with invalid ports for persisted projects" do
@@ -1132,14 +1132,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project.import_url = 'http://github.com:25/t.git'
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Only allowed ports are 22, 80, 443, and any over 1024')
       end
 
       it "does not allow import_url with invalid user" do
         project = build(:project, import_url: 'http://$user:password@github.com/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Username needs to start with an alphanumeric character')
       end
 
       include_context 'invalid urls'
@@ -4036,7 +4036,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       project.import_state.finish
 
-      expect(project.reload.import_url).to eq('http://test.com')
+      expect(project.reload.unsafe_import_url).to eq('http://test.com')
     end
 
     it 'saves the url credentials percent decoded' do
@@ -4044,7 +4044,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = build(:project, import_url: url)
 
       # When the credentials are not decoded this expectation fails
-      expect(project.import_url).to eq(url)
+      expect(project.unsafe_import_url).to eq(url)
       expect(project.import_data.credentials).to eq(user: 'user', password: 'pass!?@')
     end
 
@@ -4052,7 +4052,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       url = 'http://github.com/t.git'
       project = build(:project, import_url: url)
 
-      expect(project.import_url).to eq(url)
+      expect(project.unsafe_import_url).to eq(url)
       expect(project.import_data.credentials).to eq(user: nil, password: nil)
     end
   end

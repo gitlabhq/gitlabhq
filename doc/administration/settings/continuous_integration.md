@@ -577,7 +577,7 @@ To access these settings:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350883) in GitLab 17.11.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350883) in GitLab 17.11, replacing previous `ci_enable_live_trace` [feature flag](../../administration/feature_flags/_index.md). The setting automatically migrates from the previous feature flag configuration during upgrade.
 
 {{< /history >}}
 
@@ -593,6 +593,9 @@ Prerequisites:
 
 To turn on incremental logging for all projects:
 
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings** > **CI/CD**.
+1. Expand the **Job logs** section.
 1. Under **Incremental logging configuration**, select the **Turn on incremental logging** checkbox.
 1. Select **Save changes**.
 

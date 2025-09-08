@@ -413,6 +413,10 @@ $command-palette-spacing: px-to-rem(14px);
     content: "\200b"; /* zero-width space to keep take height even when empty; */
   }
 
+  // Hide cotnext header as it leaves a big gap
+  .super-sidebar-is-icon-only & {
+    @apply gl-hidden;
+  }
 }
 
 .super-sidebar-overlay {

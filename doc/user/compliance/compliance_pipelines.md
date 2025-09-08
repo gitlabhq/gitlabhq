@@ -125,8 +125,7 @@ The user running the pipeline in the labeled project must at least have the Repo
 
 When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
-[unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
-the similarities and differences between these features, see [Scan execution policy compared to compliance framework](../application_security/detect/security_configuration.md#scan-execution-policy-compared-to-compliance-framework).
+[unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 
 ### Example configuration
 

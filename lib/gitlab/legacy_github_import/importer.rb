@@ -17,7 +17,7 @@ module Gitlab
       def initialize(project)
         @project  = project
         @repo     = project.import_source
-        @repo_url = project.import_url
+        @repo_url = project.unsafe_import_url
         @errors   = []
         @labels   = {}
       end
@@ -31,7 +31,7 @@ module Gitlab
         opts = {}
         # Gitea plan to be GitHub compliant
         if project.gitea_import?
-          uri = URI.parse(project.import_url)
+          uri = URI.parse(project.unsafe_import_url)
           host = "#{uri.scheme}://#{uri.host}:#{uri.port}#{uri.path}".sub(%r{/?[\w.-]+/[\w.-]+\.git\z}, '')
           opts = {
             host: host,

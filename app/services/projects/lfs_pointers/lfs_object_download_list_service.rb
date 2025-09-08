@@ -91,7 +91,7 @@ module Projects
       end
 
       def import_uri
-        @import_uri ||= URI.parse(project.import_url)
+        @import_uri ||= URI.parse(project.unsafe_import_url)
       rescue URI::InvalidURIError
         raise LfsObjectDownloadListError, 'Invalid project import URL'
       end

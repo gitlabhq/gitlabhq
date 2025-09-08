@@ -77,7 +77,7 @@ module Gitlab
 
           return if commits_to_fetch.blank?
 
-          project.repository.fetch_remote(project.import_url, refmap: commits_to_fetch, prune: false)
+          project.repository.fetch_remote(project.unsafe_import_url, refmap: commits_to_fetch, prune: false)
         rescue Gitlab::Git::CommandError => e
           # When we try to fetch commit from the submodule, then the process might fail
           # with "unadvertised object" error. We are going to ignore it, to unblock the import
