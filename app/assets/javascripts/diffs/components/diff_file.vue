@@ -489,7 +489,7 @@ export default {
       variant="danger"
       :dismissible="false"
       data-testid="conflictsAlert"
-      class="gl-rounded-t-base"
+      class="gl-rounded-b-none gl-rounded-t-base"
     >
       {{ $options.CONFLICT_TEXT[file.conflict_type] }}
       <template v-if="!canMerge">

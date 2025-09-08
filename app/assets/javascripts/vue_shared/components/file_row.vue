@@ -1,5 +1,5 @@
 <script>
-import { GlTruncate, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlTruncate, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
@@ -11,6 +11,7 @@ export default {
     FileIcon,
     GlTruncate,
     GlIcon,
+    GlButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -100,7 +101,7 @@ export default {
       });
     },
     hasPathAtCurrentRoute() {
-      if (!this.$router || !this.$router.currentRoute) {
+      if (!this.$router || !this.$router.currentRoute || this.file.isShowMore) {
         return false;
       }
 
@@ -125,6 +126,16 @@ export default {
 
 <template>
   <file-header v-if="file.isHeader" :path="file.path" />
+  <gl-button
+    v-else-if="file.isShowMore"
+    category="tertiary"
+    :loading="file.loading"
+    class="!gl-ml-5"
+    button-text-classes="gl-text-blue-700"
+    @click="$emit('showMore')"
+  >
+    {{ __('Show more') }}
+  </gl-button>
   <button
     v-else
     :class="fileClass"

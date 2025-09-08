@@ -300,7 +300,7 @@ export default {
   >
     <template #title>
       <div
-        class="work-item-drawer-header gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 @xl/panel:gl-px-4"
+        class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 @xl/panel:gl-px-4"
       >
         <div class="gl-flex gl-grow gl-items-center gl-gap-2">
           <gl-link
@@ -356,7 +356,7 @@ export default {
   <mounting-portal v-else-if="open" mount-to="#contextual-panel-portal" append>
     <div data-testid="work-item-drawer" class="work-item-drawer gl-pt-4 gl-leading-reset">
       <div
-        class="work-item-drawer-header gl-text gl-flex gl-w-full gl-items-start gl-gap-x-2 gl-px-4 @xl/panel:gl-px-6"
+        class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 gl-px-4 @xl/panel:gl-px-6"
       >
         <div class="gl-flex gl-grow gl-items-center gl-gap-2">
           <gl-link

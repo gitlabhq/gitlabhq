@@ -432,7 +432,7 @@ table.code {
   margin: 0;
   padding: 0;
   table-layout: fixed;
-  border-radius: 0 0 $gl-border-radius-large $gl-border-radius-large;
+  border-radius: 0 0 $gl-border-radius-base-inner $gl-border-radius-base-inner;
 
   .diff-td.highlight-top {
     box-shadow: inset 0 1px var(--highlight-border-color, $blue-300);

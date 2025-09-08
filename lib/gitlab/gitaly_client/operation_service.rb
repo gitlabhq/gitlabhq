@@ -21,7 +21,7 @@ module Gitlab
         request = Gitaly::UserDeleteTagRequest.new(
           repository: @gitaly_repo,
           tag_name: encode_binary(tag_name),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly
+          user: gitaly_user(user)
         )
 
         response = gitaly_client_call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.long_timeout)
@@ -34,7 +34,7 @@ module Gitlab
       def add_tag(tag_name, user, target, message)
         request = Gitaly::UserCreateTagRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           tag_name: encode_binary(tag_name),
           target_revision: encode_binary(target),
           message: encode_binary(message.to_s),
@@ -70,7 +70,7 @@ module Gitlab
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           start_point: encode_binary(start_point)
         )
 
@@ -108,7 +108,7 @@ module Gitlab
         request = Gitaly::UserUpdateBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           newrev: encode_binary(newrev),
           oldrev: encode_binary(oldrev)
         )
@@ -125,7 +125,7 @@ module Gitlab
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: encode_binary(branch_name),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           expected_old_oid: target_sha
         )
 
@@ -151,7 +151,7 @@ module Gitlab
           source_sha: source_sha,
           branch: encode_binary(branch),
           target_ref: encode_binary(target_ref),
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           message: encode_binary(message),
           first_parent_ref: encode_binary(first_parent_ref),
           expected_old_oid: expected_old_oid,
@@ -177,7 +177,7 @@ module Gitlab
         request_enum.push(
           Gitaly::UserMergeBranchRequest.new(
             repository: @gitaly_repo,
-            user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+            user: gitaly_user(user),
             commit_id: source_sha,
             branch: encode_binary(target_branch),
             expected_old_oid: target_sha,
@@ -225,7 +225,7 @@ module Gitlab
       def user_ff_branch(user, source_sha:, target_branch:, target_sha: nil)
         request = Gitaly::UserFFBranchRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           commit_id: source_sha,
           branch: encode_binary(target_branch),
           expected_old_oid: target_sha
@@ -272,7 +272,7 @@ module Gitlab
       )
         request = Gitaly::UserCherryPickRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           commit: commit.to_gitaly_commit,
           branch_name: encode_binary(branch_name),
           message: encode_binary(message),
@@ -321,7 +321,7 @@ module Gitlab
       def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
         request = Gitaly::UserRevertRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           commit: commit.to_gitaly_commit,
           branch_name: encode_binary(branch_name),
           message: encode_binary(message),
@@ -385,7 +385,7 @@ module Gitlab
           Gitaly::UserRebaseConfirmableRequest.new(
             header: Gitaly::UserRebaseConfirmableRequest::Header.new(
               repository: @gitaly_repo,
-              user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+              user: gitaly_user(user),
               rebase_id: rebase_id.to_s,
               branch: encode_binary(branch),
               branch_sha: branch_sha,
@@ -429,7 +429,7 @@ module Gitlab
 
       def user_rebase_to_ref(user, source_sha:, target_ref:, first_parent_ref:, expected_old_oid: "")
         request = Gitaly::UserRebaseToRefRequest.new(
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           repository: @gitaly_repo,
           source_sha: source_sha,
           target_ref: encode_binary(target_ref),
@@ -447,7 +447,7 @@ module Gitlab
       def user_squash(user, start_sha, end_sha, author, message, time = Time.now.utc)
         request = Gitaly::UserSquashRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           start_sha: start_sha,
           end_sha: end_sha,
           author: Gitlab::Git::User.from_gitlab(author).to_gitaly,
@@ -489,7 +489,7 @@ module Gitlab
       def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
         request = Gitaly::UserUpdateSubmoduleRequest.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           commit_sha: commit_sha,
           branch: encode_binary(branch),
           submodule: encode_binary(submodule),
@@ -586,7 +586,7 @@ module Gitlab
       def user_commit_patches(user, branch_name:, patches:, target_sha: nil)
         header = Gitaly::UserApplyPatchRequest::Header.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           target_branch: encode_binary(branch_name),
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
           expected_old_oid: target_sha
@@ -617,6 +617,12 @@ module Gitlab
 
       private
 
+      def gitaly_user(user)
+        Gitlab::Git::User
+          .from_gitlab(Gitlab::Auth::Identity.invert_composite_identity(user))
+          .to_gitaly
+      end
+
       # consume_final_message consumes the final message that contains the status from the response
       # stream and raises an exception if it wasn't the last one.
       def consume_final_message(response_enum)
@@ -633,7 +639,7 @@ module Gitlab
       )
         Gitaly::UserCommitFilesRequestHeader.new(
           repository: @gitaly_repo,
-          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          user: gitaly_user(user),
           branch_name: encode_binary(branch_name),
           commit_message: encode_binary(commit_message),
           commit_author_name: encode_binary(author_name),

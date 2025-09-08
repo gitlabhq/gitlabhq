@@ -6,6 +6,7 @@ module BulkImports
       class MembersPipeline
         include Pipeline
         include HexdigestCacheStrategy
+        include ::Gitlab::Utils::StrongMemoize
 
         GROUP_MEMBER_RELATIONS = %i[direct inherited shared_from_groups].freeze
         PROJECT_MEMBER_RELATIONS = %i[direct inherited invited_groups shared_into_ancestors].freeze
@@ -30,6 +31,7 @@ module BulkImports
 
         def load(_context, data)
           return unless data
+          return unless can_create_members?
 
           # Remove source_xid and entity_type since we don't use them in membership creation
           data.delete('source_xid')
@@ -43,6 +45,11 @@ module BulkImports
         end
 
         private
+
+        def can_create_members?
+          ::Import::MemberLimitCheckService.new(portable).execute.success?
+        end
+        strong_memoize_attr :can_create_members?
 
         def create_member(data)
           user_id = data[:user_id]

@@ -2695,6 +2695,16 @@ class User < ApplicationRecord
     @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
   end
 
+  def composite_identity_enforced?
+    return !!@composite_identity_enforced_override if defined?(@composite_identity_enforced_override)
+
+    !!self[:composite_identity_enforced]
+  end
+
+  def composite_identity_enforced!
+    @composite_identity_enforced_override = true
+  end
+
   protected
 
   # override, from Devise::Validatable

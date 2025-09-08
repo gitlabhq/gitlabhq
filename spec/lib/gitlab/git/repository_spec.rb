@@ -370,12 +370,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it { expect(submodule_url('six')).to eq('git://github.com/randx/six.git') }
     it { expect(submodule_url('test_inside_folder/another_folder/six')).to eq('git://github.com/randx/six.git') }
-    it { expect(submodule_url('invalid/path')).to eq(nil) }
+    it { expect(submodule_url('invalid/path')).to be_nil }
 
     context 'uncommitted submodule dir' do
       let(:ref) { 'fix-existing-submodule-dir' }
 
-      it { expect(submodule_url('submodule-existing-dir')).to eq(nil) }
+      it { expect(submodule_url('submodule-existing-dir')).to be_nil }
     end
 
     context 'tags' do
@@ -387,13 +387,13 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     context 'no .gitmodules at commit' do
       let(:ref) { '9596bc54a6f0c0c98248fe97077eb5ccf48a98d0' }
 
-      it { expect(submodule_url('six')).to eq(nil) }
+      it { expect(submodule_url('six')).to be_nil }
     end
 
     context 'no gitlink entry' do
       let(:ref) { '6d39438' }
 
-      it { expect(submodule_url('six')).to eq(nil) }
+      it { expect(submodule_url('six')).to be_nil }
     end
   end
 
@@ -549,7 +549,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
   describe '#has_local_branches?' do
     context 'check for local branches' do
-      it { expect(repository.has_local_branches?).to eq(true) }
+      it { expect(repository.has_local_branches?).to be(true) }
     end
   end
 
@@ -1620,7 +1620,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     it 'handles non-existent branch' do
       branch = repository.find_branch('this-is-garbage')
 
-      expect(branch).to eq(nil)
+      expect(branch).to be_nil
     end
 
     context 'when branch is ambiguous' do
@@ -1637,7 +1637,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'returns nil for ambiguous branch' do
         expect(repository.find_branch(branch_with_prefix)).to be_a_kind_of(Gitlab::Git::Branch)
-        expect(repository.find_branch(ambiguous_branch)).to eq(nil)
+        expect(repository.find_branch(ambiguous_branch)).to be_nil
       end
     end
   end
@@ -1654,8 +1654,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
 
       it 'returns the local and remote branches' do
-        expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to eq(true)
-        expect(subject.any? { |b| b.name == 'local_branch' }).to eq(true)
+        expect(subject.any? { |b| b.name == 'joe/remote_branch' }).to be(true)
+        expect(subject.any? { |b| b.name == 'local_branch' }).to be(true)
       end
     end
 
@@ -2013,24 +2013,24 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
 
       it 'returns nil if nothing matches' do
-        expect(repository.gitattribute("report.xslt", 'gitlab-language')).to eq(nil)
+        expect(repository.gitattribute("report.xslt", 'gitlab-language')).to be_nil
       end
     end
 
     context 'without gitattributes' do
       it 'returns nil' do
-        expect(repository.gitattribute("README.md", 'gitlab-language')).to eq(nil)
+        expect(repository.gitattribute("README.md", 'gitlab-language')).to be_nil
       end
     end
   end
 
   describe '#ref_exists?' do
     it 'returns true for an existing tag' do
-      expect(repository.ref_exists?('refs/heads/master')).to eq(true)
+      expect(repository.ref_exists?('refs/heads/master')).to be(true)
     end
 
     it 'returns false for a non-existing tag' do
-      expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to eq(false)
+      expect(repository.ref_exists?('refs/tags/THIS_TAG_DOES_NOT_EXIST')).to be(false)
     end
 
     it 'raises an ArgumentError for an empty string' do
@@ -2046,25 +2046,25 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     it 'returns true for an existing tag' do
       tag = repository.tag_names.first
 
-      expect(repository.tag_exists?(tag)).to eq(true)
+      expect(repository.tag_exists?(tag)).to be(true)
     end
 
     it 'returns false for a non-existing tag' do
-      expect(repository.tag_exists?('v9000')).to eq(false)
+      expect(repository.tag_exists?('v9000')).to be(false)
     end
   end
 
   describe '#branch_exists?' do
     it 'returns true for an existing branch' do
-      expect(repository.branch_exists?('master')).to eq(true)
+      expect(repository.branch_exists?('master')).to be(true)
     end
 
     it 'returns false for a non-existing branch' do
-      expect(repository.branch_exists?('kittens')).to eq(false)
+      expect(repository.branch_exists?('kittens')).to be(false)
     end
 
     it 'returns false when using an invalid branch name' do
-      expect(repository.branch_exists?('.bla')).to eq(false)
+      expect(repository.branch_exists?('.bla')).to be(false)
     end
   end
 
@@ -2077,8 +2077,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it 'returns the local branches' do
-      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to be(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to be(true)
     end
 
     it 'returns a Branch with UTF-8 fields' do
@@ -2230,7 +2230,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         end
 
         it 'writes the ref' do
-          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to be(true)
           expect(repository.commit(local_ref).sha).to eq(new_oid)
         end
       end
@@ -2243,7 +2243,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           # Sanity check: the commit should already exist
           expect(repository.commit(expected_oid)).not_to be_nil
 
-          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to be(true)
           expect(repository.commit(local_ref).sha).to start_with(expected_oid)
         end
       end
@@ -2253,7 +2253,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       let(:source_branch) { 'definitely-not-master' }
 
       it 'does not write the ref' do
-        expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
+        expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to be(false)
         expect(repository.commit(local_ref)).to be_nil
       end
     end
@@ -2476,8 +2476,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           end
 
       expect(result.newrev).to eq(merge_commit_id)
-      expect(result.repo_created).to eq(false)
-      expect(result.branch_created).to eq(false)
+      expect(result.repo_created).to be(false)
+      expect(result.branch_created).to be(false)
     end
 
     it 'returns nil if there was a concurrent branch update' do

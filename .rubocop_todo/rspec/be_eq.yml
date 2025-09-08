@@ -793,7 +793,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/git/diff_collection_spec.rb'
     - 'spec/lib/gitlab/git/diff_spec.rb'
     - 'spec/lib/gitlab/git/hook_env_spec.rb'
-    - 'spec/lib/gitlab/git/repository_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/commit_service_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/diff_blobs_stitcher_spec.rb'
     - 'spec/lib/gitlab/gitaly_client_spec.rb'

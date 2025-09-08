@@ -1,4 +1,8 @@
-import { normalizePath, dedupeByFlatPathAndId } from '~/repository/file_tree_browser/utils';
+import {
+  normalizePath,
+  dedupeByFlatPathAndId,
+  generateShowMoreItem,
+} from '~/repository/file_tree_browser/utils';
 
 describe('File tree browser utilities', () => {
   describe('normalizePath', () => {
@@ -50,6 +54,32 @@ describe('File tree browser utilities', () => {
         name: 'file.js',
         size: 1000,
       });
+    });
+  });
+
+  describe('generateShowMoreItem', () => {
+    it('generates show more item with correct structure', () => {
+      const result = generateShowMoreItem('file-123', '/path/to/directory', 2);
+
+      expect(result).toEqual({
+        id: 'file-123-show-more',
+        level: 2,
+        parentPath: '/path/to/directory',
+        isShowMore: true,
+      });
+    });
+
+    it.each`
+      id            | parentPath   | level | expectedId
+      ${''}         | ${'/'}       | ${0}  | ${'-show-more'}
+      ${'abc'}      | ${'/root'}   | ${1}  | ${'abc-show-more'}
+      ${'file-456'} | ${'/nested'} | ${3}  | ${'file-456-show-more'}
+    `('creates id "$expectedId" from "$id"', ({ id, parentPath, level, expectedId }) => {
+      const result = generateShowMoreItem(id, parentPath, level);
+      expect(result.id).toBe(expectedId);
+      expect(result.level).toBe(level);
+      expect(result.parentPath).toBe(parentPath);
+      expect(result.isShowMore).toBe(true);
     });
   });
 });

@@ -573,8 +573,8 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
     context 'oldrev is set' do
       context 'Gitaly does not know about the branch' do
         it 'is treated as a new branch' do
-          allow(project.repository).to receive(:branch_names) { [] }
-
+          allow(project.repository).to receive(:branch_exists?).with("refs/heads/#{branch}").and_return(false)
+          allow(project.repository).to receive(:branch_exists?).with(branch).and_return(false)
           expect(service).to receive(:branch_create_hooks)
 
           service.execute

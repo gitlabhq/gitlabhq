@@ -820,6 +820,28 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         end
       end
     end
+
+    context 'when the tag name should be escaped' do
+      let!(:release_c) do
+        create(
+          :release,
+          project: project,
+          tag: 'version/0.1',
+          author: maintainer,
+          description: 'This is v0.1',
+          released_at: 3.days.ago
+        )
+      end
+
+      it 'redirects to the latest release tag and encodes tag name' do
+        get api("/projects/#{project.id}/releases/permalink/latest", maintainer)
+
+        uri = URI(response.header["Location"])
+
+        expect(response).to have_gitlab_http_status(:redirect)
+        expect(uri.path).to eq("/api/v4/projects/#{project.id}/releases/version%2F0.1")
+      end
+    end
   end
 
   describe 'POST /projects/:id/releases' do

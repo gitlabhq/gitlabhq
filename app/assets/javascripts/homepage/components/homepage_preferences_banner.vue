@@ -1,13 +1,16 @@
 <script>
-import { GlBanner } from '@gitlab/ui';
+import { GlBanner, GlLink, GlSprintf } from '@gitlab/ui';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 
 export default {
   components: {
     GlBanner,
+    GlLink,
+    GlSprintf,
     UserCalloutDismisser,
   },
   preferencesLink: '/-/profile/preferences#behavior',
+  buttonAttributes: { hidden: true },
 };
 </script>
 
@@ -19,17 +22,23 @@ export default {
           v-if="shouldShowCallout"
           :title="s__('Homepage|Welcome to the new homepage')"
           class="homepage-duo-core-banner gl-mb-5 gl-bg-white"
-          :button-text="s__('Homepage|Go to preferences')"
-          :button-link="$options.preferencesLink"
+          button-text=""
+          :button-attributes="$options.buttonAttributes"
           @close="dismiss"
         >
-          <p>
-            {{
+          <gl-sprintf
+            :message="
               s__(
-                "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can update your user preferences.",
+                `Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can %{linkStart}update your user preferences%{linkEnd}.`,
               )
-            }}
-          </p>
+            "
+          >
+            <template #link="{ content }">
+              <gl-link :href="$options.preferencesLink" data-testid="go-to-preferences-link">{{
+                content
+              }}</gl-link>
+            </template>
+          </gl-sprintf>
         </gl-banner>
       </template>
     </user-callout-dismisser>

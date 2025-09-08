@@ -107,6 +107,50 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
   end
 
+  describe '.find_primary_user_by_scoped_user_id' do
+    let(:scoped_user_id) { scoped_user.id }
+
+    subject(:found_primary_user) { described_class.find_primary_user_by_scoped_user_id(scoped_user_id) }
+
+    context 'when a composite identity is linked' do
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        described_class.link_from_scoped_user_id(primary_user, scoped_user_id)
+      end
+
+      it 'returns the primary user' do
+        expect(found_primary_user).to eq(primary_user)
+      end
+    end
+
+    context 'when no composite identity is linked for the scoped user' do
+      it 'returns nil' do
+        expect(found_primary_user).to be_nil
+      end
+    end
+
+    context 'when scoped_user_id is nil' do
+      let(:scoped_user_id) { nil }
+
+      it 'returns nil' do
+        expect(found_primary_user).to be_nil
+      end
+    end
+
+    context 'when scoped_user_id does not exist' do
+      let(:scoped_user_id) { 99999 }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        described_class.link_from_scoped_user_id(primary_user, scoped_user.id)
+      end
+
+      it 'returns nil' do
+        expect(found_primary_user).to be_nil
+      end
+    end
+  end
+
   describe '.fabricate' do
     subject(:identity) { described_class.fabricate(primary_user) }
 
@@ -181,8 +225,8 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
   describe '#valid?' do
     context 'when a composite identity is linked to another composite identity' do
       before do
-        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
-        allow(scoped_user).to receive(:composite_identity_enforced).and_return(true)
+        primary_user.update!(composite_identity_enforced: true)
+        scoped_user.composite_identity_enforced!
       end
 
       it 'is not valid' do
@@ -231,6 +275,76 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
       expect(job[described_class::COMPOSITE_IDENTITY_SIDEKIQ_ARG])
         .to match_array([primary_user.id, scoped_user.id])
+    end
+  end
+
+  describe '.invert_composite_identity' do
+    subject(:result) { described_class.invert_composite_identity(current_user) }
+
+    context 'when current_user is nil' do
+      let(:current_user) { nil }
+
+      it 'returns nil' do
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when current_user is a regular user' do
+      let(:current_user) { create(:user) }
+
+      it 'returns the original user' do
+        expect(result).to eq(current_user)
+      end
+
+      context 'when no composite identity exists for the user' do
+        before do
+          allow(described_class).to receive(:find_primary_user_by_scoped_user_id)
+                                      .with(current_user.id)
+                                      .and_return(nil)
+        end
+
+        it 'returns the original user' do
+          expect(result).to eq(current_user)
+        end
+      end
+    end
+
+    context 'when current_user is a scoped user in a composite identity' do
+      let(:current_user) { scoped_user }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        described_class.link_from_scoped_user_id(primary_user, scoped_user.id)
+      end
+
+      it 'returns the primary user' do
+        expect(result).to eq(primary_user)
+      end
+    end
+
+    context 'when current_user is already a primary user' do
+      let(:current_user) { primary_user }
+
+      before do
+        primary_user.update!(composite_identity_enforced: true)
+        described_class.link_from_scoped_user_id(primary_user, scoped_user.id)
+      end
+
+      it 'returns the primary user itself' do
+        expect(result).to eq(primary_user)
+      end
+    end
+
+    context 'when request store is empty' do
+      let(:current_user) { scoped_user }
+
+      before do
+        Gitlab::SafeRequestStore.clear!
+      end
+
+      it 'returns the original user when no composite identities are stored' do
+        expect(result).to eq(current_user)
+      end
     end
   end
 

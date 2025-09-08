@@ -1212,25 +1212,6 @@
 #################
 # Caching rules #
 #################
-# rules for updating unprotected caches via maintenance schedule pipelines
-.caching:rules:update-master-based-caches:
-  rules:
-    - <<: *if-schedule-maintenance
-    - <<: *if-security-schedule
-    - <<: *if-foss-schedule
-    - <<: *if-merge-request-labels-update-caches
-
-.caching:rules:rubocop-cache-update:
-  rules:
-    - !reference [.caching:rules:update-master-based-caches, rules]
-    - *if-rails-next-branch
-    - <<: *if-default-branch-push
-      changes:
-        - '**/*.rb'
-        - '**/*.rake'
-        - '.rubocop_todo/**/*.yml'
-        - '.rubocop.yml'
-
 # This rule is used by pull-push cache jobs to ensure pipeline always has cache populated
 # All caches are generally related to app code, so limit cache jobs to code-backstage-patterns
 .caching:rules:update-cache-on-code-changes:

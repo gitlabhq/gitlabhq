@@ -12,6 +12,12 @@ title: Export issues to CSV
 
 {{< /details >}}
 
+{{< history >}}
+
+- The `IID`, `Type`, `Start Date`, and `Parent IID` columns [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Disabled by default.
+
+{{< /history >}}
+
 You can export issues from GitLab to a plain-text CSV
 ([comma-separated values](https://en.wikipedia.org/wiki/Comma-separated_values))
 file. The CSV file is attached to an email, and sent to your default
@@ -74,29 +80,33 @@ in GitLab, see [CSV parsing considerations](../repository/files/csv.md#csv-parsi
 The following columns are included in the CSV file.
 
 | Column            | Description |
-|-------------------|-------------|
+| ----------------- | ----------- |
+| ID                | Issue `id`  |
+| IID               | Issue `iid` |
 | Title             | Issue `title` |
 | Description       | Issue `description` |
-| Issue ID          | Issue `iid` |
+| Type              | Issue `type` |
 | URL               | A link to the issue on GitLab |
 | State             | `Open` or `Closed` |
+| Confidential      | `Yes` or `No` |
+| Locked            | `Yes` or `No` |
+| Milestone         | Title of the issue milestone |
+| Labels            | Labels, separated by commas |
 | Author            | Full name of the issue author |
 | Author Username   | Username of the author, with the `@` symbol omitted |
 | Assignee          | Full name of the issue assignee |
-| Assignee Username | Username of the author, with the `@` symbol omitted |
-| Confidential      | `Yes` or `No` |
-| Locked            | `Yes` or `No` |
-| Due Date          | Formatted as `YYYY-MM-DD` |
+| Assignee Username | Username of the assignee, with the `@` symbol omitted |
 | Created At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
 | Updated At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
 | Closed At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS` |
-| Milestone         | Title of the issue milestone |
-| Weight            | Issue weight |
-| Labels            | Labels, separated by commas |
+| Due Date          | Formatted as `YYYY-MM-DD` |
+| Start Date        | Formatted as `YYYY-MM-DD` |
+| Parent ID         | ID of the parent |
+| Parent IID        | IID of the parent |
+| Parent Title      | Title of the parent |
 | Time Estimate     | [Time estimate](../time_tracking.md#estimates) in seconds |
 | Time Spent        | [Time spent](../time_tracking.md#time-spent) in seconds |
-| Epic ID           | ID of the parent epic |
-| Epic Title        | Title of the parent epic |
+| Weight            | Issue weight |
 
 ## Troubleshooting
 

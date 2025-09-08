@@ -39,7 +39,7 @@ module Files
 
     def commit_actions!(actions)
       repository.commit_files(
-        current_user,
+        Gitlab::Auth::Identity.invert_composite_identity(current_user),
         message: @commit_message,
         branch_name: @branch_name,
         actions: actions,

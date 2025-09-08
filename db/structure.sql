@@ -27265,7 +27265,8 @@ CREATE TABLE vulnerability_historical_statistics (
     unknown integer DEFAULT 0 NOT NULL,
     info integer DEFAULT 0 NOT NULL,
     date date NOT NULL,
-    letter_grade smallint NOT NULL
+    letter_grade smallint NOT NULL,
+    security_project_tracked_context_id bigint
 );
 
 CREATE SEQUENCE vulnerability_historical_statistics_id_seq
@@ -27453,6 +27454,7 @@ CREATE TABLE vulnerability_occurrences (
     uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
     initial_pipeline_id bigint,
     latest_pipeline_id bigint,
+    security_project_tracked_context_id bigint,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))
@@ -27500,6 +27502,7 @@ CREATE TABLE vulnerability_reads (
     identifier_names text[] DEFAULT '{}'::text[] NOT NULL,
     has_vulnerability_resolution boolean DEFAULT false,
     auto_resolved boolean DEFAULT false NOT NULL,
+    security_project_tracked_context_id bigint,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),
@@ -27649,7 +27652,8 @@ CREATE TABLE vulnerability_statistics (
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     age_mean double precision DEFAULT 0.0 NOT NULL,
     age_sum_of_squares double precision DEFAULT 0.0 NOT NULL,
-    risk_score double precision DEFAULT 0.0 NOT NULL
+    risk_score double precision DEFAULT 0.0 NOT NULL,
+    security_project_tracked_context_id bigint
 );
 
 CREATE SEQUENCE vulnerability_statistics_id_seq

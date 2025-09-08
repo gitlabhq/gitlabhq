@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { file } from 'jest/ide/helpers';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -130,6 +130,14 @@ describe('File row component', () => {
     });
   });
 
+  it('does not call scrollIntoView for Show more button', () => {
+    const path = '/project/test.js';
+    const router = { currentRoute: { path } };
+    createComponent({ file: { path, isShowMore: true }, level: 0 }, router);
+
+    expect(scrollIntoViewMock).not.toHaveBeenCalled();
+  });
+
   it('renders header for file', () => {
     createComponent({
       file: {
@@ -196,5 +204,32 @@ describe('File row component', () => {
     });
 
     expect(wrapper.findComponent(GlIcon).props('name')).toBe('link');
+  });
+
+  describe('Show more button', () => {
+    const findShowMoreButton = () => wrapper.findComponent(GlButton);
+
+    it('renders show more button when file.isShowMore is true', () => {
+      createComponent({ file: { isShowMore: true, loading: false }, level: 0 });
+
+      const showMoreButton = findShowMoreButton();
+      expect(showMoreButton.props('category')).toBe('tertiary');
+      expect(showMoreButton.props('loading')).toBe(false);
+      expect(showMoreButton.text().trim()).toBe('Show more');
+    });
+
+    it('emits showMore event when show more button is clicked', () => {
+      createComponent({ file: { isShowMore: true, loading: false }, level: 0 });
+
+      findShowMoreButton().vm.$emit('click');
+
+      expect(wrapper.emitted('showMore')).toHaveLength(1);
+    });
+
+    it('shows loading state on show more button', () => {
+      createComponent({ file: { isShowMore: true, loading: true }, level: 0 });
+
+      expect(findShowMoreButton().props('loading')).toBe(true);
+    });
   });
 });

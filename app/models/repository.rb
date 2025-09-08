@@ -310,14 +310,42 @@ class Repository
     branch_names + tag_names
   end
 
+  def lazy_ref_exists?(ref_name)
+    BatchLoader.for(ref_name).batch(key: self) do |ref_names, loader, _args|
+      # Make a single Gitaly call to check all refs at once
+      existing_refs = list_refs(ref_names).to_h { |r| [r.name, true] }
+
+      # Load results for each requested ref
+      ref_names.each do |ref|
+        loader.call(ref, existing_refs.key?(ref))
+      end
+    end
+  end
+
   def branch_exists?(branch_name)
     return false unless raw_repository
+
+    if Feature.enabled?(:ref_existence_check_gitaly, project)
+      return false unless exists?
+      return false if branch_name.blank?
+
+      Gitlab::Git::RefPreloader.preload_refs_for_project(project)
+
+      return lazy_ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + branch_name).itself
+    end
 
     branch_names_include?(branch_name)
   end
 
   def tag_exists?(tag_name)
     return false unless raw_repository
+
+    if Feature.enabled?(:ref_existence_check_gitaly, project)
+      return false unless exists?
+      return false if tag_name.blank?
+
+      return lazy_ref_exists?(Gitlab::Git::TAG_REF_PREFIX + tag_name).itself
+    end
 
     tag_names_include?(tag_name)
   end
@@ -367,12 +395,14 @@ class Repository
 
   def expire_tags_cache
     expire_method_caches(%i[tag_names tag_count has_ambiguous_refs?])
+    BatchLoader::Executor.clear_current if Feature.enabled?(:ref_existence_check_gitaly, project)
     @tags = nil
     @tag_names_include = nil
   end
 
   def expire_branches_cache
     expire_method_caches(%i[branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?])
+    BatchLoader::Executor.clear_current if Feature.enabled?(:ref_existence_check_gitaly, project)
     expire_protected_branches_cache
 
     @local_branches = nil

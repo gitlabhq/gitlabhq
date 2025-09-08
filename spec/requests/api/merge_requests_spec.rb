@@ -2783,7 +2783,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when user is using a composite identity', :request_store, :sidekiq_inline do
-      let(:user) { create(:user, username: 'user-with-composite-identity') }
+      let(:user) { create(:user, :service_account, username: 'user-with-composite-identity') }
 
       let(:params) do
         {
@@ -2795,16 +2795,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       before do
-        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
-          user.username == 'user-with-composite-identity'
-        end
+        user.update!(composite_identity_enforced: true)
       end
 
       context 'when composite identity is missing' do
-        it 'responds with 403 forbidden http status' do
+        it 'responds with 401 unauthorized http status' do
           post api("/projects/#{project.id}/merge_requests", user), params: params
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
 

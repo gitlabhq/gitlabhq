@@ -7,7 +7,11 @@ module Files
     def initialize(*args)
       super
 
-      git_user = Gitlab::Git::User.from_gitlab(current_user) if current_user.present?
+      if current_user.present?
+        git_user = Gitlab::Git::User.from_gitlab(
+          Gitlab::Auth::Identity.invert_composite_identity(current_user)
+        )
+      end
 
       @author_email = commit_email(git_user)
       @author_name = params[:author_name] || git_user&.name

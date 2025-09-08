@@ -1818,6 +1818,14 @@ Instead of:
 - In GitLab 14.4 and above...
 - In GitLab 14.4 and newer...
 
+## node
+
+An individual server in a GitLab site. A single site can contain multiple nodes. Do not use
+**primary** or **secondary** to describe a node. Use **primary site** or **secondary site** instead.
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
+See also [**primary, secondary**](#primary-secondary).
+
 ## normal, normally
 
 Don't use **normal** to mean the usual, typical, or standard way of doing something.
@@ -2092,6 +2100,15 @@ For tutorial page types, use [**before you begin**](#before-you-begin) instead.
 Use **press** when talking about keyboard keys. For example:
 
 - To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
+
+## primary, secondary
+
+Use as adjectives, not as nouns, to reduce confusion. For example:
+
+- primary database, secondary database
+- primary site, secondary site (for Geo)
+
+See [**primary node** or **secondary node**](#node).
 
 ## profanity
 

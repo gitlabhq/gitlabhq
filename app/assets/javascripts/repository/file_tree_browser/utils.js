@@ -28,3 +28,17 @@ export const dedupeByFlatPathAndId = (arr) => {
     return true;
   });
 };
+
+/**
+ * Generates a show more item for the file-row component.
+ * @param {string} id - Unique id for the entry
+ * @param {string} parentPath - The path of the parent directory
+ * @param {number} level - Level used for indentation in rendering the tree
+ * @returns {Object} Show more item object with id, level, parentPath, and isShowMore properties
+ */
+export const generateShowMoreItem = (id, parentPath, level) => ({
+  id: `${id}-show-more`,
+  level,
+  parentPath,
+  isShowMore: true,
+});

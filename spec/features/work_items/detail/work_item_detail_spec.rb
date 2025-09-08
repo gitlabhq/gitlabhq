@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   include ListboxHelpers
 
-  let_it_be_with_reload(:user) { create(:user) }
-  let_it_be_with_reload(:user2) { create(:user, name: 'John') }
+  let_it_be_with_refind(:user) { create(:user) }
+  let_it_be_with_refind(:user2) { create(:user, name: 'John') }
 
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, :repository, group: group) }

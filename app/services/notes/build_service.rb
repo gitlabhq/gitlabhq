@@ -53,7 +53,7 @@ module Notes
     def new_note(params, discussion)
       note = Note.new(params)
       note.project = project
-      note.author = current_user
+      note.author = Gitlab::Auth::Identity.invert_composite_identity(current_user)
 
       parent_confidential = discussion&.confidential?
       can_set_confidential = can?(current_user, :mark_note_as_internal, note)

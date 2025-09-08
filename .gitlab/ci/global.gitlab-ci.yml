@@ -461,12 +461,17 @@
     - ${GLCI_GITLAB_ASSETS_HASH_FILE}
   policy: pull-push
 
+# unlike rubocop, webpack cache does not have built in cleanup so it's not safe to use in pull-push configuration
+# add periodic cache invalidation based on checksum of config file and dependency lock file until migration to Vite is complete
 .assets-tmp-cache: &assets-tmp-cache
-  key: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}"
+  key:
+    files:
+      - config/webpack.config.js
+      - yarn.lock
+    prefix: "partial-assets-cache-${NODE_ENV}-${OS_VERSION}-node-${NODE_VERSION}-vue-${VUE_VERSION}-${CI_COMMIT_REF_SLUG}"
   paths:
     - tmp/cache
-  policy: pull
-  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
+  policy: pull-push
 
 # used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
 .assets-cache-pull: &assets-cache-pull
@@ -487,17 +492,16 @@
   policy: pull-push
 
 .rubocop-cache: &rubocop-cache
-  key: "rubocop-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}"
+  key: "rubocop-${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-gemfile-${BUNDLE_GEMFILE}-${CI_COMMIT_REF_SLUG}"
   paths:
     - tmp/rubocop_cache/
   policy: pull
-  unprotect: true # push this cache from master pipelines to reuse as partial cache in mr pipelines
 
 .rubocop-cache-push: &rubocop-cache-push
   <<: *rubocop-cache
   # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up but RuboCop has a mechanism
   # for keeping only the N latest cache files, so we take advantage of it with `pull-push`.
-  policy: push
+  policy: pull-push
 
 .workhorse-cache: &workhorse-cache
   key: "workhorse-${BUILD_OS}-${OS_VERSION}-${GLCI_WORKHORSE_HASH}"
@@ -579,9 +583,9 @@
   extends: .cache-analytics
   cache:
     - !reference [.ruby-gems-cache]
-    - !reference [.assets-tmp-cache] # use reference to be able to override via overrides/assets-tmp-cache.yml
     - *node-modules-cache
     - *assets-cache
+    - *assets-tmp-cache
 
 .assets-compile-cache-pull: # this cache is used only for gdk:compile-test-assets which should only pull, never push
   extends: .cache-analytics
@@ -589,7 +593,8 @@
     - !reference [.ruby-gems-cache]
     - *node-modules-cache
     - *assets-cache-pull
-    - *assets-tmp-cache
+    - <<: *assets-tmp-cache
+      policy: pull
 
 .storybook-yarn-cache:
   cache:

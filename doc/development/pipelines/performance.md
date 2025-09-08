@@ -77,10 +77,6 @@ Caches in GitLab CI/CD pipelines must follow these criteria:
 - **Sync stage placement**: Cache update jobs should be defined in the `sync` stage to run at the very start of the pipeline.
 - **Reusable definitions**: Reusable cache key definitions are placed in `.gitlab/ci/global.gitlab-ci.yml` file for consistency across the project.
 
-### Exception for pull-push default
-
-Some caches are only pushed from the default branch and pulled in non-default branch pipelines. Such caches must use `unprotect: true` to be pulled correctly in non-default branch pipelines.
-
 ### Complex checksum calculation
 
 In cases when cache keys require complex multiple file checksum calculation, a specific job should be added in the `sync` stage which calculates the cache checksum and makes it available via environment variable by saving it as a dotenv type report artifact. This ensures that all subsequent jobs can use the pre-calculated checksum for consistent cache key generation across the pipeline.

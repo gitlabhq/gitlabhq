@@ -89,15 +89,13 @@ class Ability
                  policy.allowed?(ability)
                end
 
-      identity = ::Gitlab::Auth::Identity.fabricate(user)
-
-      if identity.present? && identity.composite?
-        return false unless identity.valid?
-
-        result && allowed?(identity.scoped_user, ability, subject, **opts)
-      else
-        result
+      if opts[:composite_identity_check] == false ||
+          !user.respond_to?(:composite_identity_enforced?) ||
+          !user&.composite_identity_enforced?
+        return result
       end
+
+      result && with_composite_identity_check(user, ability, subject, **opts)
 
     ensure
       # TODO: replace with runner invalidation:
@@ -178,6 +176,26 @@ class Ability
       end
 
       elements
+    end
+
+    def with_composite_identity_check(user, ability, subject = :global, **opts)
+      allowed?(
+        find_user_for_composite_identity_check(user),
+        ability,
+        subject,
+        **opts.merge(composite_identity_check: false)
+      )
+    end
+
+    def find_user_for_composite_identity_check(user)
+      if user.service_account? # for composite identity check
+        identity = ::Gitlab::Auth::Identity.fabricate(user)
+        return if !identity.present? || !identity.valid?
+
+        identity.scoped_user
+      else # for inverted composite identity check
+        Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(user.id)
+      end
     end
   end
 end

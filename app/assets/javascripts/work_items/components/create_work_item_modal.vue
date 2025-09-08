@@ -316,9 +316,7 @@ export default {
       @hide="hideCreateModal"
     >
       <template #modal-header>
-        <div
-          class="gl-text gl-flex gl-w-full gl-items-center gl-justify-between gl-gap-x-2 gl-pr-3"
-        >
+        <div class="gl-flex gl-w-full gl-items-center gl-justify-between gl-gap-x-2 gl-pr-3">
           <h2 class="modal-title">{{ newWorkItemText }}</h2>
           <gl-button
             v-gl-tooltip.top

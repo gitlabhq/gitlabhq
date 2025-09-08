@@ -7214,6 +7214,9 @@ msgstr ""
 msgid "AmazonQ|Amazon Q Settings have been saved."
 msgstr ""
 
+msgid "AmazonQ|Amazon Q failed to disconnect because of a mismatch with the GitLab instance UUID. This issue typically occurs when the GitLab instance has been restored or migrated. %{linkStart}View troubleshooting information%{linkEnd}."
+msgstr ""
+
 msgid "AmazonQ|Amazon Q will be turned off by default, but still be available to any groups or projects that have previously enabled it."
 msgstr ""
 
@@ -8116,9 +8119,6 @@ msgid "Any member with at least Developer permissions on the project."
 msgstr ""
 
 msgid "Any milestone"
-msgstr ""
-
-msgid "Any user who is added or requests access in excess of the user cap must be approved by an administrator"
 msgstr ""
 
 msgid "Anytime"
@@ -9634,7 +9634,7 @@ msgstr ""
 msgid "Auto-cancel redundant pipelines"
 msgstr ""
 
-msgid "Auto-resolved by the vulnerability management policy named '%{policy_name}'"
+msgid "Auto-resolved by the vulnerability management policy named '%{policy_name}' as the vulnerability was no longer detected in pipeline %{pipeline_link}."
 msgstr ""
 
 msgid "AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}"
@@ -32997,10 +32997,7 @@ msgstr ""
 msgid "HomepageActivityWidget|Your contributions, like commits and work on issues and merge requests."
 msgstr ""
 
-msgid "Homepage|Go to preferences"
-msgstr ""
-
-msgid "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can update your user preferences."
+msgid "Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can %{linkStart}update your user preferences%{linkEnd}."
 msgstr ""
 
 msgid "Homepage|Welcome to the new homepage"
@@ -35195,7 +35192,7 @@ msgstr ""
 msgid "Invitations above seat count are blocked"
 msgstr ""
 
-msgid "Invitations do not require administrator approval"
+msgid "Invitations do not need to be approved by a group owner."
 msgstr ""
 
 msgid "Invite \"%{email}\" by email"
@@ -59778,6 +59775,9 @@ msgstr ""
 msgid "SecurityReports|Dismissed as…"
 msgstr ""
 
+msgid "SecurityReports|Dismissed in MR"
+msgstr ""
+
 msgid "SecurityReports|Does not have a solution"
 msgstr ""
 
@@ -59971,6 +59971,9 @@ msgid "SecurityReports|Parsing errors in pipeline"
 msgstr ""
 
 msgid "SecurityReports|Parsing warnings in pipeline"
+msgstr ""
+
+msgid "SecurityReports|Policy violations"
 msgstr ""
 
 msgid "SecurityReports|Possibly active secret"
@@ -70337,6 +70340,9 @@ msgstr ""
 msgid "Users to exclude from the rate limit"
 msgstr ""
 
+msgid "Users who are added or request access beyond the user cap must be approved by a group owner."
+msgstr ""
+
 msgid "Users who can merge this merge request can override the request for changes, and unblock this merge request."
 msgstr ""
 
@@ -70978,9 +70984,6 @@ msgstr ""
 msgid "VirtualRegistry|Delete Maven registry"
 msgstr ""
 
-msgid "VirtualRegistry|Delete Maven upstream"
-msgstr ""
-
 msgid "VirtualRegistry|Delete Maven upstream cache entry?"
 msgstr ""
 
@@ -70988,6 +70991,9 @@ msgid "VirtualRegistry|Delete registry"
 msgstr ""
 
 msgid "VirtualRegistry|Delete upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Delete upstream?"
 msgstr ""
 
 msgid "VirtualRegistry|Description"
@@ -71139,6 +71145,9 @@ msgstr ""
 msgid "VirtualRegistry|There is a problem with this cached upstream"
 msgstr ""
 
+msgid "VirtualRegistry|This action cannot be undone. Deleting this upstream might impact registries associated with it."
+msgstr ""
+
 msgid "VirtualRegistry|This will delete all cached packages for exclusive upstream registries in this virtual registry. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
 msgstr ""
 
@@ -71183,6 +71192,11 @@ msgstr ""
 
 msgid "VirtualRegistry|Virtual registry"
 msgstr ""
+
+msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"
+msgid_plural "VirtualRegistry|You are about to delete this upstream used by %{count} registries:"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "VirtualRegistry|last checked %{date}"
 msgstr ""

@@ -77,9 +77,9 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
-        # ListCommitsByOid, RepositoryExists, HasLocalBranches, ListCommitsByRefNames
+        # ListCommitsByOid, RepositoryExists, HasLocalBranches, ListCommitsByRefNames, ListRefs
         expect { get_pipelines_index_json }
-          .to change { Gitlab::GitalyClient.get_request_count }.by(4)
+          .to change { Gitlab::GitalyClient.get_request_count }.by(5)
       end
     end
 

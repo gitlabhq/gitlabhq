@@ -14,7 +14,7 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
-import { normalizePath, dedupeByFlatPathAndId } from '../utils';
+import { normalizePath, dedupeByFlatPathAndId, generateShowMoreItem } from '../utils';
 
 export default {
   ROW_HEIGHT: 32,
@@ -50,10 +50,10 @@ export default {
   data() {
     return {
       filter: '',
-      currentPath: '/',
       directoriesCache: {},
       expandedPathsMap: {},
       loadingPathsMap: {},
+      flatFilesList: [],
     };
   },
   computed: {
@@ -84,13 +84,16 @@ export default {
         micromatch.contains(item.path, pattern, { nocase: true }),
       );
     },
-    flatFilesList() {
-      if (this.isRootLoading) return [];
-      return this.buildList('/', 0);
+    currentRouterPath() {
+      return this.$route.params?.path && normalizePath(this.$route.params.path);
     },
   },
+  watch: {
+    directoriesCache: { deep: true, handler: 'updateFlatFilesList' },
+    expandedPathsMap: { deep: true, handler: 'updateFlatFilesList' },
+  },
   mounted() {
-    this.navigateTo(this.$route.params.path || '/');
+    this.expandPathAncestors(this.currentRouterPath || '/');
     this.mousetrap = new Mousetrap();
 
     if (!this.shortcutsDisabled) {
@@ -101,18 +104,22 @@ export default {
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
+    updateFlatFilesList() {
+      if (this.isRootLoading) return;
+      // Replace array contents in-place to maintain same reference for RecycleScroller
+      this.flatFilesList.splice(0, this.flatFilesList.length, ...this.buildList('/', 0));
+    },
     isCurrentPath(path) {
       if (!this.$route.params.path) return path === '/';
-      const routePath = normalizePath(this.$route.params.path);
-      return path === routePath;
+      return path === this.currentRouterPath;
     },
     buildList(path, level) {
       const contents = this.getDirectoryContents(path);
-      return this.processDirectories(contents.trees, path, level)
-        .concat(this.processFiles(contents.blobs, level))
-        .concat(this.processSubmodules(contents.submodules, level));
+      return this.processDirectories({ trees: contents.trees, path, level })
+        .concat(this.processFiles({ blobs: contents.blobs, path, level }))
+        .concat(this.processSubmodules({ submodules: contents.submodules, path, level }));
     },
-    processDirectories(trees = [], path, level) {
+    processDirectories({ trees = [], path, level }) {
       const directoryList = [];
 
       trees.forEach((tree, index) => {
@@ -126,8 +133,10 @@ export default {
           level,
           opened: Boolean(this.expandedPathsMap[treePath]),
           loading: this.isDirectoryLoading(treePath),
-          isCurrentPath: this.isCurrentPath(treePath),
         });
+
+        if (this.shouldRenderShowMore(treePath, path))
+          directoryList.push(generateShowMoreItem(tree.id, path, level));
 
         // Recursively add children for expanded directories
         if (this.expandedPathsMap[treePath] && !this.isDirectoryLoading(treePath)) {
@@ -137,7 +146,7 @@ export default {
 
       return directoryList;
     },
-    processFiles(blobs = [], level) {
+    processFiles({ blobs = [], path, level }) {
       const filesList = [];
 
       blobs.forEach((blob, index) => {
@@ -150,13 +159,15 @@ export default {
           name: blob.name,
           mode: blob.mode,
           level,
-          isCurrentPath: this.isCurrentPath(blobPath),
         });
+
+        if (this.shouldRenderShowMore(blobPath, path))
+          filesList.push(generateShowMoreItem(blob.id, path, level));
       });
 
       return filesList;
     },
-    processSubmodules(submodules = [], level) {
+    processSubmodules({ submodules = [], path, level }) {
       const submodulesList = [];
 
       submodules.forEach((submodule, index) => {
@@ -168,8 +179,10 @@ export default {
           name: submodule.name,
           submodule: true,
           level,
-          isCurrentPath: this.isCurrentPath(submodulePath),
         });
+
+        if (this.shouldRenderShowMore(submodulePath, path))
+          submodulesList.push(generateShowMoreItem(submodule.id, path, level));
       });
 
       return submodulesList;
@@ -177,8 +190,9 @@ export default {
     async fetchDirectory(dirPath) {
       const path = normalizePath(dirPath);
       const apiPath = path === '/' ? path : path.substring(1);
+      const nextPageCursor = this.directoriesCache[path]?.pageInfo?.endCursor || '';
 
-      if (this.directoriesCache[path] || this.loadingPathsMap[path]) return;
+      if ((this.directoriesCache[path] && !nextPageCursor) || this.loadingPathsMap[path]) return;
 
       this.loadingPathsMap = { ...this.loadingPathsMap, [path]: true };
 
@@ -191,7 +205,7 @@ export default {
             ref: currentRef,
             refType: getRefType(refType),
             path: apiPath,
-            nextPageCursor: '',
+            nextPageCursor,
             pageSize: TREE_PAGE_SIZE,
           },
         });
@@ -203,10 +217,16 @@ export default {
           blobs: dedupeByFlatPathAndId(treeData.blobs.nodes),
           submodules: dedupeByFlatPathAndId(treeData.submodules.nodes),
         };
+        const cached = this.directoriesCache[path] || { trees: [], blobs: [], submodules: [] };
 
         this.directoriesCache = {
           ...this.directoriesCache,
-          [path]: directoryContents,
+          [path]: {
+            trees: [...cached.trees, ...directoryContents.trees],
+            blobs: [...cached.blobs, ...directoryContents.blobs],
+            submodules: [...cached.submodules, ...directoryContents.submodules],
+            pageInfo: project?.repository?.paginatedTree?.pageInfo,
+          },
         };
       } catch (error) {
         createAlert({
@@ -223,10 +243,9 @@ export default {
 
     // Expand all parent directories leading to a path
     expandPathAncestors(path) {
-      const normalizedPath = normalizePath(path);
       this.fetchDirectory('/');
 
-      const segments = normalizedPath.split('/').filter(Boolean);
+      const segments = path.split('/').filter(Boolean);
       let currentPath = '';
 
       // For each segment of the path, expand the parent directory
@@ -243,11 +262,11 @@ export default {
     toggleDirectory(normalizedPath) {
       if (!this.expandedPathsMap[normalizedPath]) {
         // If directory is collapsed, expand it
-        this.expandPathAncestors(normalizedPath);
         this.expandedPathsMap = {
           ...this.expandedPathsMap,
           [normalizedPath]: true,
         };
+        this.fetchDirectory(normalizedPath);
       } else {
         // If directory is already expanded, collapse it
         const newExpandedPaths = { ...this.expandedPathsMap };
@@ -256,25 +275,30 @@ export default {
       }
     },
 
-    // Navigate to a specific directory or file
-    navigateTo(path) {
-      const normalizedPath = normalizePath(path);
-      this.currentPath = normalizedPath;
-      this.toggleDirectory(normalizedPath);
-    },
-
     isDirectoryLoading(path) {
       return Boolean(this.loadingPathsMap[normalizePath(path)]);
     },
 
     getDirectoryContents(path) {
-      return this.directoriesCache[normalizePath(path)] || { trees: [], blobs: [], submodules: [] };
+      return this.directoriesCache[path] || { trees: [], blobs: [], submodules: [] };
+    },
+    shouldRenderShowMore(itemPath, parentPath) {
+      const cached = this.directoriesCache[parentPath];
+      if (!cached) return false;
+
+      const { trees, blobs, submodules, pageInfo } = cached;
+      const lastItemPath = normalizePath([...trees, ...blobs, ...submodules].at(-1)?.path);
+      return itemPath === lastItemPath && pageInfo?.hasNextPage;
     },
     triggerFocusFilterBar() {
       const filterBar = this.$refs.filterInput;
       if (filterBar && filterBar.$el) {
         filterBar.focus();
       }
+    },
+    filterInputTooltipTarget() {
+      // The input might not always be available (i.e. when the FTB is in collapsed state)
+      return this.$refs.filterInput?.$el;
     },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
@@ -305,7 +329,7 @@ export default {
       <gl-tooltip
         v-if="!shortcutsDisabled"
         custom-class="file-browser-filter-tooltip"
-        :target="() => $refs.filterInput.$el"
+        :target="filterInputTooltipTarget"
         trigger="hover focus"
       >
         {{ __('Focus on the filter bar') }}
@@ -336,11 +360,12 @@ export default {
             :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
-              '!gl-bg-gray-50': item.isCurrentPath,
+              '!gl-bg-gray-50': isCurrentPath(item.path),
             }"
             class="!gl-mx-0"
             truncate-middle
-            @clickTree="navigateTo(item.path)"
+            @clickTree="toggleDirectory(item.path)"
+            @showMore="fetchDirectory(item.parentPath)"
           />
         </template>
       </recycle-scroller>

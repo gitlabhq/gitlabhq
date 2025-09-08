@@ -476,7 +476,7 @@
  * Themes
  */
 
- :where(.application-chrome) {
+ .application-chrome {
   // Light mode
   &:not(.gl-dark) {
     // default color to mute the gradient
@@ -512,6 +512,10 @@
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 90);
       --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 2));
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
+    }
+
+    .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
+      background-color: var(--_shade-1);
     }
 
     .ai-panel .ai-nav-icon-active,
@@ -554,7 +558,8 @@
 
     .ai-panel,
     .super-sidebar,
-    .super-topbar {
+    .super-topbar,
+    .application-chrome {
       --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 26%);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 92);
@@ -564,8 +569,9 @@
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 32%);
     }
 
-    .super-sidebar .badge {
-      background-color: var(--super-sidebar-accent-color-badge) !important;
+    .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
+      color: var(--super-sidebar-accent-color-fg);
+      background-color: var(--_shade-1);
     }
 
     .ai-panel .ai-nav-icon-active,
@@ -603,4 +609,5 @@
   .settings-sticky-footer {
     background-color: var(--theme-background-color) !important;
   }
+
  }

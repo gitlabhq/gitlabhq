@@ -2024,22 +2024,34 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     subject { repository.branch_exists?(branch) }
 
-    it 'delegates to branch_names when the cache is empty' do
-      repository.expire_branches_cache
+    it 'batch loads requested refs' do
+      expect(repository).to receive(:list_refs).with(["refs/heads/#{branch}"]).and_call_original
 
-      expect(repository).to receive(:branch_names).and_call_original
       is_expected.to eq(true)
     end
 
-    it 'uses redis set caching when the cache is filled' do
-      repository.branch_names # ensure the branch name cache is filled
+    context 'when "ref_existence_check_gitaly" is disabled' do
+      before do
+        stub_feature_flags(ref_existence_check_gitaly: false)
+      end
 
-      expect(repository)
-        .to receive(:branch_names_include?)
-        .with(branch)
-        .and_call_original
+      it 'delegates to branch_names when the cache is empty' do
+        repository.expire_branches_cache
 
-      is_expected.to eq(true)
+        expect(repository).to receive(:branch_names).and_call_original
+        is_expected.to eq(true)
+      end
+
+      it 'uses redis set caching when the cache is filled' do
+        repository.branch_names # ensure the branch name cache is filled
+
+        expect(repository)
+          .to receive(:branch_names_include?)
+                .with(branch)
+                .and_call_original
+
+        is_expected.to eq(true)
+      end
     end
   end
 
@@ -2048,22 +2060,34 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     subject { repository.tag_exists?(tag) }
 
-    it 'delegates to tag_names when the cache is empty' do
-      repository.expire_tags_cache
+    it 'batch loads requested refs' do
+      expect(repository).to receive(:list_refs).with(["refs/tags/#{tag}"]).and_call_original
 
-      expect(repository).to receive(:tag_names).and_call_original
       is_expected.to eq(true)
     end
 
-    it 'uses redis set caching when the cache is filled' do
-      repository.tag_names # ensure the tag name cache is filled
+    context 'when "ref_existence_check_gitaly" is disabled' do
+      before do
+        stub_feature_flags(ref_existence_check_gitaly: false)
+      end
 
-      expect(repository)
-        .to receive(:tag_names_include?)
-        .with(tag)
-        .and_call_original
+      it 'delegates to tag_names when the cache is empty' do
+        repository.expire_tags_cache
 
-      is_expected.to eq(true)
+        expect(repository).to receive(:tag_names).and_call_original
+        is_expected.to eq(true)
+      end
+
+      it 'uses redis set caching when the cache is filled' do
+        repository.tag_names # ensure the tag name cache is filled
+
+        expect(repository)
+          .to receive(:tag_names_include?)
+                .with(tag)
+                .and_call_original
+
+        is_expected.to eq(true)
+      end
     end
   end
 

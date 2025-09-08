@@ -2,7 +2,6 @@
  * DS experiments
  */
 
-
  // Increased border radii
 
  :where(.application-chrome) {
@@ -12,7 +11,7 @@
   .gl-button.gl-button,
   .form-control:not(.gl-search-box-by-type-input-borderless),
   .gl-form-input,
-  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless),
+  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless):not(.input-group-prepend + .gl-form-input),
   .gl-form-select,
   .input-group-text,
   &.application-chrome .filtered-search-box {
@@ -26,6 +25,7 @@
   }
 
   // Filtered search button
+  .input-group-prepend > div,
   .filtered-search-history-dropdown-toggle-button.gl-button,
   .input-group-prepend .btn {
     @apply gl-rounded-l-lg #{!important};
@@ -96,6 +96,66 @@
   // Discussion file comment
   .discussion-body .diff-file .file-title {
     @apply gl-rounded-none #{!important};
+  }
+
+  // Diff border radii
+  .diff-file {
+    .code.md-suggestion-diff {
+      border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .diff-content {
+      border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .gl-alert-danger {
+      @apply gl-rounded-t-lg;
+    }
+
+    .file-title-flex-parent,
+    .file-holder .file-title-flex-parent {
+      border-top-left-radius: $gl-border-radius-lg-inner !important;
+      border-top-right-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .gl-alert + .file-title-flex-parent,
+    .gl-alert + .file-holder .file-title-flex-parent {
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+    }
+
+    &:not(.has-body) {
+      .file-title-flex-parent,
+      .file-holder .file-title-flex-parent {
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+        border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+      }
+    }
+  }
+
+  .diff-table.code,
+  table.code {
+    border-radius: 0 0 $gl-border-radius-lg-inner $gl-border-radius-lg-inner !important;
+
+    .line_holder:last-of-type {
+      .diff-grid-left {
+        .diff-td:first-child,
+        td:first-child {
+          border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+
+          .diff-line-expand-button {
+            border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+          }
+        }
+      }
+
+      .diff-td:last-child:not(.left-side.parallel),
+      td:last-child:not(.left-side.parallel) {
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      }
+    }
   }
 
   // Issue boards

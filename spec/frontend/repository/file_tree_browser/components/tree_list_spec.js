@@ -1,6 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { cloneDeep } from 'lodash';
 import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,14 +24,15 @@ jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOC
 jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
-const getQueryHandlerSuccess = jest.fn().mockResolvedValue(mockResponse);
-
 describe('Tree List', () => {
   let wrapper;
   let apolloProvider;
   let pinia;
+  let getQueryHandlerSuccess;
 
-  const createComponent = async () => {
+  const createComponent = async (apiResponse = mockResponse) => {
+    getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
+
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
 
     const recycleScrollerStub = stubComponent(
@@ -95,7 +97,6 @@ describe('Tree List', () => {
     expect(scroller.props('items')).toEqual([
       {
         id: '/dir_1/dir_2-gid://123-0',
-        isCurrentPath: false,
         level: 0,
         loading: false,
         name: 'dir_2',
@@ -107,7 +108,6 @@ describe('Tree List', () => {
       {
         fileHash: 'abc123',
         id: '/dir_1/file.txt-gid://456-0',
-        isCurrentPath: false,
         level: 0,
         mode: '100644',
         name: 'file.txt',
@@ -125,7 +125,6 @@ describe('Tree List', () => {
     expect(fileRows.at(0).props()).toMatchObject({
       file: {
         id: '/dir_1/dir_2-gid://123-0',
-        isCurrentPath: false,
         level: 0,
         name: 'dir_2',
         path: '/dir_1/dir_2',
@@ -141,7 +140,6 @@ describe('Tree List', () => {
       file: {
         fileHash: 'abc123',
         id: '/dir_1/file.txt-gid://456-0',
-        isCurrentPath: false,
         level: 0,
         mode: '100644',
         name: 'file.txt',
@@ -153,11 +151,36 @@ describe('Tree List', () => {
     });
   });
 
-  it('calls navigateTo with correct path when clickTree is emitted from FileRow', () => {
-    const navigateTo = jest.spyOn(wrapper.vm, 'navigateTo').mockImplementation(() => {});
+  it('calls toggleDirectory with correct path when clickTree is emitted from FileRow', () => {
+    const toggleDirectory = jest.spyOn(wrapper.vm, 'toggleDirectory').mockImplementation(() => {});
     const path = '/dir_1/dir_2';
     findFileRows().at(0).vm.$emit('clickTree', path);
-    expect(navigateTo).toHaveBeenCalledWith(path);
+    expect(toggleDirectory).toHaveBeenCalledWith(path);
+  });
+
+  describe('pagination', () => {
+    beforeEach(() => {
+      const paginatedResponse = cloneDeep(mockResponse);
+      paginatedResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+      return createComponent(paginatedResponse);
+    });
+
+    it('renders a show more button when hasNextPage is true', () => {
+      expect(findRecycleScroller().props('items')[2]).toMatchObject({ isShowMore: true });
+    });
+
+    it('fetches the next page', () => {
+      findFileRows().at(2).vm.$emit('showMore');
+
+      expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        ref: 'main',
+        refType: 'MOCK_REF_TYPE',
+        path: '/',
+        nextPageCursor: 'cursor123',
+        pageSize: 100,
+      });
+    });
   });
 
   describe('filtering', () => {

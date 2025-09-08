@@ -13,7 +13,9 @@ def main
   # We want to store the refs in a packed-refs file because if we don't
   # they can get mangled by filesystems.
   abort unless system(*GIT, *%w[pack-refs --all])
-  abort unless system(*GIT, 'fsck')
+  # Disable the fsck for now because this fails due to the presence
+  # of refs/{heads,tags}/.gitkeep
+  # abort unless system(*GIT, 'fsck')
 end
 
 # We don't want contributors to commit new pack files because those

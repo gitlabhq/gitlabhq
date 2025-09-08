@@ -36,9 +36,9 @@
       - c.with_description do
         = s_('Preferences|Select the accent color for the application interface.')
       - c.with_body do
-        .application-theme.row
+        .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
           - Gitlab::Themes.each do |theme|
-            %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
+            %label
               .preview{ class: theme.css_class }
               = f.gitlab_ui_radio_component :theme_id, theme.id,
                 theme.name,
@@ -50,9 +50,9 @@
       - c.with_description do
         = s_('Preferences|Choose the navigation theme.')
       - c.with_body do
-        .application-theme.row
+        .application-theme.gl-grid.gl-grid-cols-2.gl-gap-5{ class: '@sm/panel:gl-grid-cols-3 @lg/panel:gl-grid-cols-6' }
           - Gitlab::Themes.each do |theme|
-            %label.col-6.col-sm-4.col-md-3.col-xl-2.gl-mb-5
+            %label
               .preview{ class: theme.css_class }
               = f.gitlab_ui_radio_component :theme_id, theme.id,
                 theme.name,
@@ -67,7 +67,7 @@
       - if user_application_light_mode? || user_application_system_mode?
         = f.label class: 'label-bold' do
           = s_('Preferences|Light color scheme')
-        .gl-grid.gl-gap-5.gl-grid-cols-2.sm:gl-grid-cols-3.md:gl-grid-cols-4.lg:gl-grid-cols-6.gl-mb-5{ data: { testid: 'syntax-highlighting-light-color-scheme' } }
+        .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-light-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
             %label
               .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'
@@ -77,7 +77,7 @@
       - if user_application_dark_mode? || user_application_system_mode?
         = f.label class: 'label-bold' do
           = s_('Preferences|Dark color scheme')
-        .gl-grid.gl-gap-5.gl-grid-cols-2.sm:gl-grid-cols-3.md:gl-grid-cols-4.lg:gl-grid-cols-6.gl-mb-5{ data: { testid: 'syntax-highlighting-dark-color-scheme' } }
+        .gl-grid.gl-gap-5.gl-grid-cols-2.gl-mb-5{ class: '@sm/panel:gl-grid-cols-3 @md/panel:gl-grid-cols-4 @lg/panel:gl-grid-cols-6', data: { testid: 'syntax-highlighting-dark-color-scheme' } }
           - Gitlab::ColorSchemes.each do |scheme|
             %label
               .gl-mb-3= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview", class: 'gl-rounded-base gl-max-w-full'

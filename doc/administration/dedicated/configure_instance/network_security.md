@@ -106,6 +106,10 @@ If you are unable to use Switchboard to add a custom certificate, you can open a
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.
 
+Consider the following:
+
+- You can only create private links within the same AWS region. Make sure your VPC is in the same region where your GitLab Dedicated instance is deployed.
+
 To enable the Inbound Private Link:
 
 1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). In the body of your support ticket, include the IAM principals for the AWS users or roles in your AWS organization that are establishing the VPC endpoints in your AWS account. The IAM principals must be [IAM role principals](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-roles) or [IAM user principals](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-users). GitLab Dedicated uses these IAM Principals for access-control. These IAM principals are the only ones able to set up an endpoint to the service.
@@ -236,7 +240,7 @@ This type of connection allows GitLab functionality to access private services:
 
 Consider the following:
 
-- You can only establish private links between VPCs in the same region. Therefore, you can only establish a connection in the regions specified for your Dedicated instance.
+- You can only create private links within the same AWS region. Make sure your VPC is in the same region where your GitLab Dedicated instance is deployed.
 - The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the two Availability Zones (AZs) in the regions that you selected during onboarding.
 - If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects both AZ IDs. AZ IDs are displayed in Switchboard on the Overview page for both the Primary and Secondary regions.
 - GitLab Dedicated limits the number of outbound private link connections to 10.

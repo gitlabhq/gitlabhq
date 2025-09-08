@@ -77,6 +77,29 @@ module Gitlab
         new(user) if user.is_a?(::User)
       end
 
+      def self.find_primary_user_by_scoped_user_id(scoped_user_id, store: ::Gitlab::SafeRequestStore)
+        return unless scoped_user_id
+
+        # Get all composite identities from the store
+        composite_identities = store.store[COMPOSITE_IDENTITY_USERS_KEY] || Set.new
+
+        # Check each composite identity to find the one with matching scoped user
+        composite_identities.find do |primary_user|
+          identity_key = format(COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id)
+          scoped_user = store.store[identity_key]
+
+          scoped_user&.id == scoped_user_id
+        end
+      end
+
+      def self.invert_composite_identity(current_user)
+        return unless current_user
+
+        primary_user = Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(current_user.id)
+
+        primary_user || current_user
+      end
+
       def initialize(user, store: ::Gitlab::SafeRequestStore)
         raise UnexpectedIdentityError unless user.is_a?(::User)
 

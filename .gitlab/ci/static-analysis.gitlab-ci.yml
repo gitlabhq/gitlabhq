@@ -12,21 +12,6 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
 
-update-static-analysis-cache:
-  extends:
-    - .static-analysis-base
-    - .rubocop-job-cache-push
-    - .caching:rules:rubocop-cache-update
-  stage: prepare
-  needs:
-    - job: cache:ruby-gems
-      optional: true
-  script:
-    # Silence cop offenses for rules with "grace period".
-    # This will notify Slack if offenses were silenced.
-    # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
-    - fail_on_warnings bundle exec rake rubocop:check:graceful
-
 static-analysis:
   extends:
     - .static-analysis-base
@@ -133,7 +118,7 @@ haml-lint:
 rubocop:
   extends:
     - .static-analysis-base
-    - .rubocop-job-cache
+    - .rubocop-job-cache-push
     - .static-analysis:rules:rubocop
   needs:
     - job: detect-tests
@@ -144,10 +129,11 @@ rubocop:
     - |
       # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules
       if [ -z "${CI_MERGE_REQUEST_IID:-$FIND_CHANGES_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
-        # Silence cop offenses for rules with "grace period".
-        # We won't notify Slack if offenses were silenced to avoid frequent messages.
-        # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.
-        unset CI_SLACK_WEBHOOK_URL
+        if [ "${CI_PIPELINE_SOURCE}" != "schedule" ]; then
+          # Silence cop offenses for rules with "grace period".
+          # To avoid frequent notification, unset slack webhook url for everything but scheduled pipelines
+          unset CI_SLACK_WEBHOOK_URL
+        fi
         fail_on_warnings bundle exec rake rubocop:check:graceful
       else
         select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"

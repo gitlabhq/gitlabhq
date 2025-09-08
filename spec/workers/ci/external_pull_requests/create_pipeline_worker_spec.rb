@@ -12,6 +12,10 @@ RSpec.describe Ci::ExternalPullRequests::CreatePipelineWorker, feature_category:
 
   let(:worker) { described_class.new }
 
+  before do
+    stub_feature_flags(ref_existence_check_gitaly: false)
+  end
+
   describe '#perform' do
     let(:project_id) { project.id }
     let(:user_id) { user.id }

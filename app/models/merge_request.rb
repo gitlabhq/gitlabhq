@@ -173,6 +173,8 @@ class MergeRequest < ApplicationRecord
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
+  after_find :preload_branches
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
@@ -1755,6 +1757,17 @@ class MergeRequest < ApplicationRecord
     else
       "(removed)"
     end
+  end
+
+  def preload_branches
+    # There are cases when MergeRequest object is only partially loaded
+    # Skip preloading if required fields are missing
+    return unless has_attribute?(:source_project_id) && has_attribute?(:target_project_id)
+
+    Gitlab::Git::RefPreloader.collect_ref(source_project_id, Gitlab::Git::BRANCH_REF_PREFIX + self.source_branch)
+    Gitlab::Git::RefPreloader.collect_ref(target_project_id, Gitlab::Git::BRANCH_REF_PREFIX + self.target_branch)
+
+    nil
   end
 
   def source_branch_exists?

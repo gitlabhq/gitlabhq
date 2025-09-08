@@ -63,9 +63,6 @@ Capybara.register_driver :chrome do |app|
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
 
-  # Explicitly set user-data-dir to prevent crashes. See https://gitlab.com/gitlab-org/gitlab-foss/issues/58882#note_179811508
-  options.add_argument("user-data-dir=/tmp/chrome") if ENV['CI'] || ENV['CI_SERVER']
-
   # Set chrome default download path
   if ENV['DEFAULT_CHROME_DOWNLOAD_PATH']
     options.add_preference("download.default_directory", ENV['DEFAULT_CHROME_DOWNLOAD_PATH'])

@@ -10,7 +10,7 @@ RSpec.describe 'Group variables', :js, feature_category: :pipeline_composition d
 
   before do
     group.add_owner(user)
-    gitlab_sign_in(user)
+    sign_in(user)
 
     visit page_path
     wait_for_requests

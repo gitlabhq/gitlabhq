@@ -349,3 +349,58 @@ To turn off GitLab Duo with Amazon Q for a project:
 
 If you experience issues connecting GitLab to Amazon Q,
 ensure your GitLab installation meets [all the prerequisites](#prerequisites).
+
+You might also encounter the following issue.
+
+### GitLab instance UUID mismatch
+
+You might encounter a `GitLab instance UUID mismatch` error when disconnecting Amazon Q. This issue typically occurs when:
+
+- The GitLab instance has been restored from a backup.
+- The GitLab instance has been migrated to new infrastructure.
+- The GitLab instance UUID has changed for any other reason.
+
+To confirm that a mismatched UUID is the root cause, proceed with the following validation steps.
+
+#### Validate
+
+1. Sign in to the EC2 instance where GitLab is hosted.
+1. Access the Rails console.
+1. Get the current UUID: `Gitlab::CurrentSettings.current_application_settings.uuid`
+1. Get the JWT token:
+
+   ```ruby
+   token = CloudConnector::AvailableServices.find_by_name(:agent_quick_actions).access_token
+   JWT.decode(token, false, nil)
+   ```
+
+The issue is apparent when a mismatch in the UUID exists between the `sub` field in step 3 and the `gitlab_instance_uuid` from step 4.
+
+To resolve this issue, complete the following steps.
+
+1. Remove all active licenses.
+1. Delete all subscription add-on purchases:
+
+   Open the Rails console and execute:
+
+   ```ruby
+   GitlabSubscriptions::AddOnPurchase.all.destroy_all
+   ```
+
+1. Execute instance UUID reset.
+   In the Rails console, execute:
+
+   ```ruby
+   ApplicationSetting.update!(uuid: SecureRandom.uuid)
+   ```
+
+1. Apply the active license.
+1. Wait a minute or so and synchronize the license. This action forces the cloud connector token to regenerate. (Without this step, a header mismatch occurs.)
+1. Update the IdP and IAM role with the new UUID.
+1. Choose a next step:
+   - Continue using the existing setup by updating the existing IdP and IAM role with the new UUID and continue using GitLab Duo with Amazon Q.
+   - Off-board:
+     1. Off-board from GitLab Duo with Amazon Q.
+     1. Set up a new connection if desired.
+
+When you are done, the UUID mismatch issue should be resolved and GitLab Duo with Amazon Q should function properly with the new configuration.

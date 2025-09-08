@@ -294,9 +294,10 @@ to prevent commands such as `env`/`printenv` from printing secret variables.
 
 {{< /alert >}}
 
-You can mask a project, group, or instance CI/CD variable so the value of the variable
-does not display in job logs. When a masked CI/CD variable would be displayed in a job log,
-the value is replaced with `[masked]` to prevent the value from being exposed.
+You can mask a CI/CD variable for a project, group, or instance to prevent
+its value from appearing in job logs. When a job outputs the value of a
+masked variable, the value is replaced with `[MASKED]` in the job log.
+In some cases, the `[MASKED]` value could be followed by `x` characters as well.
 
 Prerequisites:
 
@@ -316,20 +317,15 @@ The value of the variable must:
 - Be a single line with no spaces.
 - Be 8 characters or longer.
 - Not match the name of an existing predefined or custom CI/CD variable.
-- Not include non-alphanumeric characters other than `@`, `_`, `-`, `:`, or `+`.
 
-Additionally, if [variable expansion](#prevent-cicd-variable-expansion) is enabled,
-the value can contain only:
+If a process outputs the value in a slightly modified way, the value can't be masked.
+For example, if the shell adds ` \ ` to escape special characters, the value isn't masked:
 
-- Characters from the Base64 alphabet (RFC4648).
-- The `@`, `:`, `.`, or `~` characters.
+- Example masked variable value: `My[value]`
+- This output would not be masked: `My\[value\]`
 
-Masking a variable automatically masks the value anywhere in a job log. If another
-variable has the same value, that value is also masked, including when a variable
-references a masked variable. The string `[MASKED]` is shown instead of the value,
-possibly with some trailing `x` characters.
-
-Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs).
+When `CI_DEBUG_SERVICES` is enabled, secrets might be revealed. For more information, see
+[service container logging](../services/_index.md#capturing-service-container-logs).
 
 ### Hide a CI/CD variable
 
@@ -438,7 +434,7 @@ job:
 
 Expanded variables treat values with the `$` character as a reference to another variable.
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
-disable variable expansion for the variable
+disable variable expansion for the variable.
 
 Prerequisites:
 
@@ -451,6 +447,9 @@ To disable variable expansion for the variable:
 1. Next to the variable you want to do not want expanded, select **Edit**.
 1. Clear the **Expand variable** checkbox.
 1. Select **Update variable**.
+
+If the variable is also [masked](#mask-a-cicd-variable), the value cannot contain the `$` character,
+so variable expansion is not possible with masked variables.
 
 ## CI/CD variable precedence
 

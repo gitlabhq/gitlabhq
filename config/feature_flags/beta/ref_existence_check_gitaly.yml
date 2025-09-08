@@ -1,0 +1,10 @@
+---
+name: ref_existence_check_gitaly
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556674
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198569
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556727
+milestone: '18.4'
+group: group::source code
+type: beta
+default_enabled: false

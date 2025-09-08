@@ -3,10 +3,8 @@
 .application-theme {
   .preview {
     font-size: 0;
-    height: 48px;
-    border-radius: 4px;
-    min-width: 112px;
-    margin-bottom: $gl-padding-8;
+    height: 3rem;
+    @apply gl-rounded-base gl-mb-3;
 
     &.ui-indigo {
       @apply gl-bg-purple-500 dark:gl-bg-purple-600;

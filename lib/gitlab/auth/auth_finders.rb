@@ -144,7 +144,8 @@ module Gitlab
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
-        access_token.user || raise(UnauthorizedError)
+        user = access_token.user || raise(UnauthorizedError)
+        resolve_composite_identity_user(user)
       end
 
       # This returns a deploy token, not a user since a deploy token does not
@@ -242,6 +243,16 @@ module Gitlab
 
       private
 
+      def resolve_composite_identity_user(user)
+        return user unless user&.composite_identity_enforced?
+
+        identity = ::Gitlab::Auth::Identity.currently_linked
+        raise UnauthorizedError unless identity
+
+        identity.scoped_user.composite_identity_enforced!
+        identity.scoped_user
+      end
+
       def extract_personal_access_token
         current_request.params[PRIVATE_TOKEN_PARAM].presence ||
           current_request.env[PRIVATE_TOKEN_HEADER].presence ||
@@ -279,7 +290,7 @@ module Gitlab
 
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-        job.user
+        resolve_composite_identity_user(job.user)
       end
 
       def route_authentication_setting
@@ -391,7 +402,7 @@ module Gitlab
         job = find_valid_running_job_by_token!(current_token.to_s)
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-        job.user
+        resolve_composite_identity_user(job.user)
       end
 
       def find_user_from_job_token_basic_auth
@@ -404,7 +415,7 @@ module Gitlab
         job = find_valid_running_job_by_token!(current_token.to_s)
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-        job.user
+        resolve_composite_identity_user(job.user)
       end
 
       def parsed_oauth_token

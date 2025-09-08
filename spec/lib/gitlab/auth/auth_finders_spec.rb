@@ -119,6 +119,31 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#find_user_from_bearer_token' do
+    context 'with composite CI_JOB_TOKEN (JWT)', :request_store do
+      let_it_be(:scoped_user) { create(:user) }
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:project, reload: true) { create(:project, :private, developers: scoped_user) }
+      let_it_be(:pipeline, reload: true) { create(:ci_pipeline, project: project, user: service_account) }
+      let_it_be(:job, reload: true) do
+        create(:ci_build, :running, pipeline: pipeline, project: project, user: service_account, options: { scoped_user_id: scoped_user.id })
+      end
+
+      let(:route_authentication_setting) { { job_token_allowed: true } }
+
+      it 'returns the scoped human user' do
+        set_bearer_token(job.token)
+        expect(find_user_from_bearer_token).to eq(scoped_user)
+        expect(@current_authenticated_job).to eq(job)
+      end
+
+      it 'raises UnauthorizedError if linked identity missing' do
+        set_bearer_token(job.token)
+        allow(Gitlab::Auth::Identity).to receive(:currently_linked).and_return(nil)
+
+        expect { find_user_from_bearer_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
+
     subject { find_user_from_bearer_token }
 
     context 'when the token is passed as an oauth token' do
@@ -567,6 +592,62 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
     end
 
+    context 'with composite identity', :request_store do
+      let_it_be(:oauth_application) { create(:oauth_application) }
+      let_it_be_with_reload(:primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:scoped_user) { create(:user) }
+
+      let(:scopes) { ['api', "user:#{scoped_user.id}"] }
+
+      let(:oauth_access_token) do
+        create(:oauth_access_token,
+          application_id: oauth_application.id,
+          resource_owner_id: primary_user.id,
+          scopes: scopes,
+          organization_id: organization.id)
+      end
+
+      before do
+        set_bearer_token(oauth_access_token.plaintext_token)
+      end
+
+      context 'when the token resource owner has composite_identity_enforced' do
+        context 'when linked composite identity is available' do
+          it 'returns the scoped user' do
+            expect(find_user_from_access_token).to eq(scoped_user)
+          end
+
+          it 'sets the scoped user to composite_identity_enforced' do
+            expect(find_user_from_access_token.composite_identity_enforced?).to be(true)
+          end
+        end
+
+        context 'when linked composite identity is not available' do
+          before do
+            allow(Gitlab::Auth::Identity).to(receive(:currently_linked).and_return(nil))
+          end
+
+          it 'raises an error' do
+            expect { find_user_from_access_token }.to raise_error(::Gitlab::Auth::UnauthorizedError)
+          end
+        end
+      end
+
+      context 'when the token resource owner does not have composite_identity_enforced' do
+        before do
+          primary_user.update!(composite_identity_enforced: false)
+        end
+
+        it 'returns the resource owner user' do
+          expect(find_user_from_access_token).to eq(primary_user)
+        end
+
+        it 'does not set the user to composite_identity_enforced' do
+          expect(find_user_from_access_token.composite_identity_enforced?).to be(false)
+        end
+      end
+    end
+
     context 'automatic reuse detection' do
       let(:token_3) { create(:personal_access_token, :revoked) }
       let(:token_2) { create(:personal_access_token, :revoked, previous_personal_access_token_id: token_3.id) }
@@ -876,6 +957,24 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#find_user_from_job_token_basic_auth' do
+    context 'with composite CI_JOB_TOKEN over basic auth', :request_store do
+      let_it_be(:scoped_user) { create(:user) }
+      let_it_be(:service_account) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:project, reload: true) { create(:project, :private, developers: scoped_user) }
+      let_it_be(:pipeline, reload: true) { create(:ci_pipeline, project: project, user: service_account) }
+      let_it_be(:job, reload: true) do
+        create(:ci_build, :running, pipeline: pipeline, project: project, user: service_account, options: { scoped_user_id: scoped_user.id })
+      end
+
+      let(:route_authentication_setting) { { job_token_allowed: :basic_auth } }
+
+      it 'returns the scoped human user' do
+        set_basic_auth_header(::Gitlab::Auth::CI_JOB_USER, job.token)
+        expect(find_user_from_job_token_basic_auth).to eq(scoped_user)
+        expect(@current_authenticated_job).to eq(job)
+      end
+    end
+
     subject { find_user_from_job_token_basic_auth }
 
     context 'when the request does not have AUTHORIZATION header' do

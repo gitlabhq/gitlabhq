@@ -226,9 +226,12 @@ RSpec.describe 'Database schema',
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
+      vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_identifiers: %w[external_id],
+      vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_occurrence_identifiers: %w[project_id],
       vulnerability_scanners: %w[external_id],
+      vulnerability_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
       dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
       vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
@@ -245,7 +248,7 @@ RSpec.describe 'Database schema',
       backup_vulnerability_merge_request_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
-      vulnerability_reads: %w[cluster_agent_id namespace_id], # namespace_id is a denormalization of `project.namespace`
+      vulnerability_reads: %w[cluster_agent_id namespace_id security_project_tracked_context_id], # namespace_id is a denormalization of `project.namespace`. tracked_contexts cannot be a foreign key yet
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries
       web_hook_logs: %w[web_hook_id],
