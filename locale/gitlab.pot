@@ -29219,6 +29219,12 @@ msgstr ""
 msgid "Geo|Learn more about Geo site statuses"
 msgstr ""
 
+msgid "Geo|Learn more about manual resynchronization"
+msgstr ""
+
+msgid "Geo|Learn more about manual reverification"
+msgstr ""
+
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
 msgstr ""
 
@@ -29561,10 +29567,10 @@ msgstr ""
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
 msgstr ""
 
-msgid "Geo|This will resync all %{type}. It may take some time to complete. Are you sure you want to continue?"
+msgid "Geo|This will schedule a future job to retry the secondary verification process for all %{type}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
-msgid "Geo|This will reverify all %{type}. It may take some time to complete. Are you sure you want to continue?"
+msgid "Geo|This will schedule a future job to retry the synchronization process for all %{type}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|Time in seconds"
@@ -43083,6 +43089,9 @@ msgid "No status"
 msgstr ""
 
 msgid "No suggestions found"
+msgstr ""
+
+msgid "No suitable runners available for DAST validation"
 msgstr ""
 
 msgid "No template"

@@ -18235,7 +18235,8 @@ CREATE TABLE label_links (
     target_id bigint,
     target_type character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE label_links_id_seq
@@ -39194,6 +39195,8 @@ CREATE UNIQUE INDEX index_kubernetes_namespaces_on_cluster_project_environment_i
 
 CREATE INDEX index_label_links_on_label_id_and_target_type ON label_links USING btree (label_id, target_type);
 
+CREATE INDEX index_label_links_on_namespace_id ON label_links USING btree (namespace_id);
+
 CREATE INDEX index_label_links_on_target_id_and_target_type ON label_links USING btree (target_id, target_type);
 
 CREATE INDEX index_label_priorities_on_label_id ON label_priorities USING btree (label_id);
@@ -47539,6 +47542,9 @@ ALTER TABLE ONLY bulk_import_trackers
 
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_9dc8b9d4b2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY label_links
+    ADD CONSTRAINT fk_9de5c65cb0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_9e0fc58930_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

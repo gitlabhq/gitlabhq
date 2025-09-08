@@ -117,7 +117,7 @@ describe('Pipeline Editor | Commit Form', () => {
     });
 
     it('emits an event with values', async () => {
-      await findNewMrCheckbox().setChecked();
+      await findNewMrCheckbox().setChecked(true);
       await findSubmitBtn().trigger('click');
 
       expect(wrapper.emitted('submit')[0]).toEqual([

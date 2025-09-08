@@ -72,7 +72,7 @@ Note the following:
 - Pipeline execution policies remain in effect even if the project lacks a CI/CD configuration file.
 - The order of the policies matters for the applied suffix.
 - If any policy applied to a given project has `suffix: never`, the pipeline fails if another job with the same name is already present in the pipeline.
-- Pipeline execution policies are enforced on all branches and pipeline sources. You can use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
+- Pipeline execution policies are enforced on all branches and pipeline sources. However, for [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines), some `rules:` or `workflow:rules` configurations can prevent jobs from running. Use [workflow rules](../../../ci/yaml/workflow.md) to control when pipeline execution policies are enforced.
 
 ### `.pipeline-policy-pre` stage
 

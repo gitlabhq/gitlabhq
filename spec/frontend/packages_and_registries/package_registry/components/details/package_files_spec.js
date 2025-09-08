@@ -68,7 +68,7 @@ describe('Package Files', () => {
   const findFirstToggleDetailsButton = () => findFirstRow().findByTestId('toggle-details-button');
   const findFirstRowShaComponent = (id) => wrapper.findByTestId(id);
   const findCheckAllCheckbox = () => wrapper.findByTestId('package-files-checkbox-all');
-  const findAllRowCheckboxes = () => wrapper.findAllByTestId('package-files-checkbox');
+  const findAllRowCheckboxes = () => wrapper.find('tbody').findAllComponents(GlFormCheckbox);
 
   const files = packageFilesMock();
   const [file] = files;
@@ -311,14 +311,15 @@ describe('Package Files', () => {
 
         const first = findAllRowCheckboxes().at(0);
 
-        await first.setChecked(true);
+        await first.find('input').setChecked(true);
 
         expect(findDeleteSelectedButton().props('disabled')).toBe(false);
       });
 
       describe('select all checkbox', () => {
         it('will toggle between selecting all and deselecting all files', async () => {
-          const getChecked = () => findAllRowCheckboxes().filter((x) => x.element.checked === true);
+          const getChecked = () =>
+            findAllRowCheckboxes().filter((x) => x.props('checked') === true);
 
           createComponent({ resolver: jest.fn().mockResolvedValue(packageFilesQuery()) });
           await waitForPromises();
@@ -370,7 +371,7 @@ describe('Package Files', () => {
 
         const first = findAllRowCheckboxes().at(0);
 
-        await first.setChecked(true);
+        await first.find('input').setChecked(true);
 
         await findDeleteSelectedButton().trigger('click');
 
@@ -416,7 +417,7 @@ describe('Package Files', () => {
             await waitForPromises();
             const first = findAllRowCheckboxes().at(0);
 
-            await first.setChecked(true);
+            await first.find('input').setChecked(true);
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -476,7 +477,7 @@ describe('Package Files', () => {
             await waitForPromises();
             const first = findAllRowCheckboxes().at(0);
 
-            await first.setChecked(true);
+            await first.find('input').setChecked(true);
 
             await findDeleteSelectedButton().trigger('click');
 
@@ -602,7 +603,7 @@ describe('Package Files', () => {
     const doDeleteFile = async () => {
       const first = findAllRowCheckboxes().at(0);
 
-      await first.setChecked(true);
+      await first.find('input').setChecked(true);
 
       await findDeleteSelectedButton().trigger('click');
 

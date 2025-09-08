@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
+import { GlResizeObserverDirective, GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
@@ -41,6 +41,7 @@ export default {
   },
   directives: {
     SafeHtml,
+    GlResizeObserver: GlResizeObserverDirective,
   },
   mixins: [delayedJobMixin, glAbilitiesMixin()],
   props: {
@@ -164,9 +165,8 @@ export default {
     },
   },
   created() {
-    this.throttled = throttle(this.toggleScrollButtons, 100);
+    this.throttleToggleScrollButtons = throttle(this.toggleScrollButtons, 100);
 
-    window.addEventListener('resize', this.onResize);
     window.addEventListener('scroll', this.updateScroll);
   },
   mounted() {
@@ -175,7 +175,7 @@ export default {
   beforeDestroy() {
     this.stopPollingJobLog();
     this.stopPolling();
-    window.removeEventListener('resize', this.onResize);
+
     window.removeEventListener('scroll', this.updateScroll);
   },
   methods: {
@@ -219,7 +219,7 @@ export default {
         this.toggleScrollAnimation(true);
       }
 
-      this.throttled();
+      this.throttleToggleScrollButtons();
     },
     setSearchResults(searchResults) {
       this.searchResults = searchResults;
@@ -228,7 +228,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div v-gl-resize-observer="onResize">
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">

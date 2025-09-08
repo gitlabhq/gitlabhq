@@ -145,8 +145,8 @@ describe('TriggerFields', () => {
           expect(checkbox.find('[type=hidden]').attributes('value')).toBe(
             events[index].value.toString(),
           );
-          expect(checkBox.vm.$attrs.disabled).toBe(isInheriting);
-          expect(checkBox.vm.$attrs.checked).toBe(events[index].value);
+          expect(checkBox.props('disabled')).toBe(isInheriting);
+          expect(checkBox.props('checked')).toBe(events[index].value);
         });
       });
     });

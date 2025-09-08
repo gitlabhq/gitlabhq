@@ -114,7 +114,7 @@ describe('CustomNotificationsModal', () => {
         ({ index, eventName, enabled, loading }) => {
           const checkbox = findCheckboxAt(index);
           expect(checkbox.text()).toContain(eventName);
-          expect(checkbox.vm.$attrs.checked).toBe(enabled);
+          expect(checkbox.props('checked')).toBe(enabled);
           expect(checkbox.findComponent(GlLoadingIcon).exists()).toBe(loading);
         },
       );

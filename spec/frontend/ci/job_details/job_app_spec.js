@@ -3,8 +3,10 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
@@ -42,23 +44,29 @@ describe('Job App', () => {
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
   };
 
-  const createComponent = (abilities = {}) => {
+  const createComponent = ({ abilities = {}, ...options } = {}) => {
     wrapper = shallowMountExtended(JobApp, {
       propsData: { ...props },
       store,
       provide: {
         glAbilities: { troubleshootJobWithAi: false, ...abilities },
       },
+      ...options,
     });
   };
 
-  const setupAndMount = async ({ jobData = {}, jobLogData = {}, abilities = {} } = {}) => {
+  const setupAndMount = async ({
+    jobData = {},
+    jobLogData = {},
+    abilities = {},
+    ...options
+  } = {}) => {
     mock.onGet(initSettings.jobEndpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
     mock.onGet(initSettings.logEndpoint).reply(HTTP_STATUS_OK, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 
-    createComponent(abilities);
+    createComponent({ abilities, ...options });
 
     await asyncInit;
     jest.runOnlyPendingTimers();
@@ -101,6 +109,28 @@ describe('Job App', () => {
       expect(findLoadingComponent().exists()).toBe(true);
       expect(findSidebar().exists()).toBe(false);
       expect(findJobContent().exists()).toBe(false);
+    });
+  });
+
+  describe('while resizing', () => {
+    beforeEach(async () => {
+      await setupAndMount({
+        directives: {
+          GlResizeObserver: createMockDirective('gl-resize-observer'),
+        },
+      });
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('shows sidebar', async () => {
+      store.state.isSidebarOpen = false;
+      // Mock trigger resize
+      getBinding(wrapper.element, 'gl-resize-observer').value();
+
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
     });
   });
 

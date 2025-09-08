@@ -261,9 +261,7 @@ module Ci
 
       # We've seen save! fail silently so don't delete the redis data to allow
       # a self-heal to happen automatically the next run, raise to re-try
-      if Feature.enabled?(:self_heal_build_trace_chunk_flushing, build.project) && !saved
-        raise FailedToPersistDataError, 'Check PG logs'
-      end
+      raise FailedToPersistDataError, 'Failed to save record - Check Postgres logs' unless saved
 
       old_store_class.delete_data(self)
     end

@@ -3,12 +3,6 @@
 module EnvironmentsHelper
   include ActionView::Helpers::AssetUrlHelper
 
-  def environments_list_data
-    {
-      endpoint: project_environments_path(@project, format: :json)
-    }
-  end
-
   def environments_folder_list_view_data(project, folder)
     {
       "endpoint" => folder_project_environments_path(project, folder, format: :json),

@@ -95,9 +95,6 @@ export default {
     isAscending() {
       return this.sortDirection !== SORT_DIRECTION_DESC;
     },
-    sortText() {
-      return this.activeSortItem.text;
-    },
     startCursor() {
       return this.$route.query[QUERY_PARAM_START_CURSOR] || null;
     },

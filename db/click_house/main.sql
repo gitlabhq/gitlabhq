@@ -716,7 +716,8 @@ CREATE TABLE siphon_label_links
     `created_at` DateTime64(6, 'UTC') DEFAULT now(),
     `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `namespace_id` Int64
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id

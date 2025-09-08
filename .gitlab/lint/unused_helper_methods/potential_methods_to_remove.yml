@@ -21,8 +21,6 @@ can_view_namespace_catalog?:
   file: app/helpers/ci/catalog/resources_helper.rb
 js_ci_catalog_data:
   file: app/helpers/ci/catalog/resources_helper.rb
-environments_list_data:
-  file: app/helpers/environments_helper.rb
 event_feed_title:
   file: app/helpers/events_helper.rb
 event_feed_summary:

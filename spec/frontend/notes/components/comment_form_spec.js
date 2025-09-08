@@ -730,8 +730,7 @@ describe('issue_comment_form component', () => {
           const checkbox = findConfidentialNoteCheckbox();
 
           // check checkbox
-          checkbox.element.checked = shouldCheckboxBeChecked;
-          checkbox.trigger('change');
+          checkbox.setChecked(shouldCheckboxBeChecked);
           await nextTick();
 
           // submit comment

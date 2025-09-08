@@ -51,7 +51,11 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
         expect(LabelLink).to receive(:bulk_insert!) do |*args, **kwargs|
           bulk_items = args.first
           expect(bulk_items).to contain_exactly(
-            have_attributes(label_id: persisted_label.id, target_id: persisted_issue.id)
+            have_attributes(
+              label_id: persisted_label.id,
+              target_id: persisted_issue.id,
+              namespace_id: persisted_issue.namespace_id
+            )
           )
           expect(kwargs[:validate]).to be(false)
         end
@@ -66,7 +70,10 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
           exception: instance_of(ActiveRecord::RecordInvalid),
           fail_import: false,
           external_identifiers: hash_including(
-            label_id: deleted_label.id, target_id: persisted_issue.id, target_type: 'Issue'
+            label_id: deleted_label.id,
+            target_id: persisted_issue.id,
+            target_type: 'Issue',
+            namespace_id: persisted_issue.namespace_id
           )
         )
 

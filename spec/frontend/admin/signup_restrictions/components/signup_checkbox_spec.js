@@ -43,7 +43,7 @@ describe('Signup Form', () => {
 
     describe('checkbox', () => {
       it('gets passed correct checked value', () => {
-        expect(findCheckbox().attributes('checked')).toBe('true');
+        expect(findCheckbox().props('checked')).toBe(true);
       });
 
       it('gets passed correct label', () => {
@@ -55,12 +55,12 @@ describe('Signup Form', () => {
       });
 
       it('gets passed data qa selector', () => {
-        expect(findCheckbox().attributes('data-testid')).toBe(props.dataTestId);
+        expect(findCheckbox().find('input').attributes('data-testid')).toBe(props.dataTestId);
       });
 
       it('gets passed `disabled` property', () => {
         mountComponent({ disabled: true });
-        expect(findCheckbox().attributes().disabled).toBe('true');
+        expect(findCheckbox().props('disabled')).toBe(true);
       });
     });
   });

@@ -1387,10 +1387,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@10.19.0":
-  version "10.19.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.19.0.tgz#120280334197a10bd3ff34a78a19f3394652d27c"
-  integrity sha512-b6cxi8SbVc1ImmNWICQ01ea/ZLUgPuglX65kueeVNBsQh1um87uyeak8lkXYtp8VFxj31Xr2xEWyWdhGh0LL6w==
+"@gitlab/duo-ui@10.20.0":
+  version "10.20.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.20.0.tgz#d6abafa0c3d682913c919009219e6ddc65c2135a"
+  integrity sha512-q0r0S/w+27TNVn7hhZJ0pd90AnOnGjDEcDBycD/XG6nZWRgYV7mrPUIlQzMHrC/QgUJ0+LHbiO9NHY+3pE/Z4A==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.3.2"
@@ -1457,10 +1457,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.146.0.tgz#9d2005978252296cbff9bf47f7f2c0f29c7d35e2"
   integrity sha512-KEPhXsRQkaWjyApjk71t8aIKgMjqZ+QtgRe2H82vXsj+G17XoDDXAHl7Zw00PLf4IrJjn6ur6aS2A6CmTVHDLA==
 
-"@gitlab/ui@120.0.0":
-  version "120.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-120.0.0.tgz#6192ee9d4ec59c1d313d7cab0e988e1d0624d054"
-  integrity sha512-oKACJA/b5+sVC4BZj76ixwa5KE0feyS06lFFiPRPK1as4GLICZih3/wtRTGV+zlO/znRGcIrk13wx5pc/2Zz9g==
+"@gitlab/ui@122.3.0":
+  version "122.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-122.3.0.tgz#9f4d08a6289c2ace8bb27e34da0660992acf1b2a"
+  integrity sha512-wjcx9LeerQf7EkPjiAuifdVHOPK4LglEgdJnPsaByL+U/cJxWdtCGTG+zEiPSsw7BjrSA6UKtE7HKC4YEMD4jA==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"

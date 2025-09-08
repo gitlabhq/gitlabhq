@@ -201,7 +201,6 @@ export default {
       formFieldsInputEvent(event);
       this.hasPathBeenManuallySet = true;
     },
-    helpPagePath,
   },
 };
 </script>

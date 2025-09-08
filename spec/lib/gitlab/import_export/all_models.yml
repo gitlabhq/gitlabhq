@@ -144,6 +144,7 @@ label_links:
 - target
 - label
 - own_label
+- namespace
 label:
 - subscriptions
 - project

@@ -48,7 +48,9 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
 
         issue = project.issues.last
         expect(issue.notes.count).to eq(2)
-        expect(issue.label_links).to contain_exactly(have_attributes(label_id: label.id, target_id: issue.id))
+        expect(issue.label_links).to contain_exactly(
+          have_attributes(label_id: label.id, target_id: issue.id, namespace_id: issue.namespace_id)
+        )
       end
 
       context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do

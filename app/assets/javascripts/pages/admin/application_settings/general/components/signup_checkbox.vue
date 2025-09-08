@@ -9,7 +9,7 @@ export default {
     id: {
       type: String,
       required: false,
-      default: '',
+      default: undefined,
     },
     name: {
       type: String,

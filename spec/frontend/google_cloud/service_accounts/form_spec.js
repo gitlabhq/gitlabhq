@@ -61,6 +61,6 @@ describe('google_cloud/service_accounts/form', () => {
 
   it('checkbox must be required', () => {
     const checkbox = findCheckbox();
-    expect(checkbox.attributes('required')).toBe('true');
+    expect(checkbox.props('required')).toBe(true);
   });
 });

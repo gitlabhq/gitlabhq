@@ -23,7 +23,7 @@ describe('Squash before merge component', () => {
         value: false,
       });
 
-      expect(findCheckbox().vm.$attrs.checked).toBe(false);
+      expect(findCheckbox().props('checked')).toBe(false);
     });
 
     it('is checked if passed value prop is true', () => {
@@ -31,7 +31,7 @@ describe('Squash before merge component', () => {
         value: true,
       });
 
-      expect(findCheckbox().vm.$attrs.checked).toBe(true);
+      expect(findCheckbox().props('checked')).toBe(true);
     });
 
     it('is disabled if isDisabled prop is true', () => {
@@ -40,7 +40,7 @@ describe('Squash before merge component', () => {
         isDisabled: true,
       });
 
-      expect(findCheckbox().vm.$attrs.disabled).toBe(true);
+      expect(findCheckbox().props('disabled')).toBe(true);
     });
   });
 

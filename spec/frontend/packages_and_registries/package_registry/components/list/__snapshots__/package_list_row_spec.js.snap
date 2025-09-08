@@ -13,7 +13,7 @@ exports[`packages_list_row renders 1`] = `
     >
       <gl-form-checkbox-stub
         class="gl-m-0"
-        id="reference-0"
+        value="true"
       />
     </div>
     <div
@@ -97,7 +97,7 @@ exports[`packages_list_row renders 1`] = `
         positioningstrategy="absolute"
         size="medium"
         textsronly="true"
-        toggleid="dropdown-toggle-btn-3"
+        toggleid="dropdown-toggle-btn-2"
         toggletext="More actions"
         variant="default"
       >

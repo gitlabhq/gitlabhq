@@ -44,15 +44,12 @@ describe('Diff settings dropdown component', () => {
   describe('whitespace toggle', () => {
     it('does not set as checked when showWhitespace is false', () => {
       createComponent({ showWhitespace: false });
-      // https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2268
-      // GlFormCheckbox is missing checked prop and doesn't inherit attrs
-      // We can only check against its internal state unfortunately
-      expect(findWhitespaceCheckbox().vm.$attrs.checked).toBe(false);
+      expect(findWhitespaceCheckbox().props('checked')).toBe(false);
     });
 
     it('sets as checked when showWhitespace is true', () => {
       createComponent({ showWhitespace: true });
-      expect(findWhitespaceCheckbox().vm.$attrs.checked).toBe(true);
+      expect(findWhitespaceCheckbox().props('checked')).toBe(true);
     });
 
     it('emits toggleWhitespace event', () => {
@@ -71,7 +68,7 @@ describe('Diff settings dropdown component', () => {
       'sets the checkbox to { checked: $checked } if the fileByFile setting is $fileByFile',
       ({ fileByFile, checked }) => {
         createComponent({ viewDiffsFileByFile: fileByFile });
-        expect(findFileByFileCheckbox().vm.$attrs.checked).toBe(checked);
+        expect(findFileByFileCheckbox().props('checked')).toBe(checked);
       },
     );
 

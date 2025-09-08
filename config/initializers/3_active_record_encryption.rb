@@ -3,7 +3,7 @@
 # Normally, this would automatically be setup by `ActiveRecord::Encryption` initializer, see
 # https://github.com/rails/rails/blob/v7.0.8.4/activerecord/lib/active_record/railtie.rb#L331-L335,
 # but since we're setting `Rails.application.credentials.active_record_encryption` manually in
-# `config/initializers/01_secret_token.rb`, the `ActiveRecord::Encryption` initializer runs prior
+# `config/initializers/2_secret_token.rb`, the `ActiveRecord::Encryption` initializer runs prior
 # to that. We don't want to mess up with the initializer chain, so we configure
 # `ActiveRecord::Encryption` here instead.
 ActiveRecord::Encryption.configure(
