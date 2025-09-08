@@ -1679,6 +1679,7 @@ job:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.11.
+- `maintainer` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454398) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -6446,6 +6447,7 @@ In this example, the script:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18906) in GitLab 17.1.
+- Support for environment stop jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479318) in GitLab 18.3.
 
 {{< /history >}}
 

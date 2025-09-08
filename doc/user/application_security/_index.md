@@ -71,7 +71,3 @@ GitLab assists in the complete vulnerability management lifecycle through key ph
 
 Vulnerabilities are centralized in the vulnerability report and security dashboard, making
 prioritization and remediation tracking more straightforward for security teams.
-
-## Get started
-
-To get started, see [Get started securing your application](get-started-security.md).

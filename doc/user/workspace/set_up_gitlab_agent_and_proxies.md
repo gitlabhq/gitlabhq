@@ -309,9 +309,15 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    {{< alert type="warning" >}}
 
-   Chart versions 0.1.20 and earlier contain a security vulnerability that sets cookies on a wildcard domain.
-   You should upgrade to chart version 0.1.21 or later. For more information, see the
+   Chart versions 0.1.22 and earlier contain a security vulnerability that exposes sensitive 
+   information through command line arguments. For more information, see the 
+   [vulnerability](https://gitlab.com/gitlab-org/gitlab/-/issues/567267).
+
+   Chart versions 0.1.20 and earlier also contain a security vulnerability that sets cookies 
+   on a wildcard domain. For more information, see the 
    [vulnerability fix](https://gitlab.com/gitlab-org/workspaces/gitlab-workspaces-proxy/-/merge_requests/34).
+
+   You should upgrade to chart version 0.1.23 or later to address both vulnerabilities.
 
    {{< /alert >}}
 
@@ -328,7 +334,7 @@ To install the Helm chart for the GitLab workspaces proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version=0.1.22 \
+     --version=0.1.23 \
      --namespace="gitlab-workspaces" \
      --set="ingress.enabled=true" \
      --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \

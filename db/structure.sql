@@ -37732,11 +37732,11 @@ CREATE INDEX index_bulk_import_trackers_on_project_id ON bulk_import_trackers US
 
 CREATE INDEX index_bulk_imports_on_organization_id ON bulk_imports USING btree (organization_id);
 
+CREATE INDEX index_bulk_imports_on_terminated_status ON bulk_imports USING btree (id) WHERE (status = ANY (ARRAY[2, 3, '-1'::integer, '-2'::integer]));
+
 CREATE INDEX index_bulk_imports_on_updated_at_and_id_for_stale_status ON bulk_imports USING btree (updated_at, id) WHERE (status = ANY (ARRAY[0, 1]));
 
 CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id);
-
-CREATE INDEX index_bulk_imports_on_terminated_status ON bulk_imports USING btree (id) WHERE (status IN (2, 3, -1, -2));
 
 CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON analytics_cycle_analytics_stage_aggregations USING btree (last_run_at NULLS FIRST) WHERE ((last_completed_at IS NULL) AND (enabled = true));
 

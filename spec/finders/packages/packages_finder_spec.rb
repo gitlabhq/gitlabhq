@@ -36,18 +36,6 @@ RSpec.describe ::Packages::PackagesFinder do
           expect { find_packages }.to raise_error(ArgumentError, "'#{package_type}' is not a valid package_type")
         end
       end
-
-      context 'when packages_refactor_packages_finder is disabled' do
-        before do
-          stub_feature_flags(packages_refactor_packages_finder: false)
-        end
-
-        context 'conan packages' do
-          let(:params) { { package_type: 'conan' } }
-
-          it { is_expected.to eq([conan_package]) }
-        end
-      end
     end
 
     context 'with order_by' do

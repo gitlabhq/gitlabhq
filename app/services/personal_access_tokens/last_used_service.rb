@@ -41,6 +41,10 @@ module PersonalAccessTokens
       @lease_key ||= "pat:last_used_update_lock:#{@personal_access_token.id}"
     end
 
+    def lease_taken_log_level
+      :info
+    end
+
     def needs_update?
       return false if ::Gitlab::Database.read_only?
 

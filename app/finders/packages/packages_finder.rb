@@ -37,17 +37,13 @@ module Packages
     end
 
     def base
-      if Feature.enabled?(:packages_refactor_packages_finder, project)
-        return ::Packages::Package.for_projects(project).without_package_type(:terraform_module) unless package_type
+      return ::Packages::Package.for_projects(project).without_package_type(:terraform_module) unless package_type
 
-        package_class = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
+      package_class = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
 
-        raise ArgumentError, "'#{package_type}' is not a valid package_type" unless package_class
+      raise ArgumentError, "'#{package_type}' is not a valid package_type" unless package_class
 
-        package_class.constantize.for_projects(project)
-      else
-        filter_by_package_type(project.packages)
-      end
+      package_class.constantize.for_projects(project)
     end
   end
 end

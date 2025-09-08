@@ -226,5 +226,20 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         expect(service_execution).to be_nil
       end
     end
+
+    context 'when the exclusive lease is taken' do
+      let_it_be(:personal_access_token) { create(:personal_access_token) }
+      let(:lease_key) { "pat:last_used_update_lock:#{personal_access_token.id}" }
+
+      it 'does not update the last_used_at timestamp' do
+        stub_exclusive_lease_taken(lease_key)
+
+        expect(Gitlab::AppJsonLogger).to(
+          receive(:info).with(a_hash_including(message: /^Cannot obtain an exclusive lease/))
+        )
+
+        expect { service_execution }.not_to change { personal_access_token.last_used_at }
+      end
+    end
   end
 end
