@@ -2357,7 +2357,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/gitaly_client/diff_stitcher_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/health_check_service_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/praefect_info_service_spec.rb'
-    - 'spec/lib/gitlab/gitaly_client/remote_service_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/util_spec.rb'
     - 'spec/lib/gitlab/gl_repository_spec.rb'
     - 'spec/lib/gitlab/global_id/deprecations_spec.rb'

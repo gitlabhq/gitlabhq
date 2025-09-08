@@ -861,6 +861,18 @@ The following are Docker image-related CI/CD variables.
     </tr>
     <tr>
       <td>
+        <code>SAST_SEMGREP_EXCLUDED_PATHS</code>
+      </td>
+      <td>
+        Comma-separated list of paths that are excluded specifically for the Semgrep analyzer when the GitLab Advanced SAST analyzer runs at the same time. This prevents duplicate vulnerabilities by excluding files already scanned by GitLab Advanced SAST. This list is merged with <code>SAST_EXCLUDED_PATHS</code>.
+      </td>
+      <td>None</td>
+      <td>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <!-- markdownlint-disable MD044 -->
         <code>SAST_SPOTBUGS_EXCLUDED_BUILD_PATHS</code>
         <!-- markdownlint-enable MD044 -->

@@ -264,6 +264,7 @@ module ApplicationSettingImplementation
         unique_ips_limit_per_user: 10,
         unique_ips_limit_time_window: 3600,
         usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+        usage_ping_generation_enabled: true,
         usage_ping_features_enabled: false,
         usage_stats_set_by_user_id: nil,
         user_default_external: false,
@@ -602,6 +603,12 @@ module ApplicationSettingImplementation
   end
 
   alias_method :usage_ping_enabled?, :usage_ping_enabled
+
+  def usage_ping_generation_enabled
+    Gitlab::Utils.to_boolean(usage_ping_enabled?) || Gitlab::Utils.to_boolean(super)
+  end
+
+  alias_method :usage_ping_generation_enabled?, :usage_ping_generation_enabled
 
   def allowed_key_types
     Gitlab::SSHPublicKey.supported_types.select do |type|

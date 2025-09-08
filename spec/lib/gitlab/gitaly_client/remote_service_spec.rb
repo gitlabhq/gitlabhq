@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GitalyClient::RemoteService do
+RSpec.describe Gitlab::GitalyClient::RemoteService, feature_category: :source_code_management do
   let(:project) { create(:project) }
   let(:storage_name) { project.repository_storage }
   let(:relative_path) { project.disk_path + '.git' }
@@ -48,6 +48,19 @@ RSpec.describe Gitlab::GitalyClient::RemoteService do
         .and_return(double(:update_remote_mirror_response))
 
       client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
+    end
+
+    context 'when matching branches include non-ASCII characters' do
+      let(:only_branches_matching) { %w[Äpfel] }
+
+      it 'sends an update_remote_mirror without failures' do
+        expect_any_instance_of(Gitaly::RemoteService::Stub)
+          .to receive(:update_remote_mirror)
+          .with(array_including(gitaly_request_with_params(expected_params)), kind_of(Hash))
+          .and_return(double(:update_remote_mirror_response))
+
+        client.update_remote_mirror(url, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts, keep_divergent_refs: true)
+      end
     end
   end
 

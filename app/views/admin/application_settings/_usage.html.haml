@@ -16,9 +16,15 @@
       - deactivating_service_ping_link_start = link_start % { url: help_page_path('administration/settings/usage_statistics.md', anchor: 'through-the-configuration-file') }
       - usage_ping_help_text = s_('AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}').html_safe % { link_start: service_ping_link_start, link_end: link_end }
       - disabled_help_text = s_('AdminSettings|Service ping is disabled in your configuration file, and cannot be enabled through this form. For more information, see the documentation on %{link_start}deactivating service ping%{link_end}.').html_safe % { link_start: deactivating_service_ping_link_start, link_end: link_end }
-      = f.gitlab_ui_checkbox_component :usage_ping_enabled, s_('AdminSettings|Enable Service Ping'),
+      = f.gitlab_ui_checkbox_component :usage_ping_enabled, s_('AdminSettings|Enable Service Ping. When disabled, Service Ping data will not be automatically sent'),
       help_text: can_be_configured ? usage_ping_help_text : disabled_help_text,
       checkbox_options: { disabled: !can_be_configured || ServicePing::ServicePingSettings.license_operational_metric_enabled?, data: { testid: 'enable-usage-data-checkbox' } }
+    .form-group
+      - usage_ping_generation_help_text = s_('AdminSettings|Enable automatic generation of Service Ping data. When disabled, Service Ping data will not be automatically generated.')
+      = f.gitlab_ui_checkbox_component :usage_ping_generation_enabled, s_('AdminSettings|Enable Service Ping Generation'),
+        help_text: usage_ping_generation_help_text,
+        checkbox_options: { data: { testid: 'enable-usage-ping-generation-checkbox' } }
+
     - if Gitlab.ee?
       = render_if_exists 'admin/application_settings/include_optional_metric_in_service_ping_checkbox', form: f
     .form-text.gl-pl-6.gl-mb-6

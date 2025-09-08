@@ -5038,7 +5038,13 @@ msgstr ""
 msgid "AdminSettings|Enable Sentry for Rails and Browser JavaScript"
 msgstr ""
 
-msgid "AdminSettings|Enable Service Ping"
+msgid "AdminSettings|Enable Service Ping Generation"
+msgstr ""
+
+msgid "AdminSettings|Enable Service Ping. When disabled, Service Ping data will not be automatically sent"
+msgstr ""
+
+msgid "AdminSettings|Enable automatic generation of Service Ping data. When disabled, Service Ping data will not be automatically generated."
 msgstr ""
 
 msgid "AdminSettings|Enable collection of application metrics. Restart required. %{link_start}Learn how to export metrics to Prometheus%{link_end}."

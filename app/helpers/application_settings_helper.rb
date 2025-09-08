@@ -502,6 +502,7 @@ module ApplicationSettingsHelper
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
+      :usage_ping_generation_enabled,
       :usage_ping_features_enabled,
       :use_clickhouse_for_analytics,
       :user_default_external,
