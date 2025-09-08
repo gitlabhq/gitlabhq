@@ -481,7 +481,6 @@ read_cluster_agent
 read_cluster_environments
 read_code
 read_code_review_analytics
-read_combined_project_analytics_dashboards
 read_commit
 read_commit_committer_check
 read_commit_committer_name_check

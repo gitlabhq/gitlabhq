@@ -1292,6 +1292,50 @@ to use advanced search.
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.4">
+
+## GitLab 18.4
+
+<div class="deprecation breaking-change" data-milestone="18.4">
+
+### Bitnami PostgreSQL and Redis images in GitLab chart
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.4</span>
+- Removal in GitLab <span class="milestone">18.4</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).
+
+</div>
+
+The GitLab Helm chart default configuration relies on Bitnami charts and container images
+for PostgreSQL and Redis. Bitnami will discontinue these images from their free catalogs
+on September 29th, 2025. Brownouts taking down images temporarily started on August 28th, 2025.
+
+GitLab chart bundles Bitnami's PostgreSQL and Redis for demo and testing purposes only.
+They are not part of any [supported GitLab reference architecture](https://docs.gitlab.com/administration/reference_architectures/).
+If you are on a reference architecture or deployed an external PostgreSQL and Redis with
+another vendor's packages or images, you are **not impacted** by this change.
+
+As a temporary solution, GitLab has migrated the chart configuration to the Bitnami legacy
+repository. However, unpatched GitLab chart environments (GitLab 17.11, GitLab 18.0.5. GitLab 18.1.4, and GitLab
+18.2.1 or earlier) will continue to pull images from the deprecated Bitnami repository,
+which will cause deployment failures after September 29th and may cause deployment failures during the brownout phase.
+
+If you're running an affected GitLab chart configuration, you must do one of the following:
+
+- Migrate to a supported GitLab reference architecture.
+- Upgrade to a patched chart version.
+- Configure the legacy repository in your chart values. For an example, see
+  [merge request 4421][https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/4421].
+
+Looking ahead, [we will assess alternatives](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089) to replace
+or potentially remove Bitnami components from the GitLab chart entirely. For more information, see the
+[official Bitnami announcement](https://github.com/bitnami/charts/issues/35164).
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.3">
 
 ## GitLab 18.3
