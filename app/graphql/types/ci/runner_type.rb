@@ -75,7 +75,8 @@ module Types
       field :locked, GraphQL::Types::Boolean, null: true,
         description: 'Indicates the runner is locked.'
       field :maintenance_note, GraphQL::Types::String, null: true,
-        description: 'Runner\'s maintenance notes.'
+        authorize: :update_runner,
+        description: "Runner's maintenance notes."
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
         description: 'Runner managers associated with the runner configuration.',
         resolver: Resolvers::Ci::RunnerManagersResolver
@@ -111,7 +112,7 @@ module Types
         description: 'Runner token expiration time.',
         authorize: :read_runner_sensitive_data
 
-      markdown_field :maintenance_note_html, null: true
+      markdown_field :maintenance_note_html, null: true, authorize: :update_runner
 
       def maintenance_note_html_resolver
         ::MarkupHelper.markdown(object.maintenance_note, context.to_h.dup)

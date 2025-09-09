@@ -17,6 +17,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     let(:username_format_message) { "can contain only letters, digits, '_', '-', '+', and '.'" }
 
     it { is_expected.to validate_length_of(:username).is_at_most(255) }
+    it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to allow_value('GitLab+deploy_token-3.14').for(:username) }
     it { is_expected.not_to allow_value('<script>').for(:username).with_message(username_format_message) }
     it { is_expected.not_to allow_value('').for(:username).with_message(username_format_message) }

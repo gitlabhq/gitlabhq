@@ -7,8 +7,18 @@ RSpec.describe 'processing of SAMLResponse in dependencies' do
   let(:mock_saml_response) { File.read('spec/fixtures/authentication/saml_response.xml') }
   let(:saml_strategy) { OmniAuth::Strategies::SAML.new({}) }
   let(:session_mock) { {} }
-  let(:settings) { double('settings', { soft: false, idp_cert_fingerprint: 'something', check_malformed_doc: true }) }
   let(:auth_hash) { Gitlab::Auth::Saml::AuthHash.new(saml_strategy) }
+  let(:settings) do
+    double(
+      'settings',
+      {
+        soft: false,
+        idp_cert_fingerprint: 'something',
+        check_malformed_doc: true,
+        message_max_bytesize: 1.megabyte
+      }
+    )
+  end
 
   subject { auth_hash.authn_context }
 

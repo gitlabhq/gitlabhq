@@ -92,19 +92,56 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         merge_request.update!(target_branch: 'foo')
 
         allow(project).to receive(:default_branch).and_return('foo')
-        allow(merge_request).to receive(:closes_issues).and_return([issue])
       end
 
-      it 'performs MergeRequests::CloseIssueWorker asynchronously' do
-        create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+      context 'when there is one issue to be closed' do
+        before do
+          allow(merge_request).to receive(:closes_issues).and_return([issue])
+        end
 
-        expect(MergeRequests::CloseIssueWorker)
-          .to receive(:perform_async)
-          .with(project.id, user.id, issue.id, merge_request.id, { skip_authorization: false })
+        it 'performs MergeRequests::CloseIssueWorker asynchronously' do
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
 
-        subject
+          expect(MergeRequests::CloseIssueWorker)
+            .to receive(:perform_in)
+            .with(0.minutes, project.id, user.id, issue.id, merge_request.id, { skip_authorization: false })
 
-        expect(merge_request.reload).to be_merged
+          subject
+
+          expect(merge_request.reload).to be_merged
+        end
+      end
+
+      context 'when there are multiple issues to be closed' do
+        let_it_be(:issue2) { create(:issue, project: project) }
+        let_it_be(:issue3) { create(:issue, project: project) }
+        let_it_be(:issue4) { create(:issue, project: project) }
+        let_it_be(:issue5) { create(:issue, project: project) }
+
+        before do
+          stub_const('MergeRequests::PostMergeService::BATCH_SIZE', 1)
+          allow(merge_request).to receive(:closes_issues).and_return([issue, issue2, issue3, issue4, issue5])
+          allow(MergeRequests::CloseIssueWorker).to receive(:perform_in).and_call_original
+        end
+
+        it 'performs MergeRequests::CloseIssueWorker asynchronously' do
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue)
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue2)
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue3)
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue4)
+          create(:merge_requests_closing_issues, merge_request: merge_request, issue: issue5)
+
+          expect(MergeRequests::CloseIssueWorker)
+            .to receive(:perform_in)
+                  .with(0.minutes, project.id, user.id, issue.id, merge_request.id, { skip_authorization: false })
+          expect(MergeRequests::CloseIssueWorker)
+            .to receive(:perform_in)
+                  .with(5.minutes, project.id, user.id, issue5.id, merge_request.id, { skip_authorization: false })
+
+          subject
+
+          expect(merge_request.reload).to be_merged
+        end
       end
 
       context 'when issue is an external issue' do
@@ -112,6 +149,7 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
 
         before do
           project.update!(has_external_issue_tracker: true)
+          allow(merge_request).to receive(:closes_issues).and_return([issue])
           merge_request.reload
         end
 
