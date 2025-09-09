@@ -56,6 +56,14 @@ RSpec.shared_examples 'a webhook' do |factory:|
     end
 
     describe 'custom_headers' do
+      let(:multiple_line_string) do
+        <<~TEXT
+          This is line one
+          This is line two
+          This is line three
+        TEXT
+      end
+
       it { is_expected.to allow_value({}).for(:custom_headers) }
       it { is_expected.to allow_value({ 'foo' => 'bar' }).for(:custom_headers) }
       it { is_expected.to allow_value({ 'FOO' => 'bar' }).for(:custom_headers) }
@@ -70,6 +78,7 @@ RSpec.shared_examples 'a webhook' do |factory:|
       it { is_expected.to allow_value({ 'x-y-z' => 'bar' }).for(:custom_headers) }
       it { is_expected.to allow_value({ 'x_y_z' => 'bar' }).for(:custom_headers) }
       it { is_expected.to allow_value({ 'f.o.o' => 'bar' }).for(:custom_headers) }
+      it { is_expected.to allow_value({ 'Content-Length' => 'all alone' }).for(:custom_headers) }
 
       it { is_expected.not_to allow_value([]).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'foo' => 1 }).for(:custom_headers) }
@@ -85,6 +94,16 @@ RSpec.shared_examples 'a webhook' do |factory:|
       it { is_expected.not_to allow_value({ 'MY__SECRET' => 'foo' }).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'x-_y' => 'foo' }).for(:custom_headers) }
       it { is_expected.not_to allow_value({ 'x..y' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length: 3' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ ' Content-Length-3' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length ' => 'foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => ' foo' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => 'foo ' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => '\r' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => '\n' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => '%0A' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => '%0D' }).for(:custom_headers) }
+      it { is_expected.not_to allow_value({ 'Content-Length' => multiple_line_string }).for(:custom_headers) }
     end
 
     describe 'url' do

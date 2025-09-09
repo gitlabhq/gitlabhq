@@ -312,7 +312,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         get :edit, params: default_params
       end
 
-      it 'redirects to blob show' do
+      it 'allows to edit the file' do
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
@@ -323,11 +323,25 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       before do
         project.add_maintainer(maintainer)
         sign_in(maintainer)
-        get :edit, params: default_params
       end
 
-      it 'redirects to blob show' do
+      it 'allows to edit the file' do
+        get :edit, params: default_params
+
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when file size exceeds limit' do
+        it 'redirects to blob show page with alert message' do
+          allow_next_instance_of(Blob) do |blob|
+            allow(blob).to receive(:raw_size).and_return(Projects::BlobController::MAX_EDIT_SIZE + 1.megabyte)
+          end
+
+          get :edit, params: default_params
+
+          expect(response).to redirect_to(project_blob_path(project, 'master/CHANGELOG'))
+          expect(flash[:alert]).to include(/File exceeds 10MB/)
+        end
       end
     end
   end

@@ -5,16 +5,17 @@ require 'spec_helper'
 RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, feature_category: :fleet_visibility do
   using RSpec::Parameterized::TableSyntax
 
+  let_it_be(:users) { create_list(:user, 2) }
+
+  let_it_be(:group) { create(:group, owners: users.first) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
+
   let_it_be(:organization) { create_default(:organization) }
   let_it_be(:admin) { create(:user, :admin, last_activity_on: Time.current) }
-  let_it_be(:users) { create_list(:user, 2) }
   let_it_be(:group_guest) { create(:user, guest_of: group) }
   let_it_be(:group_reporter) { create(:user, reporter_of: group) }
   let_it_be(:group_developer) { create(:user, developer_of: group) }
   let_it_be(:group_maintainer) { create(:user, maintainer_of: group) }
-
-  let_it_be(:group) { create(:group, owners: users.first) }
-  let_it_be(:subgroup) { create(:group, parent: group) }
 
   let_it_be(:project) do
     create(:project, creator_id: users.first.id, maintainers: users.first, reporters: users.second)
@@ -22,10 +23,19 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
   let_it_be(:project2) { create(:project, creator_id: users.first.id, maintainers: users.first) }
 
-  let_it_be(:shared_runner, reload: true) { create(:ci_runner, :instance, :with_runner_manager, description: 'Shared runner') }
-  let_it_be(:project_runner, reload: true) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
+  let_it_be(:shared_runner, reload: true) do
+    create(:ci_runner, :instance, :with_runner_manager, description: 'Shared runner', maintenance_note: 'Maintenance note')
+  end
+
+  let_it_be(:project_runner, reload: true) do
+    create(:ci_runner, :project, description: 'Project runner', projects: [project], maintenance_note: 'Maintenance note')
+  end
+
   let_it_be(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
-  let_it_be(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
+  let_it_be(:group_runner_a) do
+    create(:ci_runner, :group, description: 'Group runner A', groups: [group], maintenance_note: 'Maintenance note')
+  end
+
   let_it_be(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
 
   let(:query) { {} }
@@ -81,12 +91,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
       it 'returns user available runners' do
         perform_request
 
-        expect(json_response).to match_array [
+        expect(json_response).to contain_exactly(
           a_hash_including('description' => 'Project runner'),
           a_hash_including('description' => 'Two projects runner'),
           a_hash_including('description' => 'Group runner A'),
           a_hash_including('description' => 'Group runner B')
-        ]
+        )
       end
 
       context 'with request authorized with access token' do
@@ -286,13 +296,13 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         it 'returns all runners' do
           perform_request
 
-          expect(json_response).to match_array [
+          expect(json_response).to contain_exactly(
             a_hash_including('description' => 'Project runner', 'is_shared' => false, 'active' => true, 'paused' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Two projects runner', 'is_shared' => false, 'runner_type' => 'project_type'),
             a_hash_including('description' => 'Group runner A', 'is_shared' => false, 'runner_type' => 'group_type'),
             a_hash_including('description' => 'Group runner B', 'is_shared' => false, 'runner_type' => 'group_type'),
             a_hash_including('description' => 'Shared runner', 'is_shared' => true, 'runner_type' => 'instance_type')
-          ]
+          )
         end
 
         context 'created_by' do
@@ -571,6 +581,16 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           expect(json_response['paused']).to eq(false)
           expect(json_response['maintenance_note']).to be_nil
         end
+
+        context 'with admin mode enabled', :enable_admin_mode do
+          it "returns runner's details" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['maintenance_note']).not_to be_nil
+            expect(json_response['maintenance_note']).to eq(shared_runner.maintenance_note)
+          end
+        end
       end
 
       context 'when runner is a project runner' do
@@ -588,6 +608,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq(runner.description)
+            expect(json_response['maintenance_note']).not_to be_nil
+            expect(json_response['maintenance_note']).to eq(runner.maintenance_note)
           end
 
           it "returns the project's details" do
@@ -619,7 +641,22 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(runner.description)
+          expect(json_response['maintenance_note']).not_to be_nil
+          expect(json_response['maintenance_note']).to eq(runner.maintenance_note)
           expect(json_response['groups'].first['id']).to eq(group.id)
+        end
+
+        context 'and user is not a group owner' do
+          let(:current_user) { group_maintainer }
+
+          it "returns the runner's details without maintenance note" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq(runner.description)
+            expect(json_response['maintenance_note']).to be_nil
+            expect(json_response['groups'].first['id']).to eq(group.id)
+          end
         end
       end
 
@@ -634,6 +671,8 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq(runner.description)
+            expect(json_response['maintenance_note']).not_to be_nil
+            expect(json_response['maintenance_note']).to eq(runner.maintenance_note)
           end
         end
 
@@ -645,6 +684,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq(runner.description)
+            expect(json_response['maintenance_note']).to be_nil
           end
         end
       end

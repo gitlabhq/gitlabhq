@@ -10,6 +10,7 @@ module MergeRequests
     include RemovesRefs
 
     MAX_RETARGET_MERGE_REQUESTS = 4
+    BATCH_SIZE = 100
 
     def execute(merge_request, source = nil)
       return if merge_request.merged?
@@ -58,13 +59,16 @@ module MergeRequests
           close_issue(issue, merge_request)
         end
       else
-        merge_request.merge_requests_closing_issues.preload_issue.find_each(batch_size: 100) do |closing_issue| # rubocop:disable CodeReuse/ActiveRecord -- Would require exact redefinition of the method
-          close_issue(closing_issue.issue, merge_request, !closing_issue.from_mr_description)
+        delay = 0
+        merge_request.merge_requests_closing_issues.preload_issue
+                     .find_each(batch_size: BATCH_SIZE).with_index(1) do |closing_issue, index| # rubocop:disable CodeReuse/ActiveRecord -- Would require exact redefinition of the method
+          delay += 5 if (index % 5) == 0
+          close_issue(closing_issue.issue, merge_request, !closing_issue.from_mr_description, delay: delay)
         end
       end
     end
 
-    def close_issue(issue, merge_request, skip_authorization = false)
+    def close_issue(issue, merge_request, skip_authorization = false, delay: 0)
       # We are intentionally only closing Issues asynchronously (excluding ExternalIssues)
       # as the worker only supports finding an Issue. We are also only experiencing
       # SQL timeouts when closing an Issue.
@@ -73,13 +77,12 @@ module MergeRequests
         return if !skip_authorization && !current_user.can?(:update_issue, issue)
         return unless issue.autoclose_by_merged_closing_merge_request?
 
-        MergeRequests::CloseIssueWorker.perform_async(
-          project.id,
+        worker_args = [project.id,
           current_user.id,
           issue.id,
           merge_request.id,
-          { skip_authorization: skip_authorization }
-        )
+          { skip_authorization: skip_authorization }]
+        MergeRequests::CloseIssueWorker.perform_in(delay.minutes, *worker_args)
       else
         Issues::CloseService.new(container: project, current_user: current_user).execute(issue, commit: merge_request)
       end

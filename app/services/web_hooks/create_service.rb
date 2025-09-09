@@ -16,6 +16,7 @@ module WebHooks
       else
         return error("Invalid url given", 422) if hook.errors[:url].present?
         return error("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
+        return error("Custom headers must be a valid json schema", 422) if hook.errors[:custom_headers].present?
 
         error(hook.errors.full_messages.to_sentence, 422)
       end

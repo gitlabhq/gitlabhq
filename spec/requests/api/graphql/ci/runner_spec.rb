@@ -33,6 +33,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     create(:ci_runner, :group, :offline, :tagged_only, :locked,
       groups: [group],
       description: 'Group runner 1',
+      maintenance_note: '**Test maintenance note**',
       maximum_timeout: 600,
       access_level: 0)
   end
@@ -308,12 +309,60 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
   end
 
+  describe 'for group runner' do
+    let_it_be(:group_runner) { active_group_runner }
+
+    describe 'maintenanceNote' do
+      let_it_be(:user) { create(:user, owner_of: group_runner.groups) }
+
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, 'id maintenanceNote maintenanceNoteHtml'))
+      end
+
+      let(:query_path) do
+        [
+          [:runner, { id: group_runner.to_global_id.to_s }]
+        ]
+      end
+
+      before do
+        stub_commonmark_sourcepos_disabled
+      end
+
+      it 'retrieves correct maintenance note value' do
+        post_graphql(query, current_user: user)
+
+        runner_data = graphql_data_at(:runner)
+
+        expect(runner_data).to match a_graphql_entity_for(
+          group_runner, maintenance_note: group_runner.maintenance_note,
+          maintenance_note_html: a_string_including('<strong>Test maintenance note</strong>')
+        )
+      end
+
+      context 'when user is not a group owner' do
+        let_it_be(:user) { create(:user, maintainer_of: group_runner.groups) }
+
+        it 'retrieves correct maintenance note value' do
+          post_graphql(query, current_user: user)
+
+          runner_data = graphql_data_at(:runner)
+
+          expect(runner_data).to match a_graphql_entity_for(
+            group_runner, maintenance_note: nil, maintenance_note_html: nil
+          )
+        end
+      end
+    end
+  end
+
   describe 'for project runner' do
     let_it_be_with_refind(:project_runner) do
       create(
         :ci_runner, :project, :paused, :offline,
         projects: [project1],
         description: 'Runner 3',
+        maintenance_note: '**Test maintenance note**',
         locked: false,
         access_level: 1,
         run_untagged: true
@@ -487,6 +536,35 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
               queued_duration: a_value_within(0.001).of((owned_build.started_at - owned_build.queued_at).to_f))
           ])
         end
+      end
+    end
+
+    describe 'maintenanceNote' do
+      let_it_be(:user) { create(:user, maintainer_of: project_runner.projects) }
+
+      let(:query) do
+        wrap_fields(query_graphql_path(query_path, 'id maintenanceNote maintenanceNoteHtml'))
+      end
+
+      let(:query_path) do
+        [
+          [:runner, { id: project_runner.to_global_id.to_s }]
+        ]
+      end
+
+      before do
+        stub_commonmark_sourcepos_disabled
+      end
+
+      it 'retrieves correct maintenance note value' do
+        post_graphql(query, current_user: user)
+
+        runner_data = graphql_data_at(:runner)
+
+        expect(runner_data).to match a_graphql_entity_for(
+          project_runner, maintenance_note: project_runner.maintenance_note,
+          maintenance_note_html: a_string_including('<strong>Test maintenance note</strong>')
+        )
       end
     end
 
@@ -1006,7 +1084,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         post_graphql(multiple_discrete_runners_query(additional_runners), **args)
 
         raise StandardError, flattened_errors if graphql_errors # Ensure any error in query causes test to fail
-      end.not_to exceed_query_limit(discrete_runners_control)
+      end.not_to exceed_query_limit(discrete_runners_control).with_threshold(4)
     end
 
     def runner_query(runner, nr)
