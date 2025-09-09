@@ -20,7 +20,7 @@ export default {
     <ul class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="(externalLink, index) in externalLinks" :key="index">
         <gl-link :href="externalLink.url" target="_blank" rel="noopener noreferrer nofollow">
-          <gl-icon name="external-link" class="flex-shrink-0" />
+          <gl-icon name="external-link" class="gl-shrink-0" />
           {{ externalLink.label }}
         </gl-link>
       </li>

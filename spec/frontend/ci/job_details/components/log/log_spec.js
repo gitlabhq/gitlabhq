@@ -5,6 +5,7 @@ import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import Log from '~/ci/job_details/components/log/log.vue';
+import LogLine from '~/ci/job_details/components/log/line.vue';
 import LogLineHeader from '~/ci/job_details/components/log/line_header.vue';
 import LineNumber from '~/ci/job_details/components/log/line_number.vue';
 import { logLinesParser } from '~/ci/job_details/store/utils';
@@ -52,12 +53,28 @@ describe('Job Log', () => {
     initialState = {
       jobLog: lines,
       jobLogSections: sections,
+      isJobLogComplete: true,
     };
   });
 
+  const findLogLines = () => wrapper.findAllComponents(LogLine);
   const findLineNumbers = () => wrapper.findAllComponents(LineNumber);
   const findLineHeader = () => wrapper.findComponent(LogLineHeader);
   const findLineHeaders = () => wrapper.findAllComponents(LogLineHeader);
+  const findLoaderAnimation = () => wrapper.find('.loader-animation');
+
+  describe('job log', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('shows completed job', () => {
+      expect(findLineHeaders()).toHaveLength(2);
+      expect(findLogLines()).toHaveLength(5);
+
+      expect(findLoaderAnimation().exists()).toBe(false);
+    });
+  });
 
   describe('line numbers', () => {
     beforeEach(() => {
@@ -201,6 +218,16 @@ describe('Job Log', () => {
 
         expect(findLineHeaders().at(0).props('isHighlighted')).toBe(true);
         expect(findLineHeaders().at(1).props('isHighlighted')).toBe(false);
+      });
+    });
+
+    describe('when job is running', () => {
+      it('shows three dots loader', () => {
+        initialState.isJobLogComplete = false;
+
+        createComponent();
+
+        expect(findLoaderAnimation().exists()).toBe(true);
       });
     });
   });

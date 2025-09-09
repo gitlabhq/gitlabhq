@@ -14212,6 +14212,7 @@ CREATE TABLE compliance_requirements_controls (
     encrypted_secret_token_iv bytea,
     external_url text,
     external_control_name text,
+    ping_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_110c87ed8d CHECK ((char_length(expression) <= 255)),
     CONSTRAINT check_5020dd6745 CHECK ((char_length(external_url) <= 1024)),
     CONSTRAINT check_e3c26a3c02 CHECK ((char_length(external_control_name) <= 255))
@@ -15174,7 +15175,8 @@ CREATE TABLE deploy_tokens (
     write_virtual_registry boolean DEFAULT false NOT NULL,
     seven_days_notification_sent_at timestamp with time zone,
     thirty_days_notification_sent_at timestamp with time zone,
-    sixty_days_notification_sent_at timestamp with time zone
+    sixty_days_notification_sent_at timestamp with time zone,
+    CONSTRAINT check_e2ab92a2f6 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -23094,6 +23096,29 @@ CREATE SEQUENCE project_repositories_id_seq
 
 ALTER SEQUENCE project_repositories_id_seq OWNED BY project_repositories.id;
 
+CREATE TABLE project_repository_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    project_repository_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_443803a648 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE project_repository_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_repository_states_id_seq OWNED BY project_repository_states.id;
+
 CREATE TABLE project_repository_storage_moves (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -24868,6 +24893,26 @@ CREATE SEQUENCE security_policies_id_seq
     CACHE 1;
 
 ALTER SEQUENCE security_policies_id_seq OWNED BY security_policies.id;
+
+CREATE TABLE security_policy_dismissals (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    merge_request_id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    user_id bigint,
+    security_findings_uuids text[] DEFAULT '{}'::text[] NOT NULL
+);
+
+CREATE SEQUENCE security_policy_dismissals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE security_policy_dismissals_id_seq OWNED BY security_policy_dismissals.id;
 
 CREATE TABLE security_policy_project_links (
     id bigint NOT NULL,
@@ -30273,6 +30318,8 @@ ALTER TABLE ONLY project_relation_exports ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('project_repositories_id_seq'::regclass);
 
+ALTER TABLE ONLY project_repository_states ALTER COLUMN id SET DEFAULT nextval('project_repository_states_id_seq'::regclass);
+
 ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('project_repository_storage_moves_id_seq'::regclass);
 
 ALTER TABLE ONLY project_requirement_compliance_statuses ALTER COLUMN id SET DEFAULT nextval('project_requirement_compliance_statuses_id_seq'::regclass);
@@ -30414,6 +30461,8 @@ ALTER TABLE ONLY security_pipeline_execution_policy_config_links ALTER COLUMN id
 ALTER TABLE ONLY security_pipeline_execution_project_schedules ALTER COLUMN id SET DEFAULT nextval('security_pipeline_execution_project_schedules_id_seq'::regclass);
 
 ALTER TABLE ONLY security_policies ALTER COLUMN id SET DEFAULT nextval('security_policies_id_seq'::regclass);
+
+ALTER TABLE ONLY security_policy_dismissals ALTER COLUMN id SET DEFAULT nextval('security_policy_dismissals_id_seq'::regclass);
 
 ALTER TABLE ONLY security_policy_project_links ALTER COLUMN id SET DEFAULT nextval('security_policy_project_links_id_seq'::regclass);
 
@@ -33562,6 +33611,9 @@ ALTER TABLE ONLY project_relation_exports
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT project_repositories_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_repository_states
+    ADD CONSTRAINT project_repository_states_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
 
@@ -33816,6 +33868,9 @@ ALTER TABLE ONLY security_pipeline_execution_project_schedules
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT security_policies_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY security_policy_dismissals
+    ADD CONSTRAINT security_policy_dismissals_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT security_policy_project_links_pkey PRIMARY KEY (id);
@@ -36448,6 +36503,8 @@ CREATE UNIQUE INDEX i_pm_package_version_licenses_join_ids ON pm_package_version
 CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
+
+CREATE UNIQUE INDEX i_policy_dismissals_on_merge_request_id_and_security_policy_id ON security_policy_dismissals USING btree (merge_request_id, security_policy_id);
 
 CREATE INDEX i_project_compliance_violations_on_namespace_id_created_at_id ON project_compliance_violations USING btree (namespace_id, created_at DESC, id DESC);
 
@@ -40415,6 +40472,18 @@ CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_reposito
 
 CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_repositories USING btree (shard_id, project_id);
 
+CREATE INDEX index_project_repository_states_failed_verification ON project_repository_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_project_repository_states_needs_verification ON project_repository_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_project_repository_states_on_project_id ON project_repository_states USING btree (project_id);
+
+CREATE INDEX index_project_repository_states_on_project_repository_id ON project_repository_states USING btree (project_repository_id);
+
+CREATE INDEX index_project_repository_states_on_verification_state ON project_repository_states USING btree (verification_state);
+
+CREATE INDEX index_project_repository_states_pending_verification ON project_repository_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
 
 CREATE INDEX index_project_requirement_compliance_statuses_on_project_id ON project_requirement_compliance_statuses USING btree (project_id);
@@ -40920,6 +40989,12 @@ CREATE INDEX index_security_orchestration_policy_rule_schedules_on_project_i ON 
 CREATE INDEX index_security_policies_on_policy_management_project_id ON security_policies USING btree (security_policy_management_project_id);
 
 CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
+
+CREATE INDEX index_security_policy_dismissals_on_project_id ON security_policy_dismissals USING btree (project_id);
+
+CREATE INDEX index_security_policy_dismissals_on_security_policy_id ON security_policy_dismissals USING btree (security_policy_id);
+
+CREATE INDEX index_security_policy_dismissals_on_user_id ON security_policy_dismissals USING btree (user_id);
 
 CREATE UNIQUE INDEX index_security_policy_project_links_on_project_and_policy ON security_policy_project_links USING btree (security_policy_id, project_id);
 
@@ -46562,6 +46637,9 @@ ALTER TABLE ONLY jira_tracker_data
 ALTER TABLE ONLY packages_composer_packages
     ADD CONSTRAINT fk_2f085bfc2a FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY security_policy_dismissals
+    ADD CONSTRAINT fk_2f3a252c44 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_2f43f5cbbb FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -46900,6 +46978,9 @@ ALTER TABLE ONLY merge_request_diffs
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_repository_states
+    ADD CONSTRAINT fk_57201a9be7 FOREIGN KEY (project_repository_id) REFERENCES project_repositories(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspace_tokens
     ADD CONSTRAINT fk_5724f2499d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -47843,6 +47924,9 @@ ALTER TABLE p_ci_runner_machine_builds
 ALTER TABLE ONLY ai_catalog_item_consumers
     ADD CONSTRAINT fk_bba1649fa5 FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE RESTRICT;
 
+ALTER TABLE ONLY security_policy_dismissals
+    ADD CONSTRAINT fk_bc10da1827 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY wiki_page_meta_user_mentions
     ADD CONSTRAINT fk_bc155eba89 FOREIGN KEY (wiki_page_meta_id) REFERENCES wiki_page_meta(id) ON DELETE CASCADE;
 
@@ -47894,6 +47978,9 @@ ALTER TABLE ONLY design_management_versions
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_c188f0dba4 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY security_policy_dismissals
+    ADD CONSTRAINT fk_c2379f1e97 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_c2a5562923 FOREIGN KEY (source_id) REFERENCES sbom_sources(id) ON DELETE CASCADE;
 
@@ -47929,6 +48016,9 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 
 ALTER TABLE ONLY user_broadcast_message_dismissals
     ADD CONSTRAINT fk_c7cbf5566d FOREIGN KEY (broadcast_message_id) REFERENCES broadcast_messages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_policy_dismissals
+    ADD CONSTRAINT fk_c7cfc32196 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY packages_debian_group_distribution_keys
     ADD CONSTRAINT fk_c802025a67 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

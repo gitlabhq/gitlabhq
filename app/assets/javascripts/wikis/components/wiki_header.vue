@@ -198,7 +198,7 @@ export default {
           v-gl-tooltip.html
           icon="chevron-double-lg-left"
           class="js-sidebar-wiki-toggle @sm/panel:gl-hidden"
-          :aria-label="__('Toggle Sidebar')"
+          :aria-label="__('Toggle sidebar')"
         />
         <wiki-more-dropdown />
       </template>

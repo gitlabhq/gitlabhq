@@ -36,7 +36,6 @@ export default {
     compare: __('Compare'),
     findFile: __('Find file'),
   },
-  TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
   components: {
     GlButton,
     FileIcon,

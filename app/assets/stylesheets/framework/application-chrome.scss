@@ -302,7 +302,8 @@
     // Merge request sticky header
     .merge-request-sticky-header {
       @apply gl-w-full gl-bg-default;
-      top: 1px !important; // Fix flickering
+      top: 1px !important; // Fix flickering: Note: Can't be set to 0!
+      transform: translateY(-1px); // Removes the 1px bleed we crate above
 
       // Fixes for Firefox as it doesn't support (container-type: scroll-state)
       // see https://caniuse.com/?search=scroll-state

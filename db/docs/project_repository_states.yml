@@ -1,0 +1,10 @@
+---
+table_name: project_repository_states
+description: Separate table for Project Repository verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202587
+milestone: '18.4'
+feature_categories:
+- geo_replication
+classes:
+- Geo::ProjectRepositoryState
+gitlab_schema: gitlab_main_cell_local

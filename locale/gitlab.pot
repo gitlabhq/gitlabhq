@@ -67516,9 +67516,6 @@ msgstr ""
 msgid "Toggle Markdown preview"
 msgstr ""
 
-msgid "Toggle Sidebar"
-msgstr ""
-
 msgid "Toggle backtrace"
 msgstr ""
 

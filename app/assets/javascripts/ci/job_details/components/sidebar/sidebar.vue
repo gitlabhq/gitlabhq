@@ -5,7 +5,6 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import { forwardDeploymentFailureModalId } from '~/ci/constants';
 import { filterAnnotations } from '~/ci/job_details/utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { __ } from '~/locale';
 import ArtifactsBlock from './artifacts_block.vue';
 import CommitBlock from './commit_block.vue';
 import ExternalLinksBlock from './external_links_block.vue';
@@ -17,9 +16,6 @@ import StagesDropdown from './stages_dropdown.vue';
 import TriggerBlock from './trigger_block.vue';
 
 export default {
-  i18n: {
-    toggleSidebar: __('Toggle Sidebar'),
-  },
   name: 'JobSidebar',
   forwardDeploymentFailureModalId,
   components: {

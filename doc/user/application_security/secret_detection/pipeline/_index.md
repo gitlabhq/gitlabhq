@@ -133,6 +133,28 @@ By default, when you run a pipeline:
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
+### How the analyzer fetches commits
+
+When additional commits are needed beyond the initial clone, the analyzer automatically fetches them using optimized strategies:
+
+- For merge requests, the analyzer retrieves only changes committed after the merge base, which minimizes data transfer.
+- If log options are specified, like `--since` or `--max-count`, the analyzer fetches only the required commits.
+- During a historic scan, the analyzer fetches the complete repository history. If the repository was shallowly cloned, the analyzer uses the `--unshallow` option.
+
+If the analyzer cannot fetch the required commits, it falls back to scanning available data:
+
+- After a force push, the analyzer scans only the current state of the repository.
+- If there are network failures, the analyzer scans commits available after the initial clone.
+- If there are timeouts, the analyzer continues the scan with a partial commit history.
+
+These fallbacks ensure your pipeline completes successfully, even in restricted environments.
+
+### Initial repository clone depth
+
+The runner's [`GIT_DEPTH`](../../../../ci/runners/configure_runners.md#shallow-cloning) controls how many commits are initially cloned. Pipeline secret detection automatically fetches additional commits when needed, so you typically don't need to adjust this setting.
+
+If you experience persistent issues with missing commits in restricted network environments, see the troubleshooting for workarounds.
+
 ### Run a historic scan
 
 By default, pipeline secret detection scans only the current state of the Git repository. Any secrets
@@ -395,19 +417,9 @@ For information on this, see the [general Application Security troubleshooting s
 
 #### Error: `Couldn't run the gitleaks command: exit status 2`
 
-The pipeline secret detection analyzer relies on generating patches between commits to scan content for
-secrets. If the number of commits in a merge request is greater than the value of the
-[`GIT_DEPTH` CI/CD variable](../../../../ci/runners/configure_runners.md#shallow-cloning), Secret
-Detection [fails to detect secrets](#error-couldnt-run-the-gitleaks-command-exit-status-2).
+This error indicates the analyzer cannot access required commits. While the analyzer automatically fetches missing commits in most cases, issues can occur in restricted environments.
 
-For example, you could have a pipeline triggered from a merge request containing 60 commits and the
-`GIT_DEPTH` variable set to less than 60. In that case the pipeline secret detection job fails because the
-clone is not deep enough to contain all of the relevant commits. To verify the current value, see
-[pipeline configuration](../../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
-
-To confirm this as the cause of the error, enable [debug-level logging](../../troubleshooting_application_security.md#debug-level-logging),
-then rerun the pipeline. The logs should look similar to the following example. The text
-"object not found" is a symptom of this error.
+To diagnose the issue, enable [debug-level logging](../../troubleshooting_application_security.md#debug-level-logging) and look for:
 
 ```plaintext
 ERRO[2020-11-18T18:05:52Z] object not found
@@ -424,6 +436,25 @@ secret_detection:
   variables:
     GIT_DEPTH: 100
 ```
+
+To resolve this issue:
+
+- For most cases, no action is required. Let the analyzer handle fetching automatically.
+- For restricted networks, increase the initial clone depth:
+
+  ```yaml
+  secret_detection:
+    variables:
+      GIT_DEPTH: 100  # or 0 to clone everything
+  ```
+
+- For large repositories, limit the scan scope:
+
+  ```yaml
+  secret_detection:
+    variables:
+      SECRET_DETECTION_LOG_OPTIONS: "--max-count=50"
+  ```
 
 #### Error: `ERR fatal: ambiguous argument`
 
@@ -465,5 +496,46 @@ before_script:
 ```
 
 For more information about this issue, see [issue 465974](https://gitlab.com/gitlab-org/gitlab/-/issues/465974).
+
+#### Adjusting `GIT_DEPTH` doesn't change what gets scanned
+
+This is expected behavior. `GIT_DEPTH` is a runner variable for the initial clone. It doesn't change analyzer behavior.
+
+The secret detection analyzer decides what to scan based on:
+
+- Pipeline type (push, merge request, scheduled)
+- Branch context (default, new, existing)
+- Your configuration (`SECRET_DETECTION_LOG_OPTIONS`, `SECRET_DETECTION_HISTORIC_SCAN`)
+
+For example, to scan only 30 commits, use analyzer variables:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan only the last 30 commits
+    SECRET_DETECTION_LOG_OPTIONS: "--max-count=30"
+    SECRET_DETECTION_LOG_OPTIONS: "--since=2.weeks"
+    SECRET_DETECTION_LOG_OPTIONS: "HEAD~10..HEAD"
+```
+
+#### Force push detection
+
+After a force push, you might see:
+
+```plaintext
+Failed to retrieve all the commits from the last Git push event due to a force push
+```
+
+This is expected behavior. The scan continues using the current repository state.
+
+#### Repository trust configuration
+
+You might see the message:
+
+```plaintext
+Added project directory to Git safe.directory configuration
+```
+
+This indicates typical security configuration in containerized environments. No action is required.
 
 <!-- markdownlint-enable MD025 -->

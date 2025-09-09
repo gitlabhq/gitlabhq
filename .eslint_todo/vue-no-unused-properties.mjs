@@ -9,8 +9,6 @@ export default {
     'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue',
     'app/assets/javascripts/ci/catalog/components/list/ci_resources_list.vue',
     'app/assets/javascripts/ci/catalog/components/pages/ci_resources_page.vue',
-    'app/assets/javascripts/ci/job_details/components/job_header.vue',
-    'app/assets/javascripts/ci/job_details/components/log/log.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/status_cell.vue',
     'app/assets/javascripts/ci/merge_requests/components/pipelines_table_wrapper.vue',

@@ -41,7 +41,7 @@ export default {
 </script>
 <template>
   <p class="build-sidebar-item gl-mb-3 gl-flex gl-leading-normal">
-    <b v-if="hasTitle" class="gl-mr-3">{{ title }}:</b>
+    <span v-if="hasTitle" class="gl-mr-3 gl-font-bold">{{ title }}:</span>
     <gl-link v-if="path" :href="path" class="!gl-text-link" data-testid="job-sidebar-value-link">
       {{ value }}
     </gl-link>

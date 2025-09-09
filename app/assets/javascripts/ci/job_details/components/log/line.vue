@@ -5,6 +5,7 @@ import { linkRegex } from './utils';
 import LineNumber from './line_number.vue';
 
 export default {
+  name: 'LogLine',
   functional: true,
   props: {
     line: {

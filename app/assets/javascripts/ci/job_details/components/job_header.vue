@@ -12,7 +12,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
 import { isGid, getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { glEmojiTag } from '~/emoji';
-import { __, s__, sprintf } from '~/locale';
+import { s__ } from '~/locale';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -123,13 +123,6 @@ export default {
     time() {
       return this.job.startedAt || this.job.createdAt;
     },
-    userAvatarAltText() {
-      return sprintf(__(`%{username}'s avatar`), { username: this.user.name });
-    },
-    userPath() {
-      // GraphQL returns `webPath` and Rest `path`
-      return this.user?.webPath || this.user?.path;
-    },
     avatarUrl() {
       // GraphQL returns `avatarUrl` and Rest `avatar_url`
       return this.user?.avatarUrl || this.user?.avatar_url;
@@ -166,7 +159,7 @@ export default {
 </script>
 
 <template>
-  <gl-loading-icon v-if="loading" class="my-5" size="lg" />
+  <gl-loading-icon v-if="loading" class="gl-my-7" size="lg" />
   <div v-else>
     <page-heading v-if="job" data-testid="job-header-content">
       <template #heading>
@@ -177,7 +170,7 @@ export default {
         <gl-button
           :aria-label="__('Toggle sidebar')"
           category="secondary"
-          class="gl-ml-2 lg:gl-hidden"
+          class="gl-ml-2 @lg/panel:gl-hidden"
           icon="chevron-double-lg-left"
           @click="onClickSidebarButton"
         />
@@ -199,15 +192,16 @@ export default {
             :data-name="user.name"
             :href="webUrl"
             target="_blank"
-            class="js-user-link gl-mx-2 gl-items-center gl-align-middle"
+            class="js-user-link @sm/panel:gl-mx-2 @sm/panel:gl-align-middle"
           >
+            <strong class="@sm/panel:gl-hidden">@{{ user.username }}</strong>
             <gl-avatar-labeled
               :size="24"
               :src="avatarUrl"
               :label="user.name"
-              class="gl-hidden sm:gl-inline-flex"
+              class="@max-sm/panel:gl-hidden"
             />
-            <strong class="author gl-inline sm:gl-hidden">@{{ user.username }}</strong>
+
             <gl-tooltip v-if="message" :target="() => $refs[$options.EMOJI_REF]">
               {{ message }}
             </gl-tooltip>

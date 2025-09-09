@@ -2498,6 +2498,7 @@ Input type: `AiCatalogAgentUpdateInput`
 | <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
 | <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
 | <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
+| <a id="mutationaicatalogagentupdateversionbump"></a>`versionBump` | [`AiCatalogVersionBump`](#aicatalogversionbump) | Bump version, calculated from the last released version name. |
 
 #### Fields
 
@@ -46177,6 +46178,16 @@ Possible item types for AI items.
 | ----- | ----------- |
 | <a id="aicatalogitemtypeagent"></a>`AGENT` | Agent. |
 | <a id="aicatalogitemtypeflow"></a>`FLOW` | Flow. |
+
+### `AiCatalogVersionBump`
+
+Possible version bumps for AI catalog items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogversionbumpmajor"></a>`MAJOR` | Major version bump. |
+| <a id="aicatalogversionbumpminor"></a>`MINOR` | Minor version bump. |
+| <a id="aicatalogversionbumppatch"></a>`PATCH` | Patch version bump. |
 
 ### `AiConversationsThreadsConversationType`
 

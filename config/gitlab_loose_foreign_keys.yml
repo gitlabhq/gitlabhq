@@ -676,6 +676,10 @@ project_repositories:
   - table: projects
     column: project_id
     on_delete: async_delete
+project_repository_states:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 project_security_exclusions:
   - table: projects
     column: project_id

@@ -42,19 +42,13 @@
       @include build-controllers(15px, center, false, 0, inline, 0);
     }
   }
-
-  .build-loader-animation {
-    @include build-loader-animation;
-    float: left;
-    padding-left: $gl-padding-8;
-  }
 }
 
 .right-sidebar.build-sidebar {
   padding: 0;
   top: $calc-application-header-height;
 
-  @include media-breakpoint-up(lg) {
+  @include panel-container-width-up(lg) {
     border-left-width: 0;
   }
 
@@ -194,7 +188,7 @@
   flex-shrink: 0;
 
   display: none;
-  @include media-breakpoint-up(sm) {
+  @include panel-container-width-up(sm) {
     display: block;
   }
 }
