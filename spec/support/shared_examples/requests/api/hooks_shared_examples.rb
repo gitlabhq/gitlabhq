@@ -536,6 +536,14 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
   end
 
   describe "PUT #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
+    let(:multiple_line_string) do
+      <<~TEXT
+        This is line one
+        This is line two
+        This is line three
+      TEXT
+    end
+
     it 'sets the custom header' do
       expect do
         put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
@@ -569,9 +577,58 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end
 
+    it "returns a 422 error when the key has leading whitespace" do
+      put api("#{hook_uri}/custom_headers/%20abcdef", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the key has trailing whitespace" do
+      put api("#{hook_uri}/custom_headers/abcdef%20", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
     it "returns a 422 error when the value is illegal" do
       put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
         params: { value: '' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value is more than one line" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: multiple_line_string }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value has leading whitespace" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: ' foo' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value has trailing whitespace" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'foo ' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value has url encoded invalid characters" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'foo %0A foo' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value has backslash encoded invalid characters" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'foo \n foo' }
 
       expect(response).to have_gitlab_http_status(:unprocessable_entity)
     end

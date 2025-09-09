@@ -35,6 +35,16 @@ module WebHooks
         flash[:notice] = _('Webhook updated')
         redirect_to action: :edit
       else
+        if hook.errors[:custom_headers].present?
+          flash.now[:alert] =
+            format(_("Custom headers validation failed: %{errors}"), errors: hook.errors[:custom_headers].join(', '))
+          # clean invalid headers before re-rendering
+          hook.custom_headers = filter_valid_headers(hook.custom_headers)
+        elsif hook.errors.any?
+          flash.now[:alert] =
+            format(_("Please fix the following errors: %{errors}"), errors: hook.errors.full_messages.join(', '))
+        end
+
         render 'edit'
       end
     end
@@ -50,6 +60,19 @@ module WebHooks
     end
 
     private
+
+    def filter_valid_headers(headers)
+      return {} if headers.blank?
+
+      valid_headers = {}
+      headers.each do |key, value|
+        temp_hook = hook.class.new(custom_headers: { key => value })
+        temp_hook.validate
+
+        valid_headers[key] = value if temp_hook.errors[:custom_headers].empty?
+      end
+      valid_headers
+    end
 
     def hook_params
       permitted = hook_param_names + trigger_values
