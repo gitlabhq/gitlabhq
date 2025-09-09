@@ -737,22 +737,7 @@ MAX_TABLE_SIZE=10737418240 sudo gitlab-rake gitlab:db:collation_checker:main
 
 ### Bypass PgBouncer for long-running queries
 
-If your GitLab instance uses PgBouncer and you encounter statement timeouts, bypass PgBouncer by using direct PostgreSQL connections.
-
-```shell
-# Example with direct connection
-GITLAB_BACKUP_PGUSER=postgres GITLAB_BACKUP_PGHOST=localhost sudo gitlab-rake gitlab:db:collation_checker:main
-```
-
-Supported environment variables:
-
-- `GITLAB_BACKUP_PGHOST`
-- `GITLAB_BACKUP_PGUSER`
-- `GITLAB_BACKUP_PGPORT`
-- `GITLAB_BACKUP_PGPASSWORD`
-
-For more information on bypassing PgBouncer and a full list of supported environment variables, see the
-[procedure for bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).
+See [resolve statement timeout errors](#resolve-statement-timeout-errors) in the troubleshooting section.
 
 ### Example output
 
@@ -814,6 +799,7 @@ For more information about PostgreSQL collation issues and how they affect datab
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196677) in GitLab 18.2.
+- Option to bypass PgBouncer [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203843) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -871,6 +857,10 @@ sudo gitlab-rake gitlab:db:repair_index:main
 sudo gitlab-rake gitlab:db:repair_index:ci
 ```
 
+### Bypass PgBouncer for long-running queries
+
+See [resolve statement timeout errors](#resolve-statement-timeout-errors) in the troubleshooting section.
+
 ## Troubleshooting
 
 ### Advisory lock connection information
@@ -895,3 +885,24 @@ connections on Unix domain socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432"?
 ```
 
 This is because, in a multi-node environment, the `gitlab:env:info` Rake task should only be executed on the nodes running **GitLab Rails**.
+
+### Resolve statement timeout errors
+
+If your GitLab instance uses PgBouncer and you encounter statement timeouts during database maintenance tasks (like collation checker or index repair), bypass PgBouncer by using direct PostgreSQL connections.
+
+```shell
+# Example with direct connection
+GITLAB_BACKUP_PGUSER=postgres GITLAB_BACKUP_PGHOST=localhost sudo gitlab-rake gitlab:db:collation_checker
+
+GITLAB_BACKUP_PGUSER=postgres GITLAB_BACKUP_PGHOST=localhost sudo gitlab-rake gitlab:db:repair_index
+```
+
+Supported environment variables:
+
+- `GITLAB_BACKUP_PGHOST`
+- `GITLAB_BACKUP_PGUSER`
+- `GITLAB_BACKUP_PGPORT`
+- `GITLAB_BACKUP_PGPASSWORD`
+
+For more information on bypassing PgBouncer and a full list of supported environment variables, see the
+[procedure for bypassing PgBouncer](../postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer).

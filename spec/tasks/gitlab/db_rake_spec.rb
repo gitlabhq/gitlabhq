@@ -812,66 +812,108 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'repair_index' do
+    let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil, debug: true) }
+    let(:backup_connection) { instance_double(Backup::DatabaseConnection) }
+    let(:connection_double) { double(:connection) }
+
+    before do
+      allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      allow(Logger).to receive(:new).and_return(logger_double)
+      allow(Backup::DatabaseConnection).to receive(:new).and_return(backup_connection)
+      allow(backup_connection).to receive(:connection).and_return(connection_double)
+    end
+
     context 'with a single database' do
       before do
         skip_if_multiple_databases_are_setup
       end
 
-      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
-
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: false)
+      it 'runs Gitlab::Database::RepairIndex with correct arguments' do
+        expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+        expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+          connection_double,
+          'main',
+          Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+          logger_double,
+          false
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
       end
 
       it 'respects DRY_RUN environment variable' do
-        stub_env('DRY_RUN', true)
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+        stub_env('DRY_RUN', 'true')
 
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: true)
+        expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+        expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+          connection_double,
+          'main',
+          Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+          logger_double,
+          true
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
       end
     end
 
     context 'with multiple databases' do
-      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
-
       before do
-        skip_if_multiple_databases_not_setup(:ci)
-
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+        skip_if_shared_database(:ci)
       end
 
-      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: false)
+      it 'runs Gitlab::Database::RepairIndex for multiple databases' do
+        allow(Gitlab::Database::RepairIndex).to receive(:new)
+          .and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
+
+        expect(Gitlab::Database::RepairIndex).to have_received(:new)
+          .with(connection_double, 'main', Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR, logger_double, false)
+        expect(Gitlab::Database::RepairIndex).to have_received(:new)
+          .with(connection_double, 'ci', Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR, logger_double, false)
       end
 
       context 'when the single database task is used' do
-        before do
-          skip_if_shared_database(:ci)
-        end
-
-        it 'calls Gitlab::Database::RepairIndex with the main database' do
-          expect(Gitlab::Database::RepairIndex).to receive(:run)
-            .with(database_name: 'main', logger: logger_double, dry_run: false)
+        it 'runs Gitlab::Database::RepairIndex with the main database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'main',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            false
+          ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:repair_index:main')
         end
 
-        it 'calls Gitlab::Database::RepairIndex with the ci database' do
-          expect(Gitlab::Database::RepairIndex).to receive(:run)
-            .with(database_name: 'ci', logger: logger_double, dry_run: false)
+        it 'runs Gitlab::Database::RepairIndex with the ci database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('ci').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'ci',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            false
+          ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:repair_index:ci')
+        end
+
+        it 'respects DRY_RUN environment variable' do
+          stub_env('DRY_RUN', 'true')
+
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'main',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            true
+          ).and_return(double(run: {}))
+
+          run_rake_task('gitlab:db:repair_index:main')
         end
       end
 

@@ -8520,6 +8520,33 @@ Input type: `LdapAdminRoleLinkDestroyInput`
 | <a id="mutationldapadminrolelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationldapadminrolelinkdestroyldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Deleted instance-level LDAP link. |
 
+### `Mutation.lifecycleAttachWorkItemType`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleAttachWorkItemTypeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleattachworkitemtypeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleattachworkitemtypelifecycleid"></a>`lifecycleId` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to attach the work item type to. |
+| <a id="mutationlifecycleattachworkitemtypenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+| <a id="mutationlifecycleattachworkitemtypestatusmappings"></a>`statusMappings` | [`[StatusMappingInput!]`](#statusmappinginput) | Status mappings from the old lifecycle to the new lifecycle. |
+| <a id="mutationlifecycleattachworkitemtypeworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type to attach to the lifecycle. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleattachworkitemtypeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleattachworkitemtypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecycleattachworkitemtypelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle after attaching the work item type. |
+
 ### `Mutation.lifecycleCreate`
 
 {{< details >}}
@@ -8549,6 +8576,31 @@ Input type: `LifecycleCreateInput`
 | <a id="mutationlifecyclecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationlifecyclecreatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle created. |
 
+### `Mutation.lifecycleDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycledeleteid"></a>`id` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to delete. |
+| <a id="mutationlifecycledeletenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecycledeletelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Deleted lifecycle. |
+
 ### `Mutation.lifecycleUpdate`
 
 {{< details >}}
@@ -8569,6 +8621,7 @@ Input type: `LifecycleUpdateInput`
 | <a id="mutationlifecycleupdateid"></a>`id` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to be updated. |
 | <a id="mutationlifecycleupdatename"></a>`name` | [`String`](#string) | Name of the lifecycle. |
 | <a id="mutationlifecycleupdatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+| <a id="mutationlifecycleupdatestatusmappings"></a>`statusMappings` | [`[StatusMappingInput!]`](#statusmappinginput) | Mappings for statuses being removed from the lifecycle. Maps old status to replacement status. |
 | <a id="mutationlifecycleupdatestatuses"></a>`statuses` | [`[WorkItemStatusInput!]`](#workitemstatusinput) | Statuses of the lifecycle. Can be existing (with id) or new (without id). |
 
 #### Fields
@@ -46161,6 +46214,7 @@ The category of the additional context.
 | ----- | ----------- |
 | <a id="aiadditionalcontextcategoryagent_user_environment"></a>`AGENT_USER_ENVIRONMENT` | Agent_user_environment content category. |
 | <a id="aiadditionalcontextcategorydependency"></a>`DEPENDENCY` | Dependency content category. |
+| <a id="aiadditionalcontextcategorydirectory"></a>`DIRECTORY` | Directory content category. |
 | <a id="aiadditionalcontextcategoryfile"></a>`FILE` | File content category. |
 | <a id="aiadditionalcontextcategoryissue"></a>`ISSUE` | Issue content category. |
 | <a id="aiadditionalcontextcategorylocal_git"></a>`LOCAL_GIT` | Local_git content category. |
@@ -54236,6 +54290,17 @@ Represents an action to perform over a snippet file.
 | <a id="snippetblobactioninputtypecontent"></a>`content` | [`String`](#string) | Snippet file content. |
 | <a id="snippetblobactioninputtypefilepath"></a>`filePath` | [`String!`](#string) | Path of the snippet file. |
 | <a id="snippetblobactioninputtypepreviouspath"></a>`previousPath` | [`String`](#string) | Previous path of the snippet file. |
+
+### `StatusMappingInput`
+
+Input for mapping a removed status to a replacement status.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="statusmappinginputnewstatusid"></a>`newStatusId` | [`GlobalID!`](#globalid) | Global ID of the replacement status. |
+| <a id="statusmappinginputoldstatusid"></a>`oldStatusId` | [`GlobalID!`](#globalid) | Global ID of the status being removed/replaced. |
 
 ### `Timeframe`
 

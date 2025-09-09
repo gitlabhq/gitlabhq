@@ -73549,6 +73549,9 @@ msgstr ""
 msgid "WorkItem|Lifecycle name cannot be empty"
 msgstr ""
 
+msgid "WorkItem|Lifecycle:"
+msgstr ""
+
 msgid "WorkItem|Lifecycles"
 msgstr ""
 
@@ -73711,6 +73714,9 @@ msgid "WorkItem|None"
 msgstr ""
 
 msgid "WorkItem|Not in use"
+msgstr ""
+
+msgid "WorkItem|Not used on any items."
 msgstr ""
 
 msgid "WorkItem|Notifications"
@@ -74131,6 +74137,9 @@ msgid "WorkItem|Usage"
 msgstr ""
 
 msgid "WorkItem|Usage:"
+msgstr ""
+
+msgid "WorkItem|Usage: %{workItemTypes}."
 msgstr ""
 
 msgid "WorkItem|Use for items that are actively being worked on."

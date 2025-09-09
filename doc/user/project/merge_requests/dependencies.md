@@ -21,8 +21,11 @@ title: Merge request dependencies
 {{< /history >}}
 
 A single feature can span several merge requests, spread out across multiple projects,
-and the order in which the work merges can be significant. Use merge request dependencies
-when it's important to merge work in a specific order. Some examples:
+and the order in which the work merges can be significant. When you set a merge request dependency,
+the dependent merge requests cannot merge until the **Merge request dependencies must be merged**
+merge check is satisfied.
+
+Merge request dependencies can help you:
 
 - Ensure changes to a required library merge before changes to a project that
   imports the library.

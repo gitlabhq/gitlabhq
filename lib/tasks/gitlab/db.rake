@@ -658,21 +658,32 @@ namespace :gitlab do
 
     desc 'GitLab | DB | Repair database indexes according to fixed configuration'
     task repair_index: :environment do
-      Gitlab::Database::RepairIndex.run(
-        logger: Logger.new($stdout),
-        dry_run: ENV['DRY_RUN'] == 'true'
-      )
+      Gitlab::Database::EachDatabase.each_connection do |_, database_name|
+        backup_database_connection = Backup::DatabaseConnection.new(database_name)
+
+        Gitlab::Database::RepairIndex.new(
+          backup_database_connection.connection,
+          database_name,
+          Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+          Logger.new($stdout),
+          ENV['DRY_RUN'] == 'true'
+        ).run
+      end
     end
 
     namespace :repair_index do
       each_database(databases) do |database_name|
         desc "GitLab | DB | Repair database indexes on the #{database_name} database"
         task database_name => :environment do
-          Gitlab::Database::RepairIndex.run(
-            database_name: database_name,
-            logger: Logger.new($stdout),
-            dry_run: ENV['DRY_RUN'] == 'true'
-          )
+          backup_database_connection = Backup::DatabaseConnection.new(database_name)
+
+          Gitlab::Database::RepairIndex.new(
+            backup_database_connection.connection,
+            database_name,
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            Logger.new($stdout),
+            ENV['DRY_RUN'] == 'true'
+          ).run
         end
       end
     end
