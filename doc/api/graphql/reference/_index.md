@@ -223,6 +223,25 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="queryadminprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
+### `Query.aiCatalogAgentFlowConfig`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Get flow configuration for an AI Catalog agent.
+
+Returns [`String`](#string).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogagentflowconfigagentid"></a>`agentId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog agent. |
+| <a id="queryaicatalogagentflowconfigagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific agent version to use. If not provided, the latest version will be used. |
+| <a id="queryaicatalogagentflowconfigflowconfigtype"></a>`flowConfigType` | [`AiCatalogFlowConfigType!`](#aicatalogflowconfigtype) | Type of flow configuration to generate. |
+
 ### `Query.aiCatalogBuiltInTools`
 
 {{< details >}}
@@ -28765,6 +28784,7 @@ GitLab Duo Agent Platform session.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during execution. |
+| <a id="duoworkflowaicatalogitemversionid"></a>`aiCatalogItemVersionId` {{< icon name="warning-solid" >}} | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | **Introduced** in GitLab 18.4. **Status**: Experiment. ID of the AI catalog item version that triggered the workflow. |
 | <a id="duoworkflowallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
 | <a id="duoworkflowarchived"></a>`archived` | [`Boolean`](#boolean) | Archived due to retention policy. |
 | <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
@@ -46225,6 +46245,14 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
 | <a id="aiadditionalcontextcategoryterminal"></a>`TERMINAL` | Terminal content category. |
 | <a id="aiadditionalcontextcategoryuser_rule"></a>`USER_RULE` | User_rule content category. |
+
+### `AiCatalogFlowConfigType`
+
+Possible flow configuration types for AI Catalog agents.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogflowconfigtypechat"></a>`CHAT` | Chat flow configuration. |
 
 ### `AiCatalogItemType`
 

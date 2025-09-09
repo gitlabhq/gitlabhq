@@ -61,7 +61,8 @@ module Banzai
           Filter::References::MilestoneReferenceFilter,
           Filter::References::AlertReferenceFilter,
           Filter::References::FeatureFlagReferenceFilter,
-          Filter::References::CommitReferenceFilter
+          Filter::References::CommitReferenceFilter,
+          Filter::References::WikiPageReferenceFilter
         ]
       end
 

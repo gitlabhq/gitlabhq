@@ -203,6 +203,15 @@ module MarkdownMatchers
     end
   end
 
+  # WikiPageReferenceFilter
+  matcher :reference_wiki_pages do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('a.gfm.gfm-wiki_page', count: 5)
+    end
+  end
+
   # TaskListFilter
   matcher :parse_task_lists do
     set_default_markdown_messages

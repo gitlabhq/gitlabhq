@@ -20,9 +20,9 @@ Migration/UpdateLargeTable:
   - :note_diff_files
   - :notes
   - :oauth_access_tokens
-  - :packages_package_files
   - :p_ci_builds
   - :p_ci_pipelines
+  - :packages_package_files
   - :project_authorizations
   - :push_event_payloads
   - :resource_label_events
@@ -53,6 +53,7 @@ Migration/UpdateLargeTable:
   - :security_scans
   - :uploads
   - :vulnerabilities
+  - :vulnerability_occurrence_identifiers
   DeniedMethods:
   - :change_column_type_concurrently
   - :rename_column_concurrently

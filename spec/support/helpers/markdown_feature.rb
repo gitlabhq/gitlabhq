@@ -41,7 +41,7 @@ class MarkdownFeature
   end
 
   def wiki_page
-    @wiki_page ||= build(:wiki_page, wiki: wiki)
+    @wiki_page ||= create(:wiki_page, wiki: wiki)
   end
 
   def issue
@@ -139,6 +139,14 @@ class MarkdownFeature
 
   def xalert
     @xalert ||= create(:alert_management_alert, project: xproject)
+  end
+
+  def xwiki
+    @xwiki ||= ProjectWiki.new(xproject, user)
+  end
+
+  def xwiki_page
+    @xwiki_page ||= create(:wiki_page, wiki: xwiki)
   end
 
   def urls

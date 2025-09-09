@@ -60,16 +60,7 @@ It is calculated as the number of monthly unique GitLab Duo Chat users divided b
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
 
-### Lifecycle metrics
-
-- [**Lead time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)
-- [**Median time to merge**](merge_request_analytics.md)
-- [**Deployment frequency**](dora_metrics.md#deployment-frequency)
-- [**Merge request throughput**](merge_request_analytics.md#view-the-number-of-merge-requests-in-a-date-range)
-- [**Critical vulnerabilities over time**](../application_security/vulnerability_report/_index.md)
-- [**Contributor count**](../profile/contributions_calendar.md#user-contribution-events)
-
-### AI usage metrics
+### Duo usage metrics
 
 {{< history >}}
 
@@ -104,6 +95,15 @@ The **Metric trends** table displays metrics for the last six months, with month
   Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
 
   {{< /alert >}}
+
+### Development metrics
+
+- [**Lead time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)
+- [**Median time to merge**](merge_request_analytics.md)
+- [**Deployment frequency**](dora_metrics.md#deployment-frequency)
+- [**Merge request throughput**](merge_request_analytics.md#view-the-number-of-merge-requests-in-a-date-range)
+- [**Critical vulnerabilities over time**](../application_security/vulnerability_report/_index.md)
+- [**Contributor count**](../profile/contributions_calendar.md#user-contribution-events)
 
 ### Pipeline metrics
 

@@ -302,25 +302,18 @@
       }
     }
 
-    // Merge request sticky header
-    .merge-request-sticky-header {
-      @apply gl-w-full gl-bg-default;
-      top: 1px !important; // Fix flickering: Note: Can't be set to 0!
-      transform: translateY(-1px); // Removes the 1px bleed we crate above
-
-      // Fixes for Firefox as it doesn't support (container-type: scroll-state)
-      // see https://caniuse.com/?search=scroll-state
-      html:not(.gl-browser-firefox) & {
-        @apply gl-sticky;
+    // Merge request sticky header wrapper
+    .merge-request-sticky-header-wrapper,
+    .merge-request-sticky-header::after,
+    .issue-sticky-header.merge-request-sticky-header {
+      @include media-breakpoint-up(md) {
+        top: 0 !important;
       }
+    }
 
-      .issue-sticky-header-text {
-        @apply gl-px-6 @xl/panel:gl-px-4;
-      }
-
-      &::after {
-        display: none;
-      }
+    // Legacy merge request sticky header (Firefox)
+    .issue-sticky-header.merge-request-sticky-header .issue-sticky-header-text {
+      @apply gl-px-6 @xl/panel:gl-px-4;
     }
 
     // Issue boards height

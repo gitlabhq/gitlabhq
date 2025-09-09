@@ -154,6 +154,13 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
 For example, you can select code and ask Chat, `Can you simplify this?`.
 
+### Check configuration diagnostics
+
+To check your GitLab Duo configuration diagnostics and system settings, including
+system versioning, feature state management, and feature flags:
+
+- In the Chat pane, in the upper-right corner, select **Status**.
+
 ## Use GitLab Duo Chat in VS Code
 
 {{< history >}}

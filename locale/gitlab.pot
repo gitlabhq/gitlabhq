@@ -57229,6 +57229,9 @@ msgstr ""
 msgid "Seats owed"
 msgstr ""
 
+msgid "SeatsManagement|Your namespace has used all the seats in your subscription. To avoid overages from adding new users, consider %{settings_link_start}turning on restricted access%{settings_link_end}, or %{more_seats_link_start}purchase more seats%{more_seats_link_end}."
+msgstr ""
+
 msgid "Secondary email:"
 msgstr ""
 

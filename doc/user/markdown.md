@@ -794,7 +794,7 @@ GitLab Flavored Markdown recognizes the following:
 | Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                                |                                    |
 | [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`                  | `project^alert#123`                |
 | [Contact](crm/_index.md#contacts)                                                    | `[contact:test@example.com]`                          |                                                |                                    |
-| [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
+| [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)       | `[[Home]]` or `[wiki_page:Home]`                     | `[wiki_page:namespace/project:Home]` or `[wiki_page:group1/subgroup:Home]` | |
 | [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
 **Footnotes**:

@@ -9,6 +9,7 @@
   = dispensable_render_if_exists "groups/storage_enforcement_alert", context: @group
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert", context: @group
   = dispensable_render_if_exists "shared/namespace_combined_storage_users_alert", context: @group
+  = dispensable_render_if_exists "layouts/header/seat_count_alert", context: @group
 
 - content_for :page_specific_javascripts do
   - if current_user

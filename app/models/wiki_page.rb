@@ -3,6 +3,7 @@
 # rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   include Gitlab::Utils::StrongMemoize
+  include Referable
 
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
@@ -33,6 +34,54 @@ class WikiPage
 
   def self.unhyphenize(name)
     name.gsub(/-+/, ' ')
+  end
+
+  def self.extensible_reference_prefix
+    '[wiki_page:'
+  end
+
+  def self.reference_prefix
+    ':'
+  end
+
+  def self.reference_postfix
+    ']'
+  end
+
+  def self.reference_pattern
+    @reference_pattern ||= %r{
+      #{Regexp.escape(extensible_reference_prefix)}
+      (#{namespace_reference_pattern}#{Regexp.escape(reference_prefix)})?
+        (?<wiki_page>
+          [^\s]+
+        )
+      #{Regexp.escape(reference_postfix)}
+    }x
+  end
+
+  def self.namespace_reference_pattern
+    @namespace_reference_pattern ||= %r{
+      (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
+      ((?<group_or_project_namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX}))
+    }x
+  end
+
+  def self.link_reference_pattern
+    @link_reference_pattern ||= project_or_group_link_reference_pattern(
+      'wikis',
+      namespace_reference_pattern,
+      %r{(?<wiki_page>[\/\w-]+)}
+    )
+  end
+
+  def to_reference(from = nil, **_params)
+    base = container.to_reference_base(from, full: true)
+
+    "[wiki_page:#{base}:#{slug}]" if base.present?
+  end
+
+  def reference_link_text(_from = nil)
+    human_title
   end
 
   def to_key
@@ -98,6 +147,10 @@ class WikiPage
   # Sets the title of this page.
   def title=(new_title)
     attributes[:title] = new_title
+  end
+
+  def sluggified_title
+    Wiki.sluggified_title(title)
   end
 
   def front_matter_title
@@ -390,7 +443,7 @@ class WikiPage
       return false
     end
 
-    @page = wiki.find_page(::Wiki.sluggified_title(title)).page
+    @page = wiki.find_page(sluggified_title).page
     set_attributes
 
     true

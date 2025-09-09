@@ -88,7 +88,6 @@ Layout/LineContinuationSpacing:
     - 'rubocop/cop/performance/ar_exists_and_present_blank.rb'
     - 'rubocop/cop/redis_queue_usage.rb'
     - 'spec/controllers/concerns/controller_with_cross_project_access_check_spec.rb'
-    - 'spec/features/issues/create_issue_for_single_discussion_in_merge_request_spec.rb'
     - 'spec/features/issues/viewing_issues_with_external_authorization_enabled_spec.rb'
     - 'spec/features/projects/files/user_browses_files_spec.rb'
     - 'spec/features/projects/files/user_creates_directory_spec.rb'
