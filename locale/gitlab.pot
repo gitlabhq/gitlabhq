@@ -39951,6 +39951,9 @@ msgstr ""
 msgid "MemberRole|Unknown LDAP server. Please check your server settings."
 msgstr ""
 
+msgid "MemberRole|Unknown permission: %{permission}"
+msgstr ""
+
 msgid "MemberRole|Update role"
 msgstr ""
 

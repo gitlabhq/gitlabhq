@@ -12,67 +12,44 @@ module QA
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
 
-      let(:personal_access_token) { Runtime::User::Store.default_api_client.personal_access_token }
       let(:group_id) { 'com.gitlab.qa' }
       let(:artifact_id) { "maven_gradle-#{SecureRandom.hex(8)}" }
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven_gradle' }
-      let(:project) { create(:project, :private, :with_readme, name: "#{package_type}_project") }
-      let!(:runner) do
-        create(:project_runner,
-          name: "qa-runner-#{SecureRandom.hex(6)}",
-          tags: ["runner-for-#{project.name}"],
-          executor: :docker,
-          project: project)
-      end
-
+      let(:project) { create(:project, name: "#{package_type}_project") }
       let(:gitlab_address_with_port) do
         Support::GitlabAddress.address_with_port
-      end
-
-      let(:project_deploy_token) do
-        create(:project_deploy_token,
-          name: 'package-deploy-token',
-          project: project,
-          scopes: %w[
-            read_repository
-            read_package_registry
-            write_package_registry
-          ])
-      end
-
-      let(:project_inbound_job_token_disabled) do
-        Resource::CICDSettings.fabricate_via_api! do |settings|
-          settings.project_path = project.full_path
-          settings.inbound_job_token_scope_enabled = false
-        end
       end
 
       before do
         Flow::Login.sign_in_unless_signed_in
       end
 
-      where(:case_name, :authentication_token_type, :maven_header_name, :testcase) do
-        'using personal access token' | :personal_access_token | 'Private-Token' | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347601'
-        'using ci job token'          | :ci_job_token          | 'Job-Token'     | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347603'
-        'using project deploy token'  | :project_deploy_token  | 'Deploy-Token'  | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347602'
-      end
-
-      with_them do
+      context 'with ci deploy token' do
+        let(:maven_header_name) { 'Job-Token' }
         let(:token) do
-          case authentication_token_type
-          when :personal_access_token
-            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: project)
-          when :ci_job_token
-            project_inbound_job_token_disabled
-            '${CI_JOB_TOKEN}'
-          when :project_deploy_token
-            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: project)
+          project_inbound_job_token_disabled
+          '${CI_JOB_TOKEN}'
+        end
+
+        let(:project_inbound_job_token_disabled) do
+          Resource::CICDSettings.fabricate_via_api! do |settings|
+            settings.project_path = project.full_path
+            settings.inbound_job_token_scope_enabled = false
           end
         end
 
-        it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
+        let!(:runner) do
+          create(:project_runner,
+            name: "qa-runner-#{SecureRandom.hex(6)}",
+            tags: ["runner-for-#{project.name}"],
+            executor: :docker,
+            project: project)
+        end
+
+        it 'pushes and pulls a maven package via gradle, using a pipeline',
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347603' do
           gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle',
             'gradle_upload_install_package.yaml.erb')).result(binding)
           build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)
@@ -105,6 +82,110 @@ module QA
           Page::Project::Packages::Show.perform do |show|
             expect(show).to have_package_info(name: nil, version: package_version)
           end
+        end
+      end
+
+      context 'with other token types' do
+        let(:build_gradle) do
+          {
+            file_path: 'build.gradle',
+            content: <<~GRADLE
+            plugins {
+              id 'java'
+              id 'maven-publish'
+            }
+
+            repositories {
+              maven {
+                url "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/maven"
+                credentials(HttpHeaderCredentials) {
+                  name = '#{maven_header_name}'
+                  value = "#{token}"
+                }
+                allowInsecureProtocol = true
+                authentication {
+                  header(HttpHeaderAuthentication)
+                }
+              }
+            }
+
+            dependencies {
+              implementation group: '#{group_id}', name: '#{artifact_id}', version: '#{package_version}'
+            }
+
+            group '#{group_id}'
+            version '#{package_version}'
+
+            publishing {
+              publications {
+                library(MavenPublication) {
+                  from components.java
+                }
+              }
+              repositories {
+                maven {
+                  url "#{gitlab_address_with_port}/api/v4/projects/#{project.id}/packages/maven"
+                  credentials(HttpHeaderCredentials) {
+                    name = '#{maven_header_name}'
+                    value = "#{token}"
+                  }
+                  allowInsecureProtocol = true
+                  authentication {
+                    header(HttpHeaderAuthentication)
+                  }
+                }
+              }
+            }
+            GRADLE
+          }
+        end
+
+        before do
+          with_fixtures([build_gradle]) do |dir|
+            Service::DockerRun::Gradle.new(dir, artifact_id).publish_and_install!
+          end
+        end
+
+        shared_examples 'using a docker container' do |testcase|
+          it 'pushes and pulls a maven package via gradle', testcase: testcase do
+            project.visit!
+
+            Page::Project::Menu.perform(&:go_to_package_registry)
+            Page::Project::Packages::Index.perform do |index|
+              expect(index).to have_package(package_name)
+
+              index.click_package(package_name)
+            end
+
+            Page::Project::Packages::Show.perform do |show|
+              expect(show).to have_package_info(name: nil, version: package_version)
+            end
+          end
+        end
+
+        context 'with a project deploy token' do
+          let(:maven_header_name) { 'Deploy-Token' }
+          let(:project_deploy_token) do
+            create(:project_deploy_token,
+              name: 'package-deploy-token',
+              project: project,
+              scopes: %w[
+                read_repository
+                read_package_registry
+                write_package_registry
+              ])
+          end
+
+          let(:token) { project_deploy_token.token }
+
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347602'
+        end
+
+        context 'with a personal access token' do
+          let(:maven_header_name) { 'Private-Token' }
+          let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
+
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347601'
         end
       end
     end

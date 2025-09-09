@@ -56,6 +56,28 @@ module Gitlab::UsageDataCounters
       p_ci_templates_pages_brunch
       p_ci_templates_pages_nanoc
       p_ci_templates_terraform_module_base
+      p_ci_templates_auto_devops
+      p_ci_templates_aws_deploy_ecs
+      p_ci_templates_implicit_jobs_browser_performance_testing
+      p_ci_templates_implicit_jobs_build
+      p_ci_templates_implicit_jobs_code_intelligence
+      p_ci_templates_implicit_jobs_code_quality
+      p_ci_templates_implicit_jobs_container_scanning
+      p_ci_templates_implicit_jobs_dependency_scanning
+      p_ci_templates_implicit_jobs_deploy_ec2
+      p_ci_templates_implicit_jobs_deploy_ecs
+      p_ci_templates_implicit_jobs_helm_2to3
+      p_ci_templates_implicit_jobs_license_scanning
+      p_ci_templates_implicit_jobs_sast
+      p_ci_templates_implicit_jobs_test
+      p_ci_templates_implicit_security_container_scanning
+      p_ci_templates_implicit_security_dast
+      p_ci_templates_implicit_security_dependency_scanning
+      p_ci_templates_implicit_security_license_scanning
+      p_ci_templates_implicit_security_sast
+      p_ci_templates_implicit_security_secret_detection
+      p_ci_templates_jobs_browser_performance_testing
+      p_ci_templates_jobs_browser_performance_testing_latest
     ].freeze
 
     class << self

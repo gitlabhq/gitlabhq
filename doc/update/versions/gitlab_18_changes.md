@@ -27,6 +27,10 @@ For additional information for Helm chart installations, see
 
 ## Issues to be aware of when upgrading from 17.11
 
+- From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
+  GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
+  downtime. For more information, see [issue 6089](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).
+
 - **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details in [issue 558808](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
 
   **Prevention:** Open the Rails console and enable the feature flag before upgrading:
