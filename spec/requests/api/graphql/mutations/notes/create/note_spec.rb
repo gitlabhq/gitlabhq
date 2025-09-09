@@ -62,10 +62,6 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
         let(:discussion) { create(:discussion_note, project: project).to_discussion }
 
         context 'when discussion is not on the noteable' do
-          it 'checks noteable and discussion noteable' do
-            expect(noteable.id).not_to eq(discussion.noteable_id)
-          end
-
           it_behaves_like 'a mutation that returns top-level errors',
             errors: ["The discussion does not exist or you don't have permission to perform this action"]
         end
