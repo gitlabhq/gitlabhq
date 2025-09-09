@@ -1193,7 +1193,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2023.1003)
     mini_histogram (0.3.1)
-    mini_magick (4.12.0)
+    mini_magick (4.13.2)
     mini_mime (1.1.2)
     mini_portile2 (2.8.8)
     minitest (5.11.3)

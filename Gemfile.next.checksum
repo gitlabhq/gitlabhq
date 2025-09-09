@@ -397,7 +397,7 @@
 {"name":"mime-types","version":"3.5.1","platform":"ruby","checksum":"85d772fb6cf21f999ac8085998192fb9dd5d16e86ec4c69c5e79ac3003420d61"},
 {"name":"mime-types-data","version":"3.2023.1003","platform":"ruby","checksum":"0f7b96d4e54d17752ed78398dca9402359ccaeb391aa0c0e5b305bedaf025b7a"},
 {"name":"mini_histogram","version":"0.3.1","platform":"ruby","checksum":"6a114b504e4618b0e076cc672996036870f7cc6f16b8e5c25c0c637726d2dd94"},
-{"name":"mini_magick","version":"4.12.0","platform":"ruby","checksum":"67302fa84e63f1002b71416a8466968ed0f33d22f5d42962a0c09a9f1c3a906a"},
+{"name":"mini_magick","version":"4.13.2","platform":"ruby","checksum":"71d6258e0e8a3d04a9a0a09784d5d857b403a198a51dd4f882510435eb95ddd9"},
 {"name":"mini_mime","version":"1.1.2","platform":"ruby","checksum":"a54aec0cc7438a03a850adb00daca2bdb60747f839e28186994df057cea87151"},
 {"name":"mini_portile2","version":"2.8.8","platform":"ruby","checksum":"8e47136cdac04ce81750bb6c09733b37895bf06962554e4b4056d78168d70a75"},
 {"name":"minitest","version":"5.11.3","platform":"ruby","checksum":"78e18aa2c49c58e9bc53c54a0b900e87ad0a96394e92fbbfa58d3ff860a68f45"},

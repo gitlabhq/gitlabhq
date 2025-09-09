@@ -66,7 +66,6 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
-      canIconOnly: this.projectStudioEnabled,
       isIconOnly: this.projectStudioEnabled,
     };
   },
@@ -83,10 +82,14 @@ export default {
         'super-sidebar-peek': this.showOverlay,
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
         'super-sidebar-is-icon-only': this.canIconOnly && this.isIconOnly,
+        'super-sidebar-is-mobile': this.sidebarState.isMobile,
       };
     },
     isAdmin() {
       return this.sidebarData?.admin_mode?.user_is_admin;
+    },
+    canIconOnly() {
+      return this.projectStudioEnabled && !this.sidebarState.isMobile;
     },
   },
   watch: {

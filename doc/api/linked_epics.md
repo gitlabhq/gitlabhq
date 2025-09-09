@@ -44,7 +44,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
-| `id`       | integer or string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | Yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `created_after` | string | no | Return related epic links created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
 | `created_before` | string | no | Return related epic links created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `updated_after` | string | no | Return related epic links updated on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)  |
@@ -167,7 +167,7 @@ Supported attributes:
 | Attribute  | Type           | Required               | Description                                                               |
 | ---------- | -------------- | ---------------------- | ------------------------------------------------------------------------- |
 | `epic_iid` | integer        | Yes | Internal ID of a group's epic                                             |
-| `id`       | integer or string | Yes | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | Yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 Example request:
 
@@ -250,7 +250,7 @@ Supported attributes:
 | Attribute           | Type           | Required                    | Description                           |
 |---------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`          | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `target_epic_iid`   | integer or string | Yes      | Internal ID of a target group's epic. |
 | `target_group_id`   | integer or string | Yes      | ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `link_type`         | string         | No      | Type of the relation (`relates_to`, `blocks`, `is_blocked_by`), defaults to `relates_to`. |
@@ -377,7 +377,7 @@ Supported attributes:
 | Attribute                | Type           | Required                    | Description                           |
 |--------------------------|----------------|-----------------------------|---------------------------------------|
 | `epic_iid`               | integer        | Yes      | Internal ID of a group's epic.        |
-| `id`                     | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                     | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `related_epic_link_id`   | integer or string | Yes      | Internal ID of a related epic link. |
 
 Example request:

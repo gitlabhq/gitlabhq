@@ -70,6 +70,12 @@ You can use GitLab Duo Chat in:
 
 ### Use GitLab Duo Chat in the GitLab UI
 
+{{< history >}}
+
+- Ability for Chat to remember your most recent conversation [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203653) in GitLab 18.4.
+
+{{< /history >}}
+
 Prerequisites:
 
 - Ensure you meet [the prerequisites](../duo_agent_platform/_index.md#prerequisites).
@@ -82,6 +88,9 @@ To use Chat in the GitLab UI:
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It may take a few seconds to produce an answer.
 1. Optional. Ask a follow-up question.
+
+If you reload the webpage you are on, or go to another webpage, Chat remembers your
+most recent conversation, and that conversation is still active in the Chat drawer.
 
 ### Use GitLab Duo Chat in VS Code
 

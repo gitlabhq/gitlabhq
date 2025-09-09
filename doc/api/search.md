@@ -486,7 +486,7 @@ GET /groups/:id/search
 
 | Attribute | Type | Required | Description  |
 | --------- | ---- | -------- | -------------|
-| `id`                | integer or string   | Yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string   | Yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `scope`       | string   | Yes | The scope to search in. Values include `projects`, `issues`, `merge_requests`, `milestones`, and `users`. Additional scopes are `wiki_blobs`, `commits`, `blobs`, and `notes`. |
 | `search`      | string   | Yes | The search term. |
 | `confidential` | boolean   | No | Filter by confidentiality. Supports only `issues` scope; other scopes are ignored. |

@@ -595,7 +595,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
 | `epic_id` | integer           | Yes      | The ID of an epic. |
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Epic`.
 
@@ -705,7 +705,7 @@ Supported attributes:
 |-----------------|-------------------|----------|-------------|
 | `discussion_id` | integer            | Yes      | The ID of a discussion item. |
 | `epic_id`       | integer           | Yes      | The ID of an epic. |
-| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List group epic discussion items](#list-group-epic-discussion-items).
 
@@ -731,7 +731,7 @@ Supported attributes:
 |--------------|-------------------|----------|-------------|
 | `body`       | string            | Yes      | The content of the thread. |
 | `epic_id`    | integer           | Yes      | The ID of an epic. |
-| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `created_at` | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created discussion object.
@@ -760,7 +760,7 @@ Supported attributes:
 | `body`          | string            | Yes      | The content of the note or reply. |
 | `discussion_id` | integer            | Yes      | The ID of a thread. |
 | `epic_id`       | integer           | Yes      | The ID of an epic. |
-| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `created_at`    | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
@@ -788,7 +788,7 @@ Supported attributes:
 | `body`          | string            | Yes      | The content of a note or reply. |
 | `discussion_id` | integer            | Yes      | The ID of a thread. |
 | `epic_id`       | integer           | Yes      | The ID of an epic. |
-| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `note_id`       | integer           | Yes      | The ID of a thread note. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
@@ -815,7 +815,7 @@ Supported attributes:
 |-----------------|-------------------|----------|-------------|
 | `discussion_id` | integer            | Yes      | The ID of a thread. |
 | `epic_id`       | integer           | Yes      | The ID of an epic. |
-| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `note_id`       | integer           | Yes      | The ID of a thread note. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).

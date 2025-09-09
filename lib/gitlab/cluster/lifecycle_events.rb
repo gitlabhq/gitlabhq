@@ -160,8 +160,17 @@ module Gitlab
         # Puma doesn't use singletons (which is good) but
         # this means we need to pass through whether the
         # puma server is running in single mode or cluster mode
+        # DEPRECATED for Puma 6 because options cannot be
+        # accessed directly until the config has been fully loaded due to
+        # https://github.com/puma/puma/pull/3297.
         def set_puma_options(options)
           @puma_options = options
+        end
+
+        # Added to support Puma 7 to replace accessing Puma options
+        # directly.
+        def set_puma_worker_count(count)
+          @puma_worker_count = count
         end
 
         private
@@ -181,7 +190,10 @@ module Gitlab
         end
 
         def in_clustered_puma?
-          Gitlab::Runtime.puma? && @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
+          return false unless Gitlab::Runtime.puma?
+          return @puma_worker_count.to_i > 0 if defined?(@puma_worker_count)
+
+          @puma_options && @puma_options[:workers] && @puma_options[:workers] > 0
         end
       end
     end

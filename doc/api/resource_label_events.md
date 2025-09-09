@@ -131,7 +131,7 @@ GET /groups/:id/epics/:epic_id/resource_label_events
 
 | Attribute           | Type             | Required   | Description  |
 | ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id`           | integer          | yes        | The ID of an epic |
 
 ```json
@@ -198,7 +198,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`            | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id`       | integer        | yes      | The ID of an epic |
 | `resource_label_event_id` | integer        | yes      | The ID of a label event |
 

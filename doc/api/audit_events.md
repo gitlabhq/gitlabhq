@@ -234,7 +234,7 @@ GET /groups/:id/audit_events
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `created_after` | string | no | Return group audit events created on or after the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ)`  |
 | `created_before` | string | no | Return group audit events created on or before the given time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 
@@ -300,7 +300,7 @@ GET /groups/:id/audit_events/:audit_event_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer or string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `audit_event_id` | integer | yes | The ID of the audit event |
 
 ```shell

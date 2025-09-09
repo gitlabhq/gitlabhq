@@ -14,6 +14,7 @@ export const portalState = Vue.observable({
 
 export const sidebarState = Vue.observable({
   isCollapsed: false,
+  isMobile: false,
   hasPeeked: false,
   isPeek: false,
   isPeekable: false,

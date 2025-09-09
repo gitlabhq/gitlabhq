@@ -304,7 +304,7 @@ Supported attributes:
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
 | ------------------- | ---------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | Yes        | The global ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).                 |
+| `id`                | integer or string   | Yes        | The global ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.                 |
 | `assignee_id`       | integer          | No         | Return issues assigned to the given user `id`. Mutually exclusive with `assignee_username`. `None` returns unassigned issues. `Any` returns issues with an assignee. |
 | `assignee_username` | string array     | No         | Return issues assigned to the given `username`. Similar to `assignee_id` and mutually exclusive with `assignee_id`. In GitLab CE, the `assignee_username` array should only contain a single value. Otherwise, an invalid parameter error is returned. |
 | `author_id`         | integer          | No         | Return issues created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |

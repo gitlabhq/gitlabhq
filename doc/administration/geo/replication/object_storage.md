@@ -56,7 +56,7 @@ In case of issues, avoid manually deleting individual files as that can lead to 
 
 {{< /alert >}}
 
-**Secondary** sites can replicate files stored on the **primary** site regardless of
+**Secondary** sites can replicate files stored by the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:

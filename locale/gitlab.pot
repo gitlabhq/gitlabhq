@@ -2455,6 +2455,12 @@ msgstr ""
 msgid "AICatalog|Add to project"
 msgstr ""
 
+msgid "AICatalog|Agent added successfully to %{name}."
+msgstr ""
+
+msgid "AICatalog|Agent could not be added: %{agentName}"
+msgstr ""
+
 msgid "AICatalog|Agent created successfully."
 msgstr ""
 
@@ -2570,6 +2576,9 @@ msgid "AICatalog|Edit flow"
 msgstr ""
 
 msgid "AICatalog|Explore AI Catalog flows"
+msgstr ""
+
+msgid "AICatalog|Failed to add agent to target. Agent not found."
 msgstr ""
 
 msgid "AICatalog|Failed to add flow to target. Flow not found."
@@ -2714,6 +2723,9 @@ msgid "AICatalog|Test run agents to see how they respond."
 msgstr ""
 
 msgid "AICatalog|The agent could not be added. Try again."
+msgstr ""
+
+msgid "AICatalog|The agent could not be enabled. Try again. %{error}"
 msgstr ""
 
 msgid "AICatalog|The agent could not be updated. Try again."
@@ -25832,7 +25844,7 @@ msgstr ""
 msgid "EnforcementAtLimitAlert|To invite more users, you can reduce the number of users in your top-level group to %{pluralized_limit} or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free %{duration}-day trial which includes unlimited users."
 msgstr ""
 
-msgid "EnforcementAtLimitAlert|Your top-level group %{namespace_name} has reached the %{free_limit}-user limit"
+msgid "EnforcementAtLimitAlert|Your top-level group %{namespace_name} has reached the %{free_limit} user limit"
 msgstr ""
 
 msgid "Engine"

@@ -322,17 +322,45 @@ describe('SuperSidebar component', () => {
     });
   });
 
-  describe('when the icon-only behavior is available', () => {
-    beforeEach(() => {
-      createWrapper({ provide: { projectStudioEnabled: true } });
+  describe('in the panel-based layout', () => {
+    describe('on desktop', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: { projectStudioEnabled: true },
+          sidebarState: { isMobile: false },
+        });
+      });
+
+      it('renders the icon-only toggle', () => {
+        expect(findIconOnlyToggle().exists()).toBe(true);
+      });
+
+      it('does not render the context header text when in icon-only mode', () => {
+        expect(findContextHeader().exists()).toBe(false);
+      });
+
+      it('renders the context header normally while not in icon-only mode', async () => {
+        findIconOnlyToggle().vm.$emit('toggle');
+        await nextTick();
+        expect(findContextHeader().text()).toBe('Your work');
+      });
     });
 
-    it('renders the icon-only toggle', () => {
-      expect(findIconOnlyToggle().exists()).toBe(true);
-    });
+    describe('on mobile', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: { projectStudioEnabled: true },
+          sidebarState: { isMobile: true },
+        });
+      });
 
-    it('does not render the context header text when in icon-only mode', () => {
-      expect(findContextHeader().exists()).toBe(false);
+      it('does not render the icon-only toggle', () => {
+        expect(findIconOnlyToggle().exists()).toBe(false);
+      });
+
+      it('sets the correct class', () => {
+        expect(findSidebar().classes()).toContain('super-sidebar-is-mobile');
+      });
     });
   });
 

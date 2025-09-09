@@ -30,6 +30,7 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   sidebarState.isHoverPeek = false;
   sidebarState.wasHoverPeek = false;
   sidebarState.isCollapsed = collapsed;
+  sidebarState.isMobile = !isDesktopBreakpoint();
 
   if (saveCookie && isDesktopBreakpoint()) {
     setCookie(SIDEBAR_COLLAPSED_COOKIE, collapsed, {

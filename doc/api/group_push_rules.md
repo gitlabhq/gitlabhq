@@ -29,7 +29,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer or string | Yes      | ID of the group or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID of the group or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -109,7 +109,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `author_email_regex`              | string         | No       | Allow only commit author emails that match the regular expression provided in this attribute, for example, `@my-company.com$`. |
 | `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*`. |
 | `commit_committer_check`          | boolean        | No       | If `true`, allows commits from users only if the committer email is one of their own verified emails. |
@@ -191,7 +191,7 @@ Supported attributes:
 
 | Attribute                         | Type           | Required | Description |
 |-----------------------------------|----------------|----------|-------------|
-| `id`                              | integer or string | Yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                              | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `author_email_regex`              | string         | No       | Allow only commit author emails that match the regular expression provided in this attribute, for example, `@my-company.com$`. |
 | `branch_name_regex`               | string         | No       | Allow only branch names that match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*`. |
 | `commit_committer_check`          | boolean        | No       | If `true`, allows commits from users only if the committer email is one of their own verified emails. |
@@ -271,7 +271,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes) with no response body.
 

@@ -383,7 +383,7 @@ GET /groups/:id/billable_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `search`  | string            | no       | A query string to search for group members by name, username, or public email. |
 | `sort`    | string            | no       | A query string containing parameters that specify the sort attribute and order. See supported values below. |
 
@@ -478,7 +478,7 @@ GET /groups/:id/billable_members/:user_id/memberships
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -551,7 +551,7 @@ GET /groups/:id/billable_members/:user_id/indirect
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the billable member. |
 
 ```shell
@@ -604,7 +604,7 @@ DELETE /groups/:id/billable_members/:user_id
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -632,7 +632,7 @@ PUT /groups/:id/members/:user_id/state
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the member. |
 | `state`   | string            | yes      | The new state for the user. State is either `awaiting` or `active`. |
 
@@ -826,7 +826,7 @@ POST /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -871,7 +871,7 @@ DELETE /groups/:id/members/:user_id/override
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `user_id` | integer           | yes      | The user ID of the member. |
 
 ```shell
@@ -996,7 +996,7 @@ GET /groups/:id/pending_members
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

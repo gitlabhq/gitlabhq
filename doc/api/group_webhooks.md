@@ -32,7 +32,7 @@ Supported attributes:
 
 | Attribute | Type            | Required | Description |
 | --------- | --------------- | -------- | ----------- |
-| `id`      | integer or string  | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string  | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 Example request:
 
@@ -101,7 +101,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `hook_id` | integer        | yes      | The ID of a group hook. |
 
 Example request:
@@ -175,7 +175,7 @@ Supported attributes:
 | Attribute  | Type                 | Required | Description |
 |----------- |--------------------- |--------- |------------ |
 | `hook_id`  | Integer              | Yes      | The ID of a project hook. |
-| `id`       | Integer or string    | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`       | Integer or string    | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `page`     | Integer              | No       | Page to retrieve. Defaults to `1`. |
 | `per_page` | Integer              | No       | Number of records to return per page. Defaults to `20`. |
 | `status`   | Integer or string    | No       | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
@@ -462,7 +462,7 @@ Supported attributes:
 |---------------- |------------------ |--------- |------------ |
 | `hook_event_id` | Integer           | Yes      | The ID of a hook event. |
 | `hook_id`       | Integer           | Yes      | The ID of a group hook. |
-| `id`            | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`            | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 Example request:
 
@@ -492,7 +492,7 @@ Supported attributes:
 
 | Attribute                      | Type              | Required | Description |
 |------------------------------- |------------------ |--------- |------------ |
-| `id`                           | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                           | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `url`                          | String            | Yes      | The hook URL. |
 | `branch_filter_strategy`       | String            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `confidential_issues_events`   | Boolean           | No       | Trigger hook on confidential issue events. |
@@ -583,7 +583,7 @@ Supported attributes:
 | Attribute                                   | Type              | Required | Description |
 |-------------------------------------------- |------------------ |--------- |------------ |
 | `hook_id`                                   | Integer           | Yes      | The ID of the group hook. |
-| `id`                                        | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                                        | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `url`                                       | String            | Yes      | The hook URL. |
 | `branch_filter_strategy`                    | String            | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `confidential_issues_events`                | Boolean           | No       | Trigger hook on confidential issue events. |
@@ -681,7 +681,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 | --------- | ----------------- | -------- | ----------- |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 Example request:
 
@@ -715,7 +715,7 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 | Attribute | Type              | Required | Description |
 |---------- |------------------ |--------- |------------ |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `trigger` | String            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `milestone_events`, `emoji_events`, or `resource_access_token_events`. |
 
 Example request:
@@ -751,7 +751,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |---------- |------------------ |--------- |------------ |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `key`     | String            | Yes      | The key of the custom header. |
 | `value`   | String            | Yes      | The value of the custom header. |
 
@@ -784,7 +784,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |---------- |------------------ |--------- |------------ |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `key`     | String            | Yes      | The key of the custom header. |
 
 Example request:
@@ -814,7 +814,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |---------- |------------------ |--------- |------------ |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `key`     | String            | Yes      | The key of the URL variable. |
 | `value`   | String            | Yes      | The value of the URL variable. |
 
@@ -839,7 +839,7 @@ Supported attributes:
 | Attribute | Type              | Required | Description |
 |---------- |------------------ |--------- |------------ |
 | `hook_id` | Integer           | Yes      | The ID of the group hook. |
-| `id`      | Integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | Integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `key`     | String            | Yes      | The key of the URL variable. |
 
 Example request:

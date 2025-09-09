@@ -584,7 +584,7 @@
   }
 
   .super-topbar,
-  .super-sidebar,
+  .super-sidebar:not(.super-sidebar-is-mobile),
   .super-sidebar .bottom-scrim,
   .super-sidebar .top-scrim {
     background: transparent !important;

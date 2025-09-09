@@ -404,7 +404,7 @@ Project Owners can perform any listed action, and can delete pipelines:
    is not set on the job.
 4. Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
-   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected branch](../ci/environments/protected_environments.md#protecting-environments).
+   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
 7. Developers: Only if the job was triggered by the user and runs for a non-protected branch.
 8. Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).

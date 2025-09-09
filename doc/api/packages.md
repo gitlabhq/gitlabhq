@@ -106,7 +106,7 @@ GET /groups/:id/packages
 
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                  | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `exclude_subgroups`   | boolean        | no       | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |

@@ -34,7 +34,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`              | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -77,7 +77,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description               |
 | --------- | -------------- | -------- | ------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `uid`     | string         | yes      | External UID of the user. |
 
 Example request:
@@ -111,7 +111,7 @@ Supported attributes:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -138,7 +138,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -197,7 +197,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following response attributes:
 
@@ -245,7 +245,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 | `provider`        | string         | no       | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) to disambiguate when multiple links exist with the same name. Required when multiple links exist with the same `saml_group_name`. |
 
@@ -295,7 +295,7 @@ Supported attributes:
 
 | Attribute         | Type              | Required | Description |
 |:------------------|:------------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `saml_group_name` | string            | yes      | Name of the SAML group. |
 | `access_level`    | integer           | yes      | [Role (`access_level`)](members.md#roles) for members of the SAML group. |
 | `member_role_id`  | integer           | no       | [Member Role ID (`member_role_id`)](member_roles.md) for members of the SAML group. |
@@ -339,7 +339,7 @@ Supported attributes:
 
 | Attribute         | Type           | Required | Description |
 |:------------------|:---------------|:---------|:------------|
-| `id`              | integer or string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `saml_group_name` | string         | yes      | Name of the SAML group. |
 | `provider`        | string         | no       | Unique [provider name](../integration/saml.md#configure-saml-support-in-gitlab) to disambiguate when multiple links exist with the same name. Required when multiple links exist with the same `saml_group_name`. |
 

@@ -248,7 +248,7 @@ GET /groups/:id/epics/:epic_id/resource_state_events
 
 | Attribute   | Type           | Required | Description                                                                    |
 |-------------| -------------- | -------- |--------------------------------------------------------------------------------|
-| `id`        | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).   |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.   |
 | `epic_id`   | integer        | yes      | The ID of an epic.                                                              |
 
 Example request:
@@ -306,7 +306,7 @@ Parameters:
 
 | Attribute                 | Type           | Required | Description                                                                   |
 |---------------------------| -------------- | -------- |-------------------------------------------------------------------------------|
-| `id`                      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).  |
+| `id`                      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.  |
 | `epic_id`                 | integer        | yes      | The ID of an epic.                                                           |
 | `resource_state_event_id` | integer        | yes      | The ID of a state event.                                                       |
 

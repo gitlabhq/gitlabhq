@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: API Security
+title: API security
 description: Protection, analysis, testing, scanning, and discovery.
 ---
 
@@ -13,7 +13,7 @@ description: Protection, analysis, testing, scanning, and discovery.
 
 {{< /details >}}
 
-API Security refers to the measures taken to secure and protect web Application Programming Interfaces (APIs) from unauthorized access, misuse, and attacks.
+API security refers to the measures taken to secure and protect web Application Programming Interfaces (APIs) from unauthorized access, misuse, and attacks.
 APIs are a crucial component of modern application development as they allow applications to interact with each other and exchange data.
 However, this also makes them attractive to attackers and vulnerable to security threats if not properly secured.
 In this section, we discuss GitLab features that can be used to ensure the security of web APIs in your application.

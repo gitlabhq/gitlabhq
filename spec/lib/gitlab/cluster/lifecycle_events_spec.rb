@@ -33,26 +33,41 @@ RSpec.describe Gitlab::Cluster::LifecycleEvents do
   end
 
   context 'in clustered environments' do
-    before do
-      allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
-      replica.set_puma_options(workers: 2)
-    end
-
-    where(:hook, :execution_helper) do
-      :on_worker_start             | :do_worker_start
-      :on_before_fork              | :do_before_fork
-      :on_before_graceful_shutdown | :do_before_graceful_shutdown
-      :on_before_master_restart    | :do_before_master_restart
-      :on_worker_stop              | :do_worker_stop
-    end
-
-    with_them do
-      it 'requires explicit execution via do_* helper' do
-        was_executed = false
-        replica.public_send(hook, &proc { was_executed = true })
-
-        expect { replica.public_send(execution_helper) }.to change { was_executed }.from(false).to(true)
+    shared_examples 'executes hooks' do
+      where(:hook, :execution_helper) do
+        :on_worker_start             | :do_worker_start
+        :on_before_fork              | :do_before_fork
+        :on_before_graceful_shutdown | :do_before_graceful_shutdown
+        :on_before_master_restart    | :do_before_master_restart
+        :on_worker_stop              | :do_worker_stop
       end
+
+      with_them do
+        it 'requires explicit execution via do_* helper' do
+          was_executed = false
+          replica.public_send(hook, &proc { was_executed = true })
+
+          expect { replica.public_send(execution_helper) }.to change { was_executed }.from(false).to(true)
+        end
+      end
+    end
+
+    describe 'using #set_puma_options' do
+      before do
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+        replica.set_puma_options(workers: 2)
+      end
+
+      it_behaves_like 'executes hooks'
+    end
+
+    describe 'using #set_puma_worker_count' do
+      before do
+        allow(Gitlab::Runtime).to receive(:puma?).and_return(true)
+        replica.set_puma_worker_count(2)
+      end
+
+      it_behaves_like 'executes hooks'
     end
   end
 

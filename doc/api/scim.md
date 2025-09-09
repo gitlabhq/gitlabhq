@@ -54,7 +54,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -101,7 +101,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:
@@ -144,7 +144,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description               |
 | --------- | ------ | -------- | ------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `uid`     | string | yes      | External UID of the user. |
 
 Example request:
@@ -172,7 +172,7 @@ Supported attributes:
 
 | Attribute | Type    | Required | Description               |
 | --------- | ------- | -------- | ------------------------- |
-| `id`      | integer | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`      | integer | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `uid`     | string  | yes      | External UID of the user. |
 
 Example request:

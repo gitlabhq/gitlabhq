@@ -539,7 +539,7 @@ GET /groups/:id/epics/:epic_id/notes?sort=asc&order_by=updated_at
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id`  | integer           | yes      | The ID of a group epic |
 | `sort`     | string            | no       | Return epic notes sorted in `asc` or `desc` order. Default is `desc` |
 | `order_by` | string            | no       | Return epic notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
@@ -561,7 +561,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id` | integer           | yes      | The ID of an epic |
 | `note_id` | integer           | yes      | The ID of a note |
 
@@ -612,7 +612,7 @@ Parameters:
 |----------------|-------------------|----------|-------------|
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
 | `epic_id`      | integer           | yes      | The ID of an epic |
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `confidential` | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
 | `internal`     | boolean           | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is `false`. |
 
@@ -633,7 +633,7 @@ Parameters:
 
 | Attribute      | Type              | Required | Description |
 |----------------|-------------------|----------|-------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id`      | integer           | yes      | The ID of an epic |
 | `note_id`      | integer           | yes      | The ID of a note |
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
@@ -656,7 +656,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `epic_id` | integer           | yes      | The ID of an epic |
 | `note_id` | integer           | yes      | The ID of a note |
 
@@ -838,7 +838,7 @@ GET /groups/:id/wiki_pages/:wiki_page_meta_id/notes?sort=asc&order_by=updated_at
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
 | `sort`     | string            | no       | Return wiki page notes sorted in `asc` or `desc` order. Default is `desc` |
 | `order_by` | string            | no       | Return wiki page notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
@@ -860,7 +860,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
 | `note_id` | integer           | yes      | The ID of a note |
 
@@ -912,7 +912,7 @@ Parameters:
 |----------------|-------------------|----------|-------------|
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
 | `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -931,7 +931,7 @@ Parameters:
 
 | Attribute      | Type              | Required | Description |
 |----------------|-------------------|----------|-------------|
-| `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`           | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
 | `note_id`      | integer           | yes      | The ID of a note |
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
@@ -953,7 +953,7 @@ Parameters:
 
 | Attribute | Type              | Required | Description |
 |-----------|-------------------|----------|-------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `wiki_page_meta_id`  | integer           | yes      | The ID of a wiki page meta |
 | `note_id` | integer           | yes      | The ID of a note |
 

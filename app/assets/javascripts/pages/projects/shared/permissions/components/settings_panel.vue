@@ -578,8 +578,9 @@ export default {
               type="hidden"
               name="project[request_access_enabled]"
             />
-            <input v-model="requestAccessEnabled" type="checkbox" />
-            {{ s__('ProjectSettings|Users can request access') }}
+            <gl-form-checkbox v-model="requestAccessEnabled">
+              {{ s__('ProjectSettings|Users can request access') }}
+            </gl-form-checkbox>
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
