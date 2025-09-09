@@ -35,6 +35,10 @@ module Mutations
         required: false,
         description: copy_field_description(Types::MergeRequestType, :merge_after)
 
+      argument :remove_source_branch, GraphQL::Types::Boolean,
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :should_remove_source_branch)
+
       field :merge_request,
         Types::MergeRequestType,
         null: true,
@@ -44,7 +48,7 @@ module Mutations
 
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)
-        params = attributes.merge(author_id: current_user.id)
+        params = parse_arguments(attributes)
 
         merge_request = ::MergeRequests::CreateService.new(
           project: project,
@@ -56,6 +60,16 @@ module Mutations
           merge_request: merge_request.valid? ? merge_request : nil,
           errors: errors_on_object(merge_request)
         }
+      end
+
+      private
+
+      def parse_arguments(args)
+        args = args.merge(author_id: current_user.id)
+
+        args[:force_remove_source_branch] = args.delete(:remove_source_branch) if args.key?(:remove_source_branch)
+
+        args.compact
       end
     end
   end

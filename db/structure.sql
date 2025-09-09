@@ -21329,6 +21329,28 @@ CREATE TABLE packages_nuget_metadata (
     CONSTRAINT packages_nuget_metadata_project_url_constraint CHECK ((char_length(project_url) <= 255))
 );
 
+CREATE TABLE packages_nuget_symbol_states (
+    id bigint NOT NULL,
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    packages_nuget_symbol_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_e1484aadc9 CHECK ((char_length(verification_failure) <= 255))
+);
+
+CREATE SEQUENCE packages_nuget_symbol_states_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_nuget_symbol_states_id_seq OWNED BY packages_nuget_symbol_states.id;
+
 CREATE TABLE packages_nuget_symbols (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -30214,6 +30236,8 @@ ALTER TABLE ONLY packages_maven_metadata ALTER COLUMN id SET DEFAULT nextval('pa
 
 ALTER TABLE ONLY packages_npm_metadata_caches ALTER COLUMN id SET DEFAULT nextval('packages_npm_metadata_caches_id_seq'::regclass);
 
+ALTER TABLE ONLY packages_nuget_symbol_states ALTER COLUMN id SET DEFAULT nextval('packages_nuget_symbol_states_id_seq'::regclass);
+
 ALTER TABLE ONLY packages_nuget_symbols ALTER COLUMN id SET DEFAULT nextval('packages_nuget_symbols_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_package_file_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_package_file_build_infos_id_seq'::regclass);
@@ -33405,6 +33429,9 @@ ALTER TABLE ONLY packages_nuget_dependency_link_metadata
 
 ALTER TABLE ONLY packages_nuget_metadata
     ADD CONSTRAINT packages_nuget_metadata_pkey PRIMARY KEY (package_id);
+
+ALTER TABLE ONLY packages_nuget_symbol_states
+    ADD CONSTRAINT packages_nuget_symbol_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY packages_nuget_symbols
     ADD CONSTRAINT packages_nuget_symbols_pkey PRIMARY KEY (id);
@@ -40178,6 +40205,16 @@ CREATE INDEX index_packages_nuget_dl_metadata_on_dependency_link_id ON packages_
 
 CREATE INDEX index_packages_nuget_metadata_on_project_id ON packages_nuget_metadata USING btree (project_id);
 
+CREATE INDEX index_packages_nuget_symbol_states_failed_verification ON packages_nuget_symbol_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_packages_nuget_symbol_states_needs_verification ON packages_nuget_symbol_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_packages_nuget_symbol_states_on_packages_nuget_symbol_id ON packages_nuget_symbol_states USING btree (packages_nuget_symbol_id);
+
+CREATE INDEX index_packages_nuget_symbol_states_on_verification_state ON packages_nuget_symbol_states USING btree (verification_state);
+
+CREATE INDEX index_packages_nuget_symbol_states_pending_verification ON packages_nuget_symbol_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE UNIQUE INDEX index_packages_nuget_symbols_on_object_storage_key ON packages_nuget_symbols USING btree (object_storage_key);
 
 CREATE INDEX index_packages_nuget_symbols_on_package_id ON packages_nuget_symbols USING btree (package_id);
@@ -45627,6 +45664,8 @@ CREATE TRIGGER p_ci_pipelines_loose_fk_trigger AFTER DELETE ON p_ci_pipelines RE
 CREATE TRIGGER p_ci_workloads_loose_fk_trigger AFTER DELETE ON p_ci_workloads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_workloads');
 
 CREATE TRIGGER p_knowledge_graph_enabled_namespaces_loose_fk_trigger AFTER DELETE ON p_knowledge_graph_enabled_namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_knowledge_graph_enabled_namespaces');
+
+CREATE TRIGGER packages_nuget_symbols_loose_fk_trigger AFTER DELETE ON packages_nuget_symbols REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER plans_loose_fk_trigger AFTER DELETE ON plans REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 

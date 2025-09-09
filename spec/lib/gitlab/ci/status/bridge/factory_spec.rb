@@ -167,6 +167,29 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
   end
 
+  context 'when bridge has strategy:depend and downstream has the passed_with_warnings status' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:upstream_pipeline) { create(:ci_pipeline, :success, project: project) }
+    let_it_be(:bridge) { create(:ci_bridge, :success, :strategy_depend, pipeline: upstream_pipeline) }
+
+    before do
+      downstream_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: downstream_pipeline)
+      create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
+    end
+
+    it 'does not match the SuccessWarning status' do
+      expect(factory.extended_statuses)
+        .not_to include(Gitlab::Ci::Status::Bridge::SuccessWarning)
+    end
+
+    it 'shows success status' do
+      expect(status.icon).to eq 'status_success'
+      expect(status.group).to eq 'success'
+      expect(status.label).to eq 'passed'
+    end
+  end
+
   context 'when the bridge is successful and therefore retryable' do
     let(:bridge) { create(:ci_bridge, :success) }
 

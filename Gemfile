@@ -643,7 +643,7 @@ gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 gem 'gitaly', '~> 18.2.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 18.2.0', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 18.3.0', feature_category: :deployment_management
 
 gem 'grpc', '~> 1.74.0', feature_category: :shared
 
@@ -697,7 +697,7 @@ gem 'json', '~> 2.13.0', feature_category: :shared
 gem 'json_schemer', '~> 2.3.0', feature_category: :shared
 gem 'oj', '~> 3.16.0', '>=3.16.10', feature_category: :shared
 gem 'oj-introspect', '~> 0.8', feature_category: :shared
-gem 'multi_json', '~> 1.14.1', feature_category: :shared
+gem 'multi_json', '~> 1.17.0', feature_category: :shared
 gem 'yajl-ruby', '~> 1.4.3', require: 'yajl', feature_category: :shared
 
 gem 'webauthn', '~> 3.0', feature_category: :shared

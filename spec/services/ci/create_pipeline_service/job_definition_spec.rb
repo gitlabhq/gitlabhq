@@ -71,6 +71,60 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
     end
   end
 
+  context 'when there are jobs with run steps' do
+    let(:config) do
+      <<-YAML
+      with_run1:
+        run:
+          - name: step1
+            script: echo "step 1"
+
+      with_run2:
+        run:
+          - name: step2
+            script: echo "step 2"
+
+      duplicate_run1:
+        run:
+          - name: step1
+            script: echo "step 1"
+
+      regular_script:
+        script: echo "regular script"
+      YAML
+    end
+
+    let(:with_run1)     { find_job('with_run1') }
+    let(:with_run2)     { find_job('with_run2') }
+    let(:duplicate_run1) { find_job('duplicate_run1') }
+    let(:regular_script) { find_job('regular_script') }
+
+    it 'creates job definition for each unique job' do
+      expect do
+        expect(pipeline).to be_created_successfully
+      end.to change { ::Ci::JobDefinition.count }.by(3)
+         .and change { ::Ci::JobDefinitionInstance.count }.by(4)
+
+      expect(with_run1.job_definition.config[:run_steps]).to eq([{ name: 'step1', script: 'echo "step 1"' }])
+      expect(with_run2.job_definition.config[:run_steps]).to eq([{ name: 'step2', script: 'echo "step 2"' }])
+      expect(duplicate_run1.job_definition.config[:run_steps]).to eq(
+        [{ name: 'step1', script: 'echo "step 1"' }]
+      )
+    end
+
+    it 'avoids creating duplicate job definitions' do
+      # creating the first pipeline
+      service.execute(:push, content: config).payload
+
+      # creating the second pipeline
+      expect do
+        expect do
+          expect(pipeline).to be_created_successfully
+        end.not_to change { ::Ci::JobDefinition.count }
+      end.to change { ::Ci::JobDefinitionInstance.count }.by(4)
+    end
+  end
+
   private
 
   def find_job(name)

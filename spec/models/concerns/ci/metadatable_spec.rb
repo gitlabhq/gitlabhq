@@ -12,6 +12,188 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     processable.clear_memoization(:can_write_metadata?)
   end
 
+  describe '#options' do
+    let(:job) { build(:ci_build, :without_job_definition, metadata: nil) }
+    let(:legacy_job_options) { { script: 'legacy job' } }
+    let(:job_definition_options) { { script: 'job_definition' } }
+    let(:temp_job_definition_options) { { script: 'temp_job_definition' } }
+    let(:metadata_options) { { script: 'metadata' } }
+
+    subject(:options) { job.options }
+
+    it 'defaults to an empty hash' do
+      is_expected.to eq({})
+    end
+
+    context 'when metadata options are present' do
+      before do
+        job.ensure_metadata.write_attribute(:config_options, metadata_options)
+      end
+
+      it { is_expected.to eq(metadata_options) }
+
+      context 'when temp job definition options are present' do
+        before do
+          temp_job_definition = build(:ci_job_definition, config: { options: temp_job_definition_options })
+          job.write_attribute(:temp_job_definition, temp_job_definition)
+        end
+
+        it { is_expected.to eq(temp_job_definition_options) }
+
+        context 'when job definition options are present' do
+          before do
+            job.build_job_definition.write_attribute(:config, { options: job_definition_options })
+          end
+
+          it { is_expected.to eq(job_definition_options) }
+
+          context 'when FF `read_from_new_ci_destinations` is disabled' do
+            before do
+              stub_feature_flags(read_from_new_ci_destinations: false)
+            end
+
+            it { is_expected.to eq(metadata_options) }
+          end
+
+          context 'when legacy job options are present' do
+            before do
+              job.write_attribute(:options, legacy_job_options)
+            end
+
+            it { is_expected.to eq(legacy_job_options) }
+          end
+        end
+      end
+    end
+  end
+
+  describe '#yaml_variables' do
+    let(:job) { build(:ci_build, :without_job_definition, metadata: nil) }
+    let(:legacy_job_variables) { [{ key: 'VAR', value: 'legacy job' }] }
+    let(:job_definition_variables) { [{ key: 'VAR', value: 'job_definition' }] }
+    let(:temp_job_definition_variables) { [{ key: 'VAR', value: 'temp_job_definition' }] }
+    let(:metadata_variables) { [{ key: 'VAR', value: 'metadata' }] }
+
+    subject(:yaml_variables) { job.yaml_variables }
+
+    it 'defaults to an empty array' do
+      is_expected.to eq([])
+    end
+
+    context 'when metadata variables are present' do
+      before do
+        job.ensure_metadata.write_attribute(:config_variables, metadata_variables)
+      end
+
+      it { is_expected.to eq(metadata_variables) }
+
+      context 'when temp job definition variables are present' do
+        before do
+          temp_job_definition = build(:ci_job_definition, config: { yaml_variables: temp_job_definition_variables })
+          job.write_attribute(:temp_job_definition, temp_job_definition)
+        end
+
+        it { is_expected.to eq(temp_job_definition_variables) }
+
+        context 'when job definition variables are present' do
+          before do
+            job.build_job_definition.write_attribute(:config, { yaml_variables: job_definition_variables })
+          end
+
+          it { is_expected.to eq(job_definition_variables) }
+
+          context 'when FF `read_from_new_ci_destinations` is disabled' do
+            before do
+              stub_feature_flags(read_from_new_ci_destinations: false)
+            end
+
+            it { is_expected.to eq(metadata_variables) }
+          end
+
+          context 'when legacy job variables are present' do
+            before do
+              job.write_attribute(:yaml_variables, legacy_job_variables)
+            end
+
+            it { is_expected.to eq(legacy_job_variables) }
+          end
+        end
+      end
+    end
+  end
+
+  describe '#options=' do
+    let(:options) { { script: 'echo test' } }
+
+    subject(:set_options) { processable.options = options }
+
+    before do
+      processable.write_attribute(:options, { script: 'echo something' })
+    end
+
+    it 'does not change metadata.config_options' do
+      expect { set_options }
+        .to not_change { processable.metadata.config_options }
+    end
+
+    it 'does not set legacy job options to nil' do
+      expect { set_options }
+        .to not_change { processable.read_attribute(:options) }
+    end
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it 'sets value into metadata.config_options' do
+        expect { set_options }
+          .to change { processable.metadata.config_options }.to(options)
+      end
+
+      it 'sets legacy job options to nil' do
+        expect { set_options }
+          .to change { processable.read_attribute(:options) }.to(nil)
+      end
+    end
+  end
+
+  describe '#yaml_variables=' do
+    let(:yaml_variables) { [{ key: 'VAR', value: 'test' }] }
+
+    subject(:set_yaml_variables) { processable.yaml_variables = yaml_variables }
+
+    before do
+      processable.write_attribute(:yaml_variables, [{ key: 'VAR', value: 'something' }])
+    end
+
+    it 'does not change metadata.config_variables' do
+      expect { set_yaml_variables }
+        .to not_change { processable.metadata.config_variables }
+    end
+
+    it 'does not set legacy job yaml_variables to nil' do
+      expect { set_yaml_variables }
+        .to not_change { processable.read_attribute(:yaml_variables) }
+    end
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it 'sets value into metadata.config_variables' do
+        expect { set_yaml_variables }
+          .to change { processable.metadata.config_variables }.to(yaml_variables)
+      end
+
+      it 'sets legacy job yaml_variables to nil' do
+        expect { set_yaml_variables }
+          .to change { processable.read_attribute(:yaml_variables) }.to(nil)
+      end
+    end
+  end
+
   describe '#timeout_human_readable_value' do
     let_it_be_with_refind(:job) { create(:ci_build) }
 
@@ -335,6 +517,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   describe '#id_tokens' do
     let(:metadata_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://metadata' } } }
     let(:job_definition_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://job.definition' } } }
+    let(:temp_job_definition_id_tokens) { { 'TEST_ID_TOKEN' => { 'aud' => 'https://temp.job.definition' } } }
 
     subject(:id_tokens) { processable.id_tokens }
 
@@ -353,25 +536,34 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
         expect(processable.id_tokens?).to be(true)
       end
 
-      context 'when job definition id_tokens are present' do
+      context 'when temp job definition id_tokens are present' do
         before do
-          updated_config = processable.job_definition.config.merge(id_tokens: job_definition_id_tokens)
-          processable.job_definition.write_attribute(:config, updated_config)
+          temp_job_definition = build(:ci_job_definition, config: { id_tokens: temp_job_definition_id_tokens })
+          processable.write_attribute(:temp_job_definition, temp_job_definition)
         end
 
-        it 'returns job definition id_tokens' do
-          expect(id_tokens).to eq(job_definition_id_tokens)
-          expect(processable.id_tokens?).to be(true)
-        end
+        it { is_expected.to eq(temp_job_definition_id_tokens) }
 
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
+        context 'when job definition id_tokens are present' do
           before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
+            updated_config = processable.job_definition.config.merge(id_tokens: job_definition_id_tokens)
+            processable.job_definition.write_attribute(:config, updated_config)
           end
 
-          it 'returns metadata id_tokens' do
-            expect(id_tokens).to eq(metadata_id_tokens)
+          it 'returns job definition id_tokens' do
+            expect(id_tokens).to eq(job_definition_id_tokens)
             expect(processable.id_tokens?).to be(true)
+          end
+
+          context 'when FF `read_from_new_ci_destinations` is disabled' do
+            before do
+              stub_feature_flags(read_from_new_ci_destinations: false)
+            end
+
+            it 'returns metadata id_tokens' do
+              expect(id_tokens).to eq(metadata_id_tokens)
+              expect(processable.id_tokens?).to be(true)
+            end
           end
         end
       end

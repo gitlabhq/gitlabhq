@@ -107,6 +107,20 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       end
     end
 
+    context 'with tag_list' do
+      let(:config) do
+        {
+          options: { script: ['echo test'] },
+          tag_list: ['build'],
+          extra_field: 'should be ignored'
+        }
+      end
+
+      it 'sets the correct config' do
+        expect(fabricate.config).to include(tag_list: ['build'])
+      end
+    end
+
     context 'with all CONFIG_ATTRIBUTES specified' do
       let(:config) do
         {

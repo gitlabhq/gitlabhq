@@ -193,13 +193,20 @@ module Ci
     private
 
     def read_metadata_attribute(legacy_key, metadata_key, job_definition_key, default_value = nil)
-      (legacy_key && read_attribute(legacy_key)) ||
-        (read_from_new_destination? && job_definition && job_definition.config[job_definition_key]) ||
-        metadata&.read_attribute(metadata_key) ||
-        default_value
+      result = read_attribute(legacy_key) if legacy_key
+      return result if result
+
+      if read_from_new_destination?
+        result = job_definition&.config&.dig(job_definition_key) || temp_job_definition&.config&.dig(job_definition_key)
+        return result if result
+      end
+
+      metadata&.read_attribute(metadata_key) || default_value
     end
 
     def write_metadata_attribute(legacy_key, metadata_key, value)
+      return unless can_write_metadata?
+
       ensure_metadata.write_attribute(metadata_key, value)
       write_attribute(legacy_key, nil)
     end

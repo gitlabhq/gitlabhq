@@ -311,7 +311,7 @@ module Ci
     end
 
     def inherit_status_from_downstream(pipeline)
-      if pipeline.source_bridge.mirrored?
+      if mirrored?
         inherit_mirrored_status_from_downstream!(pipeline)
       else
         inherit_dependent_status_from_downstream!(pipeline)

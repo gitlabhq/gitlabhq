@@ -19,7 +19,7 @@ Bundler.require(*Rails.groups)
 
 module Gitlab
   class Application < Rails::Application
-    config.load_defaults 7.1
+    config.load_defaults 7.0
 
     # This section contains configuration from Rails upgrades to override the new defaults so that we
     # keep existing behavior.
@@ -29,20 +29,6 @@ module Gitlab
     # https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
     #
     # To switch a setting to the new default value, we just need to delete the specific line here.
-    # Rails 7.1
-    config.active_record.default_column_serializer = Psych # New default is `nil`
-    config.active_record.raise_on_assign_to_attr_readonly = false # New default is `true`
-    config.active_record.run_after_transaction_callbacks_in_order_defined = false # New default is `true`
-    config.active_record.run_commit_callbacks_on_first_saved_instances_in_transaction = true # New default is `false`
-    config.active_record.sqlite3_adapter_strict_strings_by_default = false # New default is `true`
-    config.action_controller.allow_deprecated_parameters_hash_equality = true
-    config.action_view.sanitizer_vendor = Rails::HTML4::Sanitizer # New default is `Rails::HTML5::Sanitizer`
-    config.add_autoload_paths_to_load_path = true # New default is `false`
-    config.active_record.generate_secure_token_on = :create # New default is `:initialize`
-    config.active_record.marshalling_format_version = 6.1 # New default is `7.1`
-    config.active_record.belongs_to_required_validates_foreign_key = true # New default is `false`
-    config.active_support.raise_on_invalid_cache_expiration_time = false # New default is `true`
-    config.active_record.encryption.support_sha1_for_non_deterministic_encryption = true # New default is `false`
 
     # Rails 7.0
     config.action_controller.raise_on_open_redirects = false
@@ -55,7 +41,7 @@ module Gitlab
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
     config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
-    config.active_record.encryption.hash_digest_class = OpenSSL::Digest::SHA256
+    config.active_support.cache_format_version = 7.1
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax

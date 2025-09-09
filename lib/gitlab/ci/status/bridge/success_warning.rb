@@ -10,7 +10,7 @@ module Gitlab
         #
         class SuccessWarning < Status::Extended
           def self.matches?(bridge, _user)
-            bridge.success? && bridge.downstream_pipeline&.has_warnings?
+            bridge.success? && bridge.mirrored? && bridge.downstream_pipeline&.has_warnings?
           end
 
           def icon

@@ -54,8 +54,6 @@ RSpec.describe Ci::CreatePipelineService, :request_store, feature_category: :con
       context 'with multiple tags' do
         context 'when the tags do not exist' do
           it 'does not execute N+1 queries' do
-            stub_yaml_config(config)
-
             recording = ActiveRecord::QueryRecorder.new(skip_cached: false) do
               expect(pipeline).to be_created_successfully
             end

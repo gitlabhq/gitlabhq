@@ -16440,6 +16440,9 @@ msgstr ""
 msgid "ComplianceFramework|Import framework"
 msgstr ""
 
+msgid "ComplianceFramework|Instance level compliance framework"
+msgstr ""
+
 msgid "ComplianceFramework|Looking for a template? Need an example JSON schema? Look through our %{linkStart}examples here.%{linkEnd}"
 msgstr ""
 
@@ -20597,9 +20600,6 @@ msgstr ""
 msgid "DORA4Metrics|Filtered by"
 msgstr ""
 
-msgid "DORA4Metrics|Forecast"
-msgstr ""
-
 msgid "DORA4Metrics|Go to docs"
 msgstr ""
 
@@ -20710,9 +20710,6 @@ msgstr ""
 msgid "DORA4Metrics|Percentage of failed deployments"
 msgstr ""
 
-msgid "DORA4Metrics|Show forecast"
-msgstr ""
-
 msgid "DORA4Metrics|Some metric charts failed to load"
 msgstr ""
 
@@ -20753,9 +20750,6 @@ msgid "DORA4Metrics|Time to restore service (Quality)"
 msgstr ""
 
 msgid "DORA4Metrics|Time to restore service (median days)"
-msgstr ""
-
-msgid "DORA4Metrics|To help us improve the Show forecast feature, please share feedback about your experience in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
 msgid "DORA4Metrics|To help us improve the Value Stream Management Dashboard, please share feedback about your experience in this %{linkStart}survey%{linkEnd}."
@@ -41727,6 +41721,9 @@ msgid "ModelSelection|Model Selection"
 msgstr ""
 
 msgid "ModelSelection|Model Selection is enabled for GitLab Duo, which requires a default namespace to be set. You must select a default namespace in profile preferences to continue using GitLab Duo features."
+msgstr ""
+
+msgid "ModelSelection|Select a model"
 msgstr ""
 
 msgid "ModelSelection|Select default namespace for GitLab Duo"

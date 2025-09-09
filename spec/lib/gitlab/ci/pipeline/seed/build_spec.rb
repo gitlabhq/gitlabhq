@@ -307,6 +307,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
 
       it { is_expected.to include(tag_list: ['static-tag', 'value', '$NO_VARIABLE']) }
+      it { expect(subject[:temp_job_definition].config).to include({ tag_list: ['static-tag', 'value', '$NO_VARIABLE'] }) }
       it { is_expected.to include(yaml_variables: [{ key: 'VARIABLE', value: 'value' }]) }
     end
 
@@ -615,6 +616,50 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         it 'includes secrets in temp_job_definition' do
           expect(subject[:temp_job_definition].config[:secrets]).to eq(attributes[:secrets])
           expect(subject[:secrets]).to eq(attributes[:secrets])
+        end
+      end
+
+      context 'with execution_config (run steps)' do
+        let(:run_steps_value) do
+          [
+            { name: 'step1', step: 'gitlab.com/components/echo@v1.0.0', env: { VAR1: 'value1' } },
+            { name: 'step2', script: "echo 'Hello, World!'", inputs: { input1: 'input_value1' } }
+          ]
+        end
+
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master',
+            execution_config: {
+              run_steps: run_steps_value
+            }
+          }
+        end
+
+        it 'includes execution config data in temp_job_definition' do
+          expect(seed_attributes[:temp_job_definition].config[:run_steps]).to eq(run_steps_value)
+        end
+
+        it 'preserves original execution_config attribute' do
+          expect(seed_attributes[:execution_config]).to an_object_having_attributes(
+            project: pipeline.project,
+            pipeline: pipeline,
+            run_steps: run_steps_value.map(&:deep_stringify_keys)
+          )
+        end
+
+        context 'when execution_config is nil' do
+          let(:attributes) do
+            {
+              name: 'rspec',
+              ref: 'master'
+            }
+          end
+
+          it 'does not include execution config data in temp_job_definition' do
+            expect(seed_attributes[:temp_job_definition].config[:run_steps]).to be_nil
+          end
         end
       end
 

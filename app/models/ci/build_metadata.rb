@@ -69,6 +69,7 @@ module Ci
 
     def validate_config_options_schema
       return unless ci_validate_config_options_enabled?
+      return if config_options.nil?
 
       validator = JsonSchemaValidator.new({
         filename: 'build_metadata_config_options',

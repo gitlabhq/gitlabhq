@@ -696,6 +696,7 @@ Audit event types belong to the following product categories.
 | [`user_impersonation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79340) | An instance administrator starts or stops impersonating a user | {{< icon name="check-circle" >}} Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) | User, Group |
 | [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user password is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User |
 | [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | {{< icon name="check-circle" >}} Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
+| [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to ghost user during batch processing | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 
 ### User profile

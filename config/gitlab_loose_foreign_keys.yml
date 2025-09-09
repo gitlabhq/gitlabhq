@@ -652,6 +652,10 @@ packages_npm_metadata_caches:
     on_delete: update_column_to
     target_column: status
     target_value: 2
+packages_nuget_symbol_states:
+  - table: packages_nuget_symbols
+    column: packages_nuget_symbol_id
+    on_delete: async_delete
 packages_package_file_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id

@@ -63,7 +63,7 @@ module Sidebars
           build_menu_item(
             title: _('Users'),
             link: admin_users_path,
-            active_routes: { controller: 'users' },
+            active_routes: { controller: 'admin/users' },
             item_id: :users,
             container_html_options: { 'data-testid': 'admin-overview-users-link' }
           ) { can?(current_user, :read_admin_users) }

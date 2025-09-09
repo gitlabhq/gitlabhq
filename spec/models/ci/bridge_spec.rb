@@ -397,6 +397,19 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         end
       end
 
+      context 'when downstream has success with warnings' do
+        let(:downstream_status) { 'success' }
+
+        before do
+          create(:ci_build, :failed, :allowed_to_fail, pipeline: downstream_pipeline)
+        end
+
+        it 'inherits success status' do
+          expect(downstream_pipeline.has_warnings?).to be true
+          expect { subject }.to change { bridge.status }.from('pending').to('success')
+        end
+      end
+
       %w[success failed canceled skipped].each do |bridge_starting_status|
         context "when initial bridge status is {bridge_starting_status}" do
           before do

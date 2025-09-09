@@ -789,7 +789,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    context 'with resource group' do
+    shared_examples 'with resource group' do
       context 'when resource group is defined' do
         before do
           config = YAML.dump(
@@ -827,7 +827,9 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    context 'when resource group is defined for review app deployment' do
+    it_behaves_like 'with resource group'
+
+    shared_examples 'when resource group is defined for review app deployment' do
       before do
         config = YAML.dump(
           review_app: {
@@ -876,6 +878,26 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         end
 
         expect(execute_service.payload).to be_created_successfully
+      end
+    end
+
+    it_behaves_like 'when resource group is defined for review app deployment'
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it_behaves_like 'with resource group'
+      it_behaves_like 'when resource group is defined for review app deployment'
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it_behaves_like 'with resource group'
+        it_behaves_like 'when resource group is defined for review app deployment'
       end
     end
 

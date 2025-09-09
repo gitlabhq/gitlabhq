@@ -241,11 +241,25 @@ module Gitlab
           def apply_job_definition_attributes(attrs)
             return attrs if ::Feature.disabled?(:write_to_new_ci_destinations, @pipeline.project)
 
-            temp_job_definition = ::Ci::JobDefinition.fabricate(
-              config: attrs, project_id: @pipeline.project.id, partition_id: @pipeline.partition_id
-            )
+            attrs.merge(temp_job_definition: build_temp_job_definition(attrs))
+          end
 
-            attrs.merge(temp_job_definition: temp_job_definition)
+          def build_temp_job_definition(attrs)
+            ::Ci::JobDefinition.fabricate(
+              config: build_job_definition_config(attrs), project_id: @pipeline.project.id, partition_id: @pipeline.partition_id
+            )
+          end
+
+          def build_job_definition_config(attrs)
+            return attrs unless @execution_config_attribute
+
+            # Currently, `execution_config` is passed from `lib/gitlab/ci/yaml_processor/result.rb` and deleted
+            # in the `initialize` method of this class and assigned to `@execution_config_attribute`.
+            # Today, we don't want to make a huge change in the process; we only want to save the data to the
+            # `p_ci_job_definitions` table. In the future (https://gitlab.com/groups/gitlab-org/-/epics/19262), we'll
+            # remove the `build_execution_config_attribute` method and splat the `execution_config` to
+            # `build_attributes` in `lib/gitlab/ci/yaml_processor/result.rb`.
+            attrs.merge(@execution_config_attribute)
           end
 
           def remove_ci_builds_metadata_attributes(attrs)

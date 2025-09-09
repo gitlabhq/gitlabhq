@@ -376,7 +376,7 @@ module Types
 
     # This is temporary to fix a bug where `committers` is already loaded and memoized
     # and calling it again with a certain GraphQL query can cause the Rails to to throw
-    # a ActiveRecord::ImmutableRelation error
+    # a ActiveRecord::UnmodifiableRelation error
     def committers
       object.commits.committers
     end

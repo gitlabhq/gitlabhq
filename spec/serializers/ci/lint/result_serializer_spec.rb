@@ -77,6 +77,9 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
       end
 
       it 'returns job data' do
+        # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
+        stub_feature_flags(stop_writing_builds_metadata: false)
+
         expect(first_job[:name]).to eq('rspec')
         expect(first_job[:stage]).to eq('test')
         expect(first_job[:before_script]).to eq(['bundle install', 'bundle exec rake db:create'])

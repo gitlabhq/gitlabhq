@@ -254,6 +254,7 @@ module QA
 
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
+            # We don't want to delete sandbox groups
             attributes['info']&.match(/with full_path 'gitlab-e2e-sandbox-group(-\d)?'/) ||
               (attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-")) ||
               attributes['api_path'] == 'Cannot find resource API path' ||
@@ -319,7 +320,8 @@ module QA
 
         organized_resources['QA::Resource::Sandbox'] = sandboxes if sandboxes
         organized_resources['QA::Resource::Group'] = groups if groups
-        organized_resources['QA::Resource::Project'] = projects if projects
+        # Don't try to delete projects when we're soft-deleting resources as it would result in 403 API responses
+        organized_resources['QA::Resource::Project'] = projects if projects && @permanently_delete
         organized_resources.merge!(filtered_resources) unless filtered_resources.empty?
         organized_resources['QA::Resource::User'] = users if users
 

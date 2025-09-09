@@ -332,7 +332,7 @@ describe('SuperSidebar component', () => {
     });
 
     it('does not render the context header text when in icon-only mode', () => {
-      expect(findContextHeader().element.textContent.trim()).toBe('');
+      expect(findContextHeader().exists()).toBe(false);
     });
   });
 

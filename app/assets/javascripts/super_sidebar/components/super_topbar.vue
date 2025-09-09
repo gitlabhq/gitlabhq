@@ -65,7 +65,7 @@ export default {
   <header
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
-    <div class="gl-contents gl-items-center gl-gap-3 md:gl-flex">
+    <div class="gl-contents gl-items-center gl-gap-5 md:gl-flex">
       <div class="gl-flex gl-items-center gl-gap-2">
         <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
@@ -123,7 +123,7 @@ export default {
             v-if="isAdmin"
             :href="sidebarData.admin_url"
             icon="admin"
-            class="topbar-admin-link gl-hidden !gl-rounded-lg xl:gl-flex"
+            class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"
             data-testid="topbar-admin-link"
           >
             {{ $options.i18n.adminArea }}

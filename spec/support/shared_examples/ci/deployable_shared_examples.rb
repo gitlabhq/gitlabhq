@@ -310,7 +310,7 @@ RSpec.shared_examples 'a deployable job' do
   describe '#environment_options_for_permanent_storage' do
     subject { job.environment_options_for_permanent_storage }
 
-    let(:job) { described_class.new(options: options) }
+    let(:job) { FactoryBot.build(factory_type, options: options) }
     let(:options) do
       {
         script: 'script',

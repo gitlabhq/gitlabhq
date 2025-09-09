@@ -43,6 +43,14 @@ RSpec.describe Mutations::MergeRequests::Update, feature_category: :team_plannin
         end
       end
 
+      context 'when remove_source_branch is provided' do
+        let(:attributes) { { remove_source_branch: true } }
+
+        it 'applies remove source branch attribute' do
+          expect(mutated_merge_request.force_remove_source_branch?).to be(true)
+        end
+      end
+
       context 'when timeEstimate attribute is provided' do
         let(:time_estimate) { '0' }
         let(:attributes) { { time_estimate: time_estimate } }

@@ -252,11 +252,11 @@ export default {
       />
       <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <div
-          v-if="sidebarData.current_context_header"
+          v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
           class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
-          {{ isIconOnly ? '' : sidebarData.current_context_header }}
+          {{ sidebarData.current_context_header }}
         </div>
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu

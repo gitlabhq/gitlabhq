@@ -32,7 +32,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-px-5;
+    @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-pl-5 gl-pr-5 sm:gl-pr-3;
     top: $calc-system-headers-height;
     height: var(--header-height);
     z-index: calc($super-sidebar-z-index + 1);

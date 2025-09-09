@@ -757,7 +757,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.33)
       rb_sys (~> 0.9.109)
-    gitlab-kas-grpc (18.2.1)
+    gitlab-kas-grpc (18.3.1)
       grpc (~> 1.0)
     gitlab-labkit (0.40.0)
       actionpack (>= 5.0.0, < 8.1.0)
@@ -1206,7 +1206,7 @@ GEM
       chef-utils
     mize (0.6.1)
     msgpack (1.5.4)
-    multi_json (1.14.1)
+    multi_json (1.17.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
     murmurhash3 (0.1.7)
@@ -2175,7 +2175,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.33)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-kas-grpc (~> 18.2.0)
+  gitlab-kas-grpc (~> 18.3.0)
   gitlab-labkit (~> 0.40.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)
@@ -2269,7 +2269,7 @@ DEPENDENCIES
   microsoft_graph_mailer (~> 0.1.0)!
   mini_magick (~> 4.12)
   minitest (~> 5.11.0)
-  multi_json (~> 1.14.1)
+  multi_json (~> 1.17.0)
   mutex_m (~> 0.3)
   net-http (= 0.6.0)
   net-ldap (~> 0.17.1)

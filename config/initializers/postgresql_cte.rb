@@ -65,13 +65,17 @@ module ActiveRecord
     end
 
     def with_values_=(values)
-      raise ImmutableRelation if @loaded
+      if @loaded
+        raise Gitlab.next_rails? ? UnmodifiableRelation : ImmutableRelation
+      end
 
       @values[:with_values] = values
     end
 
     def recursive_value=(value)
-      raise ImmutableRelation if @loaded
+      if @loaded
+        raise Gitlab.next_rails? ? UnmodifiableRelation : ImmutableRelation
+      end
 
       @values[:recursive] = value
     end

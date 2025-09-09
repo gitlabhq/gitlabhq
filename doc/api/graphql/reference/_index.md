@@ -8931,6 +8931,7 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the merge request. |
 | <a id="mutationmergerequestcreatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the merge request is associated with. |
+| <a id="mutationmergerequestcreateremovesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
 | <a id="mutationmergerequestcreatesourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the merge request. |
 | <a id="mutationmergerequestcreatetargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestcreatetitle"></a>`title` | [`String!`](#string) | Title of the merge request. |
@@ -9150,6 +9151,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdateremovesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestupdatetimeestimate"></a>`timeEstimate` | [`String`](#string) | Estimated time to complete the merge request. Use `null` or `0` to remove the current estimate. |
