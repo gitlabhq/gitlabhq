@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.1.6 (2025-09-09)
+
+### Fixed (1 change)
+
+- [Make FileLocationType.endLine nullable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d182c402a89a05008c98ff5fbd30bbcfc547a789) **GitLab Enterprise Edition**
+
+### Security (6 changes)
+
+- [Introduce limit for closed issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a869c795eb95f8012e9343521f1be9007cf2dab) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5237))
+- [Add file size limit for blob editing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4e9cb1f4b1f02e7c932f3cf98beff6efe7de1a10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5298))
+- [Fix DoS via large SAML Response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf826c92b10e5c36d16aaff1baad1ba5dfda8cde) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5241))
+- [Add limit to deploy token name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09bb4e1c9da13aca8fd29e1cf19fb8e314ab43f0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5301))
+- [Fix webhook custom header validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/87b35b0046ab269fa0f469a7df196ccbc95f22bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5294))
+- [Show runner maintenance note only to runner maintainers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b91b0297eedbf681c1355e8ef9f3f0a055aec06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5288))
+
 ## 18.1.5 (2025-08-26)
 
 ### Security (4 changes)
