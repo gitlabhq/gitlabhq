@@ -78,19 +78,19 @@
   table.tree-table tbody tr:last-child {
     td, th {
       &:first-child {
-        border-bottom-left-radius: calc(#{$gl-border-radius-lg} - 1px) !important;
+        border-bottom-left-radius: $gl-border-radius-lg-inner !important;
       }
 
       &:last-child {
-        border-bottom-right-radius: calc(#{$gl-border-radius-lg} - 1px) !important;
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
       }
     }
   }
 
   // File title
   .file-title-flex-parent, .file-holder .file-title-flex-parent {
-    border-top-left-radius: #{$gl-border-radius-lg - 1px} !important;
-    border-top-right-radius: #{$gl-border-radius-lg - 1px} !important;
+    border-top-left-radius: $gl-border-radius-lg-inner !important;
+    border-top-right-radius: $gl-border-radius-lg-inner !important;
   }
 
   // Discussion file comment

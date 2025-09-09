@@ -1166,6 +1166,9 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 - Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
   not `/regex.*/`.
 - `inputs:regex` uses [RE2](https://github.com/google/re2/wiki/Syntax) to parse regular expressions.
+- Validation of the input against the regular expression happens before variable expansion.
+  If the input text includes a variable name, the raw value of the input (the variable name)
+  is validated, not the variable value.
 
 ---
 

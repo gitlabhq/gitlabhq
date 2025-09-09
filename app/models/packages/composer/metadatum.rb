@@ -6,7 +6,7 @@ module Packages
       self.table_name = 'packages_composer_metadata'
       self.primary_key = :package_id
 
-      belongs_to :package, class_name: 'Packages::Composer::Package', inverse_of: :composer_metadatum
+      belongs_to :package, class_name: 'Packages::Composer::Sti::Package', inverse_of: :composer_metadatum
 
       validates :package, :target_sha, :composer_json, presence: true
 

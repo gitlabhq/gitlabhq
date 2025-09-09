@@ -48,7 +48,9 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           :yaml_variables,
           :id_tokens,
           :secrets,
-          :interruptible
+          :interruptible,
+          :tag_list,
+          :run_steps
         ])
       end
     end
@@ -112,7 +114,8 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           yaml_variables: [{ key: 'VAR', value: 'value' }],
           id_tokens: { TEST_TOKEN: { aud: 'https://gitlab.com' } },
           secrets: { TEST_SECRET: { gitlab_secrets_manager: { name: 'foo' } } },
-          interruptible: true
+          interruptible: true, tag_list: %w[ruby postgresql],
+          run_steps: [{ 'name' => 'step1', 'step' => 'echo', 'inputs' => { 'message' => 'Hello, World!' } }]
         }
       end
 

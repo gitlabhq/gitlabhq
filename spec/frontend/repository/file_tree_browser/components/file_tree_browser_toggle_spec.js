@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { GlButton, GlTooltip } from '@gitlab/ui';
+import { GlButton, GlTooltip, GlPopover } from '@gitlab/ui';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
@@ -8,6 +8,8 @@ import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_brow
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
@@ -19,9 +21,15 @@ describe('FileTreeBrowserToggle', () => {
   let fileTreeBrowserStore;
 
   const findToggleButton = () => wrapper.findComponent(GlButton);
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   const createComponent = () => {
-    wrapper = shallowMount(FileTreeBrowserToggle, { pinia });
+    wrapper = shallowMount(FileTreeBrowserToggle, {
+      pinia,
+      stubs: {
+        LocalStorageSync,
+      },
+    });
   };
 
   beforeEach(() => {
@@ -107,6 +115,63 @@ describe('FileTreeBrowserToggle', () => {
       await nextTick();
       expect(findTooltip().text()).toContain('Show file tree browser');
       expect(findShortcut().exists()).toBe(false);
+    });
+  });
+
+  describe('FileTreeBrowserToggle popover', () => {
+    useLocalStorageSpy();
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    describe('when mounted', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('has the correct target', () => {
+        expect(findPopover().props('target')).toBe('file-tree-browser-toggle');
+      });
+
+      it('has an empty localStorage', () => {
+        expect(localStorage.getItem('ftb-popover-visible')).toBe(null);
+      });
+    });
+
+    describe('when the localStorage entry is true', () => {
+      it('shows the popover', async () => {
+        localStorage.setItem('ftb-popover-visible', 'true');
+        createComponent();
+        await nextTick();
+
+        expect(findPopover().exists()).toBe(true);
+      });
+    });
+
+    describe('when the localStorage entry is false', () => {
+      it('does not show the popover', async () => {
+        localStorage.setItem('ftb-popover-visible', 'false');
+        createComponent();
+        await nextTick();
+
+        expect(findPopover().exists()).toBe(false);
+      });
+    });
+
+    describe('when dismissing the popover', () => {
+      beforeEach(() => {
+        createComponent();
+        findPopover().vm.$emit('close-button-clicked');
+      });
+
+      it('sets the correct localStorage item', () => {
+        expect(localStorage.setItem).toHaveBeenCalledWith('ftb-popover-visible', 'false');
+      });
+
+      it('sets the correct localStorage value', () => {
+        expect(localStorage.getItem('ftb-popover-visible')).toBe('false');
+      });
     });
   });
 });

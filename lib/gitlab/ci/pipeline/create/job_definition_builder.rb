@@ -30,7 +30,7 @@ module Gitlab
           attr_reader :project, :pipeline, :jobs
 
           def find_or_insert_job_definitions
-            Gitlab::Ci::JobDefinitions::FindOrCreate.new(pipeline, jobs).execute
+            Gitlab::Ci::JobDefinitions::FindOrCreate.new(pipeline, jobs: jobs).execute
           end
 
           def jobs_by_checksum

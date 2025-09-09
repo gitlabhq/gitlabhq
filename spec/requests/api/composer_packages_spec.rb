@@ -482,7 +482,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
       it 'does not create a new package' do
         expect { subject }
-          .not_to change { ::Packages::Composer::Package.for_projects(project).count }
+          .not_to change { ::Packages::Composer::Sti::Package.for_projects(project).count }
 
         expect(response).to have_gitlab_http_status(:created)
       end
@@ -491,7 +491,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         it 'does create a new package' do
           existing_package.pending_destruction!
           expect { subject }
-            .to change { ::Packages::Composer::Package.for_projects(project).count }.by(1)
+            .to change { ::Packages::Composer::Sti::Package.for_projects(project).count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
         end

@@ -299,7 +299,7 @@
 }
 
 .add-reaction-search {
-  $input-focus-ring-border-radius: calc(#{$gl-border-radius-large} - #{$gl-border-size-1});
+  $input-focus-ring-border-radius: $gl-border-radius-lg-inner;
 
   input {
     border-top-left-radius: $input-focus-ring-border-radius !important;

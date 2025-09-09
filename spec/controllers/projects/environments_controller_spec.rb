@@ -547,6 +547,18 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         expect(response).to have_gitlab_http_status(:not_found)
       end
     end
+
+    context 'with certificate_based_clusters feature disabled' do
+      before do
+        stub_feature_flags(certificate_based_clusters: false)
+      end
+
+      it 'responds with a status code 404' do
+        get :terminal, params: environment_params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'GET #terminal_websocket_authorize' do

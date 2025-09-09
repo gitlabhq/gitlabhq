@@ -28,7 +28,7 @@ module Packages
 
       override :packages_class
       def packages_class
-        ::Packages::Composer::Package
+        ::Packages::Composer::Sti::Package
       end
     end
   end

@@ -71,7 +71,7 @@ For runners to work with caches efficiently, you must do one of the following:
 
 ## Use multiple caches
 
-You can have a maximum of four caches:
+You can have a maximum of four caches, per job:
 
 ```yaml
 test-job:

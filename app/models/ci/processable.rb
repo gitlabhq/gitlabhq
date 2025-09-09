@@ -192,31 +192,6 @@ module Ci
 
     delegate :short_token, to: :trigger, prefix: true, allow_nil: true
 
-    def clone(current_user:, new_job_variables_attributes: [])
-      new_attributes = self.class.clone_accessors.index_with do |attribute|
-        public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
-      end
-
-      if persisted_environment.present?
-        new_attributes[:metadata_attributes] ||= {}
-        new_attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
-      end
-
-      # We don't check for job_definition because loading the jsonb field from the database is expensive
-      if job_definition_instance
-        new_attributes[:job_definition_instance_attributes] ||= {}
-        new_attributes[:job_definition_instance_attributes].merge!(
-          project_id: project_id,
-          job_definition_id: job_definition_instance.job_definition_id,
-          partition_id: job_definition_instance.partition_id
-        )
-      end
-
-      new_attributes[:user] = current_user
-
-      self.class.new(new_attributes)
-    end
-
     # Scoped user is present when the user creating the pipeline supports composite identity.
     # For example: a service account like GitLab Duo. The scoped user is used to further restrict
     # the permissions of the CI job token associated to the `job.user`.

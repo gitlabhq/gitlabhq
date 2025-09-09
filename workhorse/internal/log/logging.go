@@ -2,12 +2,12 @@
 package log
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/sirupsen/logrus"
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
-	"golang.org/x/net/context"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/exception"
 )

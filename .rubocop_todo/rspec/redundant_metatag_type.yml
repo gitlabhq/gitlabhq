@@ -421,7 +421,6 @@ RSpec/RedundantMetatagType:
     - 'spec/models/packages/build_info_spec.rb'
     - 'spec/models/packages/cleanup/policy_spec.rb'
     - 'spec/models/packages/composer/metadatum_spec.rb'
-    - 'spec/models/packages/composer/package_spec.rb'
     - 'spec/models/packages/conan/file_metadatum_spec.rb'
     - 'spec/models/packages/conan/metadatum_spec.rb'
     - 'spec/models/packages/conan/package_reference_spec.rb'

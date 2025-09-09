@@ -138,7 +138,7 @@ module Packages
         conan: 'Packages::Conan::Package',
         rpm: 'Packages::Rpm::Package',
         debian: 'Packages::Debian::Package',
-        composer: 'Packages::Composer::Package',
+        composer: 'Packages::Composer::Sti::Package',
         helm: 'Packages::Helm::Package',
         generic: 'Packages::Generic::Package',
         pypi: 'Packages::Pypi::Package',

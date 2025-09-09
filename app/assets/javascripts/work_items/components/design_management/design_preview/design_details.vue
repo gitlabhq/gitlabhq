@@ -8,6 +8,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import { ROUTES } from '../../../constants';
 import getDesignQuery from '../graphql/design_details.query.graphql';
 import getWorkItemDesignListQuery from '../graphql/design_collection.query.graphql';
@@ -99,7 +100,6 @@ export default {
       resolvedDiscussionsExpanded: false,
       prevCurrentUserTodos: null,
       maxScale: DEFAULT_MAX_SCALE,
-      workItemId: '',
       isSidebarOpen: true,
     };
   },
@@ -217,6 +217,9 @@ export default {
     },
     canUpdateDesign() {
       return this.design.canUpdateDesign || false;
+    },
+    workItemId() {
+      return this.design?.issue?.id?.replace(TYPENAME_ISSUE, TYPENAME_WORK_ITEM) || '';
     },
   },
   watch: {

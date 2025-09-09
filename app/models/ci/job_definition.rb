@@ -18,7 +18,9 @@ module Ci
       :yaml_variables,
       :id_tokens,
       :secrets,
-      :interruptible
+      :interruptible,
+      :tag_list,
+      :run_steps
     ].freeze
 
     query_constraints :id, :partition_id

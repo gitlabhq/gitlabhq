@@ -797,6 +797,16 @@ tests = [
     explanation: 'Verify application settings based on related API doc changes',
     changed_file: 'doc/api/settings.md',
     expected: ['spec/scripts/cells/application_settings_analysis_spec.rb']
+  },
+  {
+    explanation: 'Map any yaml file changes in devfile folder',
+    changed_file: '.devfile/search.yaml',
+    expected: ['spec/dot_gitlab_ci/rules_spec.rb']
+  },
+  {
+    explanation: 'Map any yaml file changes in project root',
+    changed_file: '.devfile.yaml',
+    expected: ['spec/dot_gitlab_ci/rules_spec.rb']
   }
 ]
 

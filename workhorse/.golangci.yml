@@ -155,7 +155,6 @@ linters:
             # Extended Go libraries
             - golang.org/x/image/draw
             - golang.org/x/image/tiff
-            - golang.org/x/net/context
             - golang.org/x/oauth2/google
             # Additional test and utility libraries
             - github.com/dlclark/regexp2

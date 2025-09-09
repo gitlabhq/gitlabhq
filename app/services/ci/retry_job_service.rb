@@ -27,7 +27,7 @@ module Ci
       check_access!(job)
       variables = ensure_project_id!(variables)
 
-      new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
+      new_job = Ci::CloneJobService.new(job, current_user: current_user).execute(new_job_variables: variables)
       if enqueue_if_actionable && new_job.action?
         new_job.set_enqueue_immediately!
       end

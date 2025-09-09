@@ -30,8 +30,7 @@ $merge-request-sticky-header-height: 45px;
   }
 }
 
-.mr_source_commit,
-.mr_target_commit {
+.mr_source_commit, .mr_target_commit {
   margin-bottom: 0;
 
   .commit {
@@ -159,14 +158,19 @@ $merge-request-sticky-header-height: 45px;
 }
 
 @supports (container-type: scroll-state) {
-  .merge-request-sticky-header {
+  .merge-request-sticky-header-wrapper {
     @include media-breakpoint-up(md) {
-      @apply gl-sticky;
+      top: $calc-application-header-height;
+      min-height: 88px;
       container-type: scroll-state;
       container-name: sticky-header;
-      top: $calc-application-header-height;
       z-index: $top-bar-z-index - 1;
+      @apply gl-sticky;
+    }
+  }
 
+  .merge-request-sticky-header {
+    @include media-breakpoint-up(md) {
       &:has(.detail-page-description)::after {
         height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
       }
@@ -219,7 +223,7 @@ $merge-request-sticky-header-height: 45px;
 @supports not (container-type: scroll-state) {
   .merge-request-sticky-header {
     z-index: calc($top-bar-z-index - 1);
-    height: $mr-sticky-header-height;
+    min-height: $mr-sticky-header-height; // Allow container to grow with content or browser zoom
     @include translucent-glass-background;
   }
 }

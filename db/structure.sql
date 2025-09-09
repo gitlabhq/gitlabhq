@@ -9009,7 +9009,8 @@ CREATE TABLE abuse_report_user_mentions (
     note_id bigint NOT NULL,
     mentioned_users_ids bigint[],
     mentioned_projects_ids bigint[],
-    mentioned_groups_ids bigint[]
+    mentioned_groups_ids bigint[],
+    organization_id bigint
 );
 
 CREATE SEQUENCE abuse_report_user_mentions_id_seq
@@ -15632,6 +15633,7 @@ CREATE TABLE duo_workflows_workflows (
     image text,
     environment smallint,
     namespace_id bigint,
+    ai_catalog_item_version_id bigint,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
     CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
@@ -26924,7 +26926,7 @@ CREATE TABLE virtual_registries_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    enabled boolean DEFAULT false NOT NULL
+    enabled boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE virtual_registries_settings_id_seq
@@ -37208,6 +37210,8 @@ CREATE UNIQUE INDEX index_abuse_report_user_mentions_on_abuse_report_id_and_note
 
 CREATE INDEX index_abuse_report_user_mentions_on_note_id ON abuse_report_user_mentions USING btree (note_id);
 
+CREATE INDEX index_abuse_report_user_mentions_on_organization_id ON abuse_report_user_mentions USING btree (organization_id);
+
 CREATE INDEX index_abuse_reports_on_assignee_id ON abuse_reports USING btree (assignee_id);
 
 CREATE INDEX index_abuse_reports_on_organization_id ON abuse_reports USING btree (organization_id);
@@ -38497,6 +38501,8 @@ CREATE INDEX index_duo_workflows_events_on_namespace_id ON duo_workflows_events 
 CREATE INDEX index_duo_workflows_events_on_project_id ON duo_workflows_events USING btree (project_id);
 
 CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events USING btree (workflow_id);
+
+CREATE INDEX index_duo_workflows_workflows_on_ai_catalog_item_version_id ON duo_workflows_workflows USING btree (ai_catalog_item_version_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_workflows USING btree (namespace_id);
 
@@ -46739,6 +46745,9 @@ ALTER TABLE ONLY push_event_payloads
 ALTER TABLE ONLY organization_cluster_agent_mappings
     ADD CONSTRAINT fk_3727f3f4ec FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_379e8a8741 FOREIGN KEY (ai_catalog_item_version_id) REFERENCES ai_catalog_item_versions(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY protected_branch_merge_access_levels
     ADD CONSTRAINT fk_37ab3dd3ba FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -48445,6 +48454,9 @@ ALTER TABLE ONLY approval_policy_merge_request_bypass_events
 
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_f3b8fc5e4e FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_report_user_mentions
+    ADD CONSTRAINT fk_f4c2b15ef9 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_f53706dbdd FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;

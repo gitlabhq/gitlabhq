@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Packages::Composer::Package, type: :model, feature_category: :package_registry do
+RSpec.describe Packages::Composer::Sti::Package, feature_category: :package_registry do
   describe 'relationships' do
     it { is_expected.to have_one(:composer_metadatum).inverse_of(:package).class_name('Packages::Composer::Metadatum') }
   end

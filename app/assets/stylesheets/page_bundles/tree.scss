@@ -166,13 +166,13 @@ $bottom-padding: $gl-spacing-scale-6;
             &:first-child {
               box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-left-radius: calc(#{$gl-border-radius-base} - 1px);
+              border-bottom-left-radius: $gl-border-radius-base-inner;
             }
 
             &:last-child {
               box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-right-radius: calc(#{$gl-border-radius-base} - 1px);
+              border-bottom-right-radius: $gl-border-radius-base-inner;
             }
           }
         }

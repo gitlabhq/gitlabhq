@@ -11752,6 +11752,9 @@ msgstr ""
 msgid "Browse files at this commit"
 msgstr ""
 
+msgid "Browse your repository files and folders with the tree view sidebar."
+msgstr ""
+
 msgid "Build a new repository or import existing work."
 msgstr ""
 
@@ -17672,6 +17675,9 @@ msgstr ""
 msgid "ComplianceViolation|Audit event captured"
 msgstr ""
 
+msgid "ComplianceViolation|Comment deleted successfully."
+msgstr ""
+
 msgid "ComplianceViolation|Control"
 msgstr ""
 
@@ -17706,6 +17712,9 @@ msgid "ComplianceViolation|Requirement"
 msgstr ""
 
 msgid "ComplianceViolation|Resolved"
+msgstr ""
+
+msgid "ComplianceViolation|Something went wrong when deleting the comment. Please try again."
 msgstr ""
 
 msgid "ComplianceViolation|Something went wrong while trying to unlink the issue. Please try again later."
@@ -24318,6 +24327,9 @@ msgstr ""
 msgid "DuoAgentPlatform|%{pStart}Access GitLab Duo features throughout this instance by turning on the GitLab Duo Agent Platform.%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
 msgstr ""
 
+msgid "DuoAgentPlatform|%{pStart}Get early access to new GitLab Duo features before they're generally available. Help improve your development workflow and get started now.%{pEnd} By turning on these features, you accept the %{termsStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
 msgid "DuoAgentPlatform|Access the latest GitLab Duo features"
 msgstr ""
 
@@ -24343,9 +24355,6 @@ msgid "DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project
 msgstr ""
 
 msgid "DuoAgentPlatform|Allow flow execution"
-msgstr ""
-
-msgid "DuoAgentPlatform|By turning on these features, you accept the %{termsStart}GitLab Testing Agreement%{linkEnd}."
 msgstr ""
 
 msgid "DuoAgentPlatform|Details"
@@ -28237,6 +28246,9 @@ msgid "File too large. Secure files must be less than %{limit} MB."
 msgstr ""
 
 msgid "File tree"
+msgstr ""
+
+msgid "File tree navigation"
 msgstr ""
 
 msgid "File upload error."

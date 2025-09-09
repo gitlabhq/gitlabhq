@@ -6,10 +6,11 @@ module Gitlab
       class FindOrCreate
         BATCH_SIZE = 50
 
-        def initialize(pipeline, jobs)
+        def initialize(pipeline, jobs: [], definitions: [])
           @project_id = pipeline.project_id
           @partition_id = pipeline.partition_id
-          @job_definitions = Array.wrap(jobs).map(&:temp_job_definition).uniq(&:checksum)
+          @job_definitions = Array.wrap(jobs).map(&:temp_job_definition) + Array.wrap(definitions)
+          @job_definitions = @job_definitions.uniq(&:checksum)
         end
 
         def execute

@@ -3,7 +3,7 @@ require 'spec_helper'
 
 RSpec.describe Packages::Composer::Metadatum, type: :model, feature_category: :package_registry do
   describe 'relationships' do
-    it { is_expected.to belong_to(:package).class_name('Packages::Composer::Package').inverse_of(:composer_metadatum) }
+    it { is_expected.to belong_to(:package).class_name('Packages::Composer::Sti::Package').inverse_of(:composer_metadatum) }
   end
 
   describe 'validations' do
