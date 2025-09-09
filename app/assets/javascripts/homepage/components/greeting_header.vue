@@ -46,6 +46,9 @@ export default {
     statusAvailability() {
       return this.userStatus?.availability || '';
     },
+    statusClearAfter() {
+      return this.userStatus?.clearStatusAt || '';
+    },
     gradientStyle() {
       return gradientStyle(this.emojiColor);
     },
@@ -145,6 +148,7 @@ export default {
       :current-emoji="statusEmoji"
       :current-message="statusMessage"
       :current-availability="statusAvailability"
+      :current-clear-status-after="statusClearAfter"
     />
   </div>
 </template>

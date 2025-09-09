@@ -230,6 +230,8 @@ module API
         tags %w[branches]
       end
       delete ':id/repository/merged_branches' do
+        authorize_push_project
+
         ::Branches::DeleteMergedService.new(user_project, current_user).async_execute
 
         accepted!

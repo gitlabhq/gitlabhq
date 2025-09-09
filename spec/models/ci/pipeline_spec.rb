@@ -3329,7 +3329,36 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     it 'returns empty when a specified source has no pipelines' do
-      expect(described_class.newest_first(source: :schedule)).to be_empty
+      expect(described_class.newest_first(source: :api)).to be_empty
+    end
+  end
+
+  describe '.newest_without_schedules' do
+    let_it_be(:merged_commit_pipeline) do
+      create(
+        :ci_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        source: :push
+      )
+    end
+
+    let_it_be(:schedule_pipeline) do
+      create(
+        :ci_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        source: :schedule
+      )
+    end
+
+    it 'does not return pipelines ran by pipeline schedules' do
+      pipelines = described_class.newest_without_schedules
+
+      expect(pipelines.length).to eq(1)
+      expect(pipelines).not_to include(schedule_pipeline)
     end
   end
 

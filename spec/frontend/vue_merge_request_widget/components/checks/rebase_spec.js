@@ -27,10 +27,8 @@ const mockPipelineNodes = [
 
 const mockQueryHandler = ({
   rebaseInProgress = false,
-  targetBranch = '',
-  pushToSourceBranch = true,
-  allowMergeOnSkippedPipeline = true,
   nodes = mockPipelineNodes,
+  allowMergeOnSkippedPipeline = true,
 } = {}) =>
   jest.fn().mockResolvedValue({
     data: {
@@ -40,10 +38,6 @@ const mockQueryHandler = ({
         mergeRequest: {
           id: '2',
           rebaseInProgress,
-          targetBranch,
-          userPermissions: {
-            pushToSourceBranch,
-          },
           pipelines: {
             nodes,
           },
@@ -58,14 +52,19 @@ const createMockApolloProvider = (handler) => {
   return createMockApollo([[rebaseQuery, handler]]);
 };
 
-function createWrapper({ propsData = {}, provideData = {}, handler = mockQueryHandler() } = {}) {
+function createWrapper({
+  propsData = {},
+  canPushToSourceBranch = true,
+  provideData = {},
+  handler = mockQueryHandler(),
+} = {}) {
   wrapper = mountExtended(MergeChecksRebase, {
     apolloProvider: createMockApolloProvider(handler),
     provide: {
       ...provideData,
     },
     propsData: {
-      mr: {},
+      mr: { canPushToSourceBranch },
       service: {},
       check: {
         identifier: 'need_rebase',
@@ -147,6 +146,7 @@ describe('Merge request merge checks rebase component', () => {
           propsData: {
             mr: {
               onlyAllowMergeIfPipelineSucceeds: true,
+              canPushToSourceBranch: true,
             },
             service: {
               rebase: rebaseMock,
@@ -183,6 +183,7 @@ describe('Merge request merge checks rebase component', () => {
             mr: {
               onlyAllowMergeIfPipelineSucceeds: true,
               allowMergeOnSkippedPipeline: true,
+              canPushToSourceBranch: true,
             },
             service: {
               rebase: rebaseMock,
@@ -224,6 +225,7 @@ describe('Merge request merge checks rebase component', () => {
             mr: {
               sourceProjectFullPath: 'user/forked',
               targetProjectFullPath: 'root/original',
+              canPushToSourceBranch: true,
             },
             service: {
               rebase: rebaseMock,
@@ -250,6 +252,7 @@ describe('Merge request merge checks rebase component', () => {
             mr: {
               sourceProjectFullPath: 'user/forked',
               targetProjectFullPath: 'root/original',
+              canPushToSourceBranch: true,
             },
             service: {
               rebase: rebaseMock,
@@ -271,14 +274,11 @@ describe('Merge request merge checks rebase component', () => {
   });
 
   describe('without permissions', () => {
-    const exampleTargetBranch = 'fake-branch-to-test-with';
-
     it('does render the "Rebase without pipeline" button', async () => {
       createWrapper({
+        canPushToSourceBranch: false,
         handler: mockQueryHandler({
           rebaseInProgress: false,
-          pushToSourceBranch: false,
-          targetBranch: exampleTargetBranch,
         }),
       });
 

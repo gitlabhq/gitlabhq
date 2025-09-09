@@ -37,9 +37,17 @@ Doorkeeper.configure do
   allow_grant_flow_for_client do |grant_flow, client|
     next true unless client
     next true unless grant_flow == 'password'
-    next true unless Applications::CreateService.disable_ropc_available?
 
-    client.ropc_enabled?
+    if ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications) &&
+        ::Feature.enabled?(:disable_ropc_for_all_applications, :instance)
+      next false
+    end
+
+    if Applications::CreateService.disable_ropc_available?
+      next client.ropc_enabled?
+    end
+
+    true
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.

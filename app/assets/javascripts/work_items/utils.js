@@ -1,4 +1,5 @@
 import { escapeRegExp, kebabCase } from 'lodash';
+import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -487,3 +488,5 @@ export const preserveDetailsState = (element, descriptionHtml) => {
   });
   return nextTemplate.innerHTML;
 };
+
+export const activeWorkItemIds = ref([]);

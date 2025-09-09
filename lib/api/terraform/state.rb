@@ -43,9 +43,12 @@ module API
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+        params do
+          requires :name, type: String, limit: 255, desc: 'The name of a Terraform state'
+        end
+
         namespace ':id/terraform/state/:name', requirements: STATE_NAME_URI_REQUIREMENTS do
           params do
-            requires :name, type: String, desc: 'The name of a Terraform state'
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
           end
 

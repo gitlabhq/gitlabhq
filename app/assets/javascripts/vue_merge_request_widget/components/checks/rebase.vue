@@ -68,7 +68,7 @@ export default {
     },
     showRebaseWithoutPipeline() {
       return (
-        this.mergeRequest.userPermissions.pushToSourceBranch &&
+        this.mr.canPushToSourceBranch &&
         (!this.mr.onlyAllowMergeIfPipelineSucceeds ||
           (this.mr.onlyAllowMergeIfPipelineSucceeds && this.state.allowMergeOnSkippedPipeline))
       );
@@ -90,7 +90,7 @@ export default {
     },
     tertiaryActionsButtons() {
       return [
-        this.mergeRequest.userPermissions.pushToSourceBranch && {
+        this.mr.canPushToSourceBranch && {
           text: s__('mrWidget|Rebase'),
           loading: this.isMakingRequest || this.rebaseInProgress,
           testId: 'standard-rebase-button',

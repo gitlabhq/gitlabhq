@@ -18,6 +18,11 @@ the same cache don't have to download the files again, so they execute more quic
 To learn how to define the cache in your `.gitlab-ci.yml` file,
 see the [`cache` reference](../yaml/_index.md#cache).
 
+For advanced cache key strategies, you can use:
+
+- [`cache:key:files`](../yaml/_index.md#cachekeyfiles): Generate keys linked to the content of specific files.
+- [`cache:key:files_commits`](../yaml/_index.md#cachekeyfiles_commits): Generate keys linked to the latest commit of specific files.
+
 ## How cache is different from artifacts
 
 Use cache for dependencies, like packages you download from the internet.

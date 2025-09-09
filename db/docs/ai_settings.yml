@@ -7,5 +7,6 @@ feature_categories:
 description: Stores instance-wide AI-related settings
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172007
 milestone: '17.6'
-gitlab_schema: gitlab_main_cell_setting
+gitlab_schema: gitlab_main
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557293

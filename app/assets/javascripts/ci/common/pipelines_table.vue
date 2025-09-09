@@ -267,7 +267,7 @@ export default {
               :project-id="item.project.id"
               :project-path="getProjectPath(item)"
               :goal="mergeRequestPath(item)"
-              :title="__('Fix with Duo')"
+              :hover-message="__('Fix pipeline with Duo')"
               workflow-definition="fix_pipeline/experimental"
               size="medium"
             />

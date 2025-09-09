@@ -1695,7 +1695,16 @@
               "type": "object",
               "properties": {
                 "files": {
-                  "markdownDescription": "Use the `cache:key:files` keyword to generate a new key when one or two specific files change. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles)",
+                  "markdownDescription": "Use the `cache:key:files` keyword to generate a new cache key when specified file content changes. Cache keys remain stable across branches with identical file content. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "files_commits": {
+                  "markdownDescription": "Use the `cache:key:files_commits` keyword to generate a new cache key when the latest commit changes for the specified files. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles_commits)",
                   "type": "array",
                   "items": {
                     "type": "string"
@@ -1704,7 +1713,7 @@
                   "maxItems": 2
                 },
                 "prefix": {
-                  "markdownDescription": "Use `cache:key:prefix` to combine a prefix with the SHA computed for `cache:key:files`. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyprefix)",
+                  "markdownDescription": "Use `cache:key:prefix` to combine a prefix with the SHA computed for `cache:key:files` or `cache:key:files_commits`. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyprefix)",
                   "type": "string"
                 }
               }

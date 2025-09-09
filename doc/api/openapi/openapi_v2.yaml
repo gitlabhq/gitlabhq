@@ -38331,8 +38331,8 @@ paths:
         required: true
       - in: path
         name: name
-        type: integer
-        format: int32
+        description: The name of a Terraform state
+        type: string
         required: true
       responses:
         '200':
@@ -38361,8 +38361,8 @@ paths:
         required: true
       - in: path
         name: name
-        type: integer
-        format: int32
+        description: The name of a Terraform state
+        type: string
         required: true
       responses:
         '204':
@@ -38392,8 +38392,8 @@ paths:
         required: true
       - in: path
         name: name
-        type: integer
-        format: int32
+        description: The name of a Terraform state
+        type: string
         required: true
       - name: postApiV4ProjectsIdTerraformStateNameLock
         in: body
@@ -38425,16 +38425,16 @@ paths:
         description: The ID or URL-encoded path of the project
         type: string
         required: true
+      - in: path
+        name: name
+        description: The name of a Terraform state
+        type: string
+        required: true
       - in: query
         name: ID
         description: Terraform state lock ID
         type: string
         required: false
-      - in: path
-        name: name
-        type: integer
-        format: int32
-        required: true
       responses:
         '204':
           description: Unlock a Terraform state of a certain name

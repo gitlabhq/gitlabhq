@@ -528,6 +528,10 @@ module Ci
       relation
     end
 
+    def self.newest_without_schedules(ref: nil, sha: nil)
+      newest_first(ref: ref, sha: sha).where.not(source: :schedule)
+    end
+
     def self.latest_status(ref = nil)
       newest_first(ref: ref).pick(:status)
     end

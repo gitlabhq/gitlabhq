@@ -2449,7 +2449,7 @@ msgstr ""
 msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
 msgstr ""
 
-msgid "AICatalog|Add this flow to a project"
+msgid "AICatalog|Add this %{itemType} to a project"
 msgstr ""
 
 msgid "AICatalog|Add to project"
@@ -2578,12 +2578,6 @@ msgstr ""
 msgid "AICatalog|Explore AI Catalog flows"
 msgstr ""
 
-msgid "AICatalog|Failed to add agent to target. Agent not found."
-msgstr ""
-
-msgid "AICatalog|Failed to add flow to target. Flow not found."
-msgstr ""
-
 msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
@@ -2689,13 +2683,13 @@ msgstr ""
 msgid "AICatalog|Search and select tools for this agent."
 msgstr ""
 
-msgid "AICatalog|Select a project for which you want to enable this flow."
-msgstr ""
-
 msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
+msgstr ""
+
+msgid "AICatalog|Select a project to which you want to add this %{itemType}."
 msgstr ""
 
 msgid "AICatalog|Select agent"
@@ -2704,7 +2698,7 @@ msgstr ""
 msgid "AICatalog|Select tools that this agent will have access to."
 msgstr ""
 
-msgid "AICatalog|Selected flow"
+msgid "AICatalog|Selected %{itemType}"
 msgstr ""
 
 msgid "AICatalog|Steps"
@@ -2722,19 +2716,19 @@ msgstr ""
 msgid "AICatalog|Test run agents to see how they respond."
 msgstr ""
 
-msgid "AICatalog|The agent could not be added. Try again."
+msgid "AICatalog|The agent could not be added to the project. Try again. %{error}"
 msgstr ""
 
-msgid "AICatalog|The agent could not be enabled. Try again. %{error}"
+msgid "AICatalog|The agent could not be added. Try again."
 msgstr ""
 
 msgid "AICatalog|The agent could not be updated. Try again."
 msgstr ""
 
-msgid "AICatalog|The flow could not be added. Try again."
+msgid "AICatalog|The flow could not be added to the project. Try again. %{error}"
 msgstr ""
 
-msgid "AICatalog|The flow could not be enabled. Try again. %{error}"
+msgid "AICatalog|The flow could not be added. Try again."
 msgstr ""
 
 msgid "AICatalog|The flow could not be updated. Try again."
@@ -2779,6 +2773,9 @@ msgstr ""
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
 msgstr ""
 
+msgid "AICatalog|agent"
+msgstr ""
+
 msgid "AICatalog|cannot be changed as it has been released"
 msgstr ""
 
@@ -2786,6 +2783,9 @@ msgid "AICatalog|cannot be changed from public to private as it has catalog cons
 msgstr ""
 
 msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
+msgstr ""
+
+msgid "AICatalog|flow"
 msgstr ""
 
 msgid "AICatalog|is private to another project"
@@ -4801,6 +4801,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Configure and assign self-hosted models or GitLab managed models to AI-native features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Create self-hosted model"
 msgstr ""
 
@@ -6304,6 +6307,9 @@ msgstr ""
 msgid "AiPowered|Assign self-hosted models to specific AI-native features."
 msgstr ""
 
+msgid "AiPowered|Assign self-hosted or cloud-connected models to use with specific AI-native features."
+msgstr ""
+
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
@@ -6335,6 +6341,9 @@ msgid "AiPowered|Configure features"
 msgstr ""
 
 msgid "AiPowered|Configure how long GitLab Duo Chat conversations persist before they expire:"
+msgstr ""
+
+msgid "AiPowered|Configure models for GitLab Duo"
 msgstr ""
 
 msgid "AiPowered|Connection method"
@@ -6425,6 +6434,9 @@ msgid "AiPowered|GitLab Duo Chat conversation expiration"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Core available to all users"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo Model Selection"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Pro or Enterprise"
@@ -28440,7 +28452,7 @@ msgstr ""
 msgid "First seen"
 msgstr ""
 
-msgid "Fix with Duo"
+msgid "Fix pipeline with Duo"
 msgstr ""
 
 msgid "Fixed"
@@ -54493,6 +54505,9 @@ msgstr ""
 msgid "Review App|View latest app"
 msgstr ""
 
+msgid "Review and edit media"
+msgstr ""
+
 msgid "Review approval"
 msgstr ""
 
@@ -59652,6 +59667,9 @@ msgstr ""
 msgid "SecurityReports|%{nrVulnerabilities} vulnerabilities attached to 1 issue"
 msgstr ""
 
+msgid "SecurityReports|%{rating} risk score"
+msgstr ""
+
 msgid "SecurityReports|1 vulnerability attached to %{nrIssues} issues"
 msgstr ""
 
@@ -59784,6 +59802,9 @@ msgstr ""
 msgid "SecurityReports|Create issue"
 msgstr ""
 
+msgid "SecurityReports|Critical"
+msgstr ""
+
 msgid "SecurityReports|Critical risk"
 msgstr ""
 
@@ -59892,6 +59913,9 @@ msgstr ""
 msgid "SecurityReports|Has merge request"
 msgstr ""
 
+msgid "SecurityReports|High"
+msgstr ""
+
 msgid "SecurityReports|High risk"
 msgstr ""
 
@@ -59928,6 +59952,9 @@ msgstr ""
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
+msgid "SecurityReports|Low"
+msgstr ""
+
 msgid "SecurityReports|Low risk"
 msgstr ""
 
@@ -59941,6 +59968,9 @@ msgid "SecurityReports|Manage and track vulnerabilities identified in your selec
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"
+msgstr ""
+
+msgid "SecurityReports|Medium"
 msgstr ""
 
 msgid "SecurityReports|Medium risk"
@@ -68988,6 +69018,9 @@ msgid "Usage this month"
 msgstr ""
 
 msgid "Usage trends"
+msgstr ""
+
+msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
 msgid "UsageBilling|Current month usage"

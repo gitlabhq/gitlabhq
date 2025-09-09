@@ -1592,6 +1592,18 @@ class Project < ApplicationRecord
     ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit, source: source)
   end
 
+  def latest_unscheduled_pipelines(ref: default_branch, sha: nil)
+    ref = ref.presence || default_branch
+    sha ||= commit(ref)&.sha
+    return ci_pipelines.none unless sha
+
+    ci_pipelines.newest_without_schedules(ref: ref, sha: sha)
+  end
+
+  def latest_unscheduled_pipeline(ref = default_branch, sha = nil)
+    latest_unscheduled_pipelines(ref: ref, sha: sha).take
+  end
+
   def latest_pipeline(ref = default_branch, sha = nil, source = nil)
     latest_pipelines(ref: ref, sha: sha, source: source).take
   end

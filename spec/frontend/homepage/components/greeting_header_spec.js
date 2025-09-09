@@ -31,6 +31,7 @@ describe('GreetingHeader', () => {
           emoji: 'rocket',
           message: 'Working on something',
           availability: 'BUSY',
+          clearStatusAt: '2025-09-04T14:44:43Z',
         },
       },
     },
@@ -183,6 +184,7 @@ describe('GreetingHeader', () => {
         currentEmoji: 'rocket',
         currentMessage: 'Working on something',
         currentAvailability: 'BUSY',
+        currentClearStatusAfter: '2025-09-04T14:44:43Z',
       });
     });
 
@@ -196,6 +198,7 @@ describe('GreetingHeader', () => {
         currentEmoji: '',
         currentMessage: '',
         currentAvailability: '',
+        currentClearStatusAfter: '',
       });
     });
   });

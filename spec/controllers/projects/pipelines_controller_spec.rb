@@ -1189,7 +1189,24 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
   describe 'GET manual_variables' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    it_behaves_like 'the show page', 'manual_variables'
+    context 'when authorized and pipeline variables are allowed' do
+      before do
+        project.ci_cd_settings.update!(display_pipeline_variables: true)
+      end
+
+      it_behaves_like 'the show page', 'manual_variables'
+    end
+
+    context 'when pipeline variables are restricted for the project' do
+      before do
+        project.ci_cd_settings.update!(display_pipeline_variables: false)
+      end
+
+      it 'returns a 404' do
+        get :manual_variables, params: { namespace_id: project.namespace, project_id: project, id: pipeline.id }
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
 
     context 'when unauthorized' do
       it 'returns a 404' do

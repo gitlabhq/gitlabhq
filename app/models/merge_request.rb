@@ -737,7 +737,7 @@ class MergeRequest < ApplicationRecord
 
   def merge_pipeline
     if sha = merged_commit_sha
-      target_project.latest_pipeline(target_branch, sha, :push)
+      target_project.latest_unscheduled_pipeline(target_branch, sha)
     end
   end
 

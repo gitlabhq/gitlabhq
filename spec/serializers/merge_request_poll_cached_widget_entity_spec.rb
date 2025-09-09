@@ -265,6 +265,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
     context 'when is merged', :sidekiq_inline do
       let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
       let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+      let(:scheduled_pipeline) { create(:ci_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha, source: :schedule) }
 
       before do
         project.add_maintainer(user)

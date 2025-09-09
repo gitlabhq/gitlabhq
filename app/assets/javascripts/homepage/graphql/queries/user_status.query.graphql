@@ -5,6 +5,7 @@ query UserStatus {
       emoji
       message
       availability
+      clearStatusAt
     }
   }
 }

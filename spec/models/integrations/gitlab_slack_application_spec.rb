@@ -334,4 +334,44 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
       end
     end
   end
+
+  describe '#after_build_from_integration' do
+    let(:slack_integration) { create(:slack_integration) }
+    let(:initial_integration) do
+      create(:gitlab_slack_application_integration, :instance, slack_integration: slack_integration)
+    end
+
+    let(:project) { create(:project) }
+    let(:new_integration) { build(:gitlab_slack_application_integration, project: project) }
+
+    it 'duplicates slack_integration with correct alias' do
+      initial_integration.after_build_from_integration(new_integration)
+
+      new_slack_integration = new_integration.slack_integration
+      expect(new_slack_integration.slack_api_scopes.ids).to match_array(slack_integration.slack_api_scopes.ids)
+      expect(new_slack_integration).to have_attributes(
+        alias: project.full_path,
+        team_id: slack_integration.team_id,
+        team_name: slack_integration.team_name,
+        user_id: slack_integration.user_id,
+        bot_user_id: slack_integration.bot_user_id,
+        bot_access_token: slack_integration.bot_access_token
+      )
+    end
+
+    context 'when parent integration has no slack_integration' do
+      let(:initial_integration) do
+        create(:gitlab_slack_application_integration, slack_integration: nil, active: false)
+      end
+
+      it 'does not duplicate slack_integration and does not activate the new integration on save' do
+        new_integration = described_class.build_from_integration(initial_integration, project_id: project.id)
+
+        expect(new_integration.slack_integration).to be_nil
+        expect(new_integration).not_to be_active
+        expect { new_integration.save! }.not_to change { SlackIntegration.count }
+        expect(new_integration).not_to be_active
+      end
+    end
+  end
 end

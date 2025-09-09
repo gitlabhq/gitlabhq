@@ -308,6 +308,9 @@ module Integrations
           new_integration.project_id = project_id
           new_integration.group_id = group_id
           new_integration.inherit_from_id = integration.id if integration.inheritable?
+
+          integration.after_build_from_integration(new_integration)
+
           new_integration
         end
 
@@ -574,6 +577,12 @@ module Integrations
 
       def fields
         self.class.fields.dup
+      end
+
+      # Hook for integrations to configure associations after duplication.
+      # Override in subclasses when associations need the parent context.
+      def after_build_from_integration(new_integration)
+        # no-op
       end
 
       # Duplicating an integration also duplicates the data fields. Duped records have different ciphertexts.

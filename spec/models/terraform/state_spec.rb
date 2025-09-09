@@ -9,6 +9,7 @@ RSpec.describe Terraform::State, feature_category: :infrastructure_as_code do
   it { is_expected.to belong_to(:locked_by_user).class_name('User') }
 
   it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_length_of(:name).is_at_most(255) }
   it { is_expected.to validate_presence_of(:project_id) }
   it { is_expected.to validate_presence_of(:uuid) }
 

@@ -193,6 +193,18 @@ Ai::Setting.instance.ai_gateway_url == "<your-ai-gateway-instance-url>"
 
 If the AI gateway is not set up, [configure your GitLab instance to access the AI gateway](configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
 
+## Validate the GitLab Duo Agent Platform service URL
+
+To check that the URL for the Agent Platform service is correct, run the following on the GitLab Rails console:
+
+```ruby
+Ai::Setting.instance.duo_agent_platform_service_url == "<your-duo-agent-platform-instance-url>"
+```
+
+The URL for the Agent Platform service is a TCP URL and cannot have the prefixes `http://` or `https://`.
+
+If the URL for the Agent Platform has not been set up, you must [configure your GitLab instance to access the URL](configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+
 ## Check if GitLab can make an HTTP request to the AI gateway
 
 In the GitLab Rails console, verify that GitLab can make an HTTP request to AI

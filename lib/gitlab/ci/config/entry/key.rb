@@ -31,16 +31,17 @@ module Gitlab
             include ::Gitlab::Config::Entry::Attributable
             include ::Gitlab::Config::Entry::Configurable
 
-            ALLOWED_KEYS = %i[files prefix].freeze
-            REQUIRED_KEYS = %i[files].freeze
+            ALLOWED_KEYS = %i[files files_commits prefix].freeze
 
             validations do
               validates :config, allowed_keys: ALLOWED_KEYS
-              validates :config, required_keys: REQUIRED_KEYS
+              validates :config, only_one_of_keys: { in: %i[files files_commits] }
             end
 
             entry :files, Entry::Files,
               description: 'Files that should be used to build the key'
+            entry :files_commits, Entry::Files,
+              description: 'Files that should be used to build the key using commit hash'
             entry :prefix, Entry::Prefix,
               description: 'Prefix that is added to the final cache key'
           end

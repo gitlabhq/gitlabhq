@@ -787,6 +787,14 @@ class Repository
     end
   end
 
+  def git_content_hash_for_path(sha, path)
+    key = "git_content_hash_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
+
+    cache.fetch(key) do
+      blob_at(sha, path)&.id
+    end
+  end
+
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name

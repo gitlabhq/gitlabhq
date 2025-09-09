@@ -7,7 +7,10 @@ title: Install the GitLab AI gateway
 ---
 
 The [AI gateway](../user/gitlab_duo/gateway.md)
-is a standalone service that gives access to AI-native GitLab Duo features.
+is a combination of two services that give access to AI-native GitLab Duo features:
+
+- AI Gateway service
+- [GitLab Duo Agent Platform service](../user/duo_agent_platform/_index.md)
 
 ## Install by using Docker
 
@@ -59,7 +62,7 @@ Using the nightly version is **not recommended** because it can cause incompatib
 1. Run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
 
    ```shell
-   docker run -d -p 5052:5052 \
+   docker run -d -p 5052:5052 -p 50052:50052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
@@ -68,13 +71,12 @@ Using the nightly version is **not recommended** because it can cause incompatib
    Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `vX.Y.0`, use `self-hosted-vX.Y.0-ee`.
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
-1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the [Rails console](../administration/operations/rails_console.md):
+1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
+1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: 'http://ai-gateway-host.example.com:5052')
-   ```
-
-   You should configure the URL this way because the URL is stored in the database, and you can then manage it through the Admin area. Although the `AI_GATEWAY_URL` environment variable is still supported for legacy reasons, using the database setting is preferred for better configuration management.
+1. If your Duo Agent Platform URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
+   - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
+   - For self-compiled installations, in `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
 
 If you encounter issues loading the PEM file, resulting in errors like `JWKError`, you may need to resolve an SSL certificate error.
 
@@ -236,7 +238,7 @@ networks:
 
 ### Deploy and validate
 
-Noe deploy and validate the solution.
+To deploy and validate the solution:
 
 1. Start the `nginx` and `AIGW` containers and verify that they're running:
 
@@ -247,7 +249,9 @@ Noe deploy and validate the solution.
 
 1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
 
-1. Perform the health check and confirm that the AI gateway is accessible.
+1. Configure your GitLab instance to access the URL for the [GitLab Duo Agent Platform service](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+
+1. Perform the health check and confirm that the AI gateway and Agent Platform are both accessible.
 
 ## Install by using Helm chart
 

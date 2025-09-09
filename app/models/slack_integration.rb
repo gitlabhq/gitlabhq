@@ -9,6 +9,7 @@ class SlackIntegration < ApplicationRecord
   SCOPE_COMMANDS = 'commands'
   SCOPE_CHAT_WRITE = 'chat:write'
   SCOPE_CHAT_WRITE_PUBLIC = 'chat:write.public'
+  INSTANCE_ALIAS = '_gitlab-instance'
 
   # These scopes are requested when installing the app, additional scopes
   # will need reauthorization.

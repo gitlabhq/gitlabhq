@@ -480,6 +480,14 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.build_from_integration' do
+    it 'calls after_build_from_integration hook' do
+      integration = create(:integration, :instance)
+
+      expect(integration).to receive(:after_build_from_integration).with(kind_of(described_class))
+
+      described_class.build_from_integration(integration, project_id: project.id)
+    end
+
     context 'when integration is an instance-level integration' do
       let(:instance_integration) { create(:jira_integration, :instance) }
 

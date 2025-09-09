@@ -900,7 +900,10 @@ export default {
       </template>
 
       <template #discussions="{ issuable = {} }">
-        <li v-if="issuable.resolvableDiscussionsCount" class="!gl-mr-0 gl-hidden sm:gl-inline-flex">
+        <li
+          v-if="issuable.resolvableDiscussionsCount"
+          class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
+        >
           <discussions-badge :merge-request="issuable" />
         </li>
       </template>
@@ -908,7 +911,7 @@ export default {
       <template #statistics="{ issuable = {} }">
         <li
           v-if="issuable.upvotes || issuable.downvotes"
-          class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+          class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
         >
           <merge-request-statistics :merge-request="issuable" class="gl-flex" />
         </li>
@@ -928,7 +931,7 @@ export default {
       <template #pipeline-status="{ issuable = {} }">
         <li
           v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
-          class="issuable-pipeline-status !gl-mr-0 gl-hidden sm:gl-flex"
+          class="issuable-pipeline-status !gl-mr-0 gl-hidden @sm/panel:gl-flex"
         >
           <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
         </li>

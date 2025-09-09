@@ -5,11 +5,7 @@ query rebaseQuery($projectPath: ID!, $iid: String!) {
     mergeRequest(iid: $iid) {
       id
       rebaseInProgress
-      targetBranch
-      userPermissions {
-        pushToSourceBranch
-      }
-      pipelines {
+      pipelines(first: 1) {
         nodes {
           id
           project {

@@ -21,14 +21,13 @@ describe('ManualVariableApp', () => {
     return createMockApollo(requestHandlers);
   };
 
-  const createComponent = ({ variables = [], displayPipelineVariables = false } = {}) => {
+  const createComponent = ({ variables = [] } = {}) => {
     mockResolver.mockResolvedValue(mockManualVariableConnection(variables));
     wrapper = shallowMount(ManualVariablesApp, {
       provide: {
         manualVariablesCount: variables.length,
         projectPath: 'root/ci-project',
         pipelineIid: '1',
-        displayPipelineVariables,
       },
       apolloProvider: createMockApolloProvider(mockResolver),
     });
@@ -49,14 +48,8 @@ describe('ManualVariableApp', () => {
       expect(findEmptyState().exists()).toBe(true);
     });
 
-    it('renders empty state when variables were found, but displayPipelineVariables is false', () => {
+    it('renders loading state when variables were found', () => {
       createComponent({ variables: generateVariablePairs(1) });
-
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('renders loading state when variables were found and displayPipelineVariables is true', () => {
-      createComponent({ variables: generateVariablePairs(1), displayPipelineVariables: true });
 
       expect(findEmptyState().exists()).toBe(false);
       expect(findLoadingIcon().exists()).toBe(true);
@@ -64,7 +57,7 @@ describe('ManualVariableApp', () => {
     });
 
     it('renders variable table when variables were retrieved', async () => {
-      createComponent({ variables: generateVariablePairs(1), displayPipelineVariables: true });
+      createComponent({ variables: generateVariablePairs(1) });
       await waitForPromises();
 
       expect(findLoadingIcon().exists()).toBe(false);

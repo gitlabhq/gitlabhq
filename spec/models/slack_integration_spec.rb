@@ -9,6 +9,12 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     it { is_expected.to belong_to(:integration) }
   end
 
+  describe 'constant' do
+    it 'is expected that DEFAULT_ALIAS is defined with the correct value' do
+      expect(SlackIntegration::INSTANCE_ALIAS).to eq('_gitlab-instance')
+    end
+  end
+
   describe 'authorized_scope_names' do
     subject(:slack_integration) { integration }
 

@@ -340,7 +340,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         it 'includes cache options' do
           cache_options = {
             options: {
-              cache: [a_hash_including(key: '0_VERSION-f155568ad0933d8358f66b846133614f76dd0ca4')]
+              cache: [a_hash_including(key: '0_VERSION-30be75a2f82c8279268f1a442c1c60913cd11739')]
             }
           }
 
@@ -381,7 +381,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         it 'includes cache options' do
           cache_options = {
             options: {
-              cache: [a_hash_including(key: 'something-f155568ad0933d8358f66b846133614f76dd0ca4')]
+              cache: [a_hash_including(key: 'something-30be75a2f82c8279268f1a442c1c60913cd11739')]
             }
           }
 

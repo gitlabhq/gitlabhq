@@ -1,0 +1,21 @@
+build:
+  stage: build
+  script: echo "Building..."
+  cache:
+    key:
+      files_commits:
+        - package.json
+        - yarn.lock
+    paths:
+      - node_modules/
+
+test:
+  stage: test
+  script: echo "Testing..."
+  cache:
+    key:
+      files_commits:
+        - Gemfile
+      prefix: "test-cache"
+    paths:
+      - vendor/

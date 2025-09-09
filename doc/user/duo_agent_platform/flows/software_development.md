@@ -12,7 +12,7 @@ title: Software development flow
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
-- Available on GitLab Duo with self-hosted models: Not supported
+- Available on [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
@@ -20,6 +20,7 @@ title: Software development flow
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14153) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled for GitLab team members only. This feature is a [private beta](../../../policy/development_stages_support.md).
 - [Changed name](https://gitlab.com/gitlab-org/gitlab/-/issues/551382), `duo_workflow` [flag enabled](../../../administration/feature_flags/_index.md), and status changed to beta in GitLab 18.2.
+- For [GitLab Duo with self-hosted models](../../../administration/gitlab_duo_self_hosted/_index.md), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../../policy/development_stages_support.md#experiment) with a [feature flag](../../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 
 {{< /history >}}
 

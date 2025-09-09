@@ -12,13 +12,14 @@ title: GitLab Duo Agent Platform
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
-- Available on GitLab Duo with self-hosted models: Not supported
+- Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
 {{< /details >}}
 
 {{< history >}}
 
 - Introduced as [a beta](../../policy/development_stages_support.md) in GitLab 18.2.
+- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), [introduced](https://gitlab.com/groups/gitlab-org/-/epics/19213) in GitLab 18.4, as an [experiment](../../policy/development_stages_support.md#experiment) with a [feature flag](../../administration/feature_flags/_index.md) named `self_hosted_agent_platform`. Disabled by default.
 
 {{< /history >}}
 
@@ -48,12 +49,14 @@ To use the Agent Platform:
 - [GitLab Duo Core must be turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 - For GitLab Self-Managed, you must [configure GitLab Duo](../../administration/gitlab_duo/setup.md).
+- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must [install and run the AI Gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
 
 In addition, to use the Agent Platform in your IDE:
 
 - You must install an editor extension, like the GitLab Workflow extension for VS Code, and authenticate with GitLab.
 - You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
 - You must [ensure an HTTP/2 connection to the backend service is possible](troubleshooting.md#network-issues).
+- For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must use [WebSocket connection instead of gRPC](troubleshooting.md#use-websocket-connection-instead-of-grpc).
 
 To use flows in the GitLab UI, [turn on flows for your project](flows/_index.md#turn-on-flows-for-your-project).
 

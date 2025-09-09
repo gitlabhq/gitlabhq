@@ -50365,6 +50365,7 @@ The environment of a workflow.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="workflowenvironmentchat_partial"></a>`CHAT_PARTIAL` | Chat Partial environment. |
 | <a id="workflowenvironmentide"></a>`IDE` | Ide environment. |
 | <a id="workflowenvironmentweb"></a>`WEB` | Web environment. |
 

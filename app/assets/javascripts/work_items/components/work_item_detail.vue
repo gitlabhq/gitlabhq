@@ -55,7 +55,7 @@ import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
-import { findHierarchyWidgetDefinition } from '../utils';
+import { findHierarchyWidgetDefinition, activeWorkItemIds } from '../utils';
 import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
@@ -612,6 +612,9 @@ export default {
     'workItem.id': {
       immediate: true,
       async handler(newId) {
+        if (newId) {
+          activeWorkItemIds.value.push(newId);
+        }
         // Update allowedChildTypes using manual query instead of a smart query to prevent cache inconsistency (issue: #521771)
         const { workItem } = await this.fetchAllowedChildTypes(newId);
         this.allowedChildTypes = workItem
@@ -622,6 +625,7 @@ export default {
   },
   beforeDestroy() {
     document.removeEventListener('actioncable:reconnected', this.refetchIfStale);
+    activeWorkItemIds.value = activeWorkItemIds.value.filter((id) => id !== this.workItem.id);
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);

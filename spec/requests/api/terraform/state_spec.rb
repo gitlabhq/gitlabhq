@@ -296,6 +296,24 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       end
     end
 
+    context 'with state name longer than 255 characters' do
+      let(:long_state_name) { 'a' * 256 }
+      let(:long_state_path) { "/projects/#{project_id}/terraform/state/#{long_state_name}" }
+
+      subject(:request) { post api(long_state_path), headers: auth_header, as: :json, params: params }
+
+      it 'returns bad request' do
+        request
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).to include('name name must be less than 255 characters')
+      end
+
+      it 'does not create a terraform state' do
+        expect { request }.not_to change { Terraform::State.count }
+      end
+    end
+
     context 'when using job token authentication' do
       let(:job) { create(:ci_build, status: :running, project: project, user: maintainer) }
       let(:auth_header) { job_basic_auth_header(job) }
@@ -444,6 +462,22 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         request
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with state name longer than 255 characters' do
+      let(:long_state_name) { 'a' * 256 }
+      let(:state_path) { "/projects/#{project_id}/terraform/state/#{long_state_name}" }
+
+      it 'returns bad request' do
+        request
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.body).to include('name name must be less than 255 characters')
+      end
+
+      it 'does not create a terraform state' do
+        expect { request }.not_to change { Terraform::State.count }
       end
     end
 

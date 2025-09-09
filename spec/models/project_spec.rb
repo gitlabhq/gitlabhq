@@ -4377,6 +4377,51 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#latest_unscheduled_pipelines' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:scheduled_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :schedule)
+    end
+
+    context 'when retrieving the latest_unscheduled_pipelines' do
+      subject { project.latest_unscheduled_pipelines(ref: project.default_branch, sha: project.commit.id) }
+
+      it 'should not contain scheduled pipelines' do
+        expect(subject.length).to eq(1)
+        expect(subject).to include(push_pipeline)
+      end
+    end
+  end
+
+  describe '#latest_unscheduled_pipeline' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:scheduled_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :schedule)
+    end
+
+    context 'when retrieving the latest_pipeline the pipeline should not be a scheduled one' do
+      subject { project.latest_unscheduled_pipeline(project.default_branch) }
+
+      it { is_expected.to eq(push_pipeline) }
+    end
+
+    context 'with provided sha' do
+      subject { project.latest_unscheduled_pipeline(project.default_branch, project.commit.id) }
+
+      it { is_expected.to eq(push_pipeline) }
+    end
+  end
+
   describe '#latest_successful_build_for_sha' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create_pipeline(project) }

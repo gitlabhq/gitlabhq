@@ -68,6 +68,9 @@ export default {
     editDiagramLabel() {
       return __('Make changes to the diagram');
     },
+    editMediaLabel() {
+      return __('Review and edit media');
+    },
     showProgressIndicator() {
       return this.uploading || this.isUpdating;
     },
@@ -186,6 +189,7 @@ export default {
       data-testid="media-bubble-menu"
       class="gl-rounded-base gl-bg-overlap gl-shadow"
       plugin-key="bubbleMenuMedia"
+      :aria-label="editMediaLabel"
       :should-show="shouldShow"
       @show="updateMediaInfoToState"
       @hidden="resetMediaInfo"
@@ -243,7 +247,12 @@ export default {
       </gl-button-group>
       <gl-form v-else class="bubble-menu-form gl-w-full gl-p-4" @submit.prevent="saveEditedMedia">
         <gl-form-group :label="__('URL')" label-for="media-src">
-          <gl-form-input id="media-src" v-model="mediaCanonicalSrc" data-testid="media-src" />
+          <gl-form-input
+            id="media-src"
+            v-model="mediaCanonicalSrc"
+            data-testid="media-src"
+            autofocus
+          />
         </gl-form-group>
         <gl-form-group :label="__('Alt text')" label-for="media-alt">
           <gl-form-input id="media-alt" v-model="mediaAlt" data-testid="media-alt" />

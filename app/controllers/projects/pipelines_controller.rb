@@ -204,7 +204,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def manual_variables
-    return render_404 unless can?(current_user, :update_pipeline, pipeline)
+    return render_404 unless can?(current_user, :update_pipeline, pipeline) && project.ci_display_pipeline_variables?
 
     render_show
   end

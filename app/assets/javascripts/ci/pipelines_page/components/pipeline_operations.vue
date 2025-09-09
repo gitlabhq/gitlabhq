@@ -83,7 +83,6 @@ export default {
 
 <template>
   <div class="gl-text-right">
-    <slot name="duo-workflow-action"></slot>
     <pipeline-stop-modal
       :pipeline="pipelineToCancel"
       :show-confirmation-modal="showConfirmationModal"
@@ -92,6 +91,7 @@ export default {
     />
 
     <div class="btn-group">
+      <slot name="duo-workflow-action"></slot>
       <pipelines-manual-actions
         v-if="hasActions"
         :iid="pipeline.iid"

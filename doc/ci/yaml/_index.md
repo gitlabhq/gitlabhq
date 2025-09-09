@@ -1983,9 +1983,9 @@ cache-job:
 
 ##### `cache:key:files`
 
-Use the `cache:key:files` keyword to generate a new key when files matching either of the defined paths or patterns
-change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
-which speeds up subsequent pipeline runs.
+Use `cache:key:files` to generate a new cache key when the content of the specified files change.
+If the content remains unchanged, the cache key remains consistent across branches and pipelines.
+You can reuse caches and rebuild them less often, which speeds up subsequent pipeline runs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2020,8 +2020,50 @@ use the new cache, instead of rebuilding the dependencies.
 
 **Additional details**:
 
-- The cache `key` is computed from the most recent commit that changed a file, not from the actual file content. This can cause unexpected cache misses with rebase-based workflows. [Issue 460235](https://gitlab.com/gitlab-org/gitlab/-/issues/460235) aims to correct this behavior.
-- Wildcard patterns like `**/package.json` can be used. Increasing the number of allowed paths is proposed in [issue 301161](https://gitlab.com/gitlab-org/gitlab/-/issues/301161).
+- The cache `key` is a SHA computed from the content of the listed files. If a file doesn't exist, it's ignored in the key calculation.
+  If none of the specified files exist, the fallback key is `default`.
+- Wildcard patterns like `**/package.json` can be used. An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)
+  exists to increase the number of paths or patterns allowed for a cache key.
+
+---
+
+##### `cache:key:files_commits`
+
+Use `cache:key:files_commits` to generate a new cache key when the latest commit changes
+for the specified files. `cache:key:files_commits` cache keys change whenever
+the specified files have a new commit, even if the file content remains identical.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+- An array of up to two file paths or patterns.
+
+**Example of `cache:key:files_commits`**:
+
+```yaml
+cache-job:
+  script:
+    - echo "This job uses a commit-based cache."
+  cache:
+    key:
+      files_commits:
+        - package.json
+        - yarn.lock
+    paths:
+      - node_modules
+```
+
+This example creates a cache based on the commit history of `package.json` and `yarn.lock`.
+If the commit history changes for these files, a new cache key is computed and a new cache is created.
+
+**Additional details**:
+
+- The cache `key` is a SHA computed from the most recent commit for each specified file.
+- If a file doesn't exist, it's ignored in the key calculation.
+- If none of the specified files exist, the fallback key is `default`.
+- Cannot be used together with [`cache:key:files`](#cachekeyfiles) in the same cache configuration.
 
 ---
 
@@ -4020,7 +4062,7 @@ Leading and trailing hyphens or periods are not permitted.
 create-pages:
   stage: deploy
   script:
-    - echo "Pages accessible through ${CI_PAGES_URL}"
+    - echo "Pages accessible through ${CI_PAGES_URL}/${CI_COMMIT_BRANCH}"
   pages:  # specifies that this is a Pages job and publishes the default public directory
     path_prefix: "$CI_COMMIT_BRANCH"
 ```
@@ -5224,8 +5266,8 @@ tests:
 
 In this example:
 
-- If the pipeline runs on a branch that is not the default branch, and therefore the rule matches the first condition, the `tests` job needs the `build-dev` job.
-- If the pipeline runs on the default branch, and therefore the rule matches the second condition, the `tests` job needs the `build-prod` job.
+- If the pipeline runs on a branch that is not the default branch, and therefore the rule matches the first condition, the `specs` job needs the `build-dev` job.
+- If the pipeline runs on the default branch, and therefore the rule matches the second condition, the `specs` job needs the `build-prod` job.
 
 **Additional details**:
 

@@ -1012,5 +1012,17 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
 
       expect(response).to have_gitlab_http_status(:forbidden)
     end
+
+    context 'when user is not authorized and project is public' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'returns a 403 error' do
+        delete api("/projects/#{project.id}/repository/merged_branches")
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 end
