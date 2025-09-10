@@ -85,6 +85,7 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
         expect { worker.perform(params) }.to change { AbuseReport.count }.from(0).to(1)
         expect(AbuseReport.last.attributes).to include({
           reporter_id: Users::Internal.security_bot.id,
+          organization_id: Users::Internal.security_bot.organization_id,
           user_id: user.id,
           category: "spam",
           message: "User reported for abuse based on spam verdict"

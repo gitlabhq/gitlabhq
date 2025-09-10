@@ -7483,6 +7483,7 @@ RSpec.describe User, feature_category: :user_profile do
             expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
               reporter_id: Users::Internal.security_bot.id,
+              organization_id: Users::Internal.security_bot.organization_id,
               user_id: user.id,
               category: "spam",
               message: 'Potential spammer account deletion'

@@ -89,9 +89,6 @@ export default {
     },
   },
   methods: {
-    onError(message) {
-      this.$emit('error', message);
-    },
     reportError(error) {
       this.errorMessage = error;
       this.isAlertDismissed = false;

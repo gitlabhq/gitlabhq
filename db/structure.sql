@@ -5256,6 +5256,25 @@ CREATE TABLE merge_request_diff_files_99208b8fac (
 )
 PARTITION BY RANGE (merge_request_diff_id);
 
+CREATE TABLE merge_requests_merge_data (
+    merge_request_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    merge_user_id bigint,
+    merge_params text,
+    merge_error text,
+    merge_jid text,
+    merge_commit_sha bytea,
+    merged_commit_sha bytea,
+    merge_ref_sha bytea,
+    squash_commit_sha bytea,
+    in_progress_merge_commit_sha bytea,
+    merge_status smallint DEFAULT 0 NOT NULL,
+    auto_merge_enabled boolean DEFAULT false NOT NULL,
+    squash boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_d25e93fc19 CHECK ((char_length(merge_jid) <= 255))
+)
+PARTITION BY RANGE (merge_request_id);
+
 CREATE TABLE p_ai_active_context_code_enabled_namespaces (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -17657,6 +17676,7 @@ CREATE TABLE integrations (
     group_mention_events boolean DEFAULT false NOT NULL,
     group_confidential_mention_events boolean DEFAULT false NOT NULL,
     organization_id bigint,
+    CONSTRAINT check_2aae034509 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)),
     CONSTRAINT check_a948a0aa7e CHECK ((char_length(type_new) <= 255))
 );
 
@@ -19192,25 +19212,6 @@ CREATE SEQUENCE merge_requests_id_seq
     CACHE 1;
 
 ALTER SEQUENCE merge_requests_id_seq OWNED BY merge_requests.id;
-
-CREATE TABLE merge_requests_merge_data (
-    merge_request_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    merge_user_id bigint,
-    merge_params text,
-    merge_error text,
-    merge_jid text,
-    merge_commit_sha bytea,
-    merged_commit_sha bytea,
-    merge_ref_sha bytea,
-    squash_commit_sha bytea,
-    in_progress_merge_commit_sha bytea,
-    merge_status smallint DEFAULT 0 NOT NULL,
-    auto_merge_enabled boolean DEFAULT false NOT NULL,
-    squash boolean DEFAULT false NOT NULL,
-    CONSTRAINT check_d25e93fc19 CHECK ((char_length(merge_jid) <= 255))
-)
-PARTITION BY RANGE (merge_request_id);
 
 CREATE TABLE merge_trains (
     id bigint NOT NULL,
@@ -32032,9 +32033,6 @@ ALTER TABLE epic_issues
 
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
-
-ALTER TABLE integrations
-    ADD CONSTRAINT check_2aae034509 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
 
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;

@@ -10,7 +10,9 @@ module AntiAbuse
       end
 
       def execute
-        return error unless create_abuse_report
+        return error('Reporter param must be a valid User') unless valid_reporter?
+
+        return error('AbuseReport record was not created') unless create_abuse_report
 
         ServiceResponse.success(payload: abuse_report)
       end
@@ -18,14 +20,20 @@ module AntiAbuse
       private
 
       def create_abuse_report
+        params[:organization_id] = params[:reporter].organization_id
+
         @abuse_report = ::AbuseReport.new(params)
         @abuse_report.save
       end
 
-      def error
-        ServiceResponse.error(
-          message: 'AbuseReport record was not created'
-        )
+      def valid_reporter?
+        return false unless params.key?(:reporter)
+
+        params[:reporter].is_a?(User)
+      end
+
+      def error(message)
+        ServiceResponse.error(message: message)
       end
     end
   end
