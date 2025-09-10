@@ -176,7 +176,9 @@ module Gitlab
       end
 
       def supports_children?
-        ::WorkItems::HierarchyRestriction.find_by_parent_type_id(quick_action_target.work_item_type_id).present?
+        ::WorkItems::SystemDefined::HierarchyRestriction
+          .with_parent_type_id(quick_action_target.work_item_type_id)
+          .present?
       end
 
       def has_children?
@@ -202,7 +204,7 @@ module Gitlab
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       # overridden in EE
-      def handle_set_epic(parent_param); end
+      def handle_set_epic(_); end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
       # Gitlab::QuickActions::Dsl implementation
@@ -265,10 +267,10 @@ module Gitlab
       end
 
       def hierarchy_relationship_allowed?(parent, child_work_item)
-        ::WorkItems::HierarchyRestriction.find_by_parent_type_id_and_child_type_id(
-          parent.work_item_type_id,
-          child_work_item.work_item_type_id
-        ).present?
+        ::WorkItems::SystemDefined::HierarchyRestriction.hierarchy_relationship_allowed?(
+          parent_type_id: parent.work_item_type_id,
+          child_type_id: child_work_item.work_item_type_id
+        )
       end
     end
   end

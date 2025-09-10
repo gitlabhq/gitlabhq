@@ -3328,12 +3328,6 @@ class Project < ApplicationRecord
     repository.blob_data_at(sha, ci_config_path_or_default)
   end
 
-  def enabled_group_deploy_keys
-    return GroupDeployKey.none unless group
-
-    GroupDeployKey.for_groups(group.self_and_ancestors_ids)
-  end
-
   def feature_flags_client_token
     instance = operations_feature_flags_client || create_operations_feature_flags_client!
     instance.token

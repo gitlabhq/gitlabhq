@@ -154,8 +154,8 @@ $command-palette-spacing: px-to-rem(14px);
 
   &.gl-dark {
     @include super-sidebar-theme(
-      $theme-color: var(--gl-color-green-500),
-      $theme-accent-color: var(--gl-color-green-500),
+      $theme-color: var(--gl-color-green-400),
+      $theme-accent-color: var(--gl-color-green-400),
       $theme-notification-color: var(--gl-color-green-500),
       $background: var(--gl-background-color-subtle),
       $accent-color-fg: var(--gl-color-green-200),

@@ -9022,49 +9022,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.not_to include(user) }
   end
 
-  describe '#enabled_group_deploy_keys' do
-    let_it_be(:project) { create(:project) }
-
-    subject { project.enabled_group_deploy_keys }
-
-    context 'when a project does not have a group' do
-      it { is_expected.to be_empty }
-    end
-
-    context 'when a project has a parent group' do
-      let!(:group) { create(:group, projects: [project]) }
-
-      context 'and this group has a group deploy key enabled' do
-        let!(:group_deploy_key) { create(:group_deploy_key, groups: [group]) }
-
-        it { is_expected.to contain_exactly(group_deploy_key) }
-
-        context 'and this group has parent group which also has a group deploy key enabled' do
-          let(:super_group) { create(:group) }
-
-          it 'returns both group deploy keys' do
-            super_group = create(:group)
-            super_group_deploy_key = create(:group_deploy_key, groups: [super_group])
-            group.update!(parent: super_group)
-
-            expect(subject).to contain_exactly(group_deploy_key, super_group_deploy_key)
-          end
-        end
-      end
-
-      context 'and another group has a group deploy key enabled' do
-        let_it_be(:group_deploy_key) { create(:group_deploy_key) }
-
-        it 'does not return this group deploy key' do
-          another_group = create(:group)
-          create(:group_deploy_key, groups: [another_group])
-
-          expect(subject).to be_empty
-        end
-      end
-    end
-  end
-
   describe '#default_branch_or_main' do
     let(:project) { create(:project, :repository) }
 

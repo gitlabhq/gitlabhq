@@ -88,4 +88,31 @@ RSpec.describe WorkItems::SystemDefined::HierarchyRestriction, feature_category:
       expect(restriction.maximum_depth).to eq(1)
     end
   end
+
+  describe '.with_parent_type_id' do
+    it 'returns hierarchy restrictions with the specified parent type' do
+      restrictions = described_class.with_parent_type_id(described_class::EPIC_ID)
+      expect(restrictions.map(&:parent_type_id).uniq).to match_array([described_class::EPIC_ID])
+    end
+  end
+
+  describe '.hierarchy_relationship_allowed?' do
+    it 'returns true if a hierarchical relationship is allowed' do
+      result = described_class.hierarchy_relationship_allowed?(
+        parent_type_id: described_class::EPIC_ID,
+        child_type_id: described_class::ISSUE_ID
+      )
+
+      expect(result).to be true
+    end
+
+    it 'returns false if a hierarchical relationship is not allowed' do
+      result = described_class.hierarchy_relationship_allowed?(
+        parent_type_id: described_class::EPIC_ID,
+        child_type_id: described_class::TASK_ID
+      )
+
+      expect(result).to be false
+    end
+  end
 end

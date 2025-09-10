@@ -484,7 +484,7 @@
  * Themes
  */
 
- .application-chrome {
+ .application-chrome.page-with-panels {
   // Light mode
   &:not(.gl-dark) {
     // default color to mute the gradient
@@ -510,11 +510,11 @@
         var(--gl-background-color-default);
     }
 
-    .ai-panel,
+    .ai-panels,
     .super-sidebar,
     .super-topbar {
       --super-sidebar-bg: var(--theme-background-color);
-      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 24);
+      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 20);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h s l / 16%);
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 90);
@@ -564,13 +564,12 @@
         var(--_shade-2);
     }
 
-    .ai-panel,
+    .ai-panels,
     .super-sidebar,
-    .super-topbar,
-    .application-chrome {
+    .super-topbar {
       --super-sidebar-bg: var(--theme-background-color);
-      --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 26%);
-      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 92);
+      --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 25%);
+      --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 88);
       --super-sidebar-nav-item-hover-bg: hsla(from var(--theme-accent-color) h calc(s - 30) l / 16%);
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 85);
       --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 20));

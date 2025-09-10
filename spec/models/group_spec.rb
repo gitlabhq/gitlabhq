@@ -45,7 +45,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:container_repositories) }
     it { is_expected.to have_many(:milestones) }
-    it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_one(:dependency_proxy_setting) }
     it { is_expected.to have_one(:dependency_proxy_image_ttl_policy) }

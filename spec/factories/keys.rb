@@ -63,10 +63,6 @@ FactoryBot.define do
       end
     end
 
-    factory :group_deploy_key, class: 'GroupDeployKey' do
-      user
-    end
-
     factory :personal_key do
       user
     end

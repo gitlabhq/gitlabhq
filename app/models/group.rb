@@ -123,8 +123,6 @@ class Group < Namespace
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
   has_many :bulk_import_entities, class_name: 'BulkImports::Entity', foreign_key: :namespace_id, inverse_of: :group
 
-  has_many :group_deploy_keys_groups, inverse_of: :group
-  has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
   has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

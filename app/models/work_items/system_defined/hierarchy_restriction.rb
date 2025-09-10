@@ -17,6 +17,16 @@ module WorkItems
       INCIDENT_ID = ::WorkItems::Type::BASE_TYPES[:incident][:id]
       TICKET_ID = ::WorkItems::Type::BASE_TYPES[:ticket][:id]
 
+      class << self
+        def with_parent_type_id(parent_type_id)
+          where(parent_type_id: parent_type_id)
+        end
+
+        def hierarchy_relationship_allowed?(parent_type_id:, child_type_id:)
+          where(parent_type_id: parent_type_id, child_type_id: child_type_id).present?
+        end
+      end
+
       ITEMS = [
         {
           id: 1,

@@ -3276,7 +3276,6 @@ Layout/LineLength:
     - 'spec/models/event_spec.rb'
     - 'spec/models/gpg_key_spec.rb'
     - 'spec/models/grafana_integration_spec.rb'
-    - 'spec/models/group_deploy_key_spec.rb'
     - 'spec/models/group_spec.rb'
     - 'spec/models/identity_spec.rb'
     - 'spec/models/import_export_upload_spec.rb'

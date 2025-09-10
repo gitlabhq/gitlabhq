@@ -1068,7 +1068,7 @@
   :queue_namespace: :cronjob
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
-  :feature_category: :system_access
+  :feature_category: :user_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

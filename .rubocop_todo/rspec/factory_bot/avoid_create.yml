@@ -440,7 +440,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/serializers/group_access_token_serializer_spec.rb'
     - 'spec/serializers/group_child_entity_spec.rb'
     - 'spec/serializers/group_child_serializer_spec.rb'
-    - 'spec/serializers/group_deploy_key_entity_spec.rb'
     - 'spec/serializers/group_link/group_group_link_entity_spec.rb'
     - 'spec/serializers/group_link/project_group_link_entity_spec.rb'
     - 'spec/serializers/group_link/project_group_link_serializer_spec.rb'

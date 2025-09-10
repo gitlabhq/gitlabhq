@@ -996,8 +996,6 @@ Gitlab/BoundedContexts:
     - 'app/models/group/crm_settings.rb'
     - 'app/models/group_custom_attribute.rb'
     - 'app/models/group_deletion_schedule.rb'
-    - 'app/models/group_deploy_key.rb'
-    - 'app/models/group_deploy_keys_group.rb'
     - 'app/models/group_deploy_token.rb'
     - 'app/models/group_group_link.rb'
     - 'app/models/group_import_state.rb'
