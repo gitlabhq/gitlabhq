@@ -5,6 +5,7 @@ import { shallowMount, RouterLinkStub } from '@vue/test-utils';
 import refQuery from '~/repository/queries/ref.query.graphql';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import TableRow from '~/repository/components/table/row.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { FILE_SYMLINK_MODE } from '~/vue_shared/constants';
@@ -65,6 +66,8 @@ describe('Repository table row component', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findRouterLink = () => wrapper.findComponent(RouterLinkStub);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   it('renders table row', () => {
     factory({
@@ -278,6 +281,60 @@ describe('Repository table row component', () => {
     });
 
     expect(findFileIcon().props('loading')).toBe(true);
+  });
+
+  describe('tracking events', () => {
+    it('tracks event when file link is clicked', () => {
+      factory({
+        propsData: {
+          id: '1',
+          sha: '123',
+          path: 'test/test',
+          type: 'file',
+          currentPath: 'tesf',
+        },
+      });
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      wrapper.find('tr').trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_file_list_on_repository_page', {});
+    });
+
+    it('tracks event when directory link is clicked', () => {
+      factory({
+        propsData: {
+          id: '1',
+          sha: '123',
+          path: 'src/components',
+          type: 'tree',
+          currentPath: '/',
+        },
+      });
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      wrapper.find('tr').trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_file_list_on_repository_page', {});
+    });
+
+    it('tracks event when submodule link is clicked', () => {
+      factory({
+        propsData: {
+          id: '1',
+          sha: '123',
+          path: 'external-lib',
+          type: 'commit',
+          url: 'https://external-repo.com',
+          currentPath: '/',
+        },
+      });
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      wrapper.find('tr').trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_file_list_on_repository_page', {});
+    });
   });
 
   describe('row visibility', () => {

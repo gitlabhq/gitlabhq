@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
   before do
     # each call generate a new replica pool
     allow(load_balancer).to receive(:create_replica_connection_pool) do
-      double(:replica_connection_pool)
+      double(:replica_connection_pool, discarded?: false)
     end
   end
 

@@ -45,8 +45,6 @@ To submit a CVE ID request:
 1. Go to the vulnerability's issue and select **Create CVE ID Request**. The new issue page of
    the [GitLab CVE project](https://gitlab.com/gitlab-org/cves) opens.
 
-   ![CVE ID request button](img/cve_id_request_button_v13_4.png)
-
 1. In the **Title** box, enter a brief description of the vulnerability.
 
 1. In the **Description** box, enter the following details:
@@ -57,8 +55,6 @@ To submit a CVE ID request:
    - Fixed versions
    - The vulnerability class (a [CWE](https://cwe.mitre.org/data/index.html) identifier)
    - A [CVSS v3 vector](https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator)
-
-   ![New CVE ID request issue](img/new_cve_request_issue_v14_4.png)
 
 GitLab updates your CVE ID request issue when:
 

@@ -49,7 +49,7 @@ export default {
   <gl-disclosure-dropdown-item :item="menuItem">
     <template #list-item>
       <span class="gl-flex gl-flex-col">
-        <span class="gl-flex">
+        <span class="gl-flex gl-gap-2">
           <span class="gl-truncate gl-font-bold">
             {{ user.name }}
           </span>

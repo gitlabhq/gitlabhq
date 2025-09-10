@@ -577,16 +577,10 @@ when you stop and restart a workspace.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543982) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `workspaces_shallow_clone_project`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/550330) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/558154) in GitLab 18.4. Feature flag `workspaces_shallow_clone_project` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 When you create a workspace, GitLab uses shallow cloning to improve performance.
 A shallow clone downloads only the latest commit history instead of the complete Git history,

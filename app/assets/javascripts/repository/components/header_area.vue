@@ -29,6 +29,10 @@ import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useViewport } from '~/pinia/global_stores/viewport';
 import { Mousetrap } from '~/lib/mousetrap';
+import {
+  EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+  EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+} from '~/repository/constants';
 
 export default {
   name: 'HeaderArea',
@@ -59,7 +63,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -233,9 +237,21 @@ export default {
       'initFileTreeVisibility',
       'toggleFileTreeVisibility',
     ]),
+    onShortcutToggle() {
+      this.toggleFileTreeVisibility();
+
+      this.trackEvent(
+        this.fileTreeBrowserVisible
+          ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
+          : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        {
+          label: 'shortcut',
+        },
+      );
+    },
     bindShortcuts() {
       if (this.shortcutsEnabled) {
-        Mousetrap.bind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY), this.toggleFileTreeVisibility);
+        Mousetrap.bind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY), this.onShortcutToggle);
       }
     },
     unbindShortcuts() {
@@ -244,11 +260,11 @@ export default {
       }
     },
     onInput(selectedRef) {
-      InternalEvents.trackEvent(REF_SELECTOR_CLICK);
+      this.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
     },
     handleFindFile() {
-      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
+      this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
     onLockedDirectory({ isLocked, lockAuthor }) {

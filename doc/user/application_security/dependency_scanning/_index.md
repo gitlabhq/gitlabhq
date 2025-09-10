@@ -78,8 +78,6 @@ ensure coverage for all of these dependency types. To cover as much of your risk
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
-![Dependency scanning Widget](img/dependency_scanning_v13_2.png)
-
 {{< alert type="warning" >}}
 
 Dependency Scanning does not support runtime installation of compilers and interpreters.

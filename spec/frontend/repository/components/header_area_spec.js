@@ -23,6 +23,7 @@ import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/fil
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
+import { EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE } from '~/repository/constants';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
@@ -150,6 +151,7 @@ describe('HeaderArea', () => {
         },
       );
     });
+
     describe('shortcuts', () => {
       describe('toggle visibility', () => {
         beforeEach(() => {
@@ -161,11 +163,34 @@ describe('HeaderArea', () => {
             },
           });
         });
+
         it('toggles visibility on shortcut trigger', () => {
           shouldDisableShortcuts.mockReturnValue(false);
           createComponent();
           Mousetrap.trigger(toggleHotkeys[0]);
           expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).toHaveBeenCalled();
+        });
+
+        it('triggers a tracking event when the toggle button is clicked', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          shouldDisableShortcuts.mockReturnValue(false);
+          fileTreeBrowserStore.setFileTreeVisibility(false);
+
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+            { label: 'shortcut' },
+            undefined,
+          );
+
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'collapse_file_tree_browser_on_repository_page',
+            { label: 'shortcut' },
+            undefined,
+          );
         });
 
         it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
@@ -176,6 +201,7 @@ describe('HeaderArea', () => {
           expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).not.toHaveBeenCalled();
         });
       });
+
       describe('toggle visibility when shortcuts are disabled', () => {
         it('does not toggle visibility on shortcut trigger', () => {
           shouldDisableShortcuts.mockReturnValue(true);
@@ -272,7 +298,11 @@ describe('HeaderArea', () => {
 
         findFindFileButton().vm.$emit('click');
 
-        expect(trackEventSpy).toHaveBeenCalledWith('click_find_file_button_on_repository_pages');
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_find_file_button_on_repository_pages',
+          {},
+          undefined,
+        );
       });
     });
 

@@ -114,3 +114,8 @@ export const FILE_EXTENSION_MAPPING_HLJS = {
 };
 
 export const FILE_TREE_BROWSER_VISIBILITY = 'file_tree_browser_visibility';
+
+export const EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE =
+  'expand_file_tree_browser_on_repository_page';
+export const EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE =
+  'collapse_file_tree_browser_on_repository_page';

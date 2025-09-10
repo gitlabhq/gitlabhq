@@ -2,6 +2,8 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { file } from 'jest/ide/helpers';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
@@ -20,6 +22,8 @@ describe('File row component', () => {
       },
     });
   }
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   it('renders name', () => {
     const fileName = 't4';
@@ -86,6 +90,8 @@ describe('File row component', () => {
   });
 
   it('emits clickTree on tree click with file path', () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
     const fileName = 'folder';
     const filePath = 'path/to/folder';
     createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
@@ -93,9 +99,16 @@ describe('File row component', () => {
     wrapper.element.click();
 
     expect(wrapper.emitted('clickTree')[0][0]).toEqual(filePath);
+    expect(trackEventSpy).toHaveBeenCalledWith(
+      'click_file_tree_browser_on_repository_page',
+      {},
+      undefined,
+    );
   });
 
   it('emits clickFile on blob click', () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
     const fileName = 't3';
     const fileProp = {
       ...file(fileName),
@@ -109,6 +122,11 @@ describe('File row component', () => {
     wrapper.element.click();
 
     expect(wrapper.emitted('clickFile')[0][0]).toEqual(fileProp);
+    expect(trackEventSpy).toHaveBeenCalledWith(
+      'click_file_tree_browser_on_repository_page',
+      {},
+      undefined,
+    );
   });
 
   it('calls scrollIntoView if made active', () => {

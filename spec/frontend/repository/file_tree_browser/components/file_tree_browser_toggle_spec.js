@@ -8,8 +8,13 @@ import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_brow
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import {
+  EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+  EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+} from '~/repository/constants';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
@@ -22,6 +27,7 @@ describe('FileTreeBrowserToggle', () => {
 
   const findToggleButton = () => wrapper.findComponent(GlButton);
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = () => {
     wrapper = shallowMount(FileTreeBrowserToggle, {
@@ -77,6 +83,27 @@ describe('FileTreeBrowserToggle', () => {
       await findToggleButton().vm.$emit('click');
 
       expect(mockToggle).toHaveBeenCalled();
+    });
+
+    it('triggers a tracking event when the button is clicked', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      fileTreeBrowserStore.setFileTreeVisibility(false);
+
+      createComponent();
+      await findToggleButton().vm.$emit('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        { label: 'click' },
+        undefined,
+      );
+
+      await findToggleButton().vm.$emit('click');
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        { label: 'click' },
+        undefined,
+      );
     });
   });
   describe('tooltip', () => {

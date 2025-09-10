@@ -3,6 +3,7 @@ import { GlTruncate, GlIcon, GlTooltipDirective, GlButton } from '@gitlab/ui';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
+import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'FileRow',
@@ -16,6 +17,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     file: {
       type: Object,
@@ -82,6 +84,8 @@ export default {
       this.$emit('toggleTreeOpen', path);
     },
     clickFile() {
+      this.trackEvent('click_file_tree_browser_on_repository_page');
+
       // Manual Action if a tree is selected/opened
       if (this.isTree) this.$emit('clickTree', this.file.path);
       if (this.isTree && this.hasUrlAtCurrentRoute()) {

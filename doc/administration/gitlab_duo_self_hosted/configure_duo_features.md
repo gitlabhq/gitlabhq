@@ -72,14 +72,6 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
 {{< /alert >}}
-You must provide a URL to access the Agent Platform service from your GitLab instance.
-
-- The URL for the Agent Platform service cannot start with `http://` or `https://`.
-
-- If the URL for the Agent Platform service is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
-
-  - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
-  - For self-compiled installations, in `/etc/default/gitlab` set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
 
 You must provide a URL to access the Agent Platform service from your GitLab instance.
 

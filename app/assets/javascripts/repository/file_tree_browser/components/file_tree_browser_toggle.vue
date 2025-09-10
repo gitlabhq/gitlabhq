@@ -6,7 +6,12 @@ import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_brow
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
+import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import {
+  EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+  EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+} from '~/repository/constants';
 
 export default {
   name: 'FileTreeBrowserDrawerToggle',
@@ -19,6 +24,7 @@ export default {
     GlButton,
     GlTooltip,
   },
+  mixins: [InternalEvents.mixin()],
   data() {
     return {
       shouldShowPopover: true,
@@ -37,6 +43,18 @@ export default {
   },
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, ['toggleFileTreeVisibility']),
+    onClickToggle() {
+      this.toggleFileTreeVisibility();
+
+      this.trackEvent(
+        this.fileTreeBrowserVisible
+          ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
+          : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        {
+          label: 'click',
+        },
+      );
+    },
     setShouldShowPopover(value) {
       this.shouldShowPopover = value;
     },
@@ -51,7 +69,7 @@ export default {
       ref="toggle"
       icon="file-tree"
       :aria-label="toggleFileBrowserTitle"
-      @click="toggleFileTreeVisibility"
+      @click="onClickToggle"
     />
     <gl-tooltip
       custom-class="file-browser-toggle-tooltip"

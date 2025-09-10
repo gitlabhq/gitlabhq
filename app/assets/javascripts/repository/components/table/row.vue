@@ -208,7 +208,7 @@ export default {
 </script>
 
 <template>
-  <tr class="tree-item">
+  <tr class="tree-item" data-event-tracking="click_file_list_on_repository_page">
     <th class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal" scope="row">
       <component
         :is="linkComponent"

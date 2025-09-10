@@ -824,5 +824,6 @@ instance.
 To share the cache between concurrent runners, you can either:
 
 - Use the `[runners.docker]` section of the runners' `config.toml` to configure a single mount point on the host that
-  is mapped to `/cache` in each container, preventing the runner from creating unique volume names.
+  is mapped to `/cache` in each container, such as `volumes = ["/mnt/gitlab-runner/cache-for-all-concurrent-jobs:/cache"]`.
+  This approach prevents the runner from creating unique volume names for concurrent jobs.
 - Use a distributed cache.

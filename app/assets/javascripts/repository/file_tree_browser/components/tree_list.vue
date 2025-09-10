@@ -6,6 +6,7 @@ import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { joinPaths } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
@@ -32,6 +33,7 @@ export default {
     GlTooltip,
     Shortcut,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     currentRef: {
       type: String,
@@ -293,8 +295,16 @@ export default {
     triggerFocusFilterBar() {
       const filterBar = this.$refs.filterInput;
       if (filterBar && filterBar.$el) {
+        this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
+          label: 'shortcut',
+        });
         filterBar.focus();
       }
+    },
+    onFilterBarClick() {
+      this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
+        label: 'click',
+      });
     },
     filterInputTooltipTarget() {
       // The input might not always be available (i.e. when the FTB is in collapsed state)
@@ -319,12 +329,12 @@ export default {
       <gl-form-input
         ref="filterInput"
         v-model="filter"
-        data-testid="ftb-filter-input"
         :aria-label="__('Filter input')"
         :aria-keyshortcuts="filterSearchShortcutKey"
         type="search"
         class="!gl-pl-7"
         :placeholder="$options.filterPlaceholder"
+        @click="onFilterBarClick"
       />
       <gl-tooltip
         v-if="!shortcutsDisabled"

@@ -12,6 +12,7 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
@@ -72,6 +73,8 @@ describe('Tree List', () => {
   const findFilterIcon = () => wrapper.findComponent(GlIcon);
   const findNoFilesMessage = () => wrapper.findByText('No files found');
   const findTooltip = () => wrapper.findComponent(GlTooltip);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   it('calls apollo query with correct parameters', () => {
     expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
@@ -215,6 +218,21 @@ describe('Tree List', () => {
     });
   });
 
+  it('triggers a tracking event when filter bar is click', async () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+    createComponent();
+    findFilterInput().vm.$emit('click', '*.nonexistent');
+
+    await nextTick();
+
+    expect(trackEventSpy).toHaveBeenCalledWith(
+      'focus_file_tree_browser_filter_bar_on_repository_page',
+      { label: 'click' },
+      undefined,
+    );
+  });
+
   describe('handles filter bar focus correctly when shortcuts are enabled', () => {
     beforeEach(() => {
       shouldDisableShortcuts.mockReturnValue(false);
@@ -222,9 +240,8 @@ describe('Tree List', () => {
     });
 
     it('focuses filter input when triggerFocusFilterBar is called', async () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
       const mockFocus = jest.fn();
-      filterInput.vm.focus = mockFocus;
+      findFilterInput().vm.focus = mockFocus;
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
@@ -232,6 +249,24 @@ describe('Tree List', () => {
       await nextTick();
 
       expect(mockFocus).toHaveBeenCalled();
+    });
+
+    it('triggers a tracking event when shortcut is used', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const mockFocus = jest.fn();
+      findFilterInput().vm.focus = mockFocus;
+
+      const mousetrapInstance = wrapper.vm.mousetrap;
+      mousetrapInstance.trigger('f');
+
+      await nextTick();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'focus_file_tree_browser_filter_bar_on_repository_page',
+        { label: 'shortcut' },
+        undefined,
+      );
     });
 
     it('displays tooltip', () => {
@@ -261,9 +296,8 @@ describe('Tree List', () => {
     });
 
     it('does not focus when shortcuts are disabled', async () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
       const mockFocus = jest.fn();
-      filterInput.vm.focus = mockFocus;
+      findFilterInput().vm.focus = mockFocus;
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');

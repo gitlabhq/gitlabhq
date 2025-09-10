@@ -99,6 +99,7 @@ docs hugo_build:
   extends:
     - .default-retry
     - .docs:rules:docs-lint
+    - .docs:rules:docs-i18n-lint
   stage: lint
   needs: []
   dependencies: []
@@ -130,14 +131,13 @@ docs hugo_build:
     - git clone --depth 1 --filter=tree:0 --branch $DOCS_BRANCH https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons
-    # Copy the current project's docs to the appropriate location in the docs website
-    - cp -r ../doc/* content/
   script:
     # Test that Hugo will build
-    - hugo --gc --printPathWarnings --panicOnWarning
+    - hugo --gc --printPathWarnings --panicOnWarning  --environment test
     # Test for invalid index pages
     # See https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-index-filenames.sh
     - make check-index-pages SEARCH_DIR="../doc"
+    - make check-index-pages SEARCH_DIR="../doc-locale"
 
 docs-lint links:
   extends:
