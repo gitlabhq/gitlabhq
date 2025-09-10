@@ -14,6 +14,7 @@ class Projects::BlobController < Projects::ApplicationController
   extend ::Gitlab::Utils::Override
 
   MAX_PREVIEW_CONTENT = 512.kilobytes
+  MAX_EDIT_SIZE = 10.megabytes
 
   prepend_before_action :authenticate_user!, only: [:edit]
 
@@ -84,7 +85,12 @@ class Projects::BlobController < Projects::ApplicationController
 
   def edit
     if can_collaborate_with_project?(project, ref: @ref)
-      blob.load_all_data!
+      if blob.raw_size > MAX_EDIT_SIZE
+        redirect_to project_blob_path(@project, @id),
+          alert: _("File exceeds 10MB and can't be edited in the browser. Edit locally and push your changes.")
+      else
+        blob.load_all_data!
+      end
     else
       redirect_to action: 'show'
     end

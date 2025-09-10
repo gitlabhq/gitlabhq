@@ -15,6 +15,8 @@ module Gitlab
       Regexp.new(pattern).freeze
     end
 
+    MAX_CLOSING_ISSUES = 500
+
     def initialize(project, current_user = nil)
       @project = project
       @extractor = Gitlab::ReferenceExtractor.new(project, current_user)
@@ -31,6 +33,7 @@ module Gitlab
       @extractor.analyze(closing_statements.join(" "))
       relevant_records = (@extractor.issues + @extractor.work_items).uniq(&:id)
 
+      relevant_records = relevant_records.first(MAX_CLOSING_ISSUES)
       relevant_records.reject do |issue|
         @extractor.project.forked_from?(issue.project)
       end

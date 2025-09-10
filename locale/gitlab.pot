@@ -19988,6 +19988,9 @@ msgstr ""
 msgid "Custom emoji will be available to use in every project in the group."
 msgstr ""
 
+msgid "Custom headers validation failed: %{errors}"
+msgstr ""
+
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
@@ -27820,6 +27823,9 @@ msgid "File deleted"
 msgstr ""
 
 msgid "File deleted."
+msgstr ""
+
+msgid "File exceeds 10MB and can't be edited in the browser. Edit locally and push your changes."
 msgstr ""
 
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
@@ -48033,6 +48039,9 @@ msgstr ""
 msgid "Please fill out this field."
 msgstr ""
 
+msgid "Please fix the following errors: %{errors}"
+msgstr ""
+
 msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions%{link_end} to re-obtain your Let's Encrypt certificate."
 msgstr ""
 
@@ -54726,7 +54735,7 @@ msgstr ""
 msgid "Runners|Online"
 msgstr ""
 
-msgid "Runners|Only administrators can view this."
+msgid "Runners|Only the users with the update permission for this runner can view the note."
 msgstr ""
 
 msgid "Runners|Operating System"
