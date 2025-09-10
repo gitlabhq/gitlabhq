@@ -4,8 +4,9 @@ require 'spec_helper'
 
 RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :remote_mirror) }
+  let_it_be(:project) { create(:project, :repository) }
   let_it_be(:developer) { create(:user) { |u| project.add_developer(u) } }
+  let_it_be(:remote_mirror) { create(:remote_mirror, :host_keys, enabled: true, project: project) }
 
   describe 'GET /projects/:id/remote_mirrors' do
     let(:route) { "/projects/#{project.id}/remote_mirrors" }
@@ -28,7 +29,7 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
   describe 'GET /projects/:id/remote_mirrors/:mirror_id' do
     let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}" }
-    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror) { remote_mirror }
 
     it 'requires `admin_remote_mirror` permission' do
       get api(route, developer)
@@ -36,19 +37,34 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns at remote mirror' do
+    it 'returns a remote mirror' do
       project.add_maintainer(user)
 
       get api(route, user)
 
       expect(response).to have_gitlab_http_status(:success)
       expect(response).to match_response_schema('remote_mirror')
+      expect(json_response['host_keys']).to be_present
+    end
+
+    context "when remote mirror doesn't have host_keys" do
+      let(:mirror) { create(:remote_mirror, project: project) }
+
+      it 'returns an empty host_keys array' do
+        project.add_maintainer(user)
+
+        get api(route, user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to match_response_schema('remote_mirror')
+        expect(json_response['host_keys']).to be_empty
+      end
     end
   end
 
   describe 'POST /projects/:id/remote_mirrors/:mirror_id/sync' do
     let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror_id}/sync" }
-    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror) { remote_mirror }
     let(:mirror_id) { mirror.id }
 
     context 'without enough permissions' do
@@ -181,7 +197,7 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
   describe 'PUT /projects/:id/remote_mirrors/:mirror_id' do
     let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}" }
-    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror) { remote_mirror }
 
     it 'requires `admin_remote_mirror` permission' do
       put api(route, developer)
@@ -233,7 +249,7 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
   describe 'DELETE /projects/:id/remote_mirrors/:mirror_id' do
     let(:route) { ->(id) { "/projects/#{project.id}/remote_mirrors/#{id}" } }
-    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror) { remote_mirror }
 
     it 'requires `admin_remote_mirror` permission' do
       expect { delete api(route[mirror.id], developer) }.not_to change { project.remote_mirrors.count }
@@ -273,7 +289,7 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
   describe 'GET /projects/:id/remote_mirrors/:mirror_id/public_key' do
     let(:route) { "/projects/#{project.id}/remote_mirrors/#{mirror.id}/public_key" }
-    let(:mirror) { project.remote_mirrors.first }
+    let(:mirror) { remote_mirror }
 
     it 'requires `admin_remote_mirror` permission' do
       get api(route, developer)

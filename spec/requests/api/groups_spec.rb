@@ -7,12 +7,12 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   include UploadHelpers
   include WorkhorseHelpers
 
-  let_it_be(:user1) { create(:user, can_create_group: false, organizations: [current_organization]) }
-  let_it_be(:user2) { create(:user, organizations: [current_organization]) }
-  let_it_be(:user3) { create(:user, organizations: [current_organization]) }
-  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
+  let_it_be(:user1) { create(:user, can_create_group: false) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
-  let_it_be(:group2) { create(:group, :private, owners: user2, organization: current_organization) }
+  let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
@@ -2953,8 +2953,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         context 'and organization_id is passed' do
+          let!(:organization_owner) { create(:organization_owner, user: admin, organization: organization) }
+
           it 'creates group within organization' do
-            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+            post api('/groups', admin), params: attributes_for_group_api(organization_id: organization.id)
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['organization_id']).to eq(organization.id)
@@ -2984,6 +2986,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       context 'when user is not an organization user' do
         context 'when organization is public' do
           let_it_be(:organization) { create(:organization, :public) }
+
+          before do
+            stub_current_organization(organization)
+          end
 
           it 'does not create the group' do
             post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)

@@ -718,82 +718,58 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
       get git_info_refs_path, headers: headers
     end
 
-    context 'with git_authenticated_http_limit feature flag disabled' do
+    context 'when rate limit is enabled' do
       before do
-        stub_feature_flags(git_authenticated_http_limit: false)
         settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
         settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
         settings_to_set[:throttle_authenticated_git_http_enabled] = true
         stub_application_setting(settings_to_set)
       end
 
-      it 'does not apply rate limiting' do
+      it 'rejects requests over the rate limit' do
+        # First requests should succeed
+        requests_per_period.times do
+          do_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # Request over the limit should be throttled
+        do_request
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+
+      it 'allows different users to make requests independently' do
+        # First user makes requests up to the limit
+        requests_per_period.times do
+          do_request
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        # Different user should not be throttled
+        different_user = create(:user)
+        different_token = create(:personal_access_token, user: different_user)
+        different_headers = WorkhorseHelpers
+          .workhorse_internal_api_request_header
+          .merge(basic_auth_headers(different_user, different_token))
+
+        get git_info_refs_path, headers: different_headers
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when rate limit is disabled' do
+      before do
+        settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
+        settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
+        settings_to_set[:throttle_authenticated_git_http_enabled] = false
+        stub_application_setting(settings_to_set)
+      end
+
+      it 'does not reject requests over the rate limit' do
         # Multiple requests should succeed even though they exceed the limit
         (requests_per_period + 2).times do
           do_request
           expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-    end
-
-    context 'with git_authenticated_http_limit feature flag enabled' do
-      before do
-        stub_feature_flags(git_authenticated_http_limit: true)
-      end
-
-      context 'when rate limit is enabled' do
-        before do
-          settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
-          settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
-          settings_to_set[:throttle_authenticated_git_http_enabled] = true
-          stub_application_setting(settings_to_set)
-        end
-
-        it 'rejects requests over the rate limit' do
-          # First requests should succeed
-          requests_per_period.times do
-            do_request
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          # Request over the limit should be throttled
-          do_request
-          expect(response).to have_gitlab_http_status(:too_many_requests)
-        end
-
-        it 'allows different users to make requests independently' do
-          # First user makes requests up to the limit
-          requests_per_period.times do
-            do_request
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-
-          # Different user should not be throttled
-          different_user = create(:user)
-          different_token = create(:personal_access_token, user: different_user)
-          different_headers = WorkhorseHelpers
-            .workhorse_internal_api_request_header
-            .merge(basic_auth_headers(different_user, different_token))
-
-          get git_info_refs_path, headers: different_headers
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
-
-      context 'when rate limit is disabled' do
-        before do
-          settings_to_set[:throttle_authenticated_git_http_requests_per_period] = requests_per_period
-          settings_to_set[:throttle_authenticated_git_http_period_in_seconds] = period_in_seconds
-          settings_to_set[:throttle_authenticated_git_http_enabled] = false
-          stub_application_setting(settings_to_set)
-        end
-
-        it 'does not reject requests over the rate limit' do
-          # Multiple requests should succeed even though they exceed the limit
-          (requests_per_period + 2).times do
-            do_request
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
       end
     end

@@ -14,7 +14,6 @@
     .form-group
       = f.label :throttle_unauthenticated_git_http_period_in_seconds, _('Unauthenticated Git HTTP rate limit period in seconds'), class: 'gl-font-bold'
       = f.number_field :throttle_unauthenticated_git_http_period_in_seconds, class: 'form-control gl-form-input'
-  - if Feature.enabled?(:git_authenticated_http_limit, :instance)
     %fieldset
       %h3.gl-heading-5
         = _('Authenticated Git HTTP request rate limit')

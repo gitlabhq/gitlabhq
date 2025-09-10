@@ -1372,6 +1372,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 {{< history >}}
 
 - Marking groups for deletion [available](https://gitlab.com/groups/gitlab-org/-/epics/17208) on Free tier in GitLab 18.0.
+- `permanently_remove` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4 [with a flag](../administration/feature_flags/_index.md) named `disallow_immediate_deletion`.
 
 {{< /history >}}
 
@@ -1394,7 +1395,7 @@ DELETE /groups/:id
 Parameters:
 
 | `id`                 | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
-| `permanently_remove` | boolean/string | no       | If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. |
+| `permanently_remove` | boolean/string | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4. If `true`, immediately deletes a subgroup that is already marked for deletion. Cannot delete top-level groups. |
 | `full_path`          | string         | no       | The full path to the subgroup. Used to confirm deletion of the subgroup. If `permanently_remove` is `true`, this attribute is required. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
 The response is `202 Accepted` if the user has authorization.

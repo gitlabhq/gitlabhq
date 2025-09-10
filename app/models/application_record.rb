@@ -161,6 +161,10 @@ class ApplicationRecord < ActiveRecord::Base
     Gitlab::Database::DeleteRelationWithReturning.execute(relation, columns.flatten)
   end
 
+  def self.sharding_keys
+    @sharding_keys ||= Gitlab::Database::Dictionary.entry(table_name).sharding_key || {}
+  end
+
   def readable_by?(user)
     Ability.allowed?(user, :"read_#{to_ability_name}", self)
   end

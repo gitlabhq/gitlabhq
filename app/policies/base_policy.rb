@@ -1,6 +1,27 @@
 # frozen_string_literal: true
 
 class BasePolicy < DeclarativePolicy::Base
+  # rubocop:disable Gitlab/AvoidCurrentOrganization -- Needed for prevent_all policy
+  desc "Subject belongs to current organization"
+  condition(:in_current_organization) do
+    next true unless Feature.enabled?(:current_organization_policy, Feature.current_request)
+    next true if user_is_user? && @user.admin?
+    next true unless Current.organization_assigned && Current.organization
+    next true if @subject.is_a? Organizations::Organization
+
+    sharding_attribute = @subject.class.try(:sharding_keys)&.key("organizations")
+    next true unless sharding_attribute
+    next true unless @subject.respond_to?(sharding_attribute)
+
+    # rubocop:disable GitlabSecurity/PublicSend -- Sharding attribute can have different names
+    organization_id = @subject.public_send(sharding_attribute)
+    # rubocop:enable GitlabSecurity/PublicSend
+    next true if organization_id.nil?
+
+    organization_id == Current.organization.id
+  end
+  # rubocop:enable Gitlab/AvoidCurrentOrganization
+
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) do
@@ -91,6 +112,8 @@ class BasePolicy < DeclarativePolicy::Base
   condition(:external_authorization_enabled, scope: :global, score: 0) do
     ::Gitlab::ExternalAuthorization.perform_check?
   end
+
+  rule { ~in_current_organization }.prevent_all
 
   rule { external_authorization_enabled & ~can?(:read_all_resources) }.policy do
     prevent :read_cross_project

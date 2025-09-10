@@ -19,7 +19,9 @@ module API
         expose(:platform) { |runner, _options| latest_runner_manager(runner)&.platform }
         expose(:architecture) { |runner, _options| latest_runner_manager(runner)&.architecture }
         expose :contacted_at
-        expose :maintenance_note
+        expose :maintenance_note do |runner, options|
+          runner.maintenance_note if options[:current_user].can?(:update_runner, runner)
+        end
 
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|
           next runner.projects if options[:current_user].can_read_all_resources?

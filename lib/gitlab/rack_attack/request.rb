@@ -182,7 +182,6 @@ module Gitlab
 
       def throttle_authenticated_git_http?
         git_path? &&
-          Feature.enabled?(:git_authenticated_http_limit, :instance) &&
           Gitlab::Throttle.settings.throttle_authenticated_git_http_enabled
       end
 

@@ -33,7 +33,14 @@ export default {
     WorkItemGroupsListbox,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIterationsFeature'],
+  inject: {
+    hasIterationsFeature: {
+      default: false,
+    },
+    projectNamespaceFullPath: {
+      default: '',
+    },
+  },
   props: {
     fullPath: {
       type: String,
@@ -451,6 +458,7 @@ export default {
             :full-path="fullPath"
             :current-project-name="fullName"
             :is-group="isGroup"
+            :project-namespace-full-path="projectNamespaceFullPath"
           />
         </gl-form-group>
         <gl-form-group

@@ -1,0 +1,10 @@
+---
+name: project_ci_cd_settings_accessed
+description: Log an audit event when a user loads the CI/CD Settings page of a project.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/555959
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203540
+feature_category: ci_variables
+milestone: '18.4'
+saved_to_database: false
+streamed: true
+scope: [Project]

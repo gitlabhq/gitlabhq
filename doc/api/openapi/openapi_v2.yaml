@@ -65614,9 +65614,18 @@ definitions:
       auth_method:
         type: string
         example: password
+      host_keys:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_MirrorHostKey"
       mirror_branch_regex:
         type: string
     description: API_Entities_RemoteMirror model
+  API_Entities_MirrorHostKey:
+    type: object
+    properties:
+      fingerprint_sha256:
+        type: string
   postApiV4ProjectsIdRemoteMirrors:
     type: object
     properties:

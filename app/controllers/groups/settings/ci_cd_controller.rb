@@ -23,6 +23,8 @@ module Groups
       def show
         @entity = :group
         @variable_limit = ::Plan.default.actual_limits.group_ci_variables
+
+        audit_group_cicd_settings_access
       end
 
       def update
@@ -50,6 +52,24 @@ module Groups
       end
 
       private
+
+      def audit_group_cicd_settings_access
+        audit_context = {
+          name: 'group_ci_cd_settings_accessed',
+          author: current_user,
+          scope: group,
+          target: group,
+          message: 'User accessed CI/CD settings for a group',
+          additional_details: {
+            group_path: group.full_path,
+            group_id: group.id,
+            timestamp: Time.current.iso8601,
+            action: 'group_ci_cd_settings_page_viewed'
+          }
+        }
+
+        ::Gitlab::Audit::Auditor.audit(audit_context)
+      end
 
       def authorize_show_cicd_settings!
         return if can_any?(current_user, [

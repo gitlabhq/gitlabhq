@@ -36,6 +36,8 @@ module Projects
 
         @triggers_json = Gitlab::Json.dump(triggers)
 
+        audit_project_cicd_settings_access
+
         render
       end
 
@@ -99,6 +101,25 @@ module Projects
       end
 
       private
+
+      def audit_project_cicd_settings_access
+        audit_context = {
+          name: 'project_ci_cd_settings_accessed',
+          author: current_user,
+          scope: project,
+          target: project,
+          message: 'User accessed CI/CD settings for project',
+          additional_details: {
+            project_path: project.full_path,
+            project_id: project.id,
+            ip_address: request.remote_ip,
+            timestamp: Time.current.iso8601,
+            action: 'project_ci_cd_settings_page_viewed'
+          }
+        }
+
+        ::Gitlab::Audit::Auditor.audit(audit_context)
+      end
 
       def authorize_reset_cache!
         return if can_any?(current_user, [

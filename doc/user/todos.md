@@ -25,7 +25,7 @@ needed, a to-do item appears in your To-Do List.
 To access your To-Do List:
 
 On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
-<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
+<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 ### Filter the To-Do List
 
@@ -181,7 +181,7 @@ There are two ways to do this:
 If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
 1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
-<!-- When the feature flag global_topbar is removed, refer only to the button icon -->
+<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 1. At the top, select **Done**.
 1. Find the to-do item you want to re-add.
 1. Next to this to-do item, select **Undo** {{< icon name="redo" >}}.

@@ -50,6 +50,31 @@ RSpec.describe Groups::Settings::CiCdController, feature_category: :continuous_i
         expect(response).to have_gitlab_http_status(:ok)
       end
     end
+
+    context 'when accessing CI/CD Settings page for a group' do
+      before do
+        enable_external_authorization_service_check
+        group.add_owner(user)
+      end
+
+      it 'creates a streaming audit event' do
+        expect(::Gitlab::Audit::Auditor).to receive(:audit).with({
+          name: 'group_ci_cd_settings_accessed',
+          author: user,
+          scope: group,
+          target: group,
+          message: 'User accessed CI/CD settings for a group',
+          additional_details: hash_including(
+            group_path: group.full_path,
+            group_id: group.id,
+            timestamp: kind_of(String),
+            action: 'group_ci_cd_settings_page_viewed'
+          )
+        })
+
+        get :show, params: { group_id: group }
+      end
+    end
   end
 
   describe 'PATCH #update_auto_devops' do

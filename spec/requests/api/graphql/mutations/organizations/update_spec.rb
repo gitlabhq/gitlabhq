@@ -6,10 +6,8 @@ RSpec.describe Mutations::Organizations::Update, feature_category: :organization
   include GraphqlHelpers
   include WorkhorseHelpers
 
-  let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:organization) do
-    create(:organization) { |org| create(:organization_user, :owner, organization: org, user: user) }
-  end
+  let_it_be_with_reload(:organization) { create(:organization) }
+  let_it_be(:user) { create(:user, owner_of: organization) }
 
   let(:mutation) { graphql_mutation(:organization_update, params) }
   let(:name) { 'Name' }

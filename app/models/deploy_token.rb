@@ -43,6 +43,7 @@ class DeployToken < ApplicationRecord
       with: /\A[a-zA-Z0-9\.\+_-]+\z/,
       message: "can contain only letters, digits, '_', '-', '+', and '.'"
     }
+  validates :name, length: { maximum: 255 }, if: :name_changed?
 
   validates :expires_at, iso8601_date: true, on: :create
   validates :deploy_token_type, presence: true

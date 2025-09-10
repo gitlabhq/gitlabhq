@@ -37161,8 +37161,6 @@ CREATE INDEX idx_wi_select_field_values_on_custom_field_select_option_id ON work
 
 CREATE UNIQUE INDEX idx_wi_select_values_on_wi_custom_field_id_select_option_id ON work_item_select_field_values USING btree (work_item_id, custom_field_id, custom_field_select_option_id);
 
-CREATE UNIQUE INDEX idx_wi_status_mappings_unique_combo ON work_item_custom_status_mappings USING btree (namespace_id, new_status_id, work_item_type_id, old_status_id);
-
 CREATE UNIQUE INDEX idx_wi_text_values_on_work_item_id_custom_field_id ON work_item_text_field_values USING btree (work_item_id, custom_field_id);
 
 CREATE UNIQUE INDEX idx_wi_type_custom_fields_on_ns_id_wi_type_id_custom_field_id ON work_item_type_custom_fields USING btree (namespace_id, work_item_type_id, custom_field_id);
@@ -41876,6 +41874,8 @@ CREATE INDEX index_work_item_custom_lifecycles_on_created_by_id ON work_item_cus
 CREATE UNIQUE INDEX index_work_item_custom_lifecycles_on_namespace_id_and_name ON work_item_custom_lifecycles USING btree (namespace_id, name);
 
 CREATE INDEX index_work_item_custom_lifecycles_on_updated_by_id ON work_item_custom_lifecycles USING btree (updated_by_id);
+
+CREATE INDEX index_work_item_custom_status_mappings_on_namespace_id ON work_item_custom_status_mappings USING btree (namespace_id);
 
 CREATE INDEX index_work_item_custom_status_mappings_on_new_status_id ON work_item_custom_status_mappings USING btree (new_status_id);
 

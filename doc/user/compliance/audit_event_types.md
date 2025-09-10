@@ -124,6 +124,8 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`variable_viewed_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197385) | A CI/CD variable is accessed with the API | {{< icon name="dotted-circle" >}} No | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555960) | Project, Group |
+| [`group_ci_cd_settings_accessed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203540) | Log an audit event when a user loads the CI/CD Settings page of a group. | {{< icon name="dotted-circle" >}} No | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/555959) | Group |
+| [`project_ci_cd_settings_accessed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203540) | Log an audit event when a user loads the CI/CD Settings page of a project. | {{< icon name="dotted-circle" >}} No | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/555959) | Project |
 
 ### Code review
 

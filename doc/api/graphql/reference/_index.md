@@ -321,6 +321,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryaicatalogitemsitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
 | <a id="queryaicatalogitemssearch"></a>`search` | [`String`](#string) | Search items by name and description. |
 
+### `Query.aiChatAvailableModels`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Get available models for Duo Agentic Chat.
+
+Returns [`AvailableModels`](#availablemodels).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaichatavailablemodelsrootnamespaceid"></a>`rootNamespaceId` | [`GroupID!`](#groupid) | Global ID of the namespace the user is acting on. |
+
 ### `Query.aiChatContextPresets`
 
 Get available GitLab Duo Chat context presets for the current user for a specific URL.
@@ -1962,6 +1979,21 @@ Returns [`WorkItem`](#workitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+
+### `Query.workItemAllowedStatuses`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Allowed work item statuses from the root groups the current user belongs to.
+
+Returns [`WorkItemStatusConnection`](#workitemstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.workItemDescriptionTemplateContent`
 
@@ -10391,7 +10423,7 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsecretupdatedescription"></a>`description` | [`String`](#string) | New description of the project secret. |
 | <a id="mutationprojectsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environments that can access the secret. |
-| <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int`](#int) | This should match the current metadata version of the project secret being updated. |
+| <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int!`](#int) | This should match the current metadata version of the project secret being updated. |
 | <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
 | <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
 | <a id="mutationprojectsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the project secret. |
@@ -15060,6 +15092,29 @@ The edge type for [`AiModelSelectionNamespaceFeatureSetting`](#aimodelselectionn
 | ---- | ---- | ----------- |
 | <a id="aimodelselectionnamespacefeaturesettingedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aimodelselectionnamespacefeaturesettingedgenode"></a>`node` | [`AiModelSelectionNamespaceFeatureSetting`](#aimodelselectionnamespacefeaturesetting) | The item at the end of the edge. |
+
+#### `AiModelSelectionOfferedModelConnection`
+
+The connection type for [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodelconnectionedges"></a>`edges` | [`[AiModelSelectionOfferedModelEdge]`](#aimodelselectionofferedmodeledge) | A list of edges. |
+| <a id="aimodelselectionofferedmodelconnectionnodes"></a>`nodes` | [`[AiModelSelectionOfferedModel]`](#aimodelselectionofferedmodel) | A list of nodes. |
+| <a id="aimodelselectionofferedmodelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiModelSelectionOfferedModelEdge`
+
+The edge type for [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aimodelselectionofferedmodeledgenode"></a>`node` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | The item at the end of the edge. |
 
 #### `AiSelfHostedModelConnection`
 
@@ -23165,12 +23220,15 @@ Duo Chat feature setting.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aifeaturesettingcompatiblellms"></a>`compatibleLlms` | [`[String!]`](#string) | LLMs Compatible with the feature. |
+| <a id="aifeaturesettingdefaultgitlabmodel"></a>`defaultGitlabModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | GitLab model selected for use with the AI feature. |
 | <a id="aifeaturesettingfeature"></a>`feature` | [`String!`](#string) | Identifier for the AI feature. |
+| <a id="aifeaturesettinggitlabmodel"></a>`gitlabModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | GitLab model selected for use with the AI feature. |
 | <a id="aifeaturesettingmainfeature"></a>`mainFeature` | [`String`](#string) | Displayed name of the main feature. |
 | <a id="aifeaturesettingprovider"></a>`provider` | [`String!`](#string) | Humanized name for the AI feature, e.g "Code Completion". |
 | <a id="aifeaturesettingreleasestate"></a>`releaseState` | [`String`](#string) | Current release state of the feature. |
 | <a id="aifeaturesettingselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model selected for use with the AI feature. |
 | <a id="aifeaturesettingtitle"></a>`title` | [`String`](#string) | Displayed AI feature name. |
+| <a id="aifeaturesettingvalidgitlabmodels"></a>`validGitlabModels` | [`AiModelSelectionOfferedModelConnection!`](#aimodelselectionofferedmodelconnection) | Valid GitLab managed models for the feature. (see [Connections](#connections)) |
 | <a id="aifeaturesettingvalidmodels"></a>`validModels` | [`AiSelfHostedModelConnection!`](#aiselfhostedmodelconnection) | Compatible self-hosted models for the feature. (see [Connections](#connections)) |
 
 ### `AiFlowTriggerType`
@@ -24231,6 +24289,17 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `AvailableModels`
+
+Available models for Duo Agentic Chat.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="availablemodelsdefaultmodel"></a>`defaultModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | Default LLM for Duo Agentic Chat. |
+| <a id="availablemodelsselectablemodels"></a>`selectableModels` | [`[AiModelSelectionOfferedModel!]`](#aimodelselectionofferedmodel) | LLMs compatible with Duo Agentic Chat. |
 
 ### `AwardEmoji`
 
@@ -48119,6 +48188,8 @@ Values for sorting issues.
 | <a id="issuesortseverity_desc"></a>`SEVERITY_DESC` | Severity from more critical to less critical. |
 | <a id="issuesortsla_due_at_asc"></a>`SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first. |
 | <a id="issuesortsla_due_at_desc"></a>`SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first. |
+| <a id="issuesortstatus_asc"></a>`STATUS_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.4. **Status**: Experiment. Status by ascending order. |
+| <a id="issuesortstatus_desc"></a>`STATUS_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.4. **Status**: Experiment. Status by descending order. |
 | <a id="issuesorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
 | <a id="issuesorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="issuesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |

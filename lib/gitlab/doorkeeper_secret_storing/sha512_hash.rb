@@ -7,7 +7,7 @@ module Gitlab
         if Feature.enabled?(:sha512_oauth, :instance)
           Digest::SHA512.hexdigest plain_secret
         else
-          Pbkdf2Sha512.transform_secret(plain_secret)
+          ::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plain_secret)
         end
       end
 

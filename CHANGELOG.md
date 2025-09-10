@@ -2,6 +2,37 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.2 (2025-09-09)
+
+### Added (1 change)
+
+- [Add Compare link to submodule diffs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2f6ecb3f3443b4cd710d59d5bda31ac1475a90f0)
+
+### Fixed (9 changes)
+
+- [Backport comment suggestion line range fix to 18-3](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b6ab76b225017a1e5046a11bc4456a918b76a66c)
+- [Update gitlab-shell to v14.45.2 to allow ED25519 for FIPS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/497cc999266226f1a61b5eac3ff87014e313bd4a)
+- [Make FileLocationType.endLine nullable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eabd8d768f54de8c43a8206d272da2dfe82369f2) **GitLab Enterprise Edition**
+- [Preserve the exact string representation of the URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/edc490fcb992e0ca351050beed0397331bb35162) **GitLab Enterprise Edition**
+- [Fix nil error in Gitlab:Auth:IpRateLimiter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6f1d8f3ec3841790aeb1d440122f89ffe8acc00e)
+- [Display MCP in General settings of root groups for SM instances](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3abe94466b6ee1c99962d42400da46513d1b5e94)
+- [Fix shared group access for advanced code search](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6bc61a1551d9a3c7b4df2c1d19efd33a7fd3f0c6) **GitLab Enterprise Edition**
+- [Fix webauthn authentication in Firefox](https://gitlab.com/gitlab-org/security/gitlab/-/commit/05b92aeca1cf8590ae070e3c3d5ad5f12a7130ad)
+- [Update gitlab-shell to v14.45.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8f040315eb5b3a09c19957fb1697b7e764ff9e6b)
+
+### Security (6 changes)
+
+- [Introduce limit for closed issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/00b2bd3e6a02e544918f4d604d64c8a5ab4832a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5257))
+- [Add file size limit for blob editing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4db58c8cb370d31f5c93543bd6c533106c420182) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5296))
+- [Fix DoS via large SAML Response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52602fdd1094a9ca30603ca01be44093799a52e3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5263))
+- [Add limit to deploy token name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/df2340492a220a11f9fdebfd54df25be0c6e6d38) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5299))
+- [Fix webhook custom header validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d80e590444fcee5ed0d747b83f4d051b1b8be218) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5292))
+- [Show runner maintenance note only to runner maintainers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c612438eba64061b130eb44c094c1d142ba6991d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5286))
+
+### Other (1 change)
+
+- [This reverts merge request 200657](https://gitlab.com/gitlab-org/security/gitlab/-/commit/33504c82acc926677c68a1e4c2bf2789a9be71da)
+
 ## 18.3.1 (2025-08-26)
 
 ### Fixed (1 change)
@@ -869,6 +900,29 @@ entry.
 - [Use proper vue frontend errors on company form](https://gitlab.com/gitlab-org/gitlab/-/commit/d04f737a5d4dbef68db29c73e37edf382b8cea79) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194378)) **GitLab Enterprise Edition**
 - [Remove ignore column from Users](https://gitlab.com/gitlab-org/gitlab/-/commit/ad08665571456b0e6d8d4f70f161a0980b6a4f80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197464))
 
+## 18.2.6 (2025-09-09)
+
+### Added (1 change)
+
+- [Add Compare link to submodule diffs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ae1c1e0c5a27ceddc5d1b14ab5c73c25a9624bf7)
+
+### Fixed (5 changes)
+
+- [Update gitlab-shell to v14.45.2 to allow ED25519 for FIPS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/165c4e2f73a0ceef972c9266f1b289cd952ca31c)
+- [Make FileLocationType.endLine nullable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1c7f2bdd6364199ea31365f07579613588c2892c) **GitLab Enterprise Edition**
+- [Preserve the exact string representation of the URI](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3240e03a283ab2d90a1d1dc168da0f952ef1dc00) **GitLab Enterprise Edition**
+- [Fix shared group access for advanced code search](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d73ef815c69212ee97b7ae5adffd24efc2de2424) **GitLab Enterprise Edition**
+- [Update gitlab-shell to v14.45.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/39c491d07bf756eca2769d728ff902d31570b0f6)
+
+### Security (6 changes)
+
+- [Introduce limit for closed issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3eb7690ee99be51187a85989005bcbb30e724e2b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5236))
+- [Add file size limit for blob editing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/77430a9aa9afea74e543b1a736c6d628d7f1b8df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5297))
+- [Fix DoS via large SAML Response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14b82231074bcf66e96a9f05b1f7b5cfbaabd8ef) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5240))
+- [Add limit to deploy token name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a542fc2ae58af6f54db56beb247ce45536ca95d1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5300))
+- [Fix webhook custom header validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7f80ed2fb18a32b87e265de9e559992531154e4e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5293))
+- [Show runner maintenance note only to runner maintainers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7df46119f30f9013bd08fda871c3a15db51f266a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5287))
+
 ## 18.2.5 (2025-08-26)
 
 ### Fixed (2 changes)
@@ -1702,6 +1756,21 @@ entry.
 - [Remove pat_last_used_at_optimization FF](https://gitlab.com/gitlab-org/gitlab/-/commit/07b0af7a1bef7be80a2b9ed8d1a8e1ee38b8b0fb) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193718))
 - [Add NOT NULL on incident_management_pending_alert_escalations](https://gitlab.com/gitlab-org/gitlab/-/commit/9eb4353a140f28bb89931e52a7606657915e95b9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193647))
 - [Sync translations from crowdin (2025-05-28)](https://gitlab.com/gitlab-org/gitlab/-/commit/b7be101322f296e7351d9f2348e5ee32ead9228a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192769))
+
+## 18.1.6 (2025-09-09)
+
+### Fixed (1 change)
+
+- [Make FileLocationType.endLine nullable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d182c402a89a05008c98ff5fbd30bbcfc547a789) **GitLab Enterprise Edition**
+
+### Security (6 changes)
+
+- [Introduce limit for closed issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a869c795eb95f8012e9343521f1be9007cf2dab) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5237))
+- [Add file size limit for blob editing](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4e9cb1f4b1f02e7c932f3cf98beff6efe7de1a10) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5298))
+- [Fix DoS via large SAML Response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bf826c92b10e5c36d16aaff1baad1ba5dfda8cde) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5241))
+- [Add limit to deploy token name](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09bb4e1c9da13aca8fd29e1cf19fb8e314ab43f0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5301))
+- [Fix webhook custom header validation](https://gitlab.com/gitlab-org/security/gitlab/-/commit/87b35b0046ab269fa0f469a7df196ccbc95f22bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5294))
+- [Show runner maintenance note only to runner maintainers](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0b91b0297eedbf681c1355e8ef9f3f0a055aec06) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5288))
 
 ## 18.1.5 (2025-08-26)
 

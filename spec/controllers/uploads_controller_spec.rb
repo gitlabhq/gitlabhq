@@ -681,6 +681,10 @@ RSpec.describe UploadsController, feature_category: :groups_and_projects do
         )
       end
 
+      before do
+        stub_current_organization(organization)
+      end
+
       context 'when organization is public' do
         context 'when signed in' do
           before do

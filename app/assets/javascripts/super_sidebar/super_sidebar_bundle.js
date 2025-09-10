@@ -225,7 +225,7 @@ export const initSuperSidebarToggle = () => {
 
 /**
  * This init function duplicates the args of `initSuperSidebar` for now.
- * TODO: When we clean up the `global_topbar` feature flag, we should remove the unused args from
+ * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
  * both functions.
  */
 export const initSuperTopbar = async ({

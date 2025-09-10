@@ -100,6 +100,7 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         hasIterationsFeature,
+        projectNamespaceFullPath: 'full-path',
       },
       stubs: {
         GlFormGroup: stubComponent(GlFormGroup, {

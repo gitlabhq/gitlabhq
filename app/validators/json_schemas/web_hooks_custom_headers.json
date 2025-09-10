@@ -5,10 +5,12 @@
   "additionalProperties": false,
   "maxProperties": 20,
   "patternProperties": {
-    "^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$": {
+    "\\A[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*\\z": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 2048
+      "maxLength": 2048,
+      "pattern": "^(?!.*[\\r\\n])(?!.*(%0[aAd]|%0[dD]|%5[cC][nr]))(?!.*(\\\\n|\\\\r))[^\\s].*[^\\s]$|^[^\\s]$",
+      "description": "Single line, no encoded newlines, no leading/trailing whitespace"
     }
   }
 }

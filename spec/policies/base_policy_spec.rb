@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BasePolicy do
+RSpec.describe BasePolicy, feature_category: :shared do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
 
@@ -208,5 +208,134 @@ RSpec.describe BasePolicy do
     it { expect_disallowed(:access_api) }
     it { expect_disallowed(:receive_notifications) }
     it { expect_disallowed(:use_slash_commands) }
+  end
+
+  describe 'in_current_organization' do
+    let_it_be(:current_organization) { create(:organization) }
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:policy_subject) { create(:group, :public, organization: other_organization) }
+
+    let(:current_user) { nil }
+
+    subject(:group_policy) do
+      GroupPolicy.new(current_user, policy_subject)
+    end
+
+    context 'when feature flag :current_organization_policy is disabled' do
+      before do
+        stub_feature_flags(current_organization_policy: false)
+      end
+
+      it 'allows access to the subject' do
+        expect(group_policy).to be_allowed(:read_group)
+      end
+    end
+
+    context 'when user is an admin' do
+      let(:current_user) { build_stubbed(:admin) }
+
+      it 'allows access to the subject' do
+        expect(group_policy).to be_allowed(:read_group)
+      end
+    end
+
+    context 'when current organization is set' do
+      before do
+        Current.organization = current_organization
+      end
+
+      context 'when subject is not in current organization' do
+        context 'and it has an organization_id' do
+          let_it_be(:policy_subject) { create(:group, :public, organization: other_organization) }
+
+          it 'disallows all access to the subject' do
+            expect(group_policy).to be_disallowed(:read_group)
+          end
+
+          context 'and organization_id is nil' do
+            before do
+              allow(policy_subject).to receive(:organization_id).and_return(nil)
+            end
+
+            it 'allows access to the subject' do
+              expect(group_policy).to be_allowed(:read_group)
+            end
+          end
+
+          context 'when subject is an Organization instance' do
+            let_it_be(:current_user) { create(:user, organization: other_organization) }
+
+            subject(:organization_policy) do
+              Organizations::OrganizationPolicy.new(
+                current_user, other_organization
+              ).allowed?(:read_organization)
+            end
+
+            it 'allows access to the subject' do
+              expect(organization_policy).to be(true)
+            end
+          end
+        end
+      end
+
+      context 'when subject is in current organization' do
+        context 'and it has an organization_id' do
+          let_it_be(:policy_subject) { create(:group, :public, organization: current_organization) }
+
+          it 'allows all access to the subject' do
+            expect(group_policy).to be_allowed(:read_group)
+          end
+        end
+      end
+
+      context 'when subject does not have an organization_id attribute' do
+        let_it_be(:policy_subject) { create(:group) }
+
+        before do
+          allow(policy_subject).to receive(:respond_to?).with('organization_id').and_return(false)
+        end
+
+        it 'allows access to the subject' do
+          expect(group_policy).to be_allowed(:read_group)
+        end
+      end
+
+      context 'when subject does not have sharding_key method' do
+        let_it_be(:policy_subject) { :global }
+        let(:current_user) { build_stubbed(:user) }
+
+        subject(:policy) do
+          Ability.allowed?(current_user, :read_cross_project)
+        end
+
+        it 'allows access to the subject' do
+          expect(policy).to be(true)
+        end
+      end
+    end
+
+    context 'when current organization is nil' do
+      before do
+        Current.organization = nil
+      end
+
+      context 'and subject has an organization_id' do
+        let_it_be(:policy_subject) { create(:group, :public, organization: other_organization) }
+
+        it 'allows access to the subject' do
+          expect(group_policy).to be_allowed(:read_group)
+        end
+      end
+    end
+
+    context 'when current organization is not assigned' do
+      context 'and subject has an organization_id' do
+        let_it_be(:policy_subject) { create(:group, :public, organization: other_organization) }
+
+        it 'allows access to the subject' do
+          expect(group_policy).to be_allowed(:read_group)
+        end
+      end
+    end
   end
 end

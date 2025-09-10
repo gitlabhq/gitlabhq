@@ -115,7 +115,7 @@ RSpec.describe Mutations::Ci::Runner::AssignToProject, feature_category: :runner
       it 'returns an error' do
         post_graphql_mutation(mutation, current_user: project_owner)
         expect(graphql_mutation_response(:runner_assign_to_project)['errors'])
-          .to include("runner can only be assigned to projects in the same organization")
+          .to include("user is not authorized to add runners to project")
         expect(runner.reload.projects).not_to include(project)
       end
     end

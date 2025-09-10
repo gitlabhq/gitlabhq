@@ -11,7 +11,7 @@
 
 .wiki-overview
   .wiki-page-details
-    %div{ class: ::Feature.enabled?(:global_topbar, current_user) && !fluid_layout ? "container-fluid container-limited limit-container-width" : nil }
+    %div{ class: project_studio_enabled? && !fluid_layout ? "container-fluid container-limited limit-container-width" : nil }
       #js-vue-wiki-content-app{ data: {
         testid: 'wiki-page-content-app',
         container_id: @wiki.container.id,

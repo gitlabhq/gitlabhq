@@ -29,6 +29,12 @@ display and update them.
 
 ## List a project's remote mirrors
 
+{{< history >}}
+
+- Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
+
+{{< /history >}}
+
 Get an array of remote mirrors and their statuses for a project.
 
 ```plaintext
@@ -48,6 +54,7 @@ following response attributes:
 |-----------------------------|---------|-------------|
 | `auth_method`               | string  | Authentication method used for the mirror. |
 | `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `host_keys`                 | array   | Array of SSH host key fingerprints for the remote mirror. |
 | `id`                        | integer | ID of the remote mirror. |
 | `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
 | `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
@@ -80,12 +87,23 @@ Example response:
     "only_protected_branches": true,
     "keep_divergent_refs": true,
     "update_status": "finished",
-    "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
+    "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git",
+    "host_keys": [
+      {
+        "fingerprint_sha256": "SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw"
+      }
+    ]
   }
 ]
 ```
 
 ## Get a single project's remote mirror
+
+{{< history >}}
+
+- Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
+
+{{< /history >}}
 
 Get a single remote mirror and its status for a project.
 
@@ -107,6 +125,7 @@ following response attributes:
 |-----------------------------|---------|-------------|
 | `enabled`                   | boolean | If `true`, the mirror is enabled. |
 | `id`                        | integer | ID of the remote mirror. |
+| `host_keys`                 | array   | Array of SSH host key fingerprints for the remote mirror. |
 | `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
 | `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
 | `last_successful_update_at` | string  | Timestamp of the last successful mirror update. ISO 8601 format. |
@@ -136,7 +155,12 @@ Example response:
   "only_protected_branches": true,
   "keep_divergent_refs": true,
   "update_status": "finished",
-  "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
+  "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git",
+  "host_keys": [
+    {
+      "fingerprint_sha256": "SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw"
+    }
+  ]
 }
 ```
 
@@ -195,6 +219,7 @@ project pull mirroring API.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+- Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -224,6 +249,7 @@ following response attributes:
 |-----------------------------|---------|-------------|
 | `auth_method`               | string  | Authentication method used for the mirror. |
 | `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `host_keys`                 | array   | Array of SSH host key fingerprints for the remote mirror. |
 | `id`                        | integer | ID of the remote mirror. |
 | `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
 | `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
@@ -257,7 +283,12 @@ Example response:
     "only_protected_branches": false,
     "keep_divergent_refs": false,
     "update_status": "none",
-    "url": "https://*****:*****@example.com/gitlab/example.git"
+    "url": "https://*****:*****@example.com/gitlab/example.git",
+    "host_keys": [
+      {
+        "fingerprint_sha256": "SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw"
+      }
+    ]
 }
 ```
 
@@ -266,6 +297,7 @@ Example response:
 {{< history >}}
 
 - Field `auth_method` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75155) in GitLab 16.10.
+- Attribute `host_keys` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203435) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -295,6 +327,7 @@ following response attributes:
 |-----------------------------|---------|-------------|
 | `auth_method`               | string  | Authentication method used for the mirror. |
 | `enabled`                   | boolean | If `true`, the mirror is enabled. |
+| `host_keys`                 | array   | Array of SSH host key fingerprints for the remote mirror. |
 | `id`                        | integer | ID of the remote mirror. |
 | `keep_divergent_refs`       | boolean | If `true`, divergent refs are kept when mirroring. |
 | `last_error`                | string  | Error message from the last mirror attempt. `null` if successful. |
@@ -328,7 +361,12 @@ Example response:
     "only_protected_branches": true,
     "keep_divergent_refs": true,
     "update_status": "finished",
-    "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
+    "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git",
+    "host_keys": [
+      {
+        "fingerprint_sha256": "SHA256:HbW3g8zUjNSksFbqTiUWPWg2Bq1x8xdGUrliXFzSnUw"
+      }
+    ]
 }
 ```
 

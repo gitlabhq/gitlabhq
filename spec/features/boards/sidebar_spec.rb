@@ -33,15 +33,30 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   end
 
   context 'when issues drawer is enabled' do
-    before do
-      sign_in(user)
+    context 'when project studio is enabled' do
+      before do
+        enable_project_studio!(user)
+        sign_in(user)
 
-      visit project_board_path(project, board)
+        visit project_board_path(project, board)
 
-      wait_for_requests
+        wait_for_requests
+      end
+
+      it_behaves_like 'work item drawer on the boards'
     end
 
-    it_behaves_like 'work item drawer on the boards'
+    context 'when project studio is disabled' do
+      before do
+        sign_in(user)
+
+        visit project_board_path(project, board)
+
+        wait_for_requests
+      end
+
+      it_behaves_like 'work item drawer on the boards'
+    end
   end
 
   def first_card

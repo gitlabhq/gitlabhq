@@ -10,7 +10,8 @@
     "last_update_started_at",
     "last_successful_update_at",
     "last_error",
-    "only_protected_branches"
+    "only_protected_branches",
+    "host_keys"
   ],
   "properties": {
     "id": {
@@ -70,6 +71,12 @@
         "boolean",
         "null"
       ]
+    },
+    "host_keys": {
+      "type": "array",
+      "items": {
+        "$ref": "entities/host_key.json"
+      }
     }
   },
   "additionalProperties": false

@@ -7,7 +7,7 @@ RSpec.describe Mutations::Organizations::Create, feature_category: :organization
   include WorkhorseHelpers
 
   let_it_be(:organization) { create(:organization) }
-  let_it_be(:user) { create(:user, organizations: [organization]) }
+  let_it_be(:user) { create(:admin, organizations: [organization]) }
 
   let(:mutation) { graphql_mutation(:organization_create, params) }
   let(:name) { 'Name' }

@@ -2467,9 +2467,6 @@ msgstr ""
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
-msgid "AICatalog|Agent executed successfully."
-msgstr ""
-
 msgid "AICatalog|Agent not found."
 msgstr ""
 
@@ -2522,9 +2519,6 @@ msgid "AICatalog|Choose who can view and interact with this flow after it is pub
 msgstr ""
 
 msgid "AICatalog|Connect AI agents to automate complicated tasks."
-msgstr ""
-
-msgid "AICatalog|Copy flow config"
 msgstr ""
 
 msgid "AICatalog|Copy of"
@@ -2582,9 +2576,6 @@ msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to delete flow. %{error}"
-msgstr ""
-
-msgid "AICatalog|Failed to execute agent."
 msgstr ""
 
 msgid "AICatalog|Failed to remove flow. %{error}"
@@ -2716,6 +2707,9 @@ msgstr ""
 msgid "AICatalog|Test run agents to see how they respond."
 msgstr ""
 
+msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{formattedId}%{linkEnd}."
+msgstr ""
+
 msgid "AICatalog|The agent could not be added to the project. Try again. %{error}"
 msgstr ""
 
@@ -2737,6 +2731,9 @@ msgstr ""
 msgid "AICatalog|The item consumer must belong to only one organization, group, or project"
 msgstr ""
 
+msgid "AICatalog|The test run failed. %{error}"
+msgstr ""
+
 msgid "AICatalog|This agent can be made private if it is not used."
 msgstr ""
 
@@ -2753,9 +2750,6 @@ msgid "AICatalog|Tools"
 msgstr ""
 
 msgid "AICatalog|Use AI Flows in your project."
-msgstr ""
-
-msgid "AICatalog|User Prompt is required."
 msgstr ""
 
 msgid "AICatalog|User prompt"
@@ -20255,6 +20249,9 @@ msgstr ""
 msgid "Custom emoji will be available to use in every project in the group."
 msgstr ""
 
+msgid "Custom headers validation failed: %{errors}"
+msgstr ""
+
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
@@ -28216,6 +28213,9 @@ msgid "File deleted"
 msgstr ""
 
 msgid "File deleted."
+msgstr ""
+
+msgid "File exceeds 10MB and can't be edited in the browser. Edit locally and push your changes."
 msgstr ""
 
 msgid "File hooks are similar to system hooks but are executed as files instead of sending data to a URL."
@@ -48623,6 +48623,9 @@ msgstr ""
 msgid "Please fill out this field."
 msgstr ""
 
+msgid "Please fix the following errors: %{errors}"
+msgstr ""
+
 msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions%{link_end} to re-obtain your Let's Encrypt certificate."
 msgstr ""
 
@@ -55355,7 +55358,7 @@ msgstr ""
 msgid "Runners|Online"
 msgstr ""
 
-msgid "Runners|Only administrators can view this."
+msgid "Runners|Only the users with the update permission for this runner can view the note."
 msgstr ""
 
 msgid "Runners|Operating System"

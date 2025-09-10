@@ -1,0 +1,18 @@
+---
+description: Count Secret Push Protection scans that completed without finding secrets.
+internal_events: true
+status: active
+action: spp_scan_passed
+identifiers:
+- project
+- namespace
+- user
+product_group: secret_detection
+product_categories:
+- secret_detection
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203698
+tiers:
+- free
+- premium
+- ultimate

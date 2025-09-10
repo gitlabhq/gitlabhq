@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe SidebarsHelper, feature_category: :navigation do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:current_organization) { build_stubbed(:organization, name: "Current Organization") }
+  let_it_be(:current_organization) { build_stubbed(:common_organization) }
 
   before do
     Current.organization = current_organization

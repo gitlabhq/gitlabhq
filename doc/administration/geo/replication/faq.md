@@ -94,7 +94,7 @@ Yes, provided they are not excluded through [selective sync](selective_synchroni
 
 ## Are delayed deletion projects replicated to secondary sites?
 
-Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibility_and_access_controls.md#delayed-project-deletion), but are yet to be permanently deleted, are replicated to secondary sites.
+Yes, projects scheduled for deletion by [delayed deletion](../../settings/visibility_and_access_controls.md#deletion-protection), but are yet to be permanently deleted, are replicated to secondary sites.
 
 ## What happens to my secondary sites with when my primary site goes down?
 

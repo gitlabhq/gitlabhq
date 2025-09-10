@@ -259,40 +259,31 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
 
     subject { request.throttle_authenticated_git_http? }
 
-    where(:path, :request_authenticated?, :application_setting_throttle_authenticated_git_http_enabled, :feature_flag_enabled, :expected) do
-      ref(:git_info_refs_path)     | true  | true  | true  | true
-      ref(:git_info_refs_path)     | false | true  | true  | true
-      ref(:git_info_refs_path)     | true  | false | true  | false
-      ref(:git_info_refs_path)     | false | false | true  | false
-      ref(:git_info_refs_path)     | true  | true  | false | false
-      ref(:git_info_refs_path)     | false | true  | false | false
+    where(:path, :request_authenticated?, :application_setting_throttle_authenticated_git_http_enabled, :expected) do
+      ref(:git_info_refs_path)     | true  | true  | true
+      ref(:git_info_refs_path)     | false | true  | true
+      ref(:git_info_refs_path)     | true  | false | false
+      ref(:git_info_refs_path)     | false | false | false
 
-      ref(:git_receive_pack_path)  | true  | true  | true  | true
-      ref(:git_receive_pack_path)  | false | true  | true  | true
-      ref(:git_receive_pack_path)  | true  | false | true  | false
-      ref(:git_receive_pack_path)  | false | false | true  | false
-      ref(:git_receive_pack_path)  | true  | true  | false | false
-      ref(:git_receive_pack_path)  | false | true  | false | false
+      ref(:git_receive_pack_path)  | true  | true  | true
+      ref(:git_receive_pack_path)  | false | true  | true
+      ref(:git_receive_pack_path)  | true  | false | false
+      ref(:git_receive_pack_path)  | false | false | false
 
-      ref(:git_upload_pack_path)   | true  | true  | true  | true
-      ref(:git_upload_pack_path)   | false | true  | true  | true
-      ref(:git_upload_pack_path)   | true  | false | true  | false
-      ref(:git_upload_pack_path)   | false | false | true  | false
-      ref(:git_upload_pack_path)   | true  | true  | false | false
-      ref(:git_upload_pack_path)   | false | true  | false | false
+      ref(:git_upload_pack_path)   | true  | true  | true
+      ref(:git_upload_pack_path)   | false | true  | true
+      ref(:git_upload_pack_path)   | true  | false | false
+      ref(:git_upload_pack_path)   | false | false | false
 
-      '/users/sign_in'             | true  | true  | true  | false
-      '/users/sign_in'             | false | true  | true  | false
-      '/users/sign_in'             | true  | false | true  | false
-      '/users/sign_in'             | false | false | true  | false
-      '/users/sign_in'             | true  | true  | false | false
-      '/users/sign_in'             | false | true  | false | false
+      '/users/sign_in'             | true  | true  | false
+      '/users/sign_in'             | false | true  | false
+      '/users/sign_in'             | true  | false | false
+      '/users/sign_in'             | false | false | false
     end
 
     with_them do
       before do
         stub_application_setting(throttle_authenticated_git_http_enabled: application_setting_throttle_authenticated_git_http_enabled)
-        stub_feature_flags(git_authenticated_http_limit: feature_flag_enabled)
         allow(request).to receive(:authenticated?).and_return(request_authenticated?)
       end
 

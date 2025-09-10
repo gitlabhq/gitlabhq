@@ -313,7 +313,9 @@ functionality of the Web IDE. By default, the GitLab Web IDE instance is configu
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host.
+This security requirement ensures that third-party extensions run in isolation and cannot access your account.
+This applies to both GitLab.com and GitLab Self-Managed.
 
 {{< /alert >}}
 
