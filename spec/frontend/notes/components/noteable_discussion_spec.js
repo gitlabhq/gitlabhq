@@ -36,10 +36,23 @@ Vue.use(PiniaVuePlugin);
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/alert');
 
+function createPinia({ stubActions = true } = {}) {
+  const pinia = createTestingPinia({ stubActions, plugins: [globalAccessorPlugin] });
+  const diffsStore = useLegacyDiffs();
+  useNotes().noteableData = noteableDataMock;
+  useNotes().notesData = notesDataMock;
+  useNotes().saveNote.mockResolvedValue();
+  useNotes().fetchDiscussionDiffLines.mockResolvedValue();
+  useBatchComments();
+
+  return { pinia, diffsStore };
+}
+
 describe('noteable_discussion component', () => {
   let pinia;
   let wrapper;
   let axiosMock;
+  let diffsStore;
 
   const createComponent = ({ discussion = discussionMock } = {}) => {
     wrapper = mountExtended(NoteableDiscussion, {
@@ -49,13 +62,7 @@ describe('noteable_discussion component', () => {
   };
 
   beforeEach(() => {
-    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
-    useLegacyDiffs();
-    useNotes().noteableData = noteableDataMock;
-    useNotes().notesData = notesDataMock;
-    useNotes().saveNote.mockResolvedValue();
-    useNotes().fetchDiscussionDiffLines.mockResolvedValue();
-    useBatchComments();
+    ({ pinia, diffsStore } = createPinia());
     axiosMock = new MockAdapter(axios);
     createComponent();
   });
@@ -303,6 +310,61 @@ describe('noteable_discussion component', () => {
         expect(Boolean(wrapper.vm.isLoggedIn)).toBe(false);
         expect(trimText(wrapper.text())).toContain('Please register or sign in to reply');
       });
+    });
+  });
+
+  it('includes the original line range when replying', async () => {
+    wrapper.vm.showReplyForm();
+
+    await nextTick();
+
+    const form = wrapper.findComponent(NoteForm);
+
+    expect(form.props('lines')).toEqual([]);
+  });
+
+  describe('multi-line comments', () => {
+    let discussion;
+    let startCode;
+    let endCode;
+
+    beforeEach(() => {
+      ({ pinia, diffsStore } = createPinia({ stubActions: false }));
+
+      const file = getDiffFileMock();
+      diffsStore.diffFiles = [file];
+
+      startCode = file.highlighted_diff_lines[6].line_code;
+      endCode = file.highlighted_diff_lines[7].line_code;
+
+      discussion = {
+        ...discussionMock,
+        diff_file: file,
+        position: {
+          line_range: {
+            start: {
+              line_code: startCode,
+            },
+            end: {
+              line_code: endCode,
+            },
+          },
+        },
+      };
+
+      createComponent({ discussion });
+    });
+
+    it('includes the original line range when replying to a multiline comment', async () => {
+      wrapper.vm.showReplyForm();
+      await nextTick();
+
+      const form = wrapper.findComponent(NoteForm);
+
+      expect(form.props('lines')).toEqual([
+        expect.objectContaining({ line_code: startCode }),
+        expect.objectContaining({ line_code: endCode }),
+      ]);
     });
   });
 

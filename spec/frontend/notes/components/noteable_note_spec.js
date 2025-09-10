@@ -5,6 +5,7 @@ import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import NoteActions from '~/notes/components/note_actions.vue';
 import NoteBody from '~/notes/components/note_body.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
@@ -20,7 +21,7 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
-import { noteableDataMock, notesDataMock, note } from '../mock_data';
+import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
 
 Vue.use(PiniaVuePlugin);
 
@@ -48,6 +49,7 @@ const singleLineNotePosition = {
 
 describe('issue_note', () => {
   let pinia;
+  let diffsStore;
   let wrapper;
 
   const REPORT_ABUSE_PATH = '/abuse_reports/add_category';
@@ -79,12 +81,16 @@ describe('issue_note', () => {
     });
   };
 
-  beforeEach(() => {
-    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
-    useLegacyDiffs();
+  const createPinia = ({ stubActions = true } = {}) => {
+    pinia = createTestingPinia({ stubActions, plugins: [globalAccessorPlugin] });
+    diffsStore = useLegacyDiffs();
     useNotes().noteableData = noteableDataMock;
     useNotes().notesData = notesDataMock;
     useNotes().updateNote.mockResolvedValue();
+  };
+
+  beforeEach(() => {
+    createPinia();
   });
 
   describe('mutiline comments', () => {
@@ -193,6 +199,48 @@ describe('issue_note', () => {
 
     it('should not render if `line_range` is unavailable', () => {
       expect(findMultilineComment().exists()).toBe(false);
+    });
+
+    describe('multi-line line range', () => {
+      let discussion;
+      let startCode;
+      let endCode;
+
+      beforeEach(() => {
+        createPinia({ stubActions: false });
+
+        const file = getDiffFileMock();
+        diffsStore.diffFiles = [file];
+
+        startCode = file.highlighted_diff_lines[6].line_code;
+        endCode = file.highlighted_diff_lines[7].line_code;
+
+        discussion = {
+          ...discussionMock,
+          diff_file: file,
+          position: {
+            line_range: {
+              start: {
+                line_code: startCode,
+              },
+              end: {
+                line_code: endCode,
+              },
+            },
+          },
+        };
+
+        createWrapper({ discussion });
+      });
+
+      it('passes the correct lines to the note body', () => {
+        const body = findNoteBody();
+
+        expect(body.props('lines')).toEqual([
+          expect.objectContaining({ line_code: startCode }),
+          expect.objectContaining({ line_code: endCode }),
+        ]);
+      });
     });
   });
 

@@ -36,6 +36,11 @@ export default {
       required: false,
       default: null,
     },
+    lines: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     file: {
       type: Object,
       required: false,
@@ -234,6 +239,7 @@ export default {
       :note-body="noteBody"
       :note-id="note.id"
       :line="line"
+      :lines="lines"
       :note="note"
       :diff-file="file"
       :save-button-title="saveButtonTitle"

@@ -9,9 +9,11 @@ import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import {
   DIFF_VIEW_COOKIE_NAME,
   INLINE_DIFF_VIEW_TYPE,
+  INLINE_DIFF_LINES_KEY,
   PARALLEL_DIFF_VIEW_TYPE,
   EVT_MR_PREPARED,
   FILE_DIFF_POSITION_TYPE,
+  OLD_LINE_TYPE,
 } from '~/diffs/constants';
 import {
   BUILDING_YOUR_MR,
@@ -1318,6 +1320,137 @@ describe('legacyDiffs actions', () => {
           title: 'Warning: Potential secret detected',
         }),
       );
+    });
+  });
+
+  describe('getLinesForDiscussion', () => {
+    it('returns empty array when discussion is null or undefined', () => {
+      expect(store.getLinesForDiscussion({ discussion: null })).toEqual([]);
+      expect(store.getLinesForDiscussion({ discussion: undefined })).toEqual([]);
+    });
+
+    it('returns empty array when discussion has no position', () => {
+      const result = store.getLinesForDiscussion({ discussion: {} });
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when line_range is missing', () => {
+      const discussion = { position: {} };
+      const result = store.getLinesForDiscussion({ discussion });
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array when diffFile is not found', () => {
+      const discussion = {
+        diff_file: { file_hash: 'nonexistent_hash' },
+        position: {
+          line_range: {
+            start: { line_code: 'start_line' },
+            end: { line_code: 'end_line' },
+          },
+        },
+      };
+
+      store.diffFiles = [{ file_hash: 'different_hash' }];
+
+      const result = store.getLinesForDiscussion({ discussion });
+      expect(result).toEqual([]);
+    });
+
+    it('returns correct lines for a valid discussion', () => {
+      const diffLines = [
+        { line_code: 'line1', type: 'new' },
+        { line_code: 'line2', type: 'new' },
+        { line_code: 'line3', type: 'new' },
+        { line_code: 'line4', type: 'new' },
+        { line_code: 'line5', type: 'new' },
+      ];
+
+      const diffFile = {
+        file_hash: 'abc123',
+        [INLINE_DIFF_LINES_KEY]: diffLines,
+      };
+
+      const discussion = {
+        diff_file: { file_hash: 'abc123' },
+        position: {
+          line_range: {
+            start: { line_code: 'line2' },
+            end: { line_code: 'line4' },
+          },
+        },
+      };
+
+      store.diffFiles = [diffFile];
+
+      const result = store.getLinesForDiscussion({ discussion });
+      expect(result).toEqual([
+        { line_code: 'line2', type: 'new' },
+        { line_code: 'line3', type: 'new' },
+        { line_code: 'line4', type: 'new' },
+      ]);
+    });
+
+    it('excludes old lines from the result', () => {
+      const diffLines = [
+        { line_code: 'line1', type: 'new' },
+        { line_code: 'line2', type: OLD_LINE_TYPE },
+        { line_code: 'line3', type: 'new' },
+        { line_code: 'line4', type: OLD_LINE_TYPE },
+        { line_code: 'line5', type: 'new' },
+      ];
+
+      const diffFile = {
+        file_hash: 'abc123',
+        [INLINE_DIFF_LINES_KEY]: diffLines,
+      };
+
+      const discussion = {
+        diff_file: { file_hash: 'abc123' },
+        position: {
+          line_range: {
+            start: { line_code: 'line1' },
+            end: { line_code: 'line5' },
+          },
+        },
+      };
+
+      store.diffFiles = [diffFile];
+
+      const result = store.getLinesForDiscussion({ discussion });
+      expect(result).toEqual([
+        { line_code: 'line1', type: 'new' },
+        { line_code: 'line3', type: 'new' },
+        { line_code: 'line5', type: 'new' },
+      ]);
+    });
+
+    it('handles case when start and end are the same line', () => {
+      const diffLines = [
+        { line_code: 'line1', type: 'new' },
+        { line_code: 'line2', type: 'new' },
+        { line_code: 'line3', type: 'new' },
+      ];
+
+      const diffFile = {
+        file_hash: 'abc123',
+        [INLINE_DIFF_LINES_KEY]: diffLines,
+      };
+
+      const discussion = {
+        diff_file: { file_hash: 'abc123' },
+        position: {
+          line_range: {
+            start: { line_code: 'line2' },
+            end: { line_code: 'line2' },
+          },
+        },
+      };
+
+      store.diffFiles = [diffFile];
+
+      const result = store.getLinesForDiscussion({ discussion });
+      expect(result).toEqual([{ line_code: 'line2', type: 'new' }]);
     });
   });
 
