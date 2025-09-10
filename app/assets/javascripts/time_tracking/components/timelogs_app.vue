@@ -10,9 +10,10 @@ import {
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert } from '~/alert';
-import { formatTimeSpent } from '~/lib/utils/datetime_utility';
+import { newDate, formatTimeSpent, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
+import { queryToObject, objectToQuery, updateHistory } from '~/lib/utils/url_utility';
 import GroupSelect from '~/vue_shared/components/entity_select/group_select.vue';
 import getTimelogsQuery from './queries/get_timelogs.query.graphql';
 import TimelogsTable from './timelogs_table.vue';
@@ -71,6 +72,8 @@ export default {
       pageInfo: {},
       report: [],
       totalSpentTime: 0,
+      groupInitialSelection: null,
+      initialLoad: true,
     };
   },
   apollo: {
@@ -104,7 +107,85 @@ export default {
       return formatTimeSpent(this.totalSpentTime, this.limitToHours);
     },
   },
+  created() {
+    this.initFromUrlParams();
+  },
   methods: {
+    initFromUrlParams() {
+      const urlParams = queryToObject(window.location.search);
+
+      if (urlParams.username) {
+        this.username = urlParams.username;
+      }
+
+      if (urlParams.group_id) {
+        this.groupId = convertToGraphQLId(TYPENAME_GROUP, urlParams.group_id);
+        this.groupInitialSelection = urlParams.group_id;
+      }
+
+      if (urlParams.project_id) {
+        this.projectId = urlParams.project_id;
+      }
+
+      if (urlParams.from_date) {
+        const fromDate = newDate(urlParams.from_date);
+        this.timeSpentFrom = Number.isNaN(fromDate.getTime()) ? null : fromDate;
+      }
+
+      if (urlParams.to_date) {
+        const toDate = newDate(urlParams.to_date);
+        this.timeSpentTo = Number.isNaN(toDate.getTime()) ? null : toDate;
+      }
+
+      if (
+        urlParams.username ||
+        urlParams.group_id ||
+        urlParams.project_id ||
+        urlParams.from_date ||
+        urlParams.to_date
+      ) {
+        this.$nextTick(() => {
+          this.runReport();
+        });
+      }
+    },
+    updateUrlParams() {
+      const params = {};
+
+      if (this.username) {
+        params.username = this.username;
+      }
+
+      if (this.groupId) {
+        // Extract numeric ID from GraphQL ID
+        const [, groupId] = this.groupId.match(/\/(\d+)$/) ?? [];
+        params.group_id = groupId || undefined;
+      }
+
+      if (this.projectId) {
+        params.project_id = this.projectId;
+      }
+
+      if (this.timeSpentFrom) {
+        params.from_date = toISODateFormat(this.timeSpentFrom);
+      }
+
+      if (this.timeSpentTo) {
+        params.to_date = toISODateFormat(this.timeSpentTo);
+      }
+
+      const queryString = objectToQuery(params);
+      const newUrl = queryString
+        ? `${window.location.pathname}?${queryString}`
+        : window.location.pathname;
+
+      updateHistory({
+        url: newUrl,
+        replace: this.initialLoad,
+      });
+
+      this.initialLoad = false;
+    },
     nullIfBlank(value) {
       return value === '' ? null : value;
     },
@@ -129,6 +210,8 @@ export default {
         groupId: this.nullIfBlank(this.groupId),
         username: this.nullIfBlank(this.username),
       };
+
+      this.updateUrlParams();
     },
     nextPage(item) {
       this.cursor = {
@@ -153,6 +236,7 @@ export default {
       this.timeSpentTo = null;
     },
     handleGroupSelected(group) {
+      this.selectedGroup = group;
       this.groupId = group?.id ? convertToGraphQLId(TYPENAME_GROUP, group.id) : null;
     },
   },
@@ -175,6 +259,7 @@ export default {
         :label="__('Group')"
         input-name="group"
         input-id="group"
+        :initial-selection="groupInitialSelection"
         :empty-text="__('Any')"
         block
         clearable
@@ -192,6 +277,7 @@ export default {
           v-model="username"
           data-testid="form-username"
           class="gl-w-full"
+          @keydown.enter="runReport"
         />
       </gl-form-group>
       <gl-form-group

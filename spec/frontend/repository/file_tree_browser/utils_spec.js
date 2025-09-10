@@ -2,7 +2,12 @@ import {
   normalizePath,
   dedupeByFlatPathAndId,
   generateShowMoreItem,
+  directoryContainsChild,
+  shouldStopPagination,
+  hasMorePages,
+  isExpandable,
 } from '~/repository/file_tree_browser/utils';
+import { FTB_MAX_PAGES, FTB_MAX_DEPTH } from '~/repository/constants';
 
 describe('File tree browser utilities', () => {
   describe('normalizePath', () => {
@@ -80,6 +85,65 @@ describe('File tree browser utilities', () => {
       expect(result.level).toBe(level);
       expect(result.parentPath).toBe(parentPath);
       expect(result.isShowMore).toBe(true);
+    });
+  });
+
+  describe('directoryContainsChild', () => {
+    const trees = [
+      { name: 'src', id: '1' },
+      { name: 'docs', id: '2' },
+      { name: 'README.md', id: '3' },
+    ];
+
+    it.each`
+      tree     | childName      | expected
+      ${trees} | ${'docs'}      | ${true}
+      ${trees} | ${'lib'}       | ${false}
+      ${[]}    | ${'any'}       | ${false}
+      ${trees} | ${'README.md'} | ${true}
+      ${trees} | ${'readme.md'} | ${false}
+    `('returns $expected when searching for "$childName"', ({ tree, childName, expected }) => {
+      expect(directoryContainsChild({ trees: tree }, childName)).toBe(expected);
+    });
+  });
+
+  describe('shouldStopPagination', () => {
+    it.each`
+      page                 | isLoading | expected
+      ${FTB_MAX_PAGES}     | ${false}  | ${true}
+      ${1}                 | ${true}   | ${true}
+      ${FTB_MAX_PAGES - 1} | ${false}  | ${false}
+      ${FTB_MAX_PAGES}     | ${true}   | ${true}
+    `(
+      'returns $expected when page=$page and isLoading=$isLoading',
+      ({ page, isLoading, expected }) => {
+        expect(shouldStopPagination(page, isLoading)).toBe(expected);
+      },
+    );
+  });
+
+  describe('hasMorePages', () => {
+    it.each`
+      pageInfo                  | expected
+      ${{ hasNextPage: true }}  | ${true}
+      ${{ hasNextPage: false }} | ${false}
+      ${undefined}              | ${false}
+      ${null}                   | ${false}
+    `('returns $expected when pageInfo=$pageInfo', ({ pageInfo, expected }) => {
+      expect(hasMorePages({ pageInfo })).toBe(expected);
+    });
+  });
+
+  describe('isExpandable', () => {
+    it.each`
+      segments                                       | expected
+      ${['src', 'components']}                       | ${true}
+      ${['a']}                                       | ${true}
+      ${[]}                                          | ${false}
+      ${new Array(FTB_MAX_DEPTH + 1).fill('folder')} | ${false}
+      ${new Array(FTB_MAX_DEPTH).fill('folder')}     | ${true}
+    `('returns $expected for segments length $segments.length', ({ segments, expected }) => {
+      expect(isExpandable(segments)).toBe(expected);
     });
   });
 });

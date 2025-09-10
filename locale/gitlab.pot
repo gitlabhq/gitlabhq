@@ -47088,6 +47088,12 @@ msgstr ""
 msgid "Personal projects limit:"
 msgstr ""
 
+msgid "PersonalAccessToken|The token cannot have multiple granular scopes for the same namespace"
+msgstr ""
+
+msgid "PersonalAccessToken|The token cannot have multiple instance-level granular scopes"
+msgstr ""
+
 msgid "PersonalProject|Learn to move a project to a group"
 msgstr ""
 

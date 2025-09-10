@@ -84,13 +84,50 @@
 
   // Quick search overlay
   #super-sidebar-search-modal {
-    @apply gl-pt-0 gl-bg-transparent;
+    @apply gl-pt-0;
 
-    &,
-    .modal-dialog {
-      transition: none !important;
+    /* stylelint-disable scss/at-rule-no-unknown */
+    @media (prefers-reduced-motion: no-preference) {
+      transition-property: opacity;
+      transition-timing-function: $gl-easing-out-cubic;
+
+      &.show {
+        opacity: 1;
+        transition-duration: 0.2s;
+
+        .modal-dialog {
+          scale: 1;
+          transition-duration: 0.2s;
+        }
+      }
+
+      &:not(.show) {
+        opacity: 0;
+        transition-duration: 0.1s;
+
+        .modal-dialog {
+          scale: 0.8;
+          transition-duration: 0.1s;
+        }
+      }
+
+      @starting-style {
+        opacity: 0;
+      }
+
+      .modal-dialog {
+        transform-origin: top center;
+        transform: none !important;
+        transition-property: scale;
+        transition-timing-function: $gl-easing-out-cubic;
+
+        @starting-style {
+          scale: 0.8;
+        }
+      }
     }
   }
+
 
   // Position for search overlay when Performance bar is visible
   &.with-performance-bar #super-sidebar-search-modal {

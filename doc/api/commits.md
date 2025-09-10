@@ -639,6 +639,12 @@ dry run.
 
 ## Get commit diff
 
+{{< history >}}
+
+- `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
+
+{{< /history >}}
+
 Get the diff of a commit in a project.
 
 ```plaintext
@@ -671,12 +677,30 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/main/diff"
 ```
 
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type    | Description |
+|----------------|---------|-------------|
+| `a_mode`       | string  | Old file mode of the file. |
+| `b_mode`       | string  | New file mode of the file. |
+| `collapsed`    | boolean | File diffs are excluded but can be fetched on request. |
+| `deleted_file` | boolean | File has been removed. |
+| `diff`         | string  | Diff representation of the changes made to the file. |
+| `new_file`     | boolean | File has been added. |
+| `new_path`     | string  | New path of the file. |
+| `old_path`     | string  | Old path of the file. |
+| `renamed_file` | boolean | File has been renamed. |
+| `too_large`    | boolean | File diffs are excluded and cannot be retrieved. |
+
 Example response:
 
 ```json
 [
   {
     "diff": "@@ -71,6 +71,8 @@\n sudo -u git -H bundle exec rake migrate_keys RAILS_ENV=production\n sudo -u git -H bundle exec rake migrate_inline_notes RAILS_ENV=production\n \n+sudo -u git -H bundle exec rake gitlab:assets:compile RAILS_ENV=production\n+\n ```\n \n ### 6. Update config files",
+    "collapsed": false,
+    "too_large": false,
     "new_path": "doc/update/5.4-to-6.0.md",
     "old_path": "doc/update/5.4-to-6.0.md",
     "a_mode": null,

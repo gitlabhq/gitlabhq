@@ -33,6 +33,7 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_TIME_TRACKING,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_TASK,
@@ -547,6 +548,12 @@ export function mapWorkItemWidgetsToIssuableFields({
         currentWidget[property]
       ) {
         activeItem[property] = { __persist: true, ...currentWidget[property] };
+        return;
+      }
+
+      // handling the case for time tracking
+      if (property === WORK_ITEM_TO_ISSUABLE_MAP[WIDGET_TYPE_TIME_TRACKING]) {
+        activeItem[property] = currentWidget.humanReadableAttributes?.timeEstimate;
         return;
       }
       activeItem[property] = currentWidget[property];

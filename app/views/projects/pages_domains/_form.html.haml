@@ -7,11 +7,11 @@
 .form-group
   .row
     - if domain_presenter.persisted?
-      .col-12
+      .gl-col-12
         = _("Domain")
         = external_link(domain_presenter.url, domain_presenter.url)
     - else
-      .col-12
+      .gl-col-12
         = f.label :domain, _("Domain")
         .input-group
           = f.text_field :domain, required: true, autocomplete: "off", class: "form-control", placeholder: 'example.com'

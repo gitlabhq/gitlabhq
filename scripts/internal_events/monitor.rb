@@ -101,6 +101,8 @@ def extract_standard_context(event)
 end
 
 def generate_snowplow_table
+  return event_tracking_disabled_table unless Gitlab::CurrentSettings.gitlab_product_usage_data_enabled?
+
   events = snowplow_data.select { |d| ARGV.include?(d["event"]["se_action"]) }
             .filter { |e| e['rawEvent']['parameters']['dtm'].to_i > @min_timestamp }
 
@@ -205,6 +207,24 @@ def render_screen(paused)
   puts "Press \"p\" to toggle refresh. (It makes it easier to select and copy the tables)"
   puts "Press \"r\" to reset without exiting the monitor"
   puts "Press \"q\" to quit"
+end
+
+def event_tracking_disabled_table
+  Terminal::Table.new(
+    title: red('SNOWPLOW EVENTS (DISABLED)'),
+    rows: [[
+      <<~TEXT
+        Whoops! GitLab is not configured to send events! To resolve this issue, you can do one of:
+          1) Enable event tracking
+             - Nav to Admin area > Settings > Metrics and profiling > Event tracking
+             - Toggle "Enable event tracking" on
+             - Save changes
+
+          2) Set up Snowplow Micro in your GDK
+            https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+      TEXT
+    ]]
+  )
 end
 
 server = nil

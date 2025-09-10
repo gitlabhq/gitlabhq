@@ -72,9 +72,9 @@ export default {
     },
     timeEstimate() {
       return (
+        findTimeTrackingWidget(this.issue)?.humanReadableAttributes?.timeEstimate ||
         this.issue.humanTimeEstimate ||
-        this.issue.timeStats?.humanTimeEstimate ||
-        findTimeTrackingWidget(this.issue)?.humanReadableAttributes?.timeEstimate
+        this.issue.timeStats?.humanTimeEstimate
       );
     },
   },

@@ -15,7 +15,7 @@ title: Configure OpenID Connect in AWS to retrieve temporary credentials
 {{< alert type="warning" >}}
 
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/_index.md#id_tokens) instead.
+and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 {{< /alert >}}
 
@@ -95,7 +95,7 @@ assume role:
 ```
 
 - `ROLE_ARN`: The role ARN defined in this [step](#configure-a-role-and-trust).
-- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/_index.md#id_tokens).
+- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../secrets/id_token_authentication.md).
 
 ## Working examples
 

@@ -129,10 +129,10 @@ export default {
 
 <template>
   <li
-    class="!gl-grid gl-grid-cols-[1fr,1fr] gl-gap-2 gl-py-4 md:gl-grid-cols-[1fr,3fr,2fr] md:gl-gap-0"
+    class="!gl-grid gl-grid-cols-[1fr,1fr] gl-gap-2 gl-py-4 @md/panel:gl-grid-cols-[1fr,3fr,2fr] @md/panel:gl-gap-0"
   >
     <div
-      class="gl-flex gl-flex-col gl-items-start gl-justify-center gl-gap-2 md:gl-justify-start"
+      class="gl-flex gl-flex-col gl-items-start gl-justify-center gl-gap-2 @md/panel:gl-justify-start"
       data-testid="deployment-state"
     >
       <gl-badge
@@ -160,7 +160,7 @@ export default {
     </div>
 
     <div
-      class="gl-col-start-1 gl-row-start-2 gl-flex gl-flex-col gl-gap-2 md:gl-col-start-2 md:gl-row-start-1"
+      class="gl-col-start-1 gl-row-start-2 gl-flex gl-flex-col gl-gap-2 @md/panel:gl-col-start-2 @md/panel:gl-row-start-1"
     >
       <div data-testid="deployment-url">
         <a
@@ -208,7 +208,7 @@ export default {
     </div>
 
     <div
-      class="gl-col-start-1 gl-row-start-3 gl-mt-3 gl-flex gl-flex-col gl-gap-2 md:gl-col-start-2 md:gl-flex-row md:gl-items-center"
+      class="gl-col-start-1 gl-row-start-3 gl-mt-3 gl-flex gl-flex-col gl-gap-2 @md/panel:gl-col-start-2 @md/panel:gl-flex-row @md/panel:gl-items-center"
     >
       <p class="gl-mb-0 gl-text-sm gl-text-subtle" data-testid="deployment-created-at">
         {{ $options.i18n.createdLabel }}
@@ -216,7 +216,7 @@ export default {
       </p>
 
       <template v-if="deployment.updatedAt">
-        <span class="gl-hidden md:gl-inline" aria-hidden="true">·</span>
+        <span class="gl-hidden @md/panel:gl-inline" aria-hidden="true">·</span>
         <p class="gl-mb-0 gl-text-sm gl-text-subtle" data-testid="deployment-updated-at">
           {{ $options.i18n.lastUpdatedLabel }}
           <time-ago :time="deployment.updatedAt" />
@@ -225,7 +225,7 @@ export default {
     </div>
 
     <div
-      class="gl-col-start-2 gl-row-start-1 gl-flex gl-flex-col gl-items-end gl-justify-between gl-gap-2 md:gl-col-start-3"
+      class="gl-col-start-2 gl-row-start-1 gl-flex gl-flex-col gl-items-end gl-justify-between gl-gap-2 @md/panel:gl-col-start-3"
       data-testid="deployment-details"
     >
       <gl-button
@@ -251,7 +251,7 @@ export default {
     </div>
 
     <div
-      class="gl-col-start-1 gl-row-start-4 gl-flex gl-flex-col gl-justify-between gl-gap-2 md:gl-col-start-3 md:gl-row-start-3 md:gl-mt-3 md:gl-items-end"
+      class="gl-col-start-1 gl-row-start-4 gl-flex gl-flex-col gl-justify-between gl-gap-2 @md/panel:gl-col-start-3 @md/panel:gl-row-start-3 @md/panel:gl-mt-3 @md/panel:gl-items-end"
     >
       <template v-if="!deployment.active">
         <p class="gl-mb-0 gl-text-sm gl-text-danger">

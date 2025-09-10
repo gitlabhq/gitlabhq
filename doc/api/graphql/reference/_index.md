@@ -28689,12 +28689,14 @@ Snapshot.
 | ---- | ---- | ----------- |
 | <a id="diffamode"></a>`aMode` | [`String`](#string) | Old file mode of the file. |
 | <a id="diffbmode"></a>`bMode` | [`String`](#string) | New file mode of the file. |
+| <a id="diffcollapsed"></a>`collapsed` | [`String`](#string) | File diffs are excluded but can be fetched on request. |
 | <a id="diffdeletedfile"></a>`deletedFile` | [`String`](#string) | Indicates if the file has been removed. |
 | <a id="diffdiff"></a>`diff` | [`String`](#string) | Diff representation of the changes made to the file. |
 | <a id="diffnewfile"></a>`newFile` | [`String`](#string) | Indicates if the file has just been added. |
 | <a id="diffnewpath"></a>`newPath` | [`String`](#string) | New path of the file. |
 | <a id="diffoldpath"></a>`oldPath` | [`String`](#string) | Old path of the file. |
 | <a id="diffrenamedfile"></a>`renamedFile` | [`String`](#string) | Indicates if the file has been renamed. |
+| <a id="difftoolarge"></a>`tooLarge` | [`String`](#string) | File diffs are excluded and cannot be retrieved. |
 
 ### `DiffPosition`
 

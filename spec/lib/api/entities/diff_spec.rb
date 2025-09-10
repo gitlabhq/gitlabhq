@@ -17,6 +17,8 @@ RSpec.describe ::API::Entities::Diff, feature_category: :source_code_management 
     expect(entity.as_json).to eq(
       {
         diff: diff.diff,
+        collapsed: diff.collapsed?,
+        too_large: diff.too_large?,
         new_path: diff.new_path,
         old_path: diff.old_path,
         a_mode: diff.a_mode,

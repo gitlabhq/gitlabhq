@@ -39,7 +39,7 @@ Vault application causes downtime.
 
 To optimally use Vault in a production environment, it's ideal to have a good understanding
 of the internals of Vault and how to configure it. This can be done by reading
-the [Vault Configuration guide](../../../../../ci/secrets/_index.md#configure-your-vault-server),
+the [Vault Configuration guide](../../../../../ci/secrets/hashicorp_vault.md#configure-your-vault-server),
 the [Vault documentation](https://developer.hashicorp.com/vault/docs/internals) and
 the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 

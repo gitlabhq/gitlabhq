@@ -43,7 +43,7 @@ For more information, see [Platform compatibility](configuration.md#platform-com
 ## Workspaces and projects
 
 Workspaces are scoped to a project.
-When you [create a workspace](configuration.md#create-a-workspace), you must:
+When you create a workspace, you must:
 
 - Assign the workspace to a specific project.
 - Select a project with a [devfile](#devfile).
@@ -116,8 +116,8 @@ In deployments that contain multiple agents, you might want to identify an agent
 To identify an agent associated with a running workspace, use one of the following GraphQL endpoints:
 
 - `agent-id` to return the project the agent belongs to.
-- [`Query.workspaces`](../../api/graphql/reference/_index.md#queryworkspaces) to return:
-  - The [cluster agent](../../api/graphql/reference/_index.md#clusteragent) associated with the workspace.
+- `Query.workspaces` to return:
+  - The cluster agent associated with the workspace.
   - The project the agent belongs to.
 
 ## Devfile
@@ -191,7 +191,7 @@ For example, `.devfile/subfolder/devfile.yaml` is not recognized.
 - The devfile size must not exceed 3 MB.
 - For `components`:
   - Names must not start with `gl-`.
-  - Only [`container`](#container-component-type) and `volume` are supported.
+  - Only `container` and `volume` are supported.
 - For `commands`:
   - IDs must not start with `gl-`.
   - Only `exec` and `apply` command types are supported.
@@ -199,7 +199,7 @@ For example, `.devfile/subfolder/devfile.yaml` is not recognized.
   - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
 - For `events`:
   - Names must not start with `gl-`.
-  - Only `preStart` and [`postStart`](#user-defined-poststart-events) are supported.
+  - Only `preStart` and `postStart` are supported.
   - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
 - `parent`, `projects`, and `starterProjects` are not supported.
 - For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
@@ -295,10 +295,7 @@ see the [example configurations](#example-configurations).
 
 #### Monitor `postStart` event progress
 
-When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs.
-All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
-
-To check the progress of your `postStart` scripts:
+When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs. To check the progress of your `postStart` scripts:
 
 1. Open a terminal in your workspace.
 1. Go to the workspace logs directory:
@@ -312,6 +309,8 @@ To check the progress of your `postStart` scripts:
    ```shell
    tail -f poststart-stdout.log
    ```
+
+All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
 
 ### Example configurations
 
@@ -350,12 +349,10 @@ events:
 
 {{< alert type="note" >}}
 
-This container image is for demonstration purposes only. To use your own container image,
-see [Arbitrary user IDs](#arbitrary-user-ids).
+This container `image` is for demonstration purposes only.
 
 {{< /alert >}}
 
-For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 
 ## Workspace container requirements
@@ -371,7 +368,6 @@ must meet the following system requirements:
   - `glibcxx` 3.4.25 and later
 
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
-For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/remote/linux).
 
 {{< alert type="note" >}}
 
@@ -394,8 +390,7 @@ controls, such as offline environments.
 
 GitLab provides a workspace base image
 (`registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base`)
-that serves as the foundation for all workspace environments. To understand its configuration, view the
-[source Dockerfile](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base).
+that serves as the foundation for all workspace environments.
 
 The base image includes:
 
@@ -427,9 +422,6 @@ RUN sudo apt-get update && sudo apt-get install -y \
 RUN mise install python@3.11 && mise use python@3.11
 ```
 
-For detailed instructions on creating custom images, see
-[Create a custom workspace image](create_image.md).
-
 ## Workspace add-ons
 
 {{< history >}}
@@ -441,10 +433,7 @@ For detailed instructions on creating custom images, see
 The GitLab Workflow extension for VS Code is configured by default in workspaces.
 
 With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
-This extension also powers AI features like [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
-and [GitLab Duo Chat](../gitlab_duo_chat/_index.md).
-
-For more information, see [GitLab Workflow extension for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
+This extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
 
 ## Extension marketplace
 
@@ -464,8 +453,8 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 The VS Code Extension Marketplace provides you with access to extensions that enhance the
 functionality of your workspace.
 
-You can use the [extension marketplace](../project/web_ide/_index.md#manage-extensions) in your
-workspace Web IDE. The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+You can use the extension marketplace in your
+workspace Web IDE. It connects to the [Open VSX Registry](https://open-vsx.org/).
 For more information, see [Configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 ## Personal access token
@@ -477,7 +466,7 @@ For more information, see [Configure VS Code Extension Marketplace](../../admini
 
 {{< /history >}}
 
-When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token
+When you create a workspace, you get a personal access token
 with `write_repository` and `api` permissions.
 Use this token to clone the project initially, while starting the workspace,
 and to configure the GitLab Workflow extension for VS Code.
@@ -522,9 +511,7 @@ To delete the provisioned volume, you must terminate the workspace.
 By default, a workspace automatically:
 
 - Stops 36 hours after the workspace was last started or restarted.
-  For more information, see [`max_active_hours_before_stop`](settings.md#max_active_hours_before_stop).
 - Terminates 722 hours after the workspace was last stopped.
-  For more information, see [`max_stopped_hours_before_termination`](settings.md#max_stopped_hours_before_termination).
 
 ## Arbitrary user IDs
 
@@ -538,9 +525,6 @@ If you have a container image that does not support arbitrary user IDs,
 you cannot create, update, or delete files in a workspace.
 To create a container image that supports arbitrary user IDs,
 see [Create a custom workspace image that supports arbitrary user IDs](create_image.md).
-
-For more information, see the
-[OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
 
 ## Workspace logs directory
 
@@ -591,4 +575,11 @@ This process is transparent and doesn't affect your development workflow.
 
 ## Related topics
 
+- [Create a workspace](configuration.md#create-a-workspace)
+- [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
+- [GitLab Duo Chat](../gitlab_duo_chat/_index.md)
+- [GraphQL API reference](../../api/graphql/reference/_index.md)
+- [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)
+- [OpenShift documentation on arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images)

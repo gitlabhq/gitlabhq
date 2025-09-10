@@ -47,7 +47,8 @@ The monitor can show two tables:
 - The `RELEVANT METRICS` table lists all the metrics that are defined on the `i_code_review_user_create_mr` event.
   The second right-most column shows the value of each metric when the monitor was started and the right most column shows the current value of each metric.
 
-- The `SNOWPLOW EVENTS` table lists a selection of properties from only Snowplow events fired after the monitor was started and those that match the event name. It is no longer a requirement to set up [Snowplow Micro](#snowplow-micro) for this table to be visible.
+- The `SNOWPLOW EVENTS` table lists a selection of properties from only Snowplow events fired after the monitor was started and those that match the event name.
+For this table to be visible, you can either enable event tracking (**Admin area** > **Settings** > **Metrics and profiling** > **Event tracking**, then select "Enable event tracking" & save changes) or configure GDK to run with [Snowplow Micro](#snowplow-micro).
 
 If a new `i_code_review_user_create_mr` event is fired, the metrics values get updated and a new event appears in the `SNOWPLOW EVENTS` table.
 

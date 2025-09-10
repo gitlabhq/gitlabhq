@@ -135,6 +135,9 @@ export default {
     agentInvokePath() {
       return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
+    agentPrivileges() {
+      return [1, 2, 3, 5];
+    },
   },
   methods: {
     displayFailedJobsWidget(item) {
@@ -268,6 +271,7 @@ export default {
               :project-path="getProjectPath(item)"
               :goal="mergeRequestPath(item)"
               :hover-message="__('Fix pipeline with Duo')"
+              :agent-privileges="agentPrivileges"
               workflow-definition="fix_pipeline/experimental"
               size="medium"
             />

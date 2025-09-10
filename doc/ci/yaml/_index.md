@@ -2976,7 +2976,7 @@ job_with_workload_identity:
 
 {{< /history >}}
 
-Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
+Use `id_tokens` to create [ID tokens](../secrets/id_token_authentication.md) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
 
 **Supported values**:

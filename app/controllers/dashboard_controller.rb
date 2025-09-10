@@ -20,6 +20,10 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 
+  before_action only: [:activity] do
+    push_frontend_feature_flag(:global_time_tracking_report)
+  end
+
   respond_to :html
 
   feature_category :notifications, [:home]

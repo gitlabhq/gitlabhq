@@ -596,13 +596,13 @@ is determined by the tag's protection status, not the branch where the pipeline 
 
 This behavior ensures consistent security boundaries, because the triggering reference determines cache access permissions.
 
-As an example, assuming that we have tags triggering pipelines on different branches, then the following table represents the cache suffix:
+For example, with tags that trigger pipelines on different branches:
 
-| Trigger type                | Tag protection | Branch                  | Cache suffix applied |
-|-----------------------------|----------------|-------------------------|----------------------|
-| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected`     |
-| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`         |
-| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected`     |
+| Trigger type                | Tag protection | Branch                  | Cache suffix     |
+|-----------------------------|----------------|-------------------------|------------------|
+| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected` |
+| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`     |
+| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected` |
 
 ##### Use the same cache for all branches
 

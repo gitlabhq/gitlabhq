@@ -321,4 +321,89 @@ describe('Tree List', () => {
       );
     });
   });
+
+  describe('deep path navigation with pagination', () => {
+    it('paginates to find directories not on first page', async () => {
+      const page1 = cloneDeep(mockResponse);
+      page1.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+        { id: 'gid://dir_1', name: 'dir_1', path: 'dir_1', webPath: 'dir_1' },
+      ];
+      page1.data.project.repository.paginatedTree.pageInfo = {
+        __typename: 'PageInfo',
+        hasNextPage: true,
+        startCursor: null,
+        endCursor: 'page1_cursor',
+      };
+
+      const page2 = cloneDeep(mockResponse);
+      page2.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+        { id: 'gid://dir_100', name: 'dir_100', path: 'dir_100', webPath: 'dir_100' },
+      ];
+
+      const dir100Contents = cloneDeep(mockResponse);
+      dir100Contents.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [
+        {
+          id: 'gid://file',
+          name: 'file.txt',
+          path: 'dir_100/file.txt',
+          sha: 'abc123',
+          webPath: 'dir_100/file.txt',
+        },
+      ];
+
+      getQueryHandlerSuccess
+        .mockResolvedValueOnce(page1) // Root page 1
+        .mockResolvedValueOnce(page2) // Root page 2
+        .mockResolvedValueOnce(dir100Contents); // dir_100 contents
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: 'dir_100/file.txt' } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(3);
+    });
+
+    it('respects default maxPages limit (5)', async () => {
+      getQueryHandlerSuccess.mockReset();
+
+      for (let i = 0; i < 10; i += 1) {
+        const page = cloneDeep(mockResponse);
+        page.data.project.repository.paginatedTree.pageInfo = {
+          __typename: 'PageInfo',
+          hasNextPage: i < 9,
+          startCursor: null,
+          endCursor: `cursor_${i}`,
+        };
+        page.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+          { id: `gid://dir_${i}`, name: `dir_${i}`, path: `dir_${i}`, webPath: `dir_${i}` },
+        ];
+        getQueryHandlerSuccess.mockResolvedValueOnce(page);
+      }
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: 'dir_99/file.txt' } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(6); // 1 + 5 pages
+    });
+
+    it('respects default maxDepth limit (20)', async () => {
+      const deepPath = Array.from({ length: 30 }, (_, i) => `dir_${i}`).join('/');
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: deepPath } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(2); // root + dir_0
+    });
+  });
 });

@@ -348,6 +348,27 @@ To migrate your data to GitLab Dedicated:
 - For complex migrations:
   - Engage [Professional Services](../../user/project/import/_index.md#migrate-by-engaging-professional-services).
 
+## Expired subscriptions
+
+Before your subscription expires, you receive a notification that the end date is approaching.
+
+When your subscription expires, you can access your instance for 30 days.
+
+To preserve your data, contact your account team or email Support within 15 days
+of expiration to request data preservation.
+
+During this 30-day period, you can:
+
+- Email Support to request additional time to retrieve data.
+- Engage Professional Services for migration assistance or offboarding support.
+
+After 30 days, if your data is not archived or migrated to another instance,
+your instance is terminated and all Customer Content is deleted.
+This includes all projects, repositories, issues, merge requests, and other data.
+
+You can request confirmation of account removal 90 days after instance termination.
+Confirmation is provided as an email from AWS stating that your account is closed.
+
 ## Get started
 
 For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/dedicated/).

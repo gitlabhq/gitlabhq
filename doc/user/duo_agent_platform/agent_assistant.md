@@ -73,13 +73,43 @@ When completing your task, the CLI agent runs a CI/CD pipeline.
 If you are on GitLab Self-Managed or GitLab Dedicated, you must
 [create and register a GitLab Runner](../../tutorials/create_register_first_runner/_index.md).
 
-### Get an AI model provider API key
+### AI model provider credentials
+
+To integrate your CLI agent with a third-party AI model provider, you must have access credentials.
+You can use an AI model provider API key or GitLab-managed credentials.
+
+#### AI model provider API key
 
 To integrate your CLI agent with a third-party AI model provider, you need an API key
 for that model provider:
 
 - For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).
+
+#### GitLab-managed credentials
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567791) in GitLab 18.4.
+
+{{< /history >}}
+
+Instead of using your own API keys for third-party AI model providers,
+you can configure CLI agents to use GitLab-managed credentials through an AI gateway.
+This way, you do not have to manage and rotate API keys yourself.
+
+When you use GitLab-managed credentials:
+
+- Set `injectGatewayToken: true` in your flow configuration file.
+- Remove the API key variables (for example, `ANTHROPIC_API_KEY`) from your CI/CD variables.
+- Configure the CLI agent to use the GitLab AI gateway proxy endpoints.
+
+The following environment variables are automatically injected when `injectGatewayToken` is `true`:
+
+- `AI_FLOW_AI_GATEWAY_TOKEN`: the authentication token for AI Gateway
+- `AI_FLOW_AI_GATEWAY_HEADERS`: formatted headers for API requests
+
+GitLab-managed credentials are available only for Anthropic Claude.
 
 ## Create a service account
 
@@ -127,7 +157,7 @@ Add the following CI/CD variables to your project's settings:
 |---------------------|---------------------------|------------|
 | All                 | `GITLAB_TOKEN_<integration>`   | Personal access token for the service account user |
 | All                 | `GITLAB_HOST`                  | GitLab instance hostname (for example, `gitlab.com`) |
-| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key |
+| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key (optional when `injectGatewayToken: true` is set) |
 | OpenAI Codex        | `OPENAI_API_KEY`               | OpenAI API key |
 | Amazon Q            | `AWS_SECRET_NAME`              | AWS Secret Manager secret name |
 | Amazon Q            | `AWS_REGION_NAME`              | AWS region name |
@@ -151,8 +181,8 @@ To add or update a variable in the project settings:
    - Clear the **Protect variable** checkbox.
    - Clear the **Expand variable reference** checkbox.
    - **Description (optional)**: Enter a variable description.
-   - **Key**: Enter the environment variable name of the CI/CD variable.
-     For example `ANTHROPIC_API_KEY`.
+   - **Key**: Enter the environment variable name of the CI/CD variable
+     (for example, `GITLAB_HOST`).
    - **Value**: The value of the API key, personal access token, or host.
 1. Select **Add variable**.
 
@@ -171,9 +201,19 @@ You must create a different AI flow configuration file for each CLI agent.
 
 ### Example flow configuration files
 
+Use the following examples to create your flow configuration file.
+These examples contain the following variables:
+
+- `AI_FLOW_CONTEXT`: the JSON-serialized parent object, including:
+  - In merge requests, the diff and comments (up to a limit)
+  - In issues or epics, the comments (up to a limit)
+- `$AI_FLOW_EVENT`: the type of flow event (for example, `mention`)
+- `$AI_FLOW_INPUT`: the prompt the user enters as a comment in the merge request, issue, or epic
+
 #### Anthropic Claude
 
 ```yaml
+injectGatewayToken: true
 image: node:22-slim
 commands:
   - echo "Installing claude"
@@ -186,9 +226,13 @@ commands:
   - echo "Configuring git"
   - git config --global user.email "claudecode@gitlab.com"
   - git config --global user.name "Claude Code"
+  - echo "Configuring claude"
+  - export ANTHROPIC_AUTH_TOKEN=$AI_FLOW_AI_GATEWAY_TOKEN
+  - export ANTHROPIC_CUSTOM_HEADERS=$AI_FLOW_AI_GATEWAY_HEADERS
+  - export ANTHROPIC_BASE_URL="https://cloud.gitlab.com/ai/v1/proxy/anthropic"
   - echo "Running claude"
   - |
-    claude --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json --print "
+    claude --debug --allowedTools="Bash(glab:*),Bash(git:*)" --permission-mode acceptEdits --verbose --output-format stream-json -p "
     You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
@@ -204,7 +248,7 @@ commands:
     If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
   - echo "Checking for git changes and pushing if any exist"
   - |
     if ! git diff --quiet || ! git diff --cached --quiet || [ --not "$(git ls-files --others --exclude-standard)" ]; then
@@ -223,7 +267,6 @@ commands:
       echo "No git changes detected, skipping push"
     fi
 variables:
-  - ANTHROPIC_API_KEY
   - GITLAB_TOKEN_CLAUDE
   - GITLAB_HOST
 ```

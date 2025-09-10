@@ -1912,6 +1912,9 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetTimeTracking',
               type: 'TIME_TRACKING',
               timeEstimate: 5,
+              humanReadableAttributes: {
+                timeEstimate: '',
+              },
               timelogs: {
                 nodes: [
                   {
@@ -2489,6 +2492,9 @@ export const workItemChangeTypeWidgets = {
   TIME_TRACKING: {
     type: 'TIME_TRACKING',
     timeEstimate: 10,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: {
       nodes: [
         {
@@ -6648,6 +6654,9 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           {
             type: 'TIME_TRACKING',
             timeEstimate: 0,
+            humanReadableAttributes: {
+              timeEstimate: '',
+            },
             timelogs: {
               nodes: [],
               __typename: 'WorkItemTimelogConnection',
@@ -7311,6 +7320,9 @@ export const mockCreateWorkItemDraftData = {
           __typename: 'WorkItemWidgetTimeTracking',
           type: 'TIME_TRACKING',
           timeEstimate: 0,
+          humanReadableAttributes: {
+            timeEstimate: '',
+          },
           timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
           totalTimeSpent: 0,
         },
@@ -7526,6 +7538,9 @@ export const restoredDraftDataWidgets = [
   {
     type: 'TIME_TRACKING',
     timeEstimate: 0,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: { nodes: [], __typename: 'WorkItemTimelogConnection' },
     totalTimeSpent: 0,
     __typename: 'WorkItemWidgetTimeTracking',
@@ -7616,6 +7631,9 @@ export const restoredDraftDataWidgetsEmpty = [
   {
     type: 'TIME_TRACKING',
     timeEstimate: 0,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: {
       nodes: [],
       __typename: 'WorkItemTimelogConnection',

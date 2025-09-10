@@ -4,6 +4,9 @@ export const GITALY_UNAVAILABLE_CODE = 'unavailable';
 export const TREE_PAGE_LIMIT = 1000; // the maximum amount of items per page
 export const TREE_PAGE_SIZE = 100; // the amount of items to be fetched per (batch) request
 
+export const FTB_MAX_DEPTH = 20; // Max directory depth to expand recursively (e.g., dir_1/dir_2/.../dir_20)
+export const FTB_MAX_PAGES = 5; // Max number of paginated pages to fetch while expanding a directory
+
 export const COMMIT_BATCH_SIZE = 25; // we request commit data in batches of 25
 
 export const COMMIT_MESSAGE_SUBJECT_MAX_LENGTH = 52;

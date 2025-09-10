@@ -183,6 +183,12 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Compare branches, tags or commits
 
+{{< history >}}
+
+- `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
+
+{{< /history >}}
+
 This endpoint can be accessed without authentication if the repository is
 publicly accessible. Diffs can have an empty diff string if
 diff limits are reached.
@@ -201,6 +207,34 @@ Supported attributes:
 | `from_project_id` | integer        | no       | The ID to compare from. |
 | `straight`        | boolean        | no       | Comparison method: `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)'. Default is `false`. |
 | `unidiff`           | boolean | No       | Present diffs in the [unified diff](https://www.gnu.org/software/diffutils/manual/html_node/Detailed-Unified.html) format. Default is false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130610) in GitLab 16.5.     |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute                     | Type         | Description |
+|-------------------------------|--------------|-------------|
+| `commit`                      | object       | Details of the latest commit in the comparison. |
+| `commits`                     | object array | List of commits included in the comparison. |
+| `commits[].author_email`      | string       | Commit author's email address. |
+| `commits[].author_name`       | string       | Commit author's name. |
+| `commits[].created_at`        | datetime     | Commit creation timestamp. |
+| `commits[].id`                | string       | Full commit SHA. |
+| `commits[].short_id`          | string       | Short commit SHA. |
+| `commits[].title`             | string       | Commit title. |
+| `compare_same_ref`            | boolean      | Comparison uses the same reference for both from and to. |
+| `compare_timeout`             | boolean      | Comparison operation timed out. |
+| `diffs`                       | object array | List of file differences. |
+| `diffs[].a_mode`              | string       | Old file mode. |
+| `diffs[].b_mode`              | string       | New file mode. |
+| `diffs[].collapsed`           | boolean      | File diffs are excluded but can be fetched on request. |
+| `diffs[].deleted_file`        | boolean      | File has been removed. |
+| `diffs[].diff`                | string       | Diff content showing changes made to the file. |
+| `diffs[].new_file`            | boolean      | File has been added. |
+| `diffs[].new_path`            | string       | New path of the file. |
+| `diffs[].old_path`            | string       | Old path of the file. |
+| `diffs[].renamed_file`        | boolean      | File has been renamed. |
+| `diffs[].too_large`           | boolean      | File diffs are excluded and cannot be retrieved. |
+| `web_url`                     | string       | Web URL for viewing the comparison. |
 
 ```plaintext
 GET /projects/:id/repository/compare?from=main&to=feature
@@ -232,6 +266,8 @@ Example response:
     "a_mode": null,
     "b_mode": "100644",
     "diff": "@@ -24,8 +24,10 @@\n //= require g.raphael-min\n //= require g.bar-min\n //= require branch-graph\n-//= require highlightjs.min\n-//= require ace/ace\n //= require_tree .\n //= require d3\n //= require underscore\n+\n+function fix() { \n+  alert(\"Fixed\")\n+}",
+    "collapsed": false,
+    "too_large": false,
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false

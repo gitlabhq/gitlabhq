@@ -54511,6 +54511,10 @@ definitions:
       diff:
         type: string
         example: "@@ -71,6 +71,8 @@\\n..."
+      collapsed:
+        type: boolean
+      too_large:
+        type: boolean
       new_path:
         type: string
         example: doc/update/5.4-to-6.0.md

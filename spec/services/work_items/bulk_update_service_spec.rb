@@ -118,6 +118,32 @@ RSpec.describe WorkItems::BulkUpdateService, feature_category: :team_planning do
           it 'returns update count' do
             expect(service_result[:updated_work_item_count]).to eq(2)
           end
+
+          it 'preloads the namespace route to avoid N+1 queries' do
+            # Create new work items to prevent a warm cache from previous specs from subverting the test
+            single_item, *multiple_items = create_list(:work_item, 3, :group_level, namespace: group)
+
+            # Force user creation before recording queries
+            current_user
+
+            control = ActiveRecord::QueryRecorder.new do
+              described_class.new(
+                parent: group,
+                current_user: current_user,
+                work_item_ids: [single_item.id],
+                attributes: { state: :closed }
+              ).execute
+            end
+
+            expect do
+              described_class.new(
+                parent: group,
+                current_user: current_user,
+                work_item_ids: multiple_items.map(&:id),
+                attributes: { state: :closed }
+              ).execute
+            end.not_to exceed_query_limit(control).with_threshold(28)
+          end
         end
       end
 

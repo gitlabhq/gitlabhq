@@ -8857,7 +8857,8 @@ CREATE TABLE abuse_events (
     abuse_report_id bigint,
     source smallint NOT NULL,
     category smallint,
-    metadata jsonb
+    metadata jsonb,
+    organization_id bigint
 );
 
 CREATE SEQUENCE abuse_events_id_seq
@@ -37201,6 +37202,8 @@ CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (
 
 CREATE INDEX index_abuse_events_on_category_and_source ON abuse_events USING btree (category, source);
 
+CREATE INDEX index_abuse_events_on_organization_id ON abuse_events USING btree (organization_id);
+
 CREATE INDEX index_abuse_events_on_user_id ON abuse_events USING btree (user_id);
 
 CREATE INDEX index_abuse_report_assignees_on_abuse_report_id ON abuse_report_assignees USING btree (abuse_report_id);
@@ -47106,6 +47109,9 @@ ALTER TABLE ONLY issue_assignees
 
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT fk_5e1572387c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_events
+    ADD CONSTRAINT fk_5e51d70fab FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY milestone_releases
     ADD CONSTRAINT fk_5e73b8cad2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

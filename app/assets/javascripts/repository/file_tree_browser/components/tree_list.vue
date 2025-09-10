@@ -15,7 +15,15 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
-import { normalizePath, dedupeByFlatPathAndId, generateShowMoreItem } from '../utils';
+import {
+  normalizePath,
+  dedupeByFlatPathAndId,
+  generateShowMoreItem,
+  directoryContainsChild,
+  shouldStopPagination,
+  hasMorePages,
+  isExpandable,
+} from '../utils';
 
 export default {
   ROW_HEIGHT: 32,
@@ -244,21 +252,44 @@ export default {
     },
 
     // Expand all parent directories leading to a path
-    expandPathAncestors(path) {
-      this.fetchDirectory('/');
+    async expandPathAncestors(path) {
+      await this.fetchDirectory('/');
+      const segments = (path || '').split('/').filter(Boolean);
+      if (!isExpandable(segments)) return;
 
-      const segments = path.split('/').filter(Boolean);
-      let currentPath = '';
+      const expand = async (index = 0, currentPath = '', page = 0) => {
+        if (index >= segments.length) return;
 
-      // For each segment of the path, expand the parent directory
-      segments.forEach((segment) => {
-        currentPath += `/${segment}`;
-        this.expandedPathsMap = {
-          ...this.expandedPathsMap,
-          [currentPath]: true,
-        };
-        this.fetchDirectory(currentPath);
-      });
+        const parent = currentPath || '/';
+        const segment = segments[index];
+        const parentContents = this.getDirectoryContents(parent);
+
+        // Check if segment exists in parent directory
+        if (!directoryContainsChild(parentContents, segment)) {
+          if (shouldStopPagination(page, this.loadingPathsMap[parent])) return;
+
+          await this.fetchDirectory(parent);
+
+          // Check if found after fetch
+          const updatedContents = this.getDirectoryContents(parent);
+          if (!directoryContainsChild(updatedContents, segment)) {
+            // If more pages exist, try next page
+            if (hasMorePages(updatedContents)) {
+              await expand(index, currentPath, page + 1);
+              return;
+            }
+            return; // Not found
+          }
+        }
+
+        // Expand and move to next segment
+        const next = `${currentPath}/${segment}`;
+        this.expandedPathsMap = { ...this.expandedPathsMap, [next]: true };
+        if (!this.directoriesCache[next]) await this.fetchDirectory(next);
+        await expand(index + 1, next);
+      };
+
+      await expand();
     },
 
     toggleDirectory(normalizedPath) {

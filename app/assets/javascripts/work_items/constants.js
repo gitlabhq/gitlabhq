@@ -154,7 +154,7 @@ export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_START_AND_DUE_DATE]: 'dueDate',
   [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
-  [WIDGET_TYPE_TIME_TRACKING]: 'timeEstimate',
+  [WIDGET_TYPE_TIME_TRACKING]: 'humanTimeEstimate',
   [WIDGET_TYPE_COLOR]: 'color',
   [WIDGET_TYPE_STATUS]: 'status',
 };

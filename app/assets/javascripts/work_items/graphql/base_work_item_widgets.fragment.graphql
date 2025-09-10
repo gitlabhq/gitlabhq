@@ -121,6 +121,9 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetTimeTracking {
     timeEstimate
+    humanReadableAttributes {
+      timeEstimate
+    }
     timelogs {
       nodes {
         ...TimelogFragment

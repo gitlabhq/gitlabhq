@@ -1793,6 +1793,7 @@ ee/app/workers/ai/repository_xray/
 # Necessary to keep the design system in-sync
 [Foundations::Design System] @gitlab-org/foundations/design-system/engineering
 /app/components/pajamas/
+/app/assets/stylesheets/framework/ds_experiments_tokens.scss
 
 # Necessary for availability, similar to DB migrations
 [Global Search] @gitlab-org/search-team/migration-maintainers

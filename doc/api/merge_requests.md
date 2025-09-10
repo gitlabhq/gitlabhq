@@ -1894,6 +1894,7 @@ Example response:
 - `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags/_index.md) named `collapse_generated_diff_files`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
+- `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -1916,17 +1917,19 @@ Supported attributes:
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
-| Attribute      | Type    | Description |
-|----------------|---------|-------------|
-| `old_path`     | string  | Old path of the file. |
-| `new_path`     | string  | New path of the file. |
-| `a_mode`       | string  | Old file mode of the file. |
-| `b_mode`       | string  | New file mode of the file. |
-| `diff`         | string  | Diff representation of the changes made to the file. |
-| `new_file`     | boolean | Indicates if the file has just been added. |
-| `renamed_file` | boolean | Indicates if the file has been renamed. |
-| `deleted_file` | boolean | Indicates if the file has been removed. |
-| `generated_file` | boolean | Indicates if the file is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9. |
+| Attribute        | Type    | Description |
+|------------------|---------|-------------|
+| `a_mode`         | string  | Old file mode of the file. |
+| `b_mode`         | string  | New file mode of the file. |
+| `collapsed`      | boolean | File diffs are excluded but can be fetched on request. |
+| `deleted_file`   | boolean | File has been removed. |
+| `diff`           | string  | Diff representation of the changes made to the file. |
+| `generated_file` | boolean | File is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). |
+| `new_file`       | boolean | File has been added. |
+| `new_path`       | string  | New path of the file. |
+| `old_path`       | string  | Old path of the file. |
+| `renamed_file`   | boolean | File has been renamed. |
+| `too_large`      | boolean | File diffs are excluded and cannot be retrieved. |
 
 Example request:
 
@@ -1945,6 +1948,8 @@ Example response:
     "a_mode": "100644",
     "b_mode": "100644",
     "diff": "@@ -1 +1 @@\ -Title\ +README",
+    "collapsed": false,
+    "too_large": false,
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false,
@@ -1956,6 +1961,8 @@ Example response:
     "a_mode": "100644",
     "b_mode": "100644",
     "diff": "@@\ -1.9.7\ +1.9.8",
+    "collapsed": false,
+    "too_large": false,
     "new_file": false,
     "renamed_file": false,
     "deleted_file": false,
@@ -3685,6 +3692,12 @@ Example response:
 
 ## Get a single merge request diff version
 
+{{< history >}}
+
+- `collapsed` and `too_large` response attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199633) in GitLab 18.4.
+
+{{< /history >}}
+
 Get a single merge request diff version.
 
 ```plaintext
@@ -3725,15 +3738,17 @@ response attributes:
 | `commits[].web_url`           | string       | Web URL of the merge request. |
 | `created_at`                  | datetime     | Creation date and time of the merge request. |
 | `diffs`                       | object array | Diffs in the merge request diff version. |
-| `diffs[].diff`                | string       | Content of the diff. |
-| `diffs[].new_path`            | string       | New path of the file. |
-| `diffs[].old_path`            | string       | Old path of the file. |
 | `diffs[].a_mode`              | string       | Old file mode of the file. |
 | `diffs[].b_mode`              | string       | New file mode of the file. |
-| `diffs[].new_file`            | boolean      | Indicates an added file. |
-| `diffs[].renamed_file`        | boolean      | Indicates a renamed file. |
-| `diffs[].deleted_file`        | boolean      | Indicates a removed file. |
-| `diffs[].generated_file`      | boolean      | Indicates if the file is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9. |
+| `diffs[].collapsed`           | boolean      | File diffs are excluded but can be fetched on request. |
+| `diffs[].deleted_file`        | boolean      | File has been removed. |
+| `diffs[].diff`                | string       | Content of the diff. |
+| `diffs[].generated_file`      | boolean      | File is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). |
+| `diffs[].new_file`            | boolean      | File has been added. |
+| `diffs[].new_path`            | string       | New path of the file. |
+| `diffs[].old_path`            | string       | Old path of the file. |
+| `diffs[].renamed_file`        | boolean      | File has been renamed. |
+| `diffs[].too_large`           | boolean      | File diffs are excluded and cannot be retrieved. |
 | `head_commit_sha`             | string       | HEAD commit of the source branch. |
 | `merge_request_id`            | integer      | ID of the merge request. |
 | `patch_id_sha`                | string       | [Patch ID](https://git-scm.com/docs/git-patch-id) for the merge request diff. |
@@ -3816,6 +3831,8 @@ Example response:
     "a_mode": "0",
     "b_mode": "100644",
     "diff": "@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
+    "collapsed": false,
+    "too_large": false,
     "new_file": true,
     "renamed_file": false,
     "deleted_file": false,
