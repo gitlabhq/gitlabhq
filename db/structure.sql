@@ -41371,19 +41371,17 @@ CREATE INDEX index_todos_on_user_id_and_id_pending ON todos USING btree (user_id
 
 CREATE INDEX index_topics_non_private_projects_count ON topics USING btree (non_private_projects_count DESC, id);
 
-CREATE INDEX index_topics_on_lower_name ON topics USING btree (lower(name));
-
 CREATE INDEX index_topics_on_name ON topics USING btree (name);
 
 CREATE INDEX index_topics_on_name_trigram ON topics USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_topics_on_org_id_and_lower_name_and_projects_count ON topics USING btree (organization_id, lower(name), total_projects_count DESC);
 
 CREATE UNIQUE INDEX index_topics_on_organization_id_and_name ON topics USING btree (organization_id, name);
 
 CREATE INDEX index_topics_on_organization_id_and_non_private_projects_count ON topics USING btree (organization_id, non_private_projects_count DESC);
 
 CREATE UNIQUE INDEX index_topics_on_organization_id_slug_and ON topics USING btree (organization_id, slug) WHERE (slug IS NOT NULL);
-
-CREATE INDEX index_topics_on_slug ON topics USING btree (slug) WHERE (slug IS NOT NULL);
 
 CREATE INDEX index_topics_total_projects_count ON topics USING btree (total_projects_count DESC, id);
 
@@ -42404,6 +42402,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX tmp_idx_members_for_active_group_members ON members USING btree (id) WHERE (((source_type)::text = 'Namespace'::text) AND (state = 0) AND (user_id IS NOT NULL) AND (requested_at IS NULL));
 
 CREATE INDEX tmp_idx_members_for_group_members_with_member_role ON members USING btree (id, source_id) WHERE ((member_role_id IS NOT NULL) AND ((source_type)::text = 'Namespace'::text) AND (state = 0));
 

@@ -71017,6 +71017,9 @@ msgstr[1] ""
 msgid "VirtualRegistry|Artifact caching period"
 msgstr ""
 
+msgid "VirtualRegistry|Cache revalidation is disabled. Upstream URL is known to have immutable responses."
+msgstr ""
+
 msgid "VirtualRegistry|Cache: %{size}"
 msgstr ""
 
