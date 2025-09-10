@@ -849,31 +849,17 @@ RSpec.describe SearchHelper, feature_category: :global_search do
   end
 
   describe '#highlight_and_truncate_issuable' do
-    let(:description) { 'hello world' }
-    let(:issue) { create(:issue, description: description) }
-    let(:user) { create(:user) }
+    let_it_be(:issue) { create(:issue) }
     let(:highlight_and_truncate) { highlight_and_truncate_issuable(issue, 'test', {}) }
 
     before do
-      allow(self).to receive(:current_user).and_return(user)
+      allow(self).to receive(:current_user).and_return(build(:user))
     end
 
-    context 'when description is not present' do
-      let(:description) { nil }
+    it 'calls simple_search_highlight_and_truncate' do
+      expect(self).to receive(:simple_search_highlight_and_truncate).with(issue.description, 'test')
 
-      it 'does nothing' do
-        expect(self).not_to receive(:simple_search_highlight_and_truncate)
-
-        highlight_and_truncate
-      end
-    end
-
-    context 'when description present' do
-      it 'calls simple_search_highlight_and_truncate' do
-        expect(self).to receive(:simple_search_highlight_and_truncate).with(description, 'test')
-
-        highlight_and_truncate
-      end
+      highlight_and_truncate
     end
   end
 
@@ -881,6 +867,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     using RSpec::Parameterized::TableSyntax
 
     where(:text, :expected) do
+      '' | nil
+      nil | nil
+      123 | nil
       'test' | '<mark>test</mark>'
       'charset ëòä test' | 'charset ëòä <mark>test</mark>'
       '<span style="color: blue;">this test should not be blue</span>' | 'this <mark>test</mark> should not be blue'
