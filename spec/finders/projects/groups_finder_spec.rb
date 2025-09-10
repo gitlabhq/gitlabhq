@@ -13,16 +13,16 @@ RSpec.describe Projects::GroupsFinder do
     let_it_be(:public_project) { create(:project, :public, group: project_group) }
     let_it_be(:private_project) { create(:project, :private, group: project_group) }
 
+    let(:params) { {} }
+    let(:current_user) { user }
+    let(:finder) { described_class.new(project: project, current_user: current_user, params: params) }
+
     before_all do
       [public_project, private_project].each do |project|
         create(:project_group_link, :developer, group: shared_group_with_dev_access, project: project)
         create(:project_group_link, :reporter, group: shared_group_with_reporter_access, project: project)
       end
     end
-
-    let(:params) { {} }
-    let(:current_user) { user }
-    let(:finder) { described_class.new(project: project, current_user: current_user, params: params) }
 
     subject { finder.execute }
 

@@ -468,17 +468,17 @@ class Member < ApplicationRecord
       select(member_columns_with_no_access)
     end
 
-    def with_group_group_sharing_access(shared_groups, custom_role_for_group_link_enabled)
-      columns = member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
+    def with_group_group_sharing_access(group)
+      columns = member_columns_with_group_sharing_access(group)
 
       joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
         .select(columns)
-        .where(group_group_links: { shared_group_id: shared_groups })
+        .where(group_group_links: { shared_group_id: group.self_and_ancestors })
     end
 
     private
 
-    def member_columns_with_group_sharing_access(custom_role_for_group_link_enabled)
+    def member_columns_with_group_sharing_access(group)
       group_group_link_table = GroupGroupLink.arel_table
 
       column_names.map do |column_name|
@@ -487,7 +487,7 @@ class Member < ApplicationRecord
           args = [group_group_link_table[:group_access], arel_table[:access_level]]
           smallest_value_arel(args, 'access_level')
         when 'member_role_id'
-          member_role_id(group_group_link_table, custom_role_for_group_link_enabled)
+          member_role_id(group)
         else
           arel_table[column_name]
         end
@@ -507,7 +507,7 @@ class Member < ApplicationRecord
     end
 
     # overriden in EE
-    def member_role_id(_group_link_table, _custom_role_for_group_link_enabled)
+    def member_role_id(_group)
       Arel::Nodes::As.new(Arel::Nodes::SqlLiteral.new('NULL'), Arel::Nodes::SqlLiteral.new('member_role_id'))
     end
   end

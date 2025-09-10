@@ -11559,6 +11559,50 @@ Input type: `SecretPermissionUpdateInput`
 | <a id="mutationsecretpermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecretpermissionupdatesecretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
 
+### `Mutation.securityAttributeCreate`
+
+Input type: `SecurityAttributeCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributecreateattributes"></a>`attributes` | [`[SecurityAttributeInput!]!`](#securityattributeinput) | Attributes to create. |
+| <a id="mutationsecurityattributecreatecategoryid"></a>`categoryId` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecurityattributecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributecreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace. Will be used if no Category ID is given. |
+| <a id="mutationsecurityattributecreatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityattributecreatesecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Created security attributes. |
+
+### `Mutation.securityAttributeUpdate`
+
+Input type: `SecurityAttributeUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributeupdatecolor"></a>`color` | [`Color`](#color) | Color of the security attribute. |
+| <a id="mutationsecurityattributeupdatedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
+| <a id="mutationsecurityattributeupdateid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="mutationsecurityattributeupdatename"></a>`name` | [`String`](#string) | Name of the security attribute. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributeupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityattributeupdatesecurityattribute"></a>`securityAttribute` | [`SecurityAttribute`](#securityattribute) | Updated security attribute. |
+
 ### `Mutation.securityCategoryCreate`
 
 Input type: `SecurityCategoryCreateInput`
@@ -54381,6 +54425,18 @@ Represents a CI configuration of SAST.
 | <a id="sastciconfigurationinputanalyzers"></a>`analyzers` | [`[SastCiConfigurationAnalyzersEntityInput!]`](#sastciconfigurationanalyzersentityinput) | List of analyzers and related variables for the SAST configuration. |
 | <a id="sastciconfigurationinputglobal"></a>`global` | [`[SastCiConfigurationEntityInput!]`](#sastciconfigurationentityinput) | List of global entities related to SAST configuration. |
 | <a id="sastciconfigurationinputpipeline"></a>`pipeline` | [`[SastCiConfigurationEntityInput!]`](#sastciconfigurationentityinput) | List of pipeline entities related to SAST configuration. |
+
+### `SecurityAttributeInput`
+
+Input type for security attribute.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributeinputcolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
+| <a id="securityattributeinputdescription"></a>`description` | [`String!`](#string) | Description of the security attribute. |
+| <a id="securityattributeinputname"></a>`name` | [`String!`](#string) | Name of the security attribute. |
 
 ### `SnippetBlobActionInputType`
 

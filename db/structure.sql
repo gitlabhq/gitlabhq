@@ -16610,49 +16610,6 @@ CREATE TABLE group_deletion_schedules (
     marked_for_deletion_on date NOT NULL
 );
 
-CREATE TABLE group_deploy_keys (
-    id bigint NOT NULL,
-    user_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    last_used_at timestamp with time zone,
-    expires_at timestamp with time zone,
-    key text NOT NULL,
-    title text,
-    fingerprint text,
-    fingerprint_sha256 bytea,
-    CONSTRAINT check_cc0365908d CHECK ((char_length(title) <= 255)),
-    CONSTRAINT check_e4526dcf91 CHECK ((char_length(fingerprint) <= 255)),
-    CONSTRAINT check_f58fa0a0f7 CHECK ((char_length(key) <= 4096))
-);
-
-CREATE TABLE group_deploy_keys_groups (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    group_id bigint NOT NULL,
-    group_deploy_key_id bigint NOT NULL,
-    can_push boolean DEFAULT false NOT NULL
-);
-
-CREATE SEQUENCE group_deploy_keys_groups_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE group_deploy_keys_groups_id_seq OWNED BY group_deploy_keys_groups.id;
-
-CREATE SEQUENCE group_deploy_keys_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE group_deploy_keys_id_seq OWNED BY group_deploy_keys.id;
-
 CREATE TABLE group_deploy_tokens (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25392,6 +25349,7 @@ CREATE TABLE software_license_policies (
     custom_software_license_id bigint,
     approval_policy_rule_id bigint,
     software_license_spdx_identifier text,
+    CONSTRAINT check_6cb3facbb3 CHECK ((num_nonnulls(custom_software_license_id, software_license_spdx_identifier) = 1)),
     CONSTRAINT check_986c4e5c59 CHECK ((char_length(software_license_spdx_identifier) <= 255))
 );
 
@@ -29868,10 +29826,6 @@ ALTER TABLE ONLY group_crm_settings ALTER COLUMN group_id SET DEFAULT nextval('g
 
 ALTER TABLE ONLY group_custom_attributes ALTER COLUMN id SET DEFAULT nextval('group_custom_attributes_id_seq'::regclass);
 
-ALTER TABLE ONLY group_deploy_keys ALTER COLUMN id SET DEFAULT nextval('group_deploy_keys_id_seq'::regclass);
-
-ALTER TABLE ONLY group_deploy_keys_groups ALTER COLUMN id SET DEFAULT nextval('group_deploy_keys_groups_id_seq'::regclass);
-
 ALTER TABLE ONLY group_deploy_tokens ALTER COLUMN id SET DEFAULT nextval('group_deploy_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY group_group_links ALTER COLUMN id SET DEFAULT nextval('group_group_links_id_seq'::regclass);
@@ -32688,12 +32642,6 @@ ALTER TABLE ONLY group_custom_attributes
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT group_deletion_schedules_pkey PRIMARY KEY (group_id);
-
-ALTER TABLE ONLY group_deploy_keys_groups
-    ADD CONSTRAINT group_deploy_keys_groups_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY group_deploy_keys
-    ADD CONSTRAINT group_deploy_keys_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY group_deploy_tokens
     ADD CONSTRAINT group_deploy_tokens_pkey PRIMARY KEY (id);
@@ -38813,16 +38761,6 @@ CREATE INDEX index_group_custom_attributes_on_key_and_value ON group_custom_attr
 CREATE INDEX index_group_deletion_schedules_on_marked_for_deletion_on ON group_deletion_schedules USING btree (marked_for_deletion_on);
 
 CREATE INDEX index_group_deletion_schedules_on_user_id ON group_deletion_schedules USING btree (user_id);
-
-CREATE UNIQUE INDEX index_group_deploy_keys_group_on_group_deploy_key_and_group_ids ON group_deploy_keys_groups USING btree (group_id, group_deploy_key_id);
-
-CREATE INDEX index_group_deploy_keys_groups_on_group_deploy_key_id ON group_deploy_keys_groups USING btree (group_deploy_key_id);
-
-CREATE INDEX index_group_deploy_keys_on_fingerprint ON group_deploy_keys USING btree (fingerprint);
-
-CREATE UNIQUE INDEX index_group_deploy_keys_on_fingerprint_sha256_unique ON group_deploy_keys USING btree (fingerprint_sha256);
-
-CREATE INDEX index_group_deploy_keys_on_user_id ON group_deploy_keys USING btree (user_id);
 
 CREATE INDEX index_group_deploy_tokens_on_deploy_token_id ON group_deploy_tokens USING btree (deploy_token_id);
 
@@ -49345,9 +49283,6 @@ ALTER TABLE ONLY virtual_registries_packages_maven_registries
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT fk_rails_56417a5a7f FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY group_deploy_keys
-    ADD CONSTRAINT fk_rails_5682fc07f8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT;
-
 ALTER TABLE ONLY issue_user_mentions
     ADD CONSTRAINT fk_rails_57581fda73 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -50245,9 +50180,6 @@ ALTER TABLE ONLY project_repositories
 ALTER TABLE ONLY packages_nuget_dependency_link_metadata
     ADD CONSTRAINT fk_rails_c3313ee2e4 FOREIGN KEY (dependency_link_id) REFERENCES packages_dependency_links(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY group_deploy_keys_groups
-    ADD CONSTRAINT fk_rails_c3854f19f5 FOREIGN KEY (group_deploy_key_id) REFERENCES group_deploy_keys(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY project_wiki_repositories
     ADD CONSTRAINT fk_rails_c3dd796199 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -50556,9 +50488,6 @@ ALTER TABLE ONLY audit_events_streaming_instance_event_type_filters
 
 ALTER TABLE ONLY work_item_text_field_values
     ADD CONSTRAINT fk_rails_e846cf23c6 FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY group_deploy_keys_groups
-    ADD CONSTRAINT fk_rails_e87145115d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters
     ADD CONSTRAINT fk_rails_e8bd011129 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;

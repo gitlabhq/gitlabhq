@@ -5,9 +5,6 @@ require 'spec_helper'
 RSpec.describe 'User visits issue boards', :js, feature_category: :portfolio_management do
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:group) { create_default(:group, :public) }
-  let_it_be(:project) { create_default(:project, :public, group: group) }
-
   # TODO use 'let' when rspec-parameterized supports it.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/329746
   label_name1 = 'foobar'
@@ -18,6 +15,9 @@ RSpec.describe 'User visits issue boards', :js, feature_category: :portfolio_man
   issue_with_assignee = "issue with assignee"
   issue_with_milestone = "issue with milestone"
   issue_with_all_filters = "issue with all filters"
+
+  let_it_be(:group) { create_default(:group, :public) }
+  let_it_be(:project) { create_default(:project, :public, group: group) }
 
   let_it_be(:label1) { create(:group_label, group: group, name: label_name1) }
   let_it_be(:label2) { create(:group_label, group: group, name: label_name2) }

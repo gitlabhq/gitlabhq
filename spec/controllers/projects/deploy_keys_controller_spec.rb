@@ -320,6 +320,7 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
 
   describe 'PUT update' do
     let(:extra_params) { {} }
+    let(:project) { create(:project) }
 
     subject do
       put :update, params: extra_params.reverse_merge(
@@ -331,8 +332,6 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       deploy_keys_projects_attributes = { '0' => { can_push: can_push } }
       { deploy_key: { title: title, deploy_keys_projects_attributes: deploy_keys_projects_attributes } }
     end
-
-    let(:project) { create(:project) }
 
     context 'public deploy key' do
       let(:deploy_key) { create(:deploy_key, public: true) }

@@ -18,10 +18,6 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
   let(:token) { 'token' }
   let(:headers) { { 'Authorization' => "Bearer #{build_jwt(user).encoded}" } }
 
-  subject(:response) do
-    HTTParty.get(url, headers: headers)
-  end
-
   let_it_be(:external_server) do
     handler = ->(env) do
       if env['REQUEST_PATH'] == '/token'
@@ -32,6 +28,10 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
     end
 
     run_server(handler)
+  end
+
+  subject(:response) do
+    HTTParty.get(url, headers: headers)
   end
 
   before do

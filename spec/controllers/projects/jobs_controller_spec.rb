@@ -14,6 +14,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
+  let(:user) { developer }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:default_pipeline) { create_default(:ci_pipeline) }
 
   before_all do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
@@ -27,11 +30,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     create_default(:ci_trigger, project_id: project.id)
     create_default(:ci_stage)
   end
-
-  let(:user) { developer }
-
-  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:default_pipeline) { create_default(:ci_pipeline) }
 
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)

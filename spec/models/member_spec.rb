@@ -1196,7 +1196,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         specify do
           members = invited_group
                          .members
-                         .with_group_group_sharing_access(shared_group, false)
+                         .with_group_group_sharing_access(shared_group)
                          .id_in(member.id)
                          .to_a
 
