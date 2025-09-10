@@ -481,6 +481,20 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
         expect(subject.closed_by_message(message))
             .to match_array([issue])
       end
+
+      context 'when there are more references than max allowed' do
+        before do
+          stub_const("Gitlab::ClosingIssueExtractor::MAX_CLOSING_ISSUES", 2)
+        end
+
+        it 'limits the returned references to the max allowed' do
+          message = "Awesome commit (closes #{reference})\n"\
+            "Also fixing issues #{reference2}, #{reference3} and #4"
+
+          expect(subject.closed_by_message(message))
+            .to match_array([issue, other_issue])
+        end
+      end
     end
 
     context "with autoclose referenced issues disabled" do

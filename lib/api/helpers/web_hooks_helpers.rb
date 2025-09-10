@@ -78,6 +78,7 @@ module API
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
           error!("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
+          error!("Custom headers validation failed", 422) if hook.errors[:custom_headers].present?
 
           render_validation_error!(hook, 422)
         end

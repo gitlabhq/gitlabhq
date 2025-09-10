@@ -110,7 +110,11 @@ export default {
             s__('Runners|Add notes such as the runner owner or what it should be used for.')
           "
           :optional="true"
-          :description="s__('Runners|Only administrators can view this.')"
+          :description="
+            s__(
+              'Runners|Only the users with the update permission for this runner can view the note.',
+            )
+          "
         >
           <gl-form-textarea
             id="runner-maintenance-note"
