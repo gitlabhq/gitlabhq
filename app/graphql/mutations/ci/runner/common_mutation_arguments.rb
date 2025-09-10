@@ -13,7 +13,7 @@ module Mutations
 
           argument :maintenance_note, GraphQL::Types::String,
             required: false,
-            description: 'Runner\'s maintenance notes.'
+            description: "Runner's maintenance notes."
 
           argument :maximum_timeout, GraphQL::Types::Int,
             required: false,

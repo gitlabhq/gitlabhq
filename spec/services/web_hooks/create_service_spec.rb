@@ -47,6 +47,30 @@ RSpec.describe WebHooks::CreateService, feature_category: :webhooks do
       end
     end
 
+    context 'when the custom header key is invalid' do
+      let(:invalid_params) { hook_params.merge(custom_headers: { "Content-Length: 3 %0D%0A a " => "GET http://redis:1234/ HTTP/1.1  " }) }
+
+      it 'returns an error response' do
+        response = webhook_created.execute(invalid_params, relation)
+
+        expect(response).not_to be_success
+        expect(response[:message]).to eq("Custom headers must be a valid json schema")
+        expect(response[:http_status]).to eq(422)
+      end
+    end
+
+    context 'when the custom header value is invalid' do
+      let(:invalid_params) { hook_params.merge(custom_headers: { "Content-Length" => "\n  %0D%0A a " }) }
+
+      it 'returns an error response' do
+        response = webhook_created.execute(invalid_params, relation)
+
+        expect(response).not_to be_success
+        expect(response[:message]).to eq("Custom headers must be a valid json schema")
+        expect(response[:http_status]).to eq(422)
+      end
+    end
+
     context 'when the project is not provided' do
       let(:invalid_params) { hook_params.merge(project_id: nil) }
 
