@@ -568,7 +568,7 @@ module SearchHelper
   end
 
   def simple_search_highlight_and_truncate(text, phrase, options = {})
-    highlight(search_sanitize(search_truncate(text)), phrase.split, options)
+    highlight(search_sanitize(search_truncate(text)), phrase.split, options) if text.is_a?(String) && !text.empty?
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the
@@ -590,8 +590,6 @@ module SearchHelper
 
   # _search_highlight is used in EE override
   def highlight_and_truncate_issuable(issuable, search_term, _search_highlight)
-    return unless issuable.description.present?
-
     simple_search_highlight_and_truncate(issuable.description, search_term)
   end
 
