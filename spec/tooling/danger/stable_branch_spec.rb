@@ -112,6 +112,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
           { 'version' => '15.0.2' },
           { 'version' => '15.0.1' },
           { 'version' => '15.0.0' },
+          { 'version' => '14.11.4' },
           { 'version' => '14.10.3' },
           { 'version' => '14.10.2' },
           { 'version' => '14.9.3' }
@@ -264,7 +265,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         end
 
         context 'when not an applicable version' do
-          let(:target_branch) { '15-0-stable-ee' }
+          let(:target_branch) { '14-10-stable-ee' }
 
           it 'warns about the test-on-omnibus pipeline and the version' do
             expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
