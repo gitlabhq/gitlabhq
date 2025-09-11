@@ -11,7 +11,7 @@ exports[`GroupItemName template matches the snapshot 1`] = `
     variant="current"
   />
   <div
-    class="gl-hidden gl-mr-3 gl-shrink-0 sm:gl-flex"
+    class="@sm/panel:gl-flex gl-hidden gl-mr-3 gl-shrink-0"
   >
     <gl-avatar-stub
       alt="avatar"

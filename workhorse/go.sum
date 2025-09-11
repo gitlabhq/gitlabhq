@@ -636,8 +636,8 @@ gitlab.com/gitlab-org/go/reopen v1.0.0 h1:6BujZ0lkkjGIejTUJdNO1w56mN1SI10qcVQyQl
 gitlab.com/gitlab-org/go/reopen v1.0.0/go.mod h1:D6OID8YJDzEVZNYW02R/Pkj0v8gYFSIhXFTArAsBQw8=
 gitlab.com/gitlab-org/labkit v1.25.0 h1:ON+pf8hk5nmrFLwT4CVLniBf1kSYvBujyGp1+jW9++g=
 gitlab.com/gitlab-org/labkit v1.25.0/go.mod h1:ZHOQIOVQKeOEKvQ/GhGBjUNbV3zWsx8nty6D/SRCyd4=
-gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250904102453-d00588020e86 h1:S/0QcbWgERhMv7gmDNtnjjq06r2Aim4gp0t5oJIiHNs=
-gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250904102453-d00588020e86/go.mod h1:G/uyhLyG53gWlNSoTuWirrqS42PKcobyiQZvEAaJ9o8=
+gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250910175730-e1ecde3df22c h1:LyOZ/4WgbksOXWcCY3MJnQOQTe8vCfSrC/gYRT2cna4=
+gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250910175730-e1ecde3df22c/go.mod h1:G/uyhLyG53gWlNSoTuWirrqS42PKcobyiQZvEAaJ9o8=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
 go.etcd.io/raft/v3 v3.6.0 h1:5NtvbDVYpnfZWcIHgGRk9DyzkBIXOi8j+DDp1IcnUWQ=
 go.etcd.io/raft/v3 v3.6.0/go.mod h1:nLvLevg6+xrVtHUmVaTcTz603gQPHfh7kUAwV6YpfGo=

@@ -55,3 +55,5 @@ module Pages
     end
   end
 end
+
+Pages::DeploymentUploader.prepend_mod

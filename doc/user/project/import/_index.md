@@ -109,6 +109,7 @@ difficult, but several tools exist including:
 - Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
 
 {{< /history >}}
 

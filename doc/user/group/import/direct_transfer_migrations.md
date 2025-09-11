@@ -16,7 +16,8 @@ description: "Migrate groups and projects between GitLab instances by using dire
 To migrate GitLab groups and projects by using direct transfer:
 
 1. Ensure you meet the [prerequisites](#prerequisites).
-1. Review [user contribution and membership mapping](#user-contribution-and-membership-mapping).
+1. Review [user contribution](../../project/import/_index.md#user-contribution-and-membership-mapping)
+   and [user membership](#user-membership-mapping) mapping.
 1. [Connect the source GitLab instance](#connect-the-source-gitlab-instance).
 1. [Select groups and projects to import](#select-the-groups-and-projects-to-import) and begin the migration.
 1. [Review the results of the import](#review-results-of-the-import).
@@ -85,34 +86,26 @@ This requirement does not apply for migrations from GitLab.com to GitLab Dedicat
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../_index.md#specify-who-can-add-projects-to-a-group).
 
-## User contribution and membership mapping
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
+## User membership mapping
 
 {{< history >}}
 
-- Mapping of shared and inherited shared members as direct members was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11, shared and inherited shared members are no longer mapped as direct members if they are already shared or inherited shared members of the imported group or project.
-- Full support for mapping inherited membership [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
-- Removed from direct transfer on GitLab.com in GitLab 17.5 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
-- Removed as the default direct transfer method on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7 in favor of [the alternative](../../project/import/_index.md#user-contribution-and-membership-mapping).
+- Mapping shared and inherited shared members as direct members [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129017) in GitLab 16.3.
+- Mapping shared and inherited shared members as direct members [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148220) in GitLab 16.11 for existing members of the imported group or project.
+- Mapping inherited members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/458834) in GitLab 17.1.
+- Mapping user memberships initially to placeholder users [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12378) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `bulk_import_importer_user_mapping`. Disabled by default.
+- Mapping user memberships initially to placeholder users [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/478054) in GitLab 17.5.
+- Mapping user memberships initially to placeholder users [enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/478054) in GitLab 17.7.
+- Mapping user memberships initially to placeholder users [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4. Feature flag `bulk_import_importer_user_mapping` removed.
 
 {{< /history >}}
 
-This method of user contribution and membership mapping is available for
-GitLab Self-Managed when `bulk_import_importer_user_mapping` is disabled.
-This feature flag is enabled by default.
-For information on the default method available for GitLab Self-Managed and GitLab.com,
-see [user contribution and membership mapping](../../project/import/_index.md#user-contribution-and-membership-mapping).
+Users are never created during a migration.
+Instead, user memberships on the source instance are mapped to users on the destination instance.
+The type of mapping for user memberships depends on the
+[membership type](../../project/members/_index.md#membership-types) on the source instance:
 
-Users are never created during a migration. Instead, contributions and membership of users on the source instance are
-mapped to users on the destination instance. The type of mapping of a user's membership depends on the
-[membership type](../../project/members/_index.md#membership-types) on source instance:
-
+- Imported memberships are initially mapped to [placeholder users](../../project/import/_index.md#placeholder-users).
 - Direct memberships are mapped as direct memberships on the destination instance.
 - Inherited memberships are mapped as inherited memberships on the destination instance.
 - Shared memberships are mapped as direct memberships on the destination instance unless the user has an existing shared

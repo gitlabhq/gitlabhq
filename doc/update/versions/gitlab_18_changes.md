@@ -61,6 +61,12 @@ GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 a
 
 ## 18.2.0
 
+### Zero-downtime upgrades
+
+- Upgrades between 18.1.x and 18.2.x are affected by [known issue 567543](https://gitlab.com/gitlab-org/gitlab/-/issues/567543),
+  which causes errors with pushing code to existing projects during an upgrade. To ensure no downtime during the
+  upgrade between versions 18.1.x and 18.2.x, upgrade directly to version 18.2.6, which includes a fix.
+
 ### Geo installations 18.2.0
 
 - This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.2.2 or later.

@@ -1315,6 +1315,15 @@ production: &base
     # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
 
+  database_traffic_capture:
+    config:
+      storage:
+        connector:
+          provider: Gcs
+          project_id: 'my-project'
+          credentials: '/path/to/keyfile.json'
+          bucket: 'my-bucket'
+
   cell:
     # enabled: false
     # id: null

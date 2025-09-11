@@ -172,24 +172,29 @@ module Tooling
       end
 
       def targeting_patchable_version?
-        raise VersionApiError if current_stable_version.empty?
+        raise VersionApiError if maintained_stable_versions.empty?
 
-        current_stable_version == targeted_version
+        maintained_stable_versions.include?(targeted_version)
       rescue VersionApiError
         warn FAILED_VERSION_REQUEST_MESSAGE
         true
       end
 
-      def current_stable_version
-        return unless versions
-
-        current_version = versions.first.match(VERSION_REGEX)
-
-        version_to_minor_string(current_version)
+      def maintained_stable_versions
+        minor_versions.first(3)
       end
 
       def targeted_version
         stable_target_branch[1].tr('-', '.')
+      end
+
+      def minor_versions
+        return unless versions
+
+        versions
+          .filter_map { |version| version.match(VERSION_REGEX) }
+          .uniq { |matched_version| "#{matched_version[:major]}.#{matched_version[:minor]}" }
+          .map { |uniq_version| version_to_minor_string(uniq_version) }
       end
 
       def versions(page = 1)

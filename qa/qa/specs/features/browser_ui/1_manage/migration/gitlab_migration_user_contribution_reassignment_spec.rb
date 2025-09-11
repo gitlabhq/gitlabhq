@@ -2,11 +2,7 @@
 
 module QA
   describe 'Manage', feature_category: :importers do
-    describe 'Gitlab migration',
-      feature_flag: {
-        name: [:bulk_import_importer_user_mapping],
-        scope: :global
-      } do
+    describe 'Gitlab migration' do
       include_context "with gitlab project migration"
 
       context 'with user contribution reassignment', :orchestrated, :import_with_smtp do
@@ -37,8 +33,6 @@ module QA
         end
 
         before do
-          Runtime::Feature.enable(:bulk_import_importer_user_mapping)
-
           Flow::Login.sign_in(as: user)
         end
 

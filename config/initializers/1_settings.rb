@@ -1139,6 +1139,15 @@ Settings['workhorse'] ||= {}
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
 
 #
+# Database Traffic Capture Settings
+#
+
+Settings['database_traffic_capture'] ||= {}
+Settings.database_traffic_capture['config'] ||= {}
+Settings.database_traffic_capture.config['storage'] ||= {}
+Settings.database_traffic_capture.config.storage['connector'] ||= {}
+
+#
 # Cells
 #
 Settings['cell'] ||= {}

@@ -58,7 +58,7 @@ response attributes:
 | `id`            | integer | ID of snippet. |
 | `imported`      | boolean | If `true`, the snippet was imported. |
 | `imported_from` | string  | Source of import. |
-| `project_id`    | integer | ID of associated project (null for personal snippets). |
+| `project_id`    | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`       | string  | URL to raw snippet content. |
 | `title`         | string  | Title of snippet. |
 | `updated_at`    | string  | Date and time when snippet was last updated. |
@@ -151,7 +151,7 @@ response attributes:
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
-| `project_id`       | integer | ID of associated project (null for personal snippets). |
+| `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
 | `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
 | `title`            | string  | Title of snippet. |
@@ -296,7 +296,7 @@ response attributes:
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
-| `project_id`       | integer | ID of associated project (null for personal snippets). |
+| `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
 | `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
 | `title`            | string  | Title of snippet. |
@@ -410,7 +410,7 @@ response attributes:
 | `id`               | integer | ID of snippet. |
 | `imported`         | boolean | If `true`, the snippet was imported. |
 | `imported_from`    | string  | Source of import. |
-| `project_id`       | integer | ID of associated project (null for personal snippets). |
+| `project_id`       | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`          | string  | URL to raw snippet content. |
 | `ssh_url_to_repo`  | string  | SSH URL to snippet repository. |
 | `title`            | string  | Title of snippet. |
@@ -534,7 +534,7 @@ response attributes:
 | `description` | string  | Description of snippet. |
 | `file_name`   | string  | Name of snippet file. |
 | `id`          | integer | ID of snippet. |
-| `project_id`  | integer | ID of associated project (null for personal snippets). |
+| `project_id`  | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`     | string  | URL to raw snippet content. |
 | `title`       | string  | Title of snippet. |
 | `updated_at`  | string  | Date and time when snippet was last updated. |
@@ -631,7 +631,7 @@ response attributes:
 | `id`                 | integer | ID of snippet. |
 | `imported`           | boolean | If `true`, the snippet was imported. |
 | `imported_from`      | string  | Source of import. |
-| `project_id`         | integer | ID of associated project (null for personal snippets). |
+| `project_id`         | integer | ID of associated project. For personal snippets, `null`. |
 | `raw_url`            | string  | URL to raw snippet content. |
 | `repository_storage` | string  | Repository storage used by snippet. |
 | `title`              | string  | Title of snippet. |
