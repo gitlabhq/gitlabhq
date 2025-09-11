@@ -8,6 +8,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   before do
     stub_application_setting(import_sources: Gitlab::ImportSources.values)
     stub_feature_flags(new_project_creation_form: false)
+    stub_feature_flags(import_by_url_new_page: false)
   end
 
   shared_examples 'shows correct navigation' do
@@ -37,6 +38,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
     before do
       stub_feature_flags(new_project_creation_form: false)
+      stub_feature_flags(import_by_url_new_page: false)
       sign_in(user)
     end
 
@@ -56,7 +58,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       click_link 'Import project'
 
       page.within('#import-project-pane') do
-        click_button 'Repository by URL'
+        click_on 'Repository by URL'
 
         expect(page).to have_content(description_label)
       end
@@ -100,12 +102,15 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   context 'as an admin' do
     let(:user) { create(:admin) }
 
-    it_behaves_like 'shows correct navigation'
+    before do
+      sign_in(user)
+    end
 
+    it_behaves_like 'shows correct navigation'
     shared_examples '"New project" page' do
       before do
         stub_feature_flags(new_project_creation_form: false)
-        sign_in(user)
+        stub_feature_flags(import_by_url_new_page: false)
       end
 
       it 'shows "New project" page', :js do
@@ -302,7 +307,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       it 'does not show the initialize with Readme checkbox on "Import project" tab' do
         visit new_project_path
         click_link 'Import project'
-        click_button 'Repository by URL'
+        click_on 'Repository by URL'
 
         page.within '#import-project-pane' do
           expect(page).not_to have_css('input#project_initialize_with_readme')
@@ -556,6 +561,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
     context 'when OAuth is not configured' do
       before do
         stub_feature_flags(new_project_creation_form: false)
+        stub_feature_flags(import_by_url_new_page: false)
         sign_in(user)
 
         allow(Gitlab::Auth::OAuth::Provider).to receive(:enabled?).and_call_original

@@ -79,7 +79,7 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
 
         # ListCommitsByOid, RepositoryExists, HasLocalBranches, ListCommitsByRefNames, ListRefs
         expect { get_pipelines_index_json }
-          .to change { Gitlab::GitalyClient.get_request_count }.by(5)
+          .to change { Gitlab::GitalyClient.get_request_count }.by(6)
       end
     end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'has user mentions' do
+  let_it_be(:additional_params) { {} }
+
   describe '#has_mentions?' do
     context 'when no mentions' do
       it 'returns false' do
@@ -38,8 +40,13 @@ RSpec.shared_examples 'has user mentions' do
     context 'with mentions in notes' do
       let_it_be(:user) { create(:user) }
       let_it_be(:notes) { create_list(:note, 2) }
-      let_it_be(:user_mention1) { described_class.create!(mentionable_key => mentionable.id, note: notes[0]) }
-      let_it_be(:user_mention2) { described_class.create!(mentionable_key => mentionable.id, note: notes[1]) }
+      let_it_be(:user_mention1) do
+        described_class.create!(additional_params.merge(mentionable_key => mentionable.id, note: notes[0]))
+      end
+
+      let_it_be(:user_mention2) do
+        described_class.create!(additional_params.merge(mentionable_key => mentionable.id, note: notes[1]))
+      end
 
       it { expect(described_class.for_notes(notes)).to match_array([user_mention1, user_mention2]) }
       it { expect(described_class.for_notes(notes.map(&:id))).to match_array([user_mention1, user_mention2]) }

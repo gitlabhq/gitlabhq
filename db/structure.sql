@@ -19946,6 +19946,7 @@ CREATE TABLE notes (
     id bigint NOT NULL,
     namespace_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_1244cbd7d0 CHECK ((noteable_type IS NOT NULL))
 );
 

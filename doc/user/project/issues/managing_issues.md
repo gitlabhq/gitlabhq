@@ -737,6 +737,7 @@ The following sections describe how to work with the issue list.
 - Filtering by type was [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
 - Filtering by health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218711) in GitLab 15.5.
+- In GitLab 18.4 and later, if [the new look for issues](issue_work_items.md) is enabled, you can filter the list of issues by custom status or the parent item.
 
 {{< /history >}}
 

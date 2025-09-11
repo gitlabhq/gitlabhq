@@ -452,7 +452,6 @@ Gitlab/NamespacedClass:
     - 'app/serializers/build_artifact_entity.rb'
     - 'app/serializers/build_coverage_entity.rb'
     - 'app/serializers/build_details_entity.rb'
-    - 'app/serializers/build_metadata_entity.rb'
     - 'app/serializers/build_trace_entity.rb'
     - 'app/serializers/build_trace_serializer.rb'
     - 'app/serializers/cluster_entity.rb'

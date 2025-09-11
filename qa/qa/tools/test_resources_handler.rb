@@ -187,7 +187,7 @@ module QA
             next unless resource
 
             resource_info = resource_info(resource_hash, key)
-            next if already_marked_for_deletion?(resource_info)
+            next if already_marked_for_deletion?(resource)
 
             logger.info("Processing #{resource_info}...")
 
@@ -370,8 +370,8 @@ module QA
         nil
       end
 
-      def already_marked_for_deletion?(resource_info)
-        resource_info.include?('-deletion_scheduled-')
+      def already_marked_for_deletion?(resource)
+        resource_path(resource).include?('-deletion_scheduled-')
       end
 
       # Generates a descriptive string for a resource

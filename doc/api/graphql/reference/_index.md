@@ -44429,12 +44429,12 @@ Represents vulnerability counts grouped by severity level.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitiesperseveritycritical"></a>`critical` | [`Int!`](#int) | Number of CRITICAL severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityhigh"></a>`high` | [`Int!`](#int) | Number of HIGH severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityinfo"></a>`info` | [`Int!`](#int) | Number of INFO severity vulnerabilities. |
-| <a id="vulnerabilitiesperseveritylow"></a>`low` | [`Int!`](#int) | Number of LOW severity vulnerabilities. |
-| <a id="vulnerabilitiesperseveritymedium"></a>`medium` | [`Int!`](#int) | Number of MEDIUM severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityunknown"></a>`unknown` | [`Int!`](#int) | Number of UNKNOWN severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritycritical"></a>`critical` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of CRITICAL severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityhigh"></a>`high` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of HIGH severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityinfo"></a>`info` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of INFO severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritylow"></a>`low` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of LOW severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritymedium"></a>`medium` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of MEDIUM severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityunknown"></a>`unknown` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of UNKNOWN severity vulnerabilities. |
 
 ### `Vulnerability`
 
@@ -54609,6 +54609,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use authorUsernames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
+| <a id="unionedepicfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use labelNames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
@@ -54620,6 +54621,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters issues that are assigned to at least one of the given users. |
 | <a id="unionedissuefilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters issues that are authored by one of the given users. |
+| <a id="unionedissuefilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedissuefilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters issues that have at least one of the given labels. |
 
 ### `UnionedMergeRequestFilterInput`
@@ -54641,6 +54643,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedworkitemfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters work items that are assigned to at least one of the given users. |
 | <a id="unionedworkitemfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters work items that are authored by one of the given users. |
+| <a id="unionedworkitemfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedworkitemfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters work items that have at least one of the given labels. |
 
 ### `UpdateDiffImagePositionInput`

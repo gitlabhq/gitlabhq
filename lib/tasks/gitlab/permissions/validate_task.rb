@@ -20,7 +20,8 @@ module Tasks
         }.freeze
 
         ERROR_MESSAGES = {
-          docs: "The following permissions are missing a documentation file.",
+          docs: "The following permissions are missing a documentation file." \
+            "\nRun bundle exec rails generate authz:permission <NAME> to generate documentation files.",
           excluded: "The following permissions have a documentation file." \
             "\nRemove them from config/authz/permissions/definitions_todo.txt.",
           schema: "The following permissions failed schema validation.",

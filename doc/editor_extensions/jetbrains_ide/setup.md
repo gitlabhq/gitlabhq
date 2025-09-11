@@ -61,6 +61,16 @@ After you configure the plugin in your IDE, connect it to your GitLab account:
 1. Select **Verify setup**.
 1. Select **OK** or **Save**.
 
+## Set the default namespace
+
+The GitLab Duo Agent Platform uses the **Default Namespace** value when the plugin
+can't determine the current GitLab project. To configure this value:
+
+1. In your IDE, on the top bar, select your IDE's name, then select **Settings**.
+1. On the left sidebar, expand **Tools**, then select **GitLab Duo**.
+1. Enter a value for **Default Namespace**.
+1. Select **OK** or **Save**.
+
 ## Install alpha versions of the plugin
 
 GitLab publishes pre-release (alpha) builds of the plugin to the

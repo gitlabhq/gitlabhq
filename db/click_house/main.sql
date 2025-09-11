@@ -963,7 +963,8 @@ CREATE TABLE siphon_notes
     `namespace_id` Nullable(Int64),
     `imported_from` Int8 DEFAULT 0,
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
-    `_siphon_deleted` Bool DEFAULT false
+    `_siphon_deleted` Bool DEFAULT false,
+    `organization_id` Nullable(Int64)
 )
 ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
 PRIMARY KEY id

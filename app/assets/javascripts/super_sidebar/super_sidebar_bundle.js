@@ -54,6 +54,8 @@ const getDuoAgentPlatformWidgetData = (sidebarData) => {
     const {
       actionPath,
       stateProgression,
+      featurePreviewAttribute,
+      initialState,
       isAuthorized,
       showRequestAccess,
       hasRequested,
@@ -64,6 +66,8 @@ const getDuoAgentPlatformWidgetData = (sidebarData) => {
       showDuoAgentPlatformWidget: true,
       actionPath,
       stateProgression,
+      featurePreviewAttribute,
+      initialState,
       isAuthorized,
       showRequestAccess,
       hasRequested,

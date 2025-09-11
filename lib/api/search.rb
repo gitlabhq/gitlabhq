@@ -181,6 +181,7 @@ module API
         use :search_params_ee
         use :pagination
       end
+      route_setting :mcp, tool_name: :gitlab_search, params: Helpers::SearchHelpers.gitlab_search_mcp_params
       get do
         verify_search_scope!(resource: nil)
 

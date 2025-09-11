@@ -20,7 +20,7 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       described_class.new(build, request: request, current_user: user, project: project)
     end
 
-    subject { entity.as_json }
+    subject(:serialized_entity) { entity.as_json }
 
     before do
       allow(request).to receive(:current_user).and_return(user)
@@ -318,6 +318,58 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
         expect(subject[:trigger][:short_token]).to eq(build.trigger_short_token)
         expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
         expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
+      end
+    end
+
+    describe 'metadata timeout fields' do
+      subject(:metadata) { serialized_entity[:metadata] }
+
+      it 'returns default values' do
+        expect(metadata[:timeout_human_readable]).to be_nil
+        expect(metadata[:timeout_source]).to eq('unknown_timeout_source')
+      end
+
+      context 'when build.metadata does not exist' do
+        before do
+          build.metadata.delete
+          build.reload
+        end
+
+        it 'returns nil values' do
+          expect(metadata[:timeout_human_readable]).to be_nil
+          expect(metadata[:timeout_source]).to be_nil
+        end
+      end
+
+      context 'when build timeout is present' do
+        before do
+          build.write_attribute(:timeout, 90)
+        end
+
+        it 'returns human readable timeout value' do
+          expect(metadata[:timeout_human_readable]).to eq('1m 30s')
+        end
+      end
+
+      context 'when build timeout source is present' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:timeout_source, :expected_timeout_source) do
+          1 | 'unknown_timeout_source'
+          2 | 'project'
+          3 | 'runner'
+          4 | 'job'
+        end
+
+        with_them do
+          before do
+            build.write_attribute(:timeout_source, timeout_source)
+          end
+
+          it 'returns expected human readable timeout source' do
+            expect(metadata[:timeout_source]).to eq(expected_timeout_source)
+          end
+        end
       end
     end
   end

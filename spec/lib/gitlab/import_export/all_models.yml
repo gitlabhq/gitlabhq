@@ -106,6 +106,7 @@ notes:
 - award_emoji
 - project
 - namespace
+- organization
 - noteable
 - author
 - updated_by
@@ -125,6 +126,7 @@ note_metadata:
   - email_participant
 commit_notes:
 - namespace
+- organization
 - award_emoji
 - noteable
 - author

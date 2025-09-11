@@ -284,6 +284,21 @@ Retrieves the pipelines for a specific merge request.
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 ```
 
+### `gitlab_search`
+
+Performs a search on a term across the entire GitLab instance using the Search API.
+
+Parameters:
+
+- `search` (required): The expression to search for
+- `scope` (required): The search scope (for example, `issues`, `merge_requests`, `projects`)
+
+**Example usage in AI tool**:
+
+```plaintext
+Search issues for "flaky test" across GitLab
+```
+
 ## Feedback
 
 This feature is experimental. Your feedback is valuable in helping us to improve it. Share your experiences, suggestions, or issues in [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).

@@ -99,6 +99,8 @@ tags:
   description: Operations about namespaces
 - name: organizations
   description: Operations about organizations
+- name: search
+  description: Operations about searches
 - name: snippets
   description: Operations about snippets
 - name: hooks
@@ -8938,6 +8940,84 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4GroupsIdAccessTokensSelfRotate
+  "/api/v4/groups/{id}/(-/)search":
+    get:
+      summary: Search on GitLab
+      description: This feature was introduced in GitLab 10.5.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID of a group
+        type: string
+        required: true
+      - in: query
+        name: search
+        description: The expression it should be searched for
+        type: string
+        required: true
+      - in: query
+        name: scope
+        description: The scope of the search
+        type: string
+        enum:
+        - wiki_blobs
+        - blobs
+        - commits
+        - notes
+        - projects
+        - issues
+        - merge_requests
+        - milestones
+        - users
+        required: true
+      - in: query
+        name: state
+        description: Filter results by state
+        type: string
+        enum:
+        - all
+        - opened
+        - closed
+        - merged
+        required: false
+      - in: query
+        name: confidential
+        description: Filter results by confidentiality
+        type: boolean
+        required: false
+      - in: query
+        name: fields
+        description: Array of fields you wish to search
+        type: array
+        items:
+          type: string
+          enum:
+          - title
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Search on GitLab
+      tags:
+      - groups
+      operationId: getApiV4GroupsId(-)search
   "/api/v4/groups/{id}/wikis":
     get:
       description: Get a list of wiki pages
@@ -37873,6 +37953,89 @@ paths:
       tags:
       - rubygem_packages
       operationId: getApiV4ProjectsIdPackagesRubygemsApiV1Dependencies
+  "/api/v4/projects/{id}/(-/)search":
+    get:
+      summary: Search on GitLab
+      description: This feature was introduced in GitLab 10.5.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: query
+        name: search
+        description: The expression it should be searched for
+        type: string
+        required: true
+      - in: query
+        name: scope
+        description: The scope of the search
+        type: string
+        enum:
+        - issues
+        - merge_requests
+        - milestones
+        - notes
+        - wiki_blobs
+        - commits
+        - blobs
+        - users
+        required: true
+      - in: query
+        name: ref
+        description: The name of a repository branch or tag. If not given, the default
+          branch is used
+        type: string
+        required: false
+      - in: query
+        name: state
+        description: Filter results by state
+        type: string
+        enum:
+        - all
+        - opened
+        - closed
+        - merged
+        required: false
+      - in: query
+        name: confidential
+        description: Filter results by confidentiality
+        type: boolean
+        required: false
+      - in: query
+        name: fields
+        description: Array of fields you wish to search
+        type: array
+        items:
+          type: string
+          enum:
+          - title
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Search on GitLab
+      tags:
+      - projects
+      operationId: getApiV4ProjectsId(-)search
   "/api/v4/projects/{id}/repository/submodules/{submodule}":
     put:
       description: Update existing submodule reference in repository
@@ -44704,6 +44867,80 @@ paths:
       tags:
       - personal_access_tokens
       operationId: postApiV4PersonalAccessTokensIdRotate
+  "/api/v4/search":
+    get:
+      summary: Search on GitLab
+      description: This feature was introduced in GitLab 10.5.
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: search
+        description: The expression it should be searched for
+        type: string
+        required: true
+      - in: query
+        name: scope
+        description: The scope of the search
+        type: string
+        enum:
+        - wiki_blobs
+        - blobs
+        - commits
+        - notes
+        - projects
+        - issues
+        - merge_requests
+        - milestones
+        - snippet_titles
+        - users
+        required: true
+      - in: query
+        name: state
+        description: Filter results by state
+        type: string
+        enum:
+        - all
+        - opened
+        - closed
+        - merged
+        required: false
+      - in: query
+        name: confidential
+        description: Filter results by confidentiality
+        type: boolean
+        required: false
+      - in: query
+        name: fields
+        description: Array of fields you wish to search
+        type: array
+        items:
+          type: string
+          enum:
+          - title
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      responses:
+        '200':
+          description: Search on GitLab
+      tags:
+      - search
+      operationId: getApiV4Search
   "/api/v4/snippets":
     get:
       summary: Get a snippets list for an authenticated user

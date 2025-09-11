@@ -1,0 +1,10 @@
+---
+name: import_by_url_new_page
+description: Hides Vue url import flow
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561096
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201202
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/566389
+milestone: '18.4'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

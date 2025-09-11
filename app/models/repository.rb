@@ -329,6 +329,9 @@ class Repository
       return false unless exists?
       return false if branch_name.blank?
 
+      # Optimization: Use a root_ref cache to check the presence of the default branch
+      return true if branch_name == root_ref
+
       Gitlab::Git::RefPreloader.preload_refs_for_project(project)
 
       return lazy_ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + branch_name).itself
@@ -577,7 +580,10 @@ class Repository
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch(expire_cache: true)
-    expire_branches_cache if expire_cache
+    if expire_cache
+      expire_branches_cache
+      expire_root_ref_cache
+    end
   end
 
   def lookup(sha)

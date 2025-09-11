@@ -10,7 +10,8 @@ export default {
     },
     currentStep: {
       type: Number,
-      required: true,
+      required: false,
+      default: null,
     },
     stepsTotal: {
       type: Number,
@@ -35,7 +36,9 @@ export default {
     <h1 class="gl-heading-1 gl-mb-3 gl-mt-0 gl-text-center" data-testid="multi-step-form-title">
       {{ title }}
     </h1>
-    <p class="gl-m-0 gl-text-center" data-testid="multi-step-form-steps">{{ stepMessage }}</p>
+    <p v-if="currentStep" class="gl-m-0 gl-text-center" data-testid="multi-step-form-steps">
+      {{ stepMessage }}
+    </p>
     <div class="gl-mt-7" data-testid="multi-step-form-content">
       <slot name="form"></slot>
     </div>

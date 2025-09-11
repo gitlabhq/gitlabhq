@@ -21,6 +21,10 @@ module API
       def self.search_states
         %w[all opened closed merged]
       end
+
+      def self.gitlab_search_mcp_params
+        %i[scope search state confidential snippets num_context_lines search_type page per_page order_by sort source]
+      end
     end
   end
 end

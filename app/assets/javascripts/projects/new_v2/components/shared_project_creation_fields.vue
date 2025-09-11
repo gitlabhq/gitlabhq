@@ -45,7 +45,8 @@ export default {
   props: {
     namespace: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {

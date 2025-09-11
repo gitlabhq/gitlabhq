@@ -57,6 +57,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a documentation file.
+          #  Run bundle exec rails generate authz:permission <NAME> to generate documentation files.
           #
           #    - undefined_permission
           #
@@ -90,6 +91,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #######################################################################
           #
           #  The following permissions are missing a documentation file.
+          #  Run bundle exec rails generate authz:permission <NAME> to generate documentation files.
           #
           #    - undefined_permission
           #

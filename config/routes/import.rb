@@ -12,7 +12,7 @@ end
 namespace :import do
   resources :history, only: [:index], controller: :history
 
-  namespace :url do
+  resource :url, only: [:new], controller: :url do
     post :validate
   end
 

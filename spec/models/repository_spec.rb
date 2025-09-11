@@ -2020,7 +2020,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
   end
 
   describe '#branch_exists?' do
-    let(:branch) { repository.root_ref }
+    let(:branch) { 'feature' }
 
     subject { repository.branch_exists?(branch) }
 
@@ -2028,6 +2028,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
       expect(repository).to receive(:list_refs).with(["refs/heads/#{branch}"]).and_call_original
 
       is_expected.to eq(true)
+    end
+
+    context 'when default branch is provided' do
+      let(:branch) { repository.root_ref }
+
+      it 'does not make list_refs query and rely on root_ref cache' do
+        expect(repository).not_to receive(:list_refs).with(["refs/heads/#{branch}"])
+
+        is_expected.to eq(true)
+      end
     end
 
     context 'when "ref_existence_check_gitaly" is disabled' do

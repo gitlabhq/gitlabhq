@@ -42,6 +42,11 @@ describe('MultiStepFormTemplate', () => {
 
       expect(findSteps().text()).toBe('Step 1');
     });
+
+    it('does not render stepMessage if no currentStep is passed', () => {
+      createComponent({ currentStep: null });
+      expect(findSteps().exists()).toBe(false);
+    });
   });
 
   describe('slots', () => {

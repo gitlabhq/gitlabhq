@@ -51,6 +51,18 @@ RSpec.describe Note, feature_category: :team_planning do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:namespace) }
 
+    context 'when note is on a personal snippet' do
+      before do
+        allow(subject).to receive(:for_personal_snippet?).and_return(true)
+      end
+
+      it { is_expected.to validate_presence_of(:organization) }
+
+      it { is_expected.not_to validate_presence_of(:namespace) }
+
+      it { is_expected.not_to validate_presence_of(:project) }
+    end
+
     context 'when note is on commit' do
       before do
         allow(subject).to receive(:for_commit?).and_return(true)
@@ -387,6 +399,20 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
+    describe '#ensure_organization_id' do
+      context 'for a personal snippet note' do
+        let_it_be(:snippet) { create(:personal_snippet) }
+
+        it 'sets organization_id of the personal snippet' do
+          note = build(:note, noteable: snippet, project: nil)
+
+          note.valid?
+
+          expect(note.organization_id).to eq(snippet.organization_id)
+        end
+      end
+    end
+
     describe '#ensure_namespace_id' do
       context 'for issues' do
         let!(:issue) { create(:issue) }
@@ -450,20 +476,12 @@ RSpec.describe Note, feature_category: :team_planning do
       context 'for a personal snippet note' do
         let_it_be(:snippet) { create(:personal_snippet) }
 
-        it 'copies the personal namespace_id of the author' do
+        it 'sets namespace_id to nil' do
           note = build(:note, noteable: snippet, project: nil)
 
           note.valid?
 
-          expect(note.namespace_id).to eq(snippet.author.namespace.id)
-        end
-
-        context 'when snippet author is missing' do
-          it 'does not raise an exception' do
-            note = build(:note, noteable: build(:personal_snippet, author: nil), project: nil)
-
-            expect { note.valid? }.not_to raise_error
-          end
+          expect(note.namespace_id).to be_nil
         end
       end
 
