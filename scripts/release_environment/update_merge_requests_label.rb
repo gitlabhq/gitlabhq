@@ -4,6 +4,8 @@ require 'gitlab'
 require 'logger'
 
 class UpdateMergeRequestsLabel
+  PROJECT_ID = '41365521' # Using gitlab-com/gl-infra/release-environments project id
+
   def initialize
     @client = Gitlab.client(endpoint: api_endpoint, private_token: api_token)
     @logger = Logger.new($stdout)
@@ -12,7 +14,10 @@ class UpdateMergeRequestsLabel
   def execute
     return if deployment_mrs.empty?
 
+    @logger.info("Found #{deployment_mrs.count} merge requests for deployment #{deployment_id}.")
+
     deployment_mrs.each do |mr|
+      @logger.info("Adding label 'workflow::release-environment' to merge request #{mr.web_url} ...")
       labels = mr.labels
 
       # Remove existing workflow labels from the list
@@ -24,8 +29,8 @@ class UpdateMergeRequestsLabel
           labels: ['workflow::release-environment', *labels].join(',')
         )
       rescue StandardError => e
-        @logger.error("Could not update backport MR iid #{mr.iid} with " \
-          "label 'workflow::release-environment'.\n[ERROR]: #{e.message}")
+        @logger.error("Could not add label 'workflow::release-environment' to merge request #{mr.web_url}." \
+          "\n[ERROR]: #{e.message}")
       end
     end
   end
@@ -33,7 +38,7 @@ class UpdateMergeRequestsLabel
   private
 
   def deployment_mrs
-    @client.get("/projects/#{project_id}/deployments/#{deployment_id}/merge_requests")
+    @client.get("/projects/#{PROJECT_ID}/deployments/#{deployment_id}/merge_requests")
   rescue StandardError => e
     @logger.error("Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: #{e.message}")
     [] # Return empty array on error
@@ -43,12 +48,8 @@ class UpdateMergeRequestsLabel
     ENV.fetch('CI_API_V4_URL')
   end
 
-  def project_id
-    ENV.fetch('CI_PROJECT_ID')
-  end
-
   def api_token
-    ENV.fetch('PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE')
+    ENV.fetch('COM_RELEASE_TOOLS_BOT')
   end
 
   def deployment_id

@@ -16,10 +16,11 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
   before do
     stub_const('ENV', {
       'CI_API_V4_URL' => api_endpoint,
-      'CI_PROJECT_ID' => project_id,
-      'PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE' => api_token,
+      'COM_RELEASE_TOOLS_BOT' => api_token,
       'DEPLOYMENT_ID' => deployment_id
     })
+
+    stub_const('UpdateMergeRequestsLabel::PROJECT_ID', project_id)
 
     allow(Gitlab).to receive(:client).with(
       endpoint: api_endpoint,
@@ -63,12 +64,17 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
         double('MR1', # rubocop:disable RSpec/VerifiedDoubles -- stub only
           project_id: 123,
           iid: 456,
-          labels: ['bug', 'workflow::in-progress', 'frontend']
+          labels: ['bug', 'workflow::in-progress', 'frontend'],
+          web_url: 'https://example.gitlab.com/mr'
         )
       end
 
       before do
         allow(updater).to receive(:deployment_mrs).and_return([mr1])
+        allow(logger).to receive(:info).with("Found 1 merge requests for deployment #{deployment_id}.")
+        allow(logger)
+          .to receive(:info)
+                .with("Adding label 'workflow::release-environment' to merge request #{mr1.web_url} ...")
       end
 
       it 'updates merge request with workflow::release-environment label' do
@@ -88,8 +94,8 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
 
         it 'logs error and continues processing other MRs' do
           expect(logger).to receive(:error).with(
-            "Could not update backport MR iid 456 with " \
-              "label 'workflow::release-environment'.\n[ERROR]: API Error"
+            "Could not add label 'workflow::release-environment' to " \
+              "merge request #{mr1.web_url}.\n[ERROR]: API Error"
           )
 
           updater.execute
