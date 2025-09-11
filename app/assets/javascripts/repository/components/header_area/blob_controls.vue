@@ -39,7 +39,7 @@ export default {
     archivedProjectTooltip: __('You cannot edit files in archived projects'),
     lfsFileTooltip: __('You cannot edit files stored in LFS'),
   },
-  buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
+  buttonClassList: '@sm/panel:gl-w-auto gl-w-full @sm/panel:gl-mt-0 gl-mt-3',
   components: {
     OpenMrBadge,
     GlButton,
@@ -138,8 +138,8 @@ export default {
   computed: {
     controlsCollapseClass() {
       const breakpoint = this.glFeatures.repositoryFileTreeBrowser
-        ? 'md:gl-inline-flex'
-        : 'sm:gl-inline-flex';
+        ? '@md/panel:gl-inline-flex'
+        : '@sm/panel:gl-inline-flex';
       return `gl-hidden ${breakpoint}`;
     },
     isLoadingRepositoryBlob() {

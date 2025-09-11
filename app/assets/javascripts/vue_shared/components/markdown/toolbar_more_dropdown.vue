@@ -42,17 +42,17 @@ export default {
         {
           text: __('Bullet list'),
           action: () => this.insertMarkdown('- {text}', 'bulletList'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Ordered list'),
           action: () => this.insertMarkdown('1. {text}', 'orderedList'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Task list'),
           action: () => this.insertMarkdown('- [ ] {text}', 'taskList'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Horizontal rule'),

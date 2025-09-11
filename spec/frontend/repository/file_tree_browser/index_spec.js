@@ -39,16 +39,16 @@ describe('initFileTreeBrowser', () => {
   });
 
   describe.each`
-    routeName            | isNarrowScreen | fileTreeVisible | expectedVisible
-    ${'blobPathDecoded'} | ${false}       | ${true}         | ${true}
-    ${'blobPathDecoded'} | ${true}        | ${true}         | ${false}
-    ${'blobPathDecoded'} | ${false}       | ${false}        | ${false}
-    ${'projectRoot'}     | ${true}        | ${false}        | ${false}
+    routeName            | isCompactViewport | fileTreeVisible | expectedVisible
+    ${'blobPathDecoded'} | ${false}          | ${true}         | ${true}
+    ${'blobPathDecoded'} | ${true}           | ${true}         | ${false}
+    ${'blobPathDecoded'} | ${false}          | ${false}        | ${false}
+    ${'projectRoot'}     | ${true}           | ${false}        | ${false}
   `(
-    'visibility logic when route is $routeName, narrow screen: $isNarrowScreen, file tree visible: $fileTreeVisible',
-    ({ routeName, isNarrowScreen, fileTreeVisible, expectedVisible }) => {
+    'visibility logic when route is $routeName, compact screen: $isCompactViewport, file tree visible: $fileTreeVisible',
+    ({ routeName, isCompactViewport, fileTreeVisible, expectedVisible }) => {
       beforeEach(() => {
-        useViewport().updateIsNarrow(isNarrowScreen);
+        useViewport().updateIsCompact(isCompactViewport);
         useFileTreeBrowserVisibility().setFileTreeVisibility(fileTreeVisible);
       });
 

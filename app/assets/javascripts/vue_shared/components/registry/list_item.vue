@@ -67,13 +67,15 @@ export default {
       >
         <slot name="left-action"></slot>
       </div>
-      <div class="gl-flex gl-grow gl-flex-col gl-items-stretch gl-justify-between sm:gl-flex-row">
-        <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col sm:gl-mb-0">
+      <div
+        class="gl-flex gl-grow gl-flex-col gl-items-stretch gl-justify-between @sm/panel:gl-flex-row"
+      >
+        <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col @sm/panel:gl-mb-0">
           <div
             v-if="
               $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
             "
-            class="gl-min-h-6 gl-min-w-0 gl-items-center gl-font-semibold gl-text-default sm:gl-flex"
+            class="gl-min-h-6 gl-min-w-0 gl-items-center gl-font-semibold gl-text-default @sm/panel:gl-flex"
           >
             <slot name="left-primary"></slot>
             <gl-button
@@ -82,7 +84,7 @@ export default {
               :icon="toggleDetailsIcon"
               :aria-label="toggleDetailsLabel"
               size="small"
-              class="gl-ml-2 gl-hidden sm:gl-block"
+              class="gl-ml-2 gl-hidden @sm/panel:gl-block"
               category="tertiary"
               :title="toggleDetailsLabel"
               :aria-expanded="isDetailsShown"
@@ -101,7 +103,7 @@ export default {
           </div>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-center gl-text-subtle sm:gl-items-end"
+          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-center gl-text-subtle @sm/panel:gl-items-end"
         >
           <div
             v-if="
@@ -109,7 +111,7 @@ export default {
                 'right-primary'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-items-center sm:gl-text-default"
+            class="gl-flex gl-min-h-6 gl-items-center @sm/panel:gl-text-default"
           >
             <slot name="right-primary"></slot>
           </div>
@@ -129,7 +131,7 @@ export default {
         v-if="
           $slots['right-action'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
         "
-        class="gl-items-center gl-pl-3 sm:gl-flex"
+        class="gl-items-center gl-pl-3 @sm/panel:gl-flex"
       >
         <slot name="right-action"></slot>
       </div>

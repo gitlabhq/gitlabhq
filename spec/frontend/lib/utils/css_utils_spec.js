@@ -3,9 +3,8 @@ import {
   getSystemColorScheme,
   listenSystemColorSchemeChange,
   removeListenerSystemColorSchemeChange,
-  isNarrowScreenAddListener,
-  isNarrowScreenRemoveListener,
-  isNarrowScreen,
+  getPageBreakpoints,
+  resetBreakpointsCache,
 } from '~/lib/utils/css_utils';
 
 describe('getCssClassDimensions', () => {
@@ -107,8 +106,9 @@ describe('listenSystemColorSchemeChange', () => {
   });
 });
 
-describe('listenNarrowScreen', () => {
+describe('getPageBreakpoints', () => {
   let mockMedia;
+  let getComputedStyleSpy;
 
   beforeEach(() => {
     mockMedia = {
@@ -117,29 +117,45 @@ describe('listenNarrowScreen', () => {
       removeEventListener: jest.fn(),
     };
     window.matchMedia = jest.fn().mockReturnValue(mockMedia);
-    window.getComputedStyle = jest.fn().mockReturnValue({
-      getPropertyValue: jest.fn().mockReturnValue('1200px'),
+
+    getComputedStyleSpy = jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue: jest.fn((prop) => {
+        const breakpoints = {
+          '--breakpoint-md': '768px',
+          '--breakpoint-lg': '992px',
+          '--breakpoint-xl': '1200px',
+        };
+        return breakpoints[prop] || '0px';
+      }),
     });
   });
 
-  it('checks for screen size', () => {
-    mockMedia.matches = true;
-    expect(isNarrowScreen()).toBe(true);
-    mockMedia.matches = false;
-    expect(isNarrowScreen()).toBe(false);
+  afterEach(() => {
+    getComputedStyleSpy.mockRestore();
+    resetBreakpointsCache();
   });
 
-  it('adds event listener for screen size changes', () => {
-    const callback = jest.fn();
-    isNarrowScreenAddListener(callback);
-    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 1199px)');
-    expect(mockMedia.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+  it('returns breakpoint media queries with short names', () => {
+    const breakpoints = getPageBreakpoints();
+
+    expect(breakpoints).toEqual({
+      compact: mockMedia,
+      intermediate: mockMedia,
+      wide: mockMedia,
+      narrow: mockMedia,
+    });
   });
 
-  it('removes event listener for screen size changes', () => {
-    const callback = jest.fn();
-    isNarrowScreenAddListener(callback);
-    isNarrowScreenRemoveListener(callback);
-    expect(mockMedia.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+  it('generates correct media queries for each breakpoint', () => {
+    getPageBreakpoints();
+
+    expect(window.matchMedia).toHaveBeenCalledTimes(4);
+    expect(window.matchMedia).toHaveBeenNthCalledWith(1, '(max-width: 767px)');
+    expect(window.matchMedia).toHaveBeenNthCalledWith(
+      2,
+      '(min-width: 768px) and (max-width: 1199px)',
+    );
+    expect(window.matchMedia).toHaveBeenNthCalledWith(3, '(min-width: 1200px)');
+    expect(window.matchMedia).toHaveBeenNthCalledWith(4, '(max-width: 991px)');
   });
 });

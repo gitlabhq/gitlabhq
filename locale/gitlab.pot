@@ -6397,6 +6397,9 @@ msgstr ""
 msgid "AiPowered|Failed to enable GitLab Duo Agent Platform."
 msgstr ""
 
+msgid "AiPowered|Failed to enable GitLab Duo Core."
+msgstr ""
+
 msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
 msgstr ""
 
@@ -24327,9 +24330,6 @@ msgstr ""
 msgid "Duo Agent Platform Service URL %{host} is not reachable.."
 msgstr ""
 
-msgid "Duo Agent Platform is on"
-msgstr ""
-
 msgid "Duo Agent Platform|Duo Agent Platform Settings have been saved"
 msgstr ""
 
@@ -24339,7 +24339,7 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{pStart}Access GitLab Duo features throughout this instance by turning on the GitLab Duo Agent Platform.%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
+msgid "DuoAgentPlatform|%{pStart}Access GitLab Duo features throughout this instance by turning on GitLab Duo Core.%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{pStart}Get early access to new GitLab Duo features before they're generally available. Help improve your development workflow and get started now.%{pEnd} By turning on these features, you accept the %{termsStart}GitLab Testing Agreement%{linkEnd}."
@@ -24352,12 +24352,6 @@ msgid "DuoAgentPlatform|Action"
 msgstr ""
 
 msgid "DuoAgentPlatform|Activity"
-msgstr ""
-
-msgid "DuoAgentPlatform|Agent Platform Off"
-msgstr ""
-
-msgid "DuoAgentPlatform|Agent Platform On"
 msgstr ""
 
 msgid "DuoAgentPlatform|Agent reasoning"
@@ -24390,6 +24384,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Flow started successfully. To view progress, see %{linkStart}Session %{id}%{linkEnd}."
 msgstr ""
 
+msgid "DuoAgentPlatform|GitLab Duo Core Off"
+msgstr ""
+
+msgid "DuoAgentPlatform|GitLab Duo Core On"
+msgstr ""
+
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
@@ -24399,7 +24399,7 @@ msgstr ""
 msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
-msgid "DuoAgentPlatform|Start using the Agent Platform"
+msgid "DuoAgentPlatform|Start using GitLab Duo Core"
 msgstr ""
 
 msgid "DuoAgentPlatform|Turn on Feature Preview"
@@ -29886,6 +29886,9 @@ msgid "GitLab Duo Chat"
 msgstr ""
 
 msgid "GitLab Duo Chat with Amazon Q"
+msgstr ""
+
+msgid "GitLab Duo Core is on"
 msgstr ""
 
 msgid "GitLab Duo Sessions"

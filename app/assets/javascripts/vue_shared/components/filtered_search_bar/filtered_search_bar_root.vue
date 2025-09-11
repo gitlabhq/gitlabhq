@@ -412,7 +412,7 @@ export default {
         :sort-options="transformedSortOptions"
         :sort-by="sortById"
         :is-ascending="sortDirectionAscending"
-        class="sort-dropdown-container gl-w-full @sm/panel:gl-w-auto sm:!gl-m-0"
+        class="sort-dropdown-container gl-w-full @sm/panel:!gl-m-0 @sm/panel:gl-w-auto"
         dropdown-toggle-class="gl-grow"
         dropdown-class="gl-grow"
         sort-direction-toggle-class="!gl-shrink !gl-grow-0"

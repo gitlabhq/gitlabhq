@@ -124,8 +124,16 @@ docs hugo_build:
         MAJOR=$(echo $BRANCH_NAME | cut -d '-' -f 1)
         MINOR=$(echo $BRANCH_NAME | cut -d '-' -f 2)
         # Convert GitLab style (17-9-stable-ee) to Docs style (17.9)
-        DOCS_BRANCH="$MAJOR.$MINOR"
-        echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+        DOCS_BRANCH_CANDIDATE="$MAJOR.$MINOR"
+
+        # Check if the branch exists in the Docs website repo, fallback to main if not
+        if git ls-remote --heads --exit-code https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git "refs/heads/$DOCS_BRANCH_CANDIDATE" >/dev/null 2>&1; then
+          DOCS_BRANCH="$DOCS_BRANCH_CANDIDATE"
+          echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+        else
+          DOCS_BRANCH="main"
+          echo "Branch $DOCS_BRANCH_CANDIDATE does not exist, falling back to main"
+        fi
       fi
     # Clone the Docs website project
     - git clone --depth 1 --filter=tree:0 --branch $DOCS_BRANCH https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git

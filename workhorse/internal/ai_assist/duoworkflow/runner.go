@@ -11,9 +11,11 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 var marshaler = protojson.MarshalOptions{
@@ -146,9 +148,21 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
 		}
 
+		statusCode := event.GetActionResponse().GetHttpResponse().StatusCode
+		log.WithContextFields(r.originalReq.Context(), log.Fields{
+			"path":                 action.GetRunHTTPRequest().Path,
+			"status_code":          statusCode,
+			"payload_size":         proto.Size(event),
+			"event_type":           fmt.Sprintf("%T", event.Response),
+			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
+		}).Info("Sending HTTP response event")
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
 		}
+		log.WithContextFields(r.originalReq.Context(), log.Fields{
+			"path": action.GetRunHTTPRequest().Path,
+		}).Info("Successfully sent HTTP response event")
+
 	default:
 		message, err := marshaler.Marshal(action)
 		if err != nil {

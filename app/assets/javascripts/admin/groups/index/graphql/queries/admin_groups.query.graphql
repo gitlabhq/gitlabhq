@@ -1,8 +1,9 @@
 #import "~/graphql_shared/fragments/group.fragment.graphql"
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/group_interface.fragment.graphql"
 #import "ee_else_ce/admin/groups/index/graphql/fragments/admin_group.fragment.graphql"
 
-query adminGroupsQuery(
+query adminGroupsQueryNew(
   $first: Int
   $last: Int
   $before: String
@@ -11,7 +12,7 @@ query adminGroupsQuery(
   $search: String
   $active: Boolean
 ) {
-  groups(
+  groups: adminGroups(
     allAvailable: true
     first: $first
     last: $last
@@ -22,10 +23,13 @@ query adminGroupsQuery(
     active: $active
   ) {
     nodes {
-      ...Group
-      ...AdminGroup
+      ...GroupInterface
       userPermissions {
         adminAllResources @gl_introduced(version: "18.3.0")
+      }
+      ... on Group {
+        ...Group
+        ...AdminGroup
       }
     }
     pageInfo {

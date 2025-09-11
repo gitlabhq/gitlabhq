@@ -1,5 +1,5 @@
 - if show_lfs_misconfiguration_banner?(project)
-  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: true, alert_options: { class: 'gl-hidden sm:gl-block js-persistent-callout', data: { dismiss_endpoint: project_callouts_path, feature_id: 'lfs_misconfiguration_banner', project_id: project.id } }) do |c|
+  = render Pajamas::AlertComponent.new(variant: :warning, dismissible: true, alert_options: { class: 'gl-hidden @sm/panel:gl-block js-persistent-callout', data: { dismiss_endpoint: project_callouts_path, feature_id: 'lfs_misconfiguration_banner', project_id: project.id } }) do |c|
     - c.with_body do
       = _('LFS objects detected. Git supports adding a `.gitattributes` file in subdirectories, but GitLab only checks for this file in the root directory of the default branch. Dismiss this message if your LFS is configured in subdirectories, on a different branch, or is working correctly.')
       = link_to('Learn more about Git LFS.', help_page_path('topics/git/lfs/_index.md'), target: '_blank', rel: 'noopener noreferrer')

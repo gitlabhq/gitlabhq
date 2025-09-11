@@ -44,7 +44,8 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
 
       context 'when web-ide has valid configuration' do
         before do
-          # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
+          # WebIde Terminal features to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/568849.
+          # We stub this FF for now to pass the test.
           stub_feature_flags(stop_writing_builds_metadata: false)
 
           stub_webide_config_file(config_content)

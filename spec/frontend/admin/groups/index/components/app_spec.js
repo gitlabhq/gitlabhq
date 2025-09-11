@@ -25,7 +25,8 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import adminGroupsQuery from '~/admin/groups/index/graphql/queries/groups.query.graphql';
+import adminGroupsQuery from '~/admin/groups/index/graphql/queries/admin_groups.query.graphql';
+import groupsQuery from '~/admin/groups/index/graphql/queries/groups.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -48,14 +49,20 @@ describe('AdminGroupsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    features = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(AdminGroupsApp, { apolloProvider, router });
+    wrapper = mountFn(AdminGroupsApp, {
+      apolloProvider,
+      router,
+      provide: { glFeatures: { readAdminGroups: false, ...features } },
+    });
   };
 
+  const findTabsWithList = () => wrapper.findComponent(TabsWithList);
   const findTabByName = (name) =>
     wrapper.findAllByRole('tab').wrappers.find((tab) => tab.text().includes(name));
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -67,7 +74,7 @@ describe('AdminGroupsApp', () => {
   it('renders TabsWithList component and passes correct props', async () => {
     await createComponent();
 
-    expect(wrapper.findComponent(TabsWithList).props()).toMatchObject({
+    expect(findTabsWithList().props()).toMatchObject({
       tabs: ADMIN_GROUPS_TABS,
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -87,12 +94,30 @@ describe('AdminGroupsApp', () => {
     });
   });
 
+  describe('when readAdminGroups feature flag is enabled', () => {
+    it('uses getAdminGroupsNew query', async () => {
+      const adminGroupsQueryHandler = jest
+        .fn()
+        .mockResolvedValue({ groups: { count: 0, nodes: [], pageInfo: {} } });
+
+      await createComponent({
+        mountFn: mountExtended,
+        features: { readAdminGroups: true },
+        handlers: [[adminGroupsQuery, adminGroupsQueryHandler]],
+      });
+
+      await waitForPromises();
+
+      expect(adminGroupsQueryHandler).toHaveBeenCalled();
+    });
+  });
+
   it('renders relative URL that supports relative_url_root', async () => {
     window.gon = { relative_url_root: '/gitlab' };
 
     await createComponent({
       mountFn: mountExtended,
-      handlers: [[adminGroupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
+      handlers: [[groupsQuery, jest.fn().mockResolvedValue(adminGroupsGraphQlResponse)]],
     });
     await waitForPromises();
 
@@ -114,7 +139,7 @@ describe('AdminGroupsApp', () => {
       mountFn: mountExtended,
       handlers: [
         [
-          adminGroupsQuery,
+          groupsQuery,
           jest.fn().mockResolvedValue({
             data: {
               groups: {
@@ -136,9 +161,7 @@ describe('AdminGroupsApp', () => {
   it('allows deleting immediately on Inactive tab', async () => {
     await createComponent({
       mountFn: mountExtended,
-      handlers: [
-        [adminGroupsQuery, jest.fn().mockResolvedValue(adminInactiveGroupsGraphQlResponse)],
-      ],
+      handlers: [[groupsQuery, jest.fn().mockResolvedValue(adminInactiveGroupsGraphQlResponse)]],
       route: { name: INACTIVE_TAB.value },
     });
 
@@ -154,7 +177,7 @@ describe('AdminGroupsApp', () => {
         mountFn: mountExtended,
         handlers: [
           [
-            adminGroupsQuery,
+            groupsQuery,
             jest.fn().mockResolvedValue({ data: { groups: { nodes: [], pageInfo: {} } } }),
           ],
         ],

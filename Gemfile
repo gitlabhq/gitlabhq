@@ -223,7 +223,7 @@ gem 'google-cloud-storage', '~> 1.57.0', feature_category: :shared
 gem 'google-apis-core', '~> 0.18.0', '>= 0.18.0', feature_category: :shared
 gem 'google-apis-compute_v1', '~> 0.129.0', feature_category: :shared
 gem 'google-apis-container_v1', '~> 0.100.0', feature_category: :shared
-gem 'google-apis-container_v1beta1', '~> 0.89.0', feature_category: :shared
+gem 'google-apis-container_v1beta1', '~> 0.90.0', feature_category: :shared
 gem 'google-apis-cloudbilling_v1', '~> 0.22.0', feature_category: :shared
 gem 'google-apis-cloudresourcemanager_v1', '~> 0.31.0', feature_category: :shared
 gem 'google-apis-iam_v1', '~> 0.73.0', feature_category: :shared

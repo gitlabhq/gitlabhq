@@ -63,7 +63,7 @@ export default {
     class="repository-tree-list repository-tree-list-responsive gl-mt-4 gl-px-4"
   >
     <panel-resizer
-      class="max-lg:gl-hidden"
+      class="max-@lg/panel:gl-hidden"
       :start-size="treeWidth"
       :min-size="$options.minTreeWidth"
       :max-size="$options.maxTreeWidth"

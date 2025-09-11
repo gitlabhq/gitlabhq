@@ -1,5 +1,5 @@
 - if ::Gitlab::ExternalAuthorization.enabled?
-  .form-group.col-md-9
+  .form-group.gl-col-md-9
     = f.label :external_authorization_classification_label, _('Classification Label (optional)'), class: 'label-bold'
     = f.text_field :external_authorization_classification_label, class: "form-control"
     %span.form-text.gl-text-subtle

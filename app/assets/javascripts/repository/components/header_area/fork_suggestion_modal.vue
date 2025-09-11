@@ -23,7 +23,7 @@ export default {
         attributes: {
           variant: 'confirm',
           href: this.forkPath,
-          class: 'gl-w-full sm:gl-w-auto',
+          class: 'gl-w-full @sm/panel:gl-w-auto',
           'data-method': 'post',
           'data-testid': 'fork',
         },
@@ -33,7 +33,7 @@ export default {
       return {
         text: __('Cancel'),
         attributes: {
-          class: 'gl-w-full sm:gl-w-auto',
+          class: 'gl-w-full @sm/panel:gl-w-auto',
           'data-testid': 'cancel',
         },
       };

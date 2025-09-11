@@ -303,7 +303,7 @@ export default {
       />
     </div>
 
-    <h4 class="my-3 gl-block md:gl-hidden">
+    <h4 class="gl-my-5 gl-block @md/panel:gl-hidden">
       <slot name="title"></slot>
     </h4>
 

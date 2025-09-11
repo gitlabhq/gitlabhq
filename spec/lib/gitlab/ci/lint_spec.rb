@@ -43,9 +43,6 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       end
 
       it 'returns a valid result', :aggregate_failures do
-        # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
-        stub_feature_flags(stop_writing_builds_metadata: false)
-
         expect(subject).to be_valid
 
         expect(subject.errors).to be_empty
@@ -1029,11 +1026,6 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         it_behaves_like 'content with errors and warnings'
 
         it_behaves_like 'content is valid' do
-          before do
-            # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
-            stub_feature_flags(stop_writing_builds_metadata: false)
-          end
-
           it 'does not include extra attributes' do
             subject.jobs.each do |job|
               expect(job.key?(:only)).to be_falsey

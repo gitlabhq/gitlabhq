@@ -1,50 +1,57 @@
 import { createTestingPinia } from '@pinia/testing';
 import { useViewport } from '~/pinia/global_stores/viewport';
-import { isNarrowScreenMediaQuery } from '~/lib/utils/css_utils';
-import waitForPromises from 'helpers/wait_for_promises';
+import { getPageBreakpoints } from '~/lib/utils/css_utils';
 
 jest.mock('~/lib/utils/css_utils');
 
 describe('Viewport store', () => {
+  let mockBreakpoints;
+
   beforeEach(() => {
     createTestingPinia({ stubActions: false });
+    jest.clearAllMocks();
+
+    mockBreakpoints = {
+      compact: { matches: false, addEventListener: jest.fn() },
+      intermediate: { matches: false, addEventListener: jest.fn() },
+      wide: { matches: false, addEventListener: jest.fn() },
+      narrow: { matches: false, addEventListener: jest.fn() },
+    };
+
+    getPageBreakpoints.mockReturnValue(mockBreakpoints);
   });
 
-  describe('isNarrowScreen', () => {
-    let handler;
+  describe('viewport detection', () => {
+    it.each([
+      ['compact', 'isCompactViewport'],
+      ['intermediate', 'isIntermediateViewport'],
+      ['wide', 'isWideViewport'],
+      ['narrow', 'isNarrowScreen'],
+    ])('detects %s viewport correctly', (breakpoint, property) => {
+      mockBreakpoints[breakpoint].matches = true;
 
-    const setNarrowScreen = (isNarrow) => {
-      isNarrowScreenMediaQuery.mockReturnValue({
-        matches: isNarrow,
-        addEventListener: jest.fn((_, fn) => {
-          handler = fn;
-        }),
-      });
-    };
-    const triggerChange = (isNarrow) => {
-      handler({ matches: isNarrow });
-    };
-
-    beforeEach(() => {
-      isNarrowScreenMediaQuery.mockReset();
+      const viewport = useViewport();
+      expect(viewport[property]).toBe(true);
     });
+  });
 
-    it('returns true if screen is narrow', () => {
-      setNarrowScreen(true);
-      expect(useViewport().isNarrowScreen).toBe(true);
-    });
+  it('updates narrow screen with updateIsNarrow', () => {
+    const viewport = useViewport();
 
-    it('returns false if screen is not narrow', () => {
-      setNarrowScreen(false);
-      expect(useViewport().isNarrowScreen).toBe(false);
-    });
+    viewport.updateIsNarrow(true);
+    expect(viewport.isNarrowScreen).toBe(true);
 
-    it('updates value if screen changes', async () => {
-      setNarrowScreen(true);
-      useViewport();
-      triggerChange(false);
-      await waitForPromises();
-      expect(useViewport().isNarrowScreen).toBe(false);
-    });
+    viewport.updateIsNarrow(false);
+    expect(viewport.isNarrowScreen).toBe(false);
+  });
+
+  it('updates compact viewport with updateIsCompact', () => {
+    const viewport = useViewport();
+
+    viewport.updateIsCompact(true);
+    expect(viewport.isCompactViewport).toBe(true);
+
+    viewport.updateIsCompact(false);
+    expect(viewport.isCompactViewport).toBe(false);
   });
 });

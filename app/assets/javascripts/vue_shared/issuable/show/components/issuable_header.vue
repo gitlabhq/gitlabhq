@@ -199,7 +199,7 @@ export default {
               name="external-link"
               :aria-label="__('external link')"
             />
-            <strong v-if="author.username" class="author gl-inline sm:!gl-hidden"
+            <strong v-if="author.username" class="author gl-inline @sm/panel:!gl-hidden"
               >@{{ author.username }}</strong
             >
           </gl-link>
@@ -219,7 +219,7 @@ export default {
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="js-sidebar-toggle gl-ml-auto gl-block sm:!gl-hidden"
+        class="js-sidebar-toggle gl-ml-auto gl-block @sm/panel:!gl-hidden"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />

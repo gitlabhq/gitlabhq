@@ -458,7 +458,7 @@ export default {
 
     <div
       data-testid="list-footer"
-      class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center"
+      class="gl-relative gl-mt-6 gl-flex gl-justify-between @md/panel:!gl-justify-center"
     >
       <gl-keyset-pagination
         v-if="showPaginationControls && useKeysetPagination"

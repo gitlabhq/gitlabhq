@@ -30335,7 +30335,7 @@ GPG signature for a signed commit.
 | <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` {{< icon name="warning-solid" >}} | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
-| <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
+| <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
 | <a id="groupid"></a>`id` | [`ID`](#id) | ID of the group. |
@@ -32409,9 +32409,10 @@ Limited group data accessible to users without full group read access (e.g. non-
 | ---- | ---- | ----------- |
 | <a id="groupminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupminimalaccessfullname"></a>`fullName` | [`String!`](#string) | Full name of the group. |
-| <a id="groupminimalaccessid"></a>`id` | [`ID`](#id) | ID of the group. |
+| <a id="groupminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
+| <a id="groupminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the group. |
 | <a id="groupminimalaccessname"></a>`name` | [`String!`](#string) | Name of the group. |
-| <a id="groupminimalaccessuserpermissions"></a>`userPermissions` | [`GroupPermissions`](#grouppermissions) | Permissions for the current user on the group. |
+| <a id="groupminimalaccessuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 ### `GroupNamespaceLinks`
@@ -52583,6 +52584,7 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="groupinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupinterfacefullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
+| <a id="groupinterfacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
 | <a id="groupinterfaceid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupinterfacename"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="groupinterfaceuserpermissions"></a>`userPermissions` | [`GroupPermissions`](#grouppermissions) | Permissions for the current user on the group. |

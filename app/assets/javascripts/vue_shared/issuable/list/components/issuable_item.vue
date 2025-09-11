@@ -498,7 +498,7 @@ export default {
         <slot v-if="hasSlotContents('title-icons')" name="title-icons"></slot>
         <span
           v-if="taskStatus"
-          class="task-status gl-ml-2 gl-hidden gl-text-sm sm:!gl-inline-block"
+          class="task-status gl-ml-2 gl-hidden gl-text-sm @sm/panel:!gl-inline-block"
           data-testid="task-status"
         >
           {{ taskStatus }}

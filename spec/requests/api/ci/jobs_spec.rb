@@ -158,7 +158,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context 'authentication via primary', :skip_before_request do
         it 'targets the primary' do
           expect(Gitlab::Database::LoadBalancing::SessionMap)
-            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+            .to receive(:with_sessions).and_call_original
 
           expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
             expect(session).to receive(:use_primary).and_call_original
@@ -350,7 +350,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context 'authentication via primary', :skip_before_request do
         it 'targets the primary' do
           expect(Gitlab::Database::LoadBalancing::SessionMap)
-            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+            .to receive(:with_sessions).and_call_original
 
           expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
             expect(session).to receive(:use_primary).and_call_original

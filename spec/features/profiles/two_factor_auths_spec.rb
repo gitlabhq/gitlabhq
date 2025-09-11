@@ -139,6 +139,22 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
             )
           end
         end
+
+        context 'when only email-based OTP is enabled' do
+          let(:user) { create(:user, email_otp_required_after: 1.day.ago) }
+
+          it 'does not accept it as 2FA' do
+            visit root_path
+
+            # to confirm that the user has enabled email_otp
+            expect(user.user_detail.email_otp_required_after).not_to be_nil
+
+            expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
+            expect(page).to have_content(
+              'The global settings require you to enable Two-Factor Authentication for your account'
+            )
+          end
+        end
       end
     end
 
@@ -221,6 +237,56 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
       end
     end
 
+    context 'when group requires 2FA', :js do
+      let(:group_require_2fa) { create(:group, require_two_factor_authentication: true) }
+      let(:group_name) { group_require_2fa.name }
+
+      before do
+        group_require_2fa.add_developer(user)
+
+        sign_in(user)
+      end
+
+      context 'when user has no OTP enabled' do
+        let(:user) { create(:user) }
+
+        it 'does not allow user to access the group without setting up MFA' do
+          visit profile_two_factor_auth_path
+
+          expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+        end
+      end
+
+      context 'when user only has email-based otp' do
+        let(:user) { create(:user, email_otp_required_after: 1.day.ago) }
+
+        context 'when user only belongs to the group which enforces MFA' do
+          it 'does not allow user to access the group without setting up a non-email-based OTP' do
+            visit profile_two_factor_auth_path
+
+            expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+          end
+        end
+      end
+
+      context 'when user has both app-based and email-based 2FA' do
+        let(:user) { create(:user, :two_factor_via_otp, email_otp_required_after: 1.day.ago) }
+
+        it 'restricts access when app-based TOTP is removed' do
+          # Can access group resources with both OTP methods enabled
+          visit group_path(group_require_2fa)
+          expect(page).to have_current_path(group_path(group_require_2fa))
+
+          # Remove app-based TOTP
+          visit profile_two_factor_auth_path
+          find_button(_('Delete one-time password authenticator')).click
+          modal_submit(user.password)
+
+          expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+        end
+      end
+    end
+
     def modal_submit(password)
       within_modal do
         fill_in 'current_password', with: password
@@ -232,6 +298,14 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
       within_modal do
         find_by_testid('2fa-action-primary').click
       end
+    end
+
+    def expect_user_cannot_visit_group_path_without_enabling_2fa(group_name)
+      visit group_path(group_name)
+      expect(page).to have_current_path(profile_two_factor_auth_path, ignore_query: true)
+      expect(page).to have_content(
+        "The group settings for #{group_name} require you to enable Two-Factor Authentication for your account"
+      )
     end
   end
 end

@@ -8,9 +8,9 @@ RSpec.describe Types::Namespaces::GroupInterface, feature_category: :groups_and_
   end
 
   it 'has the expected fields' do
-    expected_fields = %w[id name full_name web_url avatar_url user_permissions]
+    expected_fields = %w[id name full_name full_path web_url avatar_url user_permissions]
 
-    expect(described_class).to include_graphql_fields(*expected_fields)
+    expect(described_class.own_fields.keys.map(&:underscore)).to match_array(expected_fields)
   end
 
   describe ".resolve_type" do

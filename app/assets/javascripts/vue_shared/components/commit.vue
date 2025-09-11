@@ -192,7 +192,7 @@ export default {
         :img-alt="userImageAltDescription"
         :tooltip-text="author.username"
         :img-size="16"
-        class="avatar-image-container text-decoration-none"
+        class="gl-no-underline"
         img-css-classes="gl-mr-3"
       />
     </div>

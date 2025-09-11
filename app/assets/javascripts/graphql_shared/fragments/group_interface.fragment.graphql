@@ -1,0 +1,14 @@
+fragment GroupInterface on GroupInterface {
+  id
+  fullName
+  fullPath
+  name
+  webUrl
+  avatarUrl
+  userPermissions {
+    archiveGroup
+    canLeave
+    removeGroup
+    viewEditPage
+  }
+}

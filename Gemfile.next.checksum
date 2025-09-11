@@ -252,7 +252,7 @@
 {"name":"google-apis-cloudresourcemanager_v1","version":"0.31.0","platform":"ruby","checksum":"f0a472a228c0b9b592741380ce79ead2458ea0066a4b5a78635818b9b62efbbf"},
 {"name":"google-apis-compute_v1","version":"0.129.0","platform":"ruby","checksum":"b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3"},
 {"name":"google-apis-container_v1","version":"0.100.0","platform":"ruby","checksum":"5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853"},
-{"name":"google-apis-container_v1beta1","version":"0.89.0","platform":"ruby","checksum":"459acd4ba57e2e7789d0564531134a39b8cab08bbbc55b4a376379eb9d89908c"},
+{"name":"google-apis-container_v1beta1","version":"0.90.0","platform":"ruby","checksum":"9d027300e780000cdb2cdc982ae45b79818fd3e236531f81f13dcfb3f12f6b49"},
 {"name":"google-apis-core","version":"0.18.0","platform":"ruby","checksum":"96b057816feeeab448139ed5b5c78eab7fc2a9d8958f0fbc8217dedffad054ee"},
 {"name":"google-apis-dns_v1","version":"0.36.0","platform":"ruby","checksum":"5dd273d78ab37d03d1bc07837186f79ad0399e9f2b8b1ec2629ed682ea347d47"},
 {"name":"google-apis-iam_v1","version":"0.73.0","platform":"ruby","checksum":"6f181165f161dd4d53e98c412d345d262114b2e26ef790d57a754f1fcf436a49"},

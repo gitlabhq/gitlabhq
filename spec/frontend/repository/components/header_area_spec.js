@@ -120,22 +120,22 @@ describe('HeaderArea', () => {
       // Reset stores to default state for each test
       const viewportStore = useViewport();
       // For composition API stores, we need to directly modify the internal refs
-      viewportStore.updateIsNarrow(false);
+      viewportStore.updateIsCompact(false);
     });
 
     describe('when repositoryFileTreeBrowser is enabled', () => {
       it.each`
-        fileTreeVisible | isNarrowScreen | isProjectOverview | expectedToggleVisible
-        ${false}        | ${false}       | ${false}          | ${true}
-        ${true}         | ${false}       | ${false}          | ${false}
-        ${false}        | ${true}        | ${false}          | ${false}
-        ${false}        | ${false}       | ${true}           | ${false}
+        fileTreeVisible | isCompactViewport | isProjectOverview | expectedToggleVisible
+        ${false}        | ${false}          | ${false}          | ${true}
+        ${true}         | ${false}          | ${false}          | ${false}
+        ${false}        | ${true}           | ${false}          | ${false}
+        ${false}        | ${false}          | ${true}           | ${false}
       `(
         'toggles file tree visibility',
-        ({ fileTreeVisible, isNarrowScreen, isProjectOverview, expectedToggleVisible }) => {
+        ({ fileTreeVisible, isCompactViewport, isProjectOverview, expectedToggleVisible }) => {
           const viewportStore = useViewport();
           fileTreeBrowserStore.setFileTreeVisibility(fileTreeVisible);
-          viewportStore.updateIsNarrow(isNarrowScreen);
+          viewportStore.updateIsCompact(isCompactViewport);
 
           const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
           wrapper = createComponent({
@@ -224,7 +224,7 @@ describe('HeaderArea', () => {
     it('does not render the toggle', () => {
       const viewportStore = useViewport();
       fileTreeBrowserStore.setFileTreeVisibility(true);
-      viewportStore.updateIsNarrow(false);
+      viewportStore.updateIsCompact(true);
 
       wrapper = createComponent({
         provided: {

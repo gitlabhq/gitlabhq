@@ -46,7 +46,7 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshFromReplicaWorker, feature_ca
 
     context 'with load balancing enabled' do
       it 'reads from the replica database' do
-        expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+        expect(Gitlab::Database::LoadBalancing::SessionMap).to receive(:with_sessions).with(Gitlab::Database::LoadBalancing.base_models).and_call_original
 
         expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
           expect(inst).to receive(:use_replicas_for_read_queries).and_call_original

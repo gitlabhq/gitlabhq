@@ -115,10 +115,10 @@ module API
         end
 
         def authenticate_job_via_dependent_job!
-          # Use primary for both main and ci database as authenticating in the scope of runners will load
+          # Use primary for both main and non-main databases as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
           ::Gitlab::Database::LoadBalancing::SessionMap
-            .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
+            .with_sessions.use_primary { authenticate! }
 
           forbidden! unless current_job
           forbidden! unless can?(current_user, :read_build, current_job)

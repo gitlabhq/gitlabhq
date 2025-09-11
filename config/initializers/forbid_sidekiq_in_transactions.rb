@@ -27,7 +27,9 @@ module Sidekiq
     end
 
     def self.inside_transaction?
-      ::ApplicationRecord.inside_transaction? || ::Ci::ApplicationRecord.inside_transaction?
+      ::ApplicationRecord.inside_transaction? ||
+        Gitlab::Database.database_base_models.values
+          .reject { |c| c == ActiveRecord::Base }.any?(&:inside_transaction?)
     end
 
     def self.raise_exception_for_being_inside_a_transaction?

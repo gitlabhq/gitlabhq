@@ -201,9 +201,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       let(:rspec_variables) { command.pipeline_seed.stages[0].statuses[0].variables.to_hash }
 
       it 'sends root variable with overridden by rules' do
-        # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
-        stub_feature_flags(stop_writing_builds_metadata: false)
-
         run_chain
 
         expect(rspec_variables['VAR1']).to eq('overridden var 1')
@@ -226,9 +223,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Seed do
       let(:rspec_variables) { command.pipeline_seed.stages[0].statuses[0].variables.to_hash }
 
       it 'correctly parses rule variables' do
-        # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
-        stub_feature_flags(stop_writing_builds_metadata: false)
-
         run_chain
 
         expect(rspec_variables['SYMBOL']).to eq("symbol")

@@ -30,6 +30,8 @@ module Types
         description: 'ID of the group.'
       field :full_name, GraphQL::Types::String, null: true,
         description: 'Full name of the group.'
+      field :full_path, GraphQL::Types::ID, null: false,
+        description: 'Full path of the group.'
       field :name, GraphQL::Types::String, null: true,
         description: 'Name of the group.'
       field :web_url,

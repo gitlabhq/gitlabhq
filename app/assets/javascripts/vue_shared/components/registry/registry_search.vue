@@ -127,7 +127,7 @@ export default {
 
 <template>
   <div
-    class="row-content-block gl-border-t gl-border-b !-gl-mt-3 gl-flex gl-flex-col gl-gap-3 gl-border-y-0 md:gl-flex-row"
+    class="row-content-block gl-border-t gl-border-b !-gl-mt-3 gl-flex gl-flex-col gl-gap-3 gl-border-y-0 @md/panel:gl-flex-row"
   >
     <gl-filtered-search
       v-model="internalFilter"

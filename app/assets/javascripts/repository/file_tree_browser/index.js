@@ -23,7 +23,7 @@ export default async function initFileTreeBrowser(router, options, apolloProvide
         const isProjectOverview = this.$route?.name === 'projectRoot';
         return (
           !isProjectOverview &&
-          !useViewport().isNarrowScreen &&
+          !useViewport().isCompactViewport &&
           useFileTreeBrowserVisibility().fileTreeBrowserVisible
         );
       },

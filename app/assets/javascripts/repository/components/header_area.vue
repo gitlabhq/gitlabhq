@@ -139,7 +139,7 @@ export default {
   },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
-    ...mapState(useViewport, ['isNarrowScreen']),
+    ...mapState(useViewport, ['isCompactViewport']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -213,7 +213,7 @@ export default {
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
         !this.fileTreeBrowserVisible &&
-        !this.isNarrowScreen
+        !this.isCompactViewport
       );
     },
     toggleFileBrowserShortcutKey() {
@@ -413,7 +413,7 @@ export default {
         <!-- web ide -->
         <web-ide-link
           :class="[
-            'gl-w-full sm:!gl-ml-0',
+            'gl-w-full @sm/panel:!gl-ml-0',
             glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
           data-testid="js-tree-web-ide-link"

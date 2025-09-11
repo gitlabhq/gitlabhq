@@ -72,7 +72,7 @@ export default {
 <template>
   <section :id="id" class="vue-settings-block settings no-animate" :class="expandedClass">
     <div class="gl-flex gl-items-start gl-justify-between gl-gap-x-3">
-      <div class="-gl-mr-3 gl-shrink-0 gl-px-2 gl-py-0 sm:gl-mr-0 sm:gl-p-2">
+      <div class="-gl-mr-3 gl-shrink-0 gl-px-2 gl-py-0 @sm/panel:gl-mr-0 @sm/panel:gl-p-2">
         <gl-button
           category="tertiary"
           size="small"
@@ -105,7 +105,7 @@ export default {
       </div>
     </div>
     <gl-collapse :id="collapseId" :visible="localExpanded" data-testid="settings-block-content">
-      <div class="gl-pl-7 gl-pt-5 sm:gl-pl-8">
+      <div class="gl-pl-7 gl-pt-5 @sm/panel:gl-pl-8">
         <slot></slot>
       </div>
     </gl-collapse>

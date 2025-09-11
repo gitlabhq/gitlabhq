@@ -98,7 +98,13 @@ class Projects::TagsController < Projects::ApplicationController
     flash_type = result[:status] == :error ? :alert : :notice
     flash[flash_type] = result[:message]
 
-    redirect_to project_tags_path(@project), status: :see_other
+    # When deleting from an individual tag's show page, redirect to index to avoid 404
+    # otherwise, redirect to pre-sorted list or the default tags list
+    if request.referer&.include?(project_tag_path(@project, params[:id]))
+      redirect_to project_tags_path(@project), status: :see_other
+    else
+      redirect_back_or_default(default: project_tags_path(@project), options: { status: :see_other })
+    end
   end
 
   private

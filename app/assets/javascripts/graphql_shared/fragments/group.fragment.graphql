@@ -1,26 +1,17 @@
+#import "~/graphql_shared/fragments/group_interface.fragment.graphql"
+
 fragment Group on Group {
-  id
-  name
-  fullPath
-  fullName
+  ...GroupInterface
   parent {
     id
   }
-  webUrl
   descriptionHtml
-  avatarUrl
   descendantGroupsCount
   projectsCount
   groupMembersCount
   visibility
   createdAt
   updatedAt
-  userPermissions {
-    archiveGroup
-    canLeave
-    removeGroup
-    viewEditPage
-  }
   maxAccessLevel {
     integerValue
   }

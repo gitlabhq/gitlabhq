@@ -33,7 +33,7 @@ export default {
       :lines="rightLinesCount"
       :width="100"
       :equal-width-lines="true"
-      class="gl-hidden sm:gl-block"
+      class="gl-hidden @sm/panel:gl-block"
       data-testid="loading-state-list-item-right-skeleton"
     />
   </div>

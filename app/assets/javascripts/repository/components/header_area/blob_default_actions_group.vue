@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group bordered class="sm:gl-hidden">
+  <gl-disclosure-dropdown-group bordered class="@sm/panel:gl-hidden">
     <gl-disclosure-dropdown-item
       v-if="showCopyButton"
       data-testid="copy-item"

@@ -56,9 +56,6 @@ RSpec.describe Ci::CreatePipelineService,
         let(:tier) { 'testing' }
 
         it 'creates the environment with the expected tier' do
-          # TODO: Remove this stub when resolving https://gitlab.com/gitlab-org/gitlab/-/issues/567952
-          stub_feature_flags(stop_writing_builds_metadata: false)
-
           is_expected.to be_created_successfully
 
           expect(Environment.find_by_name("review/master")).to be_testing

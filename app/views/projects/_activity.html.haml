@@ -1,7 +1,7 @@
 .nav-block.activities.gl-static
   = render 'shared/event_filter'
   .controls.gl-flex
-    = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: '!gl-hidden sm:!gl-inline-flex has-tooltip', icon: 'rss'
+    = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: '!gl-hidden @sm/panel:!gl-inline-flex has-tooltip', icon: 'rss'
 
 %ul.content_list.gl-list-none.gl-pl-0.project-activity{ :"data-href" => activity_project_path(@project) }
 .loading

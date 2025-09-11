@@ -19,7 +19,7 @@ describe('LoadingStateListItem', () => {
     });
 
     it('adds CSS classes to the right skeleton', () => {
-      expect(findRightSkeleton().html()).toContain('gl-hidden sm:gl-block');
+      expect(findRightSkeleton().html()).toContain('gl-hidden @sm/panel:gl-block');
     });
   });
 
