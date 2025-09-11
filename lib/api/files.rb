@@ -113,7 +113,7 @@ module API
 
       params :simple_file_params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :branch, type: String,
           desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.', allow_blank: false,
           documentation: { example: 'main' }
@@ -145,7 +145,7 @@ module API
       desc 'Get blame file metadata from repository'
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
@@ -158,7 +158,7 @@ module API
       desc 'Get blame file from the repository'
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
         optional :range, type: Hash do
@@ -184,7 +184,7 @@ module API
       end
       params do
         requires :file_path, type: String, file_path: { allow_initial_path_separator: true },
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         optional :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
         optional :lfs, type: Boolean,
@@ -213,7 +213,7 @@ module API
       desc 'Get file metadata from repository'
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end
@@ -226,7 +226,7 @@ module API
       desc 'Get a file from the repository'
       params do
         requires :file_path, type: String, file_path: true,
-          desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
+          desc: 'The URL-encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         requires :ref, type: String,
           desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
       end

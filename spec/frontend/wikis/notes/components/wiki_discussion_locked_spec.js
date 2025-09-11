@@ -1,5 +1,4 @@
-import { GlLink, GlIcon } from '@gitlab/ui';
-import { nextTick } from 'vue';
+import { GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiDiscussionLocked from '~/wikis/wiki_notes/components/wiki_discussion_locked.vue';
 
@@ -11,8 +10,6 @@ describe('WikiDiscussionLocked', () => {
       provide: {
         isContainerArchived: false,
         containerType: 'Project',
-        lockedWikiDocsPath: 'exampledocsurl1.com',
-        archivedProjectDocsPath: 'exampledocsurl2.com',
         ...provideData,
       },
     });
@@ -20,13 +17,6 @@ describe('WikiDiscussionLocked', () => {
   describe('renders correctly', () => {
     const shouldRenderLockIcon = () => {
       expect(wrapper.findComponent(GlIcon).props('name')).toBe('lock');
-    };
-
-    const shouldRenderLinkIconCorrectly = async (docsPath) => {
-      const link = wrapper.findComponent(GlLink);
-      await nextTick();
-      expect(await link.text()).toBe('Learn more');
-      expect(link.element.getAttribute('href')).toBe(docsPath);
     };
 
     describe('when isContainerArchived is false', () => {
@@ -48,10 +38,6 @@ describe('WikiDiscussionLocked', () => {
         expect(await wrapper.text()).not.toContain(
           'This project is archived and cannot be commented on.',
         );
-      });
-
-      it('should render learn more in  gl-link component correctly', async () => {
-        await shouldRenderLinkIconCorrectly('exampledocsurl1.com');
       });
     });
 
@@ -79,12 +65,8 @@ describe('WikiDiscussionLocked', () => {
         wrapper = createWrapper({ isContainerArchived: true, containerType: 'group' });
 
         expect(await wrapper.text()).toContain(
-          'This group has been scheduled for deletion and cannot be commented on.',
+          'This group is archived and cannot be commented on.',
         );
-      });
-
-      it('should render learn more in gl-link component correctly', async () => {
-        await shouldRenderLinkIconCorrectly('exampledocsurl2.com');
       });
     });
   });

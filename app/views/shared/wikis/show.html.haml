@@ -49,7 +49,7 @@
           sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
           markdown_preview_path: preview_markdown_path(@wiki.container),
           noteable_type: @noteable_type,
-          is_container_archived: @wiki.container.is_a?(Project) ? @wiki.container.archived : false,
+          is_container_archived: @wiki.container.self_or_ancestors_archived?.to_s,
           notes_filters: UserPreference.notes_filters.to_json,
           report_abuse_path: add_category_abuse_reports_path,
           container_name: @wiki.container.name,

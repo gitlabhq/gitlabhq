@@ -4878,6 +4878,8 @@ In this example:
 - You can use the `$` character for both variables and paths. For example, if the
   `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
   as being part of a path.
+- Do not use `./`, double slashes (`//`), or any other kind of relative path.
+  Paths are matched with exact string comparison, they are not evaluated like in a shell.
 
 **Related topics**:
 

@@ -7,11 +7,20 @@ title: Accessibility feature tests
 
 ## When to add accessibility tests
 
-When adding a new view to the application, make sure to include the accessibility check in your feature test.
-We aim to have full coverage for all the views.
+Feature tests with axe-core-gem provide the most comprehensive accessibility testing approach, covering complete user journeys across all UI technologies (HAML, Vue, and JavaScript).
 
-One of the advantages of testing in feature tests is that we can check different states, not only
-single components in isolation.
+Prioritize accessibility tests for:
+
+- **Mission-critical user journeys:** core workflows that users depend on.
+- **High-traffic pages:** areas with significant user interaction.
+- **New features:** Ensure accessibility from the start.
+- **Complex UI interactions:** Multi-step processes, modals, dynamic content.
+
+### Strategic approach
+
+Rather than testing every possible page combination, focus on deep coverage of key user scenarios. This approach provides better value than broad but shallow coverage across all views.
+
+One of the advantages of testing in feature tests is that we can check different states and complete user flows, not only single components in isolation.
 
 You can find some examples on how to approach accessibility checks below.
 

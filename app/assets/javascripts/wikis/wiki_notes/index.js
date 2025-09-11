@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import createApolloClient from '~/lib/graphql';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
@@ -67,13 +67,9 @@ export default () => {
       noteableType,
       queryVariables,
       noteCount: 5,
-      lockedWikiDocsPath: '',
       markdownDocsPath: helpPagePath('user/markdown.md'),
-      archivedProjectDocsPath: helpPagePath('user/project/working_with_projects.md', {
-        anchor: 'archive-a-project',
-      }),
       notesFilters: JSON.parse(notesFilters || {}),
-      isContainerArchived: isContainerArchived === undefined ? false : isContainerArchived !== null,
+      isContainerArchived: parseBoolean(isContainerArchived),
       containerName,
       pageAuthorEmail,
     },

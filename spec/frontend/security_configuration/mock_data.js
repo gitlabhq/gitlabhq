@@ -180,6 +180,7 @@ export const provideMock = {
   autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',
   autoDevopsPath: '/autoDevopsPath',
   projectFullPath: 'namespace/project',
+  groupFullPath: 'namespace',
   vulnerabilityTrainingDocsPath: 'user/application_security/vulnerabilities/_index',
   licenseConfigurationSource: 'SBOM',
 };

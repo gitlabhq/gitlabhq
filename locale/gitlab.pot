@@ -4819,6 +4819,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|GitLab Duo Self-Hosted"
 msgstr ""
 
+msgid "AdminSelfHostedModels|GitLab managed models"
+msgstr ""
+
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
 msgstr ""
 
@@ -28152,10 +28155,10 @@ msgstr ""
 msgid "FeaturedUpdate|Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate."
 msgstr ""
 
-msgid "FeaturedUpdate|Featured updates"
+msgid "FeaturedUpdate|Explore GitLab Duo Core"
 msgstr ""
 
-msgid "FeaturedUpdate|GitLab Premium and Ultimate with Duo"
+msgid "FeaturedUpdate|Featured updates"
 msgstr ""
 
 msgid "FeaturedUpdate|Granular access controls for GitLab Duo Core"
@@ -57659,6 +57662,12 @@ msgstr ""
 msgid "SecurityAttributes|Description is required"
 msgstr ""
 
+msgid "SecurityAttributes|Edit project attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Edit project security attributes"
+msgstr ""
+
 msgid "SecurityAttributes|Edit security attribute"
 msgstr ""
 
@@ -57687,6 +57696,9 @@ msgid "SecurityAttributes|Security attributes for %{projectName}"
 msgstr ""
 
 msgid "SecurityAttributes|Security attributes help classify and organize your projects. Attributes are managed at the group level. You can add or remove attributes to this project as needed."
+msgstr ""
+
+msgid "SecurityAttributes|Select security attributes"
 msgstr ""
 
 msgid "SecurityAttributes|Selection type"
@@ -59457,6 +59469,9 @@ msgstr ""
 msgid "SecurityOrchestration|You can't unprotect this branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
 msgstr ""
 
+msgid "SecurityOrchestration|You do not have the permission required to edit policies"
+msgstr ""
+
 msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr ""
 
@@ -59473,6 +59488,9 @@ msgid "SecurityOrchestration|You must select one or more projects to be excluded
 msgstr ""
 
 msgid "SecurityOrchestration|You must select one or more projects to which this policy should apply."
+msgstr ""
+
+msgid "SecurityOrchestration|You need the Developer, Maintainer, or Owner role in the project or group. You also need one one of these roles in the security policy project."
 msgstr ""
 
 msgid "SecurityOrchestration|You've reached the maximum limit of %{max} %{type} policies allowed. Policies are disabled when added."
@@ -66054,9 +66072,6 @@ msgstr ""
 msgid "This group does not have any group runners yet."
 msgstr ""
 
-msgid "This group has been scheduled for deletion and cannot be commented on."
-msgstr ""
-
 msgid "This group has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this group, including all its resources."
 msgstr ""
 
@@ -66064,6 +66079,9 @@ msgid "This group has no active access tokens."
 msgstr ""
 
 msgid "This group has no inactive access tokens."
+msgstr ""
+
+msgid "This group is archived and cannot be commented on."
 msgstr ""
 
 msgid "This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}."

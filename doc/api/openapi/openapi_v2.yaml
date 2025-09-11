@@ -19286,7 +19286,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19315,7 +19315,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19357,7 +19357,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19395,7 +19395,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19424,7 +19424,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19455,7 +19455,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19485,7 +19485,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -19513,7 +19513,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: file_path
-        description: The url encoded path to the file.
+        description: The URL-encoded path to the file.
         type: string
         required: true
         example: lib%2Fclass%2Erb
@@ -33980,7 +33980,7 @@ paths:
         required: true
       - in: path
         name: file_path
-        description: The url encoded path to the file, e.g. lib%2Fclass%2Erb
+        description: The URL-encoded path to the file, like lib%2Fclass%2Erb
         type: string
         required: true
       - in: path
@@ -37889,7 +37889,7 @@ paths:
         example: gitlab-org/gitlab
       - in: path
         name: submodule
-        description: Url encoded full path to submodule.
+        description: URL-encoded full path to submodule.
         type: string
         required: true
         example: gitlab-org/gitlab-shell
@@ -44986,7 +44986,7 @@ paths:
       parameters:
       - in: path
         name: file_path
-        description: The url encoded path to the file, e.g. lib%2Fclass%2Erb
+        description: The URL-encoded path to the file, like lib%2Fclass%2Erb
         type: string
         required: true
       - in: path

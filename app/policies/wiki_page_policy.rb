@@ -3,8 +3,6 @@
 class WikiPagePolicy < BasePolicy
   delegate { @subject.container }
 
-  overrides :read_note, :create_note
-
   condition(:planner_or_reporter_access) do
     can?(:reporter_access) || can?(:planner_access)
   end
@@ -14,6 +12,11 @@ class WikiPagePolicy < BasePolicy
     enable :read_note
     enable :create_note
     enable :update_subscription
+  end
+
+  rule { ~can?(:read_wiki) }.policy do
+    prevent :read_note
+    prevent :create_note
   end
 
   rule { can?(:read_wiki) & planner_or_reporter_access }.policy do

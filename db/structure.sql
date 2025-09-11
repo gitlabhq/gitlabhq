@@ -12625,6 +12625,12 @@ CREATE SEQUENCE catalog_verified_namespaces_id_seq
 
 ALTER SEQUENCE catalog_verified_namespaces_id_seq OWNED BY catalog_verified_namespaces.id;
 
+CREATE TABLE cells_outstanding_leases (
+    uuid uuid NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
 CREATE TABLE chat_names (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -31976,6 +31982,9 @@ ALTER TABLE ONLY catalog_resources
 
 ALTER TABLE ONLY catalog_verified_namespaces
     ADD CONSTRAINT catalog_verified_namespaces_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY cells_outstanding_leases
+    ADD CONSTRAINT cells_outstanding_leases_pkey PRIMARY KEY (uuid);
 
 ALTER TABLE ONLY chat_names
     ADD CONSTRAINT chat_names_pkey PRIMARY KEY (id);

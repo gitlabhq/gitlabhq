@@ -45361,6 +45361,7 @@ Represents a lifecycle for work items.
 | <a id="workitemlifecycledefaultopenstatus"></a>`defaultOpenStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. Default open status of the lifecycle. |
 | <a id="workitemlifecycleid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the lifecycle. |
 | <a id="workitemlifecyclename"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the lifecycle. |
+| <a id="workitemlifecyclestatuscounts"></a>`statusCounts` {{< icon name="warning-solid" >}} | [`[WorkItemStatusCount!]`](#workitemstatuscount) | **Introduced** in GitLab 18.4. **Status**: Experiment. Work item counts by status for the lifecycle. |
 | <a id="workitemlifecyclestatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`[WorkItemStatus!]`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. All available statuses of the lifecycle. |
 | <a id="workitemlifecycleworkitemtypes"></a>`workItemTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 18.1. **Status**: Experiment. Work item types associated to the lifecycle. |
 
@@ -45450,6 +45451,17 @@ Represents status.
 | <a id="workitemstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.11. **Status**: Experiment. ID of the status. |
 | <a id="workitemstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Name of the status. |
 | <a id="workitemstatusposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.11. **Status**: Experiment. Position of the status within its category. |
+
+### `WorkItemStatusCount`
+
+Represents a status with its work item count.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatuscountcount"></a>`count` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Work item count for the status. Shows "999+" when count exceeds 999. |
+| <a id="workitemstatuscountstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus!`](#workitemstatus) | **Introduced** in GitLab 18.4. **Status**: Experiment. Status of the work items. |
 
 ### `WorkItemTextFieldValue`
 

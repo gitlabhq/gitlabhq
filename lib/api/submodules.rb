@@ -37,7 +37,7 @@ module API
       params do
         requires :submodule,
           type: String,
-          desc: 'Url encoded full path to submodule.',
+          desc: 'URL-encoded full path to submodule.',
           documentation: { example: 'gitlab-org/gitlab-shell' }
         requires :commit_sha,
           type: String,

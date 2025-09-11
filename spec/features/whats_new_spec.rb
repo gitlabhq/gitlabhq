@@ -98,11 +98,11 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
         click_on "What's new"
       end
 
-      expect(page).to have_css("[data-testid='granular-controls-feature-card']")
+      expect(page).to have_css("[data-testid='whats-new-featured-card-first']")
 
       find_by_testid('card-carousel-next-button').click
 
-      expect(page).to have_css("[data-testid='duo-core-feature-card']")
+      expect(page).to have_css("[data-testid='whats-new-featured-card-second']")
     end
   end
 
