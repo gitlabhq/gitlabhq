@@ -87,6 +87,18 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
         expect(commit.authored_date).to eq(Time.at(seconds, in: '-08:00'))
         expect(commit.committed_date).to eq(Time.at(seconds, in: '+08:00'))
       end
+
+      context 'when timezone is incorrect' do
+        it 'falls back to UTC' do
+          gitaly_commit.author.date.seconds = seconds
+          gitaly_commit.author.timezone = '-2500'
+          gitaly_commit.committer.date.seconds = seconds
+          gitaly_commit.committer.timezone = '+2500'
+
+          expect(commit.authored_date).to eq(Time.at(seconds).utc)
+          expect(commit.committed_date).to eq(Time.at(seconds).utc)
+        end
+      end
     end
 
     context 'body_size != body.size' do

@@ -32,7 +32,21 @@ module ConcurrencyLimit
         next unless queue_size > 0
         next if limit < 0 # do not re-queue jobs if circuit-broken
 
-        self.class.perform_async(worker.name)
+        schedule_worker(worker)
+      end
+    end
+
+    def schedule_worker(worker)
+      _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(worker.get_sidekiq_options['store'])
+      Sidekiq::Client.via(pool) do
+        queue = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker)
+        # Schedules ResumeWorker job to the respective queue of the `worker` we're resuming.
+        # This is because `worker_limit` requires reading environment variables unique each sidekiq shard,
+        # whereas ResumeWorker (cronjob) always runs in the default queue.
+        #
+        # rubocop: disable Cop/SidekiqApiUsage -- valid usage of scheduling to other queue
+        Sidekiq::Client.push('class' => self.class, 'args' => [worker.name], 'queue' => queue)
+        # rubocop: enable Cop/SidekiqApiUsage
       end
     end
 

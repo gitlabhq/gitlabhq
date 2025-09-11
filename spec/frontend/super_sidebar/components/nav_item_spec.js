@@ -2,6 +2,7 @@ import { nextTick } from 'vue';
 import { GlBadge, GlButton, GlAvatar } from '@gitlab/ui';
 import { RouterLinkStub } from '@vue/test-utils';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import NavItemRouterLink from '~/super_sidebar/components/nav_item_router_link.vue';
 import NavItemLink from '~/super_sidebar/components/nav_item_link.vue';
@@ -22,13 +23,20 @@ describe('NavItem component', () => {
   const findNavItemRouterLink = () => extendedWrapper(wrapper.findComponent(NavItemRouterLink));
   const findNavItemLink = () => extendedWrapper(wrapper.findComponent(NavItemLink));
 
-  const createWrapper = ({ item, props = {}, provide = {}, routerLinkSlotProps = {} }) => {
+  const createWrapper = ({
+    item,
+    props = {},
+    provide = {},
+    routerLinkSlotProps = {},
+    directives = {},
+  }) => {
     wrapper = mountExtended(NavItem, {
       propsData: {
         item,
         ...props,
       },
       provide,
+      directives,
       stubs: {
         RouterLink: {
           ...RouterLinkStub,
@@ -378,6 +386,26 @@ describe('NavItem component', () => {
         item: { is_active: false },
       });
       expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('title tooltip', () => {
+    const directives = {
+      GlTooltip: createMockDirective('gl-tooltip'),
+    };
+
+    it('does not show when sidebar is fully visible', () => {
+      createWrapper({ item: { title: 'Foo' }, directives });
+      const tooltip = getBinding(wrapper.element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe('');
+    });
+
+    it('shows when sidebar is in icon-only mode', () => {
+      createWrapper({ item: { title: 'Foo' }, provide: { isIconOnly: true }, directives });
+      const tooltip = getBinding(wrapper.element, 'gl-tooltip');
+
+      expect(tooltip.value).toBe('Foo');
     });
   });
 });

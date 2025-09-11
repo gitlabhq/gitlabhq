@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import {
   CLICK_MENU_ITEM_ACTION,
@@ -26,7 +26,6 @@ export default {
     GlBadge,
     NavItemLink,
     NavItemRouterLink,
-    GlTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -230,7 +229,7 @@ export default {
 
 <template>
   <li
-    v-gl-tooltip.right.viewport="isIconOnly && !isFlyout && item.title"
+    v-gl-tooltip.right.viewport="isIconOnly && !isFlyout ? item.title : ''"
     class="show-on-focus-or-hover--context hide-on-focus-or-hover--context transition-opacity-on-hover--context gl-relative"
     data-testid="nav-item"
     @mouseenter="isMouseIn = true"

@@ -51,12 +51,23 @@ const getTrialStatusWidgetData = (sidebarData) => {
 
 const getDuoAgentPlatformWidgetData = (sidebarData) => {
   if (sidebarData.duoAgentWidgetProvide) {
-    const { actionPath, stateProgression } = sidebarData.duoAgentWidgetProvide;
+    const {
+      actionPath,
+      stateProgression,
+      isAuthorized,
+      showRequestAccess,
+      hasRequested,
+      requestCount,
+    } = sidebarData.duoAgentWidgetProvide;
 
     return {
       showDuoAgentPlatformWidget: true,
       actionPath,
       stateProgression,
+      isAuthorized,
+      showRequestAccess,
+      hasRequested,
+      requestCount,
     };
   }
 

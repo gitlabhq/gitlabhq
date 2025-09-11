@@ -2,7 +2,7 @@
 
 module Users
   class CalloutsController < ApplicationController
-    feature_category :navigation
+    feature_category :navigation, [:create]
     urgency :low
 
     def create
@@ -30,3 +30,5 @@ module Users
     end
   end
 end
+
+Users::CalloutsController.prepend_mod

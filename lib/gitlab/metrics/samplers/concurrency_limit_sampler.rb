@@ -54,6 +54,10 @@ module Gitlab
           LEASE_TIMEOUT
         end
 
+        def lease_key
+          "#{self.class.name.underscore}:queues:#{current_queues.join(',')}"
+        end
+
         def report_metrics
           workers.each do |w|
             queue_size = concurrent_limit_service.queue_size(w.name)
@@ -80,7 +84,17 @@ module Gitlab
         end
 
         def workers
-          Gitlab::SidekiqConfig.workers_without_default.map(&:klass)
+          @workers ||= Gitlab::SidekiqConfig
+                         .workers_without_default
+                         .select do |worker|
+                           queue = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker.klass)
+                           current_queues.include?(queue)
+                         end
+                         .map(&:klass)
+        end
+
+        def current_queues
+          Sidekiq.default_configuration.queues
         end
 
         def concurrent_limit_service

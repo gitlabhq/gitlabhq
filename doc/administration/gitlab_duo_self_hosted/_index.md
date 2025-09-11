@@ -196,6 +196,26 @@ For more information, see:
 
 - [Configure GitLab AI vendor models](configure_duo_features.md#configure-the-feature-to-use-a-gitlab-ai-vendor-model)
 
+#### GitLab managed models
+
+Use GitLab managed models to connect to AI models without the need to self-host infrastructure. These models are managed entirely by GitLab.
+
+You can select the default GitLab model to use with an AI-native feature. For the default model, GitLab uses the best model based on availability, quality, and reliability. The model used for a feature can change without notice.
+
+When you select a specific GitLab managed model, all requests for that feature use that model exclusively. If the model becomes unavailable, requests to the AI gateway fail and users cannot use that feature until another model is selected.
+
+{{< alert type="note" >}}
+
+When you configure a feature to use GitLab managed models:
+
+- Calls to those features use the GitLab-hosted AI gateway, not the self-hosted AI gateway.
+- Internet connectivity is required for these features.
+- The configuration is not fully self-hosted or isolated.
+
+{{< /alert >}}
+
+For more information, see [Model selection](../../user/gitlab_duo/model_selection.md#on-gitlab-self-managed).
+
 ### GitLab.com AI gateway with default GitLab external vendor LLMs
 
 If you do not meet the use case criteria for GitLab Duo Self-Hosted, you can use the

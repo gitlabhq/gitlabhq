@@ -964,6 +964,8 @@ project:
 - analyzer_statuses
 - configured_ai_catalog_items
 - security_project_tracked_contexts
+- security_attributes
+- project_to_security_attributes
 - policy_dismissals
 award_emoji:
 - awardable

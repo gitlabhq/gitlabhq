@@ -38,7 +38,21 @@ jest.mock('~/super_sidebar/utils', () => ({
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
 const dapWidgetStubTestId = 'dap-widget';
-const DapWidgetStub = { template: `<div data-testid="${dapWidgetStubTestId}" />` };
+const DapWidgetStub = {
+  template: `<div data-testid="${dapWidgetStubTestId}" />`,
+  inject: {
+    isAuthorized: { default: false },
+    requestCount: { default: 0 },
+    showRequestAccess: { default: false },
+    hasRequested: { default: false },
+    showDuoAgentPlatformWidget: { default: false },
+  },
+  render(h) {
+    return this.showDuoAgentPlatformWidget
+      ? h('div', { attrs: { 'data-testid': dapWidgetStubTestId } })
+      : null;
+  },
+};
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -78,6 +92,10 @@ describe('SuperSidebar component', () => {
         showTrialWidget: false,
         projectStudioEnabled: false,
         showDuoAgentPlatformWidget: false,
+        isAuthorized: false,
+        requestCount: 0,
+        showRequestAccess: false,
+        hasRequested: false,
         ...provide,
       },
       propsData: {
@@ -386,11 +404,81 @@ describe('SuperSidebar component', () => {
 
   describe('when a Duo agent platform widget is active', () => {
     beforeEach(() => {
-      createWrapper({ provide: { showDuoAgentPlatformWidget: true } });
+      createWrapper({
+        provide: {
+          showDuoAgentPlatformWidget: true,
+          isAuthorized: false,
+          showRequestAccess: false,
+          hasRequested: false,
+          requestCount: 0,
+        },
+      });
     });
 
     it('renders Duo agent platform widget', () => {
       expect(findDapWidget().exists()).toBe(true);
+    });
+
+    describe('with admin access', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: true,
+            showRequestAccess: false,
+            hasRequested: false,
+            requestCount: 5,
+          },
+        });
+      });
+
+      it('passes admin status to widget', () => {
+        expect(findDapWidget().vm.isAuthorized).toBe(true);
+      });
+
+      it('passes request count to widget', () => {
+        expect(findDapWidget().vm.requestCount).toBe(5);
+      });
+    });
+
+    describe('with request access functionality', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: false,
+            showRequestAccess: true,
+            hasRequested: false,
+            requestCount: 0,
+          },
+        });
+      });
+
+      it('shows request access option', () => {
+        expect(findDapWidget().vm.showRequestAccess).toBe(true);
+      });
+
+      it('shows request not yet made', () => {
+        expect(findDapWidget().vm.hasRequested).toBe(false);
+      });
+    });
+
+    describe('with request already made', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: false,
+            showRequestAccess: true,
+            hasRequested: true,
+            requestCount: 0,
+          },
+        });
+      });
+
+      it('shows request has been made', () => {
+        expect(findDapWidget().vm.hasRequested).toBe(true);
+      });
     });
   });
 

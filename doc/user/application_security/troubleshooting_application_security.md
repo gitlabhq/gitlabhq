@@ -77,15 +77,11 @@ target branch and the source branch is not the most recent commit on the target 
 
 To fix this issue, rebase or merge to incorporate the changes from the target branch.
 
-![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
-
 ### Target branch security report is out of date
 
 This can happen for many reasons, including failed jobs or new advisories. When the merge request
 shows that a security report is out of date, you must run a new pipeline on the target branch.
 Select **new pipeline** to run a new pipeline.
-
-![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ## Getting warning messages `… report.json: no matching files`
 

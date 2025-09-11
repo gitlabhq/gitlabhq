@@ -14,6 +14,12 @@ title: Troubleshooting Zoekt
 {{< /details >}}
 
 When working with Zoekt, you might encounter the following issues.
+For preliminary debugging:
+
+- [Run a health check](_index.md#run-a-health-check) to understand
+  the status of your Zoekt infrastructure.
+- [Check indexing status](_index.md#check-indexing-status) with the
+  `gitlab-rake gitlab:zoekt:info` Rake task.
 
 ## Namespace is not indexed
 

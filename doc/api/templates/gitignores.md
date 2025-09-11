@@ -20,11 +20,18 @@ Users with the Guest role can't access the `.gitignore` templates. For more info
 
 ## Get all `.gitignore` templates
 
-Get a list of all `.gitignore` templates:
+Get a list of all `.gitignore` templates.
 
 ```plaintext
 GET /templates/gitignores
 ```
+
+If successful, returns [`200 OK`](../rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `key`     | string | Key identifier for the `.gitignore` template. |
+| `name`    | string | Display name of the `.gitignore` template. |
 
 Example request:
 
@@ -121,15 +128,24 @@ Example response:
 
 ## Get a single `.gitignore` template
 
-Get a single `.gitignore` template:
+Get a single `.gitignore` template.
 
 ```plaintext
 GET /templates/gitignores/:key
 ```
 
+Supported attributes:
+
 | Attribute | Type   | Required | Description |
 |-----------|--------|----------|-------------|
-| `key`     | string | yes      | The key of the `.gitignore` template |
+| `key`     | string | Yes      | Key of the `.gitignore` template. |
+
+If successful, returns [`200 OK`](../rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `content` | string | Content of the `.gitignore` template. |
+| `name`    | string | Display name of the `.gitignore` template. |
 
 Example request:
 

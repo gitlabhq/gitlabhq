@@ -1369,7 +1369,7 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 {{< /history >}}
 
-The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
+The [changelog API](../api/repositories.md#add-changelog-data-to-file) enforces the following limits:
 
 - The commit range between `from` and `to` cannot exceed 15000 commits.
 

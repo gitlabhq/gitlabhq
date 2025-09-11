@@ -460,11 +460,15 @@ module Gitlab
       # Gitaly provides a UNIX timestamp in author.date.seconds, and a timezone
       # offset in author.timezone. If the latter isn't present, assume UTC.
       def init_date_from_gitaly(author)
-        if author.timezone.present?
-          Time.strptime("#{author.date.seconds} #{author.timezone}", '%s %z')
-        else
-          Time.at(author.date.seconds).utc
-        end
+        return date_in_utc(author) if author.timezone.blank?
+
+        Time.strptime("#{author.date.seconds} #{author.timezone}", '%s %z')
+      rescue ArgumentError
+        date_in_utc(author)
+      end
+
+      def date_in_utc(author)
+        Time.at(author.date.seconds).utc
       end
 
       def serialize_keys
