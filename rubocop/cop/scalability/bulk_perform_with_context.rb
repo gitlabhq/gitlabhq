@@ -6,19 +6,20 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module Scalability
-      # Checks for usage of bulk_perform_async and bulk_perform_in
-      # without context and suggests using the _with_context variants instead.
+      # Ensures that `bulk_perform_async` or `bulk_perform_in` is only used when
+      # contextual metadata is applied using `bulk_perform_async_with_contexts` or
+      # `bulk_perform_in_with_context`. Adding context helps attach useful logging metadata
+      # (like project or namespace) for better traceability and observability.
       #
       # @example
       #   # bad
-      #   MyWorker.bulk_perform_async(args)
+      #   MyWorker.bulk_perform_async([[1], [2]])
       #
       #   # good
-      #   MyWorker.bulk_perform_async_with_context(
-      #     args,
-      #     context: { project: project }
-      #   )
-
+      #   MyWorker.bulk_perform_async_with_contexts([[1], [2]], { project: project })
+      #
+      #   # good (background migration excluded)
+      #   BackgroundMigrationWorker.bulk_perform_async([[1], [2]])
       class BulkPerformWithContext < RuboCop::Cop::Base
         include RuboCop::MigrationHelpers
         include RuboCop::CodeReuseHelpers

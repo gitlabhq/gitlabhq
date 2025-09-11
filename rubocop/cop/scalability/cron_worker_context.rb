@@ -3,6 +3,33 @@
 module RuboCop
   module Cop
     module Scalability
+      # Ensures that workers scheduled via the `CronjobQueue` include contextual
+      # metadata by either calling `with_context` or using bulk scheduling with context.
+      # Context is used for logging and traceability of cron jobs.
+      #
+      # @example
+      #   # bad
+      #   class MyCronWorker
+      #     include CronjobQueue
+      #
+      #     def perform
+      #       # no context provided
+      #     end
+      #   end
+      #
+      #   # good
+      #   class MyCronWorker
+      #     include CronjobQueue
+      #
+      #     def perform
+      #       with_context(project: project) do
+      #         # work here
+      #       end
+      #     end
+      #   end
+      #
+      #   # good (batch context)
+      #   SomeWorker.bulk_perform_async_with_contexts([[1], [2]], { project: project })
       class CronWorkerContext < RuboCop::Cop::Base
         MSG = <<~MSG
           Manually define an ApplicationContext for cronjob-workers. The context

@@ -79,7 +79,7 @@ a YAML definition in `ee/config/saas_features`.
 Only SaaS features that have a YAML definition file can be used when running the development or testing environments.
 
 ```shell
-❯ bin/saas-feature my_saas_feature
+❯ bin/saas-feature.rb my_saas_feature
 You picked the group 'group::acquisition'
 
 >> URL of the MR introducing the SaaS feature (enter to skip and let Danger provide a suggestion directly in the MR):

@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe AntiAbuse::Reports::LabelLink, feature_category: :insider_threat do
-  subject(:instance) { build(:abuse_report_label_link) }
+  let_it_be(:abuse_report_label) { create(:abuse_report_label) }
+
+  subject(:instance) { build(:abuse_report_label_link, abuse_report_label: abuse_report_label) }
 
   it { is_expected.to be_valid }
 

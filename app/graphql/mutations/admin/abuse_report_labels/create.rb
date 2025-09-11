@@ -23,7 +23,7 @@ module Mutations
         def resolve(args)
           raise_resource_not_available_error! unless current_user.can?(:admin_all_resources)
 
-          label = ::Admin::AbuseReportLabels::CreateService.new(args).execute
+          label = ::Admin::AbuseReportLabels::CreateService.new(current_user, args).execute
 
           {
             label: label.persisted? ? label : nil,

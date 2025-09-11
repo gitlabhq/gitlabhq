@@ -559,6 +559,10 @@
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 16%);
     }
 
+    .super-sidebar hr {
+      border-color: var(--gl-color-alpha-dark-8);
+    }
+
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
       background-color: var(--_shade-1);
     }
@@ -611,6 +615,10 @@
       --super-sidebar-accent-color-badge: hsl(from var(--theme-accent-color) h s 85);
       --super-sidebar-user-bar-notification-dot: hsl(from var(--theme-notification-color) calc(h - 2) s calc(l + 20));
       --super-sidebar-accent-color-bg: hsla(from var(--theme-accent-color) h s l / 32%);
+    }
+
+    .super-sidebar hr {
+      border-color: var(--gl-color-alpha-light-16);
     }
 
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {

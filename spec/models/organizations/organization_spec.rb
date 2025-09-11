@@ -129,6 +129,55 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :org
         end
       end
     end
+
+    describe 'check_organization_reserved_name validation', :aggregate_failures do
+      context 'for an existing record' do
+        let(:existing_namespace) { instance_double(Namespace, full_path: 'o') }
+
+        before do
+          allow(Namespace).to receive(:find_by_full_path).with('o').and_return(existing_namespace)
+        end
+
+        it 'skips reserved name validation' do
+          expect(organization).not_to receive(:check_organization_reserved_name)
+          expect(organization).to be_valid
+        end
+      end
+
+      context 'when creating a new organization' do
+        let(:organization) { build(:organization, name: 'Test Org', path: 'test-org') }
+
+        it 'is valid' do
+          expect(organization).to be_valid
+        end
+
+        context 'when reserved path "o" exists as a namespace' do
+          let(:existing_namespace) { instance_double(Namespace, full_path: 'o') }
+
+          before do
+            allow(Namespace).to receive_message_chain(:filter_by_path, :top_level, :exists?).and_return(true)
+          end
+
+          it 'is invalid and adds error' do
+            expect(organization).not_to be_valid
+            expect(organization.errors[:base])
+              .to include(
+                _('Cannot create organization. The `o` namespace is a reserved path. ' \
+                  'Please rename the group or user before creating an organization.')
+              )
+          end
+
+          context 'when organization is the default organization' do
+            let(:organization) { build(:organization, :default, name: 'Default', path: 'default') }
+
+            it 'skips validation and is valid' do
+              expect(organization).to be_valid
+              expect(organization.errors[:base]).to be_empty
+            end
+          end
+        end
+      end
+    end
   end
 
   describe 'delegations' do

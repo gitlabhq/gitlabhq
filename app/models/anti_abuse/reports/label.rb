@@ -10,9 +10,13 @@ module AntiAbuse
       has_many :label_links, foreign_key: :abuse_report_label_id, inverse_of: :abuse_report_label,
         class_name: 'AntiAbuse::Reports::LabelLink'
       has_many :abuse_reports, through: :label_links
+      belongs_to :organization, class_name: 'Organizations::Organization'
 
       validates :title, uniqueness: true
       validates :description, length: { maximum: 500 }
+      validates :organization_id, presence: true, on: :create, if: -> {
+        Feature.enabled?(:abuse_report_populate_organization, :instance)
+      }
     end
   end
 end

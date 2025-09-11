@@ -4498,6 +4498,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab default model %{defaultModel}"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab default model (%{defaultModel})"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Model"
 msgstr ""
 
@@ -12718,6 +12721,9 @@ msgid "Cannot assign this child type to parent type."
 msgstr ""
 
 msgid "Cannot be merged automatically"
+msgstr ""
+
+msgid "Cannot create organization. The `o` namespace is a reserved path. Please rename the group or user before creating an organization."
 msgstr ""
 
 msgid "Cannot create the abuse report. The reported user was invalid. Please try again or contact support."

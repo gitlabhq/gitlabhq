@@ -10,22 +10,22 @@ module Gitlab
         POST_MIGRATION_MATCHER = %r{db/post_migrate/}
 
         class << self
-          def up(database:, legacy_mode: false)
+          def up(database:)
             within_context_for_database(database) do
-              Runner.new(direction: :up, database: database, migrations: migrations_for_up(database), legacy_mode: legacy_mode)
+              Runner.new(direction: :up, database: database, migrations: migrations_for_up(database))
             end
           end
 
-          def down(database:, legacy_mode: false)
+          def down(database:)
             within_context_for_database(database) do
-              Runner.new(direction: :down, database: database, migrations: migrations_for_down(database), legacy_mode: legacy_mode)
+              Runner.new(direction: :down, database: database, migrations: migrations_for_down(database))
             end
           end
 
-          def batched_background_migrations(for_database:, legacy_mode: false)
+          def batched_background_migrations(for_database:)
             runner = nil
 
-            result_dir = background_migrations_dir(for_database, legacy_mode)
+            result_dir = background_migrations_dir(for_database)
 
             # Only one loop iteration since we pass `only:` here
             Gitlab::Database::EachDatabase.each_connection(only: for_database) do |connection|
@@ -66,7 +66,7 @@ module Gitlab
 
           def batched_migrations_last_id(for_database)
             runner = nil
-            base_dir = background_migrations_dir(for_database, false)
+            base_dir = background_migrations_dir(for_database)
 
             Gitlab::Database::EachDatabase.each_connection(only: for_database) do |connection|
               runner = Gitlab::Database::Migrations::BatchedMigrationLastId
@@ -101,9 +101,7 @@ module Gitlab
             end
           end
 
-          def background_migrations_dir(db, legacy_mode)
-            return BASE_RESULT_DIR.join('background_migrations') if legacy_mode
-
+          def background_migrations_dir(db)
             BASE_RESULT_DIR.join(db.to_s, 'background_migrations')
           end
         end
@@ -112,19 +110,13 @@ module Gitlab
 
         delegate :migration_context, :within_context_for_database, to: :class
 
-        def initialize(direction:, database:, migrations:, legacy_mode: false)
+        def initialize(direction:, database:, migrations:)
           raise "Direction must be up or down" unless %i[up down].include?(direction)
 
           @direction = direction
           @migrations = migrations
-          @result_dir = if legacy_mode
-                          BASE_RESULT_DIR.join(direction.to_s)
-                        else
-                          BASE_RESULT_DIR.join(database.to_s, direction.to_s)
-                        end
-
+          @result_dir = BASE_RESULT_DIR.join(database.to_s, direction.to_s)
           @database = database
-          @legacy_mode = legacy_mode
         end
 
         def run
@@ -150,11 +142,7 @@ module Gitlab
           end
         ensure
           metadata_filename = File.join(result_dir, METADATA_FILENAME)
-          version = if @legacy_mode
-                      3
-                    else
-                      SCHEMA_VERSION
-                    end
+          version = SCHEMA_VERSION
 
           File.write(metadata_filename, { database: @database.to_s, version: version }.to_json)
 

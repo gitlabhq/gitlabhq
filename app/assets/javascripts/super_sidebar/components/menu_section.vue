@@ -80,7 +80,7 @@ export default {
       };
     },
     isActive() {
-      return !this.isExpanded && this.item.is_active;
+      return (!this.isExpanded || this.isIconOnly) && this.item.is_active;
     },
     itemId() {
       return kebabCase(this.item.title);

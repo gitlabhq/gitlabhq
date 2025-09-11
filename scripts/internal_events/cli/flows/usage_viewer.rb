@@ -252,8 +252,8 @@ module InternalEventsCli
           #{format_warning('const trackingMixin = InternalEvents.mixin();')}
 
           export default {
-            #{format_warning('mixins: [trackingMixin]')},
             components: { GlButton },
+            #{format_warning('mixins: [trackingMixin]')},
             methods: {
               performAction() {
                 #{format_warning("this.trackEvent#{args}")}

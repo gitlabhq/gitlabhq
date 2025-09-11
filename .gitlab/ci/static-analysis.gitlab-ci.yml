@@ -197,11 +197,12 @@ rails-next-dependency-check:
 feature-flags-usage:
   extends:
     - .static-analysis-base
-    - .rubocop-job-cache
-    - .static-analysis:rules:rubocop
+    # rubocop cache for this job is disabled since it creates files under tmp/feature_flags/*.used,
+    # the cache would prevent these files from being created
+    - .ruby-cache
+    # this jobs is a non optional needs for rspec:feature-flags job so it should use same rule to ensure it is present
+    - .rails:rules:rspec-feature-flags
   script:
-    # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
-    # the cache would prevent these files from being created.
     - fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false
   artifacts:
     expire_in: 31d

@@ -187,6 +187,8 @@ module QA
             next unless resource
 
             resource_info = resource_info(resource_hash, key)
+            next if already_marked_for_deletion?(resource_info)
+
             logger.info("Processing #{resource_info}...")
 
             resource[:api_path] = resource_hash['api_path']
@@ -258,7 +260,11 @@ module QA
             attributes['info']&.match(/with full_path 'gitlab-e2e-sandbox-group(-\d)?'/) ||
               (attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-")) ||
               attributes['api_path'] == 'Cannot find resource API path' ||
-              attributes['api_path'] == '/graphql'
+              attributes['api_path'] == '/graphql' ||
+              # Group resources are deleted when their group is deleted, so we don't need to delete them manually
+              attributes['api_path'].match?(%r{\A/groups/\d+/.+\z}) ||
+              # Project resources are deleted when their project is deleted, so we don't need to delete them manually
+              attributes['api_path'].match?(%r{\A/projects/\d+/.+\z})
           end
         end
 
@@ -320,8 +326,7 @@ module QA
 
         organized_resources['QA::Resource::Sandbox'] = sandboxes if sandboxes
         organized_resources['QA::Resource::Group'] = groups if groups
-        # Don't try to delete projects when we're soft-deleting resources as it would result in 403 API responses
-        organized_resources['QA::Resource::Project'] = projects if projects && @permanently_delete
+        organized_resources['QA::Resource::Project'] = projects if projects
         organized_resources.merge!(filtered_resources) unless filtered_resources.empty?
         organized_resources['QA::Resource::User'] = users if users
 
@@ -363,6 +368,10 @@ module QA
       rescue JSON::ParserError
         logger.error("Failed to read #{file} - Invalid format")
         nil
+      end
+
+      def already_marked_for_deletion?(resource_info)
+        resource_info.include?('-deletion_scheduled-')
       end
 
       # Generates a descriptive string for a resource

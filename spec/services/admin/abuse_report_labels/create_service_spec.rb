@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Admin::AbuseReportLabels::CreateService, feature_category: :insider_threat do
   describe '#execute' do
+    let_it_be(:user) { create(:user) }
+
     let(:color) { 'red' }
     let(:color_in_hex) { ::Gitlab::Color.of(color) }
     let(:params) { { title: 'FancyLabel', color: color } }
 
-    subject(:execute) { described_class.new(params).execute }
+    subject(:execute) { described_class.new(user, params).execute }
 
     shared_examples 'creates a label with the correct values' do
       it 'creates a label with the correct values', :aggregate_failures do
@@ -17,6 +19,7 @@ RSpec.describe Admin::AbuseReportLabels::CreateService, feature_category: :insid
         label = AntiAbuse::Reports::Label.last
         expect(label.title).to eq params[:title]
         expect(label.color).to eq color_in_hex
+        expect(label.organization).to eq user.organization
       end
 
       it 'returns the persisted label' do

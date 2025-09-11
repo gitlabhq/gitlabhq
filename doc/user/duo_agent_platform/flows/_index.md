@@ -41,8 +41,9 @@ Flows are available in IDEs and the GitLab UI.
 
 The following flows are available:
 
-- A flow to [convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
-- A flow to [convert an issue to a merge request](issue_to_mr.md).
+- [Fix your CI/CD pipeline](fix_pipeline.md).
+- [Convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
+- [Convert an issue to a merge request](issue_to_mr.md).
 - A flow for any aspect of [software development](software_development.md). In this flow,
   you describe your needs and GitLab Duo understands your repository, the codebase,
   and its structure.

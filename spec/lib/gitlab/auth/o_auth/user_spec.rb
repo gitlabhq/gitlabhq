@@ -62,16 +62,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
     end
 
-    context 'when identity exists for given uid and provider but is not tied to a user' do
-      before do
-        identity.update!(user: nil)
-      end
-
-      it 'returns nil' do
-        expect(described_class.find_by_uid_and_provider(uid, provider)).to eq nil
-      end
-    end
-
     context 'for LDAP' do
       let(:dn) { 'CN=John Åström, CN=Users, DC=Example, DC=com' }
 

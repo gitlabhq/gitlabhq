@@ -2692,7 +2692,20 @@
       variables:
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      # this is a combination of ruby-patterns and additional paths that contain ruby scripts without extension
+      changes:
+        - "**/Rakefile"
+        - "**/Dangerfile"
+        - "**/Gemfile"
+        - "**/Gemfile.next"
+        - "**/Guardfile"
+        - "**/*.rake"
+        - "**/*.rb"
+        - "**/*.ru"
+        - "**/*.haml"
+        - "**/*.builder"
+        - "scripts/**/*"
+        - "bin/*"
 
 .static-analysis:rules:ensure-application-settings-have-definition-file:
   rules:

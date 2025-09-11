@@ -1582,18 +1582,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   describe '#migrate_with_instrumentation' do
     let(:runner) { instance_double(::Gitlab::Database::Migrations::Runner) }
 
-    describe '#up (legacy mode)' do
-      subject { run_rake_task('gitlab:db:migration_testing:up') }
-
-      it 'delegates to the migration runner in legacy mode' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(database: 'main', legacy_mode: true)
-                                                                      .and_return(runner)
-        expect(runner).to receive(:run)
-
-        subject
-      end
-    end
-
     where(:db) do
       ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).map(&:to_sym)
     end

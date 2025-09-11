@@ -3,10 +3,12 @@
 module RuboCop
   module Cop
     module Scalability
-      # This cop checks for `File` `params` in API
+      # Checks for usage of `type: File` in API parameter declarations.
+      # Direct usage of `File` bypasses GitLab's Workhorse upload acceleration and
+      # can lead to scalability and security issues. Instead, developers should use
+      # `::API::Validations::Types::WorkhorseFile` to handle uploads properly.
       #
       # @example
-      #
       #   # bad
       #   params do
       #     requires :file, type: File
@@ -24,7 +26,6 @@ module RuboCop
       #   params do
       #     optional :file, type: ::API::Validations::Types::WorkhorseFile
       #   end
-      #
       class FileUploads < RuboCop::Cop::Base
         MSG = 'Do not upload files without workhorse acceleration. ' \
               'Please refer to https://docs.gitlab.com/ee/development/uploads/'

@@ -1995,6 +1995,12 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemallowedstatusesname"></a>`name` | [`String`](#string) | Filter statuses by name. |
+
 ### `Query.workItemDescriptionTemplateContent`
 
 {{< details >}}

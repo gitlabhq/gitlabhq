@@ -56,7 +56,7 @@ module QA
       end
 
       def api_delete_path
-        "projects/#{project.api_resource[:id]}/access_tokens/#{id}"
+        "/projects/#{project.api_resource[:id]}/access_tokens/#{id}"
       end
 
       def resource_web_url(resource)

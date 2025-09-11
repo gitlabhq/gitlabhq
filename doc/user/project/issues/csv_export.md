@@ -14,7 +14,7 @@ title: Export issues to CSV
 
 {{< history >}}
 
-- The `IID`, `Type`, `Start Date`, and `Parent IID` columns [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Disabled by default.
+- The `IID`, `Type`, `Start Date`, and `Parent IID` columns [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Enabled by default.
 
 {{< /history >}}
 

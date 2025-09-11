@@ -384,6 +384,14 @@ To update your extension to the latest version:
 1. From **Extension: GitLab Workflow**, select **Update to {later version}**.
 1. Optional. To enable automatic updates in the future, select **Auto-Update**
 
+## Check status
+
+1. In Visual Studio Code, on the bottom status bar, select the GitLab icon ({{< icon name="tanuki">}}).
+1. A menu opens under the VS Code search box, and the GitLab Workflow extension shows the status
+   of the extension. Any errors are displayed next to **Status:**.
+
+You can also check the [status of GitLab Duo Chat](../../user/gitlab_duo_chat/_index.md#check-the-status-of-chat).
+
 ## Enable telemetry
 
 GitLab Workflow extension uses the telemetry settings in Visual Studio Code to send usage and error

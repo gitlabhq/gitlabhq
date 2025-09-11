@@ -319,8 +319,8 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
       const trackingMixin = InternalEvents.mixin();
 
       export default {
-        mixins: [trackingMixin],
         components: { GlButton },
+        mixins: [trackingMixin],
         methods: {
           performAction() {
             this.trackEvent('internal_events_cli_opened');
@@ -627,8 +627,8 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
       const trackingMixin = InternalEvents.mixin();
 
       export default {
-        mixins: [trackingMixin],
         components: { GlButton },
+        mixins: [trackingMixin],
         methods: {
           performAction() {
             this.trackEvent(

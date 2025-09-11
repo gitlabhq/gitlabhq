@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_record_base do
+RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_record_base, feature_category: :database do
   let(:base_result_dir) { Pathname.new(Dir.mktmpdir) }
 
   let(:migration_runs) { [] } # This list gets populated as the runner tries to run migrations
@@ -91,11 +91,10 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     FileUtils.rm_rf(base_result_dir)
   end
 
-  where(:case_name, :database, :result_dir, :legacy_mode, :expected_schema_version) do
+  where(:case_name, :database, :result_dir, :expected_schema_version) do
     [
-      ['main database', :main, lazy { base_result_dir.join('main') }, false, described_class::SCHEMA_VERSION],
-      ['main database (legacy mode)', :main, lazy { base_result_dir }, true, 3],
-      ['ci database', :ci, lazy { base_result_dir.join('ci') }, false, described_class::SCHEMA_VERSION]
+      ['main database', :main, lazy { base_result_dir.join('main') }, described_class::SCHEMA_VERSION],
+      ['ci database', :ci, lazy { base_result_dir.join('ci') }, described_class::SCHEMA_VERSION]
     ]
   end
 
@@ -111,12 +110,12 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     describe '.up' do
       context 'result directory' do
         it 'uses the /up subdirectory' do
-          expect(described_class.up(database: database, legacy_mode: legacy_mode).result_dir).to eq(result_dir.join('up'))
+          expect(described_class.up(database: database).result_dir).to eq(result_dir.join('up'))
         end
       end
 
       context 'migrations to run' do
-        subject(:up) { described_class.up(database: database, legacy_mode: legacy_mode) }
+        subject(:up) { described_class.up(database: database) }
 
         it 'is the list of pending migrations' do
           expect(up.migrations).to eq(pending_migrations)
@@ -124,7 +123,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
       end
 
       context 'running migrations' do
-        subject(:up) { described_class.up(database: database, legacy_mode: legacy_mode) }
+        subject(:up) { described_class.up(database: database) }
 
         it 'runs the unapplied migrations in regular/post order, then version order', :aggregate_failures do
           up.run
@@ -151,7 +150,7 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     end
 
     describe '.down' do
-      subject(:down) { described_class.down(database: database, legacy_mode: legacy_mode) }
+      subject(:down) { described_class.down(database: database) }
 
       context 'result directory' do
         it 'is the /down subdirectory' do
@@ -207,14 +206,6 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
           runner = described_class.batched_background_migrations(for_database: database)
 
           expect(runner.result_dir).to eq(base_result_dir.join(database.to_s, 'background_migrations'))
-        end
-      end
-
-      context 'legacy mode' do
-        it 'does not include the database name in the path' do
-          runner = described_class.batched_background_migrations(for_database: database, legacy_mode: true)
-
-          expect(runner.result_dir).to eq(base_result_dir.join('background_migrations'))
         end
       end
     end
