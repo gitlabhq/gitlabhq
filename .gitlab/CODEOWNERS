@@ -745,7 +745,7 @@ lib/gitlab/checks/
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
-/doc/api/graphql/ai_impact_analytics.md @lciutacu
+/doc/api/graphql/duo_and_sdlc_trends.md @lciutacu
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski

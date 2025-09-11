@@ -128,7 +128,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |           |     ✓      |   ✓   |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |           |            |   ✓   |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
@@ -307,7 +307,8 @@ Project permissions for [analytics](analytics/_index.md) features including valu
 | View [DORA metrics](analytics/ci_cd_analytics.md)                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [merge request analytics](analytics/merge_request_analytics.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [repository analytics](analytics/repository_analytics.md)                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [Value Streams Dashboard & AI impact analytics](analytics/value_streams_dashboard.md) |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| View [Value Streams Dashboard](analytics/value_streams_dashboard.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
 ### Application security
 

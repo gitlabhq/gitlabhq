@@ -2,12 +2,12 @@
 
 module Import
   module SourceUsers
-    class CancelReassignmentService < BaseService
-      attr_reader :reassign_to_user
+    class UndoKeepAsPlaceholderService < BaseService
+      attr_reader :placeholder_user
 
       def initialize(import_source_user, current_user:)
         @import_source_user = import_source_user
-        @reassign_to_user = import_source_user.reassign_to_user
+        @placeholder_user = import_source_user.placeholder_user
         @current_user = current_user
       end
 
@@ -15,11 +15,11 @@ module Import
         return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
 
         invalid_status = false
-        cancel_successful = false
+        undo_successful = false
 
         import_source_user.with_lock do
-          if import_source_user.cancelable_status?
-            cancel_successful = cancel_reassignment
+          if import_source_user.keep_as_placeholder?
+            undo_successful = undo_keep_as_placeholder
           else
             invalid_status = true
           end
@@ -27,11 +27,8 @@ module Import
 
         return error_invalid_status if invalid_status
 
-        if cancel_successful
-          track_reassignment_event(
-            'cancel_placeholder_user_reassignment',
-            reassign_to_user: reassign_to_user
-          )
+        if undo_successful
+          track_reassignment_event('undo_keep_as_placeholder', reassign_to_user: placeholder_user)
 
           ServiceResponse.success(payload: import_source_user)
         else
@@ -41,8 +38,8 @@ module Import
 
       private
 
-      def cancel_reassignment
-        import_source_user.cancel_reassignment
+      def undo_keep_as_placeholder
+        import_source_user.undo_keep_as_placeholder
       end
     end
   end

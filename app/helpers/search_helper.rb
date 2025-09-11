@@ -64,8 +64,7 @@ module SearchHelper
   def generic_results(term)
     search_pattern = Regexp.new(Regexp.escape(term), "i")
 
-    generic_results = project_autocomplete + default_autocomplete + help_autocomplete
-    generic_results.concat(default_autocomplete_admin) if current_user.can_read_all_resources?
+    generic_results = combined_generic_results
     generic_results.select { |result| result[:label] =~ search_pattern }
   end
 
@@ -275,6 +274,10 @@ module SearchHelper
 
   private
 
+  def combined_generic_results
+    project_autocomplete + default_autocomplete + help_autocomplete + default_autocomplete_admin
+  end
+
   def formatted_count(scope)
     return "0" if @timeout
 
@@ -292,6 +295,8 @@ module SearchHelper
 
   # Autocomplete results for settings pages, for admins
   def default_autocomplete_admin
+    return [] unless current_user.can_read_all_resources?
+
     [
       { category: "Jump to", label: _("Admin area / Dashboard"), url: admin_root_path }
     ]

@@ -11,6 +11,7 @@ import {
 import csrf from '~/lib/utils/csrf';
 import { s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import BeforeSubmitApproveUsersModal from './before_submit_approve_users_modal.vue';
 import SignupCheckbox from './signup_checkbox.vue';
 
@@ -41,7 +42,7 @@ export default {
         'ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'
       ),
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glFeatureFlagMixin(), glLicensedFeaturesMixin()],
   provide() {
     return {
       /**
@@ -317,7 +318,7 @@ export default {
       </gl-form-group>
 
       <password-complexity-checkbox-group
-        v-if="glFeatures.passwordComplexity"
+        v-if="glLicensedFeatures.passwordComplexity"
         @set-password-complexity="setFormValue"
       />
       <gl-form-group

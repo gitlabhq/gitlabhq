@@ -9,6 +9,7 @@ module HomepageData
 
   def homepage_app_data(user)
     mr_requested_id, mr_requests_id = merge_request_ids(user)
+    last_push_event = user&.recent_push
 
     {
       review_requested_path: review_requested_path(user),
@@ -18,8 +19,37 @@ module HomepageData
       authored_work_items_path: issues_dashboard_path(author_username: user.username),
       duo_code_review_bot_username: duo_code_review_bot.username,
       merge_requests_review_requested_title: dashboard_list_title(mr_requested_id),
-      merge_requests_your_merge_requests_title: dashboard_list_title(mr_requests_id)
+      merge_requests_your_merge_requests_title: dashboard_list_title(mr_requests_id),
+      last_push_event: prepare_last_push_event_data(last_push_event)&.to_json
     }
+  end
+
+  def prepare_last_push_event_data(last_push_event)
+    return unless last_push_event
+
+    event_data = {
+      created_at: last_push_event.created_at,
+      ref_name: last_push_event.ref_name,
+      branch_name: last_push_event.branch_name,
+      show_widget: helpers.show_last_push_widget?(last_push_event)
+    }
+
+    if last_push_event.project
+      project = last_push_event.project
+      event_data[:project] = {
+        name: project.name,
+        web_url: project.web_url
+      }
+    end
+
+    # Use the same logic as HAML version for create MR button
+    event_data[:create_mr_path] = if create_mr_button_from_event?(last_push_event)
+                                    create_mr_path_from_push_event(last_push_event)
+                                  else
+                                    ''
+                                  end
+
+    event_data
   end
 
   def merge_request_ids(user)

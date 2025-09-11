@@ -2652,9 +2652,6 @@ msgstr ""
 msgid "AICatalog|Project"
 msgstr ""
 
-msgid "AICatalog|Project ID"
-msgstr ""
-
 msgid "AICatalog|Project is required."
 msgstr ""
 
@@ -8039,7 +8036,7 @@ msgstr ""
 msgid "Analytics|Last updated: %{recordedAt}"
 msgstr ""
 
-msgid "Analytics|Learn more about %{docsLinkStart}AI impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo seats%{subscriptionLinkEnd}."
+msgid "Analytics|Learn more about %{docsLinkStart}Duo and SDLC trends%{docsLinkEnd} and %{subscriptionLinkStart}Duo seats%{subscriptionLinkEnd}."
 msgstr ""
 
 msgid "Analytics|No dashboard matches the specified URL path."
@@ -27285,6 +27282,12 @@ msgstr ""
 msgid "Explore"
 msgstr ""
 
+msgid "Explore / AI Catalog (Agents)"
+msgstr ""
+
+msgid "Explore / AI Catalog (Flows)"
+msgstr ""
+
 msgid "Explore groups"
 msgstr ""
 
@@ -33180,6 +33183,9 @@ msgid "I'm sorry, you don't have the GitLab Duo subscription required to use Duo
 msgstr ""
 
 msgid "I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab namespace for Duo in Preferences &gt Behaviour in GitLab."
+msgstr ""
+
+msgid "I'm sorry, you have not selected a default GitLab Duo namespace. Please select a default GitLab namespace for Duo in User Preferences - Behaviour in GitLab."
 msgstr ""
 
 msgid "I'm sorry, you've entered too many prompts. Please run /clear or /reset before asking the next question."
@@ -42892,9 +42898,6 @@ msgstr ""
 msgid "No data found for this query."
 msgstr ""
 
-msgid "No default Duo group found. Select a default Duo group in your user preferences and try again."
-msgstr ""
-
 msgid "No deployments found"
 msgstr ""
 
@@ -47148,6 +47151,9 @@ msgid "PhoneVerification|You've reached the maximum number of tries. Request a n
 msgstr ""
 
 msgid "PhoneVerification|You've reached the maximum number of tries. Wait %{interval} and try again."
+msgstr ""
+
+msgid "Pick up where you left off"
 msgstr ""
 
 msgid "Pipeline"
@@ -58731,6 +58737,9 @@ msgstr ""
 msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
+msgid "SecurityOrchestration|Invalid security report time window"
+msgstr ""
+
 msgid "SecurityOrchestration|Invalid syntax"
 msgstr ""
 
@@ -70285,6 +70294,9 @@ msgstr ""
 msgid "UserProfile|Retry"
 msgstr ""
 
+msgid "UserProfile|Set status"
+msgstr ""
+
 msgid "UserProfile|Snippets"
 msgstr ""
 
@@ -75445,6 +75457,9 @@ msgstr ""
 msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
 msgstr ""
 
+msgid "You published branch %{branchName}. Take the next step when you are ready."
+msgstr ""
+
 msgid "You requested changes"
 msgstr ""
 
@@ -76229,6 +76244,9 @@ msgid "attach a new file"
 msgstr ""
 
 msgid "authored"
+msgstr ""
+
+msgid "avatar for %{name}"
 msgstr ""
 
 msgid "banned user already exists"

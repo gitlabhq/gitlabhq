@@ -25,6 +25,8 @@
         = render "events/event/push", event: event
       - elsif event.commented_action?
         = render "events/event/note", event: event
+      - elsif event.joined_action?
+        = render "events/event/joined", event: event
       - else
         = render "events/event/common", event: event
     - elsif @user&.include_private_contributions?

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAvatar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -8,6 +8,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import GreetingHeader from '~/homepage/components/greeting_header.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import getUserStatusQuery from '~/homepage/graphql/queries/user_status.query.graphql';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 Vue.use(VueApollo);
 
@@ -46,8 +47,38 @@ describe('GreetingHeader', () => {
     },
   };
 
+  const emptyMessageResponse = {
+    data: {
+      currentUser: {
+        id: 'gid://gitlab/User/1',
+        status: {
+          emoji: 'rocket',
+          message: '',
+          availability: 'BUSY',
+          clearStatusAt: '',
+        },
+      },
+    },
+  };
+
+  const nullMessageResponse = {
+    data: {
+      currentUser: {
+        id: 'gid://gitlab/User/1',
+        status: {
+          emoji: 'rocket',
+          message: null,
+          availability: 'BUSY',
+          clearStatusAt: '',
+        },
+      },
+    },
+  };
+
   const statusQuerySuccessHandler = jest.fn().mockResolvedValue(statusResponse);
   const statusQueryNoStatusHandler = jest.fn().mockResolvedValue(noStatusResponse);
+  const statusQueryEmptyMessageHandler = jest.fn().mockResolvedValue(emptyMessageResponse);
+  const statusQueryNullMessageHandler = jest.fn().mockResolvedValue(nullMessageResponse);
   const statusQueryErrorHandler = jest.fn().mockRejectedValue(new Error('GraphQL Error'));
 
   const createComponent = ({
@@ -66,8 +97,9 @@ describe('GreetingHeader', () => {
     wrapper = shallowMountExtended(GreetingHeader, {
       apolloProvider: mockApollo,
       stubs: {
-        'gl-emoji': true, // Stub the custom element
+        'gl-emoji': true,
       },
+      directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
 
@@ -165,40 +197,121 @@ describe('GreetingHeader', () => {
     });
   });
 
-  describe('Status Modal', () => {
-    it('mounts status modal only after opening', async () => {
-      createComponent();
-      expect(findStatusModal().exists()).toBe(false);
-      await findAvatarButton().trigger('click');
-      await Vue.nextTick();
-      expect(findStatusModal().exists()).toBe(true);
-    });
+  describe('Tooltips', () => {
+    describe('when no status is set', () => {
+      beforeEach(() => {
+        createComponent({ statusQueryHandler: statusQueryNoStatusHandler });
+        return waitForPromises();
+      });
 
-    it('passes correct props to status modal', async () => {
-      createComponent();
-      await waitForPromises();
-      await findAvatarButton().trigger('click');
-      await Vue.nextTick();
+      it('shows "Set status" tooltip on avatar button', () => {
+        const tooltip = getBinding(findAvatarButton().element, 'gl-tooltip');
 
-      expect(findStatusModal().props()).toMatchObject({
-        currentEmoji: 'rocket',
-        currentMessage: 'Working on something',
-        currentAvailability: 'BUSY',
-        currentClearStatusAfter: '2025-09-04T14:44:43Z',
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Set status');
       });
     });
 
-    it('passes empty props when no status exists', async () => {
-      createComponent({ statusQueryHandler: statusQueryNoStatusHandler });
-      await waitForPromises();
-      await findAvatarButton().trigger('click');
-      await Vue.nextTick();
+    describe('when status is set with message', () => {
+      beforeEach(() => {
+        createComponent({ statusQueryHandler: statusQuerySuccessHandler });
+        return waitForPromises();
+      });
 
-      expect(findStatusModal().props()).toMatchObject({
-        currentEmoji: '',
-        currentMessage: '',
-        currentAvailability: '',
-        currentClearStatusAfter: '',
+      it('shows status message as tooltip on status badge', () => {
+        const tooltip = getBinding(findStatusBadge().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Working on something');
+      });
+    });
+
+    describe('when status is set but message is empty', () => {
+      beforeEach(() => {
+        createComponent({ statusQueryHandler: statusQueryEmptyMessageHandler });
+        return waitForPromises();
+      });
+
+      it('shows "Set status" tooltip when status message is empty', () => {
+        const tooltip = getBinding(findStatusBadge().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Set status');
+      });
+    });
+
+    describe('when status is set but message is null', () => {
+      beforeEach(() => {
+        createComponent({ statusQueryHandler: statusQueryNullMessageHandler });
+        return waitForPromises();
+      });
+
+      it('shows "Set status" tooltip when status message is null', () => {
+        expect(findStatusBadge().exists()).toBe(true);
+        const tooltip = getBinding(findStatusBadge().element, 'gl-tooltip');
+
+        expect(tooltip).toBeDefined();
+        expect(tooltip.value).toBe('Set status');
+      });
+    });
+  });
+
+  describe('Status Modal', () => {
+    describe('when no status is set', () => {
+      beforeEach(() => {
+        createComponent({ statusQueryHandler: statusQueryNoStatusHandler });
+        return waitForPromises();
+      });
+
+      it('mounts status modal only after clicking avatar', async () => {
+        expect(findStatusModal().exists()).toBe(false);
+        expect(findAvatarButton().exists()).toBe(true);
+
+        await findAvatarButton().trigger('click');
+        await nextTick();
+
+        expect(findStatusModal().exists()).toBe(true);
+      });
+
+      it('passes empty props when no status exists', async () => {
+        await findAvatarButton().trigger('click');
+        await nextTick();
+
+        expect(findStatusModal().props()).toMatchObject({
+          currentEmoji: '',
+          currentMessage: '',
+          currentAvailability: '',
+          currentClearStatusAfter: '',
+        });
+      });
+    });
+
+    describe('when status is set', () => {
+      beforeEach(() => {
+        createComponent();
+        return waitForPromises();
+      });
+
+      it('mounts status modal only after clicking status badge', async () => {
+        expect(findStatusModal().exists()).toBe(false);
+        expect(findStatusBadge().exists()).toBe(true);
+
+        await findStatusBadge().trigger('click');
+        await nextTick();
+
+        expect(findStatusModal().exists()).toBe(true);
+      });
+
+      it('passes correct props to status modal', async () => {
+        await findStatusBadge().trigger('click');
+        await nextTick();
+
+        expect(findStatusModal().props()).toMatchObject({
+          currentEmoji: 'rocket',
+          currentMessage: 'Working on something',
+          currentAvailability: 'BUSY',
+          currentClearStatusAfter: '2025-09-04T14:44:43Z',
+        });
       });
     });
   });

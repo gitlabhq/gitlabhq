@@ -1,6 +1,6 @@
 <script>
-import { GlAvatar } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlAvatar, GlTooltipDirective } from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import SetStatusModalWrapper from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { SET_STATUS_MODAL_ID } from '~/set_status_modal/constants';
@@ -16,6 +16,9 @@ export default {
   components: {
     GlAvatar,
     SetStatusModalWrapper,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   data() {
     return {
@@ -37,6 +40,12 @@ export default {
     avatar() {
       return gon?.current_user_avatar_url;
     },
+    avatarAltText() {
+      return sprintf(__('avatar for %{name}'), { name: this.relevantName });
+    },
+    setStatusAltText() {
+      return s__('UserProfile|Set status');
+    },
     statusEmoji() {
       return this.userStatus?.emoji || '';
     },
@@ -54,6 +63,9 @@ export default {
     },
     borderStyle() {
       return borderStyle(this.emojiColor);
+    },
+    tooltipMessage() {
+      return this.statusMessage || this.setStatusAltText;
     },
   },
   watch: {
@@ -114,31 +126,48 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-6 gl-mt-5 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
+  <div class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
+    <!-- When no status is set, the entire avatar area is clickable -->
     <button
-      type="button"
+      v-if="!statusEmoji"
+      v-gl-tooltip="setStatusAltText"
       class="gl-display-inline-block gl-relative gl-border-none gl-bg-transparent gl-p-0"
       data-testid="status-modal-trigger"
+      :aria-label="setStatusAltText"
       @click="openStatusModal"
     >
       <div class="gl-relative gl-rounded-full gl-p-1" :style="gradientStyle">
         <div class="gl-relative gl-rounded-full gl-bg-white gl-p-1">
-          <gl-avatar :src="avatar" :alt="`avatar for ${relevantName}`" />
+          <gl-avatar :src="avatar" :alt="avatarAltText" />
         </div>
-        <div
-          v-if="statusEmoji"
+      </div>
+    </button>
+
+    <!-- When status is set, avatar is not clickable, only emoji badge is -->
+    <div v-else class="gl-display-inline-block gl-relative">
+      <div class="gl-relative gl-rounded-full gl-p-1" :style="gradientStyle">
+        <div class="gl-relative gl-rounded-full gl-bg-white gl-p-1">
+          <gl-avatar :src="avatar" :alt="avatarAltText" />
+        </div>
+        <button
+          v-gl-tooltip="tooltipMessage"
           class="gl-absolute -gl-bottom-2 -gl-right-1 gl-flex gl-h-7 gl-w-7 gl-items-center gl-justify-center gl-rounded-full gl-border-2 gl-border-solid gl-border-gray-400 gl-bg-white hover:gl-bg-strong dark:gl-bg-gray-900"
           data-testid="status-emoji-badge"
           :style="borderStyle"
+          :aria-label="tooltipMessage"
+          @click="openStatusModal"
         >
           <gl-emoji
             :key="statusEmoji"
             :data-name="statusEmoji"
+            :title="null"
+            :aria-label="statusEmoji"
             class="gl-leading-none gl-text-sm"
+            style="pointer-events: none"
           />
-        </div>
+        </button>
       </div>
-    </button>
+    </div>
     <header>
       <p class="gl-heading-5 gl-mb-2 gl-truncate gl-text-subtle">{{ __("Today's highlights") }}</p>
       <h1 v-if="relevantName" class="gl-heading-display gl-m-0">{{ greeting }}</h1>

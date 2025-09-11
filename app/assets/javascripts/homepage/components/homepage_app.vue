@@ -6,6 +6,7 @@ import WorkItemsWidget from './work_items_widget.vue';
 import ActivityWidget from './activity_widget.vue';
 import RecentlyViewedWidget from './recently_viewed_widget.vue';
 import TodosWidget from './todos_widget.vue';
+import PickUpWidget from './pick_up_widget.vue';
 import FeedbackWidget from './feedback_widget.vue';
 
 export default {
@@ -17,6 +18,7 @@ export default {
     ActivityWidget,
     TodosWidget,
     RecentlyViewedWidget,
+    PickUpWidget,
     FeedbackWidget,
   },
   props: {
@@ -40,6 +42,19 @@ export default {
       type: String,
       required: true,
     },
+    lastPushEvent: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
+  computed: {
+    shouldShowPickUpWidget() {
+      if (!this.lastPushEvent) return false;
+
+      // Show widget if we have a push event and either backend says show OR we have valid data
+      return Boolean(this.lastPushEvent.show_widget || this.lastPushEvent.branch_name);
+    },
   },
 };
 </script>
@@ -49,8 +64,8 @@ export default {
     <greeting-header />
     <homepage-preferences-banner />
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 @md/panel:gl-grid-cols-3">
-      <div class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
-        <div class="gl-grid gl-grid-cols-1 gl-gap-4 @lg/panel:gl-grid-cols-2">
+      <section class="gl-flex gl-flex-col gl-gap-6 @md/panel:gl-col-span-2">
+        <div class="gl-grid gl-grid-cols-1 gl-gap-5 @lg/panel:gl-grid-cols-2">
           <merge-requests-widget
             :review-requested-path="reviewRequestedPath"
             :assigned-to-you-path="assignedMergeRequestsPath"
@@ -60,13 +75,14 @@ export default {
             :authored-by-you-path="authoredWorkItemsPath"
           />
         </div>
+        <pick-up-widget v-if="shouldShowPickUpWidget" :last-push-event="lastPushEvent" />
         <todos-widget />
         <activity-widget :activity-path="activityPath" />
-      </div>
-      <div class="gl-flex gl-flex-col gl-gap-6">
+      </section>
+      <aside class="gl-flex gl-flex-col gl-gap-6">
         <recently-viewed-widget />
         <feedback-widget />
-      </div>
+      </aside>
     </div>
   </div>
 </template>

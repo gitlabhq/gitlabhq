@@ -21,7 +21,11 @@ export default () => {
     duoCodeReviewBotUsername,
     mergeRequestsReviewRequestedTitle,
     mergeRequestsYourMergeRequestsTitle,
+    lastPushEvent,
   } = el.dataset;
+
+  // Parse lastPushEvent - it's already JSON string from backend
+  const parsedLastPushEvent = lastPushEvent ? JSON.parse(lastPushEvent) : null;
 
   return new Vue({
     el,
@@ -41,6 +45,7 @@ export default () => {
           assignedMergeRequestsPath,
           assignedWorkItemsPath,
           authoredWorkItemsPath,
+          lastPushEvent: parsedLastPushEvent,
         },
       });
     },

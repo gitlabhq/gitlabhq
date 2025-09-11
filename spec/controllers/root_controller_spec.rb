@@ -220,7 +220,8 @@ RSpec.describe RootController, feature_category: :shared do
                 authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
                 duo_code_review_bot_username: duo_code_review_bot.username,
                 merge_requests_review_requested_title: "Review requested",
-                merge_requests_your_merge_requests_title: "Your merge requests"
+                merge_requests_your_merge_requests_title: "Your merge requests",
+                last_push_event: nil
               })
             end
           end
@@ -241,7 +242,8 @@ RSpec.describe RootController, feature_category: :shared do
                 authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
                 duo_code_review_bot_username: duo_code_review_bot.username,
                 merge_requests_review_requested_title: "Review requested",
-                merge_requests_your_merge_requests_title: "Your merge requests"
+                merge_requests_your_merge_requests_title: "Your merge requests",
+                last_push_event: nil
               })
             end
           end

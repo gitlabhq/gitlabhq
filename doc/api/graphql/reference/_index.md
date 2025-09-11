@@ -7595,6 +7595,30 @@ Input type: `ImportSourceUserResendNotificationInput`
 | <a id="mutationimportsourceuserresendnotificationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationimportsourceuserresendnotificationimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
 
+### `Mutation.importSourceUserUndoKeepAsPlaceholder`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ImportSourceUserUndoKeepAsPlaceholderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserundokeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholderid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserundokeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholdererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholderimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
 ### `Mutation.instanceAuditEventStreamingDestinationsCreate`
 
 {{< details >}}

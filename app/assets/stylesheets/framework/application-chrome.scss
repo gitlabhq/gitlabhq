@@ -35,7 +35,6 @@
     @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-pl-5 gl-pr-5 sm:gl-pr-3;
     top: $calc-system-headers-height;
     height: var(--header-height);
-    z-index: calc($super-sidebar-z-index + 1);
 
     // Placeholder styles
     .topbar-search-button-placeholder {
@@ -59,11 +58,6 @@
   .page-with-super-sidebar-collapsed {
     .super-sidebar {
       @apply gl-m-0;
-    }
-
-    .panels-container {
-      // When the sidebar is fully collapsed out of view, some margin is needed to not touch the window edge.
-      @apply gl-ml-3;
     }
   }
 
@@ -162,7 +156,7 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row gl-pl-3 lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
     height: calc(100vh - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
 
     // Temporarily solution to hide empty AI Chat divs
@@ -183,7 +177,12 @@
 
   // Super sidebar height
   #super-sidebar {
-    @apply gl-h-full -gl-mr-3;
+    @apply gl-h-full lg:-gl-mr-3;
+
+    @include media-breakpoint-down(lg) {
+      @apply gl-fixed #{!important};
+      @apply gl-rounded-r-[1rem];
+    }
 
     .contextual-nav {
       @apply gl-pt-2;
@@ -208,7 +207,8 @@
       }
 
       // Hide alert wrapper if it's empty
-      > .alert-wrapper:not(:has(*)) {
+      > .alert-wrapper:not(:has(*)),
+      > .alert-wrapper:not(:has(.container-fluid *)) {
         @apply gl-hidden;
       }
     }

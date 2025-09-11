@@ -309,7 +309,7 @@ When using the `schedule` rule type with the `branches` field:
 - If a policy is enforced on a large number of projects or branches, the policy is processed in
   batches, and may take some time to create all pipelines.
 
-![A diagram showing how scheduled security scans are processed and executed with potential delays.](img/scheduled_scan_execution_policies_diagram_v15_10.png)
+![A diagram showing how scheduled security scans are processed and executed with potential delays.](img/scheduled_scan_execution_policies_diagram_v18_04.png)
 
 ### `agent` schema
 

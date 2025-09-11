@@ -1,0 +1,25 @@
+---
+description: Tracks when a placeholder user is no longer kept
+internal_events: true
+action: undo_keep_as_placeholder
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: id of the placeholder user
+  property:
+    description: id of the placeholder user
+  import_type:
+    description: the import source e.g. gitlab_migration, github, bitbucket
+  reassign_to_user_state:
+    description: the state of the placeholder user e.g. active, blocked
+product_group: import
+product_categories:
+- importers
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204272
+tiers:
+- free
+- premium
+- ultimate

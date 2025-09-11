@@ -228,13 +228,6 @@ One or more AI agents can be part of a [**flow**](#flows), where they are orches
 
 Use lowercase for **AI gateway** and do not hyphenate.
 
-## AI Impact Dashboard
-
-Use title case for **AI Impact Dashboard**.
-
-On first mention on a page, use **GitLab Duo AI Impact Dashboard**.
-Thereafter, use **AI Impact Dashboard** by itself.
-
 ## AI-powered, AI-native
 
 Use **AI-native** instead of **AI-powered**. For example, **Code Suggestions is an AI-native feature**.
@@ -1180,7 +1173,6 @@ Do not use **Duo** by itself. Always use **GitLab Duo**.
 On first use on a page, use **GitLab Duo `<featurename>`**. As of Aug, 2024,
 the following are the names of GitLab Duo features:
 
-- GitLab Duo AI Impact Dashboard
 - GitLab Duo Chat
 - GitLab Duo Code Explanation
 - GitLab Duo Code Review
@@ -1191,6 +1183,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Issue Discussion Summary
 - GitLab Duo Merge Commit Message Generation
 - GitLab Duo Merge Request Summary
+- GitLab Duo and SDLC trends
 - GitLab Duo Product Analytics
 - GitLab Duo Root Cause Analysis
 - GitLab Duo Self-Hosted
