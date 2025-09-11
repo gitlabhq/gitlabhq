@@ -26,11 +26,11 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('collapse-left');
+      expect(findButton().props('icon')).toBe('sidebar');
     });
 
     it('displays shrink text', () => {
-      expect(findButton().text()).toBe('Shrink sidebar');
+      expect(findButton().text()).toBe('Collapse sidebar');
     });
 
     it('does not show tooltip', () => {
@@ -44,7 +44,7 @@ describe('IconOnlyToggle', () => {
     });
 
     it('renders button with correct icon', () => {
-      expect(findButton().props('icon')).toBe('expand-left');
+      expect(findButton().props('icon')).toBe('sidebar');
     });
 
     it('does not display text content', () => {

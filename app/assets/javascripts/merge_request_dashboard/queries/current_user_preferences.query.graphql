@@ -3,6 +3,7 @@ query getCurrentUserMergeRequestDashboardPreferences {
     id
     userPreferences {
       listType: mergeRequestDashboardListType
+      showDrafts: mergeRequestDashboardShowDrafts
     }
   }
 }

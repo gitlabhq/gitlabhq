@@ -1,0 +1,118 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SLSA Predicate",
+  "description": "SLSA Predicate conforming to v1.0 specification",
+  "type": "object",
+  "required": [
+    "buildDefinition",
+    "runDetails"
+  ],
+  "properties": {
+    "buildDefinition": {
+      "type": "object",
+      "required": [
+        "buildType",
+        "externalParameters"
+      ],
+      "properties": {
+        "buildType": {
+          "type": "string",
+          "format": "uri"
+        },
+        "externalParameters": {
+          "type": "object"
+        },
+        "internalParameters": {
+          "type": "object"
+        },
+        "resolvedDependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "format": "uri"
+              },
+              "digest": {
+                "type": "object",
+                "properties": {
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{40,64}$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "runDetails": {
+      "type": "object",
+      "required": [
+        "builder",
+        "metadata"
+      ],
+      "properties": {
+        "builder": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uri"
+            },
+            "version": {
+              "type": "object"
+            },
+            "builderDependencies": {
+              "type": "array"
+            }
+          },
+          "additionalProperties": true
+        },
+        "metadata": {
+          "type": "object",
+          "required": [
+            "invocationId"
+          ],
+          "properties": {
+            "invocationId": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "startedOn": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "finishedOn": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": true
+        },
+        "byproducts": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

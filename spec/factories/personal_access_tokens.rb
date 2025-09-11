@@ -57,7 +57,15 @@ FactoryBot.define do
     granular { true }
 
     after(:create) do |token, evaluator|
-      token.granular_scopes.create!(namespace: evaluator.namespace, permissions: Array(evaluator.permissions))
+      granular_scope = Authz::GranularScope.create!(
+        namespace: evaluator.namespace,
+        permissions: Array(evaluator.permissions),
+        organization_id: token.organization_id
+      )
+      token.personal_access_token_granular_scopes.create!(
+        granular_scope: granular_scope,
+        organization_id: token.organization_id
+      )
     end
   end
 

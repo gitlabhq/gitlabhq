@@ -84,31 +84,50 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     end
   end
 
-  describe '#boundary' do
-    subject { build(:granular_scope, namespace:).boundary }
+  describe '.permitted_for_boundary?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:boundary) { Authz::Boundary.for(project) }
+    let_it_be(:token_permissions) { ::Authz::Permission.all.keys.take(2) }
+    let_it_be(:required_permissions) { token_permissions.first }
 
-    context 'when namespace is a group' do
-      let(:namespace) { build(:group) }
+    subject { described_class.permitted_for_boundary?(boundary, required_permissions) }
 
-      it { is_expected.to eq('Group') }
+    context 'when a scope exists for a boundary' do
+      before do
+        create(:granular_scope, namespace: boundary.namespace, permissions: token_permissions)
+      end
+
+      it { is_expected.to be true }
+
+      context 'when the scope does not include the required permissions' do
+        let_it_be(:required_permissions) { :not_allowed_permission }
+
+        it { is_expected.to be false }
+      end
     end
 
-    context 'when namespace is a project namespace' do
-      let(:namespace) { build(:project_namespace) }
+    context 'when a scope does not exist for a boundary' do
+      it { is_expected.to be false }
+    end
+  end
 
-      it { is_expected.to eq('Project') }
+  describe '.token_permissions' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:boundary) { Authz::Boundary.for(project) }
+    let_it_be(:token_permissions) { ::Authz::Permission.all.keys.take(2) }
+
+    subject { described_class.token_permissions(boundary) }
+
+    context 'when a scope exists for a boundary' do
+      before do
+        create(:granular_scope, namespace: boundary.namespace, permissions: token_permissions)
+      end
+
+      it { is_expected.to eq token_permissions }
     end
 
-    context 'when namespace is a user namespace' do
-      let(:namespace) { build(:user_namespace) }
-
-      it { is_expected.to eq('User') }
-    end
-
-    context 'when namespace is nil' do
-      let(:namespace) { nil }
-
-      it { is_expected.to eq('Instance') }
+    context 'when a scope does not exist for a boundary' do
+      it { is_expected.to eq [] }
     end
   end
 end

@@ -1,7 +1,16 @@
-mutation updatePreferences($mergeRequestDashboardListType: MergeRequestsDashboardListType) {
-  userPreferencesUpdate(input: { mergeRequestDashboardListType: $mergeRequestDashboardListType }) {
+mutation updatePreferences(
+  $mergeRequestDashboardListType: MergeRequestsDashboardListType
+  $mergeRequestDashboardShowDrafts: Boolean
+) {
+  userPreferencesUpdate(
+    input: {
+      mergeRequestDashboardListType: $mergeRequestDashboardListType
+      mergeRequestDashboardShowDrafts: $mergeRequestDashboardShowDrafts
+    }
+  ) {
     userPreferences {
       mergeRequestDashboardListType: mergeRequestDashboardListType
+      mergeRequestDashboardShowDrafts
     }
   }
 }

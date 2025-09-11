@@ -349,6 +349,12 @@ module MergeRequestsHelper
     merge_request.persisted? ? merge_request.squash : merge_request.squash_enabled_by_default?
   end
 
+  def merge_request_dashboard_show_drafts?
+    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, current_user)
+
+    current_user.merge_request_dashboard_show_drafts
+  end
+
   private
 
   def default_suggestion_commit_message(project)
@@ -489,6 +495,7 @@ module MergeRequestsHelper
                 helpContent: _("Your merge requests"),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
+                  draft: merge_request_dashboard_show_drafts?,
                   perPage: 10
                 }
               },
@@ -575,6 +582,7 @@ module MergeRequestsHelper
                 helpContent: _("Merge requests you authored or are assigned to, without reviewers."),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
+                  draft: merge_request_dashboard_show_drafts?,
                   or: {
                     reviewerWildcard: 'NONE',
                     onlyReviewerUsername: duo_code_review_bot.username

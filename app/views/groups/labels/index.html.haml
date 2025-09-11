@@ -8,9 +8,13 @@
 
 %h1.gl-sr-only= page_title
 
+- if Feature.enabled?(:labels_archive, :instance)
+  = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+
 - if labels_or_filters
   #js-promote-label-modal
-  = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+  - if Feature.disabled?(:labels_archive, :instance)
+    = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
   .labels-container.gl-mt-5
     - if @labels.any?

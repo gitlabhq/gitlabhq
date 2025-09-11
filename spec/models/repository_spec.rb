@@ -4625,4 +4625,107 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
     it { is_expected.to be_nil }
   end
+
+  describe '#granular_ref_name_update' do
+    let(:repository) { project.repository }
+    let(:redis_set_cache) { instance_double(Gitlab::RepositorySetCache) }
+
+    before do
+      allow(repository).to receive(:redis_set_cache).and_return(redis_set_cache)
+    end
+
+    context 'when ref is a branch' do
+      let(:branch_ref) { 'refs/heads/feature-branch' }
+
+      context 'when branch exists' do
+        before do
+          allow(repository).to receive(:ref_exists?).with(branch_ref).and_return(true)
+        end
+
+        it 'adds branch name to cache' do
+          expect(redis_set_cache).to receive(:granular_update).with('branch_names', 'feature-branch', :add)
+          expect(repository).to receive(:clear_memoization).with('branch_names')
+
+          repository.granular_ref_name_update(branch_ref)
+        end
+      end
+
+      context 'when branch does not exist' do
+        before do
+          allow(repository).to receive(:ref_exists?).with(branch_ref).and_return(false)
+        end
+
+        it 'removes branch name from cache' do
+          expect(redis_set_cache).to receive(:granular_update).with('branch_names', 'feature-branch', :remove)
+          expect(repository).to receive(:clear_memoization).with('branch_names')
+
+          repository.granular_ref_name_update(branch_ref)
+        end
+      end
+    end
+
+    context 'when ref is a tag' do
+      let(:tag_ref) { 'refs/tags/v1.0.0' }
+
+      context 'when tag exists' do
+        before do
+          allow(repository).to receive(:ref_exists?).with(tag_ref).and_return(true)
+        end
+
+        it 'adds tag name to cache' do
+          expect(redis_set_cache).to receive(:granular_update).with('tag_names', 'v1.0.0', :add)
+          expect(repository).to receive(:clear_memoization).with('tag_names')
+
+          repository.granular_ref_name_update(tag_ref)
+        end
+      end
+
+      context 'when tag does not exist' do
+        before do
+          allow(repository).to receive(:ref_exists?).with(tag_ref).and_return(false)
+        end
+
+        it 'removes tag name from cache' do
+          expect(redis_set_cache).to receive(:granular_update).with('tag_names', 'v1.0.0', :remove)
+          expect(repository).to receive(:clear_memoization).with('tag_names')
+
+          repository.granular_ref_name_update(tag_ref)
+        end
+      end
+    end
+
+    context 'when ref is neither branch nor tag' do
+      let(:other_ref) { 'refs/notes/commits' }
+
+      it 'does nothing' do
+        expect(redis_set_cache).not_to receive(:granular_update)
+        expect(repository).not_to receive(:clear_memoization)
+
+        repository.granular_ref_name_update(other_ref)
+      end
+    end
+
+    context 'with edge cases' do
+      it 'handles nil ref gracefully' do
+        expect(redis_set_cache).not_to receive(:granular_update)
+        expect(repository).not_to receive(:clear_memoization)
+
+        repository.granular_ref_name_update(nil)
+      end
+
+      it 'handles empty string ref gracefully' do
+        expect(redis_set_cache).not_to receive(:granular_update)
+        expect(repository).not_to receive(:clear_memoization)
+
+        repository.granular_ref_name_update('')
+      end
+
+      it 'handles malformed ref gracefully' do
+        expect(redis_set_cache).not_to receive(:granular_update)
+        expect(repository).not_to receive(:clear_memoization)
+
+        repository.granular_ref_name_update('invalid-ref-format')
+      end
+    end
+  end
 end

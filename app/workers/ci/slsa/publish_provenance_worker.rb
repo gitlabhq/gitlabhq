@@ -8,6 +8,7 @@ module Ci
       data_consistency :sticky
 
       idempotent!
+      worker_has_external_dependencies!
 
       feature_category :artifact_security
 

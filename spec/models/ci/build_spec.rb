@@ -225,6 +225,55 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
       end
     end
+
+    describe 'job creation subscription trigger' do
+      context 'with rate limiting enabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .and_return(true)
+        end
+
+        it 'does not trigger GraphQL subscription when rate limited' do
+          expect_next(described_class).to receive(:execute_hooks)
+          expect(GraphqlTriggers).not_to receive(:ci_job_created)
+
+          create(:ci_build, pipeline: pipeline)
+        end
+      end
+
+      context 'without rate limiting enabled' do
+        before do
+          allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
+                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .and_return(false)
+        end
+
+        context 'with feature flag enabled' do
+          it 'triggers GraphQL subscription ciJobCreated' do
+            expect_next(described_class).to receive(:execute_hooks)
+
+            expect(GraphqlTriggers).to receive(:ci_job_created).with(instance_of(described_class))
+
+            create(:ci_build, pipeline: pipeline)
+          end
+        end
+
+        context 'with feature flag turned off' do
+          before do
+            stub_feature_flags(ci_job_created_subscription: false)
+          end
+
+          it 'does not trigger GraphQL subscription ciJobCreated' do
+            expect_next(described_class).to receive(:execute_hooks)
+
+            expect(GraphqlTriggers).not_to receive(:ci_job_created).with(instance_of(described_class))
+
+            create(:ci_build, pipeline: pipeline)
+          end
+        end
+      end
+    end
   end
 
   describe 'status' do

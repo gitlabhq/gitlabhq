@@ -3531,7 +3531,7 @@
 - :name: ci_slsa_publish_provenance
   :worker_name: Ci::Slsa::PublishProvenanceWorker
   :feature_category: :artifact_security
-  :has_external_dependencies: false
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1

@@ -1,5 +1,5 @@
 import Vue, { nextTick } from 'vue';
-import { GlToggle, GlCollapsibleListbox, GlPopover } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlPopover } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -28,7 +28,12 @@ describe('Merge request dashboard config dropdown component', () => {
     setIsShowingLabelsMutationMock = jest.fn();
     updatePreferencesMutationMock = jest.fn().mockResolvedValue({
       data: {
-        userPreferencesUpdate: { userPreferences: { mergeRequestDashboardListType: 'ROLE_BASED' } },
+        userPreferencesUpdate: {
+          userPreferences: {
+            mergeRequestDashboardListType: 'ROLE_BASED',
+            mergeRequestDashboardShowDrafts: true,
+          },
+        },
       },
     });
     const resolvers = {
@@ -46,7 +51,7 @@ describe('Merge request dashboard config dropdown component', () => {
             data: {
               currentUser: {
                 id: 1,
-                userPreferences: { listType: 'role_based' },
+                userPreferences: { listType: 'role_based', showDrafts: true },
               },
             },
           }),
@@ -71,6 +76,9 @@ describe('Merge request dashboard config dropdown component', () => {
           dismiss: userCalloutDismissSpy,
           shouldShowCallout,
         }),
+      },
+      provide: {
+        glFeatures: { mrDashboardDraftsToggle: true },
       },
     });
   }
@@ -119,7 +127,7 @@ describe('Merge request dashboard config dropdown component', () => {
 
       createComponent({ isShowingLabels });
 
-      wrapper.findComponent(GlToggle).vm.$emit('change');
+      wrapper.findByTestId('show-labels-toggle').vm.$emit('change');
 
       await waitForPromises();
 
@@ -143,7 +151,7 @@ describe('Merge request dashboard config dropdown component', () => {
     async ({ isShowingLabels, mutationValue }) => {
       createComponent({ isShowingLabels });
 
-      wrapper.findComponent(GlToggle).vm.$emit('change');
+      wrapper.findByTestId('show-labels-toggle').vm.$emit('change');
 
       await nextTick();
 
@@ -157,6 +165,18 @@ describe('Merge request dashboard config dropdown component', () => {
       );
     },
   );
+
+  it('triggers mutation when toggling show drafts toggle', async () => {
+    createComponent();
+
+    wrapper.findByTestId('show-drafts-toggle').vm.$emit('change', false);
+
+    await nextTick();
+
+    expect(updatePreferencesMutationMock).toHaveBeenCalledWith({
+      mergeRequestDashboardShowDrafts: false,
+    });
+  });
 
   it.each`
     mergeRequestDashboardListType

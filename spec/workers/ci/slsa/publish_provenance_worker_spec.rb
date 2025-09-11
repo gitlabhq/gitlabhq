@@ -26,6 +26,14 @@ RSpec.describe Ci::Slsa::PublishProvenanceWorker, feature_category: :artifact_se
     it_behaves_like 'an idempotent worker' do
       let(:job_args) { [build.id] }
 
+      before do
+        # TODO: remove mocking once database persistence is in place in PublishProvenanceService.
+        upload_statement_service = instance_double(Ci::Slsa::PublishProvenanceService)
+        allow(Ci::Slsa::PublishProvenanceService)
+          .to receive(:new).with(build).and_return(upload_statement_service)
+        allow(upload_statement_service).to receive(:execute).twice
+      end
+
       it 'does not crash when called twice' do
         expect { perform_idempotent_work }.not_to raise_error
       end

@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 SLSA_PROVENANCE_V1_SCHEMA = 'app/validators/json_schemas/slsa/in_toto_v1/provenance_v1.json'
+SLSA_PREDICATE_V1_SCHEMA = 'app/validators/json_schemas/slsa/in_toto_v1/predicate_v1.json'
 
 RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifact_security do
   let(:parsed) { Gitlab::Json.parse(subject.to_json) }
@@ -135,7 +136,7 @@ RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifa
 
         expect(builder['id']).to start_with('http://localhost/groups/GitLab-Admin-Bot/-/runners/')
 
-        expect(metadata['invocationId']).to eq(build.id)
+        expect(metadata['invocationId']).to eq(build.id.to_s)
         expect(metadata['startedOn']).to eq(build.started_at.utc.try(:rfc3339))
         expect(metadata['finishedOn']).to eq(build.finished_at.utc.try(:rfc3339))
       end
@@ -143,6 +144,20 @@ RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifa
       describe 'and we check the schema' do
         let(:schema) do
           JSONSchemer.schema(Pathname.new(SLSA_PROVENANCE_V1_SCHEMA))
+        end
+
+        let(:errors) { schema.validate(parsed).map { |e| JSONSchemer::Errors.pretty(e) } }
+
+        it 'conforms to specification' do
+          expect(errors).to eq([])
+        end
+      end
+
+      describe 'and we check the schema for the predicate' do
+        subject(:provenance_statement) { described_class::Predicate.from_build(build) }
+
+        let(:schema) do
+          JSONSchemer.schema(Pathname.new(SLSA_PREDICATE_V1_SCHEMA))
         end
 
         let(:errors) { schema.validate(parsed).map { |e| JSONSchemer::Errors.pretty(e) } }

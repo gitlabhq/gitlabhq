@@ -11,10 +11,12 @@ export default {
   inject: ['isIconOnly'],
   computed: {
     icon() {
-      return this.isIconOnly ? 'expand-left' : 'collapse-left';
+      return 'sidebar';
     },
     text() {
-      return this.isIconOnly ? s__('Navigation|Expand sidebar') : s__('Navigation|Shrink sidebar');
+      return this.isIconOnly
+        ? s__('Navigation|Expand sidebar')
+        : s__('Navigation|Collapse sidebar');
     },
   },
   methods: {
@@ -33,11 +35,9 @@ export default {
   >
     <gl-button
       v-gl-tooltip.right="isIconOnly ? text : ''"
-      class="gl-mx-3 gl-my-2"
+      :class="['gl-mx-2 gl-my-2 !gl-justify-start gl-font-semibold', { 'gl-gap-3': !isIconOnly }]"
       :icon="icon"
-      size="small"
       category="tertiary"
-      button-text-classes="gl-text-sm"
       @click="emitToggle"
       >{{ isIconOnly ? '' : text }}</gl-button
     >

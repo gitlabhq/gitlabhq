@@ -245,6 +245,7 @@ module Ci
       run_after_commit { build.execute_hooks }
     end
 
+    after_commit :trigger_job_create_subscription, on: :create
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
     after_commit :trigger_job_status_change_subscription, if: :saved_change_to_status?
@@ -450,6 +451,17 @@ module Ci
 
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
+    end
+
+    def trigger_job_create_subscription
+      return unless Feature.enabled?(:ci_job_created_subscription, project)
+
+      return if Gitlab::ApplicationRateLimiter.throttled?(
+        :ci_job_created_subscription,
+        scope: project
+      )
+
+      GraphqlTriggers.ci_job_created(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend

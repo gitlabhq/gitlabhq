@@ -474,4 +474,29 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { is_expected.to eq(expected) }
     end
   end
+
+  describe '#merge_request_dashboard_show_drafts?' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { helper.merge_request_dashboard_show_drafts? }
+
+    where(
+      :flag_enabled, :show_drafts, :expected
+    ) do
+      false  | false  | true
+      false  | true   | true
+      true   | false  | false
+      true   | true   | true
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(current_user).to receive(:merge_request_dashboard_show_drafts).and_return(show_drafts)
+      end
+
+      it { is_expected.to eq(expected) }
+    end
+  end
 end

@@ -280,4 +280,34 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       end
     end
   end
+
+  describe '.ci_job_created' do
+    let_it_be(:job) { create(:ci_build) }
+
+    it 'triggers the ci_job_created subscription' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_job_created,
+        { project_id: job.project.to_gid },
+        job
+      )
+
+      described_class.ci_job_created(job)
+    end
+
+    describe 'when ci_job_created_subscription is disabled' do
+      before do
+        stub_feature_flags(ci_job_created_subscription: false)
+      end
+
+      it 'does not trigger the ci_job_created subscription' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_job_created,
+          { job_id: job.project.to_gid },
+          job
+        )
+
+        described_class.ci_job_created(job)
+      end
+    end
+  end
 end

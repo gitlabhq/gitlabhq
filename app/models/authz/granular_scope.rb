@@ -10,8 +10,14 @@ module Authz
 
     scope :with_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
 
-    def boundary
-      namespace.present? ? namespace.class.sti_name : 'Instance'
+    def self.permitted_for_boundary?(boundary, permissions)
+      required_permissions = Array(permissions).map(&:to_sym)
+      token_permissions = token_permissions(boundary)
+      (required_permissions - token_permissions).empty?
+    end
+
+    def self.token_permissions(boundary)
+      find_by_namespace_id(boundary.namespace)&.permissions&.map(&:to_sym) || []
     end
 
     private

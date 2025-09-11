@@ -1686,6 +1686,26 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.semanticCodeSearch`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Semantically search for code in provided repositories.
+
+Returns [`[SemanticSearchCode!]`](#semanticsearchcode).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysemanticcodesearchknn"></a>`knn` | [`Int`](#int) | KNN count. |
+| <a id="querysemanticcodesearchlimit"></a>`limit` | [`Int`](#int) | Max number of search results to return. |
+| <a id="querysemanticcodesearchproject"></a>`project` | [`ProjectInfoInput!`](#projectinfoinput) | Project to search, with optional path prefix. |
+| <a id="querysemanticcodesearchsearchterm"></a>`searchTerm` | [`String!`](#string) | Search term to search for. |
+
 ### `Query.snippets`
 
 Find Snippets visible to the current user.
@@ -23415,12 +23435,6 @@ Self-hosted LLM servers.
 
 Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Ultimate with GitLab Duo Enterprise only.
 
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions. (see [Connections](#connections)) |
-
 #### Fields with arguments
 
 ##### `AiUsageData.all`
@@ -23437,8 +23451,25 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current day. |
-| <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 7 days ago. |
+| <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
+
+##### `AiUsageData.codeSuggestionEvents`
+
+Events related to code suggestions.
+
+Returns [`CodeSuggestionEventConnection`](#codesuggestioneventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusagedatacodesuggestioneventsenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedatacodesuggestioneventsstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
 
 ### `AiUsageEvent`
 
@@ -23447,7 +23478,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusageeventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
-| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
+| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="aiusageeventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
 | <a id="aiusageeventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
@@ -26077,8 +26108,8 @@ Code Quality report for a pipeline.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="codesuggestioneventevent"></a>`event` | [`AiUsageCodeSuggestionEvent!`](#aiusagecodesuggestionevent) | Type of the event. |
-| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
+| <a id="codesuggestioneventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
+| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
 | <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion measured in lines of code. |
 | <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
@@ -41776,6 +41807,31 @@ Returns [`Commit`](#commit).
 | ---- | ---- | ----------- |
 | <a id="repositorycommitref"></a>`ref` | [`String!`](#string) | Commit reference (SHA, branch name, or tag name). |
 
+##### `Repository.commits`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+List of commits from the repository.
+
+Returns [`CommitConnection`](#commitconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycommitsauthor"></a>`author` | [`String`](#string) | Name or email of the author. |
+| <a id="repositorycommitscommittedafter"></a>`committedAfter` | [`Time`](#time) | Commits created after an ISO8601 formatted time or date. |
+| <a id="repositorycommitscommittedbefore"></a>`committedBefore` | [`Time`](#time) | Commits created before an ISO8601 formatted time or date. |
+| <a id="repositorycommitsquery"></a>`query` | [`UntrustedRegexp`](#untrustedregexp) | Regular expression to filter the commits. |
+| <a id="repositorycommitsref"></a>`ref` | [`String!`](#string) | Branch or tag to search for commits. |
+
 ##### `Repository.lastCommit`
 
 The last commit made in the repository for the given path and ref.
@@ -42508,6 +42564,17 @@ Represents a URL related to a security training.
 | <a id="securitytrainingurlname"></a>`name` | [`String`](#string) | Name of the training provider. |
 | <a id="securitytrainingurlstatus"></a>`status` | [`TrainingUrlRequestStatus`](#trainingurlrequeststatus) | Status of the request to training provider. |
 | <a id="securitytrainingurlurl"></a>`url` | [`String`](#string) | URL of the link for security training content. |
+
+### `SemanticSearchCode`
+
+Code snippet returned by semantic search.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="semanticsearchcodecontent"></a>`content` | [`String!`](#string) | Content of the code snippet. |
+| <a id="semanticsearchcodepath"></a>`path` | [`String!`](#string) | File path to the code snippet. |
 
 ### `SentryDetailedError`
 
@@ -46503,16 +46570,6 @@ GitLab release state of the model.
 | <a id="aiselfhostedmodelreleasestatebeta"></a>`BETA` | Beta status. |
 | <a id="aiselfhostedmodelreleasestateexperimental"></a>`EXPERIMENTAL` | Experimental status. |
 | <a id="aiselfhostedmodelreleasestatega"></a>`GA` | GA status. |
-
-### `AiUsageCodeSuggestionEvent`
-
-Type of code suggestion event.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="aiusagecodesuggestioneventcode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code suggestion accepted. |
-| <a id="aiusagecodesuggestioneventcode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code suggestion rejected. |
-| <a id="aiusagecodesuggestioneventcode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code suggestion shown. |
 
 ### `AiUsageEventType`
 
@@ -54356,6 +54413,17 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
+
+### `ProjectInfoInput`
+
+Project selector with optional path prefix for narrowing the search.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinfoinputdirectorypath"></a>`directoryPath` | [`String`](#string) | Optional path prefix inside the repo (e.g., "app/models"). |
+| <a id="projectinfoinputprojectid"></a>`projectId` | [`Int!`](#int) | Numeric project ID. |
 
 ### `ProjectRequirementComplianceStatusInput`
 

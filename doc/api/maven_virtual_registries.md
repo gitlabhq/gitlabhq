@@ -279,7 +279,7 @@ Use the following endpoints to configure and manage upstream Maven registries.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
-
+- `upstream_name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561675) in GitLab 18.4.
 {{< /history >}}
 
 Lists all upstream registries for a top-level group.
@@ -295,6 +295,7 @@ Supported attributes:
 | `id` | string/integer | yes | The group ID or full group path. Must be a top-level group. |
 | `page` | integer | no | The page number. Defaults to 1. |
 | `per_page` | integer | no | The number of items per page. Defaults to 20. |
+| `upstream_name` | string | no | The name of the upstream registry for fuzzy search filtering by name. |
 
 Example request:
 

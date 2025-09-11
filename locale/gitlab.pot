@@ -271,6 +271,11 @@ msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d draft hidden"
+msgid_plural "%d drafts hidden"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d environment found"
 msgid_plural "%d environments found"
 msgstr[0] ""
@@ -4819,9 +4824,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Endpoint"
 msgstr ""
 
-msgid "AdminSelfHostedModels|GitLab Duo Self-Hosted"
-msgstr ""
-
 msgid "AdminSelfHostedModels|GitLab managed models"
 msgstr ""
 
@@ -4829,6 +4831,9 @@ msgid "AdminSelfHostedModels|If required, provide the API token that grants acce
 msgstr ""
 
 msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-native features."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model configuration"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model family"
@@ -42345,6 +42350,9 @@ msgstr ""
 msgid "Navigation|Code"
 msgstr ""
 
+msgid "Navigation|Collapse sidebar"
+msgstr ""
+
 msgid "Navigation|Deploy"
 msgstr ""
 
@@ -42421,9 +42429,6 @@ msgid "Navigation|Repository settings"
 msgstr ""
 
 msgid "Navigation|Secure"
-msgstr ""
-
-msgid "Navigation|Shrink sidebar"
 msgstr ""
 
 msgid "Navigation|Unpin %{title}"
@@ -61601,6 +61606,9 @@ msgstr ""
 msgid "Show wikis in global search results"
 msgstr ""
 
+msgid "Show your drafts"
+msgstr ""
+
 msgid "Showing %d project."
 msgid_plural "Showing %d projects."
 msgstr[0] ""
@@ -64824,6 +64832,9 @@ msgstr ""
 msgid "The `/merge` quick action requires the SHA of the head of the branch."
 msgstr ""
 
+msgid "The `version` attribute is required."
+msgstr ""
+
 msgid "The adjacent work item's parent must match the moving work item's parent."
 msgstr ""
 
@@ -65758,6 +65769,9 @@ msgid "There was an error summarizing your pending comments."
 msgstr ""
 
 msgid "There was an error updating your display preferences."
+msgstr ""
+
+msgid "There was an error updating your show drafts preference."
 msgstr ""
 
 msgid "There was an error when reseting email token."

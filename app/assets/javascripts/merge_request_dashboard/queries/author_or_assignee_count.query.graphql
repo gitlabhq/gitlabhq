@@ -5,6 +5,7 @@ query requestingReviewAuthorOrAssigneeCount(
   $reviewerWildcardId: ReviewerWildcardId
   $mergedAfter: Time
   $or: UnionedMergeRequestFilterInput
+  $draft: Boolean
   $not: MergeRequestsResolverNegatedParams
   $ignoredReviewerUsername: String
 ) {
@@ -17,6 +18,7 @@ query requestingReviewAuthorOrAssigneeCount(
       reviewStates: $reviewStates
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
+      draft: $draft
       or: $or
       not: $not
       ignoredReviewerUsername: $ignoredReviewerUsername

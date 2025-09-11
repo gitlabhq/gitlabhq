@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :consumables_cost_management do
+  include SubscriptionPortalHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:user) { create(:user) }
@@ -17,6 +18,7 @@ RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :
     context 'when user has read_usage_quotas permission' do
       before do
         group.add_owner(user)
+        stub_subscription_trial_types
       end
 
       it 'renders index with 200 status code' do

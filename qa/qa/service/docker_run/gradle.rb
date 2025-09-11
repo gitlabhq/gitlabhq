@@ -5,7 +5,7 @@ module QA
     module DockerRun
       class Gradle < Base
         def initialize(volume_host_path, artifact_id)
-          @image = 'gradle:8-jdk17'
+          @image = 'gradle:8-alpine'
           @name = "qa-gradle-#{SecureRandom.hex(8)}"
           @volume_host_path = volume_host_path
           @artifact_id = artifact_id

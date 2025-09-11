@@ -1408,6 +1408,24 @@ class Repository
       end
   end
 
+  def granular_ref_name_update(ref)
+    if Gitlab::Git.tag_ref?(ref)
+      cache_key = 'tag_names'
+    elsif Gitlab::Git.branch_ref?(ref)
+      cache_key = 'branch_names'
+    else
+      return
+    end
+
+    cache_value = Gitlab::Git.ref_name(ref)
+
+    exists = ref_exists?(ref)
+    operation = exists ? :add : :remove
+
+    redis_set_cache.granular_update(cache_key, cache_value, operation)
+    clear_memoization(memoizable_name(cache_key))
+  end
+
   private
 
   # Increase the limit by number of excluded refs

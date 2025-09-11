@@ -2,34 +2,7 @@
 
 module SupplyChain
   module Slsa
-    class ProvenanceStatement
-      include ActiveModel::Serializers::JSON
-
-      attr_accessor :_type, :subject, :predicate_type, :predicate
-
-      def self.from_build(build)
-        raise ArgumentError, "runner manager information not available in build" unless build.runner_manager
-
-        archives = build.job_artifacts.filter { |artifact| artifact.file_type == "archive" }
-        raise ArgumentError, 'artifacts associated with build do not contain a single archive' if archives.length != 1
-
-        archive = archives[0]
-        archive_resource = ResourceDescriptor.new(name: archive.file.filename, digest: { sha256: archive.file_sha256 })
-
-        provenance_statement = ProvenanceStatement.new
-        provenance_statement.subject = [archive_resource]
-        provenance_statement.predicate.build_definition = BuildDefinition.from_build(build)
-        provenance_statement.predicate.run_details = RunDetails.from_build(build)
-
-        provenance_statement
-      end
-
-      def initialize
-        @predicate = Predicate.new
-        @_type = "https://in-toto.io/Statement/v1"
-        @predicate_type = "https://slsa.dev/provenance/v1"
-      end
-
+    module CamelCaseJson
       def deep_change_case(json)
         exceptions = %w[_type variables]
 
@@ -42,6 +15,32 @@ module SupplyChain
         end
 
         new_json
+      end
+    end
+
+    class ProvenanceStatement
+      include ActiveModel::Serializers::JSON
+      include CamelCaseJson
+
+      attr_accessor :_type, :subject, :predicate_type, :predicate
+
+      def self.from_build(build)
+        archives = build.job_artifacts.filter { |artifact| artifact.file_type == "archive" }
+        raise ArgumentError, 'artifacts associated with build do not contain a single archive' if archives.length != 1
+
+        archive = archives[0]
+        archive_resource = ResourceDescriptor.new(name: archive.file.filename, digest: { sha256: archive.file_sha256 })
+
+        provenance_statement = ProvenanceStatement.new
+        provenance_statement.subject = [archive_resource]
+        provenance_statement.predicate = Predicate.from_build(build)
+
+        provenance_statement
+      end
+
+      def initialize
+        @_type = "https://in-toto.io/Statement/v1"
+        @predicate_type = "https://slsa.dev/provenance/v1"
       end
 
       def as_json(options = nil)
@@ -91,7 +90,7 @@ module SupplyChain
           }
 
           metadata = {
-            invocationId: build.id,
+            invocationId: build.id.to_s,
             # https://github.com/in-toto/attestation/blob/7aefca35a0f74a6e0cb397a8c4a76558f54de571/spec/v1/field_types.md#timestamp
             startedOn: build.started_at&.utc&.rfc3339,
             finishedOn: build.finished_at&.utc&.rfc3339
@@ -137,6 +136,21 @@ module SupplyChain
 
       class Predicate
         include ActiveModel::Model
+        include CamelCaseJson
+
+        def self.from_build(build)
+          raise ArgumentError, "runner manager information not available in build" unless build.runner_manager
+
+          predicate = Predicate.new
+          predicate.build_definition = BuildDefinition.from_build(build)
+          predicate.run_details = RunDetails.from_build(build)
+
+          predicate
+        end
+
+        def as_json(options = nil)
+          deep_change_case(super)
+        end
 
         attr_accessor :build_definition, :run_details
       end

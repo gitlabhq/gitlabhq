@@ -6,12 +6,14 @@ import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import eventHub from '../event_hub';
 import userMergeRequestUpdatedSubscription from '../queries/user_merge_request_updated.subscription.graphql';
 import TabTitle from './tab_title.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
+import DraftsCount from './drafts_count.vue';
 
 export default {
   apollo: {
@@ -52,7 +54,9 @@ export default {
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
+    DraftsCount,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
@@ -167,6 +171,7 @@ export default {
                 loading,
                 error,
                 resetNewMergeRequestIds,
+                draftsCount,
               }"
             >
               <collapsible-section
@@ -244,6 +249,13 @@ export default {
                     </gl-alert>
                   </div>
                 </div>
+                <template #drafts>
+                  <drafts-count
+                    v-if="glFeatures.mrDashboardDraftsToggle && draftsCount !== null && !loading"
+                    :count="draftsCount"
+                    class="gl-border-t gl-px-5 gl-py-3"
+                  />
+                </template>
                 <template #pagination>
                   <div v-if="hasNextPage" class="crud-pagination-container">
                     <gl-button :loading="loading" data-testid="load-more" @click="loadMore">{{

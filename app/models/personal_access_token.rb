@@ -8,6 +8,7 @@ class PersonalAccessToken < ApplicationRecord
   include CreatedAtFilterable
   include Gitlab::SQL::Pattern
   include SafelyChangeColumnDefault
+  include PolicyActor
 
   extend ::Gitlab::Utils::Override
 
@@ -86,6 +87,8 @@ class PersonalAccessToken < ApplicationRecord
 
   validate :validate_scopes
   validate :expires_at_before_instance_max_expiry_date, on: :create
+
+  delegate :permitted_for_boundary?, to: :granular_scopes
 
   def revoke!
     if persisted?
