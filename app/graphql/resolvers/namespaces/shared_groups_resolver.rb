@@ -13,7 +13,7 @@ module Resolvers
 
       argument :sort, Types::Namespaces::GroupSortEnum,
         required: false,
-        description: 'Order by name, path, id or similarity if searching.',
+        description: 'Order by name, created at, updated at, path, id or similarity if searching.',
         default_value: :name_asc
 
       alias_method :parent, :object

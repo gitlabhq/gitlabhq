@@ -210,6 +210,36 @@ module Gitlab
               }
             ]
           }
+        },
+        'pm_packages' => {
+          'i_pm_packages_purl_type_and_name' => {
+            'columns' => %w[purl_type name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'pm_package_versions',
+                'column' => 'pm_package_id'
+              }
+            ]
+          }
+        },
+        'pm_affected_packages' => {
+          'i_affected_packages_unique_for_upsert' => {
+            'columns' => %w[pm_advisory_id purl_type package_name distro_version],
+            'unique' => true
+          }
+        },
+        'container_repositories' => {
+          'index_container_repositories_on_project_id_and_name' => {
+            'columns' => %w[project_id name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'container_repository_states',
+                'column' => 'container_repository_id'
+              }
+            ]
+          }
         }
       }.freeze
 

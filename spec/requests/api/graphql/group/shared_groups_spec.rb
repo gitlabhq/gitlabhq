@@ -65,6 +65,10 @@ RSpec.describe 'Query.group.sharedGroups', feature_category: :groups_and_project
       :PATH_DESC | [ref(:shared_group_3), ref(:shared_group_2), ref(:shared_group)]
       :ID_ASC | [ref(:shared_group), ref(:shared_group_2), ref(:shared_group_3)]
       :ID_DESC | [ref(:shared_group_3), ref(:shared_group_2), ref(:shared_group)]
+      :CREATED_AT_ASC | [ref(:shared_group), ref(:shared_group_2), ref(:shared_group_3)]
+      :CREATED_AT_DESC | [ref(:shared_group_3), ref(:shared_group_2), ref(:shared_group)]
+      :UPDATED_AT_ASC | [ref(:shared_group), ref(:shared_group_2), ref(:shared_group_3)]
+      :UPDATED_AT_DESC | [ref(:shared_group_3), ref(:shared_group_2), ref(:shared_group)]
     end
 
     with_them do

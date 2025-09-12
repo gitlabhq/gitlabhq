@@ -2655,6 +2655,9 @@ msgstr ""
 msgid "AICatalog|Project is required."
 msgstr ""
 
+msgid "AICatalog|Project members will be able to run this %{itemType}."
+msgstr ""
+
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
@@ -2680,9 +2683,6 @@ msgid "AICatalog|Select a project for your AI agent to be associated with."
 msgstr ""
 
 msgid "AICatalog|Select a project for your AI flow to be associated with."
-msgstr ""
-
-msgid "AICatalog|Select a project to which you want to add this %{itemType}."
 msgstr ""
 
 msgid "AICatalog|Select agent"
@@ -2734,6 +2734,9 @@ msgid "AICatalog|The item consumer must belong to only one organization, group, 
 msgstr ""
 
 msgid "AICatalog|The test run failed. %{error}"
+msgstr ""
+
+msgid "AICatalog|This %{itemType} is private and can only be added to the project it was created in. Duplicate the agent to use the same configuration in other projects."
 msgstr ""
 
 msgid "AICatalog|This agent can be made private if it is not used."

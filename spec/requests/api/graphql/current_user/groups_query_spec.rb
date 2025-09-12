@@ -134,6 +134,28 @@ RSpec.describe 'Query current user groups', feature_category: :groups_and_projec
     end
   end
 
+  context 'when sorting' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:sort, :expected_groups) do
+      :CREATED_AT_ASC | [ref(:guest_group), ref(:private_maintainer_group), ref(:public_developer_group), ref(:public_maintainer_group), ref(:public_owner_group)]
+      :CREATED_AT_DESC | [ref(:public_owner_group), ref(:public_maintainer_group), ref(:public_developer_group), ref(:private_maintainer_group), ref(:guest_group)]
+      :UPDATED_AT_ASC | [ref(:guest_group), ref(:private_maintainer_group), ref(:public_developer_group), ref(:public_maintainer_group), ref(:public_owner_group)]
+      :UPDATED_AT_DESC | [ref(:public_owner_group), ref(:public_maintainer_group), ref(:public_developer_group), ref(:private_maintainer_group), ref(:guest_group)]
+    end
+
+    with_them do
+      it "orders correctly" do
+        query_with_sort = graphql_query_for('currentUser', {}, query_graphql_field('groups', { sort: sort }, fields))
+        post_graphql(query_with_sort, current_user: current_user)
+
+        expect(
+          graphql_data.dig('currentUser', 'groups', 'nodes').pluck('id')
+        ).to eq(expected_groups.map { |group| group.to_global_id.to_s })
+      end
+    end
+  end
+
   def expected_group_hash(*groups)
     groups.map do |group|
       {

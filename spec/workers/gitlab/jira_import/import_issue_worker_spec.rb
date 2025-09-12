@@ -113,6 +113,8 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
           expect(issue.labels).to eq(project.labels)
           expect(issue.assignees).to eq([user])
           expect(issue.work_item_type_id).to eq(issue_type.id)
+          expect(issue.imported_from).to eq('jira')
+          expect(issue.label_links.pluck(:namespace_id).uniq).to contain_exactly(project.project_namespace_id)
         end
 
         context 'when assignee_ids is nil' do

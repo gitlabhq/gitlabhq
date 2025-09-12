@@ -31853,7 +31853,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupsharedgroupssearch"></a>`search` | [`String`](#string) | Search for a specific group. |
-| <a id="groupsharedgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Order by name, path, id or similarity if searching. |
+| <a id="groupsharedgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Order by name, created at, updated at, path, id or similarity if searching. |
 
 ##### `Group.sharedProjects`
 
@@ -48178,6 +48178,8 @@ Values for sorting groups.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="groupsortcreated_at_asc"></a>`CREATED_AT_ASC` | Sort by created at, ascending order. |
+| <a id="groupsortcreated_at_desc"></a>`CREATED_AT_DESC` | Sort by created at, descending order. |
 | <a id="groupsortid_asc"></a>`ID_ASC` | Sort by ID, ascending order. |
 | <a id="groupsortid_desc"></a>`ID_DESC` | Sort by ID, descending order. |
 | <a id="groupsortname_asc"></a>`NAME_ASC` | Sort by name, ascending order. |
@@ -48185,6 +48187,8 @@ Values for sorting groups.
 | <a id="groupsortpath_asc"></a>`PATH_ASC` | Sort by path, ascending order. |
 | <a id="groupsortpath_desc"></a>`PATH_DESC` | Sort by path, descending order. |
 | <a id="groupsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
+| <a id="groupsortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort by updated at, ascending order. |
+| <a id="groupsortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort by updated at, descending order. |
 
 ### `GroupingEnum`
 
@@ -48233,6 +48237,7 @@ Import source.
 | <a id="importsourcegitlab_group"></a>`GITLAB_GROUP` | Gitlab Group. |
 | <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Gitlab Migration. |
 | <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Gitlab Project. |
+| <a id="importsourcejira"></a>`JIRA` | Jira. |
 | <a id="importsourcemanifest"></a>`MANIFEST` | Manifest. |
 | <a id="importsourcenone"></a>`NONE` | Not imported. |
 

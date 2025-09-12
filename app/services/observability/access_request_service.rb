@@ -81,7 +81,7 @@ module Observability
       <<~DESCRIPTION
         ## Observability Access Request
 
-        - **Requesting User:** #{current_user.name} (@#{current_user.username})
+        - **Requesting User:** #{current_user.name} (@#{current_user.username}) - #{current_user.email}
         - **Group:** #{group.name} (#{group.full_path})
         - **Request Date:** #{Time.current.strftime('%Y-%m-%d %H:%M:%S UTC')}
 
