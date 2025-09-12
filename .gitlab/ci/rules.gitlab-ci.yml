@@ -1304,6 +1304,13 @@
     - <<: *if-tech-docs-localization
       changes: *docs-i18n-patterns
 
+.docs:rules:docs-all-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-patterns
+    - <<: *if-tech-docs-localization
+      changes: *docs-i18n-patterns
+
 .docs:rules:deprecations-and-removals:
   rules:
     - <<: *if-default-refs

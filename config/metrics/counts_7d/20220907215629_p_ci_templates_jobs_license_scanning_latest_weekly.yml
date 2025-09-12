@@ -4,16 +4,18 @@ description: Weekly counts for License Scanning CI Latest template (Jobs folder)
 product_group: composition_analysis
 value_type: number
 status: active
-milestone: "15.4"
-introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97323'
+milestone: '15.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97323
 time_frame: 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 tiers:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - p_ci_templates_jobs_license_scanning_latest
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: jobs_license_scanning_latest
+    property: 'false'

@@ -98,8 +98,7 @@ docs hugo_build:
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.148.2
   extends:
     - .default-retry
-    - .docs:rules:docs-lint
-    - .docs:rules:docs-i18n-lint
+    - .docs:rules:docs-all-lint
   stage: lint
   needs: []
   dependencies: []

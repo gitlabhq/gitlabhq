@@ -175,8 +175,47 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#deduplicate_new_path callback' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let(:mrdf) { merge_request.merge_request_diff.merge_request_diff_files.first }
+
+    it 'does not modify new_path when it does not match old_path' do
+      mrdf.update!(new_path: 'example/new_path', old_path: 'example/old_path')
+
+      expect(mrdf[:new_path]).to eq('example/new_path')
+    end
+
+    it 'sets new_path to nil when it equals old_path' do
+      mrdf.update!(new_path: 'example/path', old_path: 'example/path')
+
+      expect(mrdf[:new_path]).to be_nil
+    end
+
+    it 'leaves new_path nil when nil' do
+      mrdf.update!(new_path: nil, old_path: 'example/old_path')
+
+      expect(mrdf[:new_path]).to be_nil
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(deduplicate_new_path_value: false)
+      end
+
+      it 'does not set new_path to nil when it equals old_path' do
+        mrdf.update!(new_path: 'example/path', old_path: 'example/path')
+
+        expect(mrdf[:new_path]).not_to be_nil
+      end
+    end
+  end
+
   describe '#new_path' do
     context 'file[:new_path] exists' do
+      before do
+        file.update!(new_path: 'example/new_path', old_path: 'example/old_path')
+      end
+
       it 'returns [:new_path]' do
         expect(file.new_path).to eq(file[:new_path])
       end

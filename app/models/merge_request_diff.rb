@@ -592,7 +592,7 @@ class MergeRequestDiff < ApplicationRecord
       end
     else
       strong_memoize(:modified_paths) do
-        merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+        merge_request_diff_files.pluck(:new_path, :old_path).flatten.compact.uniq
       end
     end
   end
@@ -772,6 +772,10 @@ class MergeRequestDiff < ApplicationRecord
         relative_order: index,
         project_id: self.project_id
       )
+
+      if Feature.enabled?(:deduplicate_new_path_value, Project.find(self.project_id))
+        diff_hash[:new_path] = diff.new_path == diff.old_path ? nil : diff.new_path
+      end
 
       # Compatibility with old diffs created with Psych.
       diff_hash.tap do |hash|

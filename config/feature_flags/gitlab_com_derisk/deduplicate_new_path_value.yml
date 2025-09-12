@@ -1,0 +1,10 @@
+---
+name: deduplicate_new_path_value
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557745
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203146
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/567834
+milestone: '18.4'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

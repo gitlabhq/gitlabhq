@@ -78,6 +78,28 @@ module Gitlab::UsageDataCounters
       p_ci_templates_implicit_security_secret_detection
       p_ci_templates_jobs_browser_performance_testing
       p_ci_templates_jobs_browser_performance_testing_latest
+      p_ci_templates_jobs_build
+      p_ci_templates_jobs_build_latest
+      p_ci_templates_jobs_cf_provision
+      p_ci_templates_jobs_code_intelligence
+      p_ci_templates_jobs_code_quality
+      p_ci_templates_jobs_container_scanning
+      p_ci_templates_jobs_container_scanning_latest
+      p_ci_templates_jobs_dast_default_branch_deploy
+      p_ci_templates_jobs_dependency_scanning
+      p_ci_templates_jobs_dependency_scanning_latest
+      p_ci_templates_jobs_deploy
+      p_ci_templates_jobs_deploy_ec2
+      p_ci_templates_jobs_deploy_ecs
+      p_ci_templates_jobs_deploy_latest
+      p_ci_templates_jobs_helm_2to3
+      p_ci_templates_jobs_license_scanning
+      p_ci_templates_jobs_license_scanning_latest
+      p_ci_templates_jobs_load_performance_testing
+      p_ci_templates_jobs_sast_latest
+      p_ci_templates_jobs_secret_detection
+      p_ci_templates_jobs_secret_detection_latest
+      p_ci_templates_jobs_test
     ].freeze
 
     class << self
