@@ -185,12 +185,19 @@ export default {
       return null;
     },
     currentBranch(item) {
-      return item.ref?.name;
+      if (item.source === 'push') {
+        return item.ref?.name;
+      }
+      if (item.source === 'merge_request_event') {
+        return item.merge_request?.source_branch;
+      }
+      return null;
     },
     showDuoWorkflowAction(item) {
       return (
         this.isFailed(item) &&
         this.mergeRequestPath(item) &&
+        this.currentBranch(item) &&
         this.glFeatures.aiDuoAgentFixPipelineButton
       );
     },

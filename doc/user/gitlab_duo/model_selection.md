@@ -161,9 +161,9 @@ If you are assigned a seat in a project that has a specific LLM selected for [co
 
 This might cause increased latency with code completion requests.
 
-### Agentic Chat incompatibility
+### Agentic Chat compatibility
 
-When a specific LLM is selected for GitLab Duo Chat or its sub-features, [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) is not available in that namespace.
+[Agentic Chat](../gitlab_duo_chat/agentic_chat.md) continues to use the default model regardless of the model you select for [Classic Duo Chat](../gitlab_duo_chat/_index.md) or its sub-features.
 
 ### No default GitLab Duo namespace
 

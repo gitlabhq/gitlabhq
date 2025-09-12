@@ -435,7 +435,7 @@ The GitLab Workflow extension for VS Code is configured by default in workspaces
 With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
 This extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
 
-## Extension marketplace
+## Extension Marketplace
 
 {{< details >}}
 
@@ -450,12 +450,10 @@ This extension also powers AI features like GitLab Duo Code Suggestions and GitL
 
 {{< /history >}}
 
-The VS Code Extension Marketplace provides you with access to extensions that enhance the
-functionality of your workspace.
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE. By default, the GitLab Web IDE connects to the [Open VSX Registry](https://open-vsx.org/).
 
-You can use the extension marketplace in your
-workspace Web IDE. It connects to the [Open VSX Registry](https://open-vsx.org/).
-For more information, see [Configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
+For more information, see [configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 ## Personal access token
 

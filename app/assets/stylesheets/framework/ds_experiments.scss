@@ -11,7 +11,7 @@
   .gl-button.gl-button,
   .form-control:not(.gl-search-box-by-type-input-borderless),
   .gl-form-input,
-  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless):not(.input-group-prepend + .gl-form-input),
+  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless):not(.input-group-prepend + .gl-form-input):not(.gl-search-box-by-click-input),
   .gl-form-select,
   .input-group-text,
   &.application-chrome .filtered-search-box {

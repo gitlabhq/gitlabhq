@@ -124,7 +124,7 @@ You can change the default editor for editing content in GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
-1. Under **Default text editor**, enssure the **Enable default text editor** checkbox is selected.
+1. Under **Default text editor**, ensure the **Enable default text editor** checkbox is selected.
 1. Choose either **Rich text editor** or **Plain text editor** as your default.
 1. Select **Save changes**.
 
@@ -497,16 +497,16 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< /history >}}
 
-You can use the extension marketplace to search and
-[manage extensions](../project/web_ide/_index.md#manage-extensions) for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
-For third-party extensions, you must enable the marketplace in user preferences.
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE and workspaces.
 
 Prerequisites:
 
-- In the **Admin** area, a GitLab administrator must
-  [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
+- For GitLab Self-Managed and GitLab Dedicated, a GitLab administrator must [enable the extension registry](../../administration/settings/vscode_extension_marketplace.md#enable-the-extension-registry).
+- For enterprise users, a group Owner must [enable the Extension Marketplace](../enterprise_user/_index.md#enable-the-extension-marketplace-for-enterprise-users)
+for the associated group.
 
-To enable the extension marketplace for the Web IDE and workspaces:
+To integrate with the Extension Marketplace:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

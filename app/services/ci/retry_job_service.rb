@@ -35,6 +35,10 @@ module Ci
       start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline
 
       new_job.run_after_commit do
+        if Feature.enabled?(:persisted_job_environment_relationship, project) && job.persisted_environment.present?
+          new_job.link_to_environment(job.persisted_environment)
+        end
+
         start_pipeline_proc&.call
 
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
@@ -42,10 +46,6 @@ module Ci
         ::MergeRequests::AddTodoWhenBuildFailsService
           .new(project: project)
           .close(new_job)
-
-        if Feature.enabled?(:persisted_job_environment_relationship, project) && job.persisted_environment.present?
-          new_job.link_to_environment(job.persisted_environment)
-        end
       end
 
       add_job = -> do

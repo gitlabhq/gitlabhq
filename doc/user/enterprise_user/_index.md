@@ -265,13 +265,7 @@ email address from a non-verified domain. This action automatically releases the
 Allowing group Owners to change primary emails is proposed in
 [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
-### Enable the extension marketplace for the Web IDE and workspaces
-
-{{< details >}}
-
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
+### Enable the Extension Marketplace for enterprise users
 
 {{< history >}}
 
@@ -285,12 +279,15 @@ Allowing group Owners to change primary emails is proposed in
 
 {{< /history >}}
 
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE and Workspaces. Top-level group Owners can control access to the marketplace for enterprise
+users in their group.
+
 Prerequisites:
 
-- An administrator must [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
 - You must have the Owner role for a top-level group.
 
-To enable the extension marketplace for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md):
+To enable the Extension Marketplace for enterprise users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

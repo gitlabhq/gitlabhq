@@ -46,7 +46,7 @@ export default {
 <template>
   <div
     v-if="showCommentToolBar"
-    class="comment-toolbar gl-flex gl-flex-row gl-rounded-b-base gl-px-2"
+    class="comment-toolbar gl-flex gl-flex-row gl-rounded-b-lg gl-px-2"
     :class="
       showContentEditorSwitcher
         ? 'gl-border-t gl-items-center gl-justify-between gl-border-default'

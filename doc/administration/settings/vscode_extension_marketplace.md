@@ -13,14 +13,13 @@ title: Configure VS Code Extension Marketplace
 
 {{< /details >}}
 
-The VS Code Extension Marketplace provides you with access to extensions that enhance the
-functionality of the [Web IDE](../../user/project/web_ide/_index.md) and
-[Workspaces](../../user/workspace/_index.md) in GitLab. As an administrator, you can enable this
-feature across your GitLab instance and configure which extension registry your users can access.
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE and Workspaces. Administrators can configure access to the marketplace for the entire instance.
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
+This security requirement ensures that third-party extensions run in isolation and cannot access your account.
 
 {{< /alert >}}
 
@@ -36,7 +35,7 @@ To access the VS Code Extension Marketplace settings:
 1. Select **Settings > General**.
 1. Expand **VS Code Extension Marketplace**.
 
-## Enable with default extension registry
+## Enable the extension registry
 
 By default, the GitLab instance is configured to use the [Open VSX](https://open-vsx.org/)
 extension registry. To enable the extension marketplace with this default configuration:
@@ -50,13 +49,13 @@ Prerequisites:
 1. Expand **VS Code Extension Marketplace**.
 1. Toggle on **Enable Extension Marketplace** to enable the extension marketplace across the GitLab instance.
 
-## Customize extension registry
-
-To connect the GitLab instance with a custom extension registry:
+## Modify the extension registry
 
 Prerequisites:
 
 - You must be an administrator.
+
+To modify the extension registry:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -66,15 +65,7 @@ Prerequisites:
 1. Enter full URLs for a VS Code extension registry's **Service URL**, **Item URL**, and **Resource URL Template**.
 1. Select **Save changes**.
 
-{{< alert type="note" >}}
+After you modify the extension registry:
 
-After enabling the extension marketplace, users must still
-[opt in to use the extension marketplace](../../user/profile/preferences.md#integrate-with-the-extension-marketplace).
-
-If you modify the extension registry URLs:
-
-- Users who previously opted in must opt in again with the new registry.
-- Users who have not opted in are not affected.
-- Active Web IDE or Workspace sessions continue to use their current configuration until refreshed.
-
-{{< /alert >}}
+- Active Web IDE or Workspace sessions continue to use their previous registry until refreshed.
+- All users must [integrate their account with the new registry](../../user/profile/preferences.md#integrate-with-the-extension-marketplace) before they can use extensions.

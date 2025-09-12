@@ -250,6 +250,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'creates a new deployment' do
         expect { new_job }.to change { Deployment.count }.by(1)
+        expect(new_job.job_environment.deployment).to eq(new_job.deployment)
       end
 
       it 'does not create a new environment' do
@@ -273,6 +274,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'creates a new deployment' do
         expect { new_job }.to change { Deployment.count }.by(1)
+        expect(new_job.job_environment.deployment).to eq(new_job.deployment)
       end
 
       it 'does not create a new environment' do

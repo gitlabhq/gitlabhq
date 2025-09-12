@@ -111,8 +111,8 @@ or provide suggestions on how to run `git` commands to perform other tasks.
 
 ## Install the CLI
 
-Installation instructions are available in the `glab`
-[`README`](https://gitlab.com/gitlab-org/cli/#installation).
+Installation instructions are available in
+[the `glab` `README`](https://gitlab.com/gitlab-org/cli/#installation).
 
 ## Authenticate with GitLab
 

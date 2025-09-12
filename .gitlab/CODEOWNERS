@@ -634,6 +634,7 @@ lib/gitlab/checks/
 /doc/administration/libravatar.md @axil @eread
 /doc/administration/license.md @lciutacu
 /doc/administration/license_file.md @lciutacu
+/doc/administration/license_usage.md @lciutacu
 /doc/administration/load_balancer.md @axil @eread
 /doc/administration/logs/ @axil @eread
 /doc/administration/maintenance_mode/ @axil
@@ -700,7 +701,7 @@ lib/gitlab/checks/
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @brendan777
 /doc/administration/settings/scim_setup.md @lciutacu
 /doc/administration/settings/security_and_compliance.md @rdickenson
-/doc/administration/settings/slack_app.md @ashrafkhamis
+/doc/administration/settings/slack_app.md @msedlakjakubowski
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/vscode_extension_marketplace.md @brendan777
@@ -745,10 +746,10 @@ lib/gitlab/checks/
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
 /doc/api/google_cloud_integration.md @idurham
-/doc/api/graphql/duo_and_sdlc_trends.md @lciutacu
 /doc/api/graphql/assign_gitlab_duo_seats.md @lciutacu
 /doc/api/graphql/branch_rules.md @brendan777
 /doc/api/graphql/custom_emoji.md @msedlakjakubowski
+/doc/api/graphql/duo_and_sdlc_trends.md @lciutacu
 /doc/api/graphql/epic_work_items_api_migration_guide.md @msedlakjakubowski
 /doc/api/graphql/sample_issue_boards.md @msedlakjakubowski
 /doc/api/graphql/users_example.md @idurham
@@ -877,6 +878,7 @@ lib/gitlab/checks/
 /doc/api/vulnerability_findings.md @rlehmann1
 /doc/api/web_commits.md @brendan777
 /doc/api/wikis.md @msedlakjakubowski
+/doc/auth/ @idurham
 /doc/ci/_index.md @lyspin
 /doc/ci/caching/ @marcel.amirault
 /doc/ci/ci_cd_for_external_repos/ @lyspin
@@ -953,6 +955,7 @@ lib/gitlab/checks/
 /doc/development/internal_analytics/product_analytics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logging.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/logs.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/mcp_server.md @gitlab-org/ai-powered
 /doc/development/metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/navigation_sidebar.md @gitlab-org/growth
 /doc/development/observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -979,7 +982,6 @@ lib/gitlab/checks/
 /doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
-/doc/integration/exact_code_search/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
 /doc/integration/gitpod.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
@@ -988,6 +990,7 @@ lib/gitlab/checks/
 /doc/integration/mattermost/ @axil @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
+/doc/integration/zoekt/ @ashrafkhamis
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
@@ -1074,7 +1077,6 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_runner.md @rsarangadharan
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
-/doc/user/gitlab_duo/context_exclusion.md @scawood
 /doc/user/gitlab_duo/model_selection.md @jglassman1
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
@@ -1134,8 +1136,6 @@ lib/gitlab/checks/
 /doc/user/project/integrations/emails_on_push.md @brendan777
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
-/doc/user/project/integrations/gitlab_slack_app_troubleshooting.md @ashrafkhamis
-/doc/user/project/integrations/gitlab_slack_application.md @ashrafkhamis
 /doc/user/project/integrations/google_artifact_management.md @z_painter
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/matrix.md @kpaizee

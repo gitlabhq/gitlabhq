@@ -402,6 +402,7 @@ For more information, see [skip confirmation when administrators reassign placeh
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17871) in GitLab 18.3 [with a flag](../../../administration/feature_flags/list.md) named `group_owner_placeholder_confirmation_bypass`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/548946) in GitLab 18.4.
 
 {{< /history >}}
 

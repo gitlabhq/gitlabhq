@@ -291,7 +291,7 @@ To view any notification you might have missed:
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -307,27 +307,22 @@ To view any notification you might have missed:
 
 {{< /history >}}
 
-The VS Code Extension Marketplace provides you with access to extensions that enhance the
-functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
-[Open VSX Registry](https://open-vsx.org/).
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE. By default, the GitLab Web IDE connects to the [Open VSX Registry](https://open-vsx.org/).
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host.
+To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
 This security requirement ensures that third-party extensions run in isolation and cannot access your account.
 This applies to both GitLab.com and GitLab Self-Managed.
 
 {{< /alert >}}
 
-Before you can manage and use extensions in the Web IDE:
+Prerequisites:
 
-- A GitLab administrator must [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md)
-  in the **Admin** area.
-- You must [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace)
-  in your user preferences.
-- For enterprise users, a person with the Owner role must
-  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces)
-  in group settings.
+- You must [integrate the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace) in your user preferences.
+- For GitLab Self-Managed and GitLab Dedicated, a GitLab administrator must [enable the extension registry](../../../administration/settings/vscode_extension_marketplace.md).
+- For enterprise users, a group Owner must [enable the Extension Marketplace for enterprise users](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-enterprise-users).
 
 ### Install an extension
 

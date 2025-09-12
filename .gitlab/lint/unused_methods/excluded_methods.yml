@@ -14,3 +14,6 @@ toggle_award_emoji_project_project_snippet_path:
 toggle_award_emoji_project_project_snippet_url:
   file: app/helpers/routing/snippets_helper.rb
   reason: Rails' dynamic route creation in app/helpers/award_emoji_helper.rb
+"#{arg}?":
+  file: app/models/concerns/integrations/base/integration.rb
+  reason: A metaprogramming method
