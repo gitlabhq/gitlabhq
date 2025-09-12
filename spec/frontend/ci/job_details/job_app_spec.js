@@ -132,6 +132,15 @@ describe('Job App', () => {
 
       expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
     });
+
+    it('should update scrolling when resized', () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      // Mock trigger resize
+      getBinding(wrapper.element, 'gl-resize-observer').value();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
   });
 
   describe('with successful request', () => {
@@ -395,12 +404,6 @@ describe('Job App', () => {
       expect(findJobLog().exists()).toBe(true);
 
       expect(findJobLog().props()).toEqual({ searchResults: [] });
-    });
-
-    it('should toggle scroll buttons when line is toggled', () => {
-      findJobLog().vm.$emit('toggleCollapsibleLine');
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 

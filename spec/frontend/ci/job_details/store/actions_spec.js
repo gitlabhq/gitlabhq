@@ -30,7 +30,7 @@ import {
   exitFullscreenSuccess,
   fullScreenContainerSetUpResult,
 } from '~/ci/job_details/store/actions';
-import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+import { isScrolledToBottom, scrollDown, scrollUp } from '~/lib/utils/scroll_utils';
 
 import * as types from '~/ci/job_details/store/mutation_types';
 import state from '~/ci/job_details/store/state';
@@ -195,14 +195,18 @@ describe('Job State actions', () => {
   });
 
   describe('scrollTop', () => {
-    it('should dispatch toggleScrollButtons action', () => {
-      return testAction(scrollTop, null, mockedState, [], [{ type: 'toggleScrollButtons' }]);
+    it('should dispatch toggleScrollButtons action', async () => {
+      await testAction(scrollTop, null, mockedState, [], []);
+
+      expect(scrollUp).toHaveBeenCalled();
     });
   });
 
   describe('scrollBottom', () => {
-    it('should dispatch toggleScrollButtons action', () => {
-      return testAction(scrollBottom, null, mockedState, [], [{ type: 'toggleScrollButtons' }]);
+    it('should dispatch toggleScrollButtons action', async () => {
+      await testAction(scrollBottom, null, mockedState, [], []);
+
+      expect(scrollDown).toHaveBeenCalled();
     });
   });
 

@@ -496,4 +496,15 @@ export const POLICIES_BY_RESOURCE = [
       },
     ],
   },
+  {
+    resource: { value: 'WORK_ITEMS', text: 'Work items' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_WORK_ITEMS',
+        text: 'Read',
+        resource: { value: 'WORK_ITEMS', text: 'Work items' },
+      },
+    ],
+  },
 ];

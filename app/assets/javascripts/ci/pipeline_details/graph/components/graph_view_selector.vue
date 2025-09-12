@@ -136,7 +136,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-relative gl-my-4 gl-flex gl-flex-wrap gl-items-center sm:gl-flex-nowrap">
+    <div class="gl-relative gl-my-4 gl-flex gl-flex-wrap gl-items-center @sm/panel:gl-flex-nowrap">
       <gl-loading-icon
         v-if="isSwitcherLoading"
         data-testid="switcher-loading-state"
@@ -159,7 +159,7 @@ export default {
         <gl-toggle
           v-model="showLinksActive"
           data-testid="show-links-toggle"
-          class="gl-sm-ml-4 gl-mt-4 sm:gl-mt-0"
+          class="gl-sm-ml-4 gl-mt-4 @sm/panel:gl-mt-0"
           :label="$options.i18n.linksLabelText"
           :is-loading="isToggleLoading"
           label-position="left"

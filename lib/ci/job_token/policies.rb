@@ -21,7 +21,8 @@ module Ci
         :read_secure_files,
         :admin_secure_files,
         :read_terraform_state,
-        :admin_terraform_state
+        :admin_terraform_state,
+        :read_work_items
       ].freeze
 
       DEPRECATED_POLICIES = [

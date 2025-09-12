@@ -23,6 +23,7 @@ RSpec.describe ::Types::Ci::JobTokenScope::PoliciesEnum, feature_category: :secr
       ADMIN_SECURE_FILES
       READ_TERRAFORM_STATE
       ADMIN_TERRAFORM_STATE
+      READ_WORK_ITEMS
     ])
   end
 end

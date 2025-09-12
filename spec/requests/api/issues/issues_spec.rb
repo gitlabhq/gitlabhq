@@ -1142,6 +1142,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues' do
+    it_behaves_like 'enforcing job token policies', :read_work_items,
+      allow_public_access_for_enabled_project_features: :issues do
+      let(:request) do
+        get api("/projects/#{project.id}/issues"), params: { job_token: target_job.token }
+      end
+    end
+
     context 'when authenticated with a token that has the ai_workflows scope' do
       let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
 
@@ -1260,6 +1267,13 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   end
 
   describe 'GET /projects/:id/issues/:issue_iid' do
+    it_behaves_like 'enforcing job token policies', :read_work_items,
+      allow_public_access_for_enabled_project_features: :issues do
+      let(:request) do
+        get api("/projects/#{project.id}/issues/#{issue.iid}"), params: { job_token: target_job.token }
+      end
+    end
+
     it 'exposes full reference path', :aggregate_failures do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 

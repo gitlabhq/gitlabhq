@@ -92,20 +92,22 @@ The monthly release week is the week containing the third Thursday of the month.
 
 Non-critical patches are included in the next scheduled maintenance window.
 
-## Request a backport
+## Bug fixes
 
-If you need a specific fix that hasn't been backported to your version,
-you can request a backport of the change.
+GitLab engineering teams work to include bug fixes and performance improvements
+in your version during scheduled maintenance windows.
+These fixes are included proactively without action required from you.
 
-To request a backport:
+### Request a bug fix
 
-1. Submit a support ticket with:
-   - A link to the merge request or issue containing the fix.
-   - The business justification for the backport request.
-   - A description of the impact if the fix is not available.
-1. Wait for a response about whether the backport is approved.
+You can request a specific bug fix if it hasn't been included in your version.
 
-If approved, the backport is included in your next scheduled maintenance window.
+To request a bug fix:
+
+1. Submit a support ticket with a link to the merge request or issue that contains the fix.
+1. Wait for a response about whether the request is approved.
+
+If approved, the fix is included in your next scheduled maintenance window.
 
 {{< alert type="note" >}}
 

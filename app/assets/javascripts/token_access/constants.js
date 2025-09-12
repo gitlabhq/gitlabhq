@@ -17,6 +17,7 @@ export const RESOURCE_TERRAFORM_STATE = {
   value: 'TERRAFORM_STATE',
   text: s__('JobToken|Terraform state'),
 };
+export const RESOURCE_WORK_ITEMS = { value: 'WORK_ITEMS', text: s__('JobToken|Work items') };
 
 const READ = s__('JobToken|Read');
 const READ_AND_WRITE = s__('JobToken|Read and write');
@@ -111,6 +112,11 @@ export const POLICY_ADMIN_TERRAFORM_STATE = {
   text: READ_AND_WRITE,
   resource: RESOURCE_TERRAFORM_STATE,
 };
+export const POLICY_READ_WORK_ITEMS = {
+  value: 'READ_WORK_ITEMS',
+  text: READ,
+  resource: RESOURCE_WORK_ITEMS,
+};
 export const POLICY_NONE = { value: '', text: __('None') };
 
 export const POLICIES_BY_RESOURCE = [
@@ -153,6 +159,10 @@ export const POLICIES_BY_RESOURCE = [
   {
     resource: RESOURCE_TERRAFORM_STATE,
     policies: [POLICY_NONE, POLICY_READ_TERRAFORM_STATE, POLICY_ADMIN_TERRAFORM_STATE],
+  },
+  {
+    resource: RESOURCE_WORK_ITEMS,
+    policies: [POLICY_NONE, POLICY_READ_WORK_ITEMS],
   },
 ];
 

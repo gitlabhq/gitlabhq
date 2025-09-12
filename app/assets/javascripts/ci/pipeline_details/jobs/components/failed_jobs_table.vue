@@ -80,7 +80,7 @@ export default {
     </template>
 
     <template #cell(name)="{ item }">
-      <div class="gl-flex gl-items-center gl-justify-end lg:gl-justify-start">
+      <div class="gl-flex gl-items-center gl-justify-end @lg/panel:gl-justify-start">
         <ci-icon :status="item.detailedStatus" class="gl-mr-3" />
         <div class="gl-truncate">
           <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold !gl-text-default">

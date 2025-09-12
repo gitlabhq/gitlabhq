@@ -249,3 +249,5 @@ The following endpoints are available for CI/CD job tokens.
 | Terraform state: Read and write | `ADMIN_TERRAFORM_STATE` | `POST /projects/:id/terraform/state/:name` | Add a new Terraform state or update an existing one |
 | Terraform state: Read | `READ_TERRAFORM_STATE` | `GET /projects/:id/terraform/state/:name/versions/:serial` | Get a Terraform state version |
 | Terraform state: Read | `READ_TERRAFORM_STATE` | `GET /projects/:id/terraform/state/:name` | Get a Terraform state by its name |
+| Work items: Read | `READ_WORK_ITEMS` | `GET /projects/:id/issues/:issue_iid` | Get a single project issue |
+| Work items: Read | `READ_WORK_ITEMS` | `GET /projects/:id/issues` | Get a list of project issues |

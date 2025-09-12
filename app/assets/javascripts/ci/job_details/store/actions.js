@@ -5,7 +5,6 @@ import { setFaviconOverlay, resetFavicon } from '~/lib/utils/favicon';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import {
-  canScroll,
   isScrolledToBottom,
   isScrolledToTop,
   scrollDown,
@@ -174,34 +173,28 @@ export const receiveJobError = ({ commit }) => {
 /**
  * Job Log
  */
-export const scrollTop = ({ dispatch }) => {
+export const scrollTop = () => {
   scrollUp();
-  dispatch('toggleScrollButtons');
 };
 
-export const scrollBottom = ({ dispatch }) => {
+export const scrollBottom = () => {
   scrollDown();
-  dispatch('toggleScrollButtons');
 };
 
 /**
  * Responsible for toggling the disabled state of the scroll buttons
  */
 export const toggleScrollButtons = ({ dispatch }) => {
-  if (canScroll()) {
-    if (isScrolledToTop()) {
-      dispatch('disableScrollTop');
-      dispatch('enableScrollBottom');
-    } else if (isScrolledToBottom()) {
-      dispatch('disableScrollBottom');
-      dispatch('enableScrollTop');
-    } else {
-      dispatch('enableScrollTop');
-      dispatch('enableScrollBottom');
-    }
-  } else {
-    dispatch('disableScrollBottom');
+  if (isScrolledToTop()) {
     dispatch('disableScrollTop');
+  } else {
+    dispatch('enableScrollTop');
+  }
+
+  if (isScrolledToBottom()) {
+    dispatch('disableScrollBottom');
+  } else {
+    dispatch('enableScrollBottom');
   }
 };
 

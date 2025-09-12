@@ -176,11 +176,20 @@ export default {
     isFailed(item) {
       return item.details.status.group === 'failed';
     },
+    getPipelinePath(item) {
+      if (item.path) {
+        return `${gon.gitlab_url}${item.path}`;
+      }
+      return null;
+    },
     mergeRequestPath(item) {
       if (item.merge_request?.path) {
         return `${gon.gitlab_url}${item.merge_request.path}`;
       }
       return null;
+    },
+    currentBranch(item) {
+      return item.ref?.name;
     },
     showDuoWorkflowAction(item) {
       return (
@@ -188,6 +197,15 @@ export default {
         this.mergeRequestPath(item) &&
         this.glFeatures.aiDuoAgentFixPipelineButton
       );
+    },
+    getAdditionalContext(item) {
+      return [
+        {
+          Category: 'agent_user_environment',
+          Content: JSON.stringify({ merge_request_url: this.mergeRequestPath(item) }),
+          Metadata: '{}',
+        },
+      ];
     },
   },
   TBODY_TR_ATTR: {
@@ -269,9 +287,11 @@ export default {
               :duo-workflow-invoke-path="agentInvokePath"
               :project-id="item.project.id"
               :project-path="getProjectPath(item)"
-              :goal="mergeRequestPath(item)"
+              :goal="getPipelinePath(item)"
               :hover-message="__('Fix pipeline with Duo')"
               :agent-privileges="agentPrivileges"
+              :source-branch="currentBranch(item)"
+              :additional-context="getAdditionalContext(item)"
               workflow-definition="fix_pipeline/experimental"
               size="medium"
             />

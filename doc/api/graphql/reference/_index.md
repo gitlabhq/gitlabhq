@@ -238,8 +238,7 @@ Returns [`String`](#string).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryaicatalogagentflowconfigagentid"></a>`agentId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog agent. |
-| <a id="queryaicatalogagentflowconfigagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific agent version to use. If not provided, the latest version will be used. |
+| <a id="queryaicatalogagentflowconfigagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID!`](#aicatalogitemversionid) | Global ID of the agent version to use. |
 | <a id="queryaicatalogagentflowconfigflowconfigtype"></a>`flowConfigType` | [`AiCatalogFlowConfigType!`](#aicatalogflowconfigtype) | Type of flow configuration to generate. |
 
 ### `Query.aiCatalogBuiltInTools`
@@ -2756,6 +2755,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaiduoworkflowcreateagentprivileges"></a>`agentPrivileges` | [`[Int!]`](#int) | Actions the agent is allowed to perform. |
+| <a id="mutationaiduoworkflowcreateaicatalogitemversionid"></a>`aiCatalogItemVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | ID of the catalog item the workflow is triggered from. |
 | <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Agent Platform may stop to ask the user questions before proceeding. |
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
@@ -10431,6 +10431,7 @@ Input type: `ProjectSecretCreateInput`
 | <a id="mutationprojectsecretcreateenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="mutationprojectsecretcreatename"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="mutationprojectsecretcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretcreaterotationintervaldays"></a>`rotationIntervalDays` | [`Int`](#int) | Number of days between rotation reminders for the secret. |
 | <a id="mutationprojectsecretcreatesecret"></a>`secret` | [`String!`](#string) | Value of the project secret. |
 
 #### Fields
@@ -10476,6 +10477,7 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int!`](#int) | This should match the current metadata version of the project secret being updated. |
 | <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
 | <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretupdaterotationintervaldays"></a>`rotationIntervalDays` | [`Int`](#int) | Number of days between rotation reminders for the secret. |
 | <a id="mutationprojectsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the project secret. |
 
 #### Fields
@@ -41230,6 +41232,7 @@ Representation of a project secret.
 | <a id="projectsecretmetadataversion"></a>`metadataVersion` | [`Int`](#int) | Current metadata version of the project secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
+| <a id="projectsecretrotationinfo"></a>`rotationInfo` | [`SecretRotationInfo`](#secretrotationinfo) | Rotation configuration for the secret. |
 
 ### `ProjectSecretsManager`
 
@@ -42408,6 +42411,19 @@ Representation of a secrets permission.
 | <a id="secretpermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
 | <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 | <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
+
+### `SecretRotationInfo`
+
+Rotation configuration and status for a project secret.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretrotationinfocreatedat"></a>`createdAt` | [`Time!`](#time) | When the rotation configuration was created. |
+| <a id="secretrotationinforotationintervaldays"></a>`rotationIntervalDays` | [`Int!`](#int) | Number of days between rotation reminders. |
+| <a id="secretrotationinfostatus"></a>`status` | [`SecretRotationStatus!`](#secretrotationstatus) | Current rotation status. |
+| <a id="secretrotationinfoupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the rotation configuration was last updated. |
 
 ### `SecurityAttribute`
 
@@ -47083,6 +47099,7 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_repositories"></a>`READ_REPOSITORIES` | Read Repositories. |
 | <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
 | <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
+| <a id="cijobtokenscopepoliciesread_work_items"></a>`READ_WORK_ITEMS` | Read Work Items. |
 
 ### `CiPipelineCreationStatus`
 
@@ -49645,6 +49662,16 @@ Type of search.
 | <a id="searchtypeadvanced"></a>`ADVANCED` | Advanced search. |
 | <a id="searchtypebasic"></a>`BASIC` | Basic search. |
 | <a id="searchtypezoekt"></a>`ZOEKT` | Exact code search. |
+
+### `SecretRotationStatus`
+
+Status of secret rotation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="secretrotationstatusapproaching"></a>`APPROACHING` | Rotation is due within 7 days. |
+| <a id="secretrotationstatusok"></a>`OK` | Rotation is not due soon. |
+| <a id="secretrotationstatusoverdue"></a>`OVERDUE` | Rotation is overdue (reminder was sent). |
 
 ### `SecurityCategoryEditableState`
 

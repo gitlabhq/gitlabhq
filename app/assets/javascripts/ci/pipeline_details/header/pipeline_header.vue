@@ -399,7 +399,11 @@ export default {
           </template>
         </div>
 
-        <div v-safe-html="refText" class="gl-my-3 sm:gl-mt-0" data-testid="pipeline-ref-text"></div>
+        <div
+          v-safe-html="refText"
+          class="gl-my-3 @sm/panel:gl-mt-0"
+          data-testid="pipeline-ref-text"
+        ></div>
         <div>
           <header-badges :pipeline="pipeline" />
 

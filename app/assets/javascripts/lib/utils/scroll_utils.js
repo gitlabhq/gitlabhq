@@ -1,30 +1,46 @@
-import $ from 'jquery';
+const SCROLL_CONTAINER_SELECTOR = '.js-static-panel-inner';
 
-export const canScroll = () => $(document).height() > $(window).height();
+const getScrollContainer = () => {
+  return document.querySelector(SCROLL_CONTAINER_SELECTOR);
+};
 
 /**
- * Checks if the entire page is scrolled down all the way to the bottom
- *  @returns {Boolean}
+ * Checks if container (or document if container is not found) is scrolled
+ * down all the way to the bottom
+ *
+ * @returns {Boolean}
  */
-export const isScrolledToBottom = () => {
+export const isScrolledToBottom = (scrollContainer = getScrollContainer()) => {
   // Use clientHeight to account for any horizontal scrollbar.
-  const { scrollHeight, scrollTop, clientHeight } = document.documentElement;
+  const { scrollHeight, scrollTop, clientHeight } = scrollContainer || document.documentElement;
 
   // scrollTop can be a float, so round up to next integer.
   return Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 };
 
 /**
- * Checks if page is scrolled to the top
+ * Checks if container (or document if container is not found) is scrolled to the top
+ *
  * @returns {Boolean}
  */
-export const isScrolledToTop = () => $(document).scrollTop() === 0;
+export const isScrolledToTop = (scrollContainer = getScrollContainer()) => {
+  const { scrollTop } = scrollContainer || document.documentElement;
 
-export const scrollDown = () => {
-  const $document = $(document);
-  $document.scrollTop($document.height());
+  return scrollTop === 0;
 };
 
-export const scrollUp = () => {
-  $(document).scrollTop(0);
+export const scrollDown = (scrollContainer = getScrollContainer()) => {
+  if (scrollContainer) {
+    scrollContainer.scrollTo({ top: scrollContainer.scrollHeight });
+  } else {
+    window.scrollTo({ top: document.body.scrollHeight });
+  }
+};
+
+export const scrollUp = (scrollContainer = getScrollContainer()) => {
+  if (scrollContainer) {
+    scrollContainer.scrollTo({ top: 0 });
+  } else {
+    window.scrollTo({ top: 0 });
+  }
 };

@@ -478,6 +478,9 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
+.search-migration-patterns: &search-migration-patterns
+  - "{ee/,jh/}{,spec/}elastic/migrate/**/*"
+
 .search-version-patterns: &search-version-patterns
   - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
   - "GITLAB_ZOEKT_VERSION"
@@ -874,6 +877,8 @@
       changes: *search-backend-patterns
     - <<: *if-merge-request
       changes: *search-version-patterns
+    - <<: *if-merge-request
+      changes: *search-migration-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:

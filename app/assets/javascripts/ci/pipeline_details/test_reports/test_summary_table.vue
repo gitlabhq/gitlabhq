@@ -128,7 +128,7 @@ export default {
           <div class="table-mobile-content">{{ testSuite.success_count }}</div>
         </div>
 
-        <div class="table-section section-10 pr-md-3 gl-text-right">
+        <div class="table-section section-10 gl-text-right @md/panel:gl-pr-5">
           <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Total') }}
           </div>

@@ -73,6 +73,7 @@ export default {
   },
   data() {
     return {
+      contentPanelWrapper: document.querySelector('.js-static-panel-inner'),
       searchResults: [],
       showUpdateVariablesState: false,
     };
@@ -167,7 +168,12 @@ export default {
   created() {
     this.throttleToggleScrollButtons = throttle(this.toggleScrollButtons, 100);
 
-    window.addEventListener('scroll', this.updateScroll);
+    if (this.contentPanelWrapper) {
+      this.contentPanelWrapper.addEventListener('scroll', this.updateScroll);
+    } else {
+      // This can be removed when `projectStudioEnabled` is removed
+      window.addEventListener('scroll', this.updateScroll);
+    }
   },
   mounted() {
     this.updateSidebar();
@@ -176,7 +182,12 @@ export default {
     this.stopPollingJobLog();
     this.stopPolling();
 
-    window.removeEventListener('scroll', this.updateScroll);
+    if (this.contentPanelWrapper) {
+      this.contentPanelWrapper.removeEventListener('scroll', this.updateScroll);
+    } else {
+      // This can be removed when `projectStudioEnabled` is removed
+      window.removeEventListener('scroll', this.updateScroll);
+    }
   },
   methods: {
     ...mapActions([
@@ -314,7 +325,7 @@ export default {
             @exitFullscreen="exitFullscreen"
           />
 
-          <log :search-results="searchResults" @toggleCollapsibleLine="updateScroll" />
+          <log :search-results="searchResults" />
 
           <nav
             v-if="displayStickyFooter"

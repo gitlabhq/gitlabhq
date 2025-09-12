@@ -78,7 +78,7 @@ export default {
       <h4>{{ heading }}</h4>
     </div>
 
-    <div class="gl-mt-3 gl-flex gl-w-full gl-flex-col md:gl-flex-row">
+    <div class="gl-mt-3 gl-flex gl-w-full gl-flex-col @md/panel:gl-flex-row">
       <div class="gl-flex gl-basis-1/2 gl-justify-between">
         <span class="js-total-tests gl-grow">{{
           sprintf(s__('TestReports|%{count} tests'), { count: report.total_count })
@@ -93,7 +93,7 @@ export default {
         }}</span>
       </div>
       <div class="gl-flex gl-grow gl-justify-between">
-        <div class="gl-hidden gl-grow md:gl-block"></div>
+        <div class="gl-hidden gl-grow @md/panel:gl-block"></div>
         <span class="js-success-rate gl-grow">{{
           sprintf(s__('TestReports|%{rate}%{sign} success rate'), {
             rate: successPercentage,

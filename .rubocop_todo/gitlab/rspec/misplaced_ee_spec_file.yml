@@ -93,7 +93,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/helpers/projects/settings/branch_rules_helper_spec.rb'
     - 'ee/spec/helpers/projects_helper_spec.rb'
     - 'ee/spec/helpers/search_helper_spec.rb'
-    - 'ee/spec/helpers/sidebars_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/tree_helper_spec.rb'
     - 'ee/spec/helpers/users/group_callouts_helper_spec.rb'

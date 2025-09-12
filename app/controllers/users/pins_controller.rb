@@ -3,6 +3,7 @@
 module Users
   class PinsController < ApplicationController
     include Gitlab::InternalEventsTracking
+    include SidebarsHelper
 
     feature_category :navigation
     respond_to :json
@@ -12,7 +13,8 @@ module Users
     def update
       panel = pins_params[:panel]
       new_menu_items = pins_params[:menu_item_ids]
-      prev_menu_items = current_user.pinned_nav_items[panel] || []
+      prev_menu_items = current_user.pinned_nav_items[panel] ||
+        super_sidebar_default_pins(panel, current_user).map(&:to_s)
 
       pinned_nav_items = current_user.pinned_nav_items.merge({ panel => new_menu_items })
 
@@ -37,8 +39,10 @@ module Users
     end
 
     def track_nav_item_change(panel, new_menu_items, prev_menu_items)
-      removed_item = prev_menu_items - new_menu_items
-      added_item = new_menu_items - prev_menu_items
+      cleaned_new_items = new_menu_items.reject(&:blank?)
+
+      removed_item = prev_menu_items - cleaned_new_items
+      added_item = cleaned_new_items - prev_menu_items
 
       track_unpin_event(panel, removed_item.first) if removed_item.present?
       track_pin_event(panel, added_item.first) if added_item.present?
@@ -67,3 +71,5 @@ module Users
     end
   end
 end
+
+Users::PinsController.prepend_mod

@@ -954,6 +954,7 @@ project:
 - approval_policy_rules
 - security_pipeline_execution_config_links
 - secrets_manager
+- secret_rotation_infos
 - observability_metrics
 - observability_traces
 - observability_logs

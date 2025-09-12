@@ -24664,6 +24664,26 @@ CREATE TABLE secret_detection_token_statuses (
     status smallint DEFAULT 0 NOT NULL
 );
 
+CREATE TABLE secret_rotation_infos (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    secret_name text NOT NULL,
+    secret_metadata_version integer NOT NULL,
+    rotation_interval_days integer NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_c0fb39dc52 CHECK ((char_length(secret_name) <= 255))
+);
+
+CREATE SEQUENCE secret_rotation_infos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE secret_rotation_infos_id_seq OWNED BY secret_rotation_infos.id;
+
 CREATE TABLE security_attributes (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -30438,6 +30458,8 @@ ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_ident
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
 
+ALTER TABLE ONLY secret_rotation_infos ALTER COLUMN id SET DEFAULT nextval('secret_rotation_infos_id_seq'::regclass);
+
 ALTER TABLE ONLY security_attributes ALTER COLUMN id SET DEFAULT nextval('security_attributes_id_seq'::regclass);
 
 ALTER TABLE ONLY security_categories ALTER COLUMN id SET DEFAULT nextval('security_categories_id_seq'::regclass);
@@ -33833,6 +33855,9 @@ ALTER TABLE ONLY scim_oauth_access_tokens
 ALTER TABLE ONLY secret_detection_token_statuses
     ADD CONSTRAINT secret_detection_token_statuses_pkey PRIMARY KEY (vulnerability_occurrence_id);
 
+ALTER TABLE ONLY secret_rotation_infos
+    ADD CONSTRAINT secret_rotation_infos_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY security_attributes
     ADD CONSTRAINT security_attributes_pkey PRIMARY KEY (id);
 
@@ -37011,6 +37036,8 @@ CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_
 CREATE INDEX idx_scan_result_policy_violations_on_policy_id_and_id ON scan_result_policy_violations USING btree (scan_result_policy_id, id);
 
 CREATE INDEX idx_secret_detect_token_on_project_id ON secret_detection_token_statuses USING btree (project_id);
+
+CREATE UNIQUE INDEX idx_secret_rotation_infos_project_secret ON secret_rotation_infos USING btree (project_id, secret_name, secret_metadata_version);
 
 CREATE INDEX idx_security_finding_token_on_created_at ON security_finding_token_statuses USING btree (created_at);
 
@@ -48642,6 +48669,9 @@ ALTER TABLE ONLY terraform_state_versions
 
 ALTER TABLE p_duo_workflows_checkpoints
     ADD CONSTRAINT fk_rails_0679151c27 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY secret_rotation_infos
+    ADD CONSTRAINT fk_rails_069d39f265 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

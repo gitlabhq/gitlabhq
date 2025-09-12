@@ -36994,6 +36994,9 @@ msgstr ""
 msgid "JobToken|Terraform state"
 msgstr ""
 
+msgid "JobToken|Work items"
+msgstr ""
+
 msgid "Jobs"
 msgstr ""
 
@@ -59909,9 +59912,6 @@ msgstr ""
 msgid "SecurityReports|Dismissed as…"
 msgstr ""
 
-msgid "SecurityReports|Dismissed in MR"
-msgstr ""
-
 msgid "SecurityReports|Does not have a solution"
 msgstr ""
 
@@ -60114,9 +60114,6 @@ msgid "SecurityReports|Parsing errors in pipeline"
 msgstr ""
 
 msgid "SecurityReports|Parsing warnings in pipeline"
-msgstr ""
-
-msgid "SecurityReports|Policy violations"
 msgstr ""
 
 msgid "SecurityReports|Possibly active secret"
@@ -69118,19 +69115,46 @@ msgstr ""
 msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
+msgid "UsageBilling|Current month"
+msgstr ""
+
 msgid "UsageBilling|Current month usage"
+msgstr ""
+
+msgid "UsageBilling|Custom dates"
+msgstr ""
+
+msgid "UsageBilling|Daily average use"
+msgstr ""
+
+msgid "UsageBilling|Daily usage"
 msgstr ""
 
 msgid "UsageBilling|Increase monthly commitment"
 msgstr ""
 
+msgid "UsageBilling|Last 3 months"
+msgstr ""
+
+msgid "UsageBilling|Last month"
+msgstr ""
+
+msgid "UsageBilling|Peak daily use"
+msgstr ""
+
 msgid "UsageBilling|Purchase a monthly commitment"
+msgstr ""
+
+msgid "UsageBilling|Tokens"
 msgstr ""
 
 msgid "UsageBilling|Usage Billing"
 msgstr ""
 
 msgid "UsageBilling|Usage by user"
+msgstr ""
+
+msgid "UsageBilling|Usage trend"
 msgstr ""
 
 msgid "UsageBilling|Usage trends"

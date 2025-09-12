@@ -98,7 +98,7 @@ export default {
   },
   sidebar: document.querySelector('.js-wiki-sidebar'),
   contentWrapper: document.querySelector('.content-wrapper'),
-  contentPanelWrapper: document.querySelector('#static-panel-portal .panel-content-inner'),
+  contentPanelWrapper: document.querySelector('.js-static-panel-inner'),
 };
 </script>
 <template>

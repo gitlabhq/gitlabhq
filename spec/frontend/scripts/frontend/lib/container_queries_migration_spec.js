@@ -69,12 +69,12 @@ describe('migrateCSSUtils', () => {
 describe('migrateMediaQueries', () => {
   it.each`
     input                                      | output
-    ${'@include media-breakpoint-up(md)'}      | ${'@include gl-container-width-up(md)'}
-    ${'@include media-breakpoint-down(md)'}    | ${'@include gl-container-width-down(lg)'}
-    ${'@include gl-media-breakpoint-up(md)'}   | ${'@include gl-container-width-up(md)'}
-    ${'@include gl-media-breakpoint-down(md)'} | ${'@include gl-container-width-down(md)'}
-    ${'@media (min-width: $breakpoint-md)'}    | ${'@include gl-container-width-up(md)'}
-    ${'@media (max-width: $breakpoint-md)'}    | ${'@include gl-container-width-down(md)'}
+    ${'@include media-breakpoint-up(md)'}      | ${'@include gl-container-width-up(md, panel)'}
+    ${'@include media-breakpoint-down(md)'}    | ${'@include gl-container-width-down(lg, panel)'}
+    ${'@include gl-media-breakpoint-up(md)'}   | ${'@include gl-container-width-up(md, panel)'}
+    ${'@include gl-media-breakpoint-down(md)'} | ${'@include gl-container-width-down(md, panel)'}
+    ${'@media (min-width: $breakpoint-md)'}    | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media (max-width: $breakpoint-md)'}    | ${'@include gl-container-width-down(md, panel)'}
     ${'@media (min-width: 420px)'}             | ${'@container panel (width >= 420px)'}
     ${'@media (max-width: 420px)'}             | ${'@container panel (width <= 420px)'}
   `('rewrites $input to $output', ({ input, output }) => {

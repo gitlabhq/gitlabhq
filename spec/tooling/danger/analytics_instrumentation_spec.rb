@@ -673,4 +673,116 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
     end
   end
+
+  describe '#verify_fe_tracking_params' do
+    subject(:verify_fe_tracking_params) { analytics_instrumentation.verify_fe_tracking_params }
+
+    let(:js_files) { %w[app/assets/javascripts/test.js app/assets/javascripts/component.vue] }
+
+    before do
+      allow(fake_helper).to receive(:all_changed_files).and_return(js_files)
+      allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
+      allow(fake_project_helper).to receive(:file_lines).and_return([])
+
+      js_files.each do |file|
+        allow(fake_helper).to receive(:changed_lines).with(file).and_return(file_changes[file] || [])
+      end
+    end
+
+    shared_context 'with event definition' do
+      before do
+        allow(File).to receive(:exist?).and_return(false)
+        allow(File).to receive(:exist?).with("config/events/#{event_name}.yml").and_return(ce_file_exists)
+        allow(File).to receive(:exist?).with("ee/config/events/#{event_name}.yml").and_return(ee_file_exists)
+
+        if ce_file_exists
+
+          allow(YAML).to receive(:load_file).with("config/events/#{event_name}.yml").and_return(event_definition)
+        elsif ee_file_exists
+
+          allow(YAML).to receive(:load_file).with("ee/config/events/#{event_name}.yml").and_return(event_definition)
+        end
+      end
+    end
+
+    shared_examples 'does not suggest changes' do
+      it 'does not add suggestions' do
+        expect(analytics_instrumentation).not_to receive(:add_suggestion)
+
+        verify_fe_tracking_params
+      end
+    end
+
+    shared_examples 'suggests property changes' do
+      it 'adds suggestion for missing properties' do
+        expect(analytics_instrumentation).to receive(:add_suggestion)
+
+        verify_fe_tracking_params
+      end
+    end
+
+    context 'when no trackEvent calls are added' do
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ['+ console.log("new code");'] } }
+
+      it_behaves_like 'does not suggest changes'
+    end
+
+    context 'when trackEvent call has valid properties' do
+      include_context 'with event definition'
+
+      let(:event_name) { 'valid_event' }
+      let(:ce_file_exists) { true }
+      let(:ee_file_exists) { false }
+      let(:event_definition) { { 'additional_properties' => { 'action' => {}, 'source' => {} } } }
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ["+ this.trackEvent('#{event_name}', { action: 'click', source: 'button' });"] } }
+
+      it_behaves_like 'does not suggest changes'
+    end
+
+    context 'when trackEvent call has missing properties' do
+      include_context 'with event definition'
+
+      let(:event_name) { 'invalid_event' }
+      let(:ce_file_exists) { true }
+      let(:ee_file_exists) { false }
+      let(:event_definition) { { 'additional_properties' => { 'action' => {} } } }
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ["+ this.trackEvent('#{event_name}', { action: 'click', missing_prop: 'value' });"] } }
+
+      it_behaves_like 'suggests property changes'
+    end
+
+    context 'when trackEvent call with EE event definition' do
+      include_context 'with event definition'
+
+      let(:event_name) { 'ee_event' }
+      let(:ce_file_exists) { false }
+      let(:ee_file_exists) { true }
+      let(:event_definition) { { 'additional_properties' => { 'feature' => {} } } }
+      let(:file_changes) { { 'app/assets/javascripts/test.js' => ["+ this.trackEvent('#{event_name}', { feature: 'advanced', missing: 'prop' });"] } }
+
+      it_behaves_like 'suggests property changes'
+    end
+
+    context 'when multi-line trackEvent call' do
+      include_context 'with event definition'
+
+      let(:event_name) { 'multiline_event' }
+      let(:ce_file_exists) { true }
+      let(:ee_file_exists) { false }
+      let(:event_definition) { { 'additional_properties' => { 'label' => {} } } }
+      let(:file_changes) do
+        {
+          'app/assets/javascripts/component.vue' => [
+            "+ this.trackEvent('#{event_name}',",
+            "+   {",
+            "+     label: 'test',",
+            "+     invalid_prop: 'value'",
+            "+   });"
+          ]
+        }
+      end
+
+      it_behaves_like 'suggests property changes'
+    end
+  end
 end

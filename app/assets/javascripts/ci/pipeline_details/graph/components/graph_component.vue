@@ -178,7 +178,7 @@ export default {
       :class="{
         'pipeline-graph-container gl-pipeline-min-h gl-mt-3 gl-items-start gl-overflow-auto gl-bg-subtle gl-pb-8 gl-pt-3':
           !isLinkedPipeline,
-        'gl-bg-strong sm:gl-ml-5': isLinkedPipeline,
+        'gl-bg-strong @sm/panel:gl-ml-5': isLinkedPipeline,
       }"
       data-testid="pipeline-container"
     >
@@ -237,7 +237,7 @@ export default {
         <template #downstream>
           <linked-pipelines-column
             v-if="showDownstreamPipelines"
-            class="sm:gl-ml-3"
+            class="@sm/panel:gl-ml-3"
             :config-paths="configPaths"
             :linked-pipelines="downstreamPipelines"
             :column-title="__('Downstream')"
