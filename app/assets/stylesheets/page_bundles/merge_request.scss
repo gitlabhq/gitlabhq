@@ -12,24 +12,6 @@ $merge-request-sticky-header-height: 45px;
   }
 }
 
-.media-section {
-  @include media-breakpoint-down(md) {
-    align-items: flex-start;
-
-    .media-body {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-
-  .code-text {
-    @include media-breakpoint-up(lg) {
-      align-self: center;
-      flex: 1;
-    }
-  }
-}
-
 .mr_source_commit, .mr_target_commit {
   margin-bottom: 0;
 

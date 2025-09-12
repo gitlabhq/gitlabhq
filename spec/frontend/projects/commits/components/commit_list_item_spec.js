@@ -202,21 +202,21 @@ describe('CommitListItem', () => {
       it('renders short commit ID with mobile-only classes', () => {
         const shortIdElement = findMobileCommitShortId();
         expect(shortIdElement.text()).toBe(mockCommit.shortId);
-        expect(shortIdElement.classes()).toContain('sm:gl-hidden');
+        expect(shortIdElement.classes()).toContain('@sm/panel:gl-hidden');
       });
     });
 
     describe('overflow menu', () => {
       it('renders overflow menu with mobile-only classes', () => {
         const overflowMenu = findMobileOverflowMenu();
-        expect(overflowMenu.classes()).toContain('sm:gl-hidden');
+        expect(overflowMenu.classes()).toContain('@sm/panel:gl-hidden');
       });
     });
 
     describe('expand/collapse button container', () => {
       it('renders expand/collapse button container with mobile-only classes', () => {
         const container = findMobileExpandCollapseContainer();
-        expect(container.classes()).toContain('sm:gl-hidden');
+        expect(container.classes()).toContain('@sm/panel:gl-hidden');
       });
 
       it('renders expand/collapse button inside container', () => {

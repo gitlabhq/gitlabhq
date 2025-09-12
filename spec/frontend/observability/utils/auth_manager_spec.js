@@ -1,6 +1,7 @@
 import { AuthManager } from '~/observability/utils/auth_manager';
 import { MESSAGE_TYPES } from '~/observability/constants';
 import { logError } from '~/lib/logger';
+import { getSystemColorScheme } from '~/lib/utils/css_utils';
 
 jest.mock('~/observability/utils/nonce', () => ({
   generateNonce: jest.fn(() => 'mock-nonce-123'),
@@ -8,6 +9,10 @@ jest.mock('~/observability/utils/nonce', () => ({
 
 jest.mock('~/lib/logger', () => ({
   logError: jest.fn(),
+}));
+
+jest.mock('~/lib/utils/css_utils', () => ({
+  getSystemColorScheme: jest.fn(),
 }));
 
 describe('AuthManager', () => {
@@ -59,6 +64,54 @@ describe('AuthManager', () => {
     });
   });
 
+  describe('color mode determination', () => {
+    it.each([
+      ['gl-dark', 'dark'],
+      ['gl-light', 'light'],
+      ['auto', 'light'],
+    ])('when system scheme is %s determine %s color mode', (systemScheme, expectedColorMode) => {
+      getSystemColorScheme.mockReturnValue(systemScheme);
+
+      const manager = new AuthManager(
+        mockConfig.allowedOrigin,
+        mockConfig.authTokens,
+        mockConfig.targetPath,
+      );
+
+      expect(manager.colorMode).toBe(expectedColorMode);
+      expect(getSystemColorScheme).toHaveBeenCalled();
+    });
+
+    it('includes color mode as theme in authentication payload', async () => {
+      getSystemColorScheme.mockReturnValue('gl-dark');
+
+      const manager = new AuthManager(
+        mockConfig.allowedOrigin,
+        mockConfig.authTokens,
+        mockConfig.targetPath,
+      );
+      manager.setCallbacks(mockOnAuthSuccess, mockOnAuthError);
+
+      await manager.sendAuthMessage(mockIframe, true);
+
+      expect(mockIframe.contentWindow.postMessage).toHaveBeenCalledWith(
+        {
+          type: MESSAGE_TYPES.JWT_LOGIN,
+          payload: {
+            ...mockAuthTokens,
+            nonce: 'mock-nonce-123',
+            timestamp: mockNow,
+            counter: 1,
+            targetPath: mockConfig.targetPath,
+            theme: 'dark',
+          },
+          parentOrigin: window.location.origin,
+        },
+        mockConfig.allowedOrigin,
+      );
+    });
+  });
+
   const createMockIframe = (overrides = {}) => ({
     contentWindow: {
       postMessage: jest.fn(),
@@ -70,6 +123,7 @@ describe('AuthManager', () => {
 
   beforeEach(() => {
     jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+    getSystemColorScheme.mockReturnValue('gl-light');
 
     timeoutCallbacks = [];
     jest.spyOn(global, 'setTimeout').mockImplementation((callback, delay) => {
@@ -109,6 +163,7 @@ describe('AuthManager', () => {
             timestamp: mockNow,
             counter: 1,
             targetPath: mockConfig.targetPath,
+            theme: 'light',
           },
           parentOrigin: window.location.origin,
         },

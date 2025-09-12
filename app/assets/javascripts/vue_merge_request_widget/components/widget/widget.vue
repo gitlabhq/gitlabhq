@@ -379,7 +379,7 @@ export default {
   >
     {{ label }}
   </report-list-item>
-  <section v-else class="media-section" data-testid="widget-extension">
+  <section v-else data-testid="widget-extension">
     <div
       v-if="!reportsTabContent"
       :class="{
@@ -394,7 +394,7 @@ export default {
         :icon-name="summaryStatusIcon"
       />
       <div
-        class="media-body gl-flex !gl-flex-row gl-self-center"
+        class="media-body gl-flex gl-flex-row gl-self-center"
         data-testid="widget-extension-top-level"
       >
         <div class="gl-grow" data-testid="widget-extension-top-level-summary">

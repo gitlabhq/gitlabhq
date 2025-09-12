@@ -35,11 +35,15 @@ export default {
   >
     <gl-button
       v-gl-tooltip.right="isIconOnly ? text : ''"
-      :class="['gl-mx-2 gl-my-2 !gl-justify-start gl-font-semibold', { 'gl-gap-3': !isIconOnly }]"
+      :class="[
+        'super-sidebar-nav-item !gl-mx-3 !-gl-mt-2 !gl-mb-2 !gl-justify-start !gl-px-[0.375rem] !gl-py-2 gl-font-semibold',
+        { 'gl-gap-3': !isIconOnly },
+      ]"
+      :button-text-classes="isIconOnly ? 'gl-hidden' : null"
       :icon="icon"
       category="tertiary"
       @click="emitToggle"
-      >{{ isIconOnly ? '' : text }}</gl-button
+      >{{ text }}</gl-button
     >
   </local-storage-sync>
 </template>

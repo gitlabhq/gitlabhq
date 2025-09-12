@@ -129,6 +129,10 @@ describe('UnarchiveSettings', () => {
             expect(createAlert).not.toHaveBeenCalled();
           });
 
+          it('trigger stays in loading state', () => {
+            expect(findGlButton().props('loading')).toBe(true);
+          });
+
           it('visits resourcePath', () => {
             expect(visitUrl).toHaveBeenCalledWith(defaultProps.resourcePath);
           });

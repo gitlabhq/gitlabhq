@@ -1194,6 +1194,213 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     end
   end
 
+  describe '#user_update_submodule' do
+    let(:submodule) { 'test-submodule' }
+    let(:commit_sha) { '3ac7abff9aa5e8b5184e06022894fd98c0b9c651' }
+    let(:branch) { 'master' }
+    let(:message) { 'Update submodule' }
+
+    let(:request) do
+      Gitaly::UserUpdateSubmoduleRequest.new(
+        repository: repository.gitaly_repository,
+        user: gitaly_user,
+        commit_sha: commit_sha,
+        branch: branch,
+        submodule: submodule,
+        commit_message: message,
+        timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+      )
+    end
+
+    subject do
+      client.user_update_submodule(
+        user: user,
+        submodule: submodule,
+        commit_sha: commit_sha,
+        branch: branch,
+        message: message
+      )
+    end
+
+    context 'when successful', :freeze_time do
+      let(:branch_update) do
+        Gitaly::OperationBranchUpdate.new(
+          commit_id: 'new-commit-id',
+          repo_created: false,
+          branch_created: false
+        )
+      end
+
+      let(:response) { Gitaly::UserUpdateSubmoduleResponse.new(branch_update: branch_update) }
+
+      it 'sends a user_update_submodule message and returns a BranchUpdate' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_update_submodule).with(request, kind_of(Hash))
+                                             .and_return(response)
+
+        expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+        expect(subject.newrev).to eq('new-commit-id')
+        expect(subject.repo_created).to be(false)
+        expect(subject.branch_created).to be(false)
+      end
+    end
+
+    context 'with unstructured errors' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_update_submodule).with(request, kind_of(Hash))
+                                             .and_return(response)
+      end
+
+      context 'when pre_receive_error is present' do
+        let(:response) do
+          Gitaly::UserUpdateSubmoduleResponse.new(
+            pre_receive_error: 'GitLab: pre-receive hook failed'
+          )
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, 'pre-receive hook failed')
+        end
+      end
+
+      context 'when commit_error is present' do
+        let(:response) do
+          Gitaly::UserUpdateSubmoduleResponse.new(
+            commit_error: 'Could not update submodule'
+          )
+        end
+
+        it 'raises a CommitError' do
+          expect { subject }.to raise_error(Gitlab::Git::CommitError, 'Could not update submodule')
+        end
+      end
+    end
+
+    context 'with structured errors' do
+      context 'with CustomHookError' do
+        let(:stdout) { 'some stdout' }
+        let(:stderr) { 'GitLab: some custom hook error message' }
+        let(:error_message) { 'custom hook error' }
+        let(:expected_message) { 'some custom hook error message' }
+
+        let(:custom_hook_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            error_message,
+            Gitaly::UserUpdateSubmoduleError.new(
+              custom_hook: Gitaly::CustomHookError.new(
+                stdout: stdout,
+                stderr: stderr,
+                hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+              )
+            )
+          )
+        end
+
+        it 'raises a PreReceiveError' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_update_submodule)
+                  .and_raise(custom_hook_error)
+
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq(expected_message)
+          end
+        end
+      end
+
+      context 'with ReferenceUpdateError' do
+        let(:reference_update_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::FAILED_PRECONDITION,
+            'ignored reference update failure',
+            Gitaly::UserUpdateSubmoduleError.new(
+              reference_update: Gitaly::ReferenceUpdateError.new(
+                reference_name: "refs/heads/#{branch}",
+                old_oid: 'old_oid_value',
+                new_oid: 'new_oid_value'
+              )
+            )
+          )
+        end
+
+        it 'raises a CommitError' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_update_submodule)
+                  .and_raise(reference_update_error)
+
+          expect { subject }.to raise_error(Gitlab::Git::CommitError,
+            "Could not update refs/heads/#{branch}. Please refresh and try again.")
+        end
+      end
+
+      context 'with PathError' do
+        let(:expected_message) { nil }
+        let(:error_type) { Gitaly::PathError::ErrorType::ERROR_TYPE_INVALID_PATH }
+        let(:path_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::INVALID_ARGUMENT,
+            'path error occurred',
+            Gitaly::UserUpdateSubmoduleError.new(
+              path_error: Gitaly::PathError.new(
+                path: submodule,
+                error_type: error_type
+              )
+            )
+          )
+        end
+
+        shared_examples 'raises a PathError' do
+          it 'formats a CommitError' do
+            expect_any_instance_of(Gitaly::OperationService::Stub)
+              .to receive(:user_update_submodule)
+                    .and_raise(path_error)
+
+            expect { subject }.to raise_error(Gitlab::Git::CommitError, expected_message)
+          end
+        end
+
+        context 'with ERROR_TYPE_INVALID_PATH error' do
+          let(:expected_message) { 'Invalid submodule path' }
+
+          it_behaves_like 'raises a PathError'
+        end
+
+        context 'with ERROR_TYPE_PATH_EXISTS error' do
+          let(:error_type) { Gitaly::PathError::ErrorType::ERROR_TYPE_PATH_EXISTS }
+          let(:expected_message) { "The submodule #{submodule} is already at #{commit_sha}" }
+
+          it_behaves_like 'raises a PathError'
+        end
+
+        context 'with ERROR_TYPE_UNSPECIFIED error' do
+          let(:error_type) { Gitaly::PathError::ErrorType::ERROR_TYPE_UNSPECIFIED }
+
+          it 're-raises the original error' do
+            expect_any_instance_of(Gitaly::OperationService::Stub)
+              .to receive(:user_update_submodule)
+                    .and_raise(path_error)
+
+            expect { subject }.to raise_error(path_error)
+          end
+        end
+      end
+
+      context 'with non-detailed GRPC error' do
+        let(:grpc_error) { GRPC::Internal.new('non-detailed error') }
+
+        it 're-raises the original error' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_update_submodule)
+                  .and_raise(grpc_error)
+
+          expect { subject }.to raise_error(grpc_error)
+        end
+      end
+    end
+  end
+
   describe '#user_commit_files' do
     let(:force) { false }
     let(:start_sha) { nil }

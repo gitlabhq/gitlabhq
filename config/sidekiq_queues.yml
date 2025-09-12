@@ -659,6 +659,8 @@
   - 1
 - - merge_requests_process_merge_audit_event
   - 1
+- - merge_requests_refresh_web_hooks
+  - 1
 - - merge_requests_remove_user_approval_rules
   - 1
 - - merge_requests_resolve_todos
@@ -1145,6 +1147,10 @@
   - 1
 - - work_items_import_work_items_csv
   - 1
+- - work_items_process_group_transfer_events
+  - 1
+- - work_items_process_project_transfer_events
+  - 1
 - - work_items_rolledup_dates_bulk_update_handler
   - 1
 - - work_items_rolledup_dates_update_milestone_related_work_item_dates_event_handler
@@ -1154,6 +1160,8 @@
 - - work_items_rolledup_dates_update_rolledup_dates
   - 1
 - - work_items_rolledup_dates_update_rolledup_dates_event_handler
+  - 1
+- - work_items_update_namespace_traversal_ids
   - 1
 - - work_items_update_parent_objectives_progress
   - 1

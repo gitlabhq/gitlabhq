@@ -13,8 +13,7 @@ description: "Create custom file hooks to integrate your GitLab Self-Managed ins
 
 {{< /details >}}
 
-Use custom file hooks (not to be confused with [server hooks](server_hooks.md) or [system hooks](system_hooks.md)),
-to introduce custom integrations without modifying the GitLab source code.
+Use custom file hooks to introduce custom integrations without modifying the GitLab source code.
 
 A file hook runs on each event. You can filter events or projects
 in a file hook's code, and create many file hooks as you need. Each file hook is
@@ -125,3 +124,8 @@ Validating file hooks from /file_hooks directory
 * /home/git/gitlab/file_hooks/save_to_file.clj succeed (zero exit code)
 * /home/git/gitlab/file_hooks/save_to_file.rb failure (non-zero exit code)
 ```
+
+## Related topics
+
+- [Server hooks](server_hooks.md)
+- [System hooks](system_hooks.md)

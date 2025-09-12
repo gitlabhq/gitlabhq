@@ -4380,15 +4380,35 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#shared_with_groups_of_ancestors_and_self' do
-      where(:subject_group, :result) do
-        ref(:group)         | lazy { [shared_group_1].map(&:id) }
-        ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
-        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2, shared_group_3].map(&:id) }
+      let!(:shared_reporter_group_1) {  create(:group_group_link, :reporter, shared_group: group).shared_with_group }
+      let!(:shared_reporter_group_2) {  create(:group_group_link, :reporter, shared_group: sub_group).shared_with_group }
+      let!(:shared_reporter_group_3) {  create(:group_group_link, :reporter, shared_group: sub_sub_group).shared_with_group }
+
+      let(:shared_with_group) { [shared_group_1, shared_reporter_group_1] }
+      let(:shared_with_sub_group) { shared_with_group + [shared_group_2, shared_reporter_group_2] }
+      let(:shared_with_sub_sub_group) { shared_with_sub_group + [shared_group_3, shared_reporter_group_3] }
+
+      where(:shared_group, :shared_with_groups) do
+        ref(:group)         | ref(:shared_with_group)
+        ref(:sub_group)     | ref(:shared_with_sub_group)
+        ref(:sub_sub_group) | ref(:shared_with_sub_sub_group)
       end
 
       with_them do
-        it 'returns correct group shares' do
-          expect(subject_group.shared_with_groups_of_ancestors_and_self.ids).to match_array(result)
+        subject { shared_group.shared_with_groups_of_ancestors_and_self }
+
+        it { is_expected.to match_array(shared_with_groups) }
+      end
+
+      describe '#with_developer_maintainer_owner_access' do
+        let(:shared_with_group) { [shared_group_1] }
+        let(:shared_with_sub_group) { shared_with_group + [shared_group_2] }
+        let(:shared_with_sub_sub_group) { shared_with_sub_group + [shared_group_3] }
+
+        with_them do
+          subject { shared_group.shared_with_groups_of_ancestors_and_self.with_developer_maintainer_owner_access }
+
+          it { is_expected.to match_array(shared_with_groups) }
         end
       end
     end

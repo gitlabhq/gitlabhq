@@ -140,7 +140,7 @@ export default {
 <template>
   <div class="gl-mb-4 gl-flex gl-flex-wrap gl-gap-4 gl-bg-subtle gl-p-4 gl-pb-2">
     <gl-form-group
-      class="gl-min-w-full sm:gl-min-w-20"
+      class="gl-min-w-full @sm/panel:gl-min-w-20"
       :label="s__('PipelineCharts|Source')"
       label-for="pipeline-source"
     >
@@ -152,7 +152,11 @@ export default {
         @select="onSelect('source', $event)"
       />
     </gl-form-group>
-    <gl-form-group class="gl-min-w-full sm:gl-min-w-26" :label="__('Branch')" label-for="branch">
+    <gl-form-group
+      class="gl-min-w-full @sm/panel:gl-min-w-26"
+      :label="__('Branch')"
+      label-for="branch"
+    >
       <branch-collapsible-listbox
         id="branch"
         :selected="branch"
@@ -164,7 +168,7 @@ export default {
       />
     </gl-form-group>
     <gl-form-group
-      class="gl-min-w-full sm:gl-min-w-15"
+      class="gl-min-w-full @sm/panel:gl-min-w-15"
       :label="__('Date range')"
       label-for="date-range"
     >

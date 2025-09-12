@@ -236,7 +236,7 @@ export default {
   <div class="gl-flex gl-flex-col gl-gap-2">
     <gl-button
       v-if="showWhatsNewNotification"
-      class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-pr-3"
+      class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
       category="tertiary"
       icon="compass"
       data-testid="sidebar-whatsnew-button"
@@ -252,7 +252,12 @@ export default {
     >
       {{ $options.i18n.whatsnew }}
 
-      <gl-badge variant="neutral" aria-hidden="true" data-testid="notification-count">
+      <gl-badge
+        variant="neutral"
+        aria-hidden="true"
+        data-testid="notification-count"
+        class="gl-mr-1"
+      >
         <span class="gl-m-1 gl-min-w-3">
           {{ whatsNewMostRecentReleaseUnreadCount }}
         </span>
@@ -262,6 +267,7 @@ export default {
     <gl-disclosure-dropdown
       class="super-sidebar-help-center-dropdown"
       :dropdown-offset="$options.dropdownOffset"
+      block
       @shown="trackDropdownToggle(true)"
       @hidden="trackDropdownToggle(false)"
     >
@@ -269,7 +275,7 @@ export default {
         <gl-button
           category="tertiary"
           icon="question-o"
-          class="super-sidebar-help-center-toggle !gl-justify-start gl-gap-3 !gl-py-2 gl-font-semibold"
+          class="super-sidebar-help-center-toggle super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem] !gl-py-2 gl-font-semibold"
           :button-text-classes="{ '!gl-text-default': !isIconOnly, 'gl-hidden': isIconOnly }"
           data-testid="sidebar-help-button"
         >

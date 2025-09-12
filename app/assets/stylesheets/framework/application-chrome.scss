@@ -32,7 +32,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-pl-5 gl-pr-5 sm:gl-pr-3;
+    @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
     top: $calc-system-headers-height;
     height: var(--header-height);
 
@@ -64,11 +64,6 @@
   // Super sidebar active item
   .super-sidebar-nav-item {
     @apply gl-rounded-lg #{!important};
-
-    // Hide indicator
-    .active-indicator {
-      display: none;
-    }
   }
 
   // Search button
@@ -189,6 +184,12 @@
     }
   }
 
+  // Super sidebar scollbar.
+  .super-sidebar-inner-scrollbar {
+    scrollbar-color: var(--gl-color-neutral-400) transparent;
+    scrollbar-width: thin;
+  }
+
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
@@ -199,7 +200,7 @@
       height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
 
       @apply gl-overflow-y-auto gl-overflow-x-hidden;
-      scrollbar-color: var(--gl-color-neutral-400) var(--gl-background-color-default);
+      scrollbar-color: var(--gl-color-neutral-400) transparent;
       scrollbar-width: thin;
 
       .container-fluid {

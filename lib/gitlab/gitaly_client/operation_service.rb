@@ -512,6 +512,34 @@ module Gitlab
         else
           Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
+
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
+
+        case detailed_error.try(:error)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+        when :reference_update
+          # reference_update was previously part of commit_error so for now
+          # maintain the existing behaviour and raise a CommitError
+          reference = detailed_error.reference_update.reference_name
+          message = "Could not update #{reference}. Please refresh and try again."
+          raise Gitlab::Git::CommitError, message
+        when :path_error
+          # path_error was part of the inline commit_error.
+          # It is now split into two types of path_error. For now maintain the existing behaviour.
+          case detailed_error.path_error.error_type
+          when :ERROR_TYPE_INVALID_PATH
+            raise Gitlab::Git::CommitError, "Invalid submodule path"
+          when :ERROR_TYPE_PATH_EXISTS
+            raise Gitlab::Git::CommitError, "The submodule #{submodule} is already at #{commit_sha}"
+          else
+            raise e
+          end
+        else
+          raise e
+        end
       end
 
       # rubocop:disable Metrics/ParameterLists

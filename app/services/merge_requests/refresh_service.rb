@@ -47,12 +47,17 @@ module MergeRequests
         notify_about_push(mr)
         mark_mr_as_draft_from_commits(mr)
 
-        execute_mr_web_hooks(mr)
+        # Call merge request webhook with update branches
+        if Feature.disabled?(:split_refresh_worker_web_hooks, @current_user)
+          execute_mr_web_hooks(mr)
+        end
 
         # Run at the end of the loop to avoid any potential contention on the MR object
         refresh_pipelines_on_merge_requests(mr) unless @push.branch_removed?
         merge_request_activity_counter.track_mr_including_ci_config(user: mr.author, merge_request: mr)
       end
+
+      execute_async_workers
 
       true
     end
@@ -341,6 +346,18 @@ module MergeRequests
 
     def schedule_duo_code_review(merge_request)
       # Overridden in EE
+    end
+
+    def execute_async_workers
+      if Feature.enabled?(:split_refresh_worker_web_hooks, @current_user)
+        MergeRequests::Refresh::WebHooksWorker.perform_async(
+          @project.id,
+          @current_user.id,
+          @push.oldrev,
+          @push.newrev,
+          @push.ref
+        )
+      end
     end
   end
 end

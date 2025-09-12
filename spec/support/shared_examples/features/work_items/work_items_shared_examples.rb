@@ -739,7 +739,7 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button '1d'
   end
 
-  it 'checks for progess bar with both time entries and estimate', :aggregate_failures do
+  it 'checks for progress bar with both time entries and estimate', :aggregate_failures do
     add_estimate('5d')
 
     expect(page).to have_text 'Estimate 5d'

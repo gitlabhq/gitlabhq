@@ -7,15 +7,17 @@ import {
   ACCESS_LEVEL_OPTIONS,
 } from 'ee_else_ce/admin/users/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { initializeValuesFromQuery } from '../utils';
 
 export default {
   components: { GlFilteredSearch },
-  mixins: [glFeatureFlagsMixin(), glAbilitiesMixin()],
+  mixins: [glLicensedFeaturesMixin(), glFeatureFlagsMixin(), glAbilitiesMixin()],
   data() {
     const filterTokenConfigs = getFilterTokenConfigs(ACCESS_LEVEL_OPTIONS);
     const standardTokenConfigs = getStandardTokenConfigs({
+      ...this.glLicensedFeatures,
       ...this.glFeatures,
       ...this.glAbilities,
     });

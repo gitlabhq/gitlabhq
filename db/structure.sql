@@ -23848,6 +23848,7 @@ CREATE TABLE security_attributes (
     name text NOT NULL,
     description text,
     color text NOT NULL,
+    template_type smallint,
     CONSTRAINT check_219cd2b143 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_518516df75 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_5f6fd50ef3 CHECK ((char_length(name) <= 255))
@@ -24071,7 +24072,10 @@ CREATE TABLE security_policy_dismissals (
     merge_request_id bigint NOT NULL,
     security_policy_id bigint NOT NULL,
     user_id bigint,
-    security_findings_uuids text[] DEFAULT '{}'::text[] NOT NULL
+    security_findings_uuids text[] DEFAULT '{}'::text[],
+    dismissal_types smallint[] DEFAULT '{}'::smallint[] NOT NULL,
+    comment text,
+    CONSTRAINT check_654ff06528 CHECK ((char_length(comment) <= 255))
 );
 
 CREATE SEQUENCE security_policy_dismissals_id_seq
@@ -27604,6 +27608,8 @@ CREATE TABLE workspaces_agent_configs (
     max_active_hours_before_stop smallint DEFAULT 36 NOT NULL,
     max_stopped_hours_before_termination smallint DEFAULT 744 NOT NULL,
     shared_namespace text DEFAULT ''::text NOT NULL,
+    gitlab_workspaces_proxy_http_enabled boolean DEFAULT true NOT NULL,
+    gitlab_workspaces_proxy_ssh_enabled boolean DEFAULT true NOT NULL,
     CONSTRAINT check_2de67a7a76 CHECK ((char_length(shared_namespace) <= 63)),
     CONSTRAINT check_557e75a230 CHECK ((max_stopped_hours_before_termination > 0)),
     CONSTRAINT check_58759a890a CHECK ((char_length(dns_zone) <= 256)),
@@ -34871,6 +34877,8 @@ CREATE INDEX idx_addon_purchases_on_last_refreshed_at_desc_nulls_last ON subscri
 
 CREATE INDEX idx_ai_active_context_code_enabled_namespaces_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (namespace_id);
 
+CREATE UNIQUE INDEX idx_ai_catalog_item_version_dependencies_version_and_dependency ON ai_catalog_item_version_dependencies USING btree (ai_catalog_item_version_id, dependency_id, organization_id);
+
 CREATE UNIQUE INDEX idx_ai_catalog_item_version_unique ON ai_catalog_item_versions USING btree (ai_catalog_item_id, version);
 
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
@@ -35638,8 +35646,6 @@ CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_it
 CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_dependency_id ON ai_catalog_item_version_dependencies USING btree (dependency_id);
-
-CREATE INDEX index_ai_catalog_item_version_dependencies_on_item_version_id ON ai_catalog_item_version_dependencies USING btree (ai_catalog_item_version_id);
 
 CREATE INDEX index_ai_catalog_item_version_dependencies_on_organization_id ON ai_catalog_item_version_dependencies USING btree (organization_id);
 
@@ -39328,6 +39334,8 @@ CREATE INDEX index_security_orchestration_policy_rule_schedules_on_project_i ON 
 CREATE INDEX index_security_policies_on_policy_management_project_id ON security_policies USING btree (security_policy_management_project_id);
 
 CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
+
+CREATE INDEX index_security_policy_dismissals_on_dismissal_types ON security_policy_dismissals USING gin (dismissal_types);
 
 CREATE INDEX index_security_policy_dismissals_on_project_id ON security_policy_dismissals USING btree (project_id);
 

@@ -2475,6 +2475,9 @@ msgstr ""
 msgid "AICatalog|Agent not found."
 msgstr ""
 
+msgid "AICatalog|Agent removed successfully from this project."
+msgstr ""
+
 msgid "AICatalog|Agent updated successfully."
 msgstr ""
 
@@ -2496,10 +2499,16 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to delete flow %{name}?"
 msgstr ""
 
+msgid "AICatalog|Are you sure you want to remove agent %{name}?"
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to remove flow %{name}?"
 msgstr ""
 
-msgid "AICatalog|Automate tasks and processes using AI Flows."
+msgid "AICatalog|Automate tasks and processes using agents."
+msgstr ""
+
+msgid "AICatalog|Automate tasks and processes using flows."
 msgstr ""
 
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
@@ -2574,6 +2583,9 @@ msgstr ""
 msgid "AICatalog|Edit flow"
 msgstr ""
 
+msgid "AICatalog|Explore AI Catalog agents"
+msgstr ""
+
 msgid "AICatalog|Explore AI Catalog flows"
 msgstr ""
 
@@ -2581,6 +2593,9 @@ msgid "AICatalog|Failed to delete agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to delete flow. %{error}"
+msgstr ""
+
+msgid "AICatalog|Failed to remove agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to remove flow. %{error}"
@@ -2662,6 +2677,9 @@ msgid "AICatalog|Provide default instructions or context that will be included w
 msgstr ""
 
 msgid "AICatalog|Provide instructions or context that will be included for this run."
+msgstr ""
+
+msgid "AICatalog|Remove agent from this project"
 msgstr ""
 
 msgid "AICatalog|Remove flow from this project"
@@ -2754,7 +2772,10 @@ msgstr ""
 msgid "AICatalog|Tools"
 msgstr ""
 
-msgid "AICatalog|Use AI Flows in your project."
+msgid "AICatalog|Use agents in your project."
+msgstr ""
+
+msgid "AICatalog|Use flows in your project."
 msgstr ""
 
 msgid "AICatalog|User prompt"
@@ -60089,6 +60110,9 @@ msgstr ""
 msgid "SecurityReports|New status must be different than current status."
 msgstr ""
 
+msgid "SecurityReports|No grouping"
+msgstr ""
+
 msgid "SecurityReports|No identifiers found."
 msgstr ""
 
@@ -69148,6 +69172,9 @@ msgstr ""
 msgid "UsageBilling|Daily usage"
 msgstr ""
 
+msgid "UsageBilling|Export usage data"
+msgstr ""
+
 msgid "UsageBilling|Increase monthly commitment"
 msgstr ""
 
@@ -69155,6 +69182,9 @@ msgid "UsageBilling|Last 3 months"
 msgstr ""
 
 msgid "UsageBilling|Last month"
+msgstr ""
+
+msgid "UsageBilling|Last updated:"
 msgstr ""
 
 msgid "UsageBilling|No user data available"

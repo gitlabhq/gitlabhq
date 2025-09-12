@@ -13,15 +13,6 @@ description: Image vulnerability scanning, configuration, customization, and rep
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
-- Container Scanning variables that reference Docker [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/357264) in GitLab 15.4.
-- Container Scanning template [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/381665) from `Security/Container-Scanning.gitlab-ci.yml` to `Jobs/Container-Scanning.gitlab-ci.yml` in GitLab 15.6.
-
-{{< /history >}}
-
 Security vulnerabilities in container images create risk throughout your application lifecycle.
 Container Scanning detects these risks early, before they reach production environments. When
 vulnerabilities appear in your base images or operating system's packages, Container Scanning identifies them and
@@ -37,7 +28,7 @@ aspects of inspecting the items your code uses. These items typically include ap
 dependencies that are almost always imported from external sources, rather than sourced from items
 you wrote yourself.
 
-GitLab offers both Container Scanning and [Dependency Scanning](../dependency_scanning/_index.md)
+GitLab offers both Container Scanning and Dependency Scanning
 to ensure coverage for all these dependency types. To cover as much of your risk area as
 possible, we encourage you to use all the security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
@@ -86,7 +77,7 @@ Prerequisites:
 - [Build and push](../../packages/container_registry/build_and_push_images.md#use-gitlab-cicd)
   the Docker image to your project's container registry.
 - If you're using a third-party container registry, you might need to provide authentication
-  credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).
+  credentials by using the CI/CD variables `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD`.
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
 
 Please see details below for [user and project-specific requirements](#prerequisites).
@@ -102,13 +93,13 @@ To enable the analyzer, either:
 ### Use a preconfigured merge request
 
 This method automatically prepares a merge request that includes the container scanning template
-in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable container scanning.
 
 {{< alert type="note" >}}
 
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
 If you have a complex GitLab configuration file it might not be parsed successfully, and an error
-might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+might occur. In that case, use the manual method instead.
 
 {{< /alert >}}
 
@@ -307,11 +298,11 @@ container_scanning:
     CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN: "false"
 ```
 
-When you enable this feature, you may see [duplicate findings](../terminology/_index.md#duplicate-finding)
-in the [vulnerability report](../vulnerability_report/_index.md)
-if [Dependency Scanning](../dependency_scanning/_index.md)
-is enabled for your project. This happens because GitLab can't automatically deduplicate findings
-across different types of scanning tools. To understand which types of dependencies are likely to be duplicated, see [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
+When you enable this feature, you might see [duplicate findings](../terminology/_index.md#duplicate-finding)
+in the vulnerability report if dependency scanning is enabled for your project. This happens because
+GitLab can't automatically deduplicate findings across different types of scanning tools. To
+understand which types of dependencies are likely to be duplicated, see
+[Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
 #### Running jobs in merge request pipelines
 
@@ -346,7 +337,7 @@ positives.
 | `CS_IGNORE_UNFIXED`                      | `"false"`                                                                       | Ignore findings that are not fixed. Ignored findings are not included in the report.                                                                                                                                                                                                                                                                                                          |
 | `CS_IMAGE`                               | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`                                | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables.                                                                                                                                                                                                                                                         |
 | `CS_IMAGE_SUFFIX`                        | `""`                                                                            | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details.                                                                                                                                                                                                                              |
-| `CS_QUIET`                               | `""`                                                                            | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/50) in GitLab 15.1.                                                                                                                                       |
+| `CS_QUIET`                               | `""`                                                                            | If set, this variable disables output of the [vulnerabilities table](#container-scanning-job-log-format) in the job log.                                                                                                                                    |
 | `CS_REGISTRY_INSECURE`                   | `"false"`                                                                       | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work.                                                                                                                                                                                       |
 | `CS_REGISTRY_PASSWORD`                   | `$CI_REGISTRY_PASSWORD`                                                         | Password for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled.                                                                                                                                                                |
 | `CS_REGISTRY_USER`                       | `$CI_REGISTRY_USER`                                                             | Username for accessing a Docker registry requiring authentication. The default is only set if `$CS_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when FIPS mode is enabled.                                                                                                                                                                |
@@ -424,7 +415,7 @@ container_scanning:
 `CS_DEFAULT_BRANCH_IMAGE` should remain the same for a given `CS_IMAGE`. If it changes, then a
 duplicate set of vulnerabilities are created, which must be manually dismissed.
 
-When using [Auto DevOps](../../../topics/autodevops/_index.md), `CS_DEFAULT_BRANCH_IMAGE` is
+When using Auto DevOps, `CS_DEFAULT_BRANCH_IMAGE` is
 automatically set to `$CI_REGISTRY_IMAGE/$CI_DEFAULT_BRANCH:$CI_APPLICATION_TAG`.
 
 ### Using a custom SSL CA certificate authority
@@ -442,7 +433,9 @@ container_scanning:
         -----END CERTIFICATE-----
 ```
 
-The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a custom variable in the UI, either
+as a `file`, which requires the path to the certificate, or as a variable, which requires the text
+representation of the certificate.
 
 ### Scanning a multi-arch image
 
@@ -609,9 +602,13 @@ and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
 
-For details on saving and transporting Docker images as a file, see the Docker documentation on
-[`docker save`](https://docs.docker.com/reference/cli/docker/image/save/), [`docker load`](https://docs.docker.com/reference/cli/docker/image/load/),
-[`docker export`](https://docs.docker.com/reference/cli/docker/container/export/), and [`docker import`](https://docs.docker.com/reference/cli/docker/image/import/).
+For details on saving and transporting Docker images as a file, see the Docker documentation on the
+following commands:
+
+- `docker save`
+- `docker load`
+- `docker export`
+- `docker import`
 
 #### Set container scanning CI/CD variables to use local container scanner analyzers
 
@@ -668,11 +665,10 @@ you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` va
 To scan an image in an external private registry, you must configure access credentials so the
 container scanning analyzer can authenticate itself before attempting to access the image to scan.
 
-If you use the GitLab [Container Registry](../../packages/container_registry/_index.md),
-the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables)
-are set automatically and you can skip this configuration.
+If you use the GitLab container registry, the CI/CD variables `CS_REGISTRY_USER` and
+`CS_REGISTRY_PASSWORD` are set automatically and you can skip this configuration.
 
-This example shows the configuration needed to scan images in a private [Google Container Registry](https://cloud.google.com/artifact-registry):
+This example shows the configuration needed to scan images in a private Google Container Registry:
 
 ```yaml
 include:
@@ -685,8 +681,8 @@ container_scanning:
     CS_IMAGE: "gcr.io/path-to-you-registry/image:tag"
 ```
 
-Before you commit this configuration, [add a CI/CD variable](../../../ci/variables/_index.md#for-a-project)
-for `GCP_CREDENTIALS` containing the JSON key, as described in the
+Before you commit this configuration, add a CI/CD variable for `GCP_CREDENTIALS` containing the JSON
+key, as described in the
 [Google Cloud Platform Container Registry documentation](https://cloud.google.com/container-registry/docs/advanced-authentication#json-key).
 Also:
 
@@ -819,8 +815,7 @@ It's possible to run the [GitLab container scanning tool](https://gitlab.com/git
 against a Docker container without needing to run it within the context of a CI job. To scan an
 image directly, follow these steps:
 
-1. Run [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-   or [Docker Machine](https://github.com/docker/machine).
+1. Run Docker Desktop or Docker Machine.
 
 1. Run the analyzer's Docker image, passing the image and tag you want to analyze in the
    `CI_APPLICATION_REPOSITORY` and `CI_APPLICATION_TAG` variables:
@@ -839,29 +834,23 @@ The results are stored in `gl-container-scanning-report.json`.
 
 ## Reports JSON format
 
-The container scanning tool emits JSON reports which the [GitLab Runner](https://docs.gitlab.com/runner/)
-recognizes through the [`artifacts:reports`](../../../ci/yaml/_index.md#artifactsreports)
-keyword in the CI configuration file.
+The container scanning tool emits JSON reports which the GitLab Runner recognizes through the
+`artifacts:reports` keyword in the CI/CD configuration file.
 
-Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
-the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../detect/security_scanning_results.md)
-and become part of the [vulnerability report](../vulnerability_report/_index.md).
+After the CI/CD job finishes, the runner uploads these reports to GitLab, which are then available in
+the CI/CD job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding
+pipeline and the vulnerability report.
 
-These reports must follow a format defined in the
-[security report schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/). See:
+These reports must comply with the
+[container scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
 
-- [Latest schema for the container scanning report](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json).
-- [Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json)
+[Example container scanning report](https://gitlab.com/gitlab-examples/security/security-reports/-/blob/master/samples/container-scanning.json).
 
 ### CycloneDX Software Bill of Materials
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
-
-{{< /history >}}
-
-In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
+In addition to the JSON report file, the Container Scanning tool outputs a
+[CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This
+CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the Trivy analyzer is used.
 
 This report can be viewed in the [dependency list](../dependency_list/_index.md).
 
@@ -922,7 +911,7 @@ When a container image is pushed with the `latest` tag, a container scanning job
 
 Unlike regular container scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) to inspect the components detected by the scan.
 
-When security findings are identified, GitLab populates the [vulnerability report](../vulnerability_report/_index.md) with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
+When security findings are identified, GitLab populates the vulnerability report with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the vulnerability report page.
 
 {{< alert type="note" >}}
 
@@ -991,7 +980,10 @@ In addition to the sources provided by these scanners, GitLab maintains the foll
 - The proprietary [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
 - The open source [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
 
-In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is merged in to augment the data from the external sources. In the GitLab Premium and Free tiers, the data from the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community) is merged in to augment the data from the external sources. This augmentation currently only applies to the analyzer images for the Trivy scanner.
+In the GitLab Ultimate tier, the data from the GitLab Advisory Database is merged in to augment the
+data from the external sources. In the GitLab Premium and Free tiers, the data from the GitLab
+Advisory Database (Open Source Edition) is merged in to augment the data from the external sources.
+This augmentation only applies to the analyzer images for the Trivy scanner.
 
 Database update information for other analyzers is available in the
 [maintenance table](../detect/vulnerability_scanner_maintenance.md).
@@ -1009,7 +1001,7 @@ Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
 
 To enable remediation support, the scanning tool must have access to the `Dockerfile` specified by
-the [`CS_DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
+the CI/CD variable`CS_DOCKERFILE_PATH`. To ensure that the scanning tool
 has access to this
 file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/configure_runners.md#git-strategy) in
 your `.gitlab-ci.yml` file by following the instructions described in this document's

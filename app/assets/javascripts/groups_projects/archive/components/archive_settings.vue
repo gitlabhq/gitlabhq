@@ -80,7 +80,6 @@ export default {
         visitUrl(this.resourcePath);
       } catch (error) {
         createAlert({ message: this.i18n.error, error, captureError: true });
-      } finally {
         this.loading = false;
       }
     },

@@ -137,7 +137,7 @@ RSpec.describe Gitlab::LegacyGithubImport::UserFormatter, feature_category: :imp
       end
     end
 
-    context 'when the user has been deleted on Gitea' do
+    context 'when the user has been deleted on Gitea', :clean_gitlab_redis_shared_state do
       subject(:user_formatter) { described_class.new(client, ghost_user, project, source_user_mapper) }
 
       it 'returns gitlab ghost user id' do

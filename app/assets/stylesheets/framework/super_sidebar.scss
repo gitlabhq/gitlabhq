@@ -347,6 +347,10 @@ $command-palette-spacing: px-to-rem(14px);
       background-color: var(--super-sidebar-nav-item-hover-bg);
     }
 
+    &:has(.gl-button-text.gl-hidden) .gl-button-icon {
+      @apply gl-mr-0 #{!important};
+    }
+
     .badge {
       font-size: 10px;
       @apply gl-font-semibold;
@@ -390,10 +394,6 @@ $command-palette-spacing: px-to-rem(14px);
 
   hr {
     mix-blend-mode: var(--super-sidebar-hr-mix-blend-mode);
-  }
-
-  .active-indicator {
-    background-color: var(--super-sidebar-accent-color-fg);
   }
 
   .super-sidebar-help-center-toggle[aria-expanded='true'] {

@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-items-center sm:gl-flex">
+  <div class="gl-hidden gl-items-center @sm/panel:gl-flex">
     <span class="gl-mr-2 gl-font-monospace">{{ commit.shortId }}</span>
     <clipboard-button
       :text="commit.sha"

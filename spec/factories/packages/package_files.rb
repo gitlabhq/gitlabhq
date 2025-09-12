@@ -233,6 +233,17 @@ FactoryBot.define do
         end
       end
 
+      trait(:deb_dbgsym) do
+        file_name { 'sample-dbgsym_1.2.3~alpha2_amd64.deb' }
+        file_md5 { '8f9bb17c63b2ecc2de926392218ccedc' }
+        file_sha1 { '69980b4577709015614323e3635c7691a50b265f' }
+        file_sha256 { 'c4c49c3d75486eea6654200f9f350656f951a89dc17ea5de6802a91778a12331' }
+
+        transient do
+          file_metadatum_trait { :deb_dbgsym }
+        end
+      end
+
       trait(:keep) do
         # do not override attributes
       end

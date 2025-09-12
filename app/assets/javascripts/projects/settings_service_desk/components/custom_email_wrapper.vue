@@ -169,10 +169,10 @@ export default {
 
 <template>
   <div class="row gl-mt-7">
-    <div class="col-md-9">
+    <div class="gl-col-md-9">
       <gl-card>
         <template #header>
-          <div class="justify-content-between gl-flex gl-items-center">
+          <div class="gl-flex gl-items-center !gl-justify-between">
             <h5 class="gl-my-0">{{ $options.I18N_CARD_TITLE }}</h5>
             <beta-badge />
           </div>

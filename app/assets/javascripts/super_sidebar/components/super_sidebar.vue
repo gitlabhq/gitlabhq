@@ -287,7 +287,7 @@ export default {
           v-if="canIconOnly"
           ref="helpCenter"
           :sidebar-data="sidebarData"
-          class="gl-p-2"
+          class="gl-p-3"
         />
         <div v-else class="gl-p-2">
           <div class="gl-flex gl-flex-col gl-justify-end">

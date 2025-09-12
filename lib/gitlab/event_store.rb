@@ -61,10 +61,21 @@ module Gitlab
         store.subscribe ::MergeRequests::ProcessDraftNotePublishedWorker, to: ::MergeRequests::DraftNotePublishedEvent
 
         subscribe_to_member_destroyed_events(store)
+        subscribe_to_namespace_transfered_events(store)
       end
 
       def subscribe_to_member_destroyed_events(store)
         store.subscribe ::WorkItems::UserPreferences::DestroyWorker, to: ::Members::DestroyedEvent
+      end
+
+      def subscribe_to_namespace_transfered_events(store)
+        store.subscribe ::WorkItems::ProcessProjectTransferEventsWorker,
+          to: ::Projects::ProjectTransferedEvent,
+          if: ->(event) { ::WorkItems::ProcessProjectTransferEventsWorker.handles_event?(event) }
+
+        store.subscribe ::WorkItems::ProcessGroupTransferEventsWorker,
+          to: ::Groups::GroupTransferedEvent,
+          if: ->(event) { ::WorkItems::ProcessGroupTransferEventsWorker.handles_event?(event) }
       end
     end
   end

@@ -4,9 +4,9 @@ import { RouterLinkStub } from '@vue/test-utils';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
-import NavItemRouterLink from '~/super_sidebar/components/nav_item_router_link.vue';
 import NavItemLink from '~/super_sidebar/components/nav_item_link.vue';
 import {
+  NAV_ITEM_LINK_ACTIVE_CLASS,
   CLICK_MENU_ITEM_ACTION,
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
@@ -20,7 +20,6 @@ describe('NavItem component', () => {
   const findLink = () => wrapper.findByTestId('nav-item-link');
   const findPill = () => wrapper.findComponent(GlBadge);
   const findPinButton = () => wrapper.findComponent(GlButton);
-  const findNavItemRouterLink = () => extendedWrapper(wrapper.findComponent(NavItemRouterLink));
   const findNavItemLink = () => extendedWrapper(wrapper.findComponent(NavItemLink));
 
   const createWrapper = ({
@@ -306,49 +305,20 @@ describe('NavItem component', () => {
     );
   });
 
-  describe('when `item` prop has `to` attribute', () => {
-    describe('when `RouterLink` is not active', () => {
-      it('renders `NavItemRouterLink` with active indicator hidden', () => {
-        createWrapper({ item: { title: 'Foo', to: { name: 'foo' } } });
-
-        expect(findNavItemRouterLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-opacity-0',
-        );
-      });
-    });
-
-    describe('when `RouterLink` is active', () => {
-      it('renders `NavItemRouterLink` with active indicator shown', () => {
-        createWrapper({
-          item: { title: 'Foo', to: { name: 'foo' } },
-          routerLinkSlotProps: { isActive: true },
-        });
-
-        expect(findNavItemRouterLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-opacity-10',
-        );
-      });
-    });
-  });
-
   describe('when `item` prop has `link` attribute', () => {
     describe('when `item` has `is_active` set to `false`', () => {
-      it('renders `NavItemLink` with active indicator hidden', () => {
+      it('renders `NavItemLink` with no active class', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: false } });
 
-        expect(findNavItemLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-opacity-0',
-        );
+        expect(findNavItemLink().classes()).not.toContain(NAV_ITEM_LINK_ACTIVE_CLASS);
       });
     });
 
     describe('when `item` has `is_active` set to `true`', () => {
-      it('renders `NavItemLink` with active indicator shown', () => {
+      it('renders `NavItemLink` with active class', () => {
         createWrapper({ item: { title: 'Foo', link: '/foo', is_active: true } });
 
-        expect(findNavItemLink().findByTestId('active-indicator').classes()).toContain(
-          'gl-opacity-10',
-        );
+        expect(findNavItemLink().classes()).toContain(NAV_ITEM_LINK_ACTIVE_CLASS);
       });
     });
   });

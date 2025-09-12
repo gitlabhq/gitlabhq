@@ -4362,6 +4362,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_web_hooks
+  :worker_name: MergeRequests::Refresh::WebHooksWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow
@@ -5103,6 +5113,36 @@
 - :name: work_items_import_work_items_csv
   :worker_name: WorkItems::ImportWorkItemsCsvWorker
   :feature_category: :team_planning
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_process_group_transfer_events
+  :worker_name: WorkItems::ProcessGroupTransferEventsWorker
+  :feature_category: :portfolio_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_process_project_transfer_events
+  :worker_name: WorkItems::ProcessProjectTransferEventsWorker
+  :feature_category: :portfolio_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_update_namespace_traversal_ids
+  :worker_name: WorkItems::UpdateNamespaceTraversalIdsWorker
+  :feature_category: :portfolio_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

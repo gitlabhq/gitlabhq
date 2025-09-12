@@ -760,8 +760,8 @@ Do not use **grandchild**.
 
 Examples:
 
-- An descendant project, a project in the group's hierarchy.
-- An descendant issue, an issue in the epic's hierarchy.
+- A descendant project, a project in the group's hierarchy.
+- A descendant issue, an issue in the epic's hierarchy.
 - A group and all its descendants.
 
 See also: [ancestor](#ancestor), [child](#child), and [subgroup](#subgroup).

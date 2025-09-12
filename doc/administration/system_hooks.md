@@ -14,8 +14,7 @@ description: "Use system hooks to trigger HTTP POST requests from GitLab events.
 
 {{< /details >}}
 
-System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
-requests and are triggered on the following events:
+System hooks perform HTTP POST requests and are triggered on the following events:
 
 - `group_create`
 - `group_destroy`
@@ -944,3 +943,8 @@ X-Gitlab-Event: System Hook
 
 [Requests to local network by system hooks](../security/webhooks.md) can be allowed
 or blocked by an administrator.
+
+## Related topics
+
+- [Server hooks](server_hooks.md)
+- [File hooks](file_hooks.md)

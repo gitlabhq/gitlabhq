@@ -16,6 +16,7 @@ FactoryBot.define do
     transient do
       without_package_files { false }
       with_changes_file { false }
+      with_symbols_file { false }
       file_metadatum_trait { processing? ? :unknown : :keep }
       published_in { :create }
     end
@@ -45,6 +46,10 @@ FactoryBot.define do
 
       if with_changes_file
         package_files.push(association(:debian_package_file, :changes, file_metadatum_trait, package: instance))
+      end
+
+      if with_symbols_file
+        package_files.push(association(:debian_package_file, :deb_dbgsym, file_metadatum_trait, package: instance))
       end
 
       package_files

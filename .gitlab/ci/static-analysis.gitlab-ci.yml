@@ -23,6 +23,8 @@ static-analysis:
       optional: true
     - job: cache:node-modules
       optional: true
+    - job: db:setup pg16
+      optional: true
   parallel: 2
   variables:
     SETUP_DB: "true"

@@ -1,0 +1,10 @@
+---
+name: update_work_item_traversal_ids_on_transfer
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203281
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569719
+milestone: '18.4'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

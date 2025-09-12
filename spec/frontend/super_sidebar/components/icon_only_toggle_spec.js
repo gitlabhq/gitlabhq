@@ -48,7 +48,8 @@ describe('IconOnlyToggle', () => {
     });
 
     it('does not display text content', () => {
-      expect(findButton().text()).toBe('');
+      expect(findButton().text()).toBe('Expand sidebar');
+      expect(findButton().props('buttonTextClasses')).toBe('gl-hidden');
     });
 
     it('shows tooltip with expand text', () => {

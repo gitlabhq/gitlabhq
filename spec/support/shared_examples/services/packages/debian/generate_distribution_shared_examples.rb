@@ -161,6 +161,21 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
         Filename: #{pool_prefix}/sample-dev_1.2.3~binary_amd64.deb
         Size: 409600
         SHA256: #{package_files[3].file_sha256}
+
+        Package: sample-dbgsym
+        Source: sample
+        Version: 1.2.3~alpha2
+        Installed-Size: 19
+        Maintainer: #{package_files[7].debian_fields['Maintainer']}
+        Architecture: amd64
+        Depends: sample (= 1.2.3~alpha2)
+        Description: debug symbols for sample
+        Build-Ids: 8c1ce64bc8520e5beb5c11f36feafb90db9b79ad
+        Section: debug
+        Priority: optional
+        Filename: #{pool_prefix}/sample-dbgsym_1.2.3~alpha2_amd64.deb
+        Size: 409600
+        SHA256: c4c49c3d75486eea6654200f9f350656f951a89dc17ea5de6802a91778a12331
         EOF
 
         expected_main_sources_content = <<~EOF

@@ -1,5 +1,6 @@
 import { logError } from '~/lib/logger';
 import { s__ } from '~/locale';
+import { getSystemColorScheme } from '~/lib/utils/css_utils';
 import { MESSAGE_TYPES, TIMEOUTS, RETRY_CONFIG } from '../constants';
 import { generateNonce } from './nonce';
 
@@ -41,7 +42,7 @@ export class AuthManager {
     this.allowedOrigin = allowedOrigin;
     this.authTokens = authTokens;
     this.targetPath = targetPath;
-
+    this.colorMode = AuthManager.determineColorMode();
     this.state = {
       messageNonce: null,
       messageCounter: 0,
@@ -68,6 +69,11 @@ export class AuthManager {
     if (!targetPath || typeof targetPath !== 'string') {
       throw new Error(ERROR_MESSAGES.INVALID_TARGET_PATH);
     }
+  }
+
+  static determineColorMode() {
+    const scheme = getSystemColorScheme();
+    return scheme === 'gl-dark' ? 'dark' : 'light';
   }
 
   setCallbacks(onAuthSuccess, onAuthError) {
@@ -119,6 +125,7 @@ export class AuthManager {
       timestamp: Date.now(),
       counter: this.state.messageCounter,
       targetPath: this.targetPath,
+      theme: this.colorMode,
     };
 
     try {

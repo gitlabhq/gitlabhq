@@ -4,7 +4,7 @@ RSpec.shared_context 'with published Debian package' do
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:project_distribution) { create(:debian_project_distribution, container: project, codename: 'unstable', valid_time_duration_seconds: 48.hours.to_i) }
-  let_it_be(:package) { create(:debian_package, project: project, published_in: project_distribution) }
+  let_it_be(:package) { create(:debian_package, project: project, published_in: project_distribution, with_symbols_file: true) }
 end
 
 RSpec.shared_context 'with Debian distribution' do |container_type|

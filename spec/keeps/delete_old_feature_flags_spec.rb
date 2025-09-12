@@ -423,7 +423,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.changelog_type).to eq('removed')
         expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
-        expect(actual_change.reviewers).to match_array(['@john_doe'])
+        expect(actual_change.assignees).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
         expect(actual_change.changed_files).to include(feature_flag_file)
@@ -467,7 +467,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
         expect(actual_change.changed_files).to match_array([feature_flag_file, feature_flag_patch_path, 'foobar.txt'])
-        expect(actual_change.reviewers).to match_array(['@john_doe'])
+        expect(actual_change.assignees).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
       end

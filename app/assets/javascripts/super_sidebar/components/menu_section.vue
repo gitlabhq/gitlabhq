@@ -141,7 +141,7 @@ export default {
     <button
       :id="`menu-section-button-${itemId}`"
       v-outside="handleClickOutside"
-      class="super-sidebar-nav-item gl-relative gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-px-3 gl-py-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
+      class="super-sidebar-nav-item gl-relative gl-flex gl-w-full gl-appearance-none gl-items-center gl-gap-3 gl-rounded-base gl-border-0 gl-bg-transparent gl-p-2 gl-text-left gl-font-semibold !gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
       data-testid="menu-section-button"
       :data-qa-section-name="item.title"
@@ -150,12 +150,6 @@ export default {
       @pointerover="handlePointerover"
       @pointerleave="handlePointerleave"
     >
-      <span
-        :class="[isActive ? 'active-indicator gl-bg-blue-500' : 'gl-bg-transparent']"
-        class="gl-absolute gl-bottom-2 gl-left-2 gl-top-2 gl-transition-all gl-duration-slow"
-        aria-hidden="true"
-        style="width: 3px; border-radius: 3px; margin-right: 1px"
-      ></span>
       <span class="gl-flex gl-h-6 gl-w-6 gl-shrink-0">
         <slot name="icon">
           <gl-icon
@@ -170,7 +164,7 @@ export default {
         {{ item.title }}
       </span>
 
-      <span v-if="!isIconOnly" class="gl-mr-1 gl-text-right gl-text-subtle">
+      <span v-if="!isIconOnly" class="gl-mr-2 gl-text-right gl-text-subtle">
         <gl-animated-chevron-right-down-icon :is-on="showExpanded" />
       </span>
     </button>

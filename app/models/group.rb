@@ -82,7 +82,11 @@ class Group < Namespace
   with_options source: :shared_with_group do
     has_many :shared_with_groups, through: :shared_with_group_links
     has_many :shared_with_groups_of_ancestors, through: :shared_with_group_links_of_ancestors
-    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self
+    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self do
+      def with_developer_maintainer_owner_access
+        merge(GroupGroupLink.with_developer_maintainer_owner_access)
+      end
+    end
   end
 
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

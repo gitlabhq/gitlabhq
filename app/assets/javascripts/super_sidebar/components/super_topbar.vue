@@ -66,7 +66,7 @@ export default {
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
     <div class="gl-contents gl-items-center gl-gap-5 md:gl-flex">
-      <div class="gl-flex gl-items-center gl-gap-2">
+      <div class="gl-flex gl-items-center gl-gap-3">
         <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
         <gl-badge
