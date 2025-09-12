@@ -1,0 +1,11 @@
+---
+table_name: geo_node_organization_links
+classes:
+- Geo::GeoNodeOrganizationLink
+feature_categories:
+- geo_replication
+description: Passthrough table for geo_nodes many-to-many organizations relation.
+introduced_by_url:
+milestone: '18.4'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

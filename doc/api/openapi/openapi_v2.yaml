@@ -60919,6 +60919,10 @@ definitions:
     properties:
       user:
         "$ref": "#/definitions/API_Entities_UserBasic"
+      approved_at:
+        type: string
+        format: date-time
+        example: '2025-01-01T10:00:00Z'
   postApiV4ProjectsIdMergeRequestsMergeRequestIidApprove:
     type: object
     properties:

@@ -6162,7 +6162,22 @@ msgstr ""
 msgid "Advanced export options"
 msgstr ""
 
+msgid "Advanced search"
+msgstr ""
+
 msgid "Advanced search indexing in progress. It might take a few minutes to create indices and initiate indexing.Please use gitlab:elastic:info rake task to check progress."
+msgstr ""
+
+msgid "Advanced search indexing restrictions"
+msgstr ""
+
+msgid "Advanced search indexing status"
+msgstr ""
+
+msgid "Advanced search migration halted"
+msgstr ""
+
+msgid "Advanced search zero-downtime reindexing"
 msgstr ""
 
 msgid "AdvancedSearch|Could not fetch index entities. Please try again later."
@@ -17680,6 +17695,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|The following features help satisfy this requirement."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|This control has passed successfully. No action is required."
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|This is an external control for %{link}"
 msgstr ""
 
@@ -17983,7 +18001,7 @@ msgstr ""
 msgid "Configure search access and visibility settings for search scopes."
 msgstr ""
 
-msgid "Configure settings for Advanced Search with Elasticsearch."
+msgid "Configure settings for Advanced search with Elasticsearch or OpenSearch."
 msgstr ""
 
 msgid "Configure settings for exact code search."
@@ -24449,6 +24467,12 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
+msgid "DuoAgenticChat|Duo is your general development assistant"
+msgstr ""
+
+msgid "DuoAgenticChat|GitLab Duo Agent"
+msgstr ""
+
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
@@ -25447,13 +25471,7 @@ msgstr ""
 msgid "Elapsed time"
 msgstr ""
 
-msgid "Elasticsearch HTTP client timeout value in seconds."
-msgstr ""
-
-msgid "Elasticsearch indexing restrictions"
-msgstr ""
-
-msgid "Elasticsearch migration halted"
+msgid "Elasticsearch or OpenSearch HTTP client timeout value in seconds."
 msgstr ""
 
 msgid "Elasticsearch reindexing is already in progress"
@@ -25463,9 +25481,6 @@ msgid "Elasticsearch reindexing triggered"
 msgstr ""
 
 msgid "Elasticsearch reindexing was not started: %{errors}"
-msgstr ""
-
-msgid "Elasticsearch zero-downtime reindexing"
 msgstr ""
 
 msgid "Email"
@@ -25996,10 +26011,10 @@ msgstr ""
 msgid "Enter the following to confirm:"
 msgstr ""
 
-msgid "Enter the password for password-protected Elasticsearch servers."
+msgid "Enter the password for password-protected Elasticsearch or OpenSearch servers."
 msgstr ""
 
-msgid "Enter the username for password-protected Elasticsearch servers."
+msgid "Enter the username for password-protected Elasticsearch or OpenSearch servers."
 msgstr ""
 
 msgid "Enter values to populate the .gitlab-ci.yml configuration file."
@@ -29405,6 +29420,9 @@ msgid "Geo|Project Wiki Repository"
 msgstr ""
 
 msgid "Geo|Projects in certain groups"
+msgstr ""
+
+msgid "Geo|Projects in certain organizations"
 msgstr ""
 
 msgid "Geo|Projects in certain storage shards"
@@ -33188,7 +33206,7 @@ msgstr ""
 msgid "How is progress calculated?"
 msgstr ""
 
-msgid "How many code indexing jobs are allowed to run concurrently. A higher value improves repository indexing performance by increasing Sidekiq and Elasticsearch load. Setting it to 0 allows an unlimited number of indexing jobs."
+msgid "How many code indexing jobs are allowed to run concurrently. A higher value improves repository indexing performance by increasing Sidekiq and Elasticsearch or OpenSearch load. Setting it to 0 allows an unlimited number of indexing jobs."
 msgstr ""
 
 msgid "How many seconds an IP counts toward the IP address limit."
@@ -34616,9 +34634,6 @@ msgid "Indexed documents: %{processed_documents}/%{expected_documents}"
 msgstr ""
 
 msgid "Indexing CPU to tasks multiplier"
-msgstr ""
-
-msgid "Indexing status"
 msgstr ""
 
 msgid "Indexing timeout per project"
@@ -39449,7 +39464,7 @@ msgstr ""
 msgid "Maximum character limit - %{limit}"
 msgstr ""
 
-msgid "Maximum concurrency of Elasticsearch bulk requests per indexing operation."
+msgid "Maximum concurrency of bulk requests per indexing operation."
 msgstr ""
 
 msgid "Maximum delay (Minutes)"
@@ -39554,7 +39569,7 @@ msgstr ""
 msgid "Maximum number of pipeline execution policies allowed per security policy configuration"
 msgstr ""
 
-msgid "Maximum number of possible retries for Elasticsearch search requests."
+msgid "Maximum number of possible retries for Elasticsearch or OpenSearch search requests."
 msgstr ""
 
 msgid "Maximum number of projects."
@@ -39653,7 +39668,7 @@ msgstr ""
 msgid "Maximum size limit for each repository."
 msgstr ""
 
-msgid "Maximum size of Elasticsearch bulk indexing requests."
+msgid "Maximum size of bulk indexing requests."
 msgstr ""
 
 msgid "Maximum size of export files."
@@ -44100,9 +44115,6 @@ msgstr ""
 msgid "Now, personalize your GitLab experience"
 msgstr ""
 
-msgid "Number of Elasticsearch shards and replicas per index"
-msgstr ""
-
 msgid "Number of Git pushes after which Gitaly is asked to optimize a repository."
 msgstr ""
 
@@ -44134,6 +44146,9 @@ msgid "Number of replicas"
 msgstr ""
 
 msgid "Number of shards"
+msgstr ""
+
+msgid "Number of shards and replicas per index"
 msgstr ""
 
 msgid "Number of shards for non-code indexing"
@@ -53143,6 +53158,9 @@ msgstr ""
 msgid "References should be in the form of path/to/project!merge_request_id"
 msgstr ""
 
+msgid "Reformat table"
+msgstr ""
+
 msgid "Refresh"
 msgstr ""
 
@@ -61162,9 +61180,6 @@ msgstr ""
 msgid "Sessions"
 msgstr ""
 
-msgid "Sessions content placeholder"
-msgstr ""
-
 msgid "Session|There was a error loading the user verification challenge. Refresh to try again."
 msgstr ""
 
@@ -61255,7 +61270,7 @@ msgstr ""
 msgid "Set the iteration to %{iteration_reference}."
 msgstr ""
 
-msgid "Set the maximum number of slices allowed to run concurrently during Elasticsearch reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
+msgid "Set the maximum number of slices allowed to run concurrently during reindexing. Learn more about %{max_slices_running_link_start}maximum running slices configuration%{max_slices_link_end}."
 msgstr ""
 
 msgid "Set the maximum session time for a web terminal."
@@ -64892,7 +64907,7 @@ msgstr ""
 msgid "The URL should start with http:// or https://"
 msgstr ""
 
-msgid "The URLs for connecting to Elasticsearch. For clustering, add the URLs separated by commas."
+msgid "The URLs for connecting to Elasticsearch or OpenSearch. For clustering, add the URLs separated by commas."
 msgstr ""
 
 msgid "The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`)."

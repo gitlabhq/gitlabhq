@@ -270,7 +270,7 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. In the **AWS OpenSearch IAM credentials** section:
    1. Select the **Use AWS OpenSearch Service with IAM credentials** checkbox.
    1. In **AWS region**, enter the AWS region where your OpenSearch domain
@@ -301,7 +301,7 @@ the master username and password on your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. In **OpenSearch domain URL**, enter the URL to the OpenSearch domain endpoint.
 1. In **Username**, enter the master username.
 1. In **Password**, enter the master password.
@@ -521,7 +521,7 @@ To check indexing status:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Indexing status**.
+1. Expand **Advanced search indexing status**.
 
 ### Monitor the status of background jobs
 
@@ -728,7 +728,7 @@ To pause indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Select the **Pause Elasticsearch indexing** checkbox.
 1. Select **Save changes**.
 
@@ -742,7 +742,7 @@ To resume indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 1. Select **Save changes**.
 
@@ -770,7 +770,7 @@ To trigger reindexing:
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Expand **Advanced search zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
@@ -791,7 +791,7 @@ To trigger zero-downtime reindexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Expand **Advanced search zero-downtime reindexing**.
    The following settings are available:
 
    - [Slice multiplier](#slice-multiplier)
@@ -843,7 +843,7 @@ To abandon an unfinished reindexing job and resume indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
 ## Index integrity
@@ -948,7 +948,7 @@ When you believe you've fixed the cause of the failure:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
 
 If you cannot get the migration to succeed, you may

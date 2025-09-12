@@ -249,6 +249,7 @@ RSpec.describe 'Database schema',
       backup_vulnerability_external_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_issue_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_merge_request_links: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
+      backup_vulnerability_severity_overrides: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_state_transitions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       backup_vulnerability_user_mentions: %w[vulnerability_id], # having a FK on this table prevents partitions from being detached
       vulnerability_reads: %w[cluster_agent_id namespace_id security_project_tracked_context_id], # namespace_id is a denormalization of `project.namespace`. tracked_contexts cannot be a foreign key yet

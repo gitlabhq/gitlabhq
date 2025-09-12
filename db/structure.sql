@@ -4771,6 +4771,17 @@ CREATE TABLE backup_vulnerability_merge_request_links (
 )
 PARTITION BY RANGE (date);
 
+CREATE TABLE backup_vulnerability_severity_overrides (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    original_record_identifier bigint NOT NULL,
+    vulnerability_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    date date NOT NULL,
+    data jsonb NOT NULL
+)
+PARTITION BY RANGE (date);
+
 CREATE TABLE backup_vulnerability_state_transitions (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -15479,6 +15490,23 @@ CREATE SEQUENCE geo_node_namespace_links_id_seq
     CACHE 1;
 
 ALTER SEQUENCE geo_node_namespace_links_id_seq OWNED BY geo_node_namespace_links.id;
+
+CREATE TABLE geo_node_organization_links (
+    id bigint NOT NULL,
+    geo_node_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE geo_node_organization_links_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE geo_node_organization_links_id_seq OWNED BY geo_node_organization_links.id;
 
 CREATE TABLE geo_node_statuses (
     id bigint NOT NULL,
@@ -28862,6 +28890,8 @@ ALTER TABLE ONLY geo_events ALTER COLUMN id SET DEFAULT nextval('geo_events_id_s
 
 ALTER TABLE ONLY geo_node_namespace_links ALTER COLUMN id SET DEFAULT nextval('geo_node_namespace_links_id_seq'::regclass);
 
+ALTER TABLE ONLY geo_node_organization_links ALTER COLUMN id SET DEFAULT nextval('geo_node_organization_links_id_seq'::regclass);
+
 ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY geo_nodes ALTER COLUMN id SET DEFAULT nextval('geo_nodes_id_seq'::regclass);
@@ -30736,6 +30766,9 @@ ALTER TABLE ONLY backup_vulnerability_issue_links
 ALTER TABLE ONLY backup_vulnerability_merge_request_links
     ADD CONSTRAINT backup_vulnerability_merge_request_links_pkey PRIMARY KEY (original_record_identifier, date);
 
+ALTER TABLE ONLY backup_vulnerability_severity_overrides
+    ADD CONSTRAINT backup_vulnerability_severity_overrides_pkey PRIMARY KEY (original_record_identifier, date);
+
 ALTER TABLE ONLY backup_vulnerability_state_transitions
     ADD CONSTRAINT backup_vulnerability_state_transitions_pkey PRIMARY KEY (original_record_identifier, date);
 
@@ -31476,6 +31509,9 @@ ALTER TABLE ONLY geo_events
 
 ALTER TABLE ONLY geo_node_namespace_links
     ADD CONSTRAINT geo_node_namespace_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY geo_node_organization_links
+    ADD CONSTRAINT geo_node_organization_links_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY geo_node_statuses
     ADD CONSTRAINT geo_node_statuses_pkey PRIMARY KEY (id);
@@ -35969,6 +36005,10 @@ CREATE INDEX index_backup_vulnerability_merge_request_links_on_fk ON ONLY backup
 
 CREATE INDEX index_backup_vulnerability_merge_request_links_on_project_id ON ONLY backup_vulnerability_merge_request_links USING btree (project_id);
 
+CREATE INDEX index_backup_vulnerability_severity_overrides_on_fk ON ONLY backup_vulnerability_severity_overrides USING btree (vulnerability_id);
+
+CREATE INDEX index_backup_vulnerability_severity_overrides_on_project_id ON ONLY backup_vulnerability_severity_overrides USING btree (project_id);
+
 CREATE INDEX index_backup_vulnerability_state_transitions_on_fk ON ONLY backup_vulnerability_state_transitions USING btree (vulnerability_id);
 
 CREATE INDEX index_backup_vulnerability_state_transitions_on_project_id ON ONLY backup_vulnerability_state_transitions USING btree (project_id);
@@ -37056,6 +37096,10 @@ CREATE INDEX index_geo_node_namespace_links_on_geo_node_id ON geo_node_namespace
 CREATE UNIQUE INDEX index_geo_node_namespace_links_on_geo_node_id_and_namespace_id ON geo_node_namespace_links USING btree (geo_node_id, namespace_id);
 
 CREATE INDEX index_geo_node_namespace_links_on_namespace_id ON geo_node_namespace_links USING btree (namespace_id);
+
+CREATE UNIQUE INDEX index_geo_node_organization_links_on_geo_node_id_and_org_id ON geo_node_organization_links USING btree (geo_node_id, organization_id);
+
+CREATE INDEX index_geo_node_organization_links_on_organization_id ON geo_node_organization_links USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_geo_node_statuses_on_geo_node_id ON geo_node_statuses USING btree (geo_node_id);
 
@@ -47959,6 +48003,9 @@ ALTER TABLE ONLY gpg_signatures
 
 ALTER TABLE ONLY virtual_registries_container_upstreams
     ADD CONSTRAINT fk_rails_c97afd8bbd FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY geo_node_organization_links
+    ADD CONSTRAINT fk_rails_c9bfa510d9 FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY board_group_recent_visits
     ADD CONSTRAINT fk_rails_ca04c38720 FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE;

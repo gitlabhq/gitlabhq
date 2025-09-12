@@ -234,7 +234,7 @@
     .ai-panel-header {
       z-index: $top-bar-z-index;
       @apply gl-sticky #{!important};
-      @apply gl-top-0 gl-py-3 gl-pl-5 gl-pr-3;
+      @apply gl-top-0 gl-py-3 gl-px-3;
     }
 
     .ai-nav-icon-active,
@@ -243,6 +243,10 @@
       background-color: var(--super-sidebar-nav-item-current-bg);
       color: var(--super-sidebar-accent-color-fg);
     }
+  }
+
+  .ai-panel-body{
+    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$top-bar-height} - #{$gl-spacing-scale-8});
   }
 
   .ai-panel-header-actions {

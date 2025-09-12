@@ -71,7 +71,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_at": "2016-06-10T04:21:41.050Z"
     },
     {
       "user": {
@@ -81,7 +82,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/ryley"
-      }
+      },
+      "approved_at": "2016-06-10T09:17:13.520Z"
     }
   ]
 }
@@ -795,7 +797,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_by": "2016-06-09T01:45:21.720Z"
     }
   ]
 }

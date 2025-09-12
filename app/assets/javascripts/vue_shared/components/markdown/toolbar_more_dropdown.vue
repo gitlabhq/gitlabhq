@@ -5,6 +5,7 @@ import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { updateText } from '~/lib/utils/text_markdown';
+import { formatMarkdownTable } from '~/lib/utils/markdown_table_cleanup';
 import { DEFAULT_GLQL_VIEW_CONTENT } from '~/content_editor/extensions/code_block_highlight';
 import {
   DEFAULT_MERMAID_CONTENT,
@@ -84,6 +85,10 @@ export default {
           text: __('Table of contents'),
           action: () => this.insertMarkdown('[[_TOC_]]', 'tableOfContents'),
         },
+        {
+          text: __('Reformat table'),
+          action: () => this.reformatTable('reformatTable'),
+        },
       ],
     };
   },
@@ -100,6 +105,27 @@ export default {
         tag: markdownText,
         cursorOffset: 0,
         wrap: false,
+      });
+
+      Tracking.event(undefined, TOOLBAR_CONTROL_TRACKING_ACTION, {
+        label: MARKDOWN_EDITOR_TRACKING_LABEL,
+        property: trackingProperty,
+      });
+    },
+    reformatTable(trackingProperty) {
+      const textArea = this.getCurrentTextArea();
+      if (!textArea) return;
+
+      const text = textArea.value;
+      const selectedText = text.substring(textArea.selectionStart, textArea.selectionEnd);
+      const reformattedText = formatMarkdownTable(selectedText);
+
+      updateText({
+        textArea,
+        tag: reformattedText,
+        cursorOffset: 0,
+        wrap: false,
+        replaceText: true,
       });
 
       Tracking.event(undefined, TOOLBAR_CONTROL_TRACKING_ACTION, {

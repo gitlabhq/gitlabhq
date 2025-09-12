@@ -94,7 +94,6 @@ export default {
   data() {
     return {
       customEmail: '',
-      forwardingConfigured: false,
       smtpAddress: '',
       smtpPort: '587',
       smtpUsername: '',

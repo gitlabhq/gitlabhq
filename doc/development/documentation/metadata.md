@@ -139,7 +139,6 @@ The following metadata is optional and is not actively maintained.
 - `feedback`: Set to `false` to not include the "Help & Feedback" footer.
 - `noindex`: Set to `true` to prevent the page from being indexed by search engines.
 - `redirect_to`: Used to control redirects. For more information, see [Redirects in GitLab documentation](redirects.md).
-- `searchbar`: Set to `false` to not include the search bar in the page header.
 - `toc`: Set to `false` to not include the "On this page" navigation.
 
 ## Batch updates for TW metadata

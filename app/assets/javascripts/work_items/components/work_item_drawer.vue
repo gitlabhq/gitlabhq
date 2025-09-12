@@ -345,7 +345,7 @@ export default {
         :modal-is-group="modalIsGroup"
         :is-board="isBoard"
         is-drawer
-        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
+        class="work-item-drawer !gl-pt-0 @xl/panel:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
         @work-item-updated="handleWorkItemUpdated"
         @workItemTypeChanged="$emit('workItemTypeChanged', $event)"

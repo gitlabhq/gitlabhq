@@ -62,7 +62,7 @@ export default {
           variant="danger"
           :href="revokePath"
           data-method="put"
-          class="text-truncate"
+          class="gl-truncate"
           data-testid="primary-revoke-btn"
         >
           <gl-sprintf :message="s__('DeployTokens|Revoke %{name}')">

@@ -198,7 +198,10 @@ export default {
       return [
         {
           Category: 'agent_user_environment',
-          Content: JSON.stringify({ merge_request_url: this.mergeRequestPath(item) }),
+          Content: JSON.stringify({
+            merge_request_url: this.mergeRequestPath(item),
+            source_branch: this.currentBranch(item),
+          }),
           Metadata: '{}',
         },
       ];

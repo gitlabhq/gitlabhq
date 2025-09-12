@@ -480,7 +480,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-mb-5 md:!gl-mb-3"
+        class="gl-mb-5 @md/panel:!gl-mb-3"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >

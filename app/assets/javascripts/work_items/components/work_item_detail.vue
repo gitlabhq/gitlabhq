@@ -466,16 +466,16 @@ export default {
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden !gl-mt-3': this.shouldShowAncestors,
-        'sm:!gl-block': !this.shouldShowAncestors,
+        '@sm/panel:!gl-hidden !gl-mt-3': this.shouldShowAncestors,
+        '@sm/panel:!gl-block': !this.shouldShowAncestors,
         'gl-w-full': !this.shouldShowAncestors && !this.editMode,
         'editable-wi-title': this.editMode && !this.shouldShowAncestors,
       };
     },
     titleClassComponent() {
       return {
-        'sm:!gl-block': !this.shouldShowAncestors,
-        'gl-hidden sm:!gl-block !gl-mt-3': this.shouldShowAncestors,
+        '@sm/panel:!gl-block': !this.shouldShowAncestors,
+        'gl-hidden @sm/panel:!gl-block !gl-mt-3': this.shouldShowAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
@@ -1034,7 +1034,7 @@ export default {
             :svg-path="$options.noAccessSvg"
           />
           <div v-else data-testid="detail-wrapper">
-            <div class="gl-block gl-flex-row gl-items-start gl-gap-3 sm:!gl-flex">
+            <div class="gl-block gl-flex-row gl-items-start gl-gap-3 @sm/panel:!gl-flex">
               <work-item-ancestors
                 v-if="shouldShowAncestors"
                 :work-item="workItem"
@@ -1098,7 +1098,7 @@ export default {
               </div>
               <gl-button
                 v-if="isModal"
-                class="gl-hidden sm:!gl-block"
+                class="gl-hidden @sm/panel:!gl-block"
                 category="tertiary"
                 data-testid="work-item-close"
                 icon="close"

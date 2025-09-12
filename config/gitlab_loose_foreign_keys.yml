@@ -86,6 +86,10 @@ backup_vulnerability_merge_request_links:
   - table: projects
     column: project_id
     on_delete: async_delete
+backup_vulnerability_severity_overrides:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 backup_vulnerability_state_transitions:
   - table: projects
     column: project_id
@@ -415,6 +419,10 @@ geo_node_namespace_links:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+geo_node_organization_links:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_push_rules:
   - table: namespaces
     column: group_id
@@ -467,7 +475,7 @@ merge_request_diff_commits:
   - table: merge_request_diffs
     column: merge_request_diff_id
     on_delete: async_delete
-    worker_class: 'LooseForeignKeys::MergeRequestDiffCommitCleanupWorker'
+    worker_class: LooseForeignKeys::MergeRequestDiffCommitCleanupWorker
 merge_request_metrics:
   - table: p_ci_pipelines
     column: pipeline_id

@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :consumables_cost_management do
-  include SubscriptionPortalHelpers if Gitlab.ee?
-
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:user) { create(:user) }
@@ -16,10 +14,9 @@ RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :
   end
 
   describe 'GET /groups/*group_id/-/usage_quotas' do
-    context 'when user has read_usage_quotas permission' do
+    context 'when user has read_usage_quotas permission', :with_trial_types do
       before do
         group.add_owner(user)
-        stub_subscription_trial_types if Gitlab.ee?
       end
 
       it 'renders index with 200 status code' do

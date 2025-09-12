@@ -69,15 +69,17 @@ export default {
         </div>
 
         <div class="gl-flex gl-flex-wrap gl-items-center gl-gap-2">
-          <gl-sprintf
-            :message="
-              __('You published branch %{branchName}. Take the next step when you are ready.')
-            "
-          >
-            <template #branchName>
-              <code>{{ branchName }}</code>
-            </template>
-          </gl-sprintf>
+          <span>
+            <gl-sprintf
+              :message="
+                __('You published branch %{branchName}. Take the next step when you are ready.')
+              "
+            >
+              <template #branchName>
+                <code class="gl-break-all">{{ branchName }}</code>
+              </template>
+            </gl-sprintf>
+          </span>
         </div>
         <div class="gl-flex gl-space-x-2 gl-pt-3">
           <gl-button

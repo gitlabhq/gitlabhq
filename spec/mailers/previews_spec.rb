@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Mailer previews', feature_category: :shared do
-  include SubscriptionPortalHelpers if Gitlab.ee?
-
+RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared do
   # Setup needed for email previews
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :import_failed, group: group, import_last_error: 'some error') }
@@ -52,7 +50,6 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
 
   with_them do
     it do
-      stub_subscription_trial_types if Gitlab.ee?
       issue_link = pending_failures["#{preview.name}##{email}"]
       pending "See #{issue_link}" if issue_link
 

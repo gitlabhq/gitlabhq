@@ -136,7 +136,7 @@ export default {
             this.isEditing = true;
           },
           extraAttrs: {
-            class: 'sm:!gl-hidden',
+            class: '@sm/panel:!gl-hidden',
           },
         },
         {
@@ -318,7 +318,7 @@ export default {
         <gl-button
           v-if="!isEditing && hasPermissions"
           v-gl-tooltip
-          class="gl-hidden sm:!gl-flex"
+          class="gl-hidden @sm/panel:!gl-flex"
           :aria-label="$options.i18n.editCommentLabel"
           :title="$options.i18n.editCommentLabel"
           category="tertiary"

@@ -29,7 +29,7 @@ export default {
     <template v-if="keys.length > 0">
       <div
         role="row"
-        class="gl-responsive-table-row table-row-header !gl-border-default gl-bg-subtle gl-text-base gl-font-bold gl-text-strong md:gl-pl-5 md:gl-pr-5"
+        class="gl-responsive-table-row table-row-header !gl-border-default gl-bg-subtle gl-text-base gl-font-bold gl-text-strong @md/panel:gl-px-5"
       >
         <div role="rowheader" class="table-section section-40">
           {{ s__('DeployKeys|Deploy key') }}

@@ -158,7 +158,6 @@ export default {
         : this.initialAreTicketsConfidentialByDefault,
       reopenIssueOnExternalParticipantNote: this.initialReopenIssueOnExternalParticipantNote,
       addExternalParticipantsFromCc: this.initialAddExternalParticipantsFromCc,
-      searchTerm: '',
       projectKeyError: null,
     };
   },

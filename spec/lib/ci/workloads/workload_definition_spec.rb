@@ -58,6 +58,22 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
       })
     end
 
+    it 'allows setting cache' do
+      cache_config = { key: 'my-cache-key', paths: ['node_modules'] }
+      definition.cache = cache_config
+      expect(definition.to_job_hash[:cache]).to eq(cache_config)
+    end
+
+    it 'does not include cache when cache is nil' do
+      definition.cache = nil
+      expect(definition.to_job_hash).not_to have_key(:cache)
+    end
+
+    it 'does not include cache when cache is empty hash' do
+      definition.cache = {}
+      expect(definition.to_job_hash).not_to have_key(:cache)
+    end
+
     it 'raises ArgumentError if image is not present' do
       definition.image = ''
       expect { definition.to_job_hash }.to raise_error(ArgumentError)

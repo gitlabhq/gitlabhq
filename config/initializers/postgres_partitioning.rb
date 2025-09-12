@@ -74,6 +74,7 @@ if Gitlab.ee?
       Vulnerabilities::Backups::VulnerabilityExternalIssueLink,
       Vulnerabilities::Backups::VulnerabilityIssueLink,
       Vulnerabilities::Backups::VulnerabilityMergeRequestLink,
+      Vulnerabilities::Backups::VulnerabilitySeverityOverride,
       Vulnerabilities::Backups::VulnerabilityStateTransition,
       Vulnerabilities::Backups::VulnerabilityUserMention,
       Ai::ActiveContext::Code::EnabledNamespace,

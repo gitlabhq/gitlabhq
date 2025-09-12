@@ -77,39 +77,6 @@ export default {
 
       return items;
     },
-    createRuleItems() {
-      return this.isWildcardAvailable ? [this.wildcardItem] : this.filteredOpenBranches;
-    },
-    filteredOpenBranches() {
-      const openBranches = window.gon.open_branches.map((item) => ({
-        text: item.text,
-        value: item.text,
-      }));
-      return openBranches.filter((item) => item.text.includes(this.searchQuery));
-    },
-    wildcardItem() {
-      return { text: this.$options.i18n.createWildcard, value: this.searchQuery };
-    },
-    isWildcardAvailable() {
-      return this.searchQuery.includes('*');
-    },
-    createRuleText() {
-      return this.branchRuleName || this.$options.i18n.branchNamePlaceholder;
-    },
-    primaryProps() {
-      return {
-        text: this.$options.i18n.createProtectedBranch,
-        attributes: {
-          variant: 'confirm',
-          disabled: !this.branchRuleName,
-        },
-      };
-    },
-    cancelProps() {
-      return {
-        text: this.$options.i18n.createBranchRule,
-      };
-    },
   },
   methods: {
     createPredefinedBrachRulesItem(branchRuleName) {

@@ -164,6 +164,7 @@
 - :with_license
 - :with_organization_url_helpers
 - :with_sidekiq_context
+- :with_trial_types
 - :without_license
 - :yaml_processor_feature_flag_corectness
 - :zoekt
