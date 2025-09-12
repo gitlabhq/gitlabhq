@@ -5,7 +5,7 @@ clusterwide: false
 column: prevent_merge_requests_author_approval
 db_type: boolean
 default: 'false'
-description: Prevent approval by author
+description: Prevent approval by merge request creator (author)
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

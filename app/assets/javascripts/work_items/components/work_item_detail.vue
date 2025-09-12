@@ -26,7 +26,6 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
-import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -593,14 +592,8 @@ export default {
     isDuoWorkflowEnabled() {
       return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
-    projectIdAsNumber() {
-      return getIdFromGraphQLId(this.workItemProjectId);
-    },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
-    },
-    agentInvokePath() {
-      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
     confidentialityToggledText() {
       return this.workItem.confidential
@@ -1210,14 +1203,12 @@ export default {
                     <div>
                       <duo-workflow-action
                         v-if="isDuoWorkflowEnabled"
-                        :project-id="projectIdAsNumber"
                         :project-path="workItemFullPath"
                         :title="__('Generate MR with Duo')"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
                         workflow-definition="issue_to_merge_request"
                         :agent-privileges="agentPrivileges"
-                        :duo-workflow-invoke-path="agentInvokePath"
                         size="medium"
                       />
                     </div>

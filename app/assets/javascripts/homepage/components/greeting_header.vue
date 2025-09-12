@@ -131,7 +131,7 @@ export default {
     <button
       v-if="!statusEmoji"
       v-gl-tooltip="setStatusAltText"
-      class="gl-display-inline-block gl-relative gl-border-none gl-bg-transparent gl-p-0"
+      class="gl-display-inline-block gl-relative gl-rounded-full gl-border-none gl-bg-transparent gl-p-0"
       data-testid="status-modal-trigger"
       :aria-label="setStatusAltText"
       @click="openStatusModal"

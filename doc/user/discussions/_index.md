@@ -214,11 +214,12 @@ Who can be notified:
 
 {{< history >}}
 
-- Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538003) for GitLab Wiki in GitLab 18.2.
 
 {{< /history >}}
 
-Use internal notes to protect information added to a public issue, epic, or merge request.
+Use internal notes to protect information added to a public issue, epic, wiki page, or merge request.
 Internal notes differ from public comments:
 
 - Only project members with least the Reporter role can view the internal note.
@@ -235,7 +236,7 @@ Prerequisites:
 
 To add an internal note:
 
-1. On the issue, epic, or merge request, in the **Comment** text box, enter a comment.
+1. On the issue, epic, wiki page, or merge request, in the **Comment** text box, enter a comment.
 1. Below the comment, select **Make this an internal note**.
 1. Select **Add internal note**.
 

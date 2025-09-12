@@ -14,12 +14,12 @@ title: Application Settings analysis
 
 ## Statistics
 
-- Number of attributes: 499
+- Number of attributes: 504
 - Number of encrypted attributes: 42 (8.0%)
-- Number of attributes documented: 294 (59.0%)
-- Number of attributes on GitLab.com different from the defaults: 223 (45.0%)
-- Number of attributes with `clusterwide` set: 499 (100.0%)
-- Number of attributes with `clusterwide: true` set: 132 (26.0%)
+- Number of attributes documented: 295 (59.0%)
+- Number of attributes on GitLab.com different from the defaults: 223 (44.0%)
+- Number of attributes with `clusterwide` set: 504 (100.0%)
+- Number of attributes with `clusterwide: true` set: 131 (26.0%)
 
 ## Individual columns
 
@@ -58,6 +58,7 @@ title: Application Settings analysis
 | `auto_ban_user_on_excessive_projects_download` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `auto_devops_domain` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `auto_devops_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `true` | `true`| `true` |
+| `auto_duo_code_review_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `automatic_purchased_storage_allocation` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `true`| `true` |
 | `bulk_import_concurrent_pipeline_batch_limit` | `false` | `smallint` | `integer` | `true` | `25` | `false` | `false`| `true` |
 | `bulk_import_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
@@ -150,6 +151,7 @@ title: Application Settings analysis
 | `dsa_key_restriction` | `false` | `integer` | `integer` | `true` | `'-1'::integer` | `false` | `false`| `true` |
 | `duo_chat` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
+| `duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `duo_workflow` | `false` | `jsonb` | `` | `false` | `'{}'::jsonb` | `true` | `true`| `false` |
 | `ecdsa_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
 | `ecdsa_sk_key_restriction` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
@@ -221,7 +223,7 @@ title: Application Settings analysis
 | `group_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |
 | `hashed_storage_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `health_check_access_token` | `false` | `character` | `` | `false` | `null` | `true` | `true`| `false` |
-| `help_page_documentation_base_url` | `false` | `text` | `` | `false` | `null` | `true` | `true`| `false` |
+| `help_page_documentation_base_url` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `help_page_hide_commercial_content` | `false` | `boolean` | `boolean` | `false` | `false` | `false` | `true`| `true` |
 | `help_page_support_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `help_page_text` | `false` | `text` | `string` | `false` | `null` | `true` | `true`| `true` |
@@ -260,7 +262,9 @@ title: Application Settings analysis
 | `license_trial_ends_on` | `false` | `date` | `` | `false` | `null` | `false` | `false`| `false` |
 | `license_usage_data_exported` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `local_markdown_version` | `false` | `integer` | `integer` | `true` | `0` | `true` | `false`| `true` |
+| `lock_auto_duo_code_review_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_duo_features_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
+| `lock_duo_remote_flows_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_math_rendering_limits_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_ldap` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
 | `lock_memberships_to_saml` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
@@ -336,7 +340,6 @@ title: Application Settings analysis
 | `plantuml_enabled` | `false` | `boolean` | `boolean` | `false` | `null` | `true` | `true`| `true` |
 | `plantuml_url` | `false` | `character` | `string` | `false` | `null` | `true` | `true`| `true` |
 | `polling_interval_multiplier` | `false` | `numeric` | `float` | `true` | `1.0` | `false` | `false`| `true` |
-| `pre_receive_secret_detection_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `true`| `false` |
 | `prevent_merge_requests_author_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `prevent_merge_requests_committers_approval` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `product_analytics_configurator_connection_string` | `true` | `bytea` | `` | `false` | `null` | `true` | `false`| `false` |
@@ -502,6 +505,7 @@ title: Application Settings analysis
 | `updating_name_disabled_for_users` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `usage_ping_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `usage_ping_features_enabled` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
+| `usage_ping_generation_enabled` | `false` | `boolean` | `` | `true` | `true` | `false` | `false`| `false` |
 | `usage_stats_set_by_user_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
 | `user_deactivation_emails_enabled` | `false` | `boolean` | `boolean` | `true` | `true` | `false` | `false`| `true` |
 | `user_default_external` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
@@ -522,5 +526,6 @@ title: Application Settings analysis
 | `web_ide_oauth_application_id` | `false` | `bigint` | `` | `false` | `null` | `true` | `false`| `false` |
 | `whats_new_variant` | `false` | `smallint` | `string` | `false` | `0` | `false` | `false`| `true` |
 | `wiki_asciidoc_allow_uri_includes` | `false` | `boolean` | `` | `true` | `false` | `false` | `false`| `false` |
-| `wiki_page_max_content_bytes` | `false` | `bigint` | `integer` | `true` | `52428800` | `false` | `false`| `true` |
+| `wiki_page_max_content_bytes` | `false` | `bigint` | `integer` | `true` | `5242880` | `false` | `false`| `true` |
+| `workspaces_oauth_application_id` | `false` | `bigint` | `` | `false` | `null` | `false` | `false`| `false` |
 | `zoekt_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `true` | `false`| `false` |

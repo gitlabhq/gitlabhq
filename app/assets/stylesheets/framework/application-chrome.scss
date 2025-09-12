@@ -540,7 +540,7 @@
 
     body {
       background:
-        linear-gradient(var(--_shade-1)),
+        linear-gradient(var(--_shade-1), var(--_shade-1)),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 50vw),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-2), transparent 70vw),
         linear-gradient(-10deg, var(--_shade-4), transparent 70%),
@@ -598,7 +598,7 @@
 
     body {
       background:
-        linear-gradient(var(--_shade-1)),
+        linear-gradient(var(--_shade-1), var(--_shade-1)),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-4), transparent 50vw),
         radial-gradient(farthest-side at 50% 0%, var(--_shade-3), transparent 65vw),
         linear-gradient(-10deg, var(--_shade-5), transparent),

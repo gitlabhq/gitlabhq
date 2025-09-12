@@ -1,11 +1,11 @@
 ---
-api_type: boolean
+api_type:
 attr: usage_ping_generation_enabled
 clusterwide: false
 column: usage_ping_generation_enabled
 db_type: boolean
 default: 'true'
-description: Allow GitLab to generate usage ping data.
+description:
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

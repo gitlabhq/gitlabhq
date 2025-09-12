@@ -1203,8 +1203,7 @@ due to large volumes of data being indexed:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the **Admin** area under **Monitoring > Background jobs > Queues Tab**
-   and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
+   You can query indexing status with a Rake task:
 
    ```shell
    # For installations that use the Linux package

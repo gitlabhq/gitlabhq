@@ -17,10 +17,19 @@ module Types
       null: false,
       description: 'Web URL of the group.'
 
+    field :web_path,
+      GraphQL::Types::String,
+      null: false,
+      description: 'Web path of the group.'
+
     field :organization_edit_path, GraphQL::Types::String,
       null: true,
       description: 'Path for editing group at the organization level.',
       experiment: { milestone: '17.1' }
+
+    field :edit_path, GraphQL::Types::String,
+      null: false,
+      description: 'Path for editing group.'
 
     field :avatar_url,
       type: GraphQL::Types::String,
@@ -508,6 +517,14 @@ module Types
 
     def permanent_deletion_date
       permanent_deletion_date_formatted(group) || permanent_deletion_date_formatted
+    end
+
+    def web_path
+      group.web_url(only_path: true)
+    end
+
+    def edit_path
+      ::Gitlab::Routing.url_helpers.edit_group_path(group)
     end
 
     private

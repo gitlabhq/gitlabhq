@@ -122,6 +122,15 @@ module Types
       description: 'Web URL of the project.',
       scopes: [:api, :read_api, :ai_workflows]
 
+    field :web_path,
+      GraphQL::Types::String,
+      null: false,
+      description: 'Web path of the project.'
+
+    field :edit_path, GraphQL::Types::String,
+      null: false,
+      description: 'Path for editing project.'
+
     field :forks_count, GraphQL::Types::Int,
       null: false,
       calls_gitaly: true, # 4 times
@@ -1086,6 +1095,14 @@ module Types
 
     def permanent_deletion_date
       permanent_deletion_date_formatted(project) || permanent_deletion_date_formatted
+    end
+
+    def web_path
+      ::Gitlab::Routing.url_helpers.project_path(project)
+    end
+
+    def edit_path
+      ::Gitlab::Routing.url_helpers.edit_project_path(project)
     end
 
     private

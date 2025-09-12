@@ -69124,7 +69124,13 @@ msgstr ""
 msgid "Usage trends"
 msgstr ""
 
+msgid "UsageBilling|Allocation used"
+msgstr ""
+
 msgid "UsageBilling|An error occurred while fetching data"
+msgstr ""
+
+msgid "UsageBilling|Blocked"
 msgstr ""
 
 msgid "UsageBilling|Current month"
@@ -69151,13 +69157,34 @@ msgstr ""
 msgid "UsageBilling|Last month"
 msgstr ""
 
+msgid "UsageBilling|No user data available"
+msgstr ""
+
+msgid "UsageBilling|Normal usage"
+msgstr ""
+
 msgid "UsageBilling|Peak daily use"
+msgstr ""
+
+msgid "UsageBilling|Pool used"
 msgstr ""
 
 msgid "UsageBilling|Purchase a monthly commitment"
 msgstr ""
 
+msgid "UsageBilling|Status"
+msgstr ""
+
 msgid "UsageBilling|Tokens"
+msgstr ""
+
+msgid "UsageBilling|Total units used"
+msgstr ""
+
+msgid "UsageBilling|Total users (active users)"
+msgstr ""
+
+msgid "UsageBilling|Unknown"
 msgstr ""
 
 msgid "UsageBilling|Usage Billing"
@@ -69170,6 +69197,18 @@ msgid "UsageBilling|Usage trend"
 msgstr ""
 
 msgid "UsageBilling|Usage trends"
+msgstr ""
+
+msgid "UsageBilling|Users blocked"
+msgstr ""
+
+msgid "UsageBilling|Users using allocation"
+msgstr ""
+
+msgid "UsageBilling|Using overage"
+msgstr ""
+
+msgid "UsageBilling|Using pool"
 msgstr ""
 
 msgid "UsageBilling|You can increase your commitment amount to extend your monthly allocation of tokens."

@@ -141,12 +141,14 @@ Use title case for **Admin Mode**. The UI uses title case.
 
 ## administrator
 
-Use **administrator access** instead of **admin** when talking about a user's access level.
+Use **administrator access** instead of **admin** when talking about a user's access level
+to instance-wide settings on GitLab Self-Managed or GitLab Dedicated.
 
-![admin access level](img/admin_access_level_v15_9.png)
+For GitLab.com, instead of **administrator** use [**Owner**](#owner) to refer to the highest permission level of a user for groups or projects.
 
 An **administrator** is not a [role](#roles) or [permission](#permissions).
 
+On GitLab Self-Managed and GitLab Dedicated, users can be administrators and modify instance-wide settings.
 Use:
 
 - To do this thing, you must be an administrator.
@@ -1762,6 +1764,19 @@ For usage, see [language models](#language-model-large-language-model).
 
 When possible, use **not applicable**. Spelling out the phrase helps non-English speaking users and avoids
 capitalization inconsistencies.
+
+## namespace
+
+Use **namespace** when distinguishing between personal and group namespaces.
+Don't use **namespace** as a synonym for **group** or **top-level group**.
+
+On GitLab.com, top-level group Owners have full control over their groups and projects. 
+Regular users can't have administrator access, as GitLab.com is managed by the GitLab team.
+
+For example:
+
+- You can do this thing in a personal namespace or a group namespace.
+- You must have the Owner role for the top-level group.
 
 ## navigate
 

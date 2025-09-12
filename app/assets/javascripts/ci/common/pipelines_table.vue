@@ -8,7 +8,6 @@ import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/con
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
-import { buildApiUrl } from '~/api/api_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
@@ -131,9 +130,6 @@ export default {
       }
 
       return pipelines;
-    },
-    agentInvokePath() {
-      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
     agentPrivileges() {
       return [1, 2, 3, 5];
@@ -284,8 +280,6 @@ export default {
           <template #duo-workflow-action>
             <duo-workflow-action
               v-if="showDuoWorkflowAction(item)"
-              :duo-workflow-invoke-path="agentInvokePath"
-              :project-id="item.project.id"
               :project-path="getProjectPath(item)"
               :goal="getPipelinePath(item)"
               :hover-message="__('Fix pipeline with Duo')"

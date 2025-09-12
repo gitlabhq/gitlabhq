@@ -30389,6 +30389,7 @@ GPG signature for a signed commit.
 | <a id="groupdesignatedascsp"></a>`designatedAsCsp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the namespace is designated to centrally manage security policies. |
 | <a id="groupdora"></a>`dora` | [`GroupDora`](#groupdora) | Group's DORA metrics. |
 | <a id="groupduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the group. |
+| <a id="groupeditpath"></a>`editPath` | [`String!`](#string) | Path for editing group. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupemailsenabled"></a>`emailsEnabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications enabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
@@ -30460,6 +30461,7 @@ GPG signature for a signed commit.
 | <a id="groupvulnerabilitynamespacestatistic"></a>`vulnerabilityNamespaceStatistic` | [`VulnerabilityNamespaceStatisticType`](#vulnerabilitynamespacestatistictype) | Counts for each vulnerability severity in the group and its subgroups. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupwebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates whether web-based commit signing is enabled for the group. |
+| <a id="groupwebpath"></a>`webPath` | [`String!`](#string) | Web path of the group. |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
 #### Fields with arguments
@@ -38397,6 +38399,7 @@ Project-level settings for product analytics provider.
 | <a id="projectduocontextexclusionsettings"></a>`duoContextExclusionSettings` {{< icon name="warning-solid" >}} | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | **Introduced** in GitLab 18.2. **Status**: Experiment. Settings for excluding files from Duo context. |
 | <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
+| <a id="projecteditpath"></a>`editPath` | [`String!`](#string) | Path for editing project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
 | <a id="projectflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkedfrom"></a>`forkedFrom` | [`Project`](#project) | Project the project was forked from. |
@@ -38502,6 +38505,7 @@ Project-level settings for product analytics provider.
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilitystatistic"></a>`vulnerabilityStatistic` | [`VulnerabilityStatisticType`](#vulnerabilitystatistictype) | Counts for each vulnerability severity in the project. |
+| <a id="projectwebpath"></a>`webPath` | [`String!`](#string) | Web path of the project. |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
 
