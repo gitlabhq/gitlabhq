@@ -168,8 +168,6 @@ Turning on beta self-hosted models and features also accepts the [GitLab Testing
 
 {{< /alert >}}
 
-For more information, see the [list of available beta models](supported_models_and_hardware_requirements.md#experimental-and-beta-models) under evaluation.
-
 ## Configure GitLab Duo features to use self-hosted models
 
 Prerequisites:

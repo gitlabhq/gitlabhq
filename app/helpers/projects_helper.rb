@@ -1027,8 +1027,13 @@ module ProjectsHelper
 
   def gitlab_duo_settings_data(project)
     {
-      cascadingSettingsData: project_cascading_namespace_settings_tooltip_data(
+      duo_availability_cascading_settings: project_cascading_namespace_settings_tooltip_data(
         :duo_features_enabled,
+        project,
+        method(:edit_group_path)
+      ),
+      duo_remote_flows_cascading_settings: project_cascading_namespace_settings_tooltip_data(
+        :duo_remote_flows_enabled,
         project,
         method(:edit_group_path)
       )

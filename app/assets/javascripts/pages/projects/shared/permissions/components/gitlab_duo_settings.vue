@@ -21,7 +21,12 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    cascadingSettingsData: {
+    duoAvailabilityCascadingSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    duoRemoteFlowsCascadingSettings: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -56,7 +61,7 @@ export default {
       required: false,
       default: () => ({}),
     },
-    initialDuoFlowEnabled: {
+    initialDuoRemoteFlowsAvailability: {
       type: Boolean,
       required: false,
       default: false,
@@ -77,7 +82,7 @@ export default {
       autoReviewEnabled: this.amazonQAutoReviewEnabled,
       duoEnabled: this.duoFeaturesEnabled,
       exclusionRules: this.duoContextExclusionSettings?.exclusionRules || [],
-      duoFlowEnabled: this.initialDuoFlowEnabled,
+      duoRemoteFlowsAvailability: this.initialDuoRemoteFlowsAvailability,
     };
   },
   computed: {
@@ -110,11 +115,17 @@ export default {
         this.paidDuoTier
       );
     },
-    showCascadingButton() {
+    showAvailabilityCascadingButton() {
       return (
         this.duoFeaturesLocked &&
-        this.cascadingSettingsData &&
-        Object.keys(this.cascadingSettingsData).length
+        this.duoAvailabilityCascadingSettings &&
+        Object.keys(this.duoAvailabilityCascadingSettings).length
+      );
+    },
+    showRemoteFlowsCascadingLock() {
+      return (
+        this.duoRemoteFlowsCascadingSettings?.lockedByAncestor ||
+        this.duoRemoteFlowsCascadingSettings?.lockedByApplicationSetting
       );
     },
     showDuoContextExclusion() {
@@ -157,11 +168,13 @@ export default {
     >
       <template #label-icon>
         <cascading-lock-icon
-          v-if="showCascadingButton"
+          v-if="showAvailabilityCascadingButton"
           data-testid="duo-cascading-lock-icon"
-          :is-locked-by-group-ancestor="cascadingSettingsData.lockedByAncestor"
-          :is-locked-by-application-settings="cascadingSettingsData.lockedByApplicationSetting"
-          :ancestor-namespace="cascadingSettingsData.ancestorNamespace"
+          :is-locked-by-group-ancestor="duoAvailabilityCascadingSettings.lockedByAncestor"
+          :is-locked-by-application-settings="
+            duoAvailabilityCascadingSettings.lockedByApplicationSetting
+          "
+          :ancestor-namespace="duoAvailabilityCascadingSettings.ancestorNamespace"
           class="gl-ml-1"
         />
       </template>
@@ -198,7 +211,7 @@ export default {
       </div>
       <div
         v-else-if="areDuoFlowsAvailable"
-        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7"
+        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5"
       >
         <project-setting-row
           :label="s__('DuoAgentPlatform|Allow flow execution')"
@@ -207,10 +220,22 @@ export default {
             s__('DuoAgentPlatform|Allow GitLab Duo agents to execute flows in this project.')
           "
         >
+          <template #label-icon>
+            <cascading-lock-icon
+              v-if="showRemoteFlowsCascadingLock"
+              data-testid="duo-flows-cascading-lock-icon"
+              :is-locked-by-group-ancestor="duoRemoteFlowsCascadingSettings.lockedByAncestor"
+              :is-locked-by-application-settings="
+                duoRemoteFlowsCascadingSettings.lockedByApplicationSetting
+              "
+              :ancestor-namespace="duoRemoteFlowsCascadingSettings.ancestorNamespace"
+              class="gl-ml-1"
+            />
+          </template>
           <gl-toggle
-            v-model="duoFlowEnabled"
+            v-model="duoRemoteFlowsAvailability"
             class="gl-mt-2"
-            :disabled="duoFeaturesLocked || !duoEnabled"
+            :disabled="duoFeaturesLocked || !duoEnabled || showRemoteFlowsCascadingLock"
             :label="s__('DuoAgentPlatform|Remote GitLab Duo Flows')"
             label-position="hidden"
             name="project[project_setting_attributes][duo_remote_flows_enabled]"

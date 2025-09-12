@@ -17,6 +17,7 @@ title: Control GitLab Duo availability
 
 - [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 - [Settings to turn AI features on and off added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
+- [Settings to turn flows on and off added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203733) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -109,6 +110,7 @@ To change GitLab Duo availability for the top-level group:
 1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this namespace**, select an option.
+1. Select or clear the **Allow flow execution** checkbox.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -125,6 +127,7 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
+1. Select or clear the **Allow flow execution** checkbox.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -141,6 +144,7 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
+1. Turn the **Allow flow execution** toggle on or off.
 1. Select **Save changes**.
 
 ### On GitLab Self-Managed
@@ -160,6 +164,7 @@ To change GitLab Duo availability for the instance:
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
 1. Under **GitLab Duo availability in this instance**, select an option.
+1. Select or clear the **Allow flow execution** checkbox.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the entire instance.
@@ -176,6 +181,7 @@ To change GitLab Duo availability for a group or subgroup:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **GitLab Duo availability in this group**, select an option.
+1. Select or clear the **Allow flow execution** checkbox.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for all subgroups and projects.
@@ -192,6 +198,7 @@ To change GitLab Duo availability for a project:
 1. Select **Settings** > **General**.
 1. Expand **GitLab Duo**.
 1. Turn the **Use AI-native features in this project** toggle on or off.
+1. Turn the **Allow flow execution** toggle on or off.
 1. Select **Save changes**.
 
 GitLab Duo availability changes for the project.

@@ -156,8 +156,8 @@ export default {
     hasLinkedItemsEpicsFeature: {
       from: 'hasLinkedItemsEpicsFeature',
     },
-    duoRemoteFlowsEnabled: {
-      from: 'duoRemoteFlowsEnabled',
+    duoRemoteFlowsAvailability: {
+      from: 'duoRemoteFlowsAvailability',
       default: false,
     },
   },
@@ -591,7 +591,7 @@ export default {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
     isDuoWorkflowEnabled() {
-      return this.duoRemoteFlowsEnabled && this.glFeatures.duoWorkflowInCi;
+      return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
     projectIdAsNumber() {
       return getIdFromGraphQLId(this.workItemProjectId);

@@ -47479,6 +47479,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      duo_remote_flows_availability:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request
@@ -47676,6 +47679,9 @@ definitions:
         - default_on
         - default_off
         - never_on
+      duo_remote_flows_availability:
+        type: boolean
+        description: Enable GitLab Duo remote flows for this group
       amazon_q_auto_review_enabled:
         type: boolean
         description: Enable Amazon Q auto review for merge request

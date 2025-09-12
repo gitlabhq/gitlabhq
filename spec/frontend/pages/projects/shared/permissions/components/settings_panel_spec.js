@@ -77,13 +77,7 @@ describe('Settings Panel', () => {
   let wrapper;
 
   const mountComponent = (
-    {
-      currentSettings = {},
-      glFeatures = {},
-      cascadingSettingsData = {},
-      stubs = { GlCard },
-      ...customProps
-    } = {},
+    { currentSettings = {}, glFeatures = {}, stubs = { GlCard }, ...customProps } = {},
     mountFn = shallowMountExtended,
   ) => {
     const propsData = {
@@ -96,7 +90,6 @@ describe('Settings Panel', () => {
       propsData,
       provide: {
         glFeatures,
-        cascadingSettingsData,
       },
       stubs,
     });

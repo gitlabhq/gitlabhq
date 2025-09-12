@@ -6291,6 +6291,12 @@ msgstr ""
 msgid "AiPowered|AI logs"
 msgstr ""
 
+msgid "AiPowered|Allow GitLab Duo agents to execute flows for the instance. %{linkStart}What are flows%{linkEnd}?"
+msgstr ""
+
+msgid "AiPowered|Allow GitLab Duo agents to execute flows in this group and its subgroups and projects. %{linkStart}What are flows%{linkEnd}?"
+msgstr ""
+
 msgid "AiPowered|Allow GitLab to process your code and project data for AI-powered features throughout this namespace. Your data will be sent to GitLab Duo for processing. Groups, subgroups, and projects can individually opt out if needed."
 msgstr ""
 
@@ -28497,6 +28503,9 @@ msgid "FloC|Federated Learning of Cohorts (FLoC)"
 msgstr ""
 
 msgid "FloC|Participate in FLoC"
+msgstr ""
+
+msgid "Flow execution"
 msgstr ""
 
 msgid "Focus file browser"

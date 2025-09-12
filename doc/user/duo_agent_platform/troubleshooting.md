@@ -145,9 +145,8 @@ If necessary, you can
 If you are trying to run a flow but it's not visible in the GitLab UI:
 
 1. Ensure you have at least Developer role in the project.
-1. Ensure GitLab Duo is [turned on for your group or project](../gitlab_duo/turn_on_off.md).
+1. Ensure GitLab Duo is [turned on and flows are allowed to execute](../gitlab_duo/turn_on_off.md).
 1. Ensure the required feature flags, [`duo_workflow` and `duo_workflow_in_ci`](../../administration/feature_flags/_index.md), are enabled.
-1. Ensure [flows are turned on for your project](flows/_index.md#turn-on-flows-for-your-project).
 
 ## Still having issues?
 

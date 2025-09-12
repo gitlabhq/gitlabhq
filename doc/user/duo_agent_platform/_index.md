@@ -46,9 +46,9 @@ For more details, view these blog posts about:
 
 To use the Agent Platform:
 
-- [GitLab Duo Core must be turned on](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [GitLab Duo, including GitLab Duo Core and flow execution, must be turned on](../gitlab_duo/turn_on_off.md).
 - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
-- For GitLab Self-Managed, you must [configure GitLab Duo](../../administration/gitlab_duo/setup.md).
+- For GitLab Self-Managed, you must [ensure your instance is configured](../../administration/gitlab_duo/setup.md).
 - For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must [install and run the AI Gateway with GitLab Duo Agent Platform service](../../install/install_ai_gateway.md).
 
 In addition, to use the Agent Platform in your IDE:
@@ -57,8 +57,6 @@ In addition, to use the Agent Platform in your IDE:
 - You must have a project in a [group namespace](../namespace/_index.md) and have at least the Developer role.
 - You must [ensure an HTTP/2 connection to the backend service is possible](troubleshooting.md#network-issues).
 - For [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md), you must use [WebSocket connection instead of gRPC](troubleshooting.md#use-websocket-connection-instead-of-grpc).
-
-To use flows in the GitLab UI, [turn on flows for your project](flows/_index.md#turn-on-flows-for-your-project).
 
 ## Related topics
 

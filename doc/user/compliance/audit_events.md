@@ -103,6 +103,18 @@ The time zone used for audit events depends on where you view them:
   [configured time zone](../../administration/timezone.md) on GitLab Self-Managed.
 - In CSV exports, UTC is used.
 
+## Known issues
+
+The audit events interface has limited search capabilities. Text based searching in audit event details is not supported. You can only filter audit events by:
+
+- Member events: the author who performed the action.
+- Date range: maximum 30 days rolling period.
+
+Expanding audit event report usability is proposed in [epic 418](https://gitlab.com/groups/gitlab-org/-/epics/418).
+
+For advanced searching and analysis of audit events, consider [streaming audit events](audit_event_streaming.md) to an external destination where you can perform
+comprehensive text searches and analysis.
+
 ## Contribute to audit events
 
 If you don't see the event you want in any of the epics, you can either:

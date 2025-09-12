@@ -51,15 +51,9 @@ The following flows are available:
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
 
-## Turn on flows for your project
+## Turn on flows
 
-In the GitLab UI, you must give flows the ability to run in your project.
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **General**.
-1. Expand the **GitLab Duo** section.
-1. Turn on the **Allow flow execution** toggle.
-1. Select **Save changes**.
+To turn flows on or off, use [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
 
 ## Monitor running flows in the GitLab UI
 

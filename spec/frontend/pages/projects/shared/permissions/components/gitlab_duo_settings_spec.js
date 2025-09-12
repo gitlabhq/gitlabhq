@@ -17,7 +17,7 @@ const defaultProps = {
   duoContextExclusionSettings: {
     exclusionRules: ['*.log', 'node_modules/'],
   },
-  initialDuoFlowEnabled: false,
+  initialDuoRemoteFlowsAvailability: false,
 };
 
 describe('GitlabDuoSettings', () => {
@@ -50,6 +50,8 @@ describe('GitlabDuoSettings', () => {
     wrapper.findAll(
       'input[name="project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules][]"]',
     );
+  const findDuoRemoteFlowsHiddenInput = () =>
+    wrapper.find('input[name="project[project_setting_attributes][duo_remote_flows_enabled]"]');
   const findDuoRemoteFlowsToggle = () => wrapper.findByTestId('duo-remote-flows-enabled');
   const findAutoReviewToggle = () => wrapper.findByTestId('amazon-q-auto-review-enabled');
 
@@ -132,7 +134,7 @@ describe('GitlabDuoSettings', () => {
           amazonQAvailable: true,
           amazonQAutoReviewEnabled: true,
           duoFeaturesEnabled: true,
-          initialDuoFlowEnabled: false,
+          initialDuoRemoteFlowsAvailability: false,
         });
 
         const findHiddenInput = () =>
@@ -178,9 +180,7 @@ describe('GitlabDuoSettings', () => {
 
         it('clicking on the checkbox and submitting passes along the data to the rest call', async () => {
           const duoRemoteFlowsToggle = findDuoRemoteFlowsToggle();
-          const hiddenInput = wrapper.find(
-            'input[name="project[project_setting_attributes][duo_remote_flows_enabled]"]',
-          );
+          const hiddenInput = findDuoRemoteFlowsHiddenInput();
 
           expect(duoRemoteFlowsToggle.exists()).toBe(true);
           expect(parseBoolean(hiddenInput.attributes('value'))).toBe(false);
@@ -200,9 +200,9 @@ describe('GitlabDuoSettings', () => {
     });
 
     describe('when areDuoSettingsLocked is true', () => {
-      it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
+      it('shows CascadingLockIcon when duoAvailabilityCascadingSettings is provided', () => {
         wrapper = createWrapper({
-          cascadingSettingsData: {
+          duoAvailabilityCascadingSettings: {
             lockedByAncestor: false,
             lockedByApplicationSetting: false,
             ancestorNamespace: null,
@@ -214,7 +214,7 @@ describe('GitlabDuoSettings', () => {
 
       it('passes correct props to CascadingLockIcon', () => {
         wrapper = createWrapper({
-          cascadingSettingsData: {
+          duoAvailabilityCascadingSettings: {
             lockedByAncestor: false,
             lockedByApplicationSetting: false,
             ancestorNamespace: null,
@@ -228,17 +228,17 @@ describe('GitlabDuoSettings', () => {
         });
       });
 
-      it('does not show CascadingLockIcon when cascadingSettingsData is empty', () => {
+      it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is empty', () => {
         wrapper = createWrapper({
-          cascadingSettingsData: {},
+          duoAvailabilityCascadingSettings: {},
           duoFeaturesLocked: true,
         });
         expect(findDuoCascadingLockIcon().exists()).toBe(false);
       });
 
-      it('does not show CascadingLockIcon when cascadingSettingsData is null', () => {
+      it('does not show CascadingLockIcon when duoAvailabilityCascadingSettings is null', () => {
         wrapper = createWrapper({
-          cascadingSettingsData: null,
+          duoAvailabilityCascadingSettings: null,
           duoFeaturesLocked: true,
         });
         expect(findDuoCascadingLockIcon().exists()).toBe(false);

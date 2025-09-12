@@ -67,7 +67,7 @@ describe('Work items router', () => {
       router,
       provide: {
         canAdminLabel: true,
-        duoRemoteFlowsEnabled: false,
+        duoRemoteFlowsAvailability: false,
         fullPath: 'full-path',
         groupPath: '',
         isGroup: false,

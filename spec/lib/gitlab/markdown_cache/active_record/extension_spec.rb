@@ -225,7 +225,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension, feature_category:
       end
     end
 
-    let(:thing) { klass.new(note: markdown) }
+    let(:thing) { klass.new(note: markdown, project_id: project.id) }
 
     before do
       thing.note = "hello world"
