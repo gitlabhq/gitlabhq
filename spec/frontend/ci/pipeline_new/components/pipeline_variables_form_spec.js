@@ -63,6 +63,15 @@ describe('PipelineVariablesForm', () => {
     },
   ];
 
+  const configVariablesWithDuplicateOptions = [
+    {
+      key: 'VAR_WITH_DUPLICATE_OPTIONS',
+      value: 'option1',
+      description: 'Variable with duplicate options',
+      valueOptions: ['option1', 'option2', 'option3', 'option2', 'option1', 'option3'],
+    },
+  ];
+
   const createComponent = async ({ props = {}, configVariables = [] } = {}) => {
     mockCiConfigVariables = jest.fn().mockResolvedValue({
       data: {
@@ -93,6 +102,8 @@ describe('PipelineVariablesForm', () => {
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
   const findRemoveButton = () => wrapper.findByTestId('remove-ci-variable-row');
   const findMarkdown = () => wrapper.findComponent(Markdown);
+  const findDropdownForVariable = () =>
+    wrapper.findByTestId('pipeline-form-ci-variable-value-dropdown');
 
   beforeEach(() => {
     mockCiConfigVariables = jest.fn().mockResolvedValue({
@@ -194,6 +205,16 @@ describe('PipelineVariablesForm', () => {
       });
 
       expect(findMarkdown().exists()).toBe(false);
+    });
+
+    it('removes duplicate options from the dropdown', async () => {
+      await createComponent({ configVariables: configVariablesWithDuplicateOptions });
+
+      expect(findDropdownForVariable().props('items')).toEqual([
+        { text: 'option1', value: 'option1' },
+        { text: 'option2', value: 'option2' },
+        { text: 'option3', value: 'option3' },
+      ]);
     });
   });
 

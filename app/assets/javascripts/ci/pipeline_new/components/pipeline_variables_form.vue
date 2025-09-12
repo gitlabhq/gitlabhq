@@ -189,7 +189,10 @@ export default {
       }
     },
     createListItemsFromVariableOptions(key) {
-      return (this.configVariablesWithDescription?.options?.[key] || []).map((option) => ({
+      const options = this.configVariablesWithDescription?.options?.[key] || [];
+      const uniqueOptions = [...new Set(options)];
+
+      return uniqueOptions.map((option) => ({
         text: option,
         value: option,
       }));
