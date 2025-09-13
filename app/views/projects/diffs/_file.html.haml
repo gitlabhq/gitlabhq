@@ -10,11 +10,11 @@
       = render "projects/diffs/file_header", diff_file: diff_file, url: "##{file_hash}"
 
     - if diff_file.submodule?
-      .file-actions.gl-hidden.sm:gl-block
+      .file-actions.gl-hidden{ class: "@sm/panel:gl-block" }
         = submodule_diff_compare_link(diff_file)
 
     - unless diff_file.submodule?
-      .file-actions.gl-hidden.sm:gl-flex
+      .file-actions.gl-hidden{ class: "@sm/panel:gl-flex" }
         #js-diff-stats{ data: diff_file_stats_data(diff_file) }
         - if diff_file.blob&.readable_text?
           - unless @diff_notes_disabled

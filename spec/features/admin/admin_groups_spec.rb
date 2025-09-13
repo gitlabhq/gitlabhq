@@ -11,6 +11,10 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
 
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
+  let_it_be(:project) do
+    create(:project, namespace: group, statistics: create(:project_statistics, storage_size: 10.megabytes))
+  end
+
   let_it_be_with_reload(:current_user) { create(:admin) }
 
   before do
@@ -44,6 +48,7 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       visit admin_groups_path
 
       expect(page).to have_content(group.name)
+      expect(page).to have_content('10.00 MiB')
     end
   end
 

@@ -234,5 +234,5 @@ results if they query the wrong remote. To fix this problem, change the remote `
    with the name of your preferred remote:
 
    ```shell
-   git config --append remote.origin.glab-resolved base
+   git config set --append remote.origin.glab-resolved base
    ```

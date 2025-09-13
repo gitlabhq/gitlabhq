@@ -330,7 +330,7 @@ export default {
           <nav
             v-if="displayStickyFooter"
             :class="[
-              'rca-bar-component gl-fixed gl-px-5 gl-py-2',
+              'rca-bar-component gl-sticky gl-py-2',
               { 'rca-bar-component-fullscreen': fullScreenEnabled },
             ]"
             data-testid="rca-bar-component"

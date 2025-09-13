@@ -234,7 +234,7 @@ these parameters:
 
 {{< /history >}}
 
-Updates the current [application settings](#available-settings) for this GitLab instance. You must include all keys and values from the `GET /application/settings` API request or you will overwrite your existing settings.
+Updates the current [application settings](#available-settings) for this GitLab instance. 
 
 ```plaintext
 PUT /application/settings
@@ -655,7 +655,7 @@ to configure other related settings. These requirements are
 | `maven_package_requests_forwarding`      | boolean          | no                                   | Use repo.maven.apache.org as a default remote repository when the package is not found in the GitLab package registry for Maven. Premium and Ultimate only. |
 | `npm_package_requests_forwarding`        | boolean          | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab package registry for npm. Premium and Ultimate only. |
 | `pypi_package_requests_forwarding`       | boolean          | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab package registry for PyPI. Premium and Ultimate only. |
-| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled. |
+| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled. Currently, this attribute can not be updated. For details, see [issue 569729](https://gitlab.com/gitlab-org/gitlab/-/issues/569729). |
 | `package_registry_allow_anyone_to_pull_option` | boolean    | no                                   | Enable to [allow anyone to pull from package registry](../user/packages/package_registry/_index.md#allow-anyone-to-pull-from-package-registry) visible and changeable. |
 | `package_metadata_purl_types`            | array of integers | no                                  | List of [package registry metadata to sync](../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). See [the list](https://gitlab.com/gitlab-org/gitlab/-/blob/ace16c20d5da7c4928dd03fb139692638b557fe3/app/models/concerns/enums/package_metadata.rb#L5) of the available values. GitLab Self-Managed, Ultimate only. |
 | `pages_domain_verification_enabled`       | boolean         | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |

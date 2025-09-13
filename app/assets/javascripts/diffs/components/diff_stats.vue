@@ -72,7 +72,7 @@ export default {
     :class="{
       'is-compare-versions-header gl-hidden @lg/panel:gl-inline-flex':
         isCompareVersionsHeader && hideOnNarrowScreen,
-      'gl-hidden sm:!gl-inline-flex': !isCompareVersionsHeader && hideOnNarrowScreen,
+      'gl-hidden @sm/panel:!gl-inline-flex': !isCompareVersionsHeader && hideOnNarrowScreen,
       'gl-inline-flex': !hideOnNarrowScreen,
     }"
   >

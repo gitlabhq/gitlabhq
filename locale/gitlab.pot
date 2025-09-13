@@ -11856,13 +11856,13 @@ msgstr ""
 msgid "Bulk update"
 msgstr ""
 
-msgid "BulkImports|end date is required when bypass is enabled."
+msgid "BulkImports|The date must be in the future."
 msgstr ""
 
-msgid "BulkImports|end date must be a future date."
+msgid "BulkImports|The date must not be more than one year in the future."
 msgstr ""
 
-msgid "BulkImports|end date must not be more than a year in the future."
+msgid "BulkImports|You must enter a date when user confirmation is bypassed."
 msgstr ""
 
 msgid "BulkImport|%{count} placeholder user has been matched to a user."

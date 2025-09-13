@@ -242,9 +242,7 @@
 }
 
 .rca-bar-component {
-  left: var(--application-bar-left);
   bottom: $calc-application-footer-height;
-  width: calc(100% - var(--application-bar-left));
   z-index: $zindex-dropdown-menu;
   background: var(--gl-background-color-default);
   border-top: 1px solid var(--gl-border-color-default);
@@ -252,10 +250,6 @@
 
   @media (prefers-reduced-motion: no-preference) {
     @apply gl-transition-[width,left,right];
-  }
-
-  @media (max-width: map.get($grid-breakpoints, lg)) {
-    padding-left: 1rem;
   }
 }
 

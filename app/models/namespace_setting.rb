@@ -110,6 +110,14 @@ class NamespaceSetting < ApplicationRecord
     NAMESPACE_SETTINGS_PARAMS
   end
 
+  def self.enterprise_bypass_min_date
+    Date.current.tomorrow.beginning_of_day
+  end
+
+  def self.enterprise_bypass_max_date
+    Date.current.advance(years: 1, days: -1).end_of_day
+  end
+
   def prevent_sharing_groups_outside_hierarchy
     return super if namespace.root?
 
@@ -170,17 +178,17 @@ class NamespaceSetting < ApplicationRecord
 
   def validate_enterprise_bypass_expires_at
     if enterprise_bypass_expires_at.blank?
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date is required when bypass is enabled.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|You must enter a date when user confirmation is bypassed.'))
       return
     end
 
-    min_date = Date.current.tomorrow.beginning_of_day
-    max_date = Date.current.advance(years: 1, days: -1).end_of_day
+    min_date = self.class.enterprise_bypass_min_date
+    max_date = self.class.enterprise_bypass_max_date
 
     if enterprise_bypass_expires_at < min_date
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must be a future date.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|The date must be in the future.'))
     elsif enterprise_bypass_expires_at > max_date
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must not be more than a year in the future.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|The date must not be more than one year in the future.'))
     end
   end
 

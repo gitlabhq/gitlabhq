@@ -293,6 +293,29 @@ Use this type of event to:
 For an example that shows how to configure `postStart` events,
 see the [example configurations](#example-configurations).
 
+#### Working directory for `postStart` commands
+
+By default, `postStart` commands run in different working directories depending on the component:
+
+- Main component with attribute `gl/inject-editor: true`: Commands run in the project directory (`/projects/<project-path>`).
+- Other components: Commands run in the container's default working directory.
+
+You can override the default behavior by specifying a `workingDir` in your command definition:
+
+```yaml
+commands:
+  - id: install-dependencies
+    exec:
+      component: tooling-container
+      commandLine: "npm install"
+      workingDir: "/custom/path"
+  - id: setup-project
+    exec:
+      component: tooling-container
+      commandLine: "echo 'Setting up in project directory'"
+      # Runs in project directory by default
+```
+
 #### Monitor `postStart` event progress
 
 When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs. To check the progress of your `postStart` scripts:
@@ -332,19 +355,45 @@ components:
       endpoints:
         - name: http-3000
           targetPort: 3000
+  - name: database-container
+    container:
+      image: mysql
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "my-secret-pw"
 commands:
+  # Command 1: Container 1, no working directory (uses project directory)
   - id: install-dependencies
     exec:
       component: tooling-container
       commandLine: "npm install"
+
+  # Command 2: Container 1, with working directory
   - id: setup-environment
     exec:
       component: tooling-container
       commandLine: "echo 'Setting up development environment'"
+      workingDir: "/home/gitlab-workspaces"
+
+  # Command 3: Container 2, no working directory (uses container default)
+  - id: init-database
+    exec:
+      component: database-container
+      commandLine: "echo 'Database initialized' > db-init.log"
+
+  # Command 4: Container 2, with working directory
+  - id: setup-database
+    exec:
+      component: database-container
+      commandLine: "mkdir -p /var/lib/mysql/logs && echo 'DB setup complete' > setup.log"
+      workingDir: "/var/lib/mysql"
+
 events:
   postStart:
     - install-dependencies
     - setup-environment
+    - init-database
+    - setup-database
 ```
 
 {{< alert type="note" >}}
