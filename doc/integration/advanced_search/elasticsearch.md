@@ -315,13 +315,13 @@ the master username and password on your GitLab instance:
 
 {{< /history >}}
 
-When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
+Prerequisites:
 
-During an Elasticsearch upgrade, you must:
-
+- [Disable search with advanced search](#disable-search-with-advanced-search)
+  so searches do not fail with an `HTTP 500` error.
 - [Pause indexing](#pause-indexing) so changes can still be tracked.
-- [Disable search with advanced search](#disable-search-with-advanced-search) so searches do not fail with an `HTTP 500` error.
 
+When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
 When the Elasticsearch cluster is fully upgraded and active:
 
 1. Validate cluster connectivity, index, and search operations:
