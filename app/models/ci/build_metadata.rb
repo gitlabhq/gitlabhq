@@ -43,14 +43,6 @@ module Ci
 
     enum :timeout_source, ::Ci::Build.timeout_sources
 
-    # Remove this method when FF `ci_use_new_job_update_timeout_state` is removed
-    def update_timeout_state
-      timeout = ::Ci::Builds::TimeoutCalculator.new(build).applicable_timeout
-      return unless timeout
-
-      update(timeout: timeout.value, timeout_source: timeout.source)
-    end
-
     def enable_debug_trace!
       self.debug_trace_enabled = true
       save! if changes.any?

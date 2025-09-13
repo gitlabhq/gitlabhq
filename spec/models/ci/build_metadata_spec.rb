@@ -26,43 +26,6 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:build) }
   it { is_expected.to belong_to(:project) }
 
-  describe '#update_timeout_state' do
-    subject { metadata }
-
-    let(:calculator) { instance_double(::Ci::Builds::TimeoutCalculator) }
-
-    before do
-      allow(::Ci::Builds::TimeoutCalculator).to receive(:new).with(job).and_return(calculator)
-    end
-
-    context 'when no timeouts defined anywhere' do
-      before do
-        allow(calculator).to receive(:applicable_timeout).and_return(nil)
-      end
-
-      it 'does not change anything' do
-        expect { subject.update_timeout_state }
-          .to not_change { subject.reload.timeout_source }
-          .and not_change { subject.reload.timeout }
-      end
-    end
-
-    context 'when at least a timeout is defined' do
-      before do
-        allow(calculator)
-          .to receive(:applicable_timeout)
-          .and_return(
-            ::Ci::Builds::Timeout.new(25, ::Ci::BuildMetadata.timeout_sources.fetch(:job_timeout_source)))
-      end
-
-      it 'sets the timeout' do
-        expect { subject.update_timeout_state }
-          .to change { subject.reload.timeout_source }.to('job_timeout_source')
-          .and change { subject.reload.timeout }.to(25)
-      end
-    end
-  end
-
   describe 'validations' do
     context 'when attributes are valid' do
       it 'returns no errors' do

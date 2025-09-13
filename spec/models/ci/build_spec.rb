@@ -214,14 +214,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           end
 
           it_behaves_like "when build receives #{action} event"
-
-          context 'when FF `ci_use_new_job_update_timeout_state` is disabled' do
-            before do
-              stub_feature_flags(ci_use_new_job_update_timeout_state: false)
-            end
-
-            it_behaves_like "when build receives #{action} event"
-          end
         end
       end
     end
@@ -4185,26 +4177,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         it "doesn't save timeout_source" do
           expect { run_job_without_exception }.not_to change { job.reload.timeout_source_value }
-        end
-      end
-
-      context 'when FF `ci_use_new_job_update_timeout_state` is disabled' do
-        before do
-          stub_feature_flags(ci_use_new_job_update_timeout_state: false)
-        end
-
-        context 'when Ci::BuildMetadata#update_timeout_state fails update' do
-          before do
-            allow_any_instance_of(Ci::BuildMetadata).to receive(:update_timeout_state).and_return(false)
-          end
-
-          it "doesn't save timeout" do
-            expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout }
-          end
-
-          it "doesn't save timeout_source" do
-            expect { run_job_without_exception }.not_to change { job.reload.ensure_metadata.timeout_source }
-          end
         end
       end
     end

@@ -430,4 +430,28 @@ RSpec.describe Gitlab::Database::RepairIndex, feature_category: :database do
       end
     end
   end
+
+  describe 'index repair list integrity validation' do
+    it 'ensures all indexes in INDEXES_TO_REPAIR exist in the database schema' do
+      indexes_to_repair = described_class::INDEXES_TO_REPAIR.values.flat_map(&:keys)
+
+      missing_indexes = []
+
+      indexes_to_repair.each do |index_name|
+        index_exists = ActiveRecord::Base.connection.select_value(
+          ActiveRecord::Base.sanitize_sql_array(['SELECT 1 FROM pg_indexes WHERE indexname = ?', index_name])
+        )
+
+        missing_indexes << index_name unless index_exists.present?
+      end
+
+      expect(missing_indexes).to be_empty,
+        <<~MSG
+          The following indexes are listed in INDEXES_TO_REPAIR but don't exist in the database:
+          #{missing_indexes.map { |idx| "  - #{idx}" }.join("\n")}
+
+          Please remove them from the INDEXES_TO_REPAIR constant or ensure they exist in the schema.
+        MSG
+    end
+  end
 end

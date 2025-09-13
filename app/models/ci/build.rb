@@ -323,9 +323,7 @@ module Ci
         true
       end
 
-      before_transition pending: :running do |build|
-        next if Feature.disabled?(:ci_use_new_job_update_timeout_state, build.project)
-
+      before_transition pending: :running do |build| # rubocop: disable Style/SymbolProc -- Better readability
         build.update_timeout_state
       end
 
@@ -367,12 +365,6 @@ module Ci
 
       # rubocop:enable CodeReuse/ServiceClass
       #
-      after_transition pending: :running do |build|
-        next if Feature.enabled?(:ci_use_new_job_update_timeout_state, build.project)
-
-        build.ensure_metadata.update_timeout_state
-      end
-
       after_transition pending: :running do |build|
         build.run_after_commit do
           build.ensure_persistent_ref
