@@ -40,7 +40,7 @@ function run_rubocop {
 
   while IFS='' read -r file; do
     files_for_rubocop+=("$file")
-  done < <(git ls-files -- '*/duo_workflows/*.rb' '*/duo_workflow/*.rb')
+  done < <(git ls-files -- '*/duo_workflows*.rb' '*/duo_workflow*.rb')
 
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-0} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
@@ -52,7 +52,7 @@ function run_rspec {
 
   printf "Running rspec command:\n\n"
 
-  git ls-files -- '*/duo_workflows/*_spec.rb' '*/duo_workflow/*_spec.rb' | xargs bin/rspec -fd
+  git ls-files -- '*/duo_workflows*_spec.rb' '*/duo_workflow*_spec.rb' | xargs bin/rspec -fd
 }
 
 function run_jest {
