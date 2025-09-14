@@ -1,6 +1,7 @@
 import { autoUpdate } from '@floating-ui/dom';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import FlyoutMenu, { FLYOUT_PADDING } from '~/super_sidebar/components/flyout_menu.vue';
+import NavItem from '~/super_sidebar/components/nav_item.vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('@floating-ui/dom');
@@ -26,6 +27,7 @@ describe('FlyoutMenu', () => {
   };
 
   const findHeader = () => wrapper.find('header');
+  const findNavItem = () => wrapper.findComponent(NavItem);
 
   beforeEach(() => {
     autoUpdateCleanup = autoUpdate.mockReturnValue(jest.fn());
@@ -62,6 +64,11 @@ describe('FlyoutMenu', () => {
         expect(findHeader().text()).toBe('Foo');
       });
     });
+  });
+
+  it('always provides isIconOnly as false to its child NavItems', () => {
+    createComponent({ isIconOnly: true });
+    expect(findNavItem().text()).toBe('item 1');
   });
 
   it('cleans up', () => {

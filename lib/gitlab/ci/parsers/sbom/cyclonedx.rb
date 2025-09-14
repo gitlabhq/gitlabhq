@@ -66,8 +66,10 @@ module Gitlab
             data['components']&.each_with_index do |component_data, index|
               component = Component.new(component_data).parse
               report.add_component(component) if component.ingestible?
-            rescue ::Sbom::PackageUrl::InvalidPackageUrl
-              report.add_error("/components/#{index}/purl is invalid")
+            rescue ::Sbom::PackageUrl::InvalidPackageUrl => exception
+              input = component_data['purl']
+              reason = exception.message
+              report.add_error("/components/#{index}/purl: '#{input}' is not a valid PURL, reason: #{reason}")
             end
           end
 

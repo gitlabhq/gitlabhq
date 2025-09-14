@@ -256,7 +256,7 @@ export default {
         </slot>
       </div>
       <div
-        v-show="!isIconOnly || isFlyout"
+        v-show="!isIconOnly"
         class="gl-grow gl-text-default gl-break-anywhere"
         :class="{ 'gl-w-max': isFlyout }"
         data-testid="nav-item-link-label"

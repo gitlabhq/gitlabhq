@@ -12,7 +12,7 @@ title: Personal access tokens API
 
 {{< /details >}}
 
-Use this API to interact with personal access tokens. For more information, see [Personal access tokens](../user/profile/personal_access_tokens.md).
+Use this API to interact with [personal access tokens](../user/profile/personal_access_tokens.md).
 
 ## List all personal access tokens
 
@@ -23,8 +23,8 @@ Use this API to interact with personal access tokens. For more information, see 
 {{< /history >}}
 
 Lists all personal access tokens accessible by the authenticating user. For administrators, returns
-a list of all personal access tokens in the instance. For non-administrators, returns a list of the
-personal access tokens for the current user.
+a list of all personal access tokens in the instance. For non-administrators, returns a list of all
+of their personal access tokens.
 
 ```plaintext
 GET /personal_access_tokens
@@ -99,7 +99,7 @@ Other possible response:
 {{< /history >}}
 
 Gets details on a specified personal access token. Administrators can get details on any token.
-Non-administrators can only get details on own tokens.
+Non-administrators can only get details on their own tokens.
 
 ```plaintext
 GET /personal_access_tokens/:id
@@ -308,7 +308,8 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Lists all groups and projects accessible by the personal access token used to authenticate the request. Generally, this includes any groups or projects that the user is a member of.
+Lists all groups and projects accessible by the personal access token used to authenticate the request.
+Generally, this includes any groups or projects that the user is a member of.
 
 ```plaintext
 GET /personal_access_tokens/self/associations

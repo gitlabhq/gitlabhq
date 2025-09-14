@@ -28,6 +28,11 @@ export default {
   name: 'FlyoutMenu',
   components: { NavItem },
   inject: ['isIconOnly'],
+  provide: {
+    // NavItems inside a FlyOutMenu are not affected by iconOnly state.
+    // They should always display their title and controls (pins, pills etc)
+    isIconOnly: false,
+  },
   props: {
     targetId: {
       type: String,

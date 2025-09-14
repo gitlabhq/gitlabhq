@@ -27,6 +27,8 @@ You can also interact with service accounts through the [users API](users.md).
 Instance service accounts are available to an entire GitLab instance, but must still be added
 to groups and projects like a human user.
 
+To manage personal access tokens for instance service accounts, use the [personal access tokens API](personal_access_tokens.md).
+
 Prerequisites:
 
 - You must have administrator access to the instance.

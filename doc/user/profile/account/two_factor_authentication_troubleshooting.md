@@ -132,7 +132,8 @@ To create a support request:
 
 1. Go to [GitLab Support](https://support.gitlab.com).
 1. Select **Submit a Ticket**.
-1. If possible, sign in to your account.
+1. Sign in with your GitLab Support account.
+   Your support account is different from your GitLab account and is not impacted by your 2FA issue.
 1. In the issue dropdown list, select **GitLab.com user accounts and login issues**.
 1. Complete the fields in the support form.
 1. Select **Submit**.

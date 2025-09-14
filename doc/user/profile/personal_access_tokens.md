@@ -102,7 +102,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 {{< /alert >}}
 
-## Revoke or rotate a personal access token
+## Rotate a personal access token
 
 {{< history >}}
 
@@ -111,14 +111,39 @@ for guidance on managing personal access tokens (for example, setting a short ex
 
 {{< /history >}}
 
-At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a personal access token.
+Rotating a token creates a new token with fresh credentials while invalidating the previous version.
+Rotated tokens maintain the same permissions and scope as the original. The old token becomes inactive
+immediately, and both versions remain in the system for audit purposes.
+
+To rotate a personal access token:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
-1. Select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
-1. On the confirmation dialog, select **Revoke** or **Rotate**.
+1. Select  **Rotate** ({{< icon name="retry" >}}).
+1. On the confirmation dialog, select **Rotate**.
+
+## Revoke a personal access token
+
+{{< history >}}
+
+- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.1.
+
+{{< /history >}}
+
+Revoking a token immediately invalidates it, preventing any further use for authentication or
+authorization. Revoked tokens remain in the system to maintain an audit trail of token history.
+You cannot permanently delete tokens, but you can filter token lists to show only active tokens.
+
+To revoke a personal access token:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access tokens**.
+1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Revoke** ({{< icon name="remove" >}}).
+1. On the confirmation dialog, select **Revoke**.
 
    {{< alert type="warning" >}}
 
