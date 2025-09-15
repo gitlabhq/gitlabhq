@@ -2451,7 +2451,7 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
-msgid "AICatalog|AI agents complete specialized tasks. They become active when included in a Flow."
+msgid "AICatalog|AI agents complete specialized tasks."
 msgstr ""
 
 msgid "AICatalog|Add this %{itemType} to a project"
@@ -61946,7 +61946,7 @@ msgstr ""
 msgid "SlackIntegration|Access request canceled"
 msgstr ""
 
-msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?"
+msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration? All projects inheriting these settings will also be unlinked. Groups and projects using custom settings will not be affected."
 msgstr ""
 
 msgid "SlackIntegration|Client ID"

@@ -28,6 +28,13 @@ module Integrations
           'updated_at' => time_now
         }.compact
       end
+
+      def bulk_insert_new(model, items_to_insert)
+        model.insert_all(
+          items_to_insert,
+          returning: [:id]
+        ).rows.flatten
+      end
     end
   end
 end

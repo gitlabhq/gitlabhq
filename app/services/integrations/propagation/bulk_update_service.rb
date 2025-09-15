@@ -24,7 +24,7 @@ module Integrations
 
           if integration.is_a?(GitlabSlackApplication)
             if integration.active?
-              bulk_update_slack_integrations
+              bulk_upsert_slack_integrations
             else
               bulk_delete_slack_integrations
             end
@@ -51,8 +51,17 @@ module Integrations
           end
       end
 
+      def bulk_upsert_slack_integrations
+        bulk_update_slack_integrations
+
+        inserted_slack_ids = bulk_insert_slack_integrations
+        bulk_insert_slack_integration_scopes(inserted_slack_ids)
+      end
+
       def bulk_update_slack_integrations
         slack_integration_batch = SlackIntegration.by_integration(batch_ids)
+
+        return unless slack_integration_batch.present?
 
         slack_integration_batch.update_all(
           integration.slack_integration.to_database_hash
@@ -62,6 +71,41 @@ module Integrations
           slack_integration_batch.pluck_primary_key,
           integration.slack_integration.slack_api_scopes
         )
+      end
+
+      def bulk_insert_slack_integrations
+        integrations_missing_slack_integration = Integrations::GitlabSlackApplication
+          .by_ids(batch_ids)
+          .without_slack_integration
+
+        return [] unless integrations_missing_slack_integration.present?
+
+        db_hash = integration.slack_integration.to_database_hash
+        items_to_insert = integrations_missing_slack_integration.map do |integration_record|
+          db_hash.merge(
+            'integration_id' => integration_record.id,
+            'alias' => integration_record.parent.full_path
+          )
+        end
+
+        bulk_insert_new(SlackIntegration, items_to_insert)
+      end
+
+      def bulk_insert_slack_integration_scopes(inserted_slack_ids)
+        return unless inserted_slack_ids.present?
+
+        scopes = integration.slack_integration.slack_api_scopes
+
+        items_to_insert = scopes.flat_map do |scope|
+          inserted_slack_ids.map do |record_id|
+            {
+              'slack_integration_id' => record_id,
+              'slack_api_scope_id' => scope.id
+            }
+          end
+        end
+
+        bulk_insert_new(SlackWorkspace::IntegrationApiScope, items_to_insert)
       end
 
       def bulk_delete_slack_integrations

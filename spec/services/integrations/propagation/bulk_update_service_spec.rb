@@ -253,6 +253,48 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
           excluded_integration.slack_integration.id
         )
       end
+
+      context 'and re-enabled again' do
+        before do
+          described_class.new(group_integration, batch).execute # Propagate disable
+
+          group_integration.update!(active: true)
+        end
+
+        it 'recreates SlackIntegration records and scopes using default alias' do
+          expect { execute_service }.to change { SlackIntegration.count }.by(2)
+
+          expect(subgroup_integration.reload.slack_integration).to have_attributes(
+            team_id: group_slack_integration.team_id,
+            team_name: group_slack_integration.team_name,
+            alias: subgroup.full_path,
+            user_id: group_slack_integration.user_id,
+            bot_user_id: group_slack_integration.bot_user_id,
+            bot_access_token: group_slack_integration.bot_access_token,
+            created_at: be_present,
+            updated_at: be_present,
+            authorized_scope_names: group_slack_integration.authorized_scope_names
+          )
+
+          expect(integration.reload.slack_integration).to have_attributes(
+            team_id: group_slack_integration.team_id,
+            team_name: group_slack_integration.team_name,
+            alias: project.full_path,
+            user_id: group_slack_integration.user_id,
+            bot_user_id: group_slack_integration.bot_user_id,
+            bot_access_token: group_slack_integration.bot_access_token,
+            created_at: be_present,
+            updated_at: be_present,
+            authorized_scope_names: group_slack_integration.authorized_scope_names
+          )
+
+          expect(excluded_integration.reload.slack_integration).to have_attributes(
+            team_id: 'excluded_team_id',
+            alias: 'excluded_alias',
+            authorized_scope_names: %w[excluded_scope]
+          )
+        end
+      end
     end
 
     it 'avoids N+1 database queries' do

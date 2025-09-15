@@ -12,7 +12,6 @@ RSpec.describe ::API::Entities::Project do
   end
 
   let_it_be_with_reload(:project) { create(:project, :public, group: parent_group) }
-
   let(:options) { { current_user: current_user } }
   let(:entity) do
     described_class.new(project, options)
@@ -21,7 +20,7 @@ RSpec.describe ::API::Entities::Project do
   subject(:json) { entity.as_json }
 
   context 'without project feature' do
-    before_all do
+    before do
       project.project_feature.destroy!
       project.reload
     end
@@ -30,6 +29,7 @@ RSpec.describe ::API::Entities::Project do
       expect(json[:issues_access_level]).to be_nil
       expect(json[:repository_access_level]).to be_nil
       expect(json[:merge_requests_access_level]).to be_nil
+      expect(json[:package_registry_access_level]).to be_nil
     end
   end
 
@@ -65,6 +65,7 @@ RSpec.describe ::API::Entities::Project do
 
     before do
       allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+      stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@example.com")
     end
 
     context 'when a user can admin issues' do
@@ -174,6 +175,23 @@ RSpec.describe ::API::Entities::Project do
       it 'returns runner token settings' do
         expect(json[:runners_token]).to be_present
       end
+    end
+  end
+
+  describe '.package_registry_access_level', feature_category: :package_registry do
+    where(:access_level, :expected_value) do
+      ProjectFeature::ENABLED  | 'enabled'
+      ProjectFeature::DISABLED | 'disabled'
+      ProjectFeature::PRIVATE  | 'private'
+      ProjectFeature::PUBLIC   | 'public'
+    end
+
+    with_them do
+      before do
+        project.project_feature.update!(package_registry_access_level: access_level)
+      end
+
+      it { expect(json[:package_registry_access_level]).to eq(expected_value) }
     end
   end
 end

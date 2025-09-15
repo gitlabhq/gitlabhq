@@ -1,7 +1,7 @@
 - slack_integration = integration.slack_integration
 - if slack_integration
   - inherited = integration.inherit_from_id.present?
-  - destroy_button_modal = inherited ? {} : { data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?') } }
+  - destroy_button_modal = inherited ? {} : { data: { confirm_btn_variant: "danger", confirm: s_('SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration? All projects inheriting these settings will also be unlinked. Groups and projects using custom settings will not be affected.') } }
   %table.gl-table.gl-w-full
     %thead
       %tr

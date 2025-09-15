@@ -31319,6 +31319,21 @@ paths:
         - enabled
         required: false
       - in: formData
+        name: override_params[package_registry_access_level]
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        type: string
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
+        required: false
+      - in: formData
         name: override_params[pages_access_level]
         description: Pages access level. One of `disabled`, `private`, `enabled` or
           `public`
@@ -31489,6 +31504,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[packages_enabled]
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[container_registry_enabled]
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
           indication if the container registry is enabled for that project'
@@ -31646,11 +31667,6 @@ paths:
         name: override_params[repository_storage]
         description: Which storage shard the repository is on. Available only to admins
         type: string
-        required: false
-      - in: formData
-        name: override_params[packages_enabled]
-        description: Enable project packages feature
-        type: boolean
         required: false
       - in: formData
         name: override_params[squash_option]
@@ -32000,6 +32016,21 @@ paths:
         - enabled
         required: false
       - in: formData
+        name: override_params[package_registry_access_level]
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        type: string
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
+        required: false
+      - in: formData
         name: override_params[pages_access_level]
         description: Pages access level. One of `disabled`, `private`, `enabled` or
           `public`
@@ -32170,6 +32201,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[packages_enabled]
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[container_registry_enabled]
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
           indication if the container registry is enabled for that project'
@@ -32327,11 +32364,6 @@ paths:
         name: override_params[repository_storage]
         description: Which storage shard the repository is on. Available only to admins
         type: string
-        required: false
-      - in: formData
-        name: override_params[packages_enabled]
-        description: Enable project packages feature
-        type: boolean
         required: false
       - in: formData
         name: override_params[squash_option]
@@ -32760,6 +32792,21 @@ paths:
         - enabled
         required: false
       - in: formData
+        name: override_params[package_registry_access_level]
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        type: string
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
+        required: false
+      - in: formData
         name: override_params[pages_access_level]
         description: Pages access level. One of `disabled`, `private`, `enabled` or
           `public`
@@ -32930,6 +32977,12 @@ paths:
         type: boolean
         required: false
       - in: formData
+        name: override_params[packages_enabled]
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
+        type: boolean
+        required: false
+      - in: formData
         name: override_params[container_registry_enabled]
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
           indication if the container registry is enabled for that project'
@@ -33087,11 +33140,6 @@ paths:
         name: override_params[repository_storage]
         description: Which storage shard the repository is on. Available only to admins
         type: string
-        required: false
-      - in: formData
-        name: override_params[packages_enabled]
-        description: Enable project packages feature
-        type: boolean
         required: false
       - in: formData
         name: override_params[squash_option]
@@ -48134,6 +48182,9 @@ definitions:
         type: string
         example: enabled
       model_registry_access_level:
+        type: string
+        example: enabled
+      package_registry_access_level:
         type: string
         example: enabled
       emails_disabled:
@@ -63434,6 +63485,19 @@ definitions:
         - disabled
         - private
         - enabled
+      package_registry_access_level:
+        type: string
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
       pages_access_level:
         type: string
         description: Pages access level. One of `disabled`, `private`, `enabled` or
@@ -63560,6 +63624,10 @@ definitions:
       remove_source_branch_after_merge:
         type: boolean
         description: Remove the source branch by default after merge
+      packages_enabled:
+        type: boolean
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
       container_registry_enabled:
         type: boolean
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
@@ -63666,9 +63734,6 @@ definitions:
       repository_storage:
         type: string
         description: Which storage shard the repository is on. Available only to admins
-      packages_enabled:
-        type: boolean
-        description: Enable project packages feature
       squash_option:
         type: string
         description: Squash default for project. One of `never`, `always`, `default_on`,
@@ -63861,6 +63926,19 @@ definitions:
         - disabled
         - private
         - enabled
+      package_registry_access_level:
+        type: string
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
       pages_access_level:
         type: string
         description: Pages access level. One of `disabled`, `private`, `enabled` or
@@ -63987,6 +64065,10 @@ definitions:
       remove_source_branch_after_merge:
         type: boolean
         description: Remove the source branch by default after merge
+      packages_enabled:
+        type: boolean
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
       container_registry_enabled:
         type: boolean
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
@@ -64093,9 +64175,6 @@ definitions:
       repository_storage:
         type: string
         description: Which storage shard the repository is on. Available only to admins
-      packages_enabled:
-        type: boolean
-        description: Enable project packages feature
       squash_option:
         type: string
         description: Squash default for project. One of `never`, `always`, `default_on`,
@@ -64389,6 +64468,9 @@ definitions:
         type: string
         example: enabled
       model_registry_access_level:
+        type: string
+        example: enabled
+      package_registry_access_level:
         type: string
         example: enabled
       emails_disabled:
@@ -64766,6 +64848,19 @@ definitions:
         - disabled
         - private
         - enabled
+      package_registry_access_level:
+        type: string
+        description: Controls visibility of the package registry. One of `disabled`,
+          `private`, `enabled` or `public`. `private` will make the package registry
+          accessible only to project members (reporter role and above). `enabled`
+          will make the package registry accessible to everyone who has access to
+          the project. `public` will make the package registry accessible to everyone.
+          `disabled` will disable the package registry
+        enum:
+        - disabled
+        - private
+        - enabled
+        - public
       pages_access_level:
         type: string
         description: Pages access level. One of `disabled`, `private`, `enabled` or
@@ -64892,6 +64987,10 @@ definitions:
       remove_source_branch_after_merge:
         type: boolean
         description: Remove the source branch by default after merge
+      packages_enabled:
+        type: boolean
+        description: 'Deprecated: Use :package_registry_access_level instead. Enable
+          project packages feature'
       container_registry_enabled:
         type: boolean
         description: 'Deprecated: Use :container_registry_access_level instead. Flag
@@ -64998,9 +65097,6 @@ definitions:
       repository_storage:
         type: string
         description: Which storage shard the repository is on. Available only to admins
-      packages_enabled:
-        type: boolean
-        description: Enable project packages feature
       squash_option:
         type: string
         description: Squash default for project. One of `never`, `always`, `default_on`,

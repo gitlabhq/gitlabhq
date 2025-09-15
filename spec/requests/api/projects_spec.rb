@@ -1416,6 +1416,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         merge_requests_enabled: false,
         forking_access_level: 'disabled',
         analytics_access_level: 'disabled',
+        package_registry_access_level: 'disabled',
         wiki_enabled: false,
         resolve_outdated_diff_discussions: false,
         remove_source_branch_after_merge: true,
@@ -1430,6 +1431,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       }).tap do |attrs|
         attrs[:analytics_access_level] = 'disabled'
         attrs[:container_registry_access_level] = 'private'
+        attrs[:package_registry_access_level] = 'disabled'
         attrs[:security_and_compliance_access_level] = 'private'
         attrs[:releases_access_level] = 'disabled'
         attrs[:environments_access_level] = 'disabled'
@@ -1454,7 +1456,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
           infrastructure_access_level monitor_access_level model_experiments_access_level model_registry_access_level
-          namespace
+          package_registry_access_level namespace
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -1467,6 +1469,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+      expect(project.project_feature.package_registry_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.releases_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.environments_access_level).to eq(ProjectFeature::DISABLED)
@@ -2831,6 +2834,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['snippets_access_level']).to be_present
+        expect(json_response['package_registry_access_level']).to be_present
         expect(json_response['pages_access_level']).to be_present
         expect(json_response['repository_access_level']).to be_present
         expect(json_response['issues_access_level']).to be_present
@@ -4248,6 +4252,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(project.reload.packages_enabled).to be false
         expect(json_response['packages_enabled']).to eq(false)
       end
+    end
+
+    it 'sets package_registry_access_level' do
+      put api(path, user), params: { package_registry_access_level: 'public' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['package_registry_access_level']).to eq('public')
+      expect(Project.find_by(path: project[:path]).package_registry_access_level).to eq(ProjectFeature::PUBLIC)
     end
 
     it 'sets container_registry_access_level' do

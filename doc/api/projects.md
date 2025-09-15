@@ -520,7 +520,8 @@ When the user is authenticated and `simple` is not set, this endpoint returns so
       "members": "https://gitlab.example.com/api/v4/projects/4/members",
       "cluster_agents": "https://gitlab.example.com/api/v4/projects/4/cluster_agents"
     },
-    "packages_enabled": true,
+    "packages_enabled": true, // deprecated, use package_registry_access_level instead
+    "package_registry_access_level": "enabled",
     "empty_repo": false,
     "archived": false,
     "visibility": "public",
@@ -912,7 +913,8 @@ Example response:
     "only_mirror_protected_branches": false,
     "mirror_overwrites_diverged_branches": false,
     "external_authorization_classification_label": null,
-    "packages_enabled": true,
+    "packages_enabled": true, // deprecated, use package_registry_access_level instead
+    "package_registry_access_level": "enabled",
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
@@ -1165,7 +1167,8 @@ Example response:
     "only_mirror_protected_branches": false,
     "mirror_overwrites_diverged_branches": false,
     "external_authorization_classification_label": null,
-    "packages_enabled": true,
+    "packages_enabled": true, // deprecated, use package_registry_access_level instead
+    "package_registry_access_level": "enabled",
     "service_desk_enabled": false,
     "service_desk_address": null,
     "autoclose_referenced_issues": true,
@@ -1482,7 +1485,8 @@ Supported general project attributes:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | No                             | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No                             | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No                             | Set whether merge requests can only be merged with successful pipelines. This setting is named [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge) in the project settings. |
-| `packages_enabled`                                 | boolean | No                             | Enable or disable packages repository feature. |
+| `packages_enabled`                                 | boolean | No                             | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
+| `package_registry_access_level`                    | string  | No                             | Enable or disable packages repository feature. |
 | `printing_merge_request_link_enabled`              | boolean | No                             | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                      | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
@@ -1607,7 +1611,7 @@ Supported general project attributes:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | No       | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_all_status_checks_passed`     | boolean | No       | Indicates that merges of merge requests should be blocked unless all status checks have passed. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369859) in GitLab 15.5 with feature flag `only_allow_merge_if_all_status_checks_passed` disabled by default. Ultimate only. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean | No       | Set whether merge requests can only be merged with successful jobs. |
-| `packages_enabled`                                 | boolean | No       | Enable or disable packages repository feature. |
+| `packages_enabled`                                 | boolean | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
 | `path`                                             | string  | No       | Custom repository name for new project. By default generated based on name. |
 | `printing_merge_request_link_enabled`              | boolean | No       | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                    | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
@@ -1729,7 +1733,6 @@ Supported general project attributes:
 | `merge_method`                                     | string            | No       | Set the project's [merge method](../user/project/merge_requests/methods/_index.md). Can be `merge` (merge commit), `rebase_merge` (merge commit with semi-linear history), or `ff` (fast-forward merge). |
 | `merge_pipelines_enabled`                          | boolean           | No       | Enable or disable merged results pipelines. |
 | `merge_requests_enabled`                           | boolean           | No       | _(Deprecated)_ Enable merge requests for this project. Use `merge_requests_access_level` instead. |
-| `merge_requests_template`                          | string            | No       | Default description for merge requests. Description is parsed with GitLab Flavored Markdown. See [Templates for issues and merge requests](#templates-for-issues-and-merge-requests). Premium and Ultimate only. |
 | `merge_trains_enabled`                             | boolean           | No       | Enable or disable merge trains. |
 | `merge_trains_skip_train_allowed`                  | boolean           | No       | Allows merge train merge requests to be merged without waiting for pipelines to finish. |
 | `mirror_overwrites_diverged_branches`              | boolean           | No       | Pull mirror overwrites diverged branches. Premium and Ultimate only. |
@@ -1741,7 +1744,8 @@ Supported general project attributes:
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean           | No       | Set whether merge requests can only be merged when all the discussions are resolved. |
 | `only_allow_merge_if_pipeline_succeeds`            | boolean           | No       | Set whether merge requests can only be merged with successful jobs. |
 | `only_mirror_protected_branches`                   | boolean           | No       | Only mirror protected branches. Premium and Ultimate only. |
-| `packages_enabled`                                 | boolean           | No       | Enable or disable packages repository feature. |
+| `packages_enabled`                                 | boolean           | No       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/454759) in GitLab 17.10. Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
+| `packages_enabled`                                 | boolean           | No       | _(Deprecated)_ Enable or disable packages repository feature. Use `package_registry_access_level` instead. |
 | `path`                                             | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                 | boolean           | No       | Set whether merge requests require an associated issue from Jira. Ultimate only. |
 | `printing_merge_request_link_enabled`              | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
@@ -2275,7 +2279,8 @@ Example response:
     "events": "https://gitlab.example.com/api/v4/projects/7/events",
     "members": "https://gitlab.example.com/api/v4/projects/7/members"
   },
-  "packages_enabled": true,
+  "packages_enabled": true, // deprecated, use package_registry_access_level instead
+  "package_registry_access_level": "enabled",
   "empty_repo": false,
   "archived": false,
   "visibility": "private",

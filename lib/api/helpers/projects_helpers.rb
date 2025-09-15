@@ -30,6 +30,7 @@ module API
         optional :wiki_access_level, type: String, values: %w[disabled private enabled], desc: 'Wiki access level. One of `disabled`, `private` or `enabled`'
         optional :builds_access_level, type: String, values: %w[disabled private enabled], desc: 'Builds access level. One of `disabled`, `private` or `enabled`'
         optional :snippets_access_level, type: String, values: %w[disabled private enabled], desc: 'Snippets access level. One of `disabled`, `private` or `enabled`'
+        optional :package_registry_access_level, type: String, values: %w[disabled private enabled public], desc: 'Controls visibility of the package registry. One of `disabled`, `private`, `enabled` or `public`. `private` will make the package registry accessible only to project members (reporter role and above). `enabled` will make the package registry accessible to everyone who has access to the project. `public` will make the package registry accessible to everyone. `disabled` will disable the package registry'
         optional :pages_access_level, type: String, values: %w[disabled private enabled public], desc: 'Pages access level. One of `disabled`, `private`, `enabled` or `public`'
         optional :analytics_access_level, type: String, values: %w[disabled private enabled], desc: 'Analytics access level. One of `disabled`, `private` or `enabled`'
         optional :container_registry_access_level, type: String, values: %w[disabled private enabled], desc: 'Controls visibility of the container registry. One of `disabled`, `private` or `enabled`. `private` will make the container registry accessible only to project members (reporter role and above). `enabled` will make the container registry accessible to everyone who has access to the project. `disabled` will disable the container registry'
@@ -53,6 +54,7 @@ module API
         optional :resource_group_default_process_mode,  type: String, desc: 'The process mode of the resource group', values: ProjectCiCdSetting.resource_group_default_process_modes.keys
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diff threads on lines changed with a push'
         optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
+        optional :packages_enabled, type: Boolean, desc: 'Deprecated: Use :package_registry_access_level instead. Enable project packages feature'
         optional :container_registry_enabled, type: Boolean, desc: 'Deprecated: Use :container_registry_access_level instead. Flag indication if the container registry is enabled for that project'
         optional :container_expiration_policy_attributes, type: Hash do
           use :optional_container_expiration_policy_params
@@ -78,7 +80,6 @@ module API
         optional :auto_devops_deploy_strategy, type: String, values: %w[continuous manual timed_incremental], desc: 'Auto Deploy strategy'
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
         optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
-        optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
@@ -184,6 +185,7 @@ module API
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,
+          :package_registry_access_level,
           :pages_access_level,
           :path,
           :printing_merge_request_link_enabled,
