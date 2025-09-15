@@ -353,7 +353,7 @@ ensuring that the component can gracefully fall back to its own `display` value 
 .class-name {
   display: block;
 
-  @include panel-container-width-down(lg) {
+  @include gl-container-width-up-down(lg) {
     display: flex;
   }
 }
@@ -362,7 +362,7 @@ ensuring that the component can gracefully fall back to its own `display` value 
 .class-name {
   display: flex;
 
-  @include panel-container-width-up(lg) {
+  @include gl-container-width-up(lg) {
     display: block;
   }
 }

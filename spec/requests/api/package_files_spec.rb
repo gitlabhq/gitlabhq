@@ -443,4 +443,117 @@ RSpec.describe API::PackageFiles, feature_category: :package_registry do
       end
     end
   end
+
+  describe 'GET /projects/:id/packages/:package_id/package_files/:package_file_id/download' do
+    let(:package_file) { package.package_files.first }
+    let(:package_type) { package.package_type.to_sym }
+    let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files/#{package_file.id}/download" }
+    let(:snowplow_gitlab_standard_context) do
+      { project: project, namespace: project.namespace, property: "i_package_#{package_type}_user" }
+    end
+
+    let(:params) { {} }
+
+    subject(:request) { get api(url), params: params }
+
+    shared_examples 'allow to download package file' do |user_type|
+      context "for #{user_type}" do
+        before do
+          project.send(:"add_#{user_type}", user) unless user_type == :no_type
+        end
+
+        it_behaves_like 'returning response status', :ok
+
+        it 'returns the file' do
+          request
+
+          expect(response.media_type).to eq('application/octet-stream')
+        end
+      end
+    end
+
+    shared_examples 'resource not found' do
+      context 'when package is not found' do
+        let(:url) { "/projects/#{project.id}/packages/0/package_files/#{package_file.id}/download" }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+
+      context 'when package file is not found' do
+        let(:url) { "/projects/#{project.id}/packages/#{package.id}/package_files/0/download" }
+
+        it_behaves_like 'returning response status', :not_found
+      end
+    end
+
+    shared_examples 'reject package file download' do |response_status|
+      it_behaves_like 'returning response status', response_status
+      it_behaves_like 'not a package tracking event', 'API::PackageFiles', 'pull_package'
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:params) { { job_token: target_job.token } }
+    end
+
+    context 'when project is public' do
+      it_behaves_like 'allow to download package file', :no_type
+    end
+
+    context 'when project is private' do
+      before_all do
+        project.update!(visibility_level: ::Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      context 'for unauthenticated user' do
+        it_behaves_like 'reject package file download', :not_found
+      end
+
+      context 'for authenticated user' do
+        let(:snowplow_gitlab_standard_context) do
+          { project: project, namespace: project.namespace, property: "i_package_#{package_type}_user", user: user }
+        end
+
+        subject(:request) { get api(url, user) }
+
+        context 'when user is not member of the project' do
+          it_behaves_like 'reject package file download', :not_found
+        end
+
+        context 'when user is a guest of the project' do
+          before_all do
+            project.add_guest(user)
+          end
+
+          it_behaves_like 'allow to download package file', :guest
+          it_behaves_like 'a package tracking event', 'API::PackageFiles', 'pull_package'
+          it_behaves_like 'resource not found'
+        end
+      end
+
+      context 'with JOB-TOKEN auth' do
+        let(:snowplow_gitlab_standard_context) do
+          { project: project, namespace: project.namespace, property: "i_package_#{package_type}_user", user: user }
+        end
+
+        let(:job) { create(:ci_build, :running, user: user, project: project) }
+
+        subject(:request) { get api(url, job_token: job.token) }
+
+        context 'when user is not member of project' do
+          it_behaves_like 'reject package file download', :forbidden
+        end
+
+        context 'when user is a reporter of the project' do
+          before_all do
+            project.add_reporter(user)
+          end
+
+          it_behaves_like 'allow to download package file', :reporter
+          it_behaves_like 'a package tracking event', 'API::PackageFiles', 'pull_package'
+          it_behaves_like 'resource not found'
+        end
+      end
+    end
+  end
 end

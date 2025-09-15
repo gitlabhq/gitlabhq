@@ -39,6 +39,10 @@ Prerequisites:
 - The `dpkg-deb` binary must be installed on the GitLab instance.
   This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
   installed by default on Debian and derivatives.
+- Recommended. Use `dpkg-deb` 1.22.21 or later. In `dpkg-deb` 1.22.20 and earlier,
+  the binary cannot delete temporary files from archives that
+  contain non-writable directories. These files consume disk space
+  and can cause a denial of service attack.
 - Support for compression algorithm ZStandard requires version `dpkg >= 1.21.18`
   from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
   18.04 Bionic Beaver.

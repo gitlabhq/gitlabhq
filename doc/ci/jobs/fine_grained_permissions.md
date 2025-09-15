@@ -114,6 +114,7 @@ The following endpoints are available for CI/CD job tokens.
 | Permission | API endpoint | Permission name | Scope |
 | ---------- | ------------ | --------------- | ----- |
 | Composer package endpoint to download a package archive | `GET /projects/:id/packages/composer/archives/*package_name` | `READ_PACKAGES` | Read |
+| Download a package file | `GET /projects/:id/packages/:package_id/package_files/:package_file_id/download` | `READ_PACKAGES` | Read |
 | Download module file | `GET /projects/:id/packages/go/*module_name/@v/:module_version.mod` | `READ_PACKAGES` | Read |
 | Download module source | `GET /projects/:id/packages/go/*module_name/@v/:module_version.zip` | `READ_PACKAGES` | Read |
 | Download package file | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | `READ_PACKAGES` | Read |

@@ -3,6 +3,8 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
@@ -112,7 +114,36 @@ describe('Job App', () => {
     });
   });
 
-  describe('while resizing', () => {
+  describe('when resizing', () => {
+    beforeEach(async () => {
+      await setupAndMount();
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('shows sidebar', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('showSidebar');
+
+      store.state.isSidebarOpen = false;
+      window.dispatchEvent(new Event('resize'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
+    });
+
+    it('hides sidebar on mobile', () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('hideSidebar');
+
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
+
+      store.state.isSidebarOpen = true;
+      window.dispatchEvent(new Event('resize'));
+
+      expect(store.dispatch).toHaveBeenCalledWith('hideSidebar');
+    });
+  });
+
+  describe('while scrolling', () => {
     beforeEach(async () => {
       await setupAndMount({
         directives: {
@@ -123,21 +154,60 @@ describe('Job App', () => {
       jest.spyOn(store, 'dispatch');
     });
 
-    it('shows sidebar', async () => {
-      store.state.isSidebarOpen = false;
-      // Mock trigger resize
-      getBinding(wrapper.element, 'gl-resize-observer').value();
-
-      await waitForPromises();
-
-      expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
-    });
-
-    it('should update scrolling when resized', () => {
+    it('should update scrolling when window scrolls', async () => {
       expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
 
-      // Mock trigger resize
+      window.dispatchEvent(new Event('scroll'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+
+    it('should update scrolling when resized', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
       getBinding(wrapper.element, 'gl-resize-observer').value();
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+  });
+
+  describe('while scrolling inside a content panel', () => {
+    let contentPanelWrapper;
+
+    beforeEach(async () => {
+      setHTMLFixture('<div class="js-static-panel-inner"></div>');
+      contentPanelWrapper = document.querySelector('.js-static-panel-inner');
+
+      await setupAndMount({
+        directives: {
+          GlResizeObserver: createMockDirective('gl-resize-observer'),
+        },
+        attachTo: document.body,
+      });
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('should update scrolling when content panel is scrolled', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      contentPanelWrapper.dispatchEvent(new Event('scroll'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+
+    it('should update scrolling when resized', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      getBinding(wrapper.element, 'gl-resize-observer').value();
+      await waitForPromises();
 
       expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });

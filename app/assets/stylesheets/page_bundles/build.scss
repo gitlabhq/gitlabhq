@@ -48,7 +48,7 @@
   padding: 0;
   top: $calc-application-header-height;
 
-  @include panel-container-width-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     border-left-width: 0;
   }
 
@@ -70,10 +70,6 @@
 
   .blocks-container {
     width: 289px;
-  }
-
-  .block {
-    width: 262px;
   }
 
   .builds-container {
@@ -116,6 +112,21 @@
 
   &:last-of-type {
     margin-bottom: 0;
+  }
+}
+
+// Project studio overrides, should become the default.
+.page-with-panels  {
+  .with-job-sidebar-expanded {
+    padding-right: 0;
+  }
+}
+
+@include gl-container-width-up(lg, panel) {
+  &.page-with-panels {
+    .with-job-sidebar-expanded {
+      padding-right: $right-sidebar-width;
+    }
   }
 }
 
@@ -188,7 +199,7 @@
   flex-shrink: 0;
 
   display: none;
-  @include panel-container-width-up(sm) {
+  @include gl-container-width-up(sm, panel){
     display: block;
   }
 }

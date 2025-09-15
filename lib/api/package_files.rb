@@ -17,6 +17,8 @@ module API
     helpers ::API::Helpers::Packages::Npm
 
     helpers do
+      include Gitlab::Utils::StrongMemoize
+
       def enqueue_sync_helm_metadata_cache_worker(package_file)
         channel = package_file.helm_channel
         return unless channel
@@ -26,6 +28,16 @@ module API
         ::Packages::Helm::CreateMetadataCacheWorker.perform_async(user_project.id, channel)
         # rubocop:enable CodeReuse/Worker
       end
+
+      def package
+        ::Packages::PackageFinder.new(user_project, params[:package_id]).execute
+      end
+      strong_memoize_attr :package
+
+      def package_file
+        package.installable_package_files.find_by_id(params[:package_file_id])
+      end
+      strong_memoize_attr :package_file
     end
 
     params do
@@ -56,9 +68,6 @@ module API
       route_setting :authorization, job_token_policies: :read_packages,
         allow_public_access_for_enabled_project_features: :package_registry
       get ':id/packages/:package_id/package_files' do
-        package = ::Packages::PackageFinder
-          .new(user_project, params[:package_id]).execute
-
         package_files = package.installable_package_files
                                .preload_pipelines
                                .order_by(params[:order_by], params[:sort])
@@ -85,9 +94,6 @@ module API
 
         # We want to make sure the file belongs to the declared package
         # so we look up the package before looking up the file.
-        package = ::Packages::PackageFinder
-          .new(user_project, params[:package_id]).execute
-
         not_found! unless package
 
         if Feature.enabled?(:packages_protected_packages_delete, user_project)
@@ -101,9 +107,6 @@ module API
           forbidden!('Package is deletion protected.') if service_response[:protection_rule_exists?]
         end
 
-        package_file = package.installable_package_files
-                              .find_by_id(params[:package_file_id])
-
         not_found! unless package_file
 
         destroy_conditionally!(package_file) do |package_file|
@@ -113,6 +116,31 @@ module API
 
           enqueue_sync_helm_metadata_cache_worker(package_file) if package.helm?
         end
+      end
+
+      desc 'Download a package file' do
+        detail 'This feature was introduced in GitLab 18.4'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags PACKAGE_FILES_TAGS
+      end
+      params do
+        requires :package_file_id, type: Integer, desc: 'ID of a package file'
+      end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_packages,
+        allow_public_access_for_enabled_project_features: :package_registry
+      get ':id/packages/:package_id/package_files/:package_file_id/download' do
+        not_found! unless package && package_file
+
+        track_package_event('pull_package', package.package_type.to_sym, project: user_project,
+          namespace: user_project.namespace)
+
+        present_package_file!(package_file)
       end
     end
   end

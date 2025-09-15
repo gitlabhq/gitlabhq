@@ -57,6 +57,60 @@ RSpec.describe Gitlab::Json do
         expect { subject.parse("false", legacy_mode: true) }.to raise_error(JSON::ParserError)
       end
     end
+
+    describe 'log oversize JSON objects' do
+      let(:string) { '{"key1": "value1", "key2": ["item1", "item2"], "key3": {"nested": "value"}}' }
+
+      shared_examples 'parses JSON object without logging' do
+        it 'parses JSON object without logging' do
+          expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+          result = subject.parse(string)
+          expect(result['key1']).to eq("value1")
+        end
+      end
+
+      shared_examples 'parses JSON object with logging' do |expected_fields_count|
+        it 'logs oversize JSON object and parses string' do
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(
+            message: 'Large JSON object',
+            number_of_fields: expected_fields_count,
+            caller: anything
+          )
+
+          result = subject.parse(string)
+          expect(result['key1']).to eq("value1")
+        end
+      end
+
+      context 'when JSON object is not oversize' do
+        before do
+          stub_env('GITLAB_JSON_SIZE_THRESHOLD', '100')
+        end
+
+        it_behaves_like 'parses JSON object without logging'
+      end
+
+      context 'when JSON object is oversize' do
+        before do
+          stub_env('GITLAB_JSON_SIZE_THRESHOLD', '5')
+        end
+
+        it_behaves_like 'parses JSON object with logging', 10
+      end
+
+      context 'when JSON object environment variable is 0' do
+        before do
+          stub_env('GITLAB_JSON_SIZE_THRESHOLD', '0')
+        end
+
+        it_behaves_like 'parses JSON object without logging'
+      end
+
+      context 'when threshold environment variable is not defined' do
+        it_behaves_like 'parses JSON object without logging'
+      end
+    end
   end
 
   describe ".parse!" do

@@ -77,6 +77,10 @@ module Gitlab
           options[:extra_allowed_uris] = ObjectStoreSettings.enabled_endpoint_uris
         end
 
+        if !options[:parser] && Feature.enabled?(:log_large_json_objects, :instance)
+          options[:parser] = Gitlab::HttpResponseParser
+        end
+
         # Configure HTTP_V2 Client
         {
           allow_local_requests: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,

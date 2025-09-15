@@ -44,8 +44,8 @@ is distributed among the Gitaly nodes in your instance based on your reference a
 Each Gitaly node in your instance has a specific storage capacity. This capacity affects how large individual
 repositories can be, because no single repository can exceed the capacity of a single Gitaly node.
 
-For example, if each Gitaly node has 100 GB of storage capacity and there are 3 Gitaly nodes, your instance
-can store a total of 300 GB of repository data, but no single repository can exceed 100 GB.
+For example, if each Gitaly node has 100 GiB of storage capacity and there are 3 Gitaly nodes, your instance
+can store a total of 300 GiB of repository data, but no single repository can exceed 100 GiB.
 
 ### Object storage
 
@@ -120,42 +120,42 @@ These examples demonstrate how storage allocation affects repository size limita
 #### Standard workload with 2,000 users
 
 - Reference architecture: Up to 2,000 users (1 Gitaly node)
-- Total storage size: 1 TB (1,024 GB)
-- Allocation: 600 GB repository storage, 424 GB object storage
-- Repository storage per Gitaly node: 600 GB
+- Total storage size: 1 TiB (1,024 GiB)
+- Allocation: 600 GiB repository storage, 424 GiB object storage
+- Repository storage per Gitaly node: 600 GiB
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Storage allocation for 2,000 users
-    accDescr: Diagram showing 1 TB total storage with repository storage on a single Gitaly node and object storage
+    accDescr: Diagram showing 1 TiB total storage with repository storage on a single Gitaly node and object storage
 
-    subgraph A[Total storage size: 1 TB]
-        B[Repository storage: 600 GB]
-        C[Object storage: 424 GB]
-        B --> D[Gitaly node: 600 GB]
+    subgraph A[Total storage size: 1 TiB]
+        B[Repository storage: 600 GiB]
+        C[Object storage: 424 GiB]
+        B --> D[Gitaly node: 600 GiB]
     end
 ```
 
 #### CI/CD-intensive workload with 10,000 users
 
 - Reference architecture: Up to 10,000 users (3 Gitaly nodes)
-- Total storage size: 5 TB (5,120 GB)
-- Allocation: 2,048 GB repository storage, 3,072 GB object storage
-- Repository storage per Gitaly node: 682 GB (2,048 GB ÷ 3 Gitaly nodes)
+- Total storage size: 5 TiB (5,120 GiB)
+- Allocation: 2,048 GiB repository storage, 3,072 GiB object storage
+- Repository storage per Gitaly node: ~683 GiB (2,048 GiB ÷ 3 Gitaly nodes)
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Storage allocation for 10,000 users
-    accDescr: Diagram showing 5 TB total storage with repository storage across 3 Gitaly nodes and object storage
+    accDescr: Diagram showing 5 TiB total storage with repository storage across 3 Gitaly nodes and object storage
 
-    subgraph A[Total storage size: 5 TB]
-        B[Repository storage: 2,048 GB]
-        C[Object storage: 3,072 GB]
-        D[Gitaly node 1: 682 GB]
-        E[Gitaly node 2: 682 GB]
-        F[Gitaly node 3: 682 GB]
+    subgraph A[Total storage size: 5 TiB]
+        B[Repository storage: 2,048 GiB]
+        C[Object storage: 3,072 GiB]
+        D[Gitaly node 1: 683 GiB]
+        E[Gitaly node 2: 683 GiB]
+        F[Gitaly node 3: 682 GiB]
 
         B --- D
         B --- E

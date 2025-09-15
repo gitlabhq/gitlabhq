@@ -446,7 +446,7 @@
       @apply gl-pr-0 #{!important};
     }
 
-    &:not(.wiki-sidebar) .panel-content-inner {
+    &:not(.wiki-sidebar):not(.build-sidebar) .panel-content-inner {
       @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
         padding-right: $right-sidebar-width;
       }

@@ -1207,23 +1207,37 @@ lib/gitlab/checks/
 /argo_translation.yml
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
-/config/initializers/declarative_policy.rb
-/config/initializers/declarative_policy_cached_attributes.rb
+/app/**/authz/
+/app/models/ability.rb
 /app/policies/
-/ee/app/policies/
-/ee/app/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
-/ee/app/policies/clusters/ @gitlab-org/maintainers/workspaces/backend
-/ee/spec/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
-/ee/app/models/members/member_role.rb
+/config/authz/
+/config/initializers/declarative_policy_cached_attributes.rb
+/config/initializers/declarative_policy.rb
+/ee/app/**/authz/
+/ee/app/graphql/**/member_roles/
 /ee/app/models/auth/member_role_ability_loader.rb
+/ee/app/models/members/member_role.rb
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
 /ee/app/models/preloaders/user_member_roles_in_projects_preloader.rb
+/ee/app/policies/
 /ee/app/services/member_roles/
-/ee/app/graphql/types/member_roles/
-/ee/app/graphql/mutations/member_roles/
-/ee/app/graphql/resolvers/member_roles/
-/ee/spec/requests/custom_roles/
+/ee/config/custom_abilities/
 /ee/lib/api/member_roles.rb
+/ee/lib/**/authz/
+/ee/spec/**/authz/
+/ee/spec/graphql/**/member_roles/
+/ee/spec/models/auth/member_role_ability_loader_spec.rb
+/ee/spec/models/members/member_role_spec.rb
+/ee/spec/models/preloaders/user_member_roles_in_groups_preloader_spec.rb
+/ee/spec/models/preloaders/user_member_roles_in_projects_preloader_spec.rb
+/ee/spec/policies/
+/ee/spec/requests/api/member_roles_spec.rb
+/ee/spec/requests/custom_roles/
+/ee/spec/services/member_roles/
+/lib/**/authz/
+/spec/**/authz/
+/spec/models/ability.rb
+/spec/policies/
 
 [Container registry] @gitlab-org/ci-cd/package-stage/container-registry-group
 /app/assets/javascripts/packages_and_registries/container_registry/

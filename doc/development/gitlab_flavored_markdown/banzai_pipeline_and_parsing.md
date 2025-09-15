@@ -54,6 +54,13 @@ Anything that can't be handled by the initial Markdown parsing gets handled by t
 
 Of specific note is the `SanitizationFilter`. This is critical for providing safe HTML from possibly malicious input.
 
+### `PostProcessPipeline`
+
+The output from the `FullPipeline` gets cached in the database. However references have already been resolved. Based on
+a users' permissions, they may not be able to see those references. `PostProcessPipeline` is responsible for redacting any
+confidential information based on user permissions. These changes are never cached, as they need to get recomputed each time
+they are displayed.
+
 ### Performance
 
 It's important to not only have the filters run as fast as possible, but to ensure that they don't take too long in general.
@@ -79,6 +86,34 @@ We use our [`gitlab-glfm-markdown`](https://gitlab.com/gitlab-org/ruby/gems/gitl
 `comrak` provides 100% compatibility with GFM and CommonMark while allowing additional extensions to be added to it. For example, we were able to implement our multi-line blockquote and wikilink syntax directly in `comrak`. The goal is to move more of the Ruby filters into either `comrak` (if it makes sense) or into `gitlab-glfm-markdown`.
 
 For more information about the various options that get passed into `comrak`, see [glfm_markdown.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/banzai/filter/markdown_engines/glfm_markdown.rb#L12-L34).
+
+## Caching
+
+The output from the main pipelines get cached in the database, or on occasion in Redis. `CacheMarkdownField` is used
+for managing the proper `_html` columns. For example, if there is a `description` column, then a `description_html` column
+is managed. If `description_html` is empty, then it hasn't been computed for `description` yet. If it's not empty, then
+you are guaranteed that `description_html` is the rendered version of `description`.
+
+Each table that contains a Markdown field also contains a `cached_markdown_version` column. This indicates which
+"version" of Markdown it was rendered with. This value controls whether or not already cached HTML may need to get
+re-rendered. This can happen if for instance something changes how we render HTML, and we need all cached HTML to be rebuilt.
+
+There are two values which control this. One is the primary application version,
+`Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION`. If this is changed in the file, then all cached HTML fields will
+get re-rendered, across all installations.
+
+There is also an application level setting, `local_markdown_version`, which allows an administrator to invalidate the cache.
+This is documented in [Markdown Cache](../../administration/invalidate_markdown_cache.md). This
+might be needed if, for example, a system setting gets changed, such as a new PlantUML server is used and the administrator wants all
+fields to use the new value. The documentation also mentions how you could reset just a project, etc.
+
+>>> [!warning]
+Changing either the `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION` or the application setting will cause all
+cached Markdown fields to be re-rendered. For large installations, this puts heavy strain on the database,
+as every row with cached Markdown needs to be updated. As a result, avoid changing `Gitlab::MarkdownCache::CACHE_COMMONMARK_VERSION`
+if the change to the renderer output is a new feature or a minor bug fix. It should only be bumped in extreme
+circumstances. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/330313).
+>>>
 
 ## Debugging
 

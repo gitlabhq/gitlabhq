@@ -29201,6 +29201,42 @@ paths:
       tags:
       - package_files
       operationId: deleteApiV4ProjectsIdPackagesPackageIdPackageFilesPackageFileId
+  "/api/v4/projects/{id}/packages/{package_id}/package_files/{package_file_id}/download":
+    get:
+      summary: Download a package file
+      description: This feature was introduced in GitLab 18.4
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_id
+        description: ID of a package
+        type: integer
+        format: int32
+        required: true
+      - in: path
+        name: package_file_id
+        description: ID of a package file
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Download a package file
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not found
+      tags:
+      - package_files
+      operationId: getApiV4ProjectsIdPackagesPackageIdPackageFilesPackageFileIdDownload
   "/api/v4/projects/{id}/pages":
     delete:
       summary: Unpublish pages

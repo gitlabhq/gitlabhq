@@ -1,9 +1,9 @@
 <script>
 import { GlResizeObserverDirective, GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -20,6 +20,8 @@ import JobHeader from './components/job_header.vue';
 import StuckBlock from './components/stuck_block.vue';
 import UnmetPrerequisitesBlock from './components/unmet_prerequisites_block.vue';
 import Sidebar from './components/sidebar/sidebar.vue';
+
+const STATIC_PANEL_WRAPPER_SELECTOR = '.js-static-panel-inner';
 
 export default {
   name: 'JobPageApp',
@@ -73,7 +75,7 @@ export default {
   },
   data() {
     return {
-      contentPanelWrapper: document.querySelector('.js-static-panel-inner'),
+      staticPanelWrapper: document.querySelector(STATIC_PANEL_WRAPPER_SELECTOR),
       searchResults: [],
       showUpdateVariablesState: false,
     };
@@ -168,12 +170,14 @@ export default {
   created() {
     this.throttleToggleScrollButtons = throttle(this.toggleScrollButtons, 100);
 
-    if (this.contentPanelWrapper) {
-      this.contentPanelWrapper.addEventListener('scroll', this.updateScroll);
+    if (this.staticPanelWrapper) {
+      this.staticPanelWrapper.addEventListener('scroll', this.updateScroll);
     } else {
       // This can be removed when `projectStudioEnabled` is removed
       window.addEventListener('scroll', this.updateScroll);
     }
+
+    PanelBreakpointInstance.addResizeListener(this.updateSidebar);
   },
   mounted() {
     this.updateSidebar();
@@ -182,12 +186,14 @@ export default {
     this.stopPollingJobLog();
     this.stopPolling();
 
-    if (this.contentPanelWrapper) {
-      this.contentPanelWrapper.removeEventListener('scroll', this.updateScroll);
+    if (this.staticPanelWrapper) {
+      this.staticPanelWrapper.removeEventListener('scroll', this.updateScroll);
     } else {
       // This can be removed when `projectStudioEnabled` is removed
       window.removeEventListener('scroll', this.updateScroll);
     }
+
+    PanelBreakpointInstance.removeResizeListener(this.updateSidebar);
   },
   methods: {
     ...mapActions([
@@ -208,19 +214,14 @@ export default {
     onHideManualVariablesForm() {
       this.showUpdateVariablesState = false;
     },
-    onResize() {
-      this.updateSidebar();
-      this.updateScroll();
-    },
     onUpdateVariables() {
       this.showUpdateVariablesState = true;
     },
     updateSidebar() {
-      const breakpoint = bp.getBreakpointSize();
-      if (breakpoint === 'xs' || breakpoint === 'sm' || breakpoint === 'md') {
-        this.hideSidebar();
-      } else if (!this.isSidebarOpen) {
+      if (PanelBreakpointInstance.isDesktop()) {
         this.showSidebar();
+      } else if (this.isSidebarOpen) {
+        this.hideSidebar();
       }
     },
     updateScroll() {
@@ -239,7 +240,7 @@ export default {
 };
 </script>
 <template>
-  <div v-gl-resize-observer="onResize">
+  <div v-gl-resize-observer="updateScroll" :class="{ 'with-job-sidebar-expanded': isSidebarOpen }">
     <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-6" />
 
     <template v-else-if="shouldRenderContent">

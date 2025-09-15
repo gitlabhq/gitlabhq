@@ -5,15 +5,12 @@ class AddMultiParentConstraintOnNotes < Gitlab::Database::Migration[2.3]
   milestone '18.4'
 
   def up
-    add_multi_column_not_null_constraint :notes,
-      :project_id,
-      :namespace_id,
-      :organization_id,
-      operator: '>=',
-      validate: false
+    # no-op
+    # Removing this constraint as it caused an incident
+    # https://app.incident.io/gitlab/incidents/3974
   end
 
   def down
-    remove_multi_column_not_null_constraint :notes, :project_id, :namespace_id, :organization_id
+    # no-op
   end
 end
