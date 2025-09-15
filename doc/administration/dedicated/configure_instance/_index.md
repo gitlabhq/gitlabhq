@@ -35,7 +35,7 @@ The following configuration settings are available in Switchboard:
 
 - [IP allowlist](network_security.md#ip-allowlist)
 - [SAML settings](saml.md)
-- [Custom certificates](network_security.md#custom-certificates)
+- [Custom certificates](network_security.md#custom-certificate-authority)
 - [Outbound private links](network_security.md#outbound-private-link)
 - [Private hosted zones](network_security.md#private-hosted-zones)
 

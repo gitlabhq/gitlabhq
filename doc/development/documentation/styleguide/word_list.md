@@ -1108,9 +1108,9 @@ Use two words for **full screen**.
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing/vale.md) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/FutureTense.yml))
 
-## GB, gigabytes
+## GB, GiB, gigabytes, gibibytes
 
-For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+For **GB** and **GiB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## generally available, general availability
 
@@ -1492,6 +1492,10 @@ Do not use **build** to be synonymous with **job**. A job is defined in the `.gi
 
 If you want to use **CI** with the word **job**, use **CI/CD job** rather than **CI job**.
 
+## KB, KiB, kilobytes, kibibytes
+
+For **KB** and **KiB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## Kubernetes executor
 
 GitLab Runner can run jobs on a Kubernetes cluster. To do this, GitLab Runner uses the Kubernetes executor.
@@ -1695,9 +1699,9 @@ Instead of:
 - The `committed_date` and `authored_date` fields are generated from different sources, and may not be identical.
 - A typical pipeline might consist of four stages, executed in the following order:
 
-## MB, megabytes
+## MB, MiB, megabytes, mebibytes
 
-For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+For **MB** and **MiB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## member
 
@@ -2536,6 +2540,10 @@ Examples:
 
 - Suggested Reviewers can recommend a person to review your merge request. (This phrase describes the feature.)
 - As you type, Suggested Reviewers are displayed. (This phrase is generic but still uses capital letters.)
+
+## TB, TiB, terabytes, tebibytes
+
+For **TB** and **TiB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
 
 ## tab
 

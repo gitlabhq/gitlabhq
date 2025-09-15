@@ -325,7 +325,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/ci/namespace_mirror.rb'
     - 'app/models/ci/pipeline.rb'
     - 'app/models/ci/pipeline_schedule.rb'
-    - 'app/models/ci/processable.rb'
     - 'app/models/ci/runner.rb'
     - 'app/models/clusters/cluster.rb'
     - 'app/models/commit.rb'

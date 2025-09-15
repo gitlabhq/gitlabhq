@@ -145,7 +145,6 @@ RSpec/ReturnFromStub:
     - 'spec/services/environments/auto_stop_service_spec.rb'
     - 'spec/services/environments/canary_ingress/update_service_spec.rb'
     - 'spec/services/environments/reset_auto_stop_service_spec.rb'
-    - 'spec/services/git/branch_hooks_service_spec.rb'
     - 'spec/services/git/branch_push_service_spec.rb'
     - 'spec/services/git/process_ref_changes_service_spec.rb'
     - 'spec/services/groups/nested_create_service_spec.rb'

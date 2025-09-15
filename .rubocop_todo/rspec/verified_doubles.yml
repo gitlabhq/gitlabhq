@@ -304,7 +304,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/auth/ldap/authentication_spec.rb'
     - 'spec/lib/gitlab/authorized_keys_spec.rb'
     - 'spec/lib/gitlab/avatar_cache_spec.rb'
-    - 'spec/lib/gitlab/background_migration/base_job_spec.rb'
     - 'spec/lib/gitlab/background_migration/batching_strategies/base_strategy_spec.rb'
     - 'spec/lib/gitlab/cache/import/caching_spec.rb'
     - 'spec/lib/gitlab/changelog/committer_spec.rb'

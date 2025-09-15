@@ -79,7 +79,7 @@ module QA
           end
         end
 
-        it 'pushes and pulls a maven package via maven', :smoke, testcase: params[:testcase] do
+        it 'pushes and pulls a maven package via maven', testcase: params[:testcase] do
           gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/project', 'gitlab_ci.yaml.erb'))
                                     .result(binding)
           pom_xml = ERB.new(read_fixture('package_managers/maven/project', 'pom.xml.erb'))

@@ -122,7 +122,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/serializers/issues/linked_issue_feature_flag_entity_spec.rb'
     - 'ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb'
     - 'ee/spec/services/analytics/value_stream_dashboard/top_level_group_counter_service_spec.rb'
-    - 'ee/spec/services/app_sec/dast/site_validations/runner_service_spec.rb'
     - 'ee/spec/services/ci/runners/reset_registration_token_service_spec.rb'
     - 'ee/spec/services/compliance_management/frameworks/update_project_service_spec.rb'
     - 'ee/spec/services/ee/ci/job_token_scope/remove_group_service_spec.rb'

@@ -1022,7 +1022,6 @@ Layout/LineLength:
     - 'ee/spec/graphql/ee/resolvers/board_list_issues_resolver_spec.rb'
     - 'ee/spec/graphql/ee/resolvers/project_issues_resolver_spec.rb'
     - 'ee/spec/graphql/ee/types/board_type_spec.rb'
-    - 'ee/spec/graphql/ee/types/issue_sort_enum_spec.rb'
     - 'ee/spec/graphql/ee/types/merge_request_type_spec.rb'
     - 'ee/spec/graphql/mutations/boards/epics/create_spec.rb'
     - 'ee/spec/graphql/mutations/boards/lists/update_limit_metrics_spec.rb'

@@ -460,7 +460,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/requests/api/graphql/project/jobs_spec.rb'
     - 'spec/requests/api/graphql/project/packages_cleanup_policy_spec.rb'
     - 'spec/requests/api/graphql/project/repository/blobs_spec.rb'
-    - 'spec/requests/api/graphql/project/repository_spec.rb'
     - 'spec/requests/api/graphql/project/tree/tree_spec.rb'
     - 'spec/requests/api/graphql_spec.rb'
     - 'spec/requests/api/group_debian_distributions_spec.rb'

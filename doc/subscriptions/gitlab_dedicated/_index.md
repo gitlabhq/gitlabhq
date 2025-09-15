@@ -53,7 +53,7 @@ Two connectivity options are available:
 - Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist) to restrict access to specified IP addresses.
 - Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) connections.
 
-For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificates).
+For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificate-authority).
 
 ##### Private connectivity for webhooks and integrations
 

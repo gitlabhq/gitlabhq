@@ -187,12 +187,13 @@ module QA
             next unless resource
 
             resource_info = resource_info(resource_hash, key)
-            next if already_marked_for_deletion?(resource)
-
             logger.info("Processing #{resource_info}...")
 
             resource[:api_path] = resource_hash['api_path']
             resource[:type] = type
+
+            # When deleting immediately, don't skip resources already marked for deletion
+            next if !permanent && group_or_project?(resource) && already_marked_for_deletion?(resource)
 
             result = if personal_resource?(key)
                        delete_personal_resource(resource, delayed_verification, permanent, skip_verification)
