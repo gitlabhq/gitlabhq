@@ -43,6 +43,16 @@ This Definition of Done (DoD) applies to features that are implemented across mu
 - The feature has been reviewed and signed off by relevant PM, UX, and EM stakeholders.
 - The feature has been demoed internally, or included in a relevant release kickoff, milestone retrospective, or internal sync - and shared with product marketing in support of external campaigns.
 
+## Usage instrumentation
+
+These requirements are mandatory for features with a [maturity level](../policy/development_stages_support.md) of Beta and above. While optional for Experimental features, early implementation enables tracking adoption from the start and is therefore highly encouraged.
+
+- Usage metrics have been implemented to [track](internal_analytics/_index.md) feature adoption.
+- Monthly Active Users (MAU) metrics have been added for user-facing features where applicable.
+- Metrics are properly attributed to the correct [group and feature category](https://handbook.gitlab.com/handbook/product/categories/lookup/).
+- Instrumentation has been verified across all applicable deployment types: GitLab.com, GitLab Self-managed, and GitLab Dedicated.
+- Metrics data appears in [relevant dashboards](internal_analytics/_index.md#data-discovery) and is accessible for analysis.
+
 ## Rollout and post-release
 
 - The feature is either:

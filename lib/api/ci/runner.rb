@@ -168,6 +168,7 @@ module API
             optional :config, type: Hash, desc: "Runner's config" do
               optional :gpus, type: String, desc: 'GPUs enabled'
             end
+            optional :labels, type: Hash, desc: "Runner's labels"
           end
           optional :session, type: Hash, desc: "Runner's session data" do
             optional :url, type: String, desc: "Session's url"

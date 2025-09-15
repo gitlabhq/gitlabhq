@@ -65,6 +65,7 @@ module Ci
     validates :ip_address, length: { maximum: 1024 }
     validates :config, json_schema: { filename: 'ci_runner_config' }
     validates :runtime_features, json_schema: { filename: 'ci_runner_runtime_features' }
+    validates :labels, json_schema: { filename: 'ci_runner_labels' }
 
     validate :no_organization_id, if: :instance_type?
 
@@ -165,7 +166,7 @@ module Ci
       #
       ::Gitlab::Database::LoadBalancing::SessionMap.current(load_balancer).without_sticky_writes do
         values = values&.slice(:version, :revision, :platform, :architecture, :ip_address, :config,
-          :executor, :runtime_features) || {}
+          :executor, :runtime_features, :labels) || {}
 
         values.merge!(contacted_at: Time.current, creation_state: :finished)
 

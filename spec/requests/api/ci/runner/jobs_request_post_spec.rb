@@ -151,6 +151,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner_manager.runner).to eq runner
               expect(runner_manager.contacted_at).to eq Time.current
             end
+
+            context 'with labels in info parameter' do
+              let(:args) { { system_id: 's_some_system_id', info: { labels: { 'environment' => 'test' } } } }
+
+              it 'creates runner manager with labels', :freeze_time do
+                expect { request }.to change { runner.runner_managers.reload.count }.from(0).to(1)
+
+                runner_manager = runner.runner_managers.last
+                expect(runner_manager.system_xid).to eq args[:system_id]
+                expect(runner_manager.labels).to eq({ 'environment' => 'test' })
+              end
+            end
           end
 
           context 'when ci_runner_machines with same system_xid already exists', :freeze_time do
@@ -167,6 +179,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               request
 
               expect(runner_manager.reload.contacted_at).to eq Time.current
+            end
+
+            context 'with labels in info parameter' do
+              let(:args) { { system_id: 's_existing_system_id', info: { labels: { 'environment' => 'staging' } } } }
+
+              it 'updates the runner manager labels' do
+                expect do
+                  request
+                end.to change { runner_manager.reload.labels }.from({}).to('environment' => 'staging')
+              end
             end
           end
         end
@@ -597,6 +619,43 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                   expect(response).to have_gitlab_http_status(:created)
                   expect(job.runner_manager.reload.read_attribute(param.to_sym)).to eq(value)
+                end
+              end
+            end
+
+            describe "when info parameter 'labels' is present" do
+              let(:labels) { { 'environment' => 'production', 'team' => 'backend' } }
+
+              subject(:perform_request) do
+                request_job info: { labels: labels }
+              end
+
+              it "updates the runner manager's labels" do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(job.runner_manager.reload.labels).to eq(labels)
+              end
+
+              context 'with empty labels' do
+                let(:labels) { {} }
+
+                it "updates the runner manager's labels to empty hash" do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(job.runner_manager.reload.labels).to eq({})
+                end
+              end
+
+              context 'with complex label values' do
+                let(:labels) { { 'environment' => 'production', 'version' => '1.2.3', 'features' => 'gpu,ssd' } }
+
+                it "updates the runner manager's labels with complex values" do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(job.runner_manager.reload.labels).to eq(labels)
                 end
               end
             end

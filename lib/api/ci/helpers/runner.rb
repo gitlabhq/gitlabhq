@@ -26,7 +26,7 @@ module API
         def get_runner_details_from_request
           return get_runner_ip unless params['info'].present?
 
-          attributes_for_keys(%w[name version revision platform architecture executor], params['info'])
+          attributes_for_keys(%w[name version revision platform architecture executor labels], params['info'])
             .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)

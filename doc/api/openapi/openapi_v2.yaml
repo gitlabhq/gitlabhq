@@ -67328,6 +67328,9 @@ definitions:
               gpus:
                 type: string
                 description: GPUs enabled
+          labels:
+            type: object
+            description: Runner's labels
       session:
         type: object
         description: Runner's session data

@@ -6427,6 +6427,34 @@ Input type: `DiscussionToggleResolveInput`
 | <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.dismissPolicyViolations`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Dismisses policy violations linked to a merge request.
+
+Input type: `DismissPolicyViolationsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdismisspolicyviolationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdismisspolicyviolationsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationdismisspolicyviolationsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationdismisspolicyviolationssecuritypolicyids"></a>`securityPolicyIds` | [`[ID!]!`](#id) | IDs of warn mode policies with violations to dismiss. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdismisspolicyviolationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdismisspolicyviolationserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationdismisspolicyviolationsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.duoSettingsUpdate`
 
 {{< details >}}
