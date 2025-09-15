@@ -92,6 +92,15 @@ The monthly release week is the week containing the third Thursday of the month.
 
 Non-critical patches are included in the next scheduled maintenance window.
 
+## Internal releases
+
+Internal releases are private releases used to remediate critical security vulnerabilities and high-severity bugs on GitLab
+Dedicated instances before public disclosure. These releases are deployed through
+[emergency maintenance procedures](maintenance.md#emergency-maintenance).
+
+Critical fixes that can't wait for the next scheduled patch are delivered through internal releases to ensure your
+instance remains secure and stable.
+
 ## Bug fixes
 
 GitLab engineering teams work to include bug fixes and performance improvements

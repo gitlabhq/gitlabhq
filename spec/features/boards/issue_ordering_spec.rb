@@ -178,7 +178,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(page).to have_selector('.board', count: 4)
     end
 
-    it 'moves to top of another list' do
+    it 'moves to top of another list', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546391' do
       drag(list_from_index: 1, list_to_index: 2)
 
       wait_for_requests

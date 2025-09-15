@@ -42,7 +42,12 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
 export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = false) => {
   let collapsed = true;
   if (isDesktopBreakpoint()) {
-    collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
+    if (gon?.features?.projectStudioEnabled) {
+      // In the "Project Studio" layout, the left sidebar can never be fully collapsed on desktop.
+      collapsed = false;
+    } else {
+      collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
+    }
   }
   toggleSuperSidebarCollapsed(collapsed, false);
 };

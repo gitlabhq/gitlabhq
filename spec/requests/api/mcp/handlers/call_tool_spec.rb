@@ -8,7 +8,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
   let_it_be(:group) { create(:group, maintainers: [user]) }
   let_it_be(:project) { create(:project, :repository, group: group, maintainers: [user]) }
   let_it_be(:issue) { create(:issue, project: project) }
-  let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp, :api]) }
+  let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
   let(:params) do
     {
@@ -19,14 +19,14 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     }
   end
 
-  describe 'POST /mcp_server with tools/call method' do
+  describe 'POST /mcp with tools/call method' do
     let(:tool_params) do
       { name: 'get_issue', arguments: { id: project.full_path, issue_iid: issue.iid } }
     end
 
     context 'with valid tool name' do
       it 'returns success response' do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['jsonrpc']).to eq(params[:jsonrpc])
@@ -43,7 +43,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         let(:insufficient_access_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
 
         it 'returns insufficient scopes error' do
-          post api('/mcp_server', user, oauth_access_token: insufficient_access_token), params: params
+          post api('/mcp', user, oauth_access_token: insufficient_access_token), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -54,7 +54,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
         let_it_be(:project) { issue.project }
 
         it 'returns not found' do
-          post api('/mcp_server', user, oauth_access_token: access_token), params: params
+          post api('/mcp', user, oauth_access_token: access_token), params: params
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['result']['isError']).to be_truthy
@@ -80,7 +80,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       before do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: invalid_params
+        post api('/mcp', user, oauth_access_token: access_token), params: invalid_params
       end
 
       it 'returns success HTTP status with error result' do
@@ -101,7 +101,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       before do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
       end
 
       it 'returns invalid params error' do
@@ -123,7 +123,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       it 'returns success response' do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['result']['content'].first['text']).to include(merge_request.title)
@@ -138,7 +138,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       it 'returns success response' do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -156,7 +156,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       it 'returns success response' do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
 
@@ -174,7 +174,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
       end
 
       it 'returns success response' do
-        post api('/mcp_server', user, oauth_access_token: access_token), params: params
+        post api('/mcp', user, oauth_access_token: access_token), params: params
 
         expect(response).to have_gitlab_http_status(:ok)
         first_pipeline = ::API::Entities::Ci::PipelineBasic.new(merge_request.head_pipeline).as_json
@@ -210,7 +210,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
       it 'returns success response' do
         expect do
-          post api('/mcp_server', user, oauth_access_token: access_token), params: params
+          post api('/mcp', user, oauth_access_token: access_token), params: params
         end.to change { project.reload.issues.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:ok)

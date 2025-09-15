@@ -51,7 +51,9 @@ export default {
     },
     issueAsWorkItem() {
       return (
-        !this.isGroup && this.glFeatures.workItemViewForIssues && this.glFeatures.workItemsAlpha
+        !this.isGroup &&
+        this.glFeatures.workItemViewForIssues &&
+        this.glFeatures.workItemsProjectIssuesList
       );
     },
     crumbs() {

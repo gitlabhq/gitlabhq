@@ -84,6 +84,26 @@ RSpec.describe GraphqlController, :with_current_organization, feature_category: 
       expect(response).to have_gitlab_http_status(:service_unavailable)
       expect(response.headers['Retry-After']).to be(50)
     end
+
+    it 'handles Issuables::GroupMembersFilterable::TooManyGroupMembersError' do
+      allow(controller).to receive(:execute) do
+        raise Issuables::GroupMembersFilterable::TooManyGroupMembersError, "anything"
+      end
+
+      post :execute
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it 'handles Issuables::GroupMembersFilterable::TooManyAssignedIssuesError' do
+      allow(controller).to receive(:execute) do
+        raise Issuables::GroupMembersFilterable::TooManyAssignedIssuesError, "anything"
+      end
+
+      post :execute
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
   end
 
   describe 'POST #execute' do

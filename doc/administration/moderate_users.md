@@ -148,8 +148,6 @@ To block a user:
 1. Select **Overview** > **Users**.
 1. For the user you want to block, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then **Block**.
 
-The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
-
 To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the **Admin** area, see [resolving abuse reports](review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user

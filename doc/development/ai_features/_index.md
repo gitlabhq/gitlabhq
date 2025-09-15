@@ -172,7 +172,7 @@ If you clean up the flag in GitLab-Rails repository at first, the feature flag i
 
 - When `push_feature_flag` runs on an enabled feature flag, the name of the flag is cached in the current context,
   which is later attached to the `x-gitlab-enabled-feature-flags` HTTP header when `GitLab-Sidekiq/Rails` sends requests to AI gateway.
-- When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](../cloud_connector/architecture.md#ai-gateway) (UJWT)
+- When frontend clients (for example, VS Code Extension or LSP) request a [User JWT](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#terms) (UJWT)
   for direct AI gateway communication, GitLab returns:
 
   - Public headers (including `x-gitlab-enabled-feature-flags`).

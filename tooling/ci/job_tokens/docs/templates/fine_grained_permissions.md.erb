@@ -63,6 +63,10 @@ access any allowed resources in the current project.
 
 The following endpoints are available for CI/CD job tokens.
 
-`None` means fine-grained permissions cannot control access to this endpoint.
+<%= allowed_endpoints[:categorized] %>
 
-<%= allowed_endpoints %>
+## Unavailable endpoints
+
+These API endpoints cannot be assigned as fine-grained permissions for job tokens.
+
+<%= allowed_endpoints[:unavailable] %>

@@ -32,12 +32,6 @@ If you select a specific LLM for a feature, the feature uses that LLM until you 
 
 ### On GitLab.com
 
-{{< details >}}
-
-- Available on GitLab Duo with self-hosted models: Not supported
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.

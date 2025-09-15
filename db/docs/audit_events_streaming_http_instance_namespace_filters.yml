@@ -8,7 +8,5 @@ description: Represents a group or project filter for instance-level custom http
   audit event destinations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136959
 milestone: '16.7'
-gitlab_schema: gitlab_main_org
-sharding_key:
-  namespace_id: namespaces
+gitlab_schema: gitlab_main_cell_setting
 table_size: small
