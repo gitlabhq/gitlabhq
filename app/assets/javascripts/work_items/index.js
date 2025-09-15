@@ -77,6 +77,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canImportWorkItems,
     isGroupIssuesList,
     canEdit,
+    exportCsvPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -163,7 +164,9 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       calendarPath,
       maxAttachmentSize,
       canImportWorkItems: parseBoolean(canImportWorkItems),
+      showImportButton: parseBoolean(canImportWorkItems),
       canEdit: parseBoolean(canEdit),
+      exportCsvPath,
     },
     mounted() {
       performanceMarkAndMeasure({

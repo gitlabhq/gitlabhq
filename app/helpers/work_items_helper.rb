@@ -12,6 +12,7 @@ module WorkItemsHelper
         data[:releases_path] = project_releases_path(resource_parent, format: :json)
         data[:project_import_jira_path] = project_import_jira_path(resource_parent)
         data[:can_import_work_items] = can?(current_user, :import_work_items, resource_parent).to_s
+        data[:export_csv_path] = export_csv_project_issues_path(resource_parent)
       end
     end
   end

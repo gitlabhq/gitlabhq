@@ -387,6 +387,9 @@ RSpec.configure do |config|
 
       # Enabled only when debugging
       stub_feature_flags(track_struct_event_logger: false)
+
+      # FF is temporary until we add a proper UI setting to enable/disable pipeline running for composite identities.
+      stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
     else
       unstub_all_feature_flags
     end

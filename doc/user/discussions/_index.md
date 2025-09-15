@@ -184,7 +184,7 @@ When you do, only project members can add and edit comments.
 Prerequisites:
 
 - In merge requests, you must have at least the Developer role.
-- In issues, you must have at least the Reporter role.
+- In issues, you must have at least the Planner role.
 
 To lock an issue or merge request:
 

@@ -212,6 +212,8 @@ describeSkipVue3(skipReason, () => {
         projectImportJiraPath: '/project/import/jira',
         isGroupIssuesList: false,
         groupId: 'gid://gitlab/Group/1',
+        isProject: false,
+        exportCsvPath: '/export/csv',
         ...provide,
       },
       propsData: {
@@ -1389,12 +1391,55 @@ describeSkipVue3(skipReason, () => {
           queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
           slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
           countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          provide: {
+            isProject: false,
+          },
         });
         await waitForPromises();
       });
 
       it('renders the list empty state', () => {
         expect(findEmptyStateWithoutAnyIssues().exists()).toBe(true);
+      });
+
+      it('passes correct props to empty state component for groups', () => {
+        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+          exportCsvPathWithQuery: null,
+          showCsvButtons: false,
+          showNewIssueDropdown: false,
+        });
+      });
+    });
+
+    describe('when there are no work items in project context', () => {
+      it('passes correct props to empty state component for projects', async () => {
+        const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        projectEmptyCountsResponse.data.project = {
+          id: 'gid://gitlab/Project/1',
+          workItemStateCounts: {
+            all: 0,
+            closed: 0,
+            opened: 0,
+          },
+        };
+        mountComponent({
+          provide: {
+            isGroup: false,
+            isProject: true,
+            exportCsvPath: '/export/csv',
+          },
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+        });
+
+        await waitForPromises();
+
+        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+          exportCsvPathWithQuery: '/export/csv',
+          showCsvButtons: true,
+          showNewIssueDropdown: false,
+        });
       });
     });
   });
@@ -1681,6 +1726,7 @@ describeSkipVue3(skipReason, () => {
       );
     });
   });
+
   describe('WorkItemByEmail component', () => {
     describe.each`
       canCreateWorkItem | isGroup  | newWorkItemEmailAddress | exists

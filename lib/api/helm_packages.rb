@@ -82,7 +82,10 @@ module API
           packages = ::Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
           metadata = ::Packages::Helm::GenerateMetadataService.new(params[:id], params[:channel], packages).execute
 
-          ::Packages::Helm::CreateMetadataCacheWorker.perform_async(project.id, params[:channel]) # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as it's accessed
+          # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as it's accessed
+          # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
+          ::Packages::Helm::CreateMetadataCacheWorker.perform_async(project.id, params[:channel])
+          # rubocop:enable CodeReuse/Worker
 
           present metadata.payload, with: ::API::Entities::Helm::Index
         end

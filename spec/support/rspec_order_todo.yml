@@ -2341,7 +2341,6 @@
 - './ee/spec/workers/groups/update_repository_storage_worker_spec.rb'
 - './ee/spec/workers/group_wikis/git_garbage_collect_worker_spec.rb'
 - './ee/spec/workers/historical_data_worker_spec.rb'
-- './ee/spec/workers/import_software_licenses_worker_spec.rb'
 - './ee/spec/workers/iterations/cadences/create_iterations_worker_spec.rb'
 - './ee/spec/workers/iterations/cadences/schedule_create_iterations_worker_spec.rb'
 - './ee/spec/workers/iterations/roll_over_issues_worker_spec.rb'

@@ -94,7 +94,7 @@
   }
 
   // Discussion file comment
-  .discussion-body .diff-file .file-title {
+  .discussion-body .diff-file .file-title.file-title-flex-parent {
     @apply gl-rounded-none #{!important};
   }
 

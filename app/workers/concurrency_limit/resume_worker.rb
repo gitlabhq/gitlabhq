@@ -14,6 +14,9 @@ module ConcurrencyLimit
     idempotent!
     urgency :low
 
+    # Do not defer jobs from ResumeWorker itself
+    concurrency_limit -> { 0 }
+
     def perform(worker_name = nil)
       if worker_name
         process_worker(worker_name)

@@ -842,9 +842,6 @@ Gitlab.ee do
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker'] ||= {}
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['job_class'] = 'IncidentManagement::PendingEscalations::ScheduleCheckCronWorker'
-  Settings.cron_jobs['import_software_licenses_worker'] ||= {}
-  Settings.cron_jobs['import_software_licenses_worker']['cron'] ||= '0 3 * * 0'
-  Settings.cron_jobs['import_software_licenses_worker']['job_class'] = 'ImportSoftwareLicensesWorker'
   Settings.cron_jobs['ldap_group_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'

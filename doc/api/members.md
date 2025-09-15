@@ -38,7 +38,7 @@ in the `Gitlab::Access` module as `access_level`.
 ## List all members of a group or project
 
 Gets a list of group or project members viewable by the authenticated user.
-Returns only direct members and not inherited members through ancestors groups.
+Returns only direct members and not inherited members through ancestors groups or members from an invited group.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 

@@ -4477,33 +4477,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe "#diff_head_pipeline_active? " do
-    context 'when project lacks an diff_head_pipeline relation' do
-      before do
-        allow(subject).to receive(:diff_head_pipeline) { nil }
-      end
-
-      it 'returns false' do
-        expect(subject.diff_head_pipeline_active?).to be false
-      end
-    end
-
-    context 'when project has a diff_head_pipeline relation' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
-
-      before do
-        allow(subject).to receive(:diff_head_pipeline) { pipeline }
-      end
-
-      it 'accesses the value from the diff_head_pipeline' do
-        expect(subject.diff_head_pipeline)
-          .to receive(:active?)
-
-        subject.diff_head_pipeline_active?
-      end
-    end
-  end
-
   describe '#has_ci_enabled?', :clean_gitlab_redis_shared_state do
     let_it_be(:mr) { create(:merge_request, source_project: project) }
     let_it_be(:project) { create(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }

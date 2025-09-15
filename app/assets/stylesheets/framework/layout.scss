@@ -21,6 +21,17 @@ html {
   }
 }
 
+// this negates the effect of the wrapping element padding and scrollbar width on the 'main' element
+// it allows us to achieve width parity with the viewport inner width and reduce regressions when moving from media queries to container queries
+// scrollbar padding is added on the left side to avoid introducing page overflow
+.container-queries-enabled {
+  width: calc(100% + var(--container-padding-x) * 2 + var(--scrollbar-width, 0px));
+  padding-right: var(--container-padding-x);
+  padding-left: calc(var(--container-padding-x) + var(--scrollbar-width, 0px));
+  margin-right: calc(var(--container-padding-x) * -1);
+  margin-left: calc((var(--container-padding-x) + var(--scrollbar-width, 0px)) * -1);
+}
+
 .layout-page {
   padding-top: $calc-application-bars-height;
   padding-bottom: $calc-application-footer-height;

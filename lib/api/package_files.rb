@@ -21,7 +21,10 @@ module API
         channel = package_file.helm_channel
         return unless channel
 
-        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(user_project.id, channel) # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file is deleted
+        # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file is deleted
+        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
+        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(user_project.id, channel)
+        # rubocop:enable CodeReuse/Worker
       end
     end
 

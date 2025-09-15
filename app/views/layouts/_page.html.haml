@@ -1,6 +1,20 @@
-- @main_wrapper_class =  "gl-@container/panel" if Feature.enabled?(:tailwind_container_queries, current_user)
+- container_queries_enabled = Feature.enabled?(:tailwind_container_queries, current_user)
+- @main_wrapper_class =  "container-queries-enabled gl-@container/panel" if container_queries_enabled
 
 .layout-page{ class: page_with_sidebar_class }
+  -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
+  - if container_queries_enabled
+    = javascript_tag do
+      :plain
+        const outer = document.createElement('div');
+        outer.style.visibility = 'hidden';
+        outer.style.overflow = 'scroll';
+        document.body.appendChild(outer);
+        const inner = document.createElement('div');
+        outer.appendChild(inner);
+        const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+        outer.parentNode.removeChild(outer);
+        document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
   -# Render the parent group sidebar while creating a new subgroup/project, see GroupsController#new.
   - group = @parent_group || @group
   - context = group || @project

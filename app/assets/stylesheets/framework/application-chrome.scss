@@ -387,6 +387,7 @@
     @include media-breakpoint-up(md) {
       .work-item-attributes-wrapper {
         top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
+        height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height} - #{$gl-spacing-scale-6});
       }
     }
 

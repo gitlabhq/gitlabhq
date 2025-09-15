@@ -4,10 +4,11 @@
   width: 100%;
 
   .container-fluid {
-    padding: 0 $container-margin;
+    --container-padding-x: #{$container-margin};
+    padding: 0 var(--container-padding-x);
 
     @include media-breakpoint-up(xl) {
-      padding: 0 $container-margin-xl;
+      --container-padding-x: #{$container-margin-xl};
     }
 
     &.container-blank {

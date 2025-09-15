@@ -1001,7 +1001,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/gitlab_subscriptions/add_on_purchases/schedule_bulk_refresh_user_assignments_worker_spec.rb'
     - 'ee/spec/workers/gitlab_subscriptions/schedule_refresh_seats_worker_spec.rb'
     - 'ee/spec/workers/historical_data_worker_spec.rb'
-    - 'ee/spec/workers/import_software_licenses_worker_spec.rb'
     - 'ee/spec/workers/incident_management/apply_incident_sla_exceeded_label_worker_spec.rb'
     - 'ee/spec/workers/incident_management/pending_escalations/alert_check_worker_spec.rb'
     - 'ee/spec/workers/incident_management/pending_escalations/alert_create_worker_spec.rb'

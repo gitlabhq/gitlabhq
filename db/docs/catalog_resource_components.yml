@@ -10,4 +10,4 @@ milestone: '16.3'
 gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
-table_size: small
+table_size: medium

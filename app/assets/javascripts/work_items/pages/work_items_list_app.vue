@@ -207,6 +207,7 @@ export default {
     'hasCustomFieldsFeature',
     'initialSort',
     'isGroup',
+    'isProject',
     'isSignedIn',
     'showNewWorkItem',
     'workItemType',
@@ -214,6 +215,7 @@ export default {
     'hasStatusFeature',
     'canReadCrmContact',
     'releasesPath',
+    'exportCsvPath',
     'metadataLoading',
     'projectImportJiraPath',
     'newWorkItemEmailAddress',
@@ -832,6 +834,15 @@ export default {
       return {
         fullPath: this.rootPageFullPath,
       };
+    },
+    exportCsvPathWithQuery() {
+      if (!this.isGroup) {
+        return `${this.exportCsvPath}${window.location.search}`;
+      }
+      return null;
+    },
+    showCsvButtons() {
+      return this.isProject && this.isSignedIn;
     },
   },
   watch: {
@@ -1512,7 +1523,10 @@ export default {
 
   <div v-else>
     <slot name="page-empty-state">
-      <empty-state-without-any-issues>
+      <empty-state-without-any-issues
+        :export-csv-path-with-query="exportCsvPathWithQuery"
+        :show-csv-buttons="showCsvButtons"
+      >
         <template #new-issue-button>
           <create-work-item-modal
             :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"

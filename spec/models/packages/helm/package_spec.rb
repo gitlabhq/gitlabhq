@@ -28,17 +28,21 @@ RSpec.describe Packages::Helm::Package, type: :model, feature_category: :package
       let(:user) { package.creator }
       let(:helm_file_metadatum) { package_file.helm_file_metadatum }
 
+      before do
+        allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
+      end
+
       shared_examples 'enqueue worker job' do
         it 'enqueues a sync worker job', :aggregate_failures do
+          sync
+
           expect(::Packages::Helm::CreateMetadataCacheWorker)
-            .to receive(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
+            .to have_received(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
               expect(metadata.map(&:channel)).to match_array(channels)
 
               expect(arguments_proc.call(helm_file_metadatum)).to eq([package.project_id, helm_file_metadatum.channel])
               expect(context_proc.call(channel)).to eq(project: package.project, user: user)
             end
-
-          sync
         end
       end
 

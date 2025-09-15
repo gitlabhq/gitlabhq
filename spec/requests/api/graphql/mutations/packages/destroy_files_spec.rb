@@ -47,6 +47,12 @@ RSpec.describe 'Destroying multiple package files', feature_category: :package_r
       end
 
       it_behaves_like 'returning response status', :success
+
+      it 'does not sync helm metadata cache' do
+        expect(::Packages::Helm::CreateMetadataCacheWorker).not_to receive(:bulk_perform_async_with_contexts)
+
+        mutation_request
+      end
     end
 
     context 'with valid params' do
@@ -64,6 +70,39 @@ RSpec.describe 'Destroying multiple package files', feature_category: :package_r
         end
 
         it_behaves_like params[:shared_examples_name]
+      end
+
+      context 'when package file is helm type' do
+        let(:ids) do
+          [package, package2].flat_map(&:package_files).map { |pf| pf.to_global_id.to_s }
+        end
+
+        let_it_be(:project) { create(:project) }
+        let_it_be(:package) { create(:helm_package, project: project) }
+        let_it_be(:package2) { create(:helm_package, project: project) }
+        let(:expected_metadata) do
+          [package, package2].map { |package| package.package_files.first.helm_file_metadatum }
+        end
+
+        before do
+          project.add_maintainer(user)
+
+          allow(Packages::Helm::CreateMetadataCacheWorker).to receive(:bulk_perform_async_with_contexts)
+        end
+
+        it 'sync helm metadata cache', :aggregate_failures do
+          mutation_request
+
+          expect(::Packages::Helm::CreateMetadataCacheWorker)
+          .to have_received(:bulk_perform_async_with_contexts) do |metadata, arguments_proc:, context_proc:|
+            expect(metadata.map(&:channel)).to match_array(expected_metadata.map(&:channel).uniq)
+
+            expected_metadata.each do |metadatum|
+              expect(arguments_proc.call(metadatum)).to eq([project.id, metadatum.channel])
+              expect(context_proc.call(anything)).to eq(project: project, user: user)
+            end
+          end
+        end
       end
 
       context 'with more than 100 files' do

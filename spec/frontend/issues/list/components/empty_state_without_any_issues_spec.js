@@ -110,11 +110,19 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
       describe('actions', () => {
         describe('"New project" link', () => {
-          describe('when can create projects', () => {
+          describe('when can create projects and not in project context', () => {
             it('renders', () => {
-              mountComponent({ provide: { canCreateProjects: true } });
+              mountComponent({ provide: { canCreateProjects: true, isProject: false } });
 
               expect(findNewProjectLink().attributes('href')).toBe(defaultProvide.newProjectPath);
+            });
+          });
+
+          describe('when can create projects but in project context', () => {
+            it('does not render', () => {
+              mountComponent({ provide: { canCreateProjects: true, isProject: true } });
+
+              expect(findNewProjectLink().exists()).toBe(false);
             });
           });
 

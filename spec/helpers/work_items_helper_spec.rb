@@ -50,7 +50,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             rss_path: project_work_items_path(project, format: :atom),
             calendar_path: project_work_items_path(project, format: :ics),
             can_import_work_items: "true",
-            can_edit: "true"
+            can_edit: "true",
+            export_csv_path: export_csv_project_issues_path(project)
           }
         )
       end
@@ -97,6 +98,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
 
       it 'does not include project-specific data' do
         expect(helper.work_items_data(group, current_user)).not_to have_key(:releases_path)
+        expect(helper.work_items_data(group, current_user)).not_to have_key(:export_csv_path)
       end
     end
   end

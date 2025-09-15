@@ -4,7 +4,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { TYPENAME_NOTE } from '~/graphql_shared/constants';
+import { TYPENAME_NOTE, TYPENAME_DISCUSSION } from '~/graphql_shared/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createWikiPageNoteMutation from '~/wikis/wiki_notes/graphql/create_wiki_page_note.mutation.graphql';
 import updateWikiPageMutation from '~/wikis/wiki_notes/graphql/update_wiki_page_note.mutation.graphql';
@@ -74,6 +74,16 @@ export default {
       required: false,
       default: false,
     },
+    discussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -96,6 +106,8 @@ export default {
         confidential: false,
         issue_email_participants: [],
       },
+      resolve: false,
+      unresolve: this.discussionResolved,
     };
   },
   computed: {
@@ -140,6 +152,45 @@ export default {
         },
       };
     },
+    showResolveDiscussionToggle() {
+      return this.isReply && this.canResolve;
+    },
+    saveShouldChangeResolvedState() {
+      return this.resolve || this.unresolve;
+    },
+    newResolvedState() {
+      return this.discussionResolved ? !this.unresolve : this.resolve;
+    },
+    noteHasContent() {
+      return Boolean(this.note.trim());
+    },
+    createNoteInput() {
+      return this.isEdit
+        ? {
+            id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
+            body: this.note,
+          }
+        : {
+            noteableId: this.noteableId,
+            body: this.note,
+            discussionId: this.isReply ? this.discussionId : null,
+            internal: this.noteIsInternal,
+          };
+    },
+    discussionToggleResolveInput() {
+      return {
+        id: this.discussionId || convertToGraphQLId(TYPENAME_DISCUSSION, 0),
+        resolve: this.newResolvedState,
+      };
+    },
+    saveMutationVariables() {
+      return {
+        shouldCreateNote: this.noteHasContent,
+        shouldChangeResolvedState: this.saveShouldChangeResolvedState,
+        createNoteInput: this.createNoteInput,
+        discussionToggleResolveInput: this.discussionToggleResolveInput,
+      };
+    },
   },
   beforeDestroy() {
     this.timeoutIds.forEach((id) => {
@@ -178,42 +229,33 @@ export default {
     async handleSave() {
       this.errors = [];
 
-      if (!this.note.trim()) return;
       this.isSubmitting = true;
 
-      const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.note });
-      if (!confirmSubmit) {
-        return;
+      // save to a block scoped variable so the value is still available in the finally block
+      const { noteHasContent } = this;
+      const noteBackup = this.note;
+
+      if (noteHasContent) {
+        const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.note });
+        if (!confirmSubmit) {
+          return;
+        }
+
+        this.$emit('creating-note:start', {
+          ...this.createNoteInput,
+          individualNote: this.noteType === constants.DISCUSSION,
+        });
+
+        trackSavedUsingEditor(
+          this.$refs.markdownEditor?.isContentEditorActive,
+          `${this.noteableType}_${this.noteType}`,
+        );
       }
-
-      const input = this.isEdit
-        ? {
-            id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
-            body: this.note,
-          }
-        : {
-            noteableId: this.noteableId,
-            body: this.note,
-            discussionId: this.isReply ? this.discussionId : null,
-            internal: this.noteIsInternal,
-          };
-
-      this.$emit('creating-note:start', {
-        ...input,
-        individualNote: this.noteType === constants.DISCUSSION,
-      });
-
-      trackSavedUsingEditor(
-        this.$refs.markdownEditor?.isContentEditorActive,
-        `${this.noteableType}_${this.noteType}`,
-      );
-
-      this.note = '';
 
       try {
         const discussion = await this.$apollo.mutate({
           mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMutation,
-          variables: { input },
+          variables: this.saveMutationVariables,
         });
 
         const response = this.isEdit
@@ -221,13 +263,18 @@ export default {
           : discussion.data.createNote?.note?.discussion;
 
         this.noteIsInternal = false;
-        clearDraft(this.autosaveKeyInternalNote);
 
-        this.$emit('creating-note:success', response);
+        if (noteHasContent) {
+          this.$emit('creating-note:success', response);
+          this.note = '';
+          clearDraft(this.autosaveKeyInternalNote);
+        }
       } catch (err) {
         this.setError(createNoteErrorMessages(err));
-        this.$emit('creating-note:failed', err);
-        this.note = input.body;
+        if (noteHasContent) {
+          this.$emit('creating-note:failed', err);
+        }
+        this.note = noteBackup;
 
         this.timeoutIds.push(
           setTimeout(() => {
@@ -236,14 +283,16 @@ export default {
         );
       } finally {
         this.isSubmitting = false;
-        this.$emit('creating-note:done');
+        if (noteHasContent) {
+          this.$emit('creating-note:done');
+        }
       }
     },
     onInput(value) {
       if (!this.isSubmitting) this.note = value;
     },
     disableSubmitButton() {
-      return !this.note.trim() || this.isSubmitting;
+      return (!this.noteHasContent && !this.saveShouldChangeResolvedState) || this.isSubmitting;
     },
     setInternalNoteCheckbox() {
       updateDraft(this.autosaveKeyInternalNote, this.noteIsInternal);
@@ -301,6 +350,25 @@ export default {
                 @input="onInput"
               />
             </comment-field-layout>
+            <div class="note-form-actions gl-font-size-0">
+              <template v-if="showResolveDiscussionToggle">
+                <label>
+                  <template v-if="discussionResolved">
+                    <gl-form-checkbox
+                      v-model="unresolve"
+                      data-testid="wiki-note-unresolve-checkbox"
+                    >
+                      {{ __('Reopen thread') }}
+                    </gl-form-checkbox>
+                  </template>
+                  <template v-else>
+                    <gl-form-checkbox v-model="resolve" data-testid="wiki-note-resolve-checkbox">
+                      {{ __('Resolve thread') }}
+                    </gl-form-checkbox>
+                  </template>
+                </label>
+              </template>
+            </div>
             <div v-if="replyOrEdit" class="gl-font-size-0 gl-flex gl-flex-wrap gl-gap-3">
               <gl-button
                 :disabled="disableSubmitButton()"

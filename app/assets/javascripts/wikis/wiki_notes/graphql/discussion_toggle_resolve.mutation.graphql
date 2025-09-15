@@ -1,0 +1,9 @@
+mutation toggleWikiNoteResolveDiscussion($id: DiscussionID!, $resolve: Boolean!) {
+  discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
+    discussion {
+      id
+      resolved
+    }
+    errors
+  }
+}

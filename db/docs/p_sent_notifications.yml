@@ -11,4 +11,4 @@ milestone: '18.3'
 gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
-table_size: medium
+table_size: small

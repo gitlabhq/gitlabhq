@@ -188,14 +188,12 @@ class Ability
     end
 
     def find_user_for_composite_identity_check(user)
-      if user.service_account? # for composite identity check
-        identity = ::Gitlab::Auth::Identity.fabricate(user)
-        return if !identity.present? || !identity.valid?
+      return Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(user.id) unless user.service_account?
 
-        identity.scoped_user
-      else # for inverted composite identity check
-        Gitlab::Auth::Identity.find_primary_user_by_scoped_user_id(user.id)
-      end
+      identity = ::Gitlab::Auth::Identity.fabricate(user)
+      return unless identity&.valid?
+
+      identity.scoped_user
     end
   end
 end
