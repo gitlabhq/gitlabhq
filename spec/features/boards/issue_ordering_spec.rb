@@ -120,7 +120,7 @@ RSpec.describe 'Issue Boards', :js, feature_category: :portfolio_management do
       expect(first('.board-card')).to have_content(issue2.title)
     end
 
-    it 'moves from bottom to middle' do
+    it 'moves from bottom to middle', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546390' do
       drag(from_index: 2, to_index: 1)
 
       wait_for_requests

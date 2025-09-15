@@ -76,11 +76,7 @@ module API
             strong_memoize_attr :package_file
 
             def latest_package
-              if Feature.enabled?(:order_by_semver_in_terraform_modules, module_namespace)
-                packages.unscope_order.order_metadatum_semver_desc
-              else
-                packages.order_version_desc
-              end.first
+              packages.unscope_order.order_metadatum_semver_desc.first
             end
             strong_memoize_attr :latest_package
           end

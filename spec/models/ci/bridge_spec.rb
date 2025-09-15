@@ -1376,6 +1376,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   describe 'metadata partitioning' do
     before do
       stub_feature_flags(ci_validate_config_options: false)
+      stub_feature_flags(stop_writing_builds_metadata: false)
     end
 
     let(:pipeline) do

@@ -11,19 +11,28 @@ module Resolvers
         required: true,
         description: "Input for fetching a specific description template."
 
-      authorize :read_project
+      authorize :read_namespace
 
       def resolve(args)
-        project = Project.find(args[:template_content_input].project_id)
+        template_project = Project.find(args[:template_content_input].project_id)
 
-        authorize!(project)
+        authorize_template!(template_project, args[:template_content_input].from_namespace)
 
-        ::TemplateFinder.new(:issues, project,
-          { name: args[:template_content_input].name, source_template_project_id: project.id }).execute
+        ::TemplateFinder.new(:issues, template_project,
+          { name: args[:template_content_input].name, source_template_project_id: template_project.id }).execute
 
       rescue Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError, ActiveRecord::RecordNotFound
         nil
       end
+
+      private
+
+      # Overridden in EE
+      def authorize_template!(template_project, _)
+        authorize!(template_project.project_namespace)
+      end
     end
   end
 end
+
+Resolvers::WorkItems::DescriptionTemplateContentResolver.prepend_mod

@@ -54826,6 +54826,7 @@ Input type for filtering projects by vulnerability count and severity.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplatecontentinputfromnamespace"></a>`fromNamespace` | [`String`](#string) | Full path of the group or project using the template. |
 | <a id="workitemdescriptiontemplatecontentinputname"></a>`name` | [`String!`](#string) | Name of the description template. |
 | <a id="workitemdescriptiontemplatecontentinputprojectid"></a>`projectId` | [`Int!`](#int) | ID of the project the template belongs to. |
 

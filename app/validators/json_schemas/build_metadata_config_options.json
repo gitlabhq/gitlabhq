@@ -1,7 +1,10 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "CI builds metadata config_options with recursive support",
-  "type": "object",
+  "type": [
+    "object",
+    "null"
+  ],
   "additionalProperties": false,
   "properties": {
     "after_script": {
@@ -59,10 +62,7 @@
       "$ref": "#/definitions/hooksDefinition"
     },
     "identity": {
-      "type": "string",
-      "enum": [
-        "google_cloud"
-      ]
+      "type": "string"
     },
     "image": {
       "$ref": "#/definitions/imageDefinition"
@@ -70,9 +70,7 @@
     "instance": {
       "type": "integer"
     },
-    "job_timeout": {
-      "type": "string"
-    },
+    "job_timeout": true,
     "manual_confirmation": {
       "type": "string"
     },
@@ -82,6 +80,7 @@
     "parallel": {
       "$ref": "#/definitions/parallelDefinition"
     },
+    "publish": true,
     "release": {
       "$ref": "#/definitions/releaseDefinition"
     },
@@ -115,15 +114,6 @@
     }
   },
   "definitions": {
-    "accessEnum": {
-      "type": "string",
-      "enum": [
-        "all",
-        "developer",
-        "none",
-        "maintainer"
-      ]
-    },
     "allowFailureCriteria": {
       "type": "object",
       "additionalProperties": false,
@@ -238,37 +228,18 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "access": {
-          "$ref": "#/definitions/accessEnum"
-        },
-        "exclude": {
-          "$ref": "#/definitions/stringArray"
-        },
-        "expire_in": {
-          "type": "string"
-        },
-        "expose_as": {
-          "type": "string",
-          "pattern": "^\\w[-\\w ]*$"
-        },
-        "name": {
-          "type": "string"
-        },
-        "paths": {
-          "$ref": "#/definitions/stringArray"
-        },
-        "public": {
-          "type": "boolean"
-        },
+        "access": true,
+        "exclude": true,
+        "expire_in": true,
+        "expose_as": true,
+        "name": true,
+        "paths": true,
+        "public": true,
         "reports": {
           "$ref": "#/definitions/artifactReports"
         },
-        "untracked": {
-          "type": "boolean"
-        },
-        "when": {
-          "$ref": "#/definitions/whenEnum"
-        }
+        "untracked": true,
+        "when": true
       }
     },
     "bridgeNeedsDefinition": {
@@ -310,9 +281,7 @@
         "untracked": {
           "type": "boolean"
         },
-        "when": {
-          "$ref": "#/definitions/whenEnum"
-        }
+        "when": true
       }
     },
     "cacheDefinition": {
@@ -377,12 +346,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "scanner_profile": {
-          "type": "string"
-        },
-        "site_profile": {
-          "type": "string"
-        }
+        "scanner_profile": true,
+        "site_profile": true
       }
     },
     "dockerOptions": {
@@ -577,12 +542,8 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "expire_in": {
-              "type": "string"
-            },
-            "path_prefix": {
-              "type": "string"
-            },
+            "expire_in": true,
+            "path_prefix": true,
             "publish": {
               "type": "string"
             }
@@ -730,14 +691,10 @@
             },
             "when": {
               "oneOf": [
-                {
-                  "$ref": "#/definitions/retryWhenEnum"
-                },
+                true,
                 {
                   "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/retryWhenEnum"
-                  }
+                  "items": true
                 }
               ]
             }
@@ -746,24 +703,6 @@
             "max"
           ]
         }
-      ]
-    },
-    "retryWhenEnum": {
-      "type": "string",
-      "enum": [
-        "always",
-        "unknown_failure",
-        "script_failure",
-        "api_failure",
-        "stuck_or_timeout_failure",
-        "runner_system_failure",
-        "runner_unsupported",
-        "stale_schedule",
-        "job_execution_timeout",
-        "archived_failure",
-        "unmet_prerequisites",
-        "scheduler_failure",
-        "data_integrity_failure"
       ]
     },
     "scriptArray": {
@@ -920,14 +859,6 @@
             }
           }
         }
-      ]
-    },
-    "whenEnum": {
-      "type": "string",
-      "enum": [
-        "on_success",
-        "on_failure",
-        "always"
       ]
     }
   }

@@ -65,61 +65,6 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
 
     describe 'config_options schema edge validation' do
       context 'with invalid edge cases' do
-        it 'rejects non-string or object in services' do
-          metadata.config_options = {
-            script: ['echo "Hello"'],
-            services: [123]
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects wrong type for reports.junit' do
-          metadata.config_options = {
-            script: ['echo'],
-            artifacts: {
-              reports: {
-                junit: 123
-              }
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects missing coverage_format in coverage_report' do
-          metadata.config_options = {
-            script: ['echo'],
-            artifacts: {
-              reports: {
-                coverage_report: {
-                  path: 'coverage.xml'
-                }
-              }
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects invalid environment.action enum value' do
-          metadata.config_options = {
-            script: ['echo'],
-            environment: {
-              name: 'production',
-              action: 'launch'
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects retry object missing required keys' do
-          metadata.config_options = {
-            script: ['echo'],
-            retry: {
-              when: ['script_failure']
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
         it 'rejects parallel.matrix missing required keys' do
           metadata.config_options = {
             script: ['echo'],
@@ -130,49 +75,11 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
           expect(metadata).to be_invalid
         end
 
-        it 'rejects bridge_needs missing required keys' do
-          metadata.config_options = {
-            script: ['echo'],
-            bridge_needs: {
-              artifacts: true
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects invalid image format' do
-          metadata.config_options = {
-            script: ['echo'],
-            image: { entrypoint: ['/bin/bash'] }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects artifacts when paths is not an array' do
-          metadata.config_options = {
-            script: ['echo'],
-            artifacts: {
-              paths: 'not-an-array'
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
         it 'rejects allow_failure_criteria with wrong exit_codes type' do
           metadata.config_options = {
             script: ['echo'],
             allow_failure_criteria: {
               exit_codes: 'not-an-integer-or-array'
-            }
-          }
-          expect(metadata).to be_invalid
-        end
-
-        it 'rejects invalid hooks' do
-          metadata.config_options = {
-            script: ['echo'],
-            hooks: {
-              pre_get_sources_script: 'not-an-array'
             }
           }
           expect(metadata).to be_invalid

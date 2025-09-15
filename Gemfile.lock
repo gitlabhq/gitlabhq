@@ -1625,7 +1625,7 @@ GEM
       actionpack (>= 5)
       redis-rack (>= 2.1.0, < 4)
       redis-store (>= 1.1.0, < 2)
-    redis-client (0.25.2)
+    redis-client (0.25.3)
       connection_pool
     redis-cluster-client (0.13.5)
       redis-client (~> 0.24)

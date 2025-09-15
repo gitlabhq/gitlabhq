@@ -20,7 +20,7 @@ module Ci
 
       accepts_nested_attributes_for :metadata
 
-      before_validation :ensure_metadata, on: :create
+      before_validation :ensure_metadata, on: :create, if: :can_write_metadata?
 
       scope :with_project_and_metadata, -> do
         joins(:metadata).includes(:metadata).preload(:project, :job_definition)

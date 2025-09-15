@@ -29,7 +29,7 @@ export default {
           <gl-sprintf
             :message="
               s__(
-                `Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for everyone. If you prefer to change your default homepage, you can %{linkStart}update your user preferences%{linkEnd}.`,
+                `Homepage|We're introducing a new way for you to get an overview of your work, so you can plan what to work on next. The homepage is now the default for you. If you prefer to change your default homepage, you can %{linkStart}update your user preferences%{linkEnd}.`,
               )
             "
           >

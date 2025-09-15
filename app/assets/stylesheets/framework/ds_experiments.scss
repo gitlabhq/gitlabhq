@@ -174,3 +174,21 @@
   }
 
 }
+
+// GlBadge within GlButton variants
+
+:where(.application-chrome) {
+
+  // Primary confirm variant
+
+  .gl-button.btn-confirm:not(.btn-confirm-secondary) .gl-badge {
+    @apply gl-text-default gl-bg-default;
+  }
+
+  // Secondary confirm variant
+
+  .gl-button.btn-confirm.btn-confirm-secondary .gl-badge {
+    @apply gl-text-default gl-bg-neutral-100 dark:gl-bg-neutral-800;
+  }
+
+}

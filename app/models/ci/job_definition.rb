@@ -13,15 +13,16 @@ module Ci
 
     # IMPORTANT: append new attributes at the end of this list. Do not change the order!
     # Order is important for the checksum calculation.
-    CONFIG_ATTRIBUTES = [
+    # We have two constants at the moment because we'll only stop writing to the `p_ci_builds_metadata` table via
+    # the `stop_writing_builds_metadata` feature flag. The `tag_list` and `run_steps` will be implemented in the future.
+    CONFIG_ATTRIBUTES_FROM_METADATA = [
       :options,
       :yaml_variables,
       :id_tokens,
       :secrets,
-      :interruptible,
-      :tag_list,
-      :run_steps
+      :interruptible
     ].freeze
+    CONFIG_ATTRIBUTES = (CONFIG_ATTRIBUTES_FROM_METADATA + [:tag_list, :run_steps]).freeze
 
     query_constraints :id, :partition_id
     partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true

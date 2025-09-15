@@ -67,6 +67,7 @@ module Gitlab
           def attributes
             @seed_attributes
               .deep_merge(pipeline_attributes)
+              .deep_merge(metadata_attributes)
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
@@ -163,9 +164,14 @@ module Gitlab
               ref: @pipeline.ref,
               tag: @pipeline.tag,
               protected: @pipeline.protected_ref?,
-              partition_id: @pipeline.partition_id,
-              metadata_attributes: { partition_id: @pipeline.partition_id }
+              partition_id: @pipeline.partition_id
             }
+          end
+
+          def metadata_attributes
+            return {} unless can_write_metadata?
+
+            { metadata_attributes: { partition_id: @pipeline.partition_id } }
           end
 
           # Scoped user is present when the user creating the pipeline supports composite identity.
@@ -263,13 +269,15 @@ module Gitlab
           end
 
           def remove_ci_builds_metadata_attributes(attrs)
-            attrs
+            return attrs if can_write_metadata?
 
-            # This change would make this MR too big since it also requires lots of test changes as the FFs are
-            # enabled by default. So, this will be a part of https://gitlab.com/gitlab-org/gitlab/-/issues/561405.
-            # return attrs if ::Feature.disabled?(:stop_writing_builds_metadata, @pipeline.project)
-            # attrs.except(*::Ci::JobDefinition::CONFIG_ATTRIBUTES)
+            attrs.except(*::Ci::JobDefinition::CONFIG_ATTRIBUTES_FROM_METADATA)
           end
+
+          def can_write_metadata?
+            Feature.disabled?(:stop_writing_builds_metadata, @pipeline.project)
+          end
+          strong_memoize_attr :can_write_metadata?
         end
       end
     end

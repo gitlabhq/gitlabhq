@@ -179,19 +179,6 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         expect(response).to have_gitlab_http_status(:found)
         expect(response.headers['Location']).to include "#{package.name}/1.0.10/download"
       end
-
-      context 'when order_by_semver_in_terraform_modules feature flag is disabled' do
-        before do
-          stub_feature_flags(order_by_semver_in_terraform_modules: false)
-        end
-
-        it 'does not sort semver versions', :aggregate_failures do
-          get_download
-
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response.headers['Location']).to include "#{package.name}/1.0.9/download"
-        end
-      end
     end
   end
 
@@ -282,19 +269,6 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
 
         expect(response).to have_gitlab_http_status(:success)
         expect(json_response['version']).to eq('1.0.10')
-      end
-
-      context 'when order_by_semver_in_terraform_modules feature flag is disabled' do
-        before do
-          stub_feature_flags(order_by_semver_in_terraform_modules: false)
-        end
-
-        it 'does not sort semver versions', :aggregate_failures do
-          get_module
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response['version']).to eq('1.0.9')
-        end
       end
     end
   end

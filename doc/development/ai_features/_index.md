@@ -129,6 +129,8 @@ This ensures that your instance or group has the correct licenses, settings, and
   the network inspector instead of the Sidekiq logs. To do that, temporarily alter
   the `perform_for` method in `Llm::CompletionWorker` class by changing
   `perform_async` to `perform_inline`.
+1. When testing model selection, add `export FETCH_MODEL_SELECTION_DATA_FROM_LOCAL=1` to your `env.runit` file, so that
+   your GDK fetches model information from your local AI Gateway rather than cloud-connected AIGW.
 
 ## Feature development (Abstraction Layer)
 

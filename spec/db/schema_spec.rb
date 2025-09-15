@@ -197,7 +197,7 @@ RSpec.describe 'Database schema',
       subscriptions: %w[user_id subscribable_id],
       suggestions: %w[commit_id],
       timelogs: %w[user_id],
-      todos: %w[target_id commit_id],
+      todos: %w[target_id commit_id organization_id], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204559
       uploads: %w[model_id organization_id namespace_id project_id],
       uploads_9ba88c4165: %w[model_id],
       abuse_report_uploads: %w[model_id],

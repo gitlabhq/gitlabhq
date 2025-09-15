@@ -25302,7 +25302,8 @@ CREATE TABLE todos (
     group_id bigint,
     resolved_by_action smallint,
     note_id bigint,
-    snoozed_until timestamp with time zone
+    snoozed_until timestamp with time zone,
+    organization_id bigint
 );
 
 CREATE SEQUENCE todos_id_seq

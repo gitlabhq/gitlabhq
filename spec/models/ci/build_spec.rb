@@ -5862,6 +5862,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
     let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
 
+    before do
+      stub_feature_flags(stop_writing_builds_metadata: false)
+    end
+
     it 'creates the metadata record and assigns its partition' do
       # The record is initialized by the factory calling metadatable setters
       build.metadata = nil
