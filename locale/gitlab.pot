@@ -73474,6 +73474,9 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to remove the %{statusName} status?"
 msgstr ""
 
+msgid "WorkItem|Are you sure you want to remove this lifecycle? This action cannot be undone."
+msgstr ""
+
 msgid "WorkItem|Assignee"
 msgstr ""
 
@@ -73633,6 +73636,9 @@ msgstr ""
 msgid "WorkItem|Delete %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|Delete Lifecycle Confirmation"
+msgstr ""
+
 msgid "WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed."
 msgstr ""
 
@@ -73715,6 +73721,9 @@ msgid "WorkItem|Failed to archive custom field %{fieldName}."
 msgstr ""
 
 msgid "WorkItem|Failed to create a branch for this %{workItemType}. Please try again."
+msgstr ""
+
+msgid "WorkItem|Failed to delete lifecycle. %{error}"
 msgstr ""
 
 msgid "WorkItem|Failed to fetch namespace metadata."
@@ -73819,6 +73828,9 @@ msgid "WorkItem|Lavender"
 msgstr ""
 
 msgid "WorkItem|Lifecycle created."
+msgstr ""
+
+msgid "WorkItem|Lifecycle deleted."
 msgstr ""
 
 msgid "WorkItem|Lifecycle name"
@@ -74070,6 +74082,9 @@ msgid "WorkItem|Remove"
 msgstr ""
 
 msgid "WorkItem|Remove lifecycle"
+msgstr ""
+
+msgid "WorkItem|Remove lifecycle: \"%{lifecycleName}\""
 msgstr ""
 
 msgid "WorkItem|Remove status"

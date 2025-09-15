@@ -23275,7 +23275,7 @@ An AI catalog flow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogflowstepsagent"></a>`agent` | [`AiCatalogAgent!`](#aicatalogagent) | Agent used. |
+| <a id="aicatalogflowstepsagent"></a>`agent` | [`AiCatalogAgent`](#aicatalogagent) | Agent used. |
 | <a id="aicatalogflowstepspinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch the agent is pinned to. |
 
 ### `AiCatalogFlowVersion`
