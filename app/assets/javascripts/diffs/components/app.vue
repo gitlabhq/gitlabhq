@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
@@ -689,7 +689,8 @@ export default {
         this.setFileBrowserVisibility(parseBoolean(hideBrowserPreference));
       } else {
         const shouldHide =
-          !bp.isDesktop() || (!this.isBatchLoading && this.flatBlobsList.length <= 1);
+          !GlBreakpointInstance.isDesktop() ||
+          (!this.isBatchLoading && this.flatBlobsList.length <= 1);
         this.setFileBrowserVisibility(!shouldHide);
       }
     },

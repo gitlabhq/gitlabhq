@@ -74,6 +74,8 @@ export default {
       config: undefined,
       variables: undefined,
       fields: undefined,
+      aggregate: undefined,
+      groupBy: undefined,
       data: undefined,
 
       preClasses: 'code highlight code-syntax-highlight-theme',
@@ -100,6 +102,10 @@ export default {
     wrappedQuery() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
       return `\`\`\`glql\n${this.queryYaml}\n\`\`\``;
+    },
+    itemsCount() {
+      if (this.aggregate?.length && this.groupBy?.length) return null;
+      return this.data?.count;
     },
   },
   watch: {
@@ -193,11 +199,15 @@ export default {
 
     async parseQuery() {
       try {
-        const { query, config, variables, fields } = await parse(this.queryYaml);
+        const { query, config, variables, fields, aggregate, groupBy } = await parse(
+          this.queryYaml,
+        );
         this.query = query;
         this.config = config;
         this.variables = variables;
         this.fields = fields;
+        this.aggregate = aggregate;
+        this.groupBy = groupBy;
         this.loading = true;
       } catch (error) {
         this.handleQueryError(error.message);
@@ -237,6 +247,14 @@ export default {
       } catch (e) {
         // ignore any tracking errors
       }
+    },
+    onPresenterError(error) {
+      this.error = {
+        variant: 'warning',
+        title: error,
+        message: null,
+        action: null,
+      };
     },
   },
   safeHtmlConfig: { ALLOWED_TAGS: ['code'] },
@@ -305,7 +323,7 @@ export default {
           :anchor-id="crudComponentId"
           :title="title"
           :description="config.description"
-          :count="data && data.count"
+          :count="itemsCount"
           is-collapsible
           :collapsed="isCollapsed"
           persist-collapsed-state
@@ -332,8 +350,11 @@ export default {
             ref="presenter"
             :data="data"
             :fields="fields"
+            :aggregate="aggregate"
+            :group-by="groupBy"
             :display-type="config.display"
             :loading="loading"
+            @error="onPresenterError"
           />
           <div
             v-if="data && data.count && data.nodes.length < data.count"

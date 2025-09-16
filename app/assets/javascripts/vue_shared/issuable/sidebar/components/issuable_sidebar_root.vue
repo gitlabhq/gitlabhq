@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 
@@ -21,7 +21,7 @@ export default {
     // 2. isExpanded reflect actual sidebar state.
     return {
       userExpanded,
-      isExpanded: userExpanded ? bp.isDesktop() : userExpanded,
+      isExpanded: userExpanded ? GlBreakpointInstance.isDesktop() : userExpanded,
     };
   },
   computed: {
@@ -56,7 +56,7 @@ export default {
     },
     handleWindowResize() {
       if (this.userExpanded) {
-        this.isExpanded = bp.isDesktop();
+        this.isExpanded = GlBreakpointInstance.isDesktop();
         this.updatePageContainerClass();
       }
     },

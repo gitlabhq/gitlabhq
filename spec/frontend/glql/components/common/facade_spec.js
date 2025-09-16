@@ -31,6 +31,8 @@ const MOCK_PARSE_OUTPUT = {
     before: { value: null, type: 'String' },
   },
   fields: MOCK_FIELDS,
+  aggregate: [],
+  groupBy: [],
 };
 
 describe('GlqlFacade', () => {
@@ -152,6 +154,8 @@ describe('GlqlFacade', () => {
       expect(presenter.props('fields')).toEqual(MOCK_FIELDS);
       expect(presenter.props('displayType')).toEqual('list');
       expect(presenter.props('loading')).toEqual(false);
+      expect(presenter.props('aggregate')).toEqual(MOCK_PARSE_OUTPUT.aggregate);
+      expect(presenter.props('groupBy')).toEqual(MOCK_PARSE_OUTPUT.groupBy);
     });
 
     it('renders actions', () => {
@@ -195,7 +199,7 @@ describe('GlqlFacade', () => {
     });
   });
 
-  describe('for an aggregate query', () => {
+  describe('when variables are missing', () => {
     beforeEach(async () => {
       parse.mockResolvedValue({ ...MOCK_PARSE_OUTPUT, variables: {} });
       execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
@@ -204,7 +208,7 @@ describe('GlqlFacade', () => {
       await triggerIntersectionObserver();
     });
 
-    it('renders the presenter component successfully when variables are missing', () => {
+    it('renders the presenter component successfully', () => {
       const presenter = wrapper.findComponent(DataPresenter);
       expect(presenter.exists()).toBe(true);
     });
@@ -323,5 +327,33 @@ describe('GlqlFacade', () => {
 
       expect(execute).toHaveBeenCalled();
     });
+  });
+
+  describe('when the query is aggregated', () => {
+    beforeEach(async () => {
+      parse.mockResolvedValue({ ...MOCK_PARSE_OUTPUT, groupBy: [{}], aggregate: [{}] });
+      execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
+
+      await createComponent();
+      await triggerIntersectionObserver();
+    });
+
+    it('does not show the count on the crudComponent', () => {
+      const crudComponent = wrapper.findComponent(CrudComponent);
+
+      expect(crudComponent.props('count')).toBe(null);
+    });
+  });
+
+  it('presenter error', async () => {
+    execute.mockResolvedValue({ count: 2, ...MOCK_ISSUES });
+    await createComponent();
+    await triggerIntersectionObserver();
+
+    await wrapper.findComponent(DataPresenter).vm.$emit('error', 'presenter error');
+
+    const alert = wrapper.findComponent(GlAlert);
+    expect(alert.exists()).toBe(true);
+    expect(alert.text()).toBe('presenter error');
   });
 });

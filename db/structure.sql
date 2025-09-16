@@ -19996,6 +19996,20 @@ CREATE SEQUENCE oauth_access_grants_id_seq
 
 ALTER SEQUENCE oauth_access_grants_id_seq OWNED BY oauth_access_grants.id;
 
+CREATE TABLE oauth_access_token_archived_records (
+    id bigint NOT NULL,
+    resource_owner_id bigint,
+    application_id bigint,
+    token character varying NOT NULL,
+    refresh_token character varying,
+    expires_in integer DEFAULT 7200 NOT NULL,
+    revoked_at timestamp without time zone,
+    created_at timestamp without time zone NOT NULL,
+    scopes character varying,
+    organization_id bigint NOT NULL,
+    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
 CREATE TABLE oauth_access_tokens (
     id bigint NOT NULL,
     resource_owner_id bigint,
@@ -33145,6 +33159,9 @@ ALTER TABLE ONLY notification_settings
 ALTER TABLE ONLY oauth_access_grants
     ADD CONSTRAINT oauth_access_grants_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY oauth_access_token_archived_records
+    ADD CONSTRAINT oauth_access_token_archived_records_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY oauth_access_tokens
     ADD CONSTRAINT oauth_access_tokens_pkey PRIMARY KEY (id);
 
@@ -39582,6 +39599,8 @@ CREATE INDEX index_oauth_access_grants_on_created_at_expires_in ON oauth_access_
 CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);
 
 CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON oauth_access_grants USING btree (token);
+
+CREATE INDEX index_oauth_access_token_archived_records_on_organization_id ON oauth_access_token_archived_records USING btree (organization_id);
 
 CREATE INDEX index_oauth_access_tokens_on_application_id ON oauth_access_tokens USING btree (application_id);
 
@@ -48580,6 +48599,9 @@ ALTER TABLE ONLY approval_project_rules_groups
 
 ALTER TABLE ONLY custom_fields
     ADD CONSTRAINT fk_rails_39d50cbb4e FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_access_token_archived_records
+    ADD CONSTRAINT fk_rails_39e86e2cb3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY chat_teams
     ADD CONSTRAINT fk_rails_3b543909cb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

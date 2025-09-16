@@ -397,14 +397,14 @@ Project Owners can perform any listed action, and can delete pipelines:
 <!-- markdownlint-disable MD029 -->
 
 1. Non-members and guests: Only if the project is public.
-2. Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
-3. Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**,
+2. Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled.
+   <br>Guests: Only if **Project-based pipeline visibility** is enabled.
+3. Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled,
    and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD** and
+   <br>Guests: Only if **Project-based pipeline visibility** is enabled and
    `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
    is not set on the job.
-4. Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
+4. Guests: Only if **Project-based pipeline visibility** is enabled.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
    <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).

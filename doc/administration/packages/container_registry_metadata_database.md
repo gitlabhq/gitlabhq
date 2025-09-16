@@ -63,6 +63,7 @@ metadata database version.
 - Geo functionality is limited. Additional features are proposed in [epic 15325](https://gitlab.com/groups/gitlab-org/-/epics/15325).
 - Prior to 18.3, registry regular schema and post-deployment database migrations must be run manually when upgrading versions.
 - No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Linux package environments.
+- Backup and restore jobs do not include the registry database. For more information, see [Backup with metadata database](#backup-with-metadata-database).
 
 ## Metadata database feature support
 
@@ -392,14 +393,6 @@ Users have reported step one import completed at [rates of 2 to 4 TB per hour](h
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
 **You may continue to use the registry as normal while step one is being completed.**
 
-{{< alert type="warning" >}}
-
-It is [not yet possible](https://gitlab.com/gitlab-org/container-registry/-/issues/1162)
-to restart the import, so it's important to let the import run to completion.
-If you must halt the operation, you have to restart this step.
-
-{{< /alert >}}
-
 {{< tabs >}}
 
 {{< tab title="GitLab 18.3 and later" >}}
@@ -631,6 +624,34 @@ sudo gitlab-ctl registry-database import --step-three
 {{< /tabs >}}
 
 After that command exists successfully, registry metadata is now fully imported to the database.
+
+#### Restore interrupted imports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1162) in GitLab 18.5.
+
+{{< /history >}}
+
+Skip repositories that you pre-imported within the last 72 hours to resume 
+interrupted imports. Repositories are pre-imported either:
+
+- By completing step one of the three-step import process
+- By completing the one-step import process
+
+To restore interrupted imports, configure the `--pre-import-skip-recent` flag. Defaults to 72 hours. 
+
+For example:
+
+```shell
+# Skip repositories imported within 6 hours from the start of the import command
+--pre-import-skip-recent 6h
+
+# Disable skipping behavior
+--pre-import-skip-recent 0
+```
+
+For more information about valid duration units, see [Go duration strings](https://pkg.go.dev/time#ParseDuration).
 
 #### Post import
 

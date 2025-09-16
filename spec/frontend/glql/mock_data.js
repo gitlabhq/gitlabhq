@@ -177,3 +177,179 @@ export const MOCK_DIMENSION = {
 };
 
 export const MOCK_LINK = { title: 'title', webUrl: 'url' };
+
+export const MOCK_AGGREGATE = [
+  {
+    key: 'count',
+    name: 'count',
+    label: 'Total count',
+  },
+  {
+    key: 'totalTimeToMerge',
+    name: 'totalTimeToMerge',
+    label: 'Total time to merge',
+  },
+];
+
+export const MOCK_GROUP_BY = [
+  {
+    fn: {
+      quantity: 1,
+      unit: 'w',
+      timeSegmentType: 'fromStartOfUnit',
+      type: 'time',
+    },
+    field: {
+      key: 'mergedAt',
+      name: 'mergedAt',
+      label: 'Date merged',
+    },
+  },
+  {
+    fn: {
+      users: [
+        {
+          type: 'Reference',
+          value: 'i-user-1-1749491956',
+          referenceType: {
+            type: '@',
+          },
+        },
+        {
+          type: 'Reference',
+          value: 'i-user-2-1749491956',
+          referenceType: {
+            type: '@',
+          },
+        },
+      ],
+      type: 'user',
+    },
+    field: {
+      key: 'author',
+      name: 'author',
+      label: 'Author',
+    },
+  },
+];
+
+export const MOCK_AGGREGATED_DATA_MR = {
+  nodes: [
+    {
+      __typename: 'MergeRequestConnection',
+      mergedAt: {
+        dimension: {
+          fn: {
+            quantity: 1,
+            unit: 'w',
+            timeSegmentType: 'fromStartOfUnit',
+            type: 'time',
+          },
+          field: {
+            key: 'mergedAt',
+            name: 'mergedAt',
+            label: 'Date merged',
+          },
+        },
+        key: 's1',
+        range: {
+          from: '2025-05-01',
+          to: '2025-05-05',
+        },
+        type: 'time',
+        __typename: 'GlqlDimensionSegment',
+      },
+      author: {
+        dimension: {
+          fn: {
+            users: [
+              {
+                type: 'Reference',
+                value: 'i-user-1-1749491956',
+                referenceType: {
+                  type: '@',
+                },
+              },
+            ],
+            type: 'user',
+          },
+          field: {
+            key: 'author',
+            name: 'author',
+            label: 'Author',
+          },
+        },
+        key: 's6',
+        user: {
+          type: 'Reference',
+          value: 'i-user-1-1749491956',
+          referenceType: {
+            type: '@',
+          },
+        },
+        type: 'user',
+        __typename: 'GlqlDimensionSegment',
+      },
+      count: 2,
+      totalTimeToMerge: 120,
+    },
+    {
+      __typename: 'MergeRequestConnection',
+      mergedAt: {
+        dimension: {
+          fn: {
+            quantity: 1,
+            unit: 'w',
+            timeSegmentType: 'fromStartOfUnit',
+            type: 'time',
+          },
+          field: {
+            key: 'mergedAt',
+            name: 'mergedAt',
+            label: 'Date merged',
+          },
+        },
+        key: 's2',
+        range: {
+          from: '2025-05-05',
+          to: '2025-05-12',
+        },
+        type: 'time',
+        __typename: 'GlqlDimensionSegment',
+      },
+      author: {
+        dimension: {
+          fn: {
+            users: [
+              {
+                type: 'Reference',
+                value: 'i-user-2-1749491956',
+                referenceType: {
+                  type: '@',
+                },
+              },
+            ],
+            type: 'user',
+          },
+          field: {
+            key: 'author',
+            name: 'author',
+            label: 'Author',
+          },
+        },
+        key: 's7',
+        user: {
+          type: 'Reference',
+          value: 'i-user-2-1749491956',
+          referenceType: {
+            type: '@',
+          },
+        },
+        type: 'user',
+        __typename: 'GlqlDimensionSegment',
+      },
+      count: 1,
+      totalTimeToMerge: 60,
+    },
+  ],
+};

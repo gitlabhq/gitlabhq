@@ -8,8 +8,8 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
   let_it_be(:group) { create(:group) }
   let_it_be(:files) { { 'composer.json' => json.to_json } }
   let_it_be_with_reload(:project) { create(:project, :public, :custom_repo, files: files, group: group) }
-  let_it_be(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
-  let_it_be(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
+  let_it_be_with_reload(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
+  let_it_be_with_reload(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
 
   let(:url) { "http://localhost/#{group.path}/#{project.path}.git" }
   let(:branch) { project.repository.find_branch('master') }
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
     context 'with an internal project' do
       let(:url) { "#{ssh_path_prefix}#{group.path}/#{project.path}.git" }
 
-      before do
+      before_all do
         project.update!(visibility: Gitlab::VisibilityLevel::INTERNAL)
       end
 
@@ -77,7 +77,7 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
     context 'with a private project' do
       let(:url) { "#{ssh_path_prefix}#{group.path}/#{project.path}.git" }
 
-      before do
+      before_all do
         project.update!(visibility: Gitlab::VisibilityLevel::PRIVATE)
       end
 

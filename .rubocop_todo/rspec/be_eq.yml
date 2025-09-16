@@ -790,7 +790,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/git/changed_path_spec.rb'
     - 'spec/lib/gitlab/git/compare_spec.rb'
     - 'spec/lib/gitlab/git/diff_collection_spec.rb'
-    - 'spec/lib/gitlab/git/diff_spec.rb'
     - 'spec/lib/gitlab/git/hook_env_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/commit_service_spec.rb'
     - 'spec/lib/gitlab/gitaly_client/diff_blobs_stitcher_spec.rb'

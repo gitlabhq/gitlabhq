@@ -52,6 +52,7 @@ describe('parse', () => {
   it('parses a simple query correctly', async () => {
     expect(await parse('assignee = currentUser()')).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "list",
     "fields": "title",
@@ -63,6 +64,7 @@ describe('parse', () => {
       "name": "title",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -112,6 +114,7 @@ display: table
 assignee = currentUser()`),
     ).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "table",
     "fields": "title, assignees, dueDate",
@@ -133,6 +136,7 @@ assignee = currentUser()`),
       "name": "dueDate",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -192,6 +196,7 @@ query: assignee = currentUser()
 `),
     ).toMatchInlineSnapshot(`
 {
+  "aggregate": [],
   "config": {
     "display": "table",
     "fields": "title, assignees, dueDate",
@@ -214,6 +219,7 @@ query: assignee = currentUser()
       "name": "dueDate",
     },
   ],
+  "groupBy": [],
   "query": "query GLQL($before: String, $after: String, $limit: Int) {
   issues(assigneeUsernames: "root", before: $before, after: $after, first: $limit) {
     nodes {
@@ -380,6 +386,50 @@ describe('parseQuery', () => {
   }
 }"
 `);
+  });
+
+  describe('when aggregation is enabled', () => {
+    beforeEach(() => {
+      gon.features = {
+        ...gon.features,
+        glqlAggregation: true,
+      };
+    });
+    const groupBy = "timeSegment(1w) on mergedAt as 'Date merged'";
+    const aggregate = "count as 'Total count'";
+
+    it('parses the aggregation config', async () => {
+      const query = await parseQuery(
+        'type = MergeRequest and merged >= 2025-05-01 and merged <= 2025-05-30',
+        { fields: MOCK_FIELDS, groupBy, aggregate },
+      );
+      expect(query.groupBy).toMatchInlineSnapshot(`
+[
+  Dimension {
+    "field": {
+      "key": "mergedAt",
+      "label": "Date merged",
+      "name": "mergedAt",
+    },
+    "fn": Time {
+      "quantity": 1,
+      "timeSegmentType": "fromStartOfUnit",
+      "type": "time",
+      "unit": "w",
+    },
+  },
+]
+`);
+      expect(query.aggregate).toMatchInlineSnapshot(`
+[
+  {
+    "key": "count",
+    "label": "Total count",
+    "name": "count",
+  },
+]
+`);
+    });
   });
 
   it('throws an error for invalid queries', async () => {

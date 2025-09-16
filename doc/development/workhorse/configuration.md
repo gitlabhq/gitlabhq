@@ -303,9 +303,19 @@ that can be trusted. For example:
 trusted_cidrs_for_propagation = ["10.0.0.0/8", "127.0.0.1/32"]
 ```
 
+In addition to the `X-Request-Id` header, it is possible to adopt an
+incoming `Cf-Ray` header from Cloudflare, with fallback to `X-Request-Id`
+if not present. This behavior can be enabled via:
+
+```toml
+adopt_cf_ray_header = true
+```
+
+It will also respect the trusted CIDR configuration.
+
 {{< alert type="note" >}}
 
-The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` option to work.
+The `-propagateCorrelationID` flag must be used for the `trusted_cidrs_for_propagation` and `adopt_cf_ray_header` options to work.
 
 {{< /alert >}}
 

@@ -114,6 +114,9 @@ func newUpstream(cfg config.Config, accessLogger *logrus.Logger, routesCallback 
 	if cfg.TrustedCIDRsForXForwardedFor != nil {
 		correlationOpts = append(correlationOpts, correlation.WithCIDRsTrustedForXForwardedFor(cfg.TrustedCIDRsForXForwardedFor))
 	}
+	if cfg.AdoptCfRayHeader {
+		correlationOpts = append(correlationOpts, correlation.WithAdoptCfRayHeader())
+	}
 
 	handler := correlation.InjectCorrelationID(&up, correlationOpts...)
 	// TODO: move to LabKit https://gitlab.com/gitlab-org/gitlab/-/issues/324823

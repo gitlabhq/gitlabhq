@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 
 /**
@@ -8,11 +8,11 @@ import $ from 'jquery';
  * @sentrify
  */
 export default () => {
-  let bootstrapBreakpoint = bp.getBreakpointSize();
+  let bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
 
   $(window).on('resize.app', () => {
     const oldBootstrapBreakpoint = bootstrapBreakpoint;
-    bootstrapBreakpoint = bp.getBreakpointSize();
+    bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
 
     if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
       const breakpointSizes = ['md', 'sm', 'xs'];

@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -17,7 +17,7 @@ export const isCollapsed = () => findPage().classList.contains(SIDEBAR_COLLAPSED
 // See documentation: https://design.gitlab.com/patterns/navigation#left-sidebar
 // NOTE: at 1200px nav sidebar should not overlap the content
 // https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24555#note_134136110
-export const isDesktopBreakpoint = () => bp.windowWidth() >= breakpoints.xl;
+export const isDesktopBreakpoint = () => GlBreakpointInstance.windowWidth() >= breakpoints.xl;
 
 export const getCollapsedCookie = () => getCookie(SIDEBAR_COLLAPSED_COOKIE) === 'true';
 

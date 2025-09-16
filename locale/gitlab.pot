@@ -15591,6 +15591,9 @@ msgstr ""
 msgid "Colorize messages"
 msgstr ""
 
+msgid "Columns charts require an aggregation to be defined"
+msgstr ""
+
 msgid "Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
 msgstr ""
 
@@ -23584,6 +23587,9 @@ msgid "Devices (optional)"
 msgstr ""
 
 msgid "DevopsAdoption|%{adoptedCount}/%{featuresCount} %{title} features adopted"
+msgstr ""
+
+msgid "DevopsAdoption|Actions"
 msgstr ""
 
 msgid "DevopsAdoption|Add a group to get started"

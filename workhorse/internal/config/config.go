@@ -198,6 +198,7 @@ type Config struct {
 	ObjectStorageConfig          ObjectStorageConfig      `toml:"-"`
 	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage" json:"object_storage"`
 	PropagateCorrelationID       bool                     `toml:"-"`
+	AdoptCfRayHeader             bool                     `toml:"adopt_cf_ray_header" json:"adopt_cf_ray_header"`
 	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer" json:"image_resizer"`
 	MetadataConfig               MetadataConfig           `toml:"metadata" json:"metadata"`
 	AltDocumentRoot              string                   `toml:"alt_document_root" json:"alt_document_root"`

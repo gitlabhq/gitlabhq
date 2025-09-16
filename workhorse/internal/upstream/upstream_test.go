@@ -12,6 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gitlab.com/gitlab-org/labkit/correlation"
 
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -520,6 +521,96 @@ func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFea
 	}
 
 	return ws, waitForNextAPIPoll
+}
+
+func TestAdoptCfRayHeaderCorrelation(t *testing.T) {
+	// Test that when AdoptCfRayHeader is enabled with PropagateCorrelationID,
+	// the correlation middleware adopts the Cf-Ray header
+	tests := []struct {
+		name                   string
+		propagateCorrelationID bool
+		adoptCfRayHeader       bool
+		cfRayHeader            string
+		xRequestID             string
+		expectedHeader         string
+	}{
+		{
+			name:                   "adopt Cf-Ray when both flags enabled and Cf-Ray present",
+			propagateCorrelationID: true,
+			adoptCfRayHeader:       true,
+			cfRayHeader:            "test-cf-ray-id",
+			xRequestID:             "test-request-id",
+			expectedHeader:         "test-cf-ray-id",
+		},
+		{
+			name:                   "fallback to X-Request-ID when Cf-Ray absent",
+			propagateCorrelationID: true,
+			adoptCfRayHeader:       true,
+			cfRayHeader:            "",
+			xRequestID:             "test-request-id",
+			expectedHeader:         "test-request-id",
+		},
+		{
+			name:                   "use X-Request-ID when adoptCfRayHeader disabled",
+			propagateCorrelationID: true,
+			adoptCfRayHeader:       false,
+			cfRayHeader:            "test-cf-ray-id",
+			xRequestID:             "test-request-id",
+			expectedHeader:         "test-request-id",
+		},
+		{
+			name:                   "generate new ID when propagation disabled",
+			propagateCorrelationID: false,
+			adoptCfRayHeader:       true,
+			cfRayHeader:            "test-cf-ray-id",
+			xRequestID:             "test-request-id",
+			expectedHeader:         "", // Will be generated
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := newUpstreamConfig("http://localhost:8080")
+			cfg.PropagateCorrelationID = tt.propagateCorrelationID
+			cfg.AdoptCfRayHeader = tt.adoptCfRayHeader
+
+			// Create a test handler that captures the correlation ID from context
+			var capturedCorrelationID string
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				capturedCorrelationID = correlation.ExtractFromContext(r.Context())
+				w.WriteHeader(http.StatusOK)
+			})
+
+			upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), func(u *upstream) {
+				u.Routes = []routeEntry{
+					u.route("", routeMetadata{}, handler),
+				}
+			}, nil, nil)
+
+			// Create a test request
+			req := httptest.NewRequest("GET", "/", nil)
+			if tt.cfRayHeader != "" {
+				req.Header.Set("Cf-Ray", tt.cfRayHeader)
+			}
+			if tt.xRequestID != "" {
+				req.Header.Set("X-Request-ID", tt.xRequestID)
+			}
+
+			// Execute the request
+			rr := httptest.NewRecorder()
+			upstreamHandler.ServeHTTP(rr, req)
+
+			// Verify the captured correlation ID
+			if tt.expectedHeader != "" {
+				require.Equal(t, tt.expectedHeader, capturedCorrelationID)
+			} else {
+				// When not propagating, a new ID is generated
+				require.NotEmpty(t, capturedCorrelationID)
+				require.NotEqual(t, tt.cfRayHeader, capturedCorrelationID)
+				require.NotEqual(t, tt.xRequestID, capturedCorrelationID)
+			}
+		})
+	}
 }
 
 func TestFixRemoteAddr(t *testing.T) {

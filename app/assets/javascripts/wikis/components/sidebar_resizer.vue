@@ -1,5 +1,5 @@
 <script>
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
@@ -31,7 +31,7 @@ export default {
     // screens to  ensure that element gets `padding-right`
     // set on it for form elements to align properly
     // when inside paneled container.
-    if (bp.isDesktop()) {
+    if (GlBreakpointInstance.isDesktop()) {
       this.$nextTick(() => {
         this.updateWidths();
       });

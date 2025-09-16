@@ -9,7 +9,7 @@ import './behaviors';
 
 // lib/utils
 import { setGlTooltipDefaultContainer } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
@@ -120,7 +120,7 @@ function deferredInitialisation() {
 
 const $body = $('body');
 const $document = $(document);
-const bootstrapBreakpoint = bp.getBreakpointSize();
+const bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
 
 initUserTracking();
 initLayoutNav();
