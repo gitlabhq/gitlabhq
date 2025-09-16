@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: none - [facilitated functionality](https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality)
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Profile preferences

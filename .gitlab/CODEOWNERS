@@ -995,6 +995,7 @@ lib/gitlab/checks/
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
 /doc/security/compliance_security_policy_management.md @rlehmann1
+/doc/security/hardening_nist_800_53.md @lyspin
 /doc/security/user_file_uploads.md @msedlakjakubowski
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
@@ -1002,6 +1003,7 @@ lib/gitlab/checks/
 /doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
 /doc/subscriptions/gitlab_com/gitlab_subscription_troubleshooting.md @lciutacu
 /doc/subscriptions/gitlab_dedicated/ @lyspin
+/doc/subscriptions/gitlab_dedicated_for_government/ @lyspin
 /doc/topics/ @msedlakjakubowski
 /doc/topics/git/ @brendan777
 /doc/topics/git/project.md @z_painter

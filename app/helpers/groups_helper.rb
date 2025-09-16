@@ -151,7 +151,8 @@ module GroupsHelper
   def groups_show_app_data(group)
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      initial_sort: project_list_sort_by
+      initial_sort: project_list_sort_by,
+      full_path: group.full_path
     }.to_json
   end
 

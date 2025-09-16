@@ -52,20 +52,13 @@ module API
       end
 
       def search_params
-        {
-          scope: params[:scope],
-          search: params[:search],
-          state: params[:state],
-          confidential: params[:confidential],
-          snippets: snippets?,
-          num_context_lines: params[:num_context_lines],
-          search_type: params[:search_type],
-          page: params[:page],
-          per_page: params[:per_page],
-          order_by: params[:order_by],
-          sort: params[:sort],
-          source: 'api'
-        }
+        keys = Helpers::SearchHelpers.search_param_keys
+        params_hash = keys.filter_map do |key|
+          [key, params[key]] if params.key?(key)
+        end.to_h
+        params_hash[:snippets] = snippets?
+        params_hash[:source] = 'api'
+        params_hash
       end
 
       def search(additional_params = {})

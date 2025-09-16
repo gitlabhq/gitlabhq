@@ -159,8 +159,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/lib/gitlab/status_page/storage.rb'
     - 'ee/lib/google_cloud/base_client.rb'
     - 'ee/lib/security/scan_result_policies/policy_violation_details.rb'
-    - 'ee/lib/system_check/geo/clocks_synchronization_check.rb'
-    - 'ee/lib/system_check/geo/ssh_port_check.rb'
     - 'ee/lib/tasks/gitlab/custom_roles/check_docs_task.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
     - 'ee/spec/components/namespaces/free_user_cap/enforcement_at_limit_alert_component_spec.rb'

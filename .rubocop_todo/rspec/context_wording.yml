@@ -345,8 +345,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/gitlab/usage_data_counters/epic_activity_unique_counter_spec.rb'
     - 'ee/spec/lib/incident_management/oncall_shift_generator_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/group_saml_spec.rb'
-    - 'ee/spec/lib/system_check/geo/authorized_keys_check_spec.rb'
-    - 'ee/spec/lib/system_check/geo/http_connection_check_spec.rb'
     - 'ee/spec/lib/system_check/rake_task/geo_task_spec.rb'
     - 'ee/spec/mailers/ee/emails/issues_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'

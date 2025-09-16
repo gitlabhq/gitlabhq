@@ -1454,7 +1454,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/gitlab/vulnerability_scanning/advisory.rb'
     - 'ee/lib/product_analytics/settings.rb'
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
-    - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/locale/unfound_translations.rb'
     - 'ee/spec/controllers/projects/settings/merge_requests_controller_spec.rb'

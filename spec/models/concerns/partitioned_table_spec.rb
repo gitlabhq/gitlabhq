@@ -41,7 +41,13 @@ RSpec.describe PartitionedTable, feature_category: :database do
 
   describe 'self._returning_columns_for_insert' do
     it 'identifies the columns that are returned on insert' do
-      expect(my_class._returning_columns_for_insert).to eq(Array.wrap(my_class.primary_key))
+      columns = if Gitlab.next_rails?
+                  my_class._returning_columns_for_insert(my_class.connection)
+                else
+                  my_class._returning_columns_for_insert
+                end
+
+      expect(columns).to eq(Array.wrap(my_class.primary_key))
     end
 
     it 'allows creating a partitionable record' do

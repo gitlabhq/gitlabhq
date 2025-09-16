@@ -43,7 +43,7 @@ module TwCodeowners
     CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),
     CodeOwnerRule.new('Editor Extensions', '@scawood'),
     CodeOwnerRule.new('Engagement', '@kpaizee'),
-    # CodeOwnerRule.new('Environment Automation', ''),
+    CodeOwnerRule.new('Environment Automation', '@lyspin'),
     # CodeOwnerRule.new('Environments', ''),
     # CodeOwnerRule.new('Fulfillment Platform', ''),
     CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
@@ -84,7 +84,7 @@ module TwCodeowners
     CodeOwnerRule.new('Switchboard', '@lyspin'),
     CodeOwnerRule.new('Testing', '@eread'),
     CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
-    # CodeOwnerRule.new('US Public Sector Services', ''),
+    CodeOwnerRule.new('US Public Sector Services', '@lyspin'),
     CodeOwnerRule.new('Utilization', '@lciutacu')
     # CodeOwnerRule.new('Vulnerability Research', '')
   ].freeze

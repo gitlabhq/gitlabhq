@@ -12,6 +12,7 @@ import {
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  SHARED_GROUPS_TAB,
 } from '../constants';
 
 export default {
@@ -32,13 +33,33 @@ export default {
       type: String,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    tabs() {
+      return GROUPS_SHOW_TABS.map((tab) => {
+        if (tab.value === SHARED_GROUPS_TAB.value) {
+          return {
+            ...tab,
+            variables: {
+              fullPath: this.fullPath,
+            },
+          };
+        }
+
+        return tab;
+      });
+    },
   },
 };
 </script>
 
 <template>
   <tabs-with-list
-    :tabs="$options.GROUPS_SHOW_TABS"
+    :tabs="tabs"
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"

@@ -1,0 +1,32 @@
+#import "~/graphql_shared/fragments/group.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query sharedGroupsQuery(
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: GroupSort
+  $search: String
+) {
+  group(fullPath: $fullPath) {
+    id
+    sharedGroups(
+      first: $first
+      last: $last
+      before: $before
+      after: $after
+      sort: $sort
+      search: $search
+    ) {
+      nodes {
+        ...Group
+      }
+      pageInfo {
+        ...PageInfo
+      }
+      count
+    }
+  }
+}

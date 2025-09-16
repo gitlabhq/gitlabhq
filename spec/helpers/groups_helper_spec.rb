@@ -555,7 +555,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       expect(Gitlab::Json.parse(helper.groups_show_app_data(group))).to eq(
         {
           'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
-          'initial_sort' => initial_sort
+          'initial_sort' => initial_sort,
+          'full_path' => group.full_path
         }
       )
     end

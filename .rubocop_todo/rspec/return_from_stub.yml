@@ -4,8 +4,6 @@ RSpec/ReturnFromStub:
   Exclude:
     - 'ee/spec/helpers/ee/security_orchestration_helper_spec.rb'
     - 'ee/spec/lib/omni_auth/strategies/group_saml_spec.rb'
-    - 'ee/spec/lib/system_check/geo/authorized_keys_check_spec.rb'
-    - 'ee/spec/lib/system_check/geo/http_connection_check_spec.rb'
     - 'ee/spec/models/ci/build_spec.rb'
     - 'ee/spec/models/concerns/ee/project_security_scanners_information_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'

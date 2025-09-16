@@ -30,7 +30,7 @@ export const initGroupsShowApp = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, subgroupsAndProjectsEndpoint } = convertObjectPropsToCamelCase(
+  const { initialSort, fullPath, subgroupsAndProjectsEndpoint } = convertObjectPropsToCamelCase(
     JSON.parse(appData),
   );
 
@@ -49,7 +49,7 @@ export const initGroupsShowApp = () => {
     apolloProvider,
     name: 'GroupsShowRoot',
     render(createElement) {
-      return createElement(GroupsShowApp, { props: { initialSort } });
+      return createElement(GroupsShowApp, { props: { initialSort, fullPath } });
     },
   });
 };

@@ -209,7 +209,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/spec/lib/gitlab/license_scanning/pipeline_components_spec.rb'
     - 'ee/spec/lib/gitlab/search/client_spec.rb'
     - 'ee/spec/lib/gitlab/spdx/catalogue_spec.rb'
-    - 'ee/spec/lib/system_check/geo/http_connection_check_spec.rb'
     - 'ee/spec/models/analytics/cycle_analytics/aggregation_context_spec.rb'
     - 'ee/spec/models/ci/minutes/quota_spec.rb'
     - 'ee/spec/models/ci/minutes/usage_spec.rb'

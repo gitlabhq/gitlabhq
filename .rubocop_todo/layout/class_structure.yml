@@ -241,7 +241,6 @@ Layout/ClassStructure:
     - 'ee/lib/langsmith/client.rb'
     - 'ee/lib/omni_auth/strategies/group_saml.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
-    - 'ee/lib/system_check/geo/license_check.rb'
     - 'lib/api/support/git_access_actor.rb'
     - 'lib/atlassian/jira_connect/serializers/feature_flag_entity.rb'
     - 'lib/backup/database_configuration.rb'

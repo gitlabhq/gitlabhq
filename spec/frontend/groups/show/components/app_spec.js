@@ -2,15 +2,16 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlPagination } from '@gitlab/ui';
+import { GlPagination, GlKeysetPagination } from '@gitlab/ui';
 import childrenResponse from 'test_fixtures/groups/children.json';
 import inactiveChildrenResponse from 'test_fixtures/groups/inactive_children.json';
+import sharedGroupsResponse from 'test_fixtures/graphql/groups/shared_groups.query.graphql.json';
 import GroupsShowApp from '~/groups/show/components/app.vue';
+import sharedGroupsQuery from '~/groups/show/graphql/queries/shared_groups.query.graphql';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { createRouter } from '~/groups/show';
 import {
-  GROUPS_SHOW_TABS,
   SUBGROUPS_AND_PROJECTS_TAB,
   SORT_OPTIONS,
   SORT_OPTION_UPDATED,
@@ -18,6 +19,7 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   INACTIVE_TAB,
+  SHARED_GROUPS_TAB,
 } from '~/groups/show/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
@@ -49,6 +51,7 @@ describe('GroupsShowApp', () => {
 
   const defaultPropsData = {
     initialSort: 'created_desc',
+    fullPath: 'foo/bar',
   };
 
   const endpoint = '/dashboard/groups.json';
@@ -87,7 +90,11 @@ describe('GroupsShowApp', () => {
     await createComponent();
 
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
-      tabs: GROUPS_SHOW_TABS,
+      tabs: [
+        SUBGROUPS_AND_PROJECTS_TAB,
+        { ...SHARED_GROUPS_TAB, variables: { fullPath: defaultPropsData.fullPath } },
+        INACTIVE_TAB,
+      ],
       filteredSearchSupportedTokens: [],
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -214,6 +221,74 @@ describe('GroupsShowApp', () => {
       await waitForPromises();
 
       expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
+    });
+  });
+
+  describe('when on the Shared groups tab', () => {
+    const route = { name: SHARED_GROUPS_TAB.value };
+    const {
+      data: {
+        group: {
+          sharedGroups: {
+            nodes: [mockGroup],
+          },
+        },
+      },
+    } = sharedGroupsResponse;
+
+    it('renders shared groups', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedGroupsQuery, jest.fn().mockResolvedValue(sharedGroupsResponse)]],
+      });
+      await waitForPromises();
+
+      expect(wrapper.findByRole('link', { name: mockGroup.name }).exists()).toBe(true);
+    });
+
+    it('transforms sort to uppercase', async () => {
+      const handler = jest.fn().mockResolvedValue(sharedGroupsResponse);
+
+      await createComponent({
+        mountFn: mountExtended,
+        route: { ...route, query: { sort: 'created_at_desc' } },
+        handlers: [[sharedGroupsQuery, handler]],
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ sort: 'CREATED_AT_DESC' }));
+    });
+
+    it('uses keyset pagination', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [
+          [
+            sharedGroupsQuery,
+            jest.fn().mockResolvedValue({
+              data: {
+                group: {
+                  ...sharedGroupsResponse.data.group,
+                  sharedGroups: {
+                    ...sharedGroupsResponse.data.group.sharedGroups,
+                    nodes: sharedGroupsResponse.data.group.sharedGroups.nodes,
+                    pageInfo: {
+                      ...sharedGroupsResponse.data.group.sharedGroups.pageInfo,
+                      hasNextPage: true,
+                    },
+                  },
+                },
+              },
+            }),
+          ],
+        ],
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
     });
   });
 });

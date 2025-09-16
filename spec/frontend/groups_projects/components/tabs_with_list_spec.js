@@ -747,8 +747,8 @@ describe('TabsWithList', () => {
         await nextTick();
       });
 
-      it('converts route param to an array', () => {
-        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/inactive');
+      it('decodes URI', () => {
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared_groups');
       });
     });
   });
