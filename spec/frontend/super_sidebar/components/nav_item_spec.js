@@ -11,7 +11,6 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
-import eventHub from '~/super_sidebar/event_hub';
 
 describe('NavItem component', () => {
   let wrapper;
@@ -72,39 +71,6 @@ describe('NavItem component', () => {
     it('does not render a pill when in icon-only mode', () => {
       createWrapper({ item: { title: 'Foo', pill_count: 123 }, provide: { isIconOnly: true } });
       expect(findPill().exists()).toBe(false);
-    });
-
-    describe('updating pill value', () => {
-      const initialPillValue = '20%';
-      const updatedPillValue = '50%';
-      const itemIdForUpdate = '_some_item_id_';
-      const triggerPillValueUpdate = async ({
-        value = updatedPillValue,
-        itemId = itemIdForUpdate,
-      } = {}) => {
-        eventHub.$emit('updatePillValue', { value, itemId });
-        await nextTick();
-      };
-
-      it('updates the pill count', async () => {
-        createWrapper({
-          item: { id: itemIdForUpdate, pill_count: initialPillValue, pill_count_dynamic: true },
-        });
-
-        await triggerPillValueUpdate();
-
-        expect(findPill().text()).toBe(updatedPillValue);
-      });
-
-      it('does not update the pill count for non matching item id', async () => {
-        createWrapper({
-          item: { id: '_non_matching_id_', pill_count: initialPillValue, pill_count_dynamic: true },
-        });
-
-        await triggerPillValueUpdate();
-
-        expect(findPill().text()).toBe(initialPillValue);
-      });
     });
 
     describe('async updating pill prop', () => {
@@ -174,17 +140,6 @@ describe('NavItem component', () => {
 
         expect(findPill().text()).toBe('10');
       });
-    });
-  });
-
-  describe('destroyed', () => {
-    it('should unbind event listeners on eventHub', async () => {
-      jest.spyOn(eventHub, '$off');
-
-      createWrapper({ item: {} });
-      await wrapper.destroy();
-
-      expect(eventHub.$off).toHaveBeenCalledWith('updatePillValue', expect.any(Function));
     });
   });
 

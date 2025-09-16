@@ -48,7 +48,7 @@ GitLab Dedicated deploys Gitaly [in a sharded setup](../gitaly/praefect/_index.m
 
 ### Geo setup
 
-GitLab Dedicated leverages GitLab Geo for [disaster recovery](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#disaster-recovery).
+GitLab Dedicated leverages Geo for [disaster recovery](disaster_recovery.md).
 
 Geo does not use an active-active failover configuration. For more information, see [Geo](../geo/_index.md).
 
@@ -56,7 +56,7 @@ Geo does not use an active-active failover configuration. For more information, 
 
 {{< alert type="note" >}}
 
-Required for Geo migrations to Dedicated. Otherwise, optional
+Required for Geo migrations to Dedicated. Otherwise, optional.
 
 {{< /alert >}}
 

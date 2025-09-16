@@ -104,7 +104,13 @@ module Database
       new_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
       ActiveRecord::Base.connection_handler = new_handler
 
-      connection_class_to_config.each { |klass, db_config| klass.establish_connection(db_config) } if reconnect
+      if reconnect
+        # Schema validation requires all connections to be established so we skip this validator
+        # while we re-establish each connection class.
+        Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
+          connection_class_to_config.each { |klass, db_config| klass.establish_connection(db_config) }
+        end
+      end
 
       yield
     ensure

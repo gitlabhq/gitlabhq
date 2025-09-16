@@ -21,8 +21,8 @@ GitLab Dedicated is a single-tenant SaaS solution that is:
 
 Each instance provides:
 
-- [High availability](data_residency_and_high_availability.md) with disaster recovery.
-- [Regular updates](maintenance.md) with the latest features.
+- [High availability](../../administration/dedicated/create_instance/data_residency_high_availability.md) with disaster recovery.
+- [Regular updates](../../administration/dedicated/maintenance.md) with the latest features.
 - Enterprise-grade security measures.
 
 With GitLab Dedicated, you can:

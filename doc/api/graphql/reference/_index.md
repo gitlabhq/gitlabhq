@@ -298,6 +298,23 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
 
+### `Query.aiCatalogItemConsumer`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a single AI Catalog item consumer by ID.
+
+Returns [`AiCatalogItemConsumer`](#aicatalogitemconsumer).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogitemconsumerid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the AI Catalog item consumer. |
+
 ### `Query.aiCatalogItems`
 
 {{< details >}}
@@ -10515,6 +10532,25 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsecretupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationprojectsecretupdateprojectsecret"></a>`projectSecret` | [`ProjectSecret`](#projectsecret) | Updated project secret. |
+
+### `Mutation.projectSecretsManagerDeprovision`
+
+Input type: `ProjectSecretsManagerDeprovisionInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretsmanagerdeprovisionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretsmanagerdeprovisionprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secrets manager. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsecretsmanagerdeprovisionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsecretsmanagerdeprovisionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationprojectsecretsmanagerdeprovisionprojectsecretsmanager"></a>`projectSecretsManager` | [`ProjectSecretsManager`](#projectsecretsmanager) | Project secrets manager. |
 
 ### `Mutation.projectSecretsManagerInitialize`
 
@@ -49467,7 +49503,8 @@ Values for the project secrets manager status.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="projectsecretsmanagerstatusactive"></a>`ACTIVE` | Secrets manager has been provisioned. |
+| <a id="projectsecretsmanagerstatusactive"></a>`ACTIVE` | Secrets manager has been provisioned and enabled. |
+| <a id="projectsecretsmanagerstatusdeprovisioning"></a>`DEPROVISIONING` | Secrets manager has is being deprovisioned. |
 | <a id="projectsecretsmanagerstatusprovisioning"></a>`PROVISIONING` | Secrets manager is being provisioned. |
 
 ### `ProjectSort`

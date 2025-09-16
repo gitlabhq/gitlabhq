@@ -4,6 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 import NewProjectDestinationSelect from '~/projects/new_v2/components/project_destination_select.vue';
+import ProjectNameValidator from '~/projects/new_v2/components/project_name_validator.vue';
 import { DEPLOYMENT_TARGET_SELECTIONS } from '~/projects/new_v2/form_constants';
 
 describe('Project creation form fields component', () => {
@@ -39,6 +40,7 @@ describe('Project creation form fields component', () => {
   const findDeploymentTargetSelect = () => wrapper.findByTestId('deployment-target-select');
   const findKubernetesHelpLink = () => wrapper.findByTestId('kubernetes-help-link');
   const findVisibilitySelector = () => wrapper.findComponent(SingleChoiceSelector);
+  const findProjectNameValidator = () => wrapper.findComponent(ProjectNameValidator);
   const findPrivateVisibilityLevelOption = () => wrapper.findByTestId('private-visibility-level');
   const findInternalVisibilityLevelOption = () => wrapper.findByTestId('internal-visibility-level');
   const findPublicVisibilityLevelOption = () => wrapper.findByTestId('public-visibility-level');
@@ -110,6 +112,43 @@ describe('Project creation form fields component', () => {
       const formGroup = wrapper.findByTestId('project-slug-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe('Please enter project slug.');
     });
+
+    it('renders a project name availability alert', async () => {
+      createComponent();
+
+      findProjectNameInput().setValue('Test Name');
+      findProjectNameInput().trigger('blur');
+      findProjectSlugInput().setValue('test-name');
+      findProjectSlugInput().trigger('blur');
+
+      await nextTick();
+
+      expect(findProjectNameValidator().exists()).toBe(true);
+      expect(findProjectNameValidator().props()).toEqual({
+        namespaceFullPath: 'root',
+        projectPath: 'test-name',
+        projectName: 'Test Name',
+      });
+    });
+
+    it('emits onValidateForm when project name validation status changes', () => {
+      createComponent();
+
+      findProjectNameInput().setValue('Test Name');
+      findProjectNameInput().trigger('blur');
+      findProjectSlugInput().setValue('test-name');
+      findProjectSlugInput().trigger('blur');
+      findProjectNameValidator().vm.$emit('onValidation', true);
+
+      expect(wrapper.emitted('onValidateForm')[0][0]).toEqual(true);
+    });
+
+    it('emits onValidateForm with false when project name validation fails', () => {
+      createComponent();
+      findProjectNameValidator().vm.$emit('onValidation', false);
+
+      expect(wrapper.emitted('onValidateForm')[0][0]).toEqual(false);
+    });
   });
 
   describe('visibility selector', () => {
@@ -156,7 +195,7 @@ describe('Project creation form fields component', () => {
         provide: { defaultProjectVisibility: 10 },
       });
 
-      expect(findVisibilitySelector().props('checked')).toBe('internal');
+      expect(findVisibilitySelector().props('checked')).toBe(10);
     });
   });
 });

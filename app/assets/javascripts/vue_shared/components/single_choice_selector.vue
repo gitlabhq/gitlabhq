@@ -9,6 +9,11 @@ export default {
       required: false,
       default: undefined,
     },
+    name: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   methods: {
     onChange(value) {
@@ -21,6 +26,7 @@ export default {
 <template>
   <gl-form-radio-group
     :checked="checked"
+    :name="name"
     class="multiple-choice-selector gl-border gl-block gl-rounded-base"
     @change="onChange"
   >

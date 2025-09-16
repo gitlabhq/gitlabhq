@@ -736,9 +736,6 @@ msgstr ""
 msgid "%{completed} of %{total} weight completed"
 msgstr ""
 
-msgid "%{completed}/%{total} completed"
-msgstr ""
-
 msgid "%{component} is not an allowed sub claim component"
 msgstr ""
 
@@ -1319,7 +1316,7 @@ msgstr[1] ""
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
 msgstr ""
 
-msgid "%{reference} %{author} %{stats} %{milestone}"
+msgid "%{reference} %{author} %{stats} %{milestone} %{target}"
 msgstr ""
 
 msgid "%{ref} cannot be added: %{error}"
@@ -38164,11 +38161,6 @@ msgstr ""
 msgid "Learn what Duo Chat can do."
 msgstr ""
 
-msgid "LearnGitLab|%d task to go"
-msgid_plural "LearnGitLab|%d tasks to go"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
@@ -38332,9 +38324,6 @@ msgid "LearnGitLab|Uses open files in your IDE, content before and after the cur
 msgstr ""
 
 msgid "LearnGitLab|Works with various programming languages supported by your development environment."
-msgstr ""
-
-msgid "LearnGitLab|You completed all tasks!"
 msgstr ""
 
 msgid "LearnGitLab|You don't have sufficient access to perform this action"
@@ -51626,6 +51615,9 @@ msgstr ""
 msgid "ProjectsNew|Bitbucket Server URL"
 msgstr ""
 
+msgid "ProjectsNew|Both project name and project path are already taken. Please choose different values for both."
+msgstr ""
+
 msgid "ProjectsNew|Choose a group"
 msgstr ""
 
@@ -51789,6 +51781,12 @@ msgid "ProjectsNew|Project description %{tag_start}(optional)%{tag_end}"
 msgstr ""
 
 msgid "ProjectsNew|Project name"
+msgstr ""
+
+msgid "ProjectsNew|Project name is already taken. Please choose a different project name."
+msgstr ""
+
+msgid "ProjectsNew|Project path is already taken. Please choose a different project path."
 msgstr ""
 
 msgid "ProjectsNew|Project slug"
@@ -64286,6 +64284,9 @@ msgid "Target branch"
 msgstr ""
 
 msgid "Target branch (%{branch}): %{pipelines}"
+msgstr ""
+
+msgid "Target branch: %{targetBranch}"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"

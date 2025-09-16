@@ -10,6 +10,7 @@ class JiraConnectInstallation < ApplicationRecord
     key: :db_key_base_32
 
   has_many :subscriptions, class_name: 'JiraConnectSubscription'
+  belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :client_key, presence: true, uniqueness: true
   validates :shared_secret, presence: true

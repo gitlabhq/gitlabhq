@@ -8014,6 +8014,787 @@ CREATE TABLE gitlab_partitions_static.virtual_registries_packages_maven_cache_en
     CONSTRAINT check_fd9fc90696 CHECK ((char_length(upstream_etag) <= 255))
 );
 
+CREATE TABLE work_item_descriptions (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+)
+PARTITION BY HASH (namespace_id);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_00 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_01 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_02 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_03 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_04 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_05 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_06 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_07 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_08 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_09 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_10 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_11 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_12 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_13 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_14 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_15 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_16 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_17 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_18 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_19 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_20 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_21 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_22 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_23 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_24 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_25 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_26 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_27 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_28 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_29 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_30 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_31 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_32 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_33 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_34 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_35 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_36 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_37 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_38 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_39 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_40 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_41 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_42 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_43 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_44 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_45 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_46 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_47 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_48 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_49 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_50 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_51 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_52 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_53 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_54 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_55 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_56 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_57 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_58 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_59 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_60 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_61 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_62 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
+CREATE TABLE gitlab_partitions_static.work_item_descriptions_63 (
+    work_item_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    last_edited_by_id bigint,
+    last_edited_at timestamp without time zone,
+    lock_version integer DEFAULT 0,
+    cached_markdown_version integer,
+    search_vector tsvector,
+    description text,
+    description_html text
+);
+
 CREATE TABLE abuse_events (
     id bigint NOT NULL,
     user_id bigint,
@@ -17247,6 +18028,7 @@ CREATE TABLE jira_connect_installations (
     encrypted_shared_secret_iv character varying,
     base_url character varying,
     instance_url text,
+    organization_id bigint,
     CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255))
 );
 
@@ -28279,6 +29061,134 @@ ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITIO
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
 
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00 FOR VALUES WITH (modulus 64, remainder 0);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01 FOR VALUES WITH (modulus 64, remainder 1);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02 FOR VALUES WITH (modulus 64, remainder 2);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03 FOR VALUES WITH (modulus 64, remainder 3);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04 FOR VALUES WITH (modulus 64, remainder 4);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05 FOR VALUES WITH (modulus 64, remainder 5);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06 FOR VALUES WITH (modulus 64, remainder 6);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07 FOR VALUES WITH (modulus 64, remainder 7);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08 FOR VALUES WITH (modulus 64, remainder 8);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09 FOR VALUES WITH (modulus 64, remainder 9);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10 FOR VALUES WITH (modulus 64, remainder 10);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11 FOR VALUES WITH (modulus 64, remainder 11);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12 FOR VALUES WITH (modulus 64, remainder 12);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13 FOR VALUES WITH (modulus 64, remainder 13);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14 FOR VALUES WITH (modulus 64, remainder 14);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15 FOR VALUES WITH (modulus 64, remainder 15);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16 FOR VALUES WITH (modulus 64, remainder 16);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17 FOR VALUES WITH (modulus 64, remainder 17);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18 FOR VALUES WITH (modulus 64, remainder 18);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19 FOR VALUES WITH (modulus 64, remainder 19);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20 FOR VALUES WITH (modulus 64, remainder 20);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21 FOR VALUES WITH (modulus 64, remainder 21);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22 FOR VALUES WITH (modulus 64, remainder 22);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23 FOR VALUES WITH (modulus 64, remainder 23);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24 FOR VALUES WITH (modulus 64, remainder 24);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25 FOR VALUES WITH (modulus 64, remainder 25);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26 FOR VALUES WITH (modulus 64, remainder 26);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27 FOR VALUES WITH (modulus 64, remainder 27);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28 FOR VALUES WITH (modulus 64, remainder 28);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29 FOR VALUES WITH (modulus 64, remainder 29);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30 FOR VALUES WITH (modulus 64, remainder 30);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31 FOR VALUES WITH (modulus 64, remainder 31);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32 FOR VALUES WITH (modulus 64, remainder 32);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33 FOR VALUES WITH (modulus 64, remainder 33);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34 FOR VALUES WITH (modulus 64, remainder 34);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35 FOR VALUES WITH (modulus 64, remainder 35);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36 FOR VALUES WITH (modulus 64, remainder 36);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37 FOR VALUES WITH (modulus 64, remainder 37);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38 FOR VALUES WITH (modulus 64, remainder 38);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39 FOR VALUES WITH (modulus 64, remainder 39);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40 FOR VALUES WITH (modulus 64, remainder 40);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41 FOR VALUES WITH (modulus 64, remainder 41);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42 FOR VALUES WITH (modulus 64, remainder 42);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43 FOR VALUES WITH (modulus 64, remainder 43);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44 FOR VALUES WITH (modulus 64, remainder 44);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45 FOR VALUES WITH (modulus 64, remainder 45);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46 FOR VALUES WITH (modulus 64, remainder 46);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47 FOR VALUES WITH (modulus 64, remainder 47);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48 FOR VALUES WITH (modulus 64, remainder 48);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49 FOR VALUES WITH (modulus 64, remainder 49);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50 FOR VALUES WITH (modulus 64, remainder 50);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51 FOR VALUES WITH (modulus 64, remainder 51);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52 FOR VALUES WITH (modulus 64, remainder 52);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53 FOR VALUES WITH (modulus 64, remainder 53);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54 FOR VALUES WITH (modulus 64, remainder 54);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55 FOR VALUES WITH (modulus 64, remainder 55);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56 FOR VALUES WITH (modulus 64, remainder 56);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57 FOR VALUES WITH (modulus 64, remainder 57);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58 FOR VALUES WITH (modulus 64, remainder 58);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59 FOR VALUES WITH (modulus 64, remainder 59);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60 FOR VALUES WITH (modulus 64, remainder 60);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61 FOR VALUES WITH (modulus 64, remainder 61);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62 FOR VALUES WITH (modulus 64, remainder 62);
+
+ALTER TABLE ONLY work_item_descriptions ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63 FOR VALUES WITH (modulus 64, remainder 63);
+
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION abuse_report_uploads FOR VALUES IN ('AbuseReport');
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION achievement_uploads FOR VALUES IN ('Achievements::Achievement');
@@ -30396,6 +31306,201 @@ ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cach
 ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_15
     ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_15_pkey PRIMARY KEY (upstream_id, relative_path, status);
 
+ALTER TABLE ONLY work_item_descriptions
+    ADD CONSTRAINT work_item_descriptions_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_00
+    ADD CONSTRAINT work_item_descriptions_00_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_01
+    ADD CONSTRAINT work_item_descriptions_01_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_02
+    ADD CONSTRAINT work_item_descriptions_02_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_03
+    ADD CONSTRAINT work_item_descriptions_03_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_04
+    ADD CONSTRAINT work_item_descriptions_04_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_05
+    ADD CONSTRAINT work_item_descriptions_05_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_06
+    ADD CONSTRAINT work_item_descriptions_06_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_07
+    ADD CONSTRAINT work_item_descriptions_07_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_08
+    ADD CONSTRAINT work_item_descriptions_08_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_09
+    ADD CONSTRAINT work_item_descriptions_09_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_10
+    ADD CONSTRAINT work_item_descriptions_10_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_11
+    ADD CONSTRAINT work_item_descriptions_11_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_12
+    ADD CONSTRAINT work_item_descriptions_12_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_13
+    ADD CONSTRAINT work_item_descriptions_13_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_14
+    ADD CONSTRAINT work_item_descriptions_14_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_15
+    ADD CONSTRAINT work_item_descriptions_15_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_16
+    ADD CONSTRAINT work_item_descriptions_16_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_17
+    ADD CONSTRAINT work_item_descriptions_17_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_18
+    ADD CONSTRAINT work_item_descriptions_18_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_19
+    ADD CONSTRAINT work_item_descriptions_19_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_20
+    ADD CONSTRAINT work_item_descriptions_20_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_21
+    ADD CONSTRAINT work_item_descriptions_21_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_22
+    ADD CONSTRAINT work_item_descriptions_22_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_23
+    ADD CONSTRAINT work_item_descriptions_23_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_24
+    ADD CONSTRAINT work_item_descriptions_24_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_25
+    ADD CONSTRAINT work_item_descriptions_25_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_26
+    ADD CONSTRAINT work_item_descriptions_26_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_27
+    ADD CONSTRAINT work_item_descriptions_27_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_28
+    ADD CONSTRAINT work_item_descriptions_28_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_29
+    ADD CONSTRAINT work_item_descriptions_29_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_30
+    ADD CONSTRAINT work_item_descriptions_30_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_31
+    ADD CONSTRAINT work_item_descriptions_31_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_32
+    ADD CONSTRAINT work_item_descriptions_32_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_33
+    ADD CONSTRAINT work_item_descriptions_33_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_34
+    ADD CONSTRAINT work_item_descriptions_34_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_35
+    ADD CONSTRAINT work_item_descriptions_35_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_36
+    ADD CONSTRAINT work_item_descriptions_36_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_37
+    ADD CONSTRAINT work_item_descriptions_37_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_38
+    ADD CONSTRAINT work_item_descriptions_38_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_39
+    ADD CONSTRAINT work_item_descriptions_39_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_40
+    ADD CONSTRAINT work_item_descriptions_40_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_41
+    ADD CONSTRAINT work_item_descriptions_41_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_42
+    ADD CONSTRAINT work_item_descriptions_42_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_43
+    ADD CONSTRAINT work_item_descriptions_43_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_44
+    ADD CONSTRAINT work_item_descriptions_44_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_45
+    ADD CONSTRAINT work_item_descriptions_45_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_46
+    ADD CONSTRAINT work_item_descriptions_46_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_47
+    ADD CONSTRAINT work_item_descriptions_47_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_48
+    ADD CONSTRAINT work_item_descriptions_48_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_49
+    ADD CONSTRAINT work_item_descriptions_49_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_50
+    ADD CONSTRAINT work_item_descriptions_50_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_51
+    ADD CONSTRAINT work_item_descriptions_51_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_52
+    ADD CONSTRAINT work_item_descriptions_52_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_53
+    ADD CONSTRAINT work_item_descriptions_53_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_54
+    ADD CONSTRAINT work_item_descriptions_54_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_55
+    ADD CONSTRAINT work_item_descriptions_55_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_56
+    ADD CONSTRAINT work_item_descriptions_56_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_57
+    ADD CONSTRAINT work_item_descriptions_57_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_58
+    ADD CONSTRAINT work_item_descriptions_58_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_59
+    ADD CONSTRAINT work_item_descriptions_59_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_60
+    ADD CONSTRAINT work_item_descriptions_60_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_61
+    ADD CONSTRAINT work_item_descriptions_61_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_62
+    ADD CONSTRAINT work_item_descriptions_62_pkey PRIMARY KEY (work_item_id, namespace_id);
+
+ALTER TABLE ONLY gitlab_partitions_static.work_item_descriptions_63
+    ADD CONSTRAINT work_item_descriptions_63_pkey PRIMARY KEY (work_item_id, namespace_id);
+
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT abuse_events_pkey PRIMARY KEY (id);
 
@@ -30941,6 +32046,9 @@ ALTER TABLE work_item_custom_statuses
 
 ALTER TABLE packages_packages
     ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
+
+ALTER TABLE jira_connect_installations
+    ADD CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
@@ -34613,6 +35721,266 @@ CREATE INDEX virtual_registries_packages_maven_cache_entri_relative_path_idx ON 
 
 CREATE INDEX virtual_registries_packages_maven_upstream_id_relative_path_idx ON gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 USING btree (upstream_id, relative_path) WHERE (status = 2);
 
+CREATE INDEX index_work_item_descriptions_on_last_edited_by_id ON ONLY work_item_descriptions USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_00_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_00 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX index_work_item_descriptions_on_namespace_id ON ONLY work_item_descriptions USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_00_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_00 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_01_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_01 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_01_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_01 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_02_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_02 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_02_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_02 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_03_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_03 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_03_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_03 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_04_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_04 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_04_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_04 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_05_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_05 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_05_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_05 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_06_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_06 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_06_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_06 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_07_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_07 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_07_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_07 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_08_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_08 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_08_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_08 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_09_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_09 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_09_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_09 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_10_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_10 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_10_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_10 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_11_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_11 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_11_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_11 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_12_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_12 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_12_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_12 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_13_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_13 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_13_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_13 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_14_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_14 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_14_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_14 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_15_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_15 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_15_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_15 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_16_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_16 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_16_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_16 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_17_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_17 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_17_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_17 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_18_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_18 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_18_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_18 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_19_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_19 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_19_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_19 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_20_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_20 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_20_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_20 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_21_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_21 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_21_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_21 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_22_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_22 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_22_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_22 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_23_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_23 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_23_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_23 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_24_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_24 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_24_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_24 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_25_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_25 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_25_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_25 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_26_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_26 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_26_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_26 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_27_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_27 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_27_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_27 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_28_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_28 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_28_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_28 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_29_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_29 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_29_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_29 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_30_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_30 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_30_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_30 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_31_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_31 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_31_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_31 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_32_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_32 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_32_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_32 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_33_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_33 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_33_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_33 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_34_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_34 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_34_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_34 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_35_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_35 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_35_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_35 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_36_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_36 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_36_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_36 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_37_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_37 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_37_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_37 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_38_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_38 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_38_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_38 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_39_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_39 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_39_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_39 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_40_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_40 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_40_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_40 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_41_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_41 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_41_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_41 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_42_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_42 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_42_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_42 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_43_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_43 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_43_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_43 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_44_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_44 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_44_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_44 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_45_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_45 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_45_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_45 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_46_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_46 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_46_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_46 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_47_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_47 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_47_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_47 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_48_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_48 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_48_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_48 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_49_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_49 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_49_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_49 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_50_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_50 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_50_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_50 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_51_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_51 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_51_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_51 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_52_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_52 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_52_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_52 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_53_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_53 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_53_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_53 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_54_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_54 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_54_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_54 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_55_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_55 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_55_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_55 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_56_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_56 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_56_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_56 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_57_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_57 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_57_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_57 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_58_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_58 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_58_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_58 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_59_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_59 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_59_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_59 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_60_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_60 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_60_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_60 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_61_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_61 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_61_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_61 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_62_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_62 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_62_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_62 USING btree (namespace_id);
+
+CREATE INDEX work_item_descriptions_63_last_edited_by_id_idx ON gitlab_partitions_static.work_item_descriptions_63 USING btree (last_edited_by_id) WHERE (last_edited_by_id IS NOT NULL);
+
+CREATE INDEX work_item_descriptions_63_namespace_id_idx ON gitlab_partitions_static.work_item_descriptions_63 USING btree (namespace_id);
+
 CREATE INDEX index_uploads_9ba88c4165_on_checksum ON ONLY uploads_9ba88c4165 USING btree (checksum);
 
 CREATE INDEX abuse_report_uploads_checksum_idx ON abuse_report_uploads USING btree (checksum);
@@ -37578,6 +38946,8 @@ CREATE INDEX index_iterations_cadences_on_group_id ON iterations_cadences USING 
 CREATE UNIQUE INDEX index_jira_connect_installations_on_client_key ON jira_connect_installations USING btree (client_key);
 
 CREATE INDEX index_jira_connect_installations_on_instance_url ON jira_connect_installations USING btree (instance_url);
+
+CREATE INDEX index_jira_connect_installations_on_organization_id ON jira_connect_installations USING btree (organization_id);
 
 CREATE INDEX index_jira_connect_subscriptions_on_namespace_id ON jira_connect_subscriptions USING btree (namespace_id);
 
@@ -42667,6 +44037,390 @@ ALTER INDEX virtual_registries_packages_maven_cache_entries_pkey ATTACH PARTITIO
 
 ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_upstream_id_relative_path_idx;
 
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_00_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_01_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_02_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_03_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_04_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_05_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_06_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_07_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_08_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_09_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_10_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_11_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_12_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_13_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_14_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_15_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_16_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_17_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_18_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_19_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_20_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_21_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_22_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_23_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_24_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_25_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_26_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_27_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_28_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_29_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_30_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_31_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_32_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_33_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_34_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_35_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_36_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_37_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_38_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_39_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_40_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_41_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_42_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_43_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_44_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_45_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_46_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_47_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_48_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_49_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_50_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_51_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_52_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_53_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_54_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_55_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_56_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_57_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_58_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_59_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_60_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_61_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_62_pkey;
+
+ALTER INDEX index_work_item_descriptions_on_last_edited_by_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_last_edited_by_id_idx;
+
+ALTER INDEX index_work_item_descriptions_on_namespace_id ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_namespace_id_idx;
+
+ALTER INDEX work_item_descriptions_pkey ATTACH PARTITION gitlab_partitions_static.work_item_descriptions_63_pkey;
+
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION abuse_report_uploads_checksum_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION abuse_report_uploads_model_id_model_type_uploader_created_a_idx;
@@ -44702,6 +46456,9 @@ ALTER TABLE ONLY ml_models
 
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY jira_connect_installations
+    ADD CONSTRAINT fk_5326fc7be6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_53fd98ccbf FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -46758,6 +48515,9 @@ ALTER TABLE ONLY resource_state_events
 ALTER TABLE ONLY group_import_states
     ADD CONSTRAINT fk_rails_31c3e0503a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE work_item_descriptions
+    ADD CONSTRAINT fk_rails_31c499d2ce FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT fk_rails_3263f29616 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -47141,6 +48901,9 @@ ALTER TABLE ONLY project_to_security_attributes
 
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_5fe86ea341 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE work_item_descriptions
+    ADD CONSTRAINT fk_rails_600bd0d333 FOREIGN KEY (last_edited_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -47969,6 +49732,9 @@ ALTER TABLE ONLY organization_settings
 
 ALTER TABLE ONLY system_access_microsoft_applications
     ADD CONSTRAINT fk_rails_c5b7765d04 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE work_item_descriptions
+    ADD CONSTRAINT fk_rails_c5e6229ed2 FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY custom_software_licenses
     ADD CONSTRAINT fk_rails_c68163fae6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

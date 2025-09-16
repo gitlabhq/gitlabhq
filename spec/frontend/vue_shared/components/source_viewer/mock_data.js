@@ -51,7 +51,10 @@ export const SOURCE_CODE_CONTENT_MOCK = `
   </div>
 </div>`;
 
-const COMMIT_DATA_MOCK = { projectBlameLink: 'project/blame/link' };
+const COMMIT_DATA_MOCK = {
+  projectBlameLink: 'project/blame/link',
+  ageMapClass: 'blame-commit-age-9',
+};
 
 export const BLAME_DATA_MOCK = [
   {

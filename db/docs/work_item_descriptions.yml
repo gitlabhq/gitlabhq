@@ -1,0 +1,13 @@
+---
+table_name: work_item_descriptions
+classes:
+  - WorkItems::Description
+feature_categories:
+  - team_planning
+description: Description associated to work items.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201103
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

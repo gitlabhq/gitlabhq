@@ -277,7 +277,7 @@
   // Panel header
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
-    @apply gl-bg-transparent gl-shadow-none gl-relative gl-px-5 #{!important};
+    @apply gl-bg-default gl-shadow-none gl-relative gl-px-5 #{!important};
     z-index: 99;
     border-bottom: 1px solid var(--super-sidebar-bg);
   }

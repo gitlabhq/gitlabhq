@@ -100,6 +100,7 @@ into three tabs:
   - The assignee's avatar.
   - The number of files and lines added and removed (`+` / `-`).
   - Milestone.
+  - Target branch, if it is not the project's default branch.
 - **Author**: The author's avatar.
 - **Reviewers**: The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks**: A compact assessment of mergeability.

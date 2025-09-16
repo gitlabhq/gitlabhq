@@ -342,6 +342,14 @@ module Ci
         end
       end
 
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
+        pipeline.run_after_commit do
+          Gitlab::EventStore.publish(
+            ::Ci::PipelineFinishedEvent.new(data: { pipeline_id: pipeline.id, status: pipeline.status })
+          )
+        end
+      end
+
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
           AutoMergeProcessWorker.perform_async({ 'pipeline_id' => self.id })

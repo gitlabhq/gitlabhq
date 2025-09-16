@@ -236,47 +236,4 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
       end
     end
   end
-
-  describe 'Complete OAuth Flow with Refresh with legacy hashing' do
-    before do
-      stub_feature_flags(sha512_oauth: false)
-    end
-
-    it 'completes full authorization, access, refresh, and re-access cycle' do
-      # Step 1: Get authorization code
-      code = fetch_authorization_code
-      expect(code).to be_present
-
-      # Step 2: Exchange code for tokens
-      initial_response = fetch_token_response(code)
-      initial_access = initial_response['access_token']
-      initial_refresh = initial_response['refresh_token']
-
-      expect(initial_access).to be_present
-      expect(initial_refresh).to be_present
-
-      # Step 3: Use initial access token
-      get "/api/v4/user", headers: { Authorization: "Bearer #{initial_access}" }
-      expect(response).to have_gitlab_http_status(:ok)
-      initial_user_data = json_response
-
-      # Step 4: Turn on FF and refresh tokens
-      stub_feature_flags(sha512_oauth: true)
-      refreshed_response = refresh_access_token(initial_refresh)
-      new_access = refreshed_response['access_token']
-      new_refresh = refreshed_response['refresh_token']
-
-      expect(new_access).not_to eq(initial_access)
-      expect(new_refresh).not_to eq(initial_refresh)
-
-      # Step 5: Use new access token
-      get "/api/v4/user", headers: { Authorization: "Bearer #{new_access}" }
-      expect(response).to have_gitlab_http_status(:ok)
-      new_user_data = json_response
-
-      # Step 6: Verify same user data
-      expect(new_user_data['id']).to eq(initial_user_data['id'])
-      expect(new_user_data['id']).to eq(user.id)
-    end
-  end
 end

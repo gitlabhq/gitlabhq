@@ -1,0 +1,12 @@
+query searchProjectNameAvailability($namespacePath: ID!, $search: String) {
+  namespace(fullPath: $namespacePath) {
+    id
+    projects(search: $search) {
+      nodes {
+        id
+        path
+        name
+      }
+    }
+  }
+}

@@ -45,8 +45,9 @@ For a click-through demo, see [Duo Agent Platform - MCP integration](https://git
 
 Before using a GitLab Duo feature with MCP, you must:
 
-- Install [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup).
+- Install [VSCodium](https://vscodium.com/) or [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
+- Set up the GitLab Workflow extension from the [Open VSX Registry](https://open-vsx.org/extension/GitLab/gitlab-workflow)
+  or the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
   - MCP support requires version 6.28.2 and later.
   - Workspace and user configuration features require version 6.35.6 and later.
 - Meet [the prerequisites for the GitLab Duo Agent Platform](../../duo_agent_platform/_index.md#prerequisites).
@@ -85,6 +86,7 @@ To set up workspace configuration:
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
+1. Restart your IDE.
 
 ### Create user configuration
 
@@ -93,13 +95,14 @@ workspaces, but any workspace settings for the same server override the user con
 
 To set up user configuration:
 
-1. In VS Code, open the Command Palette by pressing
+1. In VSCodium or VS Code, open the Command Palette by pressing
    <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> or
    <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Run the command `GitLab MCP: Open User Settings (JSON)` to create and open the user configuration file.
 1. Using the [configuration format](#configuration-format), add information about the MCP servers
    your feature connects to.
 1. Save the file.
+1. Restart your IDE.
 
 Alternatively, manually create the file in this location:
 
@@ -114,6 +117,7 @@ Both configuration files use the same JSON format:
 {
   "mcpServers": {
     "server-name": {
+      "type": "stdio",
       "command": "path/to/server",
       "args": ["--arg1", "value1"],
       "env": {
@@ -121,7 +125,12 @@ Both configuration files use the same JSON format:
       }
     },
     "http-server": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
+    },
+    "sse-server": {
+      "type": "sse",
+      "url": "http://localhost:3000/mcp/sse"
     }
   }
 }
@@ -140,6 +149,7 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 {
   "mcpServers": {
     "enterprise-data-v2": {
+      "type": "stdio",
       "command": "node",
       "args": ["src/server.js"],
       "cwd": "</path/to/your-mcp-server>"
@@ -148,12 +158,13 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 }
 ```
 
-#### Remote server
+#### Remote server with `mcp-remote`
 
 ```json
 {
   "mcpServers": {
     "aws-knowledge": {
+      "type": "stdio",
       "command": "npx",
       "args": [
         "mcp-remote",
@@ -170,7 +181,21 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 {
   "mcpServers": {
     "local-http-server": {
+      "type": "http",
       "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+#### SSE server
+
+```json
+{
+  "mcpServers": {
+    "remote-sse-server": {
+      "type": "sse",
+      "url": "http://public.domain:3000/mcp/sse"
     }
   }
 }

@@ -66,6 +66,10 @@ namespace :gitlab do
         schema_sql.split(';').each do |statement|
           next if statement.strip.empty?
 
+          if connection.replicated_engine?
+            statement = ClickHouse::ReplicatedTableEnginePatcher.patch_replicated(statement)
+          end
+
           connection.execute(statement)
         end
 
@@ -111,6 +115,7 @@ namespace :gitlab do
 
       path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
       if File.writable?(path_to_sql)
+        result = ClickHouse::ReplicatedTableEnginePatcher.unpatch_replicated(result) if connection.replicated_engine?
         File.write(path_to_sql, result)
       else
         puts "File #{path_to_sql} is not writeable, skipping writing #{database}.sql"

@@ -693,9 +693,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
             group.add_owner(owner)
           end
 
-          it 'allows remove_group action' do
-            expect(policy).to be_allowed(:remove_group)
-          end
+          it { is_expected.to be_allowed(:remove_group) }
         end
 
         context 'when group ancestor is marked for deletion' do
@@ -706,24 +704,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
             group.save!
           end
 
-          it 'prevents remove_group action' do
-            expect(policy).not_to be_allowed(:remove_group)
-          end
-        end
-
-        context 'when group ancestor is marked for deletion and being deleted' do
-          let(:ancestor) do
-            create(:group_with_deletion_schedule, organization: group.organization, deleted_at: Time.current)
-          end
-
-          before do
-            group.parent = ancestor
-            group.save!
-          end
-
-          it 'allows remove_group action' do
-            expect(policy).to be_allowed(:remove_group)
-          end
+          it { is_expected.to be_allowed(:remove_group) }
         end
       end
     end

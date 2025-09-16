@@ -33,6 +33,7 @@ query getBlameData(
               }
               commitData {
                 projectBlameLink
+                ageMapClass
               }
             }
           }

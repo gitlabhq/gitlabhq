@@ -4,11 +4,7 @@ module Gitlab
   module DoorkeeperSecretStoring
     class Sha512Hash < ::Doorkeeper::SecretStoring::Base
       def self.transform_secret(plain_secret)
-        if Feature.enabled?(:sha512_oauth, :instance)
-          Digest::SHA512.hexdigest plain_secret
-        else
-          ::Gitlab::DoorkeeperSecretStoring::Pbkdf2Sha512.transform_secret(plain_secret)
-        end
+        Digest::SHA512.hexdigest plain_secret
       end
 
       ##

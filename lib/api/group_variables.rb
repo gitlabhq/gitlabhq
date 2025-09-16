@@ -36,7 +36,7 @@ module API
       params do
         requires :key, type: String, desc: 'The key of the variable'
       end
-      get ':id/variables/:key' do
+      get ':id/variables/:key', urgency: :low do
         variable = find_variable(user_group, params)
 
         break not_found!('GroupVariable') unless variable

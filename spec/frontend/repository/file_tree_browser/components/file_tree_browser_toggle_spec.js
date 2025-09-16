@@ -34,6 +34,7 @@ describe('FileTreeBrowserToggle', () => {
       pinia,
       stubs: {
         LocalStorageSync,
+        GlTooltip,
       },
     });
   };
@@ -115,6 +116,7 @@ describe('FileTreeBrowserToggle', () => {
       fileTreeBrowserStore.setFileTreeVisibility(true);
       createComponent();
       expect(findTooltip().text()).toContain('Hide file tree browser');
+      expect(findTooltip().props('placement')).toBe('left');
       expect(findShortcut().exists()).toBe(true);
     });
 

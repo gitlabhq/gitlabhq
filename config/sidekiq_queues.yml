@@ -923,6 +923,8 @@
   - 1
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
+- - secrets_management_deprovision_project_secrets_manager
+  - 1
 - - secrets_management_provision_project_secrets_manager
   - 1
 - - security_analyzer_namespace_statuses_adjustment
@@ -1000,6 +1002,8 @@
 - - security_scan_result_policies_delete_scan_result_policy_reads
   - 1
 - - security_scan_result_policies_fallback_behavior_tracking
+  - 1
+- - security_scan_result_policies_process_pipeline_completion
   - 1
 - - security_scan_result_policies_sync_any_merge_request_approval_rules
   - 1

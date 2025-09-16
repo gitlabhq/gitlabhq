@@ -25,23 +25,23 @@ For a list of events triggered for system webhooks, see [system webhooks](../../
 
 ## Events triggered for both project and group webhooks
 
-Event type                                   | Trigger
----------------------------------------------|-----------------------------------------------------------------------------
-[Push event](#push-events)                   | A push is made to the repository.
-[Tag event](#tag-events)                     | Tags are created or deleted in the repository.
-[Work item event](#work-item-events)         | A new work item is created or an existing one is edited, closed, or reopened.
-[Comment event](#comment-events)             | A new comment is made or edited on commits, merge requests, issues, and code snippets. <sup>1</sup>
-[Merge request event](#merge-request-events) | A merge request is created, edited, merged, or closed, or a commit is added in the source branch.
-[Wiki page event](#wiki-page-events)         | A wiki page is created, edited, or deleted.
-[Pipeline event](#pipeline-events)           | A pipeline status changes.
-[Job event](#job-events)                     | A job status changes.
-[Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
-[Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
-[Release event](#release-events)             | A release is created, edited, or deleted.
-[Milestone event](#milestone-events)         | A milestone is created, closed, reopened, or deleted.
-[Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
+Event type                                                                    | Trigger
+------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------
+[Push event](#push-events)                                                    | A push is made to the repository.
+[Tag event](#tag-events)                                                      | Tags are created or deleted in the repository.
+[Work item event](#work-item-events)                                          | A new work item is created or an existing one is edited, closed, or reopened.
+[Comment event](#comment-events)                                              | A new comment is made or edited on commits, merge requests, issues, and code snippets. <sup>1</sup>
+[Merge request event](#merge-request-events)                                  | A merge request is created, edited, merged, or closed, or a commit is added in the source branch.
+[Wiki page event](#wiki-page-events)                                          | A wiki page is created, edited, or deleted.
+[Pipeline event](#pipeline-events)                                            | A pipeline status changes.
+[Job event](#job-events)                                                      | A job status changes.
+[Deployment event](#deployment-events)                                        | A deployment starts, succeeds, fails, or is canceled.
+[Feature flag event](#feature-flag-events)                                    | A feature flag is turned on or off.
+[Release event](#release-events)                                              | A release is created, edited, or deleted.
+[Milestone event](#milestone-events)                                          | A milestone is created, closed, reopened, or deleted.
+[Emoji event](#emoji-events)                                                  | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
-[Vulnerability event](#vulnerability-events) | A vulnerability is created or updated.
+[Vulnerability event](#vulnerability-events)                                  | A vulnerability is created or updated.
 
 **Footnotes**:
 
@@ -49,11 +49,11 @@ Event type                                   | Trigger
 
 ## Events triggered for group webhooks only
 
-Event type                                   | Trigger
----------------------------------------------|-----------------------------------------------------------------------------
-[Group member event](#group-member-events)   | A user is added or removed from a group, or a user's access level or access expiration date changes.
-[Project event](#project-events)             | A project is created or deleted in a group.
-[Subgroup event](#subgroup-events)           | A subgroup is created or removed from a group.
+Event type                                 | Trigger
+-------------------------------------------|-----------------------------------------------------------------------------------------------------
+[Group member event](#group-member-events) | A user is added or removed from a group, or a user's access level or access expiration date changes.
+[Project event](#project-events)           | A project is created or deleted in a group.
+[Subgroup event](#subgroup-events)         | A subgroup is created or removed from a group.
 
 {{< alert type="note" >}}
 
@@ -902,16 +902,33 @@ The available values for `object_attributes.action` in the payload are:
 - `close`
 - `reopen`
 - `update`
-- `approved`
-- `unapproved`
-- `approval`
-- `unapproval`
+- `approval`: An individual user has added their approval.
+- `approved`: A merge request has been fully approved by all required approvers.
+- `unapproval`: An individual user has removed their approval, either manually or by the system.
+- `unapproved`: A previously-approved merge request has lost its approved status, either manually or by the system.
+
 - `merge`
 
 The field `object_attributes.oldrev` is only available when there are actual code changes, like:
 
 - New code is pushed.
 - A [suggestion](../merge_requests/reviews/suggestions.md) is applied.
+
+### System-initiated merge request events
+
+Some merge request events are triggered automatically by the system, such as when approvals are reset due to new commits being pushed. These events include additional fields in the payload:
+
+- `system`: A boolean field that indicates whether the event was triggered by the system (`true`) or by a user action (`false`).
+- `system_action`: A string field that provides more context about the type of system action. This field is only present when `system` is `true`.
+
+The available values for `system_action` are:
+
+- `approvals_reset_on_push`: All approvals were reset due to new commits being pushed when the project has "Reset approvals on push" enabled.
+- `code_owner_approvals_reset_on_push`: Code owner approvals were reset due to changes in files with code owner rules when the project has "Selective code owner removals" enabled.
+
+{{< alert type="note" >}}
+These system-initiated webhook events are only triggered by push events (new commits). Other approval reset scenarios do not trigger webhooks.
+{{< /alert >}}
 
 Request header:
 

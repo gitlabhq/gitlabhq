@@ -26,4 +26,10 @@ describe('SingleChoice', () => {
     createComponent({ checked: checkedValue });
     expect(findRadioGroup().attributes('checked')).toBe(checkedValue);
   });
+
+  it('passes the name prop to GlFormRadioGroup', () => {
+    const radioGroupName = 'test-name';
+    createComponent({ checked: 'test-option', name: radioGroupName });
+    expect(findRadioGroup().attributes('name')).toBe(radioGroupName);
+  });
 });

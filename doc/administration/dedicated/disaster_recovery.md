@@ -2,6 +2,7 @@
 stage: GitLab Dedicated
 group: Environment Automation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Recovery objectives, failover process, and regional backup strategies for GitLab Dedicated instances.
 title: Disaster recovery for GitLab Dedicated
 ---
 
@@ -12,14 +13,14 @@ title: Disaster recovery for GitLab Dedicated
 
 {{< /details >}}
 
-The disaster recovery process ensures your GitLab Dedicated instance
-can be restored if a disaster affects your primary region.
+GitLab Dedicated includes disaster recovery capabilities to restore your instance if your primary region becomes unavailable.
 
-GitLab can deploy your instance in these AWS regions:
+During onboarding, you can deploy your instance across multiple AWS regions:
 
 - A primary region where your instance runs.
 - If selected, a secondary region that serves as a backup if the primary region fails.
 - A backup region where your data backups are replicated for additional protection.
+  You can use the same region as your primary or secondary regions, or choose a different region for increased redundancy.
 
 If your primary region becomes unavailable due to an outage or critical system failure,
 GitLab initiates a failover to your secondary region. If no secondary region is configured,
@@ -29,8 +30,10 @@ recovery uses backup restoration from the backup region.
 
 To be eligible for the full recovery objectives, you must:
 
-- Specify both a primary and secondary region during [onboarding](create_instance/_index.md). If you don't specify a secondary region, recovery is limited to [backup restoration](#automated-backups).
-- Make sure both regions are [supported by GitLab Dedicated](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#available-aws-regions). If you select a secondary region with [limited support](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support), the recovery time and point objectives do not apply.
+- Specify both a primary and secondary region during [onboarding](create_instance/_index.md).
+  If you don't specify a secondary region, recovery is limited to backup restoration.
+- Make sure both regions are [supported by GitLab Dedicated](create_instance/data_residency_high_availability.md#primary-regions).
+  If you select a secondary region with [limited support](create_instance/data_residency_high_availability.md#secondary-regions-with-limited-support), the recovery time and point objectives do not apply.
 
 ## Recovery objectives
 
@@ -57,9 +60,11 @@ your environment. Geo continuously replicates data between these regions, includ
 
 ### Automated backups
 
-GitLab performs automated backups of the database and repositories every four hours
-(six times daily) by creating snapshots. Backups are retained for 30 days
-and are geographically replicated by AWS for additional protection.
+GitLab performs automated backups of all GitLab Dedicated datastores
+(including databases and Git repositories) every four hours (six times daily) by creating snapshots.
+
+Backups are tested, retained for 30 days, and stored in your chosen secondary region.
+They are also geographically replicated by AWS for additional protection.
 
 Database backups:
 
@@ -89,11 +94,17 @@ Disaster recovery covers these scenarios on a best-effort basis without guarante
 
 Disaster recovery has these service limitations:
 
-- Advanced search indexes are not continuously replicated. After failover, these indexes are rebuilt when the secondary region is promoted. Basic search remains available during rebuilding.
-- ClickHouse Cloud is provisioned only in the primary region. Features that require this service might be unavailable if the primary region is completely down.
+- Advanced search indexes are not continuously replicated.
+  After failover, these indexes are rebuilt when the secondary region is promoted.
+  Basic search remains available during rebuilding.
+- ClickHouse Cloud is provisioned only in the primary region.
+  Features that require this service might be unavailable if the primary region is completely down.
 - Production preview environments do not have secondary instances.
 - Hosted runners are supported only in the primary region and cannot be rebuilt in the secondary instance.
-- Some secondary regions have limited support and are not covered by the RPO and RTO targets. These regions have limited email functionality and resilience in your failover instance because of AWS limitations. For more information, see [secondary regions with limited support](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md#secondary-regions-with-limited-support).
+- Some secondary regions have limited support and are not covered by the RPO and RTO targets.
+  These regions have limited email functionality and resilience in your failover instance because of AWS limitations.
+  These limitations may also affect disaster recovery times and certain features during failover operations.
+  For more information, see [secondary regions with limited support](create_instance/data_residency_high_availability.md#secondary-regions-with-limited-support).
 
 GitLab does not provide:
 
@@ -139,5 +150,5 @@ your team throughout the recovery process.
 
 ## Related topics
 
-- [Data residency and high availability](../../subscriptions/gitlab_dedicated/data_residency_and_high_availability.md)
+- [Data residency and high availability](create_instance/data_residency_high_availability.md)
 - [GitLab Dedicated architecture](architecture.md)

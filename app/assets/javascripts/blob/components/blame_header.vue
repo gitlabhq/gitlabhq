@@ -1,14 +1,15 @@
 <script>
 import BlamePreferences from '~/blame/preferences/blame_preferences.vue';
+import BlameLegend from '~/blame/blame_legend.vue';
 
 export default {
-  components: { BlamePreferences },
+  components: { BlamePreferences, BlameLegend },
   inject: ['hasRevsFile'],
 };
 </script>
 <template>
   <div class="gl-border-b gl-flex gl-justify-between gl-bg-subtle">
-    <div><!-- TODO: Add blame legend (https://gitlab.com/gitlab-org/gitlab/-/issues/554948)--></div>
+    <blame-legend />
     <blame-preferences :has-revs-file="hasRevsFile" />
   </div>
 </template>

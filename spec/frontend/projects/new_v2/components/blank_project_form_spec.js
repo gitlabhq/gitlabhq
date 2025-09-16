@@ -3,6 +3,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlankProjectForm from '~/projects/new_v2/components/blank_project_form.vue';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 
+jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
+
 describe('Blank Project Form', () => {
   let wrapper;
 
@@ -24,6 +26,7 @@ describe('Blank Project Form', () => {
         ...props,
       },
       provide: {
+        formPath: '/projects',
         ...provide,
       },
     });
@@ -33,9 +36,9 @@ describe('Blank Project Form', () => {
     createComponent();
   });
 
+  const findForm = () => wrapper.find('form');
   const findMultiStepFormTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
   const findSharedProjectCreationFields = () => wrapper.findComponent(SharedProjectCreationFields);
-  const findCreateButton = () => wrapper.findByTestId('create-project-button');
   const findBackButton = () => wrapper.findByTestId('create-project-back-button');
 
   it('passes the correct props to MultiStepFormTemplate', () => {
@@ -50,9 +53,36 @@ describe('Blank Project Form', () => {
     it('renders the SharedProjectCreationFields component', () => {
       expect(findSharedProjectCreationFields().exists()).toBe(true);
     });
+
+    it('renders the form element correctly', () => {
+      const form = findForm();
+
+      expect(form.attributes('action')).toBe('/projects');
+      expect(form.find('input[type=hidden][name=authenticity_token]').attributes('value')).toBe(
+        'mock-csrf-token',
+      );
+    });
+
+    it('does not submit the form without required fields', () => {
+      const submitSpy = jest.spyOn(findForm().element, 'submit');
+
+      findSharedProjectCreationFields().vm.$emit('onValidateForm', false);
+
+      findForm().trigger('submit');
+      expect(submitSpy).not.toHaveBeenCalled();
+    });
+
+    it('submit the form correctly', () => {
+      const submitSpy = jest.spyOn(findForm().element, 'submit');
+
+      findSharedProjectCreationFields().vm.$emit('onValidateForm', true);
+
+      findForm().trigger('submit');
+      expect(submitSpy).toHaveBeenCalled();
+    });
   });
 
-  describe('configuraqtion block', () => {
+  describe('configuration block', () => {
     it('renders the block', () => {
       expect(wrapper.findByTestId('configuration-form-group').exists()).toBe(true);
     });
@@ -69,11 +99,6 @@ describe('Blank Project Form', () => {
     it('check readme option by default', () => {
       expect(wrapper.findByTestId('configuration-selector').attributes('checked')).toBe('readme');
     });
-  });
-
-  it('renders the option to Create Project as disabled', () => {
-    expect(findCreateButton().text()).toBe('Create project');
-    expect(findCreateButton().props('disabled')).toBe(true);
   });
 
   it(`emits the "back" event when the back button is clicked`, () => {

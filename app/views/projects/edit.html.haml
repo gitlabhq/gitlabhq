@@ -120,8 +120,7 @@
         = render 'delete'
 - else
   = render 'projects/settings/archive', project: @project
-  - if can?(current_user, :remove_project, @project)
-    = render 'delete'
+  = render 'delete'
 
 .save-project-loader.hide
   .center

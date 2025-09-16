@@ -17,22 +17,25 @@ module MergeRequests
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
-    def hook_data(merge_request, action, old_rev: nil, old_associations: {})
+    def hook_data(merge_request, action, old_rev: nil, old_associations: {}, system: false, system_action: nil)
       hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations, action: action)
 
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
       end
 
+      hook_data[:object_attributes][:system] = system
+      hook_data[:object_attributes][:system_action] = system_action if system && system_action
+
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
+    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {}, system: false, system_action: nil)
       # NOTE: Due to the async merge request diffs generation, we need to skip this for CreateService and execute it in
       #   AfterCreateService instead so that the webhook consumers receive the update when diffs are ready.
       return if merge_request.skip_ensure_merge_request_diff
 
-      merge_data = Gitlab::Lazy.new { hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations) }
+      merge_data = Gitlab::Lazy.new { hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations, system: system, system_action: system_action) }
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
 

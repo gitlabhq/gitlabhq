@@ -5629,6 +5629,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(project.reload.self_deletion_scheduled?).to be_truthy
       end
 
+      context 'when ancestor is already marked for deletion' do
+        before do
+          create(:group_deletion_schedule, group: group)
+        end
+
+        it 'do not mark project for delayed deletion but return success', :clean_gitlab_redis_queues do
+          expect(::Projects::DestroyService).not_to receive(:new)
+          expect(::Projects::MarkForDeletionService).not_to receive(:new)
+
+          delete api(path, user), params: params
+
+          expect(response).to have_gitlab_http_status(:accepted)
+          expect(project.marked_for_deletion_on).to be_nil
+          expect(project.deleting_user).to be_nil
+        end
+      end
+
       it 'returns error if project cannot be marked for deletion' do
         message = 'Error'
         expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })

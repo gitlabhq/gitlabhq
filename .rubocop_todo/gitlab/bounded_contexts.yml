@@ -3754,6 +3754,7 @@ Gitlab/BoundedContexts:
     - 'lib/click_house/iterator.rb'
     - 'lib/click_house/logger.rb'
     - 'lib/click_house/migration.rb'
+    - 'lib/click_house/replicated_table_engine_patcher.rb'
     - 'lib/click_house/migration_support/errors.rb'
     - 'lib/click_house/migration_support/exclusive_lock.rb'
     - 'lib/click_house/migration_support/migration_context.rb'

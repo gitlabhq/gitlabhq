@@ -64,7 +64,7 @@ a {
     flex-grow: 1;
   }
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     flex-direction: row;
   }
 }
@@ -79,7 +79,7 @@ a {
     padding-bottom: 1em;
   }
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     li {
       display: inline-block;
       padding-bottom: 0;

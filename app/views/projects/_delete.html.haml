@@ -1,5 +1,6 @@
 - return unless can?(current_user, :remove_project, @project)
 - return if Feature.enabled?(:disallow_immediate_deletion, current_user) && @project.self_deletion_scheduled?
+- return if @project.ancestor_scheduled_for_deletion?
 
 - title = @project.self_deletion_scheduled? ? _('Delete project immediately') : _('Delete project')
 

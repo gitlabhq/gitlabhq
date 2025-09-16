@@ -28,7 +28,10 @@ export const BLAME_DATA_QUERY_RESPONSE_MOCK = {
                       author: {},
                       sha: '13b0aca4142d1d55931577f69289a792f216f805',
                     },
-                    commitData: { projectBlameLink: 'project/blame/link' },
+                    commitData: {
+                      projectBlameLink: 'project/blame/link',
+                      ageMapClass: 'blame-commit-age-9',
+                    },
                   },
                 ],
               },

@@ -696,10 +696,11 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
         subject { delete :destroy, format: format, params: { id: nested_group.to_param, **params } }
 
-        it 'returns 404' do
+        it 'redirect to edit page and shows an alert to the user' do
           subject
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to have_gitlab_http_status(:found)
+          expect(flash[:alert]).to eq("Group ancestor has already been marked for deletion")
         end
       end
     end

@@ -6937,4 +6937,31 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       let!(:model) { create(:ci_pipeline, trigger: parent) }
     end
   end
+
+  describe 'pipeline finished events' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be_with_reload(:pipeline) do
+      create(:ci_pipeline, project: project)
+    end
+
+    where(:status, :transition) do
+      'success'  | :succeed!
+      'failed'   | :drop!
+      'canceled' | :cancel!
+      'skipped'  | :skip!
+      'manual'   | :block!
+    end
+
+    with_them do
+      it 'publishes a PipelineFinishedEvent' do
+        expect(::Gitlab::EventStore).to receive(:publish) do |event|
+          expect(event).to be_an_instance_of(::Ci::PipelineFinishedEvent)
+          expect(event.data).to eq({ 'pipeline_id' => pipeline.id, 'status' => pipeline.status })
+        end
+
+        pipeline.public_send(transition)
+      end
+    end
+  end
 end

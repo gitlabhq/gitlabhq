@@ -106,6 +106,14 @@ You can stop the container by running the following command on your host:
 docker stop gdk
 ```
 
+## Start the GDK Container
+
+You can start the container again by running the following command on your host:
+
+```shell
+docker start gdk
+```
+
 ## Remove the GDK Container
 
 {{< alert type="warning" >}}

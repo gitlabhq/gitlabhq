@@ -189,15 +189,14 @@ module API
 
         if permanently_remove
           error = immediately_delete_subgroup_error(group)
-
           render_api_error!(error, 400) if error
-        end
 
-        if permanently_remove
           destroy_conditionally!(group) do
             ::Groups::DestroyService.new(group, current_user).async_execute
           end
 
+          return accepted!
+        elsif group.ancestor_scheduled_for_deletion?
           return accepted!
         end
 

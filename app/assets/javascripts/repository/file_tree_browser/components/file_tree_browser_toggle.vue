@@ -74,6 +74,7 @@ export default {
     <gl-tooltip
       custom-class="file-browser-toggle-tooltip"
       target="file-tree-browser-toggle"
+      placement="left"
       trigger="hover focus"
     >
       {{ toggleFileBrowserTitle }}

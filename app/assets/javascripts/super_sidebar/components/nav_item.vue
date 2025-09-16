@@ -7,7 +7,6 @@ import {
   TRACKING_UNKNOWN_ID,
   TRACKING_UNKNOWN_PANEL,
 } from '~/super_sidebar/constants';
-import eventHub from '../event_hub';
 import NavItemLink from './nav_item_link.vue';
 import NavItemRouterLink from './nav_item_router_link.vue';
 
@@ -76,7 +75,6 @@ export default {
     return {
       isMouseIn: false,
       canClickPinButton: false,
-      localPillCount: this.item.pill_count,
     };
   },
   computed: {
@@ -84,11 +82,6 @@ export default {
       if (this.item.pill_count_field) {
         return this.asyncCount[this.item.pill_count_field];
       }
-
-      if (this.item.pill_count_dynamic) {
-        return this.localPillCount;
-      }
-
       return this.item.pill_count;
     },
     hasPill() {
@@ -186,11 +179,6 @@ export default {
         inline: 'nearest',
       });
     }
-
-    eventHub.$on('updatePillValue', this.updatePillValue);
-  },
-  destroyed() {
-    eventHub.$off('updatePillValue', this.updatePillValue);
   },
   methods: {
     pinAdd() {
@@ -201,11 +189,6 @@ export default {
     },
     togglePointerEvents() {
       this.canClickPinButton = this.isMouseIn;
-    },
-    updatePillValue({ value, itemId }) {
-      if (this.item.id === itemId) {
-        this.localPillCount = value;
-      }
     },
   },
 };

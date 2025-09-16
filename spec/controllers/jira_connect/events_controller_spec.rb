@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
+RSpec.describe JiraConnect::EventsController, :with_current_organization, feature_category: :integrations do
   shared_examples 'verifies asymmetric JWT token' do
     context 'when token is valid' do
       include_context 'valid JWT token'
@@ -76,6 +76,7 @@ RSpec.describe JiraConnect::EventsController, feature_category: :integrations do
 
       expect(installation.shared_secret).to eq(shared_secret)
       expect(installation.base_url).to eq('https://test.atlassian.net')
+      expect(installation.organization_id).to eq(Current.organization.id)
     end
 
     context 'when the shared_secret param is missing' do
