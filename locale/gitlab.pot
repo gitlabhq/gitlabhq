@@ -69278,6 +69278,12 @@ msgstr ""
 msgid "UsageBilling|Total users (active users)"
 msgstr ""
 
+msgid "UsageBilling|Units used from pool this month"
+msgstr ""
+
+msgid "UsageBilling|Units used this month"
+msgstr ""
+
 msgid "UsageBilling|Unknown"
 msgstr ""
 

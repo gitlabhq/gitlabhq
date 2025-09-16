@@ -17,9 +17,6 @@ module Gitlab
       end
 
       def execute
-        bitbucket_server_notes_separate_worker_enabled =
-          Feature.enabled?(:bitbucket_server_notes_separate_worker, current_user)
-
         user_contribution_mapping_enabled =
           Feature.enabled?(:bitbucket_server_user_mapping, current_user)
 
@@ -43,7 +40,6 @@ module Gitlab
               project_key: project_key,
               repo_slug: repo_slug,
               timeout_strategy: timeout_strategy,
-              bitbucket_server_notes_separate_worker: bitbucket_server_notes_separate_worker_enabled,
               user_contribution_mapping_enabled: user_contribution_mapping_enabled,
               user_mapping_to_personal_namespace_owner_enabled: user_mapping_to_personal_namespace_owner_enabled
             }

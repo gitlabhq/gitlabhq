@@ -98,7 +98,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
       });
 
       it('does not save cookie when Project Studio is enabled', () => {
-        jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
 
         toggleSuperSidebarCollapsed(true, true);
 
@@ -143,7 +143,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
       });
 
       it('does not collapse sidebar on desktop', () => {
-        jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
         getCookie.mockReturnValue('true');
 
         initSuperSidebarCollapsedState();
@@ -153,7 +153,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
       });
 
       it('sets only `isIconOnly` (not `isCollapsed`) to true when cookie is true', () => {
-        jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
         getCookie.mockReturnValue('true');
 
         initSuperSidebarCollapsedState();
@@ -163,7 +163,7 @@ describe('Super Sidebar Collapsed State Manager', () => {
       });
 
       it('sets `isIconOnly` to false when cookie is false', () => {
-        jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+        jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
         getCookie.mockReturnValue('false');
 
         initSuperSidebarCollapsedState();

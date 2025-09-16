@@ -543,6 +543,7 @@ Dangerfile
 /workhorse/
 
 [Application Security] @gitlab-com/gl-security/appsec
+/doc/development/application_secrets.md
 /app/assets/javascripts/lib/dompurify.js
 /app/assets/javascripts/gfm_auto_complete.js
 /ee/app/assets/javascripts/gfm_auto_complete.js

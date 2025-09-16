@@ -23568,7 +23568,9 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedataallevents"></a>`events` | [`[AiUsageEventType!]`](#aiusageeventtype) | Filters by events. |
 | <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
+| <a id="aiusagedataalluserids"></a>`userIds` | [`[UserID!]`](#userid) | Filters by users. |
 
 ##### `AiUsageData.codeSuggestionEvents`
 
@@ -23585,7 +23587,9 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusagedatacodesuggestioneventsenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedatacodesuggestioneventsevents"></a>`events` | [`[AiUsageEventType!]`](#aiusageeventtype) | Filters by events. |
 | <a id="aiusagedatacodesuggestioneventsstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
+| <a id="aiusagedatacodesuggestioneventsuserids"></a>`userIds` | [`[UserID!]`](#userid) | Filters by users. |
 
 ### `AiUsageEvent`
 

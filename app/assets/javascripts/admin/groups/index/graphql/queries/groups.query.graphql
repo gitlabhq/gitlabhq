@@ -25,7 +25,7 @@ query adminGroupsQuery(
       ...Group
       ...AdminGroup
       userPermissions {
-        adminAllResources @gl_introduced(version: "18.3.0")
+        adminAllResources
       }
     }
     pageInfo {

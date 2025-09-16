@@ -114,6 +114,23 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
   subject(:importer) { described_class.new(project) }
 
   describe '#execute', :clean_gitlab_redis_shared_state do
+    context 'when bitbucket_server_notes_separate_worker is not defined' do
+      let_it_be(:project) do
+        create(:project, :import_started,
+          import_data_attributes: {
+            data: { 'project_key' => 'key', 'repo_slug' => 'slug' },
+            credentials: { 'base_uri' => 'http://bitbucket.org/', 'user' => 'bitbucket', 'password' => 'password' }
+          }
+        )
+      end
+
+      it 'imports notes individually' do
+        expect(importer).to receive(:import_notes_individually)
+
+        importer.execute
+      end
+    end
+
     context 'when bitbucket_server_notes_separate_worker is false' do
       # For performance reasons (using as many `let_it_be` as possible), these `let_it_be` is purposely duplicated
       # so that we don't need to use a variable for `bitbucket_server_notes_separate_worker`,
