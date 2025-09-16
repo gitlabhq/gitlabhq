@@ -33,7 +33,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
             "protocolVersion" => "2025-06-18",
             "serverInfo" => {
               "name" => "Official GitLab MCP Server",
-              "version" => "18.4.0-pre"
+              "version" => Gitlab::VERSION
             }
           }
         })
