@@ -191,12 +191,12 @@ module QA
 end
 ```
 
-**What do we test?**
+**What do we test**?
 
 1. Can we sign in?
 1. Can we sign out?
 
-**How do we test?**
+**How do we test**?
 
 1. Check if the user avatar appears in the left sidebar.
 1. Check if the user avatar *does not* appear in the left sidebar.

@@ -100,9 +100,6 @@ export default {
     isLoadingCounts() {
       return this.$apollo.queries.catalogResourcesCount.loading;
     },
-    namespacesCount() {
-      return this.catalogResourcesCount.namespaces;
-    },
   },
   methods: {
     async handlePrevPage() {
@@ -190,7 +187,6 @@ export default {
     <empty-state v-else-if="!hasResources" :search-term="searchTerm" />
     <template v-else>
       <ci-resources-list
-        :current-page="currentPage"
         :page-info="pageInfo"
         :prev-text="__('Prev')"
         :next-text="__('Next')"

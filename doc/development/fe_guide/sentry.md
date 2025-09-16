@@ -50,7 +50,7 @@ try {
 }
 ```
 
-**When should you report an error?** We want to avoid reporting errors that we either don't care
+**When should you report an error**? We want to avoid reporting errors that we either don't care
 about, or have no control over. For example, we shouldn't report validation errors when a user fills
 out a form incorrectly. However, if that form submission fails because or a server error,
 this is an error we want Sentry to know about.

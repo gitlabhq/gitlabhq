@@ -1359,7 +1359,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/resolvers/project_packages_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_resolver_spec.rb'
     - 'spec/graphql/resolvers/projects/fork_targets_resolver_spec.rb'
-    - 'spec/graphql/resolvers/projects/grafana_integration_resolver_spec.rb'
     - 'spec/graphql/resolvers/projects/services_resolver_spec.rb'
     - 'spec/graphql/resolvers/projects/snippets_resolver_spec.rb'
     - 'spec/graphql/resolvers/recent_boards_resolver_spec.rb'

@@ -443,8 +443,14 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
   describe 'grafana_integration field' do
     subject { described_class.fields['grafanaIntegration'] }
 
+    let_it_be(:project) { create(:project) }
+
     it { is_expected.to have_graphql_type(Types::GrafanaIntegrationType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::Projects::GrafanaIntegrationResolver) }
+    it { is_expected.to have_graphql_resolver(nil) }
+
+    it 'returns nil for grafana_integration' do
+      expect(resolve_field(:grafana_integration, project, current_user: project.owner)).to be_nil
+    end
   end
 
   describe 'environments field' do

@@ -184,6 +184,17 @@ describe('Tree List', () => {
         pageSize: 100,
       });
     });
+
+    it('can filter with Show more button in the list', async () => {
+      const filterQuery = '/dir_1/dir_2';
+      expect(findFileRows()).toHaveLength(3); // Contains all items before filtering
+
+      findFilterInput().vm.$emit('input', filterQuery);
+      await nextTick();
+
+      expect(findFileRows()).toHaveLength(1); // Contains only one item after filtering
+      expect(findFileRows().at(0).props('file')).toMatchObject({ path: filterQuery });
+    });
   });
 
   describe('filtering', () => {

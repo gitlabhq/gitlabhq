@@ -33,6 +33,7 @@ These shortcuts are available in most areas of GitLab:
 | Keyboard shortcut                  | Description |
 |------------------------------------|-------------|
 | <kbd>?</kbd>                       | Show or hide the shortcut reference sheet. |
+| <kbd>Shift</kbd> + <kbd>h</kbd>    | Go to the homepage. |
 | <kbd>Shift</kbd> + <kbd>p</kbd>    | Go to your **Projects** page. |
 | <kbd>Shift</kbd> + <kbd>g</kbd>    | Go to your **Groups** page. |
 | <kbd>Shift</kbd> + <kbd>a</kbd>    | Go to your **Activity** page. |

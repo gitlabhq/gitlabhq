@@ -64,6 +64,7 @@ class NamespaceSetting < ApplicationRecord
       .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE)
       .map(&:to_s)
   } }, allow_nil: true
+  validates :duo_agent_platform_request_count, numericality: { greater_than_or_equal_to: 0 }
 
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name

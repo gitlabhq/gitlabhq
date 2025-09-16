@@ -22,6 +22,12 @@ module NavHelper
     class_name
   end
 
+  def super_sidebar_loading_state_class
+    return '' unless project_studio_enabled?
+
+    cookies['super_sidebar_collapsed'] == 'true' ? 'super-sidebar-is-icon-only' : ''
+  end
+
   def page_gutter_class
     if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'

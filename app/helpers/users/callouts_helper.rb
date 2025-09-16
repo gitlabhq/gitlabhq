@@ -20,6 +20,7 @@ module Users
     PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
     NEW_MR_DASHBOARD_BANNER = 'new_mr_dashboard_banner'
     PRODUCT_USAGE_DATA_COLLECTION_CHANGES = 'product_usage_data_collection_changes'
+    EMAIL_OTP_ENROLLMENT_CALLOUT = 'email_otp_enrollment_callout'
 
     def render_product_usage_data_collection_changes(current_user)
       return unless current_user &&
@@ -106,6 +107,18 @@ module Users
 
     def show_new_mr_dashboard_banner?
       !user_dismissed?(NEW_MR_DASHBOARD_BANNER)
+    end
+
+    def show_email_otp_enrollment_callout?
+      return false unless current_user
+      return false unless Feature.enabled?(:email_based_mfa, current_user)
+      return false if user_dismissed?(EMAIL_OTP_ENROLLMENT_CALLOUT)
+      return false unless current_user.email_otp_required_after.present?
+      # Only show for users who can log in with a password and don't have 2FA
+      return false if current_user.password_automatically_set? || current_user.two_factor_enabled?
+
+      days_until_enrollment = (current_user.email_otp_required_after.to_date - Date.current).to_i
+      days_until_enrollment.between?(31, 60)
     end
 
     private

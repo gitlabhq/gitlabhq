@@ -12,6 +12,7 @@ import {
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  SHARED_PROJECTS_TAB,
   SHARED_GROUPS_TAB,
 } from '../constants';
 
@@ -40,8 +41,9 @@ export default {
   },
   computed: {
     tabs() {
+      const tabsWithFullPathVariable = [SHARED_PROJECTS_TAB.value, SHARED_GROUPS_TAB.value];
       return GROUPS_SHOW_TABS.map((tab) => {
-        if (tab.value === SHARED_GROUPS_TAB.value) {
+        if (tabsWithFullPathVariable.includes(tab.value)) {
           return {
             ...tab,
             variables: {

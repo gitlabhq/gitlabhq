@@ -91,7 +91,7 @@ export default {
       const pattern = terms.length > 1 ? `(${terms.join('|')})` : terms[0];
 
       return this.flatFilesList.filter((item) =>
-        micromatch.contains(item.path, pattern, { nocase: true }),
+        micromatch.contains(item.path || '', pattern, { nocase: true }),
       );
     },
     currentRouterPath() {

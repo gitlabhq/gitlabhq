@@ -1,5 +1,5 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import Cookies from '~/lib/utils/cookies';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
@@ -50,7 +50,7 @@ describe('IssuableSidebarRoot', () => {
     beforeEach(() => {
       jest.spyOn(Cookies, 'set').mockImplementation(jest.fn());
       jest.spyOn(Cookies, 'get').mockReturnValue(false);
-      jest.spyOn(bp, 'isDesktop').mockReturnValue(true);
+      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(true);
 
       wrapper = createComponent();
     });
@@ -94,7 +94,9 @@ describe('IssuableSidebarRoot', () => {
       `(
         'sets page layout classes correctly when current screen size is `$breakpoint`',
         async ({ breakpoint, isExpandedValue }) => {
-          jest.spyOn(bp, 'isDesktop').mockReturnValue(breakpoint === 'lg' || breakpoint === 'xl');
+          jest
+            .spyOn(GlBreakpointInstance, 'isDesktop')
+            .mockReturnValue(breakpoint === 'lg' || breakpoint === 'xl');
 
           window.dispatchEvent(new Event('resize'));
           await nextTick();

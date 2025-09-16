@@ -130,5 +130,22 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
         expect_graphql_errors_to_be_empty
       end
     end
+
+    describe 'shared projects' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
+
+      base_input_path = 'groups/show/graphql/queries/'
+      base_output_path = 'graphql/projects/'
+      query_name = 'shared_projects.query.graphql'
+
+      it "#{base_output_path}#{query_name}.json" do
+        query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+
+        post_graphql(query, current_user: user, variables: { full_path: group.full_path })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
   end
 end

@@ -362,4 +362,74 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       end
     end
   end
+
+  describe '#show_email_otp_enrollment_callout?' do
+    subject { helper.show_email_otp_enrollment_callout? }
+
+    let(:email_otp_required_after) { 31.days.from_now }
+
+    before do
+      user.update!(email_otp_required_after: email_otp_required_after)
+    end
+
+    it { is_expected.to be true }
+
+    context 'when user is not signed in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(email_based_mfa: false)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has dismissed the banner' do
+      before do
+        create(:callout, user: user, feature_name: :email_otp_enrollment_callout)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user does not have email_otp_required_after set' do
+      let(:email_otp_required_after) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user has two-factor authentication enabled' do
+      before do
+        user.update!(otp_required_for_login: true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user does not sign in with a password' do
+      before do
+        user.update!(password_automatically_set: true)
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when email_otp_required_after is more than 60 days away' do
+      let(:email_otp_required_after) { 61.days.from_now }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when email_otp_required_after is less than 31 days away' do
+      let(:email_otp_required_after) { 30.days.from_now }
+
+      it { is_expected.to be false }
+    end
+  end
 end

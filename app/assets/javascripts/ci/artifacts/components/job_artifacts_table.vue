@@ -160,17 +160,14 @@ export default {
           {
             key: 'checkbox',
             label: I18N_CHECKBOX,
-            thClass: 'md:gl-w-0 md:gl-min-w-6 md:!gl-pr-0',
-            tdClass: 'md:!gl-pr-0',
+            thClass: '@md/panel:gl-w-0 @md/panel:gl-min-w-6 @md/panel:!gl-pr-0',
+            tdClass: '@md/panel:!gl-pr-0',
           },
           ...this.$options.fields,
         ];
       }
 
       return this.$options.fields;
-    },
-    anyArtifactsSelected() {
-      return Boolean(this.selectedArtifacts.length);
     },
     isSelectedArtifactsLimitReached() {
       return this.selectedArtifacts.length >= this.jobArtifactsCountLimit;

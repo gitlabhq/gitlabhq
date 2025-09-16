@@ -129,4 +129,4 @@ first parent. Use the command line to cherry-pick with a different mainline. For
 ## Related topics
 
 - [Commits API](../../../api/commits.md#cherry-pick-a-commit)
-- [Cheery-pick changes with Git](../../../topics/git/cherry_pick.md)
+- [Cherry-pick changes with Git](../../../topics/git/cherry_pick.md)

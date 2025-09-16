@@ -135,14 +135,14 @@ application-related operation.
 We have to set the partitioning key based on the date interval of interest, which may depend on two
 factors:
 
-1. **How far back in time do we need to access data for?**
+1. **How far back in time do we need to access data for**?
    Partitioning by week is of no use if we always access data for a year back, as we would have to
    execute queries over 52 different partitions (tables) each time. As an example for that consider the
    activity feed on the profile of any GitLab user.
 
    In contrast, if we want to just access the last 7 days of created records, partitioning by year
    would include too many unnecessary records in each partition, as is the case for `web_hook_logs`.
-1. **How large are the partitions created?**
+1. **How large are the partitions created**?
    The major purpose of partitioning is accessing tables that are as small as possible. If they get too
    large by themselves, queries start underperforming. We may have to re-partition (split) them
    in even smaller partitions.

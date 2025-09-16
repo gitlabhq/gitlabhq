@@ -12,7 +12,7 @@ that prevent us from using the following deprecated features in the codebase.
 
 ## Vue filters
 
-**Why?**
+**Why**?
 
 Filters [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0015-remove-filters.md) from the Vue 3 API completely.
 
@@ -22,7 +22,7 @@ Component's computed properties / methods or external helpers.
 
 ## Event hub
 
-**Why?**
+**Why**?
 
 `$on`, `$once`, and `$off` methods [are removed](https://github.com/vuejs/rfcs/blob/master/active-rfcs/0020-events-api-change.md) from the Vue instance, so in Vue 3 it can't be used to create an event hub.
 
@@ -50,7 +50,7 @@ Event hubs created with the factory expose the same methods as Vue 2 event hubs 
 
 ## \<template functional>
 
-**Why?**
+**Why**?
 
 In Vue 3, `{ functional: true }` option [is removed](https://github.com/vuejs/rfcs/blob/functional-async-api-change/active-rfcs/0007-functional-async-api-change.md) and `<template functional>` is no longer supported.
 
@@ -70,7 +70,7 @@ It is not recommended to replace stateful components with functional components 
 
 ## Old slots syntax with `slot` attribute
 
-**Why?**
+**Why**?
 
 In Vue 2.6 `slot` attribute was already deprecated in favor of `v-slot` directive. The `slot` attribute usage is still allowed and sometimes we prefer using it because it simplifies unit tests (with old syntax, slots are rendered on `shallowMount`). However, in Vue 3 we can't use old syntax anymore.
 
@@ -117,7 +117,7 @@ shallowMount(MyAwesomeComponent, {
 
 ## Props default function `this` access
 
-**Why?**
+**Why**?
 
 In Vue 3, props default value factory functions no longer have access to `this`
 (the component instance).

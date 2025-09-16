@@ -8,6 +8,7 @@ import {
   HIDE_APPEARING_CONTENT,
   LOCAL_STORAGE_KEY,
   BOLD_TEXT,
+  GO_TO_HOMEPAGE,
 } from '~/behaviors/shortcuts/keybindings';
 
 describe('~/behaviors/shortcuts/keybindings', () => {
@@ -119,6 +120,21 @@ describe('~/behaviors/shortcuts/keybindings', () => {
 
     it('returns the default keybinding for the command', () => {
       expect(keysFor(HIDE_APPEARING_CONTENT)).toEqual(['esc']);
+    });
+  });
+
+  describe('GO_TO_HOMEPAGE command', () => {
+    beforeEach(() => {
+      setupCustomizations();
+    });
+
+    it('has the correct default keybinding', () => {
+      expect(keysFor(GO_TO_HOMEPAGE)).toEqual(['shift+h']);
+    });
+
+    it('is included in the global shortcuts group', () => {
+      const globalGroup = keybindingGroups.find((group) => group.id === 'globalShortcuts');
+      expect(globalGroup.keybindings).toContain(GO_TO_HOMEPAGE);
     });
   });
 });

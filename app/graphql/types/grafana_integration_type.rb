@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Deprecated:
+#   Remove alongside query during any major release.
+#   https://gitlab.com/gitlab-org/gitlab/-/issues/560601
 module Types
   class GrafanaIntegrationType < ::Types::BaseObject
     graphql_name 'GrafanaIntegration'

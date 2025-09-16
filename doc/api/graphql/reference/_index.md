@@ -2566,7 +2566,7 @@ Input type: `AiCatalogAgentExecuteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogagentexecuteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationaicatalogagentexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration file that can be used in Duo workflow service for flow execution. |
+| <a id="mutationaicatalogagentexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration that can be used in Duo workflow service for flow execution. |
 | <a id="mutationaicatalogagentexecuteworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Created workflow. |
 
 ### `Mutation.aiCatalogAgentUpdate`
@@ -2653,6 +2653,32 @@ Input type: `AiCatalogFlowDeleteInput`
 | <a id="mutationaicatalogflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogflowdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogflowdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog flow was successfully deleted. |
+
+### `Mutation.aiCatalogFlowExecute`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogFlowExecuteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowexecuteflowid"></a>`flowId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog flow to execute. |
+| <a id="mutationaicatalogflowexecuteflowversionid"></a>`flowVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific flow version to use. If not provided, the latest version will be used. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogflowexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogflowexecuteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogflowexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration that can be used in Duo workflow service for flow execution. |
+| <a id="mutationaicatalogflowexecuteworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Created workflow. |
 
 ### `Mutation.aiCatalogFlowUpdate`
 
@@ -38472,7 +38498,7 @@ Project-level settings for product analytics provider.
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
 | <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` {{< icon name="warning-solid" >}} | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if the GitLab instance is not a SaaS instance. |
-| <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
+| <a id="projectgrafanaintegration"></a>`grafanaIntegration` {{< icon name="warning-solid" >}} | [`GrafanaIntegration`](#grafanaintegration) | **Deprecated** in GitLab 18.3. Feature was removed in 16.0. Always returns null. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
 | <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
 | <a id="projecthttpurltorepo"></a>`httpUrlToRepo` | [`String`](#string) | URL to connect to the project via HTTPS. |
@@ -50144,6 +50170,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumduo_agent_platform_requested"></a>`DUO_AGENT_PLATFORM_REQUESTED` | Callout feature name for duo_agent_platform_requested. |
 | <a id="usercalloutfeaturenameenumduo_amazon_q_alert"></a>`DUO_AMAZON_Q_ALERT` | Callout feature name for duo_amazon_q_alert. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
+| <a id="usercalloutfeaturenameenumemail_otp_enrollment_callout"></a>`EMAIL_OTP_ENROLLMENT_CALLOUT` | Callout feature name for email_otp_enrollment_callout. |
 | <a id="usercalloutfeaturenameenumexplore_duo_core_banner"></a>`EXPLORE_DUO_CORE_BANNER` | Callout feature name for explore_duo_core_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |

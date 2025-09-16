@@ -51,6 +51,10 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :navigation do
       find('body').send_keys([:shift, 'L'])
 
       check_page_title('Milestones')
+
+      find('body').send_keys([:shift, 'H'])
+
+      check_page_title('Projects') # This will need to change when we remove the `personal_homepage` feature flag
     end
   end
 

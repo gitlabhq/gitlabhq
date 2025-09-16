@@ -485,8 +485,6 @@ mirror_url_changed?:
   file: app/models/remote_mirror.rb
 expire_avatar_cache:
   file: app/models/repository.rb
-move_dir_files:
-  file: app/models/repository.rb
 blobs_metadata:
   file: app/models/repository.rb
 from_merge_request_author?:

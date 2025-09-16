@@ -1243,9 +1243,9 @@
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
     - !reference [.frontend:rules:compile-test-assets, rules]
+    - !reference [.build-images:rules:build-gdk-image, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
-    - !reference [.build-images:rules:build-gdk-image, rules]
 
 ######################
 # CI Templates Rules #

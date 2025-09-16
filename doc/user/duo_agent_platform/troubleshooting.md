@@ -23,6 +23,7 @@ Start by ensuring that GitLab Duo is on and that you are properly connected.
 - Ensure you meet [the prerequisites](_index.md#prerequisites).
 - Ensure the branch you want to work in is checked out.
 - Ensure you have turned on the necessary settings in the IDE.
+- Ensure that [Admin mode is disabled](../../administration/settings/sign_in_restrictions.md#turn-off-admin-mode-for-your-session).
 
 ## Network issues
 

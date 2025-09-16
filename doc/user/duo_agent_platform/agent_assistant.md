@@ -305,7 +305,7 @@ commands:
     You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
   - echo "Checking for git changes and pushing if any exist"
   - |
     if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
@@ -368,7 +368,7 @@ commands:
     You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
   - echo "Checking for git changes and pushing if any exist"
   - |
     if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
@@ -533,7 +533,7 @@ commands:
     When generating the shell commands, avoid using $(), <(), or >(), so you don't raise: Error executing tool run_shell_command: Command substitution using $(), <(), or >() is not allowed for security reasons
     </important>
     "
-  - git checkout --branch $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
+  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
   - echo "Checking for git changes and pushing if any exist"
   - |
     if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then

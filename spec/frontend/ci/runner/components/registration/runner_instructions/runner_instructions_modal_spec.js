@@ -1,5 +1,5 @@
 import { GlAlert, GlModal, GlButton, GlSkeletonLoader } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -25,7 +25,7 @@ const MockResizeObserver = {
     resizeCallback = value;
   },
   mockResize(size) {
-    bp.getBreakpointSize.mockReturnValue(size);
+    GlBreakpointInstance.getBreakpointSize.mockReturnValue(size);
     resizeCallback();
   },
   unbind() {

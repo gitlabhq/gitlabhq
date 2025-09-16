@@ -21,7 +21,7 @@ For a full list of reference architectures, see
 - **High Availability**: No. For a highly-available environment, you can
   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 - **Cloud Native Hybrid**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
-- **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
+- **Unsure which Reference Architecture to use**? [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 
 | Service                            | Nodes | Configuration          | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |------------------------------------|-------|------------------------|-----------------|--------------|----------|

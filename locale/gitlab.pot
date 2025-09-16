@@ -2811,6 +2811,9 @@ msgstr ""
 msgid "AICatalog|is private to another project"
 msgstr ""
 
+msgid "AICatalog|must have at least one node"
+msgstr ""
+
 msgid "AICatalog|organization must match the item consumer's organization"
 msgstr ""
 
@@ -24458,6 +24461,12 @@ msgstr ""
 msgid "DuoAgentPlatform|Remote GitLab Duo Flows"
 msgstr ""
 
+msgid "DuoAgentPlatform|Request has been sent to the group Owner"
+msgstr ""
+
+msgid "DuoAgentPlatform|Request has been sent to the instance Admin"
+msgstr ""
+
 msgid "DuoAgentPlatform|Session ID"
 msgstr ""
 
@@ -24465,6 +24474,12 @@ msgid "DuoAgentPlatform|Session triggered"
 msgstr ""
 
 msgid "DuoAgentPlatform|Start using GitLab Duo Core"
+msgstr ""
+
+msgid "DuoAgentPlatform|The number of users in your group who have requested access to GitLab Duo Core."
+msgstr ""
+
+msgid "DuoAgentPlatform|The number of users in your instance who have requested access to GitLab Duo Core."
 msgstr ""
 
 msgid "DuoAgentPlatform|Turn on Feature Preview"
@@ -25580,6 +25595,15 @@ msgid "EmailError|You are not allowed to perform this action. If you believe thi
 msgstr ""
 
 msgid "EmailError|Your account has been blocked. If you believe this is in error, contact a staff member."
+msgstr ""
+
+msgid "EmailOTP|Enhanced authentication coming soon"
+msgstr ""
+
+msgid "EmailOTP|On %{date}, GitLab will begin requiring email one-time passcodes for your account. To avoid being locked out, make sure you can access your primary email address before this date."
+msgstr ""
+
+msgid "EmailOTP|Review email addresses"
 msgstr ""
 
 msgid "EmailParticipantsWarning|%{emails} will be notified of your comment."
@@ -31005,6 +31029,9 @@ msgid "Go to files"
 msgstr ""
 
 msgid "Go to find file"
+msgstr ""
+
+msgid "Go to homepage"
 msgstr ""
 
 msgid "Go to issue boards"
@@ -54289,9 +54316,6 @@ msgstr ""
 msgid "Request details"
 msgstr ""
 
-msgid "Request has been sent to the instance Admin"
-msgstr ""
-
 msgid "Request queued for administrator approval."
 msgstr ""
 
@@ -61526,6 +61550,9 @@ msgstr ""
 msgid "Shared projects"
 msgstr ""
 
+msgid "Shared projects could not be loaded. Refresh the page to try again."
+msgstr ""
+
 msgid "Shared runners enabled cannot be enabled until identity verification is completed"
 msgstr ""
 
@@ -65327,9 +65354,6 @@ msgid "The number of merge requests merged by month."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
-msgstr ""
-
-msgid "The number of users in your instance who have requested access to GitLab Duo Core."
 msgstr ""
 
 msgid "The only thread is resolved"
@@ -73837,6 +73861,9 @@ msgstr ""
 msgid "WorkItem|It must have a header row and at least two columns: the first column is the work item title and the second column is the work item description. The separator is automatically detected."
 msgstr ""
 
+msgid "WorkItem|Items from archived projects will not be shown."
+msgstr ""
+
 msgid "WorkItem|Iteration"
 msgstr ""
 
@@ -74503,6 +74530,9 @@ msgid "WorkItem|Used on types: %{workItemTypes}. Changes affect all items in all
 msgstr ""
 
 msgid "WorkItem|View current version"
+msgstr ""
+
+msgid "WorkItem|View items"
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"

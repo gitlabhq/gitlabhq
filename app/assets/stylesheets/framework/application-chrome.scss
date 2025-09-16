@@ -32,7 +32,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-screen gl-left-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
+    @apply gl-fixed gl-w-full gl-left-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
     top: $calc-system-headers-height;
     height: var(--header-height);
 
@@ -50,8 +50,26 @@
   }
 
   @media (min-width: $breakpoint-xl) {
+    $icon-sidebar-width: 48px;
+
     .super-sidebar-wrapper {
       width: auto;
+    }
+
+    .super-sidebar.super-sidebar-loading {
+      position: relative;
+
+      &:not(.super-sidebar-is-icon-only) {
+        width: calc(#{$super-sidebar-width} - 8px);
+      }
+
+      &.super-sidebar-is-icon-only {
+        width: calc(#{$icon-sidebar-width} - 8px);
+      }
+    }
+
+    .ai-panels {
+      min-width: calc(#{$icon-sidebar-width} - 8px);
     }
   }
 
@@ -291,7 +309,7 @@
   // Panel content
   .panel-content {
     @apply gl-overflow-clip gl-h-full gl-pb-0;
-    transform: translate3d(0, 0, 0);
+    contain: strict;
   }
 
   // Vue portal height
@@ -667,5 +685,19 @@
   .settings-sticky-footer {
     background-color: var(--theme-background-color) !important;
   }
-
  }
+
+/*
+ * Animations
+ */
+
+:where(.application-chrome) {
+  .nav-flyout-menu {
+    @include gl-prefers-reduced-motion-transition;
+    transition: opacity .2s .1s $gl-easing-out-cubic;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+}

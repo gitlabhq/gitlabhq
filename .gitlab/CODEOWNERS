@@ -704,12 +704,10 @@ lib/gitlab/checks/
 /doc/administration/settings/slack_app.md @msedlakjakubowski
 /doc/administration/settings/third_party_offers.md @z_painter
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
-/doc/administration/settings/vscode_extension_marketplace.md @brendan777
 /doc/administration/sidekiq/ @axil
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
-/doc/administration/static_objects_external_storage.md @brendan777
 /doc/administration/system_hooks.md @ashrafkhamis
 /doc/administration/timezone.md @axil @eread
 /doc/administration/troubleshooting/ @axil @eread
@@ -770,7 +768,6 @@ lib/gitlab/checks/
 /doc/api/group_protected_branches.md @brendan777
 /doc/api/group_push_rules.md @brendan777
 /doc/api/group_relations_export.md @ashrafkhamis
-/doc/api/group_repository_storage_moves.md @brendan777
 /doc/api/group_security_settings.md @rlehmann1
 /doc/api/group_ssh_certificates.md @brendan777
 /doc/api/group_webhooks.md @ashrafkhamis
@@ -983,7 +980,6 @@ lib/gitlab/checks/
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
-/doc/integration/gitpod.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @msedlakjakubowski
@@ -1166,7 +1162,6 @@ lib/gitlab/checks/
 /doc/user/project/project_topics.md @z_painter
 /doc/user/project/protected_tags.md @brendan777
 /doc/user/project/quick_actions.md @msedlakjakubowski
-/doc/user/project/remote_development/ @brendan777
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @scawood
 /doc/user/project/repository/code_suggestions/ @scawood
@@ -1181,7 +1176,6 @@ lib/gitlab/checks/
 /doc/user/project/time_tracking.md @msedlakjakubowski
 /doc/user/project/troubleshooting.md @z_painter
 /doc/user/project/use_project_as_go_package.md @z_painter
-/doc/user/project/web_ide/ @brendan777
 /doc/user/project/wiki/ @msedlakjakubowski
 /doc/user/project/working_with_projects.md @z_painter
 /doc/user/public_access.md @z_painter
@@ -1199,7 +1193,6 @@ lib/gitlab/checks/
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @kpaizee
 /doc/user/work_items/ @msedlakjakubowski
-/doc/user/workspace/ @brendan777
 # End rake-managed-docs-block
 
 # i18n Docs

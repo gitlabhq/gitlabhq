@@ -6,8 +6,10 @@ import { GlPagination, GlKeysetPagination } from '@gitlab/ui';
 import childrenResponse from 'test_fixtures/groups/children.json';
 import inactiveChildrenResponse from 'test_fixtures/groups/inactive_children.json';
 import sharedGroupsResponse from 'test_fixtures/graphql/groups/shared_groups.query.graphql.json';
+import sharedProjectsResponse from 'test_fixtures/graphql/projects/shared_projects.query.graphql.json';
 import GroupsShowApp from '~/groups/show/components/app.vue';
 import sharedGroupsQuery from '~/groups/show/graphql/queries/shared_groups.query.graphql';
+import sharedProjectsQuery from '~/groups/show/graphql/queries/shared_projects.query.graphql';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
 import { createRouter } from '~/groups/show';
@@ -20,6 +22,7 @@ import {
   FILTERED_SEARCH_NAMESPACE,
   INACTIVE_TAB,
   SHARED_GROUPS_TAB,
+  SHARED_PROJECTS_TAB,
 } from '~/groups/show/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
@@ -92,6 +95,7 @@ describe('GroupsShowApp', () => {
     expect(wrapper.findComponent(TabsWithList).props()).toEqual({
       tabs: [
         SUBGROUPS_AND_PROJECTS_TAB,
+        { ...SHARED_PROJECTS_TAB, variables: { fullPath: defaultPropsData.fullPath } },
         { ...SHARED_GROUPS_TAB, variables: { fullPath: defaultPropsData.fullPath } },
         INACTIVE_TAB,
       ],
@@ -276,6 +280,74 @@ describe('GroupsShowApp', () => {
                     nodes: sharedGroupsResponse.data.group.sharedGroups.nodes,
                     pageInfo: {
                       ...sharedGroupsResponse.data.group.sharedGroups.pageInfo,
+                      hasNextPage: true,
+                    },
+                  },
+                },
+              },
+            }),
+          ],
+        ],
+      });
+
+      await waitForPromises();
+
+      expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
+    });
+  });
+
+  describe('when on the Shared projects tab', () => {
+    const route = { name: SHARED_PROJECTS_TAB.value };
+    const {
+      data: {
+        group: {
+          sharedProjects: {
+            nodes: [mockProject],
+          },
+        },
+      },
+    } = sharedProjectsResponse;
+
+    it('renders shared projects', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedProjectsQuery, jest.fn().mockResolvedValue(sharedProjectsResponse)]],
+      });
+      await waitForPromises();
+
+      expect(wrapper.findByRole('link', { name: mockProject.name }).exists()).toBe(true);
+    });
+
+    it('transforms sort to uppercase', async () => {
+      const handler = jest.fn().mockResolvedValue(sharedProjectsResponse);
+
+      await createComponent({
+        mountFn: mountExtended,
+        route: { ...route, query: { sort: 'created_at_desc' } },
+        handlers: [[sharedProjectsQuery, handler]],
+      });
+      await waitForPromises();
+
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ sort: 'CREATED_AT_DESC' }));
+    });
+
+    it('uses keyset pagination', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [
+          [
+            sharedProjectsQuery,
+            jest.fn().mockResolvedValue({
+              data: {
+                group: {
+                  ...sharedProjectsResponse.data.group,
+                  sharedProjects: {
+                    ...sharedProjectsResponse.data.group.sharedProjects,
+                    nodes: sharedProjectsResponse.data.group.sharedProjects.nodes,
+                    pageInfo: {
+                      ...sharedProjectsResponse.data.group.sharedProjects.pageInfo,
                       hasNextPage: true,
                     },
                   },

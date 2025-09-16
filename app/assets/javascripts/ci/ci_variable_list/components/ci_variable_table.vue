@@ -272,7 +272,7 @@ export default {
         </template>
         <template #cell(key)="{ item }">
           <div data-testid="ci-variable-table-row-variable">
-            <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start">
+            <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end @md/panel:gl-justify-start">
               <span
                 :id="`ci-variable-key-${item.id}`"
                 class="gl-inline-block gl-max-w-full gl-break-anywhere"
@@ -304,7 +304,7 @@ export default {
         <template v-if="!isInheritedGroupVars" #cell(value)="{ item }">
           <div
             v-if="!item.hidden"
-            class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start"
+            class="-gl-mr-3 gl-flex gl-items-start gl-justify-end @md/panel:gl-justify-start"
           >
             <span v-if="areValuesHidden" data-testid="hiddenValue">•••••</span>
             <span
@@ -324,7 +324,7 @@ export default {
           </div>
         </template>
         <template #cell(environmentScope)="{ item }">
-          <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start">
+          <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end @md/panel:gl-justify-start">
             <span
               :id="`ci-variable-env-${item.id}`"
               class="gl-inline-block gl-max-w-full gl-break-anywhere"
@@ -340,7 +340,7 @@ export default {
           </div>
         </template>
         <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
-          <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start">
+          <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end @md/panel:gl-justify-start">
             <gl-link
               v-if="item.groupCiCdSettingsPath"
               :id="`ci-variable-group-${item.id}`"

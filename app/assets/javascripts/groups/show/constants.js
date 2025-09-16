@@ -8,10 +8,13 @@ import {
 } from '~/groups_projects/constants';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
+import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { formatGraphQLGroupsAndProjects } from '~/vue_shared/components/nested_groups_projects_list/formatter';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import sharedGroupsQuery from './graphql/queries/shared_groups.query.graphql';
 import subgroupsAndProjectsQuery from './graphql/queries/subgroups_and_projects.query.graphql';
+import sharedProjectsQuery from './graphql/queries/shared_projects.query.graphql';
 
 const transformSortToUpperCase = (variables) => ({
   ...variables,
@@ -47,6 +50,22 @@ export const SUBGROUPS_AND_PROJECTS_TAB = {
   variables: { active: true },
   text: __('Subgroups and projects'),
   value: 'subgroups_and_projects',
+};
+
+export const SHARED_PROJECTS_TAB = {
+  query: sharedProjectsQuery,
+  queryPath: 'group.sharedProjects',
+  paginationType: PAGINATION_TYPE_KEYSET,
+  formatter: formatGraphQLProjects,
+  listComponent: ProjectsList,
+  listComponentProps: {
+    listItemClass: 'gl-px-5',
+    showProjectIcon: true,
+  },
+  text: __('Shared projects'),
+  value: 'shared_projects',
+  transformVariables: transformSortToUpperCase,
+  queryErrorMessage: __('Shared projects could not be loaded. Refresh the page to try again.'),
 };
 
 export const SHARED_GROUPS_TAB = {
@@ -88,7 +107,12 @@ export const SORT_OPTION_UPDATED = {
 
 export const SORT_OPTIONS = [SORT_OPTION_NAME, SORT_OPTION_CREATED, SORT_OPTION_UPDATED];
 
-export const GROUPS_SHOW_TABS = [SUBGROUPS_AND_PROJECTS_TAB, SHARED_GROUPS_TAB, INACTIVE_TAB];
+export const GROUPS_SHOW_TABS = [
+  SUBGROUPS_AND_PROJECTS_TAB,
+  SHARED_PROJECTS_TAB,
+  SHARED_GROUPS_TAB,
+  INACTIVE_TAB,
+];
 
 export const BASE_ROUTE = '/(groups)?/:group*';
 

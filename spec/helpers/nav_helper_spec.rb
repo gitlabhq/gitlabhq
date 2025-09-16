@@ -134,4 +134,48 @@ RSpec.describe NavHelper, feature_category: :navigation do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe '#super_sidebar_loading_state_class' do
+    context 'when Project Studio is not enabled' do
+      before do
+        allow(helper).to receive(:project_studio_enabled?).and_return(false)
+      end
+
+      it 'returns empty string' do
+        expect(helper.super_sidebar_loading_state_class).to eq('')
+      end
+    end
+
+    context 'when Project Studio is enabled' do
+      before do
+        allow(helper).to receive(:project_studio_enabled?).and_return(true)
+      end
+
+      context 'when super_sidebar_collapsed cookie is true' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'true'
+        end
+
+        it 'returns super-sidebar-is-icon-only class' do
+          expect(helper.super_sidebar_loading_state_class).to eq('super-sidebar-is-icon-only')
+        end
+      end
+
+      context 'when super_sidebar_collapsed cookie is false' do
+        before do
+          helper.request.cookies['super_sidebar_collapsed'] = 'false'
+        end
+
+        it 'returns empty string' do
+          expect(helper.super_sidebar_loading_state_class).to eq('')
+        end
+      end
+
+      context 'when super_sidebar_collapsed cookie is not set' do
+        it 'returns empty string' do
+          expect(helper.super_sidebar_loading_state_class).to eq('')
+        end
+      end
+    end
+  end
 end

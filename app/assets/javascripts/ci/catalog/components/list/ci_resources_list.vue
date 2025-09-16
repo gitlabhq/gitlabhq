@@ -9,10 +9,6 @@ export default {
     GlKeysetPagination,
   },
   props: {
-    currentPage: {
-      type: Number,
-      required: true,
-    },
     pageInfo: {
       type: Object,
       required: true,

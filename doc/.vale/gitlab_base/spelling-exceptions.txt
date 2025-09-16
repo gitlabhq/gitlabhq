@@ -687,6 +687,7 @@ offboards
 OIDs
 OKRs
 Okta
+Ollama
 OLM
 OmniAuth
 onboarding

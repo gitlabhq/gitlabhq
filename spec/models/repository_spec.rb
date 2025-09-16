@@ -1253,36 +1253,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe "#move_dir_files" do
-    it 'move directory files successfully' do
-      expect do
-        repository.move_dir_files(
-          user, 'files/new_js', 'files/js',
-          branch_name: 'master',
-          message: 'move directory images to new_images',
-          author_email: author_email,
-          author_name: author_name
-        )
-      end.to change { repository.count_commits(ref: 'master') }.by(1)
-      files = repository.ls_files('master')
-
-      expect(files).not_to include('files/js/application.js')
-      expect(files).to include('files/new_js/application.js')
-    end
-
-    it 'skips commit with same path' do
-      expect do
-        repository.move_dir_files(
-          user, 'files/js', 'files/js',
-          branch_name: 'master',
-          message: 'no commit',
-          author_email: author_email,
-          author_name: author_name
-        )
-      end.to change { repository.count_commits(ref: 'master') }.by(0)
-    end
-  end
-
   describe "#delete_file" do
     let(:project) { create(:project, :repository) }
 

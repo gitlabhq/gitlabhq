@@ -35,7 +35,7 @@ export default {
     {
       key: 'value',
       label: __('Value'),
-      tdClass: 'md:gl-max-w-26',
+      tdClass: '@md/panel:gl-max-w-26',
     },
   ],
   props: {
@@ -67,7 +67,7 @@ export default {
 
 <template>
   <!-- Will replace with pagination in the future. -->
-  <div class="gl-overflow-y-auto md:gl-max-h-[50rem]">
+  <div class="gl-overflow-y-auto @md/panel:gl-max-h-[50rem]">
     <gl-table-lite
       class="gl-mb-0"
       :items="filteredItems"

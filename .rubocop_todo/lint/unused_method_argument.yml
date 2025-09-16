@@ -30,7 +30,6 @@ Lint/UnusedMethodArgument:
     - 'app/graphql/resolvers/merge_request_resolver.rb'
     - 'app/graphql/resolvers/project_resolver.rb'
     - 'app/graphql/resolvers/projects/branch_rules_resolver.rb'
-    - 'app/graphql/resolvers/projects/grafana_integration_resolver.rb'
     - 'app/graphql/resolvers/release_milestones_resolver.rb'
     - 'app/graphql/resolvers/users/group_count_resolver.rb'
     - 'app/graphql/resolvers/users/participants_resolver.rb'

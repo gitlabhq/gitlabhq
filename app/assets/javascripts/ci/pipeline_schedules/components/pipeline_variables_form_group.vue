@@ -139,7 +139,7 @@ export default {
       <div v-for="(variable, index) in variables" :key="`var-${index}`" class="gl-mb-4">
         <div
           v-if="!variable.destroy"
-          class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 md:gl-flex-row"
+          class="gl-flex gl-flex-col gl-items-stretch gl-gap-4 @md/panel:gl-flex-row"
           data-testid="ci-variable-row"
         >
           <gl-collapsible-listbox
@@ -193,11 +193,11 @@ export default {
               @click="removeVariable(index)"
             >
               <gl-icon class="!gl-mr-0" name="remove" />
-              <span class="md:gl-hidden">{{ s__('CiVariables|Remove variable') }}</span>
+              <span class="@md/panel:gl-hidden">{{ s__('CiVariables|Remove variable') }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-invisible gl-hidden md:gl-block"
+              class="gl-invisible gl-hidden @md/panel:gl-block"
               icon="clear"
               :aria-label="s__('CiVariables|Remove variable')"
             />

@@ -20,9 +20,9 @@ const defaultFields = [
     key: 'actions',
     label: __('Actions'),
     thClasses: [
-      'md:gl-invisible', // hides the "Actions" header in large viewports
+      '@md/panel:gl-invisible', // hides the "Actions" header in large viewports
       'gl-w-4/20',
-      'lg:gl-w-3/20',
+      '@lg/panel:gl-w-3/20',
     ],
     tdClass: 'gl-text-right',
   }),

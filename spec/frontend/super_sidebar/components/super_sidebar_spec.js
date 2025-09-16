@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
@@ -342,25 +342,34 @@ describe('SuperSidebar component', () => {
 
   describe('in the panel-based layout', () => {
     describe('on desktop', () => {
-      beforeEach(() => {
-        createWrapper({
-          provide: { projectStudioEnabled: true },
-          sidebarState: { isMobile: false },
+      describe('in icon-only mode', () => {
+        beforeEach(() => {
+          createWrapper({
+            provide: { projectStudioEnabled: true },
+            sidebarState: { isMobile: false, isIconOnly: true },
+          });
+        });
+
+        it('renders the icon-only toggle', () => {
+          expect(findIconOnlyToggle().exists()).toBe(true);
+        });
+
+        it('does not render the context header text when in icon-only mode', () => {
+          expect(findContextHeader().exists()).toBe(false);
         });
       });
 
-      it('renders the icon-only toggle', () => {
-        expect(findIconOnlyToggle().exists()).toBe(true);
-      });
+      describe('in full mode', () => {
+        beforeEach(() => {
+          createWrapper({
+            provide: { projectStudioEnabled: true },
+            sidebarState: { isMobile: false, isIconOnly: false },
+          });
+        });
 
-      it('does not render the context header text when in icon-only mode', () => {
-        expect(findContextHeader().exists()).toBe(false);
-      });
-
-      it('renders the context header normally while not in icon-only mode', async () => {
-        findIconOnlyToggle().vm.$emit('toggle');
-        await nextTick();
-        expect(findContextHeader().text()).toBe('Your work');
+        it('renders the context header normally', () => {
+          expect(findContextHeader().text()).toBe('Your work');
+        });
       });
     });
 
@@ -485,7 +494,7 @@ describe('SuperSidebar component', () => {
   describe('keyboard interactivity', () => {
     it('does not bind keydown events on screens xl and above', async () => {
       jest.spyOn(document, 'addEventListener');
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
       createWrapper();
 
       isCollapsed.mockReturnValue(false);
@@ -496,7 +505,7 @@ describe('SuperSidebar component', () => {
 
     it('binds keydown events on screens below xl', () => {
       jest.spyOn(document, 'addEventListener');
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
       createWrapper();
 
       expect(document.addEventListener).toHaveBeenCalledWith('keydown', wrapper.vm.focusTrap);
@@ -534,7 +543,7 @@ describe('SuperSidebar component', () => {
     });
 
     it('focuses the first focusable element when sidebar is not peeking', async () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
 
       wrapper.vm.sidebarState.isCollapsed = false;
       await nextTick();
@@ -544,7 +553,7 @@ describe('SuperSidebar component', () => {
     });
 
     it("doesn't focus the first focusable element when sidebar is peeking", async () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
 
       findHoverPeekBehavior().vm.$emit('change', STATE_OPEN);
       await nextTick();
@@ -553,7 +562,7 @@ describe('SuperSidebar component', () => {
     });
 
     it("doesn't focus the first focusable element when sidebar is collapsed", async () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
 
       wrapper.vm.sidebarState.isCollapsed = false;
       await nextTick();
@@ -575,7 +584,7 @@ describe('SuperSidebar component', () => {
 
     const ESC_KEY = 27;
     it('collapses sidebar when sidebar is in overlay mode', async () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(lg);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(lg);
       await findSidebar().trigger('keydown.esc', { keyCode: ESC_KEY });
 
       expect(toggleSuperSidebarCollapsed).toHaveBeenCalled();
@@ -589,7 +598,7 @@ describe('SuperSidebar component', () => {
     });
 
     it('does nothing when sidebar is not overlapping', () => {
-      jest.spyOn(bp, 'windowWidth').mockReturnValue(xl);
+      jest.spyOn(GlBreakpointInstance, 'windowWidth').mockReturnValue(xl);
 
       findSidebar().trigger('keydown', { keyCode: ESC_KEY });
       expect(toggleSuperSidebarCollapsed).not.toHaveBeenCalled();

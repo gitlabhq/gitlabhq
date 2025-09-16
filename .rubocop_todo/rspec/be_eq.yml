@@ -560,7 +560,6 @@ RSpec/BeEq:
     - 'spec/graphql/resolvers/feature_flag_resolver_spec.rb'
     - 'spec/graphql/resolvers/import/source_users_resolver_spec.rb'
     - 'spec/graphql/resolvers/kas/agent_configurations_resolver_spec.rb'
-    - 'spec/graphql/resolvers/projects/grafana_integration_resolver_spec.rb'
     - 'spec/graphql/resolvers/repository_branch_names_resolver_spec.rb'
     - 'spec/graphql/resolvers/snippets/blobs_resolver_spec.rb'
     - 'spec/graphql/subscriptions/issuable_updated_spec.rb'

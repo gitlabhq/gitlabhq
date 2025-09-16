@@ -14,7 +14,11 @@ import {
   SUPER_SIDEBAR_PEEK_STATE_WILL_OPEN as STATE_WILL_OPEN,
   SUPER_SIDEBAR_PEEK_STATE_OPEN as STATE_OPEN,
 } from '../constants';
-import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_collapsed_state_manager';
+import {
+  isCollapsed,
+  toggleSuperSidebarCollapsed,
+  toggleSuperSidebarIconOnly,
+} from '../super_sidebar_collapsed_state_manager';
 import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
@@ -52,7 +56,7 @@ export default {
   inject: ['showTrialWidget', 'projectStudioEnabled', 'showDuoAgentPlatformWidget'],
   provide() {
     return {
-      isIconOnly: computed(() => this.canIconOnly && this.isIconOnly),
+      isIconOnly: computed(() => this.isIconOnly),
     };
   },
   props: {
@@ -66,7 +70,6 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
-      isIconOnly: this.projectStudioEnabled,
     };
   },
   computed: {
@@ -81,7 +84,7 @@ export default {
         'super-sidebar-peek-hint': this.showPeekHint,
         'super-sidebar-peek': this.showOverlay,
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
-        'super-sidebar-is-icon-only': this.canIconOnly && this.isIconOnly,
+        'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
       };
     },
@@ -90,6 +93,9 @@ export default {
     },
     canIconOnly() {
       return this.projectStudioEnabled && !this.sidebarState.isMobile;
+    },
+    isIconOnly() {
+      return this.canIconOnly && this.sidebarState.isIconOnly;
     },
   },
   watch: {
@@ -127,7 +133,7 @@ export default {
   methods: {
     toggleSidebar() {
       if (this.canIconOnly) {
-        this.isIconOnly = !this.isIconOnly;
+        toggleSuperSidebarIconOnly();
         return;
       }
 
@@ -306,11 +312,7 @@ export default {
             </gl-button>
           </div>
         </div>
-        <icon-only-toggle
-          v-if="canIconOnly"
-          class="gl-hidden xl:gl-flex"
-          @toggle="isIconOnly = !isIconOnly"
-        />
+        <icon-only-toggle v-if="canIconOnly" class="gl-hidden xl:gl-flex" @toggle="toggleSidebar" />
       </div>
     </nav>
     <a

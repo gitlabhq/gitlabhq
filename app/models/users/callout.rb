@@ -114,7 +114,8 @@ module Users
       vulnerability_archival: 110, # EE-only
       duo_amazon_q_alert: 111, # EE-only
       personal_homepage_preferences_banner: 112,
-      duo_agent_platform_requested: 113 # EE-only
+      duo_agent_platform_requested: 113, # EE-only
+      email_otp_enrollment_callout: 114
     }
 
     validates :feature_name,

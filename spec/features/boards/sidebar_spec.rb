@@ -39,6 +39,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
         sign_in(user)
 
         visit project_board_path(project, board)
+        click_button 'Collapse sidebar' # otherwise panel opens as drawer and intercepts clicks
 
         wait_for_requests
       end

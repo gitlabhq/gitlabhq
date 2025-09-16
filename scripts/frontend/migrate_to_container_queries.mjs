@@ -17,7 +17,12 @@ function writeFileContents(file, contents) {
 function processFiles(files) {
   files.forEach((file) => {
     let contents = getFileContents(file);
-    if (file.endsWith('.vue') || file.endsWith('.js') || file.endsWith('.haml')) {
+    if (
+      file.endsWith('.vue') ||
+      file.endsWith('.js') ||
+      file.endsWith('.haml') ||
+      file.endsWith('.rb')
+    ) {
       contents = migrateCSSUtils(contents);
     } else if (file.endsWith('.scss')) {
       contents = migrateMediaQueries(contents);

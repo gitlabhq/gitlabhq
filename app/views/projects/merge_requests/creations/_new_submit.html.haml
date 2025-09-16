@@ -11,13 +11,14 @@
 
 .mr-compare.merge-request.js-merge-request-new-submit.gl-mt-5{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
-    .merge-request-sticky-header.gl-border-b
-      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: ["@md/panel:gl-z-1", ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test')].compact }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-border-0.gl-h-9{ class: '@lg/panel:gl-w-auto' }
-          %li.commits-tab.new-tab
-            = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
-              = _("Commits")
-              = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
+    .merge-request-sticky-header-wrapper
+      .merge-request-sticky-header.gl-border-b
+        .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: ["@md/panel:gl-z-1", ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test')].compact }
+          %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-border-0.gl-h-9{ class: '@lg/panel:gl-w-auto' }
+            %li.commits-tab.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+                = _("Commits")
+                = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
 
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active
@@ -25,22 +26,23 @@
           %p
             = _("There are no commits yet.")
   - else
-    .merge-request-sticky-header.gl-border-b
-      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: ["@md/panel:gl-z-1", ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test')].compact }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-border-0.gl-h-9{ class: '@lg/panel:gl-w-auto' }
-          %li.commits-tab.new-tab
-            = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
-              = _("Commits")
-              = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
-          - if @pipelines.any?
-            %li.builds-tab
-              = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tabvue'} do
-                = _("Pipelines")
-                = gl_badge_tag limited_counter_with_delimiter(@pipelines, limit: @pipeline_display_limit), { class: 'gl-tab-counter-badge' }
-          %li.diffs-tab
-            = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', testid: 'diffs-tab'} do
-              = _("Changes")
-              = gl_badge_tag @merge_request.diff_size, { class: 'gl-tab-counter-badge' }
+    .merge-request-sticky-header-wrapper
+      .merge-request-sticky-header.gl-border-b
+        .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: ["@md/panel:gl-z-1", ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test')].compact }
+          %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-border-0.gl-h-9{ class: '@lg/panel:gl-w-auto' }
+            %li.commits-tab.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+                = _("Commits")
+                = gl_badge_tag @total_commit_count, { class: 'gl-tab-counter-badge' }
+            - if @pipelines.any?
+              %li.builds-tab
+                = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tabvue'} do
+                  = _("Pipelines")
+                  = gl_badge_tag limited_counter_with_delimiter(@pipelines, limit: @pipeline_display_limit), { class: 'gl-tab-counter-badge' }
+            %li.diffs-tab
+              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue', testid: 'diffs-tab'} do
+                = _("Changes")
+                = gl_badge_tag @merge_request.diff_size, { class: 'gl-tab-counter-badge' }
 
     #diff-notes-app.tab-content
       #new.commits.tab-pane.active

@@ -148,7 +148,7 @@ This is because of the limitations of languages like Java where everything has t
 in a class. In JavaScript we have things like object and function literals where we can solve
 many problems with a module that exports utility functions.
 
-#### When could the Singleton pattern be actually appropriate?**
+#### When could the Singleton pattern be actually appropriate?
 
 Singletons solve the problem of enforcing there to be only 1 instance of a thing. It's possible
 that a Singleton could be appropriate in the following rare cases:

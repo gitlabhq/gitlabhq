@@ -748,7 +748,7 @@ describe('TabsWithList', () => {
       });
 
       it('decodes URI', () => {
-        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared_groups');
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared');
       });
     });
   });

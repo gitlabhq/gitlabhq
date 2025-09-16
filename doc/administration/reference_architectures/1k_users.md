@@ -22,7 +22,7 @@ For a full list of reference architectures, see
   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 - **Cloud Native Hybrid**: No. For a cloud native hybrid environment, you
   can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
-- **Unsure which Reference Architecture to use?** For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
+- **Unsure which Reference Architecture to use**? For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
 
 | Users        | Configuration        | GCP example<sup>1</sup> | AWS example<sup>1</sup> | Azure example<sup>1</sup> |
 |--------------|----------------------|----------------|--------------|----------|

@@ -162,7 +162,7 @@ export default {
   <div
     :id="`${targetId}-flyout`"
     :style="flyoutStyle"
-    class="gl-fixed gl-z-9999 -gl-mx-1 gl-max-h-full gl-overflow-y-auto"
+    class="nav-flyout-menu gl-fixed gl-z-9999 -gl-mx-1 gl-max-h-full gl-overflow-y-auto"
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >

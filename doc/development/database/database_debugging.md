@@ -123,19 +123,19 @@ To create a database connection:
    1. Ensure you are in the `gitlab` directory.
    1. Access the PostgreSQL database. Run `rails db`. The output should look like:
 
-         ```shell
-         psql (14.9)
-         Type "help" for help.
+      ```shell
+      psql (14.9)
+      Type "help" for help.
 
-         gitlabhq_development=#
-         ```
+      gitlabhq_development=#
+      ```
 
    1. In the returned PostgreSQL prompt, run `\conninfo` to display the connected user and
       the port used to establish the connection. For example:
 
-         ```shell
-         You are connected to database "gitlabhq_development" as user "root" on host "localhost" (address "127.0.0.1") at port "5432".
-         ```
+      ```shell
+      You are connected to database "gitlabhq_development" as user "root" on host "localhost" (address "127.0.0.1") at port "5432".
+      ```
 
 1. When prompted to enter the **password of the PostgreSQL user**, enter the password you set or leave the field blank.
    - As you are logged in to the same machine that the Postgres server is running on, a password is not required.

@@ -8,6 +8,8 @@ import Shortcuts, { LOCAL_MOUSETRAP_DATA_KEY } from '~/behaviors/shortcuts/short
 import MarkdownPreview from '~/behaviors/preview_markdown';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
+jest.mock('~/lib/utils/navigation_utility');
+
 const mockSearchInput = document.createElement('input');
 
 jest.mock('~/lib/utils/dom_utils', () => ({

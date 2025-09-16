@@ -927,13 +927,6 @@ class Repository
     end
   end
 
-  def move_dir_files(user, path, previous_path, **options)
-    actions = move_dir_files_actions(path, previous_path, branch_name: options[:branch_name])
-    return if actions.blank?
-
-    commit_files(user, **options.merge(actions: actions))
-  end
-
   def delete_file(user, path, **options)
     options[:actions] = [{ action: :delete, file_path: path }]
 
