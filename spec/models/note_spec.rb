@@ -594,6 +594,22 @@ RSpec.describe Note, feature_category: :team_planning do
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
 
+  describe '#refresh_markdown_cache!' do
+    it 'updates sharding key if at least one column is not present' do
+      note = create(:note_on_personal_snippet)
+      note.project_id = nil
+      note.namespace_id = nil
+      note.organization_id = nil
+      note.save!(validate: false)
+
+      expect do
+        note.refresh_markdown_cache!
+      end.to change { [note.project_id, note.namespace_id, note.organization_id] }
+        .from([nil] * 3)
+        .to([nil, nil, note.noteable.organization_id])
+    end
+  end
+
   describe '#note_html' do
     shared_examples 'note that parses work item references' do
       it 'parses the work item reference' do

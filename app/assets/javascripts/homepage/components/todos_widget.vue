@@ -25,6 +25,7 @@ import {
 import BaseWidget from './base_widget.vue';
 
 const N_TODOS = 5;
+const N_TODOS_FETCH = 15;
 
 const FILTER_OPTIONS = [
   {
@@ -97,13 +98,16 @@ export default {
       const selectedOption = FILTER_OPTIONS.find((option) => option.value === this.filter);
       return selectedOption ? selectedOption.text : s__('Todos|All');
     },
+    displayedTodos() {
+      return this.todos.slice(0, N_TODOS);
+    },
   },
   apollo: {
     todos: {
       query: getTodosQuery,
       variables() {
         return {
-          first: N_TODOS,
+          first: N_TODOS_FETCH,
           state: ['pending'],
           action: this.filter ? this.filter.split(';') : null,
         };
@@ -207,7 +211,7 @@ export default {
       </div>
       <ol v-else class="gl-m-0 gl-list-none gl-p-0">
         <todo-item
-          v-for="todo in todos"
+          v-for="todo in displayedTodos"
           :key="todo.id"
           class="-gl-mx-3 gl-rounded-lg gl-border-b-0 !gl-px-3 gl-py-4"
           :todo="todo"

@@ -7,6 +7,7 @@
 # - Databse Review Guidelines: https://docs.gitlab.com/development/database_review/
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
+# - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
 
 # This file defines custom review criteria that will be applied to specific files
 # during merge request reviews. Instructions are grouped by name and can target
@@ -48,3 +49,12 @@ instructions:
       1. Use shared examples to reduce duplication
       2. Ensure error handling tests for security-sensitive operations
       3. Ensure input validation tests for user-facing endpoints
+
+  - name: Documentation
+    fileFilters:
+      - "doc/**/*.md"
+    instructions: |
+      1. Ensure markdown formatting follows GitLab Flavored Markdown syntax standards.
+      2. Ensure new or updated content aligns with existing content in technical meaning and style.
+      3. Ensure the style is clear, concise, not repetitive, and follows the GitLab Documentation Style Guide.
+      4. Avoid excessive or repetitive links.
